@@ -404,6 +404,7 @@ public class DBStore extends BaseStore {
 		if ((db.getDBType() == DBType.DB2) ||
 			(db.getDBType() == DBType.MYSQL) ||
 			(db.getDBType() == DBType.MARIADB) ||
+			(db.getDBType() == DBType.ORACLE) ||
 			(db.getDBType() == DBType.SYBASE)) {
 
 			_transactionConfig = Factory.create(
