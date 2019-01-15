@@ -1440,7 +1440,7 @@ public class PortletImportController implements ImportController {
 		PortletDataHandler portletDataHandler =
 			_portletDataHandlerProvider.provide(companyId, portletId);
 
-		if (portletDataHandler != null && portletDataHandler.isDataLocalized()) {
+		if (portletDataHandler.isDataLocalized()) {
 			List<Locale> sourceAvailableLocales = Arrays.asList(
 				LocaleUtil.fromLanguageIds(
 					StringUtil.split(
