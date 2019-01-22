@@ -537,7 +537,7 @@ message.
 		>
 			<fileset
 				dir="lib/development"
-				includes="hsql.jar,mariadb.jar,mysql.jar,postgresql.jar"
+				includes="hsql.jar,mariadb.jar,mysql.jar,postgresql.jar,ojdbc8.jar"
 			/>
 			<fileset
 				dir="lib/global"
