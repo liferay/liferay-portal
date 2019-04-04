@@ -230,6 +230,7 @@
 				dir="${project.dir}/util-taglib/src/META-INF"
 			>
 				<include name="*.tld" />
+				<exclude name="liferay-aui.tld" />
 			</fileset>
 		</schemavalidate>
 	</target>
