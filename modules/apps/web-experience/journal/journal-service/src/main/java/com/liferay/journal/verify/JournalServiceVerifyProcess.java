@@ -257,11 +257,22 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 
 					JournalContentSearch contentSearch = contentSearches.get(0);
 
-					_journalContentSearchLocalService.updateContentSearch(
-						contentSearch.getGroupId(),
-						contentSearch.isPrivateLayout(),
-						contentSearch.getLayoutId(),
-						contentSearch.getPortletId(), articleId, true);
+					try {
+                        _journalContentSearchLocalService.updateContentSearch(
+                                contentSearch.getGroupId(),
+                                contentSearch.isPrivateLayout(),
+                                contentSearch.getLayoutId(),
+                                contentSearch.getPortletId(), articleId, true);
+                    }
+					catch(Exception ex) {
+					    _log.error("updateContentSearch failed: " + ex.getMessage() +
+                                " groupId: " + contentSearch.getGroupId() +
+                                " isPrivateLayout: " + contentSearch.isPrivateLayout() +
+                                " layoutId: " + contentSearch.getLayoutId() +
+                                " portletId: " + contentSearch.getPortletId() +
+                                " articleId: " + articleId);
+					    throw ex;
+                    }
 				}
 			}
 		}

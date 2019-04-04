@@ -23,6 +23,8 @@ import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.content.ContentUtil;
 import com.liferay.petra.xml.XMLUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -33,6 +35,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -568,7 +571,13 @@ public class UpgradeJournal extends UpgradeProcess {
 				String ddmStructureKey = rs.getString("DDMStructureKey");
 
 				if (Validator.isNull(ddmStructureKey)) {
-					content = convertStaticContentToDynamic(content);
+					try {
+						content = convertStaticContentToDynamic(content);
+					}
+					catch (Throwable ex) {
+						_log.error("Failed to upgrade journal article id: " + id + " error: " + ex.getMessage(), ex);
+						throw new UpgradeException(ex);
+					}
 
 					updateJournalArticle(id, name, name, content);
 
@@ -612,4 +621,5 @@ public class UpgradeJournal extends UpgradeProcess {
 	private final ResourceActions _resourceActions;
 	private final UserLocalService _userLocalService;
 
+	private static final Log _log = LogFactoryUtil.getLog(UpgradeJournal.class);
 }
