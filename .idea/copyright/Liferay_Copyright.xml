@@ -1,7 +1,0 @@
-<component name="CopyrightManager">
-	<copyright>
-		<option name="keyword" value="Copyright (c)" />
-		<option name="myName" value="Liferay Copyright" />
-		<option name="notice" value="/**&#10; * Copyright (c) 2000-present Liferay, Inc. All rights reserved.&#10; *&#10; * This library is free software; you can redistribute it and/or modify it under&#10; * the terms of the GNU Lesser General Public License as published by the Free&#10; * Software Foundation; either version 2.1 of the License, or (at your option)&#10; * any later version.&#10; *&#10; * This library is distributed in the hope that it will be useful, but WITHOUT&#10; * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS&#10; * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more&#10; * details.&#10; */" />
-	</copyright>
-</component>

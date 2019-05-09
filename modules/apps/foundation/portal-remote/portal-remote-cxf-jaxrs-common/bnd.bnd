@@ -30,7 +30,6 @@ Import-Package:\
 	!org.springframework.*,\
 	\
 	*
-Liferay-Releng-Module-Group-Description:
 Liferay-Releng-Module-Group-Title: Remote Service Engines
 Provide-Capability:\
 	osgi.contract;\
@@ -46,4 +45,33 @@ Provide-Capability:\
 	\
 	javax.ws.rs.*,\
 	\
-	org.apache.cxf.jaxrs.*
+	org.apache.cxf.jaxrs,\
+	org.apache.cxf.jaxrs.blueprint,\
+	org.apache.cxf.jaxrs.ext,\
+	org.apache.cxf.jaxrs.ext.multipart,\
+	org.apache.cxf.jaxrs.ext.xml,\
+	org.apache.cxf.jaxrs.impl,\
+	org.apache.cxf.jaxrs.impl.tl,\
+	org.apache.cxf.jaxrs.interceptor,\
+	org.apache.cxf.jaxrs.json.basic,\
+	org.apache.cxf.jaxrs.lifecycle,\
+	org.apache.cxf.jaxrs.model,\
+	org.apache.cxf.jaxrs.model.doc,\
+	org.apache.cxf.jaxrs.provider,\
+	org.apache.cxf.jaxrs.provider.aegis,\
+	org.apache.cxf.jaxrs.provider.atom,\
+	org.apache.cxf.jaxrs.provider.dom4j,\
+	org.apache.cxf.jaxrs.provider.json.utils,\
+	org.apache.cxf.jaxrs.provider.json,\
+	org.apache.cxf.jaxrs.provider.jsonp,\
+	org.apache.cxf.jaxrs.provider.jsrjsonp,\
+	org.apache.cxf.jaxrs.provider.xmlbeans,\
+	org.apache.cxf.jaxrs.provider,\
+	org.apache.cxf.jaxrs.security,\
+	org.apache.cxf.jaxrs.servlet,\
+	org.apache.cxf.jaxrs.spring,\
+	org.apache.cxf.jaxrs.utils.multipart,\
+	org.apache.cxf.jaxrs.utils.schemas,\
+	org.apache.cxf.jaxrs.utils.schemas,\
+	org.apache.cxf.jaxrs.utils,\
+	org.apache.cxf.jaxrs.validation

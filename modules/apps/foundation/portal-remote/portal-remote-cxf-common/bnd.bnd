@@ -31,7 +31,6 @@ Import-Package:\
 	!org.springframework.*,\
 	\
 	*
-Liferay-Releng-Module-Group-Description:
 Liferay-Releng-Module-Group-Title: Remote Service Engines
 -exportcontents:\
 	javax.wsdl.*;version="1.2",\
