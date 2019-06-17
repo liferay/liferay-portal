@@ -1,5 +1,5 @@
 <Context crossContext="true" path="">
-
+	<JarScanner className="com.liferay.support.tomcat.util.scan.NOPJarScanner" />
 	<!-- JAAS -->
 
 	<!--<Realm
