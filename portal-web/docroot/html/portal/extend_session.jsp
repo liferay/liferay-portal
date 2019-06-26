@@ -54,7 +54,7 @@ for (String servletContextName : ServletContextPool.keySet()) {
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to extend session for " + servletContextName);
+				_log.warn("Unable to extend session for " + servletContextName + ": " + e.getMessage(), e);
 			}
 		}
 	}
