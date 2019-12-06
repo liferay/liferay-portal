@@ -890,8 +890,8 @@ public class JournalArticleLocalServiceImpl
 		// Article
 
 		User user = userLocalService.getUser(userId);
-		oldArticleId = StringUtil.toUpperCase(oldArticleId.trim());
-		newArticleId = StringUtil.toUpperCase(newArticleId.trim());
+		oldArticleId = StringUtil.toUpperCase(StringUtil.trim(oldArticleId));
+		newArticleId = StringUtil.toUpperCase(StringUtil.trim(newArticleId));
 
 		JournalArticle oldArticle = journalArticlePersistence.findByG_A_V(
 			groupId, oldArticleId, version);
@@ -3204,7 +3204,7 @@ public class JournalArticleLocalServiceImpl
 		throws PortalException {
 
 		return getFirstArticle(
-			groupId, articleId, status, new ArticleVersionComparator(false));
+			groupId, articleId, status, new ArticleVersionComparator(true));
 	}
 
 	/**
@@ -6432,8 +6432,8 @@ public class JournalArticleLocalServiceImpl
 				new QueryDefinition<JournalArticle>(
 					WorkflowConstants.STATUS_APPROVED));
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Expiring " + articles.size() + " articles");
+		if (_log.isInfoEnabled() && articles.size() > 0) {
+			_log.info("Expiring " + articles.size() + " articles");
 		}
 
 		for (JournalArticle article : articles) {

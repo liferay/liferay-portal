@@ -62,7 +62,7 @@ public interface JournalServiceConfiguration {
 	)
 	public String errorTemplateXSL();
 
-	@Meta.AD(deflt = "86400000", required = false)
+	@Meta.AD(deflt = "900000", required = false)
 	public long checkInterval();
 
 	@Meta.AD(
