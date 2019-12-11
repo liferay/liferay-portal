@@ -367,6 +367,8 @@
 	// ]]>
 </script>
 
+<liferay-util:dynamic-include key="/html/common/themes/top_js.jspf#resources" />
+
 <c:if test="<%= PortalWebResourcesUtil.getPortalWebResources(PortalWebResourceConstants.RESOURCE_TYPE_JS_LOADER_MODULES) != null %>">
 
 	<%
