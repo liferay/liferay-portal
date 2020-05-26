@@ -3,7 +3,7 @@
 #set -v -x
 set -u -e
 
-version=7.0.6c
+version=7.0.6d
 lexicon_version=1.0.25a
 repo_url=http://jenkins.axiell.local:8081
 repo_dir=~/.m2/repository
