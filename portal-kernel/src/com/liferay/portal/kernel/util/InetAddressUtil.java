@@ -62,6 +62,18 @@ public class InetAddressUtil {
 		return InetAddress.getByName("127.0.0.1");
 	}
 
+	public static boolean isLocalInetAddress(InetAddress inetAddress) {
+		if (inetAddress.isAnyLocalAddress() ||
+			inetAddress.isLinkLocalAddress() ||
+			inetAddress.isLoopbackAddress() ||
+			inetAddress.isSiteLocalAddress()) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private static class LocalHostNameHolder {
 
 		private static final String _LOCAL_HOST_NAME;

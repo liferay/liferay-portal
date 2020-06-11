@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -63,6 +64,9 @@ public class EditDiscussionStrutsAction extends BaseStrutsAction {
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response)
 		throws Exception {
+
+		AuthTokenUtil.checkCSRFToken(
+			request, EditDiscussionStrutsAction.class.getName());
 
 		String namespace = ParamUtil.getString(request, "namespace");
 

@@ -18,7 +18,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Marcellus Tavares
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class InvalidSourceURIException extends PortalException {
 
 	public InvalidSourceURIException() {

@@ -15,15 +15,21 @@
 package com.liferay.portal.json;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.json.jabsorb.serializer.LiferayJSONDeserializationWhitelist;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.CaptureHandler;
+import com.liferay.portal.kernel.test.JDKLoggerTestUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,9 +44,21 @@ public class JSONFactoryTest {
 	public void setUp() throws Exception {
 		JSONInit.init();
 
+		JSONFactoryImpl jsonFactoryImpl = new JSONFactoryImpl();
+
+		LiferayJSONDeserializationWhitelist
+			liferayJSONDeserializationWhitelist =
+				jsonFactoryImpl.getLiferayJSONDeserializationWhitelist();
+
+		liferayJSONDeserializationWhitelist.register(
+			FooBean.class.getName(), FooBean1.class.getName(),
+			FooBean2.class.getName(), FooBean3.class.getName(),
+			FooBean4.class.getName(), FooBean5.class.getName(),
+			FooBean6.class.getName());
+
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
-		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+		jsonFactoryUtil.setJSONFactory(jsonFactoryImpl);
 	}
 
 	@Test
@@ -78,6 +96,36 @@ public class JSONFactoryTest {
 		Object values = deserializedMap.get("key");
 
 		Assert.assertTrue(values instanceof Integer[]);
+	}
+
+	@Test
+	public void testDeserializeNonwhitelistedClass() {
+		String json = JSONFactoryUtil.serialize(new JSONFactoryTest());
+
+		try (CaptureHandler captureHandler =
+				JDKLoggerTestUtil.configureJDKLogger(
+					LiferayJSONDeserializationWhitelist.class.getName(),
+					Level.WARNING)) {
+
+			Object object = JSONFactoryUtil.deserialize(json);
+
+			Assert.assertTrue(
+				object.getClass() + " is not an instance of Map",
+				object instanceof Map);
+
+			List<LogRecord> logRecords = captureHandler.getLogRecords();
+
+			Assert.assertEquals(logRecords.toString(), 1, logRecords.size());
+
+			LogRecord logRecord = logRecords.get(0);
+
+			Assert.assertTrue(
+				logRecord.getMessage(),
+				StringUtil.startsWith(
+					logRecord.getMessage(),
+					"Unable to deserialize " +
+						JSONFactoryTest.class.getName()));
+		}
 	}
 
 	@Test

@@ -74,7 +74,7 @@ if (portletTitleBasedNavigation) {
 	<c:if test="<%= PropsValues.BLOGS_ENTRY_PREVIOUS_AND_NEXT_NAVIGATION_ENABLED %>">
 
 		<%
-		BlogsEntry[] prevAndNext = BlogsEntryLocalServiceUtil.getEntriesPrevAndNext(entryId);
+		BlogsEntry[] prevAndNext = BlogsEntryServiceUtil.getEntriesPrevAndNext(entryId);
 
 		BlogsEntry previousEntry = prevAndNext[0];
 		BlogsEntry nextEntry = prevAndNext[2];

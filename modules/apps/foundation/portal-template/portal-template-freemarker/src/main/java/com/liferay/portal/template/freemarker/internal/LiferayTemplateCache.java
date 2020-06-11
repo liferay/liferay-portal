@@ -57,19 +57,24 @@ public class LiferayTemplateCache extends TemplateCache {
 		_freeMarkerEngineConfiguration = freeMarkerEngineConfiguration;
 		_templateResourceLoader = templateResourceLoader;
 
-		String porttalCacheName = TemplateResource.class.getName();
+		String portalCacheName = TemplateResource.class.getName();
 
-		porttalCacheName = porttalCacheName.concat(StringPool.POUND).concat(
+		portalCacheName = portalCacheName.concat(StringPool.POUND).concat(
 			TemplateConstants.LANG_TYPE_FTL);
 
 		_portalCache =
 			(PortalCache<TemplateResource, Object>)singleVMPool.getPortalCache(
-				porttalCacheName);
+				portalCacheName);
 
 		_constructor = MaybeMissingTemplate.class.getDeclaredConstructor(
 			Template.class);
 
 		_constructor.setAccessible(true);
+	}
+
+	@Override
+	public void clear() {
+		_portalCache.removeAll();
 	}
 
 	@Override

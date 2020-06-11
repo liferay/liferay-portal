@@ -95,14 +95,16 @@ long recordSetId = ddlFormDisplayContext.getRecordSetId();
 
 						<div class="ddl-form-basic-info">
 							<div class="container-fluid-1280">
-								<h1 class="ddl-form-name"><%= recordSet.getName(locale) %></h1>
 
 								<%
 								String description = recordSet.getDescription(locale);
+								String name = recordSet.getName(locale);
 								%>
 
+								<h1 class="ddl-form-name"><%= HtmlUtil.escape(name) %></h1>
+
 								<c:if test="<%= Validator.isNotNull(description) %>">
-									<h2 class="ddl-form-description"><%= description %></h2>
+									<h2 class="ddl-form-description"><%= HtmlUtil.escape(description) %></h2>
 								</c:if>
 							</div>
 						</div>

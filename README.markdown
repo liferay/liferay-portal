@@ -1,161 +1,37 @@
-# Liferay Portal
+# Information
 
-[Liferay Portal](https://community.liferay.com/projects/portal) is an
-open source enterprise web platform for building business solutions that deliver
-immediate results and long-term value. Liferay Portal started out as a personal
-development project in 2000 and was open sourced in 2001.
+This branch provides security patches for Liferay Portal 7.0.6. For more
+information about security in Liferay Portal, please see
+[https://portal.liferay.dev/learn/security](https://portal.liferay.dev/learn/security).
 
-To get started, check out the project's community homepage at
-[community.liferay.com](https://community.liferay.com)!
+**Cumulative diff patch:**
+[https://github.com/community-security-team/liferay-portal/compare/7.0.6-ga7...7.0.6-cumulative.patch](https://github.com/community-security-team/liferay-portal/compare/7.0.6-ga7...7.0.6-cumulative.patch)
 
-## Latest Release Details
+The [March 2020](https://github.com/community-security-team/liferay-portal/commit/8d144028da3e2ec6eb08a42f741420b8fc13c066)
+release contains fixes for the following issues:
+[CST-7063](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/118627231),
+[CST-7066](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/118664116),
+[CST-7106](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765125),
+[CST-7109](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765161),
+[CST-7110](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765185),
+[CST-7111](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765197),
+[CST-7113](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/114125375),
+[CST-7114](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/118664105),
+[CST-7133](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/118080791),
+[CST-7138](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/118080994),
+[CST-7141](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/118081039),
+[CST-7205](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/117954271)
 
-The latest release, Liferay Portal version 7, is built from the source code of
-Liferay Portal and several other related open source projects. It includes
-features for end users, business professionals, system administrators, and
-enterprise developers.
+Previous release(s) contains fixes for the following issues:
+[CST-7053](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113764980),
+[CST-7054](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113764992),
+[CST-7055](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765004),
+[CST-7056](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765016),
+[CST-7057](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765028),
+[CST-7058](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765052),
+[CST-7059](https://portal.liferay.dev/learn/security/known-vulnerabilities/-/asset_publisher/HbL5mxmVrnXW/content/id/113765040)
 
--   Modular architecture for maximum flexibility and reliability
--   Portal features for managing users, groups, and permissions
--   Single page applications for blazingly fast performance
--   Rich web services for integrating with other systems
--   Web content management including Personalization and Content Targeting
--   Documents and rich media management
--   Mobile development platform
--   Business forms and workflow
--   Collaboration features such as blogs, wikis, and social networking
--   Consistent and powerful Lexicon user experience
--   Integrated development environment using
-    [Liferay IDE](https://community.liferay.com/projects/ide)
-
-For more details on these and other features, please refer to the
-[user guide](https://dev.liferay.com/discover/portal) on the
-[Liferay Developer Network](https://dev.liferay.com).
-
-## Quick Start
-
-To get up and running quickly, *download* a
-[pre-built Liferay Portal release](http://liferay.com/downloads) and follow the
-[Quick Start](http://liferay.com/quick-start) instructions. For more detailed
-installation instructions, please refer to the
-[system administrator guide](https://dev.liferay.com/discover/deployment) on the
-Liferay Developer Network.
-
-If you wish to *build* core Liferay Portal or its plugins, read the
-[CONTRIBUTING guide](CONTRIBUTING.markdown). It includes details on using the
-repositories and building the software.
-
-## Liferay Developer Network
-
-The [Liferay Developer Network](https://dev.liferay.com) (LDN),
-is the best place to learn about Liferay. It has over
-200 tutorials, guided learning, and much more.
-
-LDN's [Learning Paths](https://dev.liferay.com/develop/learning-paths) are a
-great place to learn how to develop on Liferay Portal, especially if you're new
-to Liferay development. As you gain experience developing on Liferay, you'll
-want to dive into [tutorials](https://dev.liferay.com/develop/tutorials) for
-details on leveraging Liferay's technologies and frameworks. If you create apps
-that you want to share or sell, you can read LDN's
-[Distribute](https://dev.liferay.com/distribute) section to learn how to publish
-the apps to the [Liferay Marketplace](https://web.liferay.com/marketplace).
-
-The Liferay Developer Network is not only your home for Liferay development, but
-it's also your place to [participate](https://dev.liferay.com/participate) in
-making Liferay better. Come check out the
-[Liferay Developer Network](https://dev.liferay.com).
-
-## Source Code
-
-Liferay's main source code resides in two repositories:
-[liferay-portal](https://github.com/liferay/liferay-portal) and
-[liferay-plugins](https://github.com/liferay/liferay-plugins). Liferay maintains
-[several other repositories](https://github.com/liferay) related to features and
-supporting documentation.
-
-Liferay Portal *releases* are built from the liferay-portal repository and
-include select plugins from the liferay-plugins repository. You can build
-Liferay Portal, its plugins, and/or any of the other supporting technologies
-from their respective repositories.
-
-## Stay Connected
-
-There are many ways for you to learn what's new in Liferay, get answers to
-questions, and connect with other Liferay community members.
-
-### Twitter
-
-Follow us on Twitter:
-
--   [@Liferay](http://twitter.com/liferay) tweets Liferay's latest announcements
-
--   [@LiferayDocs](http://twitter.com/liferaydocs) tweets about new articles and
-    tutorials
-
--   [@LiferayEng](http://twitter.com/liferayeng) tweets from the core
-    engineering team
-
-### Blog
-
-Read our announcements, engage in discussions, and learn more by following
-[Liferay's Blog Stream](http://www.liferay.com/community/blogs).
-
-### Forum
-
-Do you have questions? Ask them on our very active
-[forums](http://www.liferay.com/community/forums)!
-
-### Chat
-
-Join the conversation on Liferay's Community Chat.
-
-* Get your invite: [community-chat.liferay.com](https://community-chat.liferay.com)
-* Enter the chat: [liferay-community.slack.com](https://liferay-community.slack.com)
-* Channel: `#portal`
-
-## Contributing
-
-Liferay welcomes any and all contributions! Please read the
-[CONTRIBUTING guide](CONTRIBUTING.markdown) for details on developing and
-submitting your contributions.
-
-## Versioning
-
-For transparency and insight into Liferay's release cycle, and for striving to
-maintain backward compatibility, we make a strong effort to uphold the
-versioning for our software as described in
-[Understanding Liferay's Releases](https://dev.liferay.com/discover/deployment/-/knowledge_base/7-0/liferay-installation-overview#understanding-liferays-releases).
-
-## Bug Reporting and Feature Requests
-
-Did you find a bug? Please file an issue for it at
-[https://issues.liferay.com](https://issues.liferay.com) following
-[Liferay's JIRA Guidelines](http://www.liferay.com/community/wiki/-/wiki/Main/JIRA).
-
-If you'd like to suggest a new feature for Liferay, visit the
-[Ideas Dashboard](https://dev.liferay.com/participate/ideas) to submit and track
-the progress of your idea!
-
-## Professional Services
-
-If you need professional consultation or help with Liferay and your business,
-check out the [offerings from Liferay, Inc.](http://www.liferay.com/services)
-and its [partner network](http://www.liferay.com/partners/service-partners).
-
-## The Liferay Development Team
-
-Liferay Portal is produced by the worldwide Liferay engineering team, and
-involves many hours of development, testing, writing documentation, and working
-with the wider Liferay community of customers, partners, and open source
-developers. We are glad you have chosen Liferay Portal, and hope that it meets
-or exceeds your expectations!
-
-In addition to Liferay's engineering staff, a special thanks goes to the many
-open source developers who volunteer their time and energy to help with the
-release, whether it was bug fixing, idea generation, documentation,
-translations, or other contribution that helped to improve this release.
-
-## Liferay Portal Community Edition License
+# Liferay Portal Community Edition License
 
 This library, *Liferay Portal Community Edition*, is free software ("Licensed
 Software"); you can redistribute it and/or modify it under the terms of the

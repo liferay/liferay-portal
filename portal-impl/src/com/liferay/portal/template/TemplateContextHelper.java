@@ -68,7 +68,9 @@ import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GetterUtil_IW;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListMergeable;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -78,6 +80,7 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SessionClicks_IW;
 import com.liferay.portal.kernel.util.StaticFieldGetter;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil_IW;
 import com.liferay.portal.kernel.util.TimeZoneUtil_IW;
@@ -87,6 +90,13 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 import com.liferay.portal.kernel.xml.SAXReader;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.net.InetAddress;
+import java.net.URL;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -95,12 +105,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.portlet.ActionRequest;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.tiles.ComponentContext;
@@ -510,7 +522,15 @@ public class TemplateContextHelper {
 		// Http util
 
 		try {
-			variables.put("httpUtil", HttpUtil.getHttp());
+			variables.put("httpUtil", new HttpWrapper(HttpUtil.getHttp()));
+		}
+		catch (SecurityException se) {
+			_log.error(se, se);
+		}
+
+		try {
+			variables.put(
+				"httpUtilUnsafe", new HttpWrapper(HttpUtil.getHttp(), false));
 		}
 		catch (SecurityException se) {
 			_log.error(se, se);
@@ -879,6 +899,534 @@ public class TemplateContextHelper {
 
 	private final Map<ClassLoader, Map<String, Object>[]> _helperUtilitiesMaps =
 		new ConcurrentHashMap<>();
+
+	private static class HttpWrapper implements Http {
+
+		public HttpWrapper(Http http) {
+			this(http, true);
+		}
+
+		public HttpWrapper(Http http, boolean disableLocalNetworkAccess) {
+			_http = http;
+			_disableLocalNetworkAccess = disableLocalNetworkAccess;
+		}
+
+		@Override
+		public String addParameter(String url, String name, boolean value) {
+			return _http.addParameter(url, name, value);
+		}
+
+		@Override
+		public String addParameter(String url, String name, double value) {
+			return _http.addParameter(url, name, value);
+		}
+
+		@Override
+		public String addParameter(String url, String name, int value) {
+			return _http.addParameter(url, name, value);
+		}
+
+		@Override
+		public String addParameter(String url, String name, long value) {
+			return _http.addParameter(url, name, value);
+		}
+
+		@Override
+		public String addParameter(String url, String name, short value) {
+			return _http.addParameter(url, name, value);
+		}
+
+		@Override
+		public String addParameter(String url, String name, String value) {
+			return _http.addParameter(url, name, value);
+		}
+
+		@Override
+		public String decodePath(String path) {
+			return _http.decodePath(path);
+		}
+
+		@Override
+		public String decodeURL(String url) {
+			return _http.decodeURL(url);
+		}
+
+		/**
+		 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+		 *             #decodeURL(String)}
+		 */
+		@Deprecated
+		@Override
+		public String decodeURL(String url, boolean unescapeSpaces) {
+			return _http.decodeURL(url, unescapeSpaces);
+		}
+
+		@Override
+		public String encodeParameters(String url) {
+			return _http.encodeParameters(url);
+		}
+
+		@Override
+		public String encodePath(String path) {
+			return _http.encodePath(path);
+		}
+
+		/**
+		 * @deprecated As of Judson (7.1.x), replaced by {@link
+		 *             URLCodec#encodeURL(String)}
+		 */
+		@Deprecated
+		@Override
+		public String encodeURL(String url) {
+			return _http.encodeURL(url);
+		}
+
+		/**
+		 * @deprecated As of Judson (7.1.x), replaced by {@link
+		 *             URLCodec#encodeURL(String, boolean)}
+		 */
+		@Deprecated
+		@Override
+		public String encodeURL(String url, boolean escapeSpaces) {
+			return _http.encodeURL(url, escapeSpaces);
+		}
+
+		@Override
+		public String fixPath(String path) {
+			return _http.fixPath(path);
+		}
+
+		@Override
+		public String fixPath(String path, boolean leading, boolean trailing) {
+			return _http.fixPath(path, leading, trailing);
+		}
+
+		@Override
+		public String getCompleteURL(HttpServletRequest request) {
+			return _http.getCompleteURL(request);
+		}
+
+		@Override
+		public Cookie[] getCookies() {
+			return _http.getCookies();
+		}
+
+		@Override
+		public String getDomain(String url) {
+			return _http.getDomain(url);
+		}
+
+		@Override
+		public String getIpAddress(String url) {
+			return _http.getIpAddress(url);
+		}
+
+		@Override
+		public String getParameter(String url, String name) {
+			return _http.getParameter(url, name);
+		}
+
+		@Override
+		public String getParameter(String url, String name, boolean escaped) {
+			return _http.getParameter(url, name, escaped);
+		}
+
+		@Override
+		public Map<String, String[]> getParameterMap(String queryString) {
+			return _http.getParameterMap(queryString);
+		}
+
+		@Override
+		public String getPath(String url) {
+			return _http.getPath(url);
+		}
+
+		@Override
+		public String getProtocol(ActionRequest actionRequest) {
+			return _http.getProtocol(actionRequest);
+		}
+
+		@Override
+		public String getProtocol(boolean secure) {
+			return _http.getProtocol(secure);
+		}
+
+		@Override
+		public String getProtocol(HttpServletRequest request) {
+			return _http.getProtocol(request);
+		}
+
+		@Override
+		public String getProtocol(RenderRequest renderRequest) {
+			return _http.getProtocol(renderRequest);
+		}
+
+		@Override
+		public String getProtocol(String url) {
+			return _http.getProtocol(url);
+		}
+
+		@Override
+		public String getQueryString(String url) {
+			return _http.getQueryString(url);
+		}
+
+		@Override
+		public String getRequestURL(HttpServletRequest request) {
+			return _http.getRequestURL(request);
+		}
+
+		@Override
+		public boolean hasDomain(String url) {
+			return _http.hasDomain(url);
+		}
+
+		@Override
+		public boolean hasProtocol(String url) {
+			return _http.hasProtocol(url);
+		}
+
+		@Override
+		public boolean hasProxyConfig() {
+			return _http.hasProxyConfig();
+		}
+
+		@Override
+		public boolean isNonProxyHost(String host) {
+			return _http.isNonProxyHost(host);
+		}
+
+		@Override
+		public boolean isProxyHost(String host) {
+			return _http.isProxyHost(host);
+		}
+
+		@Override
+		public boolean isSecure(String url) {
+			return _http.isSecure(url);
+		}
+
+		@Override
+		public String normalizePath(String uri) {
+			return _http.normalizePath(uri);
+		}
+
+		@Override
+		public Map<String, String[]> parameterMapFromString(
+			String queryString) {
+
+			return _http.parameterMapFromString(queryString);
+		}
+
+		@Override
+		public String parameterMapToString(Map<String, String[]> parameterMap) {
+			return _http.parameterMapToString(parameterMap);
+		}
+
+		@Override
+		public String parameterMapToString(
+			Map<String, String[]> parameterMap, boolean addQuestion) {
+
+			return _http.parameterMapToString(parameterMap, addQuestion);
+		}
+
+		@Override
+		public String protocolize(String url, ActionRequest actionRequest) {
+			return _http.protocolize(url, actionRequest);
+		}
+
+		@Override
+		public String protocolize(String url, boolean secure) {
+			return _http.protocolize(url, secure);
+		}
+
+		@Override
+		public String protocolize(String url, HttpServletRequest request) {
+			return _http.protocolize(url, request);
+		}
+
+		@Override
+		public String protocolize(String url, int port, boolean secure) {
+			return _http.protocolize(url, port, secure);
+		}
+
+		@Override
+		public String protocolize(String url, RenderRequest renderRequest) {
+			return _http.protocolize(url, renderRequest);
+		}
+
+		@Override
+		public String removeDomain(String url) {
+			return _http.removeDomain(url);
+		}
+
+		@Override
+		public String removeParameter(String url, String name) {
+			return _http.removeParameter(url, name);
+		}
+
+		@Override
+		public String removePathParameters(String uri) {
+			return _http.removePathParameters(uri);
+		}
+
+		@Override
+		public String removeProtocol(String url) {
+			return _http.removeProtocol(url);
+		}
+
+		@Override
+		public String sanitizeHeader(String header) {
+			return _http.sanitizeHeader(header);
+		}
+
+		@Override
+		public String setParameter(String url, String name, boolean value) {
+			return _http.setParameter(url, name, value);
+		}
+
+		@Override
+		public String setParameter(String url, String name, double value) {
+			return _http.setParameter(url, name, value);
+		}
+
+		@Override
+		public String setParameter(String url, String name, int value) {
+			return _http.setParameter(url, name, value);
+		}
+
+		@Override
+		public String setParameter(String url, String name, long value) {
+			return _http.setParameter(url, name, value);
+		}
+
+		@Override
+		public String setParameter(String url, String name, short value) {
+			return _http.setParameter(url, name, value);
+		}
+
+		@Override
+		public String setParameter(String url, String name, String value) {
+			return _http.setParameter(url, name, value);
+		}
+
+		@Override
+		public String shortenURL(String url) {
+			return _http.shortenURL(url);
+		}
+
+		/**
+		 * @deprecated As of Judson (7.1.x), replaced by {@link
+		 * 													#shortenURL(String)}
+		 */
+		@Deprecated
+		@Override
+		public String shortenURL(String url, int count) {
+			return _http.shortenURL(url, count);
+		}
+
+		@Override
+		public byte[] URLtoByteArray(Options options) throws IOException {
+			if (isLocationAccessDenied(options.getLocation())) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", options.getLocation(),
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return new byte[0];
+			}
+
+			return _http.URLtoByteArray(options);
+		}
+
+		@Override
+		public byte[] URLtoByteArray(String location) throws IOException {
+			if (isLocationAccessDenied(location)) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", location,
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return new byte[0];
+			}
+
+			return _http.URLtoByteArray(location);
+		}
+
+		@Override
+		public byte[] URLtoByteArray(String location, boolean post)
+			throws IOException {
+
+			if (isLocationAccessDenied(location)) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", location,
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return new byte[0];
+			}
+
+			return _http.URLtoByteArray(location, post);
+		}
+
+		@Override
+		public InputStream URLtoInputStream(Options options)
+			throws IOException {
+
+			if (isLocationAccessDenied(options.getLocation())) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", options.getLocation(),
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return new ByteArrayInputStream(new byte[0]);
+			}
+
+			return _http.URLtoInputStream(options);
+		}
+
+		@Override
+		public InputStream URLtoInputStream(String location)
+			throws IOException {
+
+			if (isLocationAccessDenied(location)) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", location,
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return new ByteArrayInputStream(new byte[0]);
+			}
+
+			return _http.URLtoInputStream(location);
+		}
+
+		@Override
+		public InputStream URLtoInputStream(String location, boolean post)
+			throws IOException {
+
+			if (isLocationAccessDenied(location)) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", location,
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return new ByteArrayInputStream(new byte[0]);
+			}
+
+			return _http.URLtoInputStream(location, post);
+		}
+
+		@Override
+		public String URLtoString(Options options) throws IOException {
+			if (isLocationAccessDenied(options.getLocation())) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", options.getLocation(),
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return StringPool.BLANK;
+			}
+
+			return _http.URLtoString(options);
+		}
+
+		@Override
+		public String URLtoString(String location) throws IOException {
+			if (isLocationAccessDenied(location)) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", location,
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return StringPool.BLANK;
+			}
+
+			return _http.URLtoString(location);
+		}
+
+		@Override
+		public String URLtoString(String location, boolean post)
+			throws IOException {
+
+			if (isLocationAccessDenied(location)) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", location,
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return StringPool.BLANK;
+			}
+
+			return _http.URLtoString(location, post);
+		}
+
+		@Override
+		public String URLtoString(URL url) throws IOException {
+			String protocol = url.getProtocol();
+
+			if (!HTTP.equals(protocol) && !HTTPS.equals(protocol)) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", url.toString(),
+						". $httpUtil template variable supports only HTTP and ",
+						"HTTPS protocols."));
+
+				return StringPool.BLANK;
+			}
+
+			if (isLocationAccessDenied(url.toString())) {
+				_log.error(
+					StringBundler.concat(
+						"Denied access to resource ", url.toString(),
+						" using $httpUtil variable from a template. Please ",
+						"use restricted variable $httpUtilUnsafe to access ",
+						"local network."));
+
+				return StringPool.BLANK;
+			}
+
+			return _http.URLtoString(url);
+		}
+
+		protected boolean isLocationAccessDenied(String location)
+			throws IOException {
+
+			if (_disableLocalNetworkAccess) {
+				URL url = new URL(location);
+
+				if (InetAddressUtil.isLocalInetAddress(
+						InetAddress.getByName(url.getHost()))) {
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private final boolean _disableLocalNetworkAccess;
+		private final Http _http;
+
+	}
 
 	private static class NoPACL implements PACL {
 

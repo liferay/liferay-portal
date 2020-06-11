@@ -44,7 +44,7 @@ addMenuItems.add(new AddMenuItem(HtmlUtil.escape(LanguageUtil.get(request, "uplo
 
 </c:if>
 
-<c:if test="<%= !addMenuItems.isEmpty() %>">
+<c:if test="<%= !addMenuItems.isEmpty() && workflowDefinitionDisplayContext.canPublishWorkflowDefinition() %>">
 	<liferay-frontend:add-menu
 		addMenuItems="<%= addMenuItems %>"
 	/>

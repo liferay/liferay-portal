@@ -1,5 +1,8 @@
 apply plugin: "com.liferay.lang.merger"
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 dependencies {
 	compileOnly group: "com.liferay", name: "com.liferay.application.list.api", version: "2.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.dynamic.data.mapping.api", version: "3.0.0"

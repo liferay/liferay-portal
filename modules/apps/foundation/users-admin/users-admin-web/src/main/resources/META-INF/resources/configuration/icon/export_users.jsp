@@ -18,7 +18,16 @@
 
 <liferay-portlet:resourceURL id="/users_admin/export_users" var="exportURL" />
 
+<liferay-util:buffer
+	var="onClickFn"
+>
+	if (confirm('<liferay-ui:message key="warning-this-csv-file-contains-user-supplied-inputs" />')) {
+		submitForm(document.hrefFm, '<%= exportURL + "&compress=0&etag=0&strip=0" %>');
+	}
+</liferay-util:buffer>
+
 <liferay-ui:icon
 	message="export-users"
-	url='<%= exportURL + "&compress=0&etag=0&strip=0" %>'
+	onClick="<%= onClickFn %>"
+	url="javascript:;"
 />

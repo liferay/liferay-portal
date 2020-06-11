@@ -50,8 +50,6 @@ public class SoyManager extends BaseMultiTemplateManager {
 	@Override
 	public void destroy() {
 		templateContextHelper.removeAllHelperUtilities();
-
-		templateContextHelper = null;
 	}
 
 	@Override

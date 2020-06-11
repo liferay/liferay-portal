@@ -17,12 +17,14 @@ package com.liferay.portal.template.velocity.internal;
 import com.liferay.osgi.util.StringPlus;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.PortalCache;
-import com.liferay.portal.kernel.cache.SingleVMPoolUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
+import com.liferay.portal.kernel.cache.SingleVMPool;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.TemplateResourceLoader;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ReflectionUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.template.TemplateResourceThreadLocal;
 
 import java.io.IOException;
@@ -52,15 +54,6 @@ import org.apache.velocity.runtime.resource.ResourceManagerImpl;
  * @author Shuyang Zhou
  */
 public class LiferayResourceManager extends ResourceManagerImpl {
-
-	public LiferayResourceManager() {
-		String portalCacheName = TemplateResource.class.getName();
-
-		portalCacheName = portalCacheName.concat(StringPool.POUND).concat(
-			TemplateConstants.LANG_TYPE_VM);
-
-		_portalCache = SingleVMPoolUtil.getPortalCache(portalCacheName);
-	}
 
 	@Override
 	public String getLoaderNameForResource(String source) {
@@ -130,6 +123,17 @@ public class LiferayResourceManager extends ResourceManagerImpl {
 			(TemplateResourceLoader)extendedProperties.get(
 				VelocityTemplateResourceLoader.class.getName());
 
+		SingleVMPool singleVMPool = (SingleVMPool)runtimeServices.getProperty(
+			PortalCacheManagerNames.SINGLE_VM);
+
+		_portalCache =
+			(PortalCache<TemplateResource, Object>)singleVMPool.getPortalCache(
+				StringBundler.concat(
+					TemplateResource.class.getName(), StringPool.POUND,
+					TemplateConstants.LANG_TYPE_VM));
+
+		_portalCache.removeAll();
+
 		super.initialize(runtimeServices);
 	}
 
@@ -191,7 +195,7 @@ public class LiferayResourceManager extends ResourceManagerImpl {
 	}
 
 	private List<String> _macroTemplateIds;
-	private final PortalCache<TemplateResource, Object> _portalCache;
+	private PortalCache<TemplateResource, Object> _portalCache;
 	private int _resourceModificationCheckInterval = 60;
 	private TemplateResourceLoader _templateResourceLoader;
 

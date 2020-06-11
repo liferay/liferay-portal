@@ -67,7 +67,8 @@ public interface DDMRESTDataProviderSettings {
 		properties = {
 			"placeholder=%enter-a-password",
 			"tooltip=%provide-the-password-for-authenticating-to-the-rest-provider"
-		}
+		},
+		type = "password"
 	)
 	public String password();
 

@@ -76,7 +76,9 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 		</div>
 
 		<aui:button-row>
-			<aui:button cssClass="btn-lg" type="submit" />
+			<c:if test="<%= workflowDefinitionDisplayContext.canPublishWorkflowDefinition() %>">
+				<aui:button cssClass="btn-lg" type="submit" />
+			</c:if>
 
 			<aui:button cssClass="btn-lg" href="<%= redirect %>" type="cancel" />
 		</aui:button-row>

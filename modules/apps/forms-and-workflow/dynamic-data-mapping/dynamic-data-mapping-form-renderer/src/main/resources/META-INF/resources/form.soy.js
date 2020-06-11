@@ -99,11 +99,11 @@ ddm.paginated_form = function(opt_data, opt_ignored) {
     output += '</ul></div>';
   }
   output += '<div class="lfr-ddm-form-pages" autoescape="deprecated-contextual">';
-  var pageList126 = opt_data.pages;
-  var pageListLen126 = pageList126.length;
-  for (var pageIndex126 = 0; pageIndex126 < pageListLen126; pageIndex126++) {
-    var pageData126 = pageList126[pageIndex126];
-    output += '<div class="' + ((pageIndex126 == 0) ? 'active' : '') + ' lfr-ddm-form-page">' + ((pageData126.title) ? '<h3 class="lfr-ddm-form-page-title">' + soy.$$filterNoAutoescape(pageData126.title) + '</h3>' : '') + ((pageData126.description) ? '<h4 class="lfr-ddm-form-page-description">' + soy.$$filterNoAutoescape(pageData126.description) + '</h4>' : '') + ddm.required_warning_message(soy.$$augmentMap(opt_data, {showRequiredFieldsWarning: pageData126.showRequiredFieldsWarning, requiredFieldsWarningMessageHTML: opt_data.requiredFieldsWarningMessageHTML})) + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData126.rows})) + '</div>';
+  var pageList124 = opt_data.pages;
+  var pageListLen124 = pageList124.length;
+  for (var pageIndex124 = 0; pageIndex124 < pageListLen124; pageIndex124++) {
+    var pageData124 = pageList124[pageIndex124];
+    output += '<div class="' + ((pageIndex124 == 0) ? 'active' : '') + ' lfr-ddm-form-page">' + ((pageData124.title) ? '<h3 class="lfr-ddm-form-page-title">' + soy.$$escapeHtml(pageData124.title) + '</h3>' : '') + ((pageData124.description) ? '<h4 class="lfr-ddm-form-page-description">' + soy.$$escapeHtml(pageData124.description) + '</h4>' : '') + ddm.required_warning_message(soy.$$augmentMap(opt_data, {showRequiredFieldsWarning: pageData124.showRequiredFieldsWarning, requiredFieldsWarningMessageHTML: opt_data.requiredFieldsWarningMessageHTML})) + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData124.rows})) + '</div>';
   }
   output += '</div></div><div class="lfr-ddm-form-pagination-controls"><button class="btn btn-lg btn-primary hide lfr-ddm-form-pagination-prev" type="button"><i class="icon-angle-left"></i> ' + soy.$$escapeHtml(opt_data.strings.previous) + '</button><button class="btn btn-lg btn-primary' + ((opt_data.pages.length == 1) ? ' hide' : '') + ' lfr-ddm-form-pagination-next pull-right" type="button">' + soy.$$escapeHtml(opt_data.strings.next) + ' <i class="icon-angle-right"></i></button>' + ((opt_data.showSubmitButton) ? '<button class="btn btn-lg btn-primary' + ((opt_data.pages.length > 1) ? ' hide' : '') + ' lfr-ddm-form-submit pull-right" disabled type="submit">' + soy.$$escapeHtml(opt_data.submitLabel) + '</button>' : '') + '</div></div>';
   return output;
@@ -115,11 +115,11 @@ if (goog.DEBUG) {
 
 ddm.simple_form = function(opt_data, opt_ignored) {
   var output = '<div class="lfr-ddm-form-container" id="' + soy.$$escapeHtmlAttribute(opt_data.containerId) + '"><div class="lfr-ddm-form-fields">';
-  var pageList156 = opt_data.pages;
-  var pageListLen156 = pageList156.length;
-  for (var pageIndex156 = 0; pageIndex156 < pageListLen156; pageIndex156++) {
-    var pageData156 = pageList156[pageIndex156];
-    output += ddm.required_warning_message(soy.$$augmentMap(opt_data, {showRequiredFieldsWarning: pageData156.showRequiredFieldsWarning, requiredFieldsWarningMessageHTML: opt_data.requiredFieldsWarningMessageHTML})) + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData156.rows}));
+  var pageList154 = opt_data.pages;
+  var pageListLen154 = pageList154.length;
+  for (var pageIndex154 = 0; pageIndex154 < pageListLen154; pageIndex154++) {
+    var pageData154 = pageList154[pageIndex154];
+    output += ddm.required_warning_message(soy.$$augmentMap(opt_data, {showRequiredFieldsWarning: pageData154.showRequiredFieldsWarning, requiredFieldsWarningMessageHTML: opt_data.requiredFieldsWarningMessageHTML})) + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData154.rows}));
   }
   output += '</div></div>';
   return output;
@@ -131,18 +131,18 @@ if (goog.DEBUG) {
 
 ddm.tabbed_form = function(opt_data, opt_ignored) {
   var output = '<div class="lfr-ddm-form-container" id="' + soy.$$escapeHtmlAttribute(opt_data.containerId) + '"><div class="lfr-ddm-form-tabs"><ul class="nav nav-tabs nav-tabs-default">';
-  var pageList166 = opt_data.pages;
-  var pageListLen166 = pageList166.length;
-  for (var pageIndex166 = 0; pageIndex166 < pageListLen166; pageIndex166++) {
-    var pageData166 = pageList166[pageIndex166];
-    output += '<li><a href="javascript:;">' + soy.$$escapeHtml(pageData166.title) + '</a></li>';
+  var pageList164 = opt_data.pages;
+  var pageListLen164 = pageList164.length;
+  for (var pageIndex164 = 0; pageIndex164 < pageListLen164; pageIndex164++) {
+    var pageData164 = pageList164[pageIndex164];
+    output += '<li><a href="javascript:;">' + soy.$$escapeHtml(pageData164.title) + '</a></li>';
   }
   output += '</ul><div class="tab-content">';
-  var pageList180 = opt_data.pages;
-  var pageListLen180 = pageList180.length;
-  for (var pageIndex180 = 0; pageIndex180 < pageListLen180; pageIndex180++) {
-    var pageData180 = pageList180[pageIndex180];
-    output += ddm.required_warning_message(soy.$$augmentMap(opt_data, {showRequiredFieldsWarning: pageData180.showRequiredFieldsWarning, requiredFieldsWarningMessageHTML: opt_data.requiredFieldsWarningMessageHTML})) + '<div class="tab-pane ' + ((pageIndex180 == 0) ? 'active' : '') + '">' + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData180.rows})) + '</div>';
+  var pageList178 = opt_data.pages;
+  var pageListLen178 = pageList178.length;
+  for (var pageIndex178 = 0; pageIndex178 < pageListLen178; pageIndex178++) {
+    var pageData178 = pageList178[pageIndex178];
+    output += ddm.required_warning_message(soy.$$augmentMap(opt_data, {showRequiredFieldsWarning: pageData178.showRequiredFieldsWarning, requiredFieldsWarningMessageHTML: opt_data.requiredFieldsWarningMessageHTML})) + '<div class="tab-pane ' + ((pageIndex178 == 0) ? 'active' : '') + '">' + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData178.rows})) + '</div>';
   }
   output += '</div></div></div>';
   return output;
@@ -154,11 +154,11 @@ if (goog.DEBUG) {
 
 ddm.settings_form = function(opt_data, opt_ignored) {
   var output = '<div class="lfr-ddm-form-container" id="' + soy.$$escapeHtmlAttribute(opt_data.containerId) + '"><div class="lfr-ddm-settings-form">';
-  var pageList198 = opt_data.pages;
-  var pageListLen198 = pageList198.length;
-  for (var pageIndex198 = 0; pageIndex198 < pageListLen198; pageIndex198++) {
-    var pageData198 = pageList198[pageIndex198];
-    output += '<div class="lfr-ddm-form-page' + ((pageIndex198 == 0) ? ' active basic' : '') + ((pageIndex198 == pageListLen198 - 1) ? ' advanced' : '') + '">' + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData198.rows})) + '</div>';
+  var pageList196 = opt_data.pages;
+  var pageListLen196 = pageList196.length;
+  for (var pageIndex196 = 0; pageIndex196 < pageListLen196; pageIndex196++) {
+    var pageData196 = pageList196[pageIndex196];
+    output += '<div class="lfr-ddm-form-page' + ((pageIndex196 == 0) ? ' active basic' : '') + ((pageIndex196 == pageListLen196 - 1) ? ' advanced' : '') + '">' + ddm.form_rows(soy.$$augmentMap(opt_data, {rows: pageData196.rows})) + '</div>';
   }
   output += '</div></div>';
   return output;

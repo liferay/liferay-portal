@@ -1059,6 +1059,8 @@ public interface PropsKeys {
 
 	public static final String JOURNAL_IMAGE_SMALL_MAX_SIZE = "journal.image.small.max.size";
 
+	public static final String JSON_DESERIALIZATION_WHITELIST_CLASS_NAMES = "json.deserialization.whitelist.class.names";
+
 	public static final String JSON_SERVICE_AUTH_TOKEN_ENABLED = "json.service.auth.token.enabled";
 
 	public static final String JSON_SERVICE_AUTH_TOKEN_HOSTS_ALLOWED = "json.service.auth.token.hosts.allowed";
@@ -1073,7 +1075,12 @@ public interface PropsKeys {
 
 	public static final String JSONWS_WEB_SERVICE_INVALID_HTTP_METHODS = "jsonws.web.service.invalid.http.methods";
 
-	public static final String JSONWS_WEB_SERVICE_PATHS_EXCLUDES = "jsonws.web.service.paths.excludes";
+	public static final String
+		JSONWS_WEB_SERVICE_PARAMETER_TYPE_WHITELIST_CLASS_NAMES =
+			"jsonws.web.service.parameter.type.whitelist.class.names";
+
+	public static final String JSONWS_WEB_SERVICE_PATHS_EXCLUDES =
+		"jsonws.web.service.paths.excludes";
 
 	public static final String JSONWS_WEB_SERVICE_PATHS_INCLUDES = "jsonws.web.service.paths.includes";
 

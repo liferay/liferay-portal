@@ -132,6 +132,10 @@ public class DDLFormAdminDisplayContext {
 			renderRequest);
 	}
 
+	public String getCSVExport() {
+		return _ddlFormWebConfiguration.csvExport();
+	}
+
 	public DDLFormViewRecordDisplayContext
 		getDDLFormViewRecordDisplayContext() {
 

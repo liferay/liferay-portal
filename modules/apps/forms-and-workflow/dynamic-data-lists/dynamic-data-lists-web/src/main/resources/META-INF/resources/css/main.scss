@@ -1,3 +1,11 @@
+.ddl-record-set-export-modal.modal-content {
+	max-height: fit-content;
+
+	.modal-body {
+		height: auto !important;
+	}
+}
+
 .dialog-iframe-popup .portlet-dynamic-data-lists .lfr-form-content {
 	position: relative;
 }

@@ -19,15 +19,18 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProvider;
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderTracker;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.display.context.util.DDMDataProviderRequestHelper;
 import com.liferay.dynamic.data.mapping.data.provider.web.internal.search.DDMDataProviderSearchTerms;
+import com.liferay.dynamic.data.mapping.data.provider.web.internal.util.DDMDataProviderPortletUtil;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesJSONDeserializer;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.dynamic.data.mapping.service.permission.DDMDataProviderInstancePermission;
 import com.liferay.dynamic.data.mapping.service.permission.DDMDataProviderPermission;
+import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.dynamic.data.mapping.util.DDMFormLayoutFactory;
@@ -38,10 +41,12 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.portlet.PortletURL;
@@ -111,6 +116,14 @@ public class DDMDataProviderDisplayContext {
 			DDMFormValues ddmFormValues =
 				_ddmFormValuesJSONDeserializer.deserialize(
 					ddmForm, _ddmDataProviderInstance.getDefinition());
+
+			Set<String> passwordDDMFormFieldNames =
+				DDMDataProviderPortletUtil.getDDMFormFieldNamesByType(
+					ddmForm, "password");
+
+			obfuscateDDMFormFieldValues(
+				passwordDDMFormFieldNames,
+				ddmFormValues.getDDMFormFieldValues());
 
 			ddmFormRenderingContext.setDDMFormValues(ddmFormValues);
 		}
@@ -278,6 +291,33 @@ public class DDMDataProviderDisplayContext {
 		ddmFormRenderingContext.setShowRequiredFieldsWarning(false);
 
 		return ddmFormRenderingContext;
+	}
+
+	protected void obfuscateDDMFormFieldValue(
+		DDMFormFieldValue ddmFormFieldValue) {
+
+		Value value = ddmFormFieldValue.getValue();
+
+		for (Locale availableLocale : value.getAvailableLocales()) {
+			value.addString(availableLocale, Portal.TEMP_OBFUSCATION_VALUE);
+		}
+	}
+
+	protected void obfuscateDDMFormFieldValues(
+		Set<String> ddmFormFieldNamesToBeObfuscated,
+		List<DDMFormFieldValue> ddmFormFieldValues) {
+
+		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+			if (ddmFormFieldNamesToBeObfuscated.contains(
+					ddmFormFieldValue.getName())) {
+
+				obfuscateDDMFormFieldValue(ddmFormFieldValue);
+			}
+
+			obfuscateDDMFormFieldValues(
+				ddmFormFieldNamesToBeObfuscated,
+				ddmFormFieldValue.getNestedDDMFormFieldValues());
+		}
 	}
 
 	private DDMDataProviderInstance _ddmDataProviderInstance;

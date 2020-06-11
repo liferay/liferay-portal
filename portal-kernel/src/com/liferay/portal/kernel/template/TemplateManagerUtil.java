@@ -324,6 +324,10 @@ public class TemplateManagerUtil {
 		public void modifiedService(
 			ServiceReference<TemplateManager> serviceReference,
 			TemplateManager templateManager) {
+
+			removedService(serviceReference, templateManager);
+
+			addingService(serviceReference);
 		}
 
 		@Override

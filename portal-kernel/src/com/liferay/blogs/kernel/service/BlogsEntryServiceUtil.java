@@ -103,6 +103,12 @@ public class BlogsEntryServiceUtil {
 			type, version, displayStyle, feedURL, entryURL, themeDisplay);
 	}
 
+	public static com.liferay.blogs.kernel.model.BlogsEntry[] getEntriesPrevAndNext(
+		long entryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getEntriesPrevAndNext(entryId);
+	}
+
 	public static com.liferay.blogs.kernel.model.BlogsEntry getEntry(
 		long entryId)
 		throws com.liferay.portal.kernel.exception.PortalException {

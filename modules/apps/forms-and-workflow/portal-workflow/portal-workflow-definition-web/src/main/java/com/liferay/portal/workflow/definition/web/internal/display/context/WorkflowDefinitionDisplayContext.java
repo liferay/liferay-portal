@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.AggregatePredicateFilter;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -48,6 +50,23 @@ public class WorkflowDefinitionDisplayContext {
 	public WorkflowDefinitionDisplayContext(RenderRequest renderRequest) {
 		_workflowDefinitionRequestHelper = new WorkflowDefinitionRequestHelper(
 			renderRequest);
+	}
+
+	public boolean canPublishWorkflowDefinition() {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (_companyAdministratorCanPublish &&
+			permissionChecker.isCompanyAdmin()) {
+
+			return true;
+		}
+
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public String getActive(WorkflowDefinition workflowDefinition) {
@@ -114,6 +133,12 @@ public class WorkflowDefinitionDisplayContext {
 		return String.valueOf(workflowDefinition.getVersion());
 	}
 
+	public void setCompanyAdministratorCanPublish(
+		boolean companyAdministratorCanPublish) {
+
+		_companyAdministratorCanPublish = companyAdministratorCanPublish;
+	}
+
 	protected PredicateFilter<WorkflowDefinition> createPredicateFilter(
 		String name, String title, boolean andOperator) {
 
@@ -164,6 +189,7 @@ public class WorkflowDefinitionDisplayContext {
 				_workflowDefinitionRequestHelper.getLocale());
 	}
 
+	private boolean _companyAdministratorCanPublish;
 	private final WorkflowDefinitionRequestHelper
 		_workflowDefinitionRequestHelper;
 

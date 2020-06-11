@@ -14,9 +14,12 @@
 
 package com.liferay.portal.workflow.definition.web.internal.portlet;
 
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -28,24 +31,31 @@ import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowDefinitionFileException;
 import com.liferay.portal.kernel.workflow.WorkflowDefinitionManagerUtil;
 import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.workflow.configuration.WorkflowDefinitionConfiguration;
 import com.liferay.portal.workflow.definition.web.internal.display.context.WorkflowDefinitionDisplayContext;
 
 import java.io.IOException;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Leonardo Barros
  */
 @Component(
-	immediate = true,
+	configurationPid = "com.liferay.portal.workflow.configuration.WorkflowDefinitionConfiguration",
+	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
 	property = {
 		"com.liferay.portlet.css-class-wrapper=portlet-workflow-definitions",
 		"com.liferay.portlet.display-category=category.hidden",
@@ -80,6 +90,9 @@ public class WorkflowDefinitionPortlet extends MVCPortlet {
 			WorkflowDefinitionDisplayContext displayContext =
 				new WorkflowDefinitionDisplayContext(renderRequest);
 
+			displayContext.setCompanyAdministratorCanPublish(
+				_companyAdministratorCanPublish);
+
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT, displayContext);
 
@@ -99,6 +112,32 @@ public class WorkflowDefinitionPortlet extends MVCPortlet {
 		}
 
 		super.render(renderRequest, renderResponse);
+	}
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		WorkflowDefinitionConfiguration workflowDefinitionConfiguration =
+			ConfigurableUtil.createConfigurable(
+				WorkflowDefinitionConfiguration.class, properties);
+
+		_companyAdministratorCanPublish =
+			workflowDefinitionConfiguration.companyAdministratorCanPublish();
+	}
+
+	@Override
+	protected void checkPermissions(PortletRequest portletRequest)
+		throws Exception {
+
+		super.checkPermissions(portletRequest);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!permissionChecker.isCompanyAdmin()) {
+			throw new PrincipalException.MustBeCompanyAdmin(
+				permissionChecker.getUserId());
+		}
 	}
 
 	@Override
@@ -150,5 +189,7 @@ public class WorkflowDefinitionPortlet extends MVCPortlet {
 		renderRequest.setAttribute(
 			WebKeys.WORKFLOW_DEFINITION, workflowDefinition);
 	}
+
+	private boolean _companyAdministratorCanPublish;
 
 }

@@ -167,11 +167,11 @@
 				{foreach $page in $pages}
 					<div class="{if isFirst($page)}active{/if} lfr-ddm-form-page">
 						{if $page.title}
-							<h3 class="lfr-ddm-form-page-title">{$page.title|noAutoescape}</h3>
+							<h3 class="lfr-ddm-form-page-title">{$page.title}</h3>
 						{/if}
 
 						{if $page.description}
-							<h4 class="lfr-ddm-form-page-description">{$page.description|noAutoescape}</h4>
+							<h4 class="lfr-ddm-form-page-description">{$page.description}</h4>
 						{/if}
 
 						{call ddm.required_warning_message data="all"}

@@ -44,6 +44,6 @@ String coverImageURL = entry.getCoverImageURL(themeDisplay);
 			<div class="cover-image-container" style="background-image: url(<%= coverImageURL %>)"></div>
 		</c:if>
 
-		<%= assetRenderer.getSummary(renderRequest, renderResponse) %>
+		<%= HtmlUtil.escape(assetRenderer.getSummary(renderRequest, renderResponse)) %>
 	</div>
 </div>

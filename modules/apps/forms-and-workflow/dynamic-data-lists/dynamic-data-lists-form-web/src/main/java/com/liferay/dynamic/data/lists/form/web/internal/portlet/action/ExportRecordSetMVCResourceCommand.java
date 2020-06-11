@@ -16,6 +16,8 @@ package com.liferay.dynamic.data.lists.form.web.internal.portlet.action;
 
 import com.liferay.dynamic.data.lists.exporter.DDLExporter;
 import com.liferay.dynamic.data.lists.exporter.DDLExporterFactory;
+import com.liferay.dynamic.data.lists.form.web.configuration.DDLFormWebConfiguration;
+import com.liferay.dynamic.data.lists.form.web.configuration.DDLFormWebConfigurationActivator;
 import com.liferay.dynamic.data.lists.form.web.internal.constants.DDLFormPortletKeys;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetService;
@@ -26,6 +28,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -34,6 +37,9 @@ import javax.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Marcellus Tavares
@@ -62,6 +68,16 @@ public class ExportRecordSetMVCResourceCommand extends BaseMVCResourceCommand {
 
 		String fileExtension = ParamUtil.getString(
 			resourceRequest, "fileExtension");
+
+		DDLFormWebConfiguration ddlFormWebConfiguration =
+			_ddlFormWebConfigurationActivator.getDDLFormWebConfiguration();
+
+		if (StringUtil.equals(fileExtension, "csv") &&
+			StringUtil.equals(
+				ddlFormWebConfiguration.csvExport(), "disabled")) {
+
+			return;
+		}
 
 		String fileName =
 			recordSet.getName(themeDisplay.getLocale()) + CharPool.PERIOD +
@@ -95,7 +111,23 @@ public class ExportRecordSetMVCResourceCommand extends BaseMVCResourceCommand {
 		_ddlRecordSetService = ddlRecordSetService;
 	}
 
+	protected void unsetDDLFormWebConfigurationActivator(
+		DDLFormWebConfigurationActivator ddlFormWebConfigurationActivator) {
+
+		_ddlFormWebConfigurationActivator = null;
+	}
+
 	private DDLExporterFactory _ddlExporterFactory;
+
+	@Reference(
+		cardinality = ReferenceCardinality.OPTIONAL,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY,
+		unbind = "unsetDDLFormWebConfigurationActivator"
+	)
+	private volatile DDLFormWebConfigurationActivator
+		_ddlFormWebConfigurationActivator;
+
 	private DDLRecordSetService _ddlRecordSetService;
 
 }

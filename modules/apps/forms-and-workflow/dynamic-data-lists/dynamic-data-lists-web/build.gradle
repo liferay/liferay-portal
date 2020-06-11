@@ -16,7 +16,7 @@ dependencies {
 	compileOnly group: "com.liferay", name: "com.liferay.portal.configuration.metatype", version: "2.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.portal.upgrade", version: "2.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "2.0.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.7.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.53.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.4.0"
 	compileOnly group: "javax.portlet", name: "portlet-api", version: "2.0"
 	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"

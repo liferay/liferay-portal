@@ -128,6 +128,10 @@ public class DDLDisplayContext {
 			HtmlUtil.escape(structureName), false);
 	}
 
+	public String getCSVExport() {
+		return _ddlWebConfiguration.csvExport();
+	}
+
 	public String getDDLRecordSetDisplayStyle() {
 		if (_ddlRecordDisplayStyle == null) {
 			PortalPreferences portalPreferences =

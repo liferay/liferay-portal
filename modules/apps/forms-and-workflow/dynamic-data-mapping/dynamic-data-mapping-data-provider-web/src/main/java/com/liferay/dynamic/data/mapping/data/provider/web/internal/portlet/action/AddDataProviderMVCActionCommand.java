@@ -62,13 +62,13 @@ public class AddDataProviderMVCActionCommand extends BaseMVCActionCommand {
 		String type = ParamUtil.getString(actionRequest, "type");
 
 		DDMDataProvider ddmDataProvider =
-			_ddmDataProviderTracker.getDDMDataProvider(type);
+			ddmDataProviderTracker.getDDMDataProvider(type);
 
 		Class<?> clazz = ddmDataProvider.getSettings();
 
 		DDMForm ddmForm = DDMFormFactory.create(clazz);
 
-		return _ddmFormValuesFactory.create(actionRequest, ddmForm);
+		return ddmFormValuesFactory.create(actionRequest, ddmForm);
 	}
 
 	@Override
@@ -90,16 +90,10 @@ public class AddDataProviderMVCActionCommand extends BaseMVCActionCommand {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DDMDataProviderInstance.class.getName(), actionRequest);
 
-		_ddmDataProviderInstanceService.addDataProviderInstance(
+		ddmDataProviderInstanceService.addDataProviderInstance(
 			groupId, getLocalizedMap(themeDisplay.getLocale(), name),
 			getLocalizedMap(themeDisplay.getLocale(), description),
 			ddmFormValues, type, serviceContext);
-	}
-
-	protected DDMDataProviderInstanceService
-		getDDMDataProviderInstanceService() {
-
-		return _ddmDataProviderInstanceService;
 	}
 
 	protected Map<Locale, String> getLocalizedMap(Locale locale, String value) {
@@ -110,29 +104,13 @@ public class AddDataProviderMVCActionCommand extends BaseMVCActionCommand {
 		return localizedMap;
 	}
 
-	@Reference(unbind = "-")
-	protected void setDDMDataProviderInstanceService(
-		DDMDataProviderInstanceService ddmDataProviderInstanceService) {
+	@Reference
+	protected DDMDataProviderInstanceService ddmDataProviderInstanceService;
 
-		_ddmDataProviderInstanceService = ddmDataProviderInstanceService;
-	}
+	@Reference
+	protected DDMDataProviderTracker ddmDataProviderTracker;
 
-	@Reference(unbind = "-")
-	protected void setDDMDataProviderTracker(
-		DDMDataProviderTracker ddmDataProviderTracker) {
-
-		_ddmDataProviderTracker = ddmDataProviderTracker;
-	}
-
-	@Reference(unbind = "-")
-	protected void setDDMFormValuesFactory(
-		DDMFormValuesFactory ddmFormValuesFactory) {
-
-		_ddmFormValuesFactory = ddmFormValuesFactory;
-	}
-
-	private DDMDataProviderInstanceService _ddmDataProviderInstanceService;
-	private DDMDataProviderTracker _ddmDataProviderTracker;
-	private DDMFormValuesFactory _ddmFormValuesFactory;
+	@Reference
+	protected DDMFormValuesFactory ddmFormValuesFactory;
 
 }
