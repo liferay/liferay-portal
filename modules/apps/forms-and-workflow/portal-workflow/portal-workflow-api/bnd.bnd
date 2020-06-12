@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Portal Workflow API
+Bundle-SymbolicName: com.liferay.portal.workflow.api
+Bundle-Version: 3.0.0
+Export-Package: com.liferay.portal.workflow.configuration
