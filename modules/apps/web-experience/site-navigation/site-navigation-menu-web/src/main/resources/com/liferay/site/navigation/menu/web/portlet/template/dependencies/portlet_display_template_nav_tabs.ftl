@@ -12,7 +12,7 @@
 	/>
 
 	<div id="${navbarId}">
-		<ul aria-label="<@liferay.language key="site-pages" />" class="nav nav-tabs navbar-site" role="menubar">
+		<ul aria-label="<@liferay.language key="site-pages" />" class="nav nav-tabs navbar-site" role="tablist">
 			<h1 class="hide-accessible"><@liferay.language key="navigation" /></h1>
 
 			<#assign navItems = entries />
@@ -50,13 +50,13 @@
 						/>
 					</#if>
 
-					<li class="${nav_item_css_class}" id="layout_${navItem.getLayoutId()}" ${nav_item_attr_selected} role="presentation">
-						<a aria-labelledby="layout_${navItem.getLayoutId()}" ${nav_item_attr_has_popup} class="${nav_item_link_css_class}" ${nav_item_href_link} ${navItem.getTarget()} role="menuitem">
+					<li class="${nav_item_css_class}" id="layout_${navItem.getLayoutId()}" ${nav_item_attr_selected} role="tab">
+						<a aria-labelledby="layout_${navItem.getLayoutId()}" ${nav_item_attr_has_popup} class="${nav_item_link_css_class}" ${nav_item_href_link} ${navItem.getTarget()}>
 							<span><@liferay_theme["layout-icon"] layout=navItem.getLayout() /> ${navItem.getName()} ${nav_item_caret}</span>
 						</a>
 
 						<#if showChildren>
-							<ul aria-expanded="false" class="child-menu dropdown-menu" role="menu">
+							<ul aria-expanded="false" class="child-menu dropdown-menu" role="tablist">
 								<#list navItem.getBrowsableChildren() as childNavigationItem>
 									<#assign
 										nav_child_attr_selected = ""
@@ -70,8 +70,8 @@
 										/>
 									</#if>
 
-									<li class="${nav_child_css_class}" id="layout_${childNavigationItem.getLayoutId()}" ${nav_child_attr_selected} role="presentation">
-										<a aria-labelledby="layout_${childNavigationItem.getLayoutId()}" href="${childNavigationItem.getURL()}" ${childNavigationItem.getTarget()} role="menuitem">${childNavigationItem.getName()}</a>
+									<li class="${nav_child_css_class}" id="layout_${childNavigationItem.getLayoutId()}" ${nav_child_attr_selected} role="tab">
+										<a aria-labelledby="layout_${childNavigationItem.getLayoutId()}" href="${childNavigationItem.getURL()}" ${childNavigationItem.getTarget()}>${childNavigationItem.getName()}</a>
 									</li>
 								</#list>
 							</ul>
