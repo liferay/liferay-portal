@@ -187,6 +187,7 @@ public abstract class BaseTinyMCEEditorConfigContributor
 		_tinyMCELanguages.put("ko_KR", "ko_KR");
 		_tinyMCELanguages.put("lt_LT", "lt");
 		_tinyMCELanguages.put("nb_NO", "nb_NO");
+		_tinyMCELanguages.put("nn_NO", "nn_NO");
 		_tinyMCELanguages.put("nl_NL", "nl");
 		_tinyMCELanguages.put("pl_PL", "pl");
 		_tinyMCELanguages.put("pt_BR", "pt_BR");
