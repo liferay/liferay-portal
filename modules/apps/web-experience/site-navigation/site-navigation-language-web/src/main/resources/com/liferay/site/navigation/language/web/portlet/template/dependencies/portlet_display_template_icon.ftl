@@ -9,7 +9,6 @@
 				cssClass=cssClass
 				image=entry.getW3cLanguageId()?lower_case
 				markupView="lexicon"
-				message=entry.getLongDisplayName()
 				url=entry.getURL()
 			/>
 		</#if>

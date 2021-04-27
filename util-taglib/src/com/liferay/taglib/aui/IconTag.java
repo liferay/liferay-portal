@@ -161,9 +161,10 @@ public class IconTag extends BaseIconTag {
 
 		try {
 			if ("lexicon".equals(getMarkupView())) {
-				jspWriter.write("<svg class=\"lexicon-icon lexicon-icon-");
+				jspWriter.write("<svg aria-hidden=\"true\" ");
+				jspWriter.write("class=\"lexicon-icon lexicon-icon-");
 				jspWriter.write(GetterUtil.getString(getImage()));
-				jspWriter.write("\" focusable=\"false\" role=\"img\" title=\"");
+				jspWriter.write("\" focusable=\"false\" ");
 
 				HttpServletRequest httpServletRequest =
 					(HttpServletRequest)pageContext.getRequest();
@@ -182,15 +183,8 @@ public class IconTag extends BaseIconTag {
 
 					title = HtmlUtil.escapeAttribute(
 						LanguageUtil.get(resourceBundle, label));
-
-					jspWriter.write(title);
 				}
 
-				if (title == null) {
-					title = "Icon";
-				}
-
-				jspWriter.write("\" ");
 				jspWriter.write(
 					InlineUtil.buildDynamicAttributes(getDynamicAttributes()));
 				jspWriter.write(StringPool.GREATER_THAN);
@@ -208,9 +202,11 @@ public class IconTag extends BaseIconTag {
 				jspWriter.write(StringPool.POUND);
 				jspWriter.write(GetterUtil.getString(getImage()));
 				jspWriter.write("\"></use>");
-				jspWriter.write("<title>");
-				jspWriter.write(title);
-				jspWriter.write("</title>");
+				if (title != null) {
+					jspWriter.write("<title>");
+					jspWriter.write(title);
+					jspWriter.write("</title>");
+				}
 				jspWriter.write("</svg>");
 			}
 			else {
