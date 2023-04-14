@@ -1260,6 +1260,10 @@
 		<priority value="WARN" />
 	</category>
 
+	<category name="com.zaxxer.hikari">
+		<priority value="DEBUG" />
+	</category>
+
 	<root>
 		<priority value="INFO" />
 
