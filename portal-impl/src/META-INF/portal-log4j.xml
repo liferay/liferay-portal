@@ -1264,6 +1264,10 @@
 		<priority value="DEBUG" />
 	</category>
 
+	<category name="org.apache.tomcat.jdbc">
+		<priority value="DEBUG" />
+	</category>
+
 	<root>
 		<priority value="INFO" />
 

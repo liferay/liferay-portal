@@ -514,12 +514,15 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 		if (StringUtil.equalsIgnoreCase(key, "autoCommit") ||
 				StringUtil.equalsIgnoreCase(key, "connectionTestQuery") ||
 				StringUtil.equalsIgnoreCase(key, "connectionTimeout") ||
+				StringUtil.equalsIgnoreCase(key, "dataSource") ||
 				StringUtil.equalsIgnoreCase(key, "idleTimeout") ||
 				StringUtil.equalsIgnoreCase(key, "initializationFailFast") ||
 				StringUtil.equalsIgnoreCase(key, "keepaliveTime") ||
+				StringUtil.equalsIgnoreCase(key, "leakDetectionThreshold") ||
 				StringUtil.equalsIgnoreCase(key, "maximumPoolSize") ||
 				StringUtil.equalsIgnoreCase(key, "maxLifetime") ||
 				StringUtil.equalsIgnoreCase(key, "minimumIdle") ||
+				StringUtil.equalsIgnoreCase(key, "validationTimeout") ||
 				StringUtil.equalsIgnoreCase(key, "registerMbeans")) {
 
 			return true;
