@@ -5,7 +5,7 @@ set -u -e
 
 version=7.0.6e
 lexicon_version=1.0.25a
-repo_url=http://jenkins.axiell.local:8081
+repo_url=http://artifactory.axiell.local:8081
 repo_dir=~/.m2/repository
 bundles_dir=/opt/java/liferay/arena-7.0.6-ga7/bundles.org
 
