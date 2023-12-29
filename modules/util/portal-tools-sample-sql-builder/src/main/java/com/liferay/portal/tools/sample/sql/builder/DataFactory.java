@@ -5034,15 +5034,20 @@ public class DataFactory {
 			new ArrayList<>();
 
 		for (LayoutModel layoutModel : layoutModels) {
-			long plid = layoutModel.getClassPK();
-			long ownerId = PortletKeys.PREFS_OWNER_ID_DEFAULT;
+			long classPK = layoutModel.getClassPK();
 
-			if (plid == 0) {
-				ownerId = layoutModel.getGroupId();
+			if (classPK == 0) {
+				portletPreferencesModels.addAll(
+					newPortletPreferencesModels(
+						PortletKeys.PREFS_OWNER_ID_DEFAULT,
+						layoutModel.getPlid()));
 			}
-
-			portletPreferencesModels.addAll(
-				newPortletPreferencesModels(ownerId, plid));
+			else {
+				portletPreferencesModels.addAll(
+					newPortletPreferencesModels(
+						layoutModel.getGroupId(),
+						PortletKeys.PREFS_PLID_SHARED));
+			}
 		}
 
 		return portletPreferencesModels;
