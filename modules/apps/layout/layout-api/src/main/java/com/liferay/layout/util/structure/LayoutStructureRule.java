@@ -103,6 +103,14 @@ public class LayoutStructureRule {
 		return HashUtil.hash(0, getId());
 	}
 
+	public boolean isAdvancedRule() {
+		if (Validator.isNull(_script)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public void setActionsJSONArray(JSONArray actionsJSONArray) {
 		_actionsJSONArray = actionsJSONArray;
 	}
