@@ -24,12 +24,12 @@ public class LayoutStructureRule {
 			jsonObject.getJSONArray("actions"),
 			jsonObject.getJSONArray("conditions"),
 			jsonObject.getString("conditionType"), jsonObject.getString("id"),
-			jsonObject.getString("name"));
+			jsonObject.getString("name"), jsonObject.getString("script"));
 	}
 
 	public LayoutStructureRule(
 		JSONArray actionsJSONArray, JSONArray conditionsJSONArray,
-		String conditionType, String id, String name) {
+		String conditionType, String id, String name, String script) {
 
 		_actionsJSONArray = actionsJSONArray;
 		_conditionsJSONArray = conditionsJSONArray;
@@ -40,12 +40,13 @@ public class LayoutStructureRule {
 
 		_id = id;
 		_name = name;
+		_script = script;
 	}
 
 	public LayoutStructureRule(String id, String name) {
 		this(
 			JSONFactoryUtil.createJSONArray(),
-			JSONFactoryUtil.createJSONArray(), null, id, name);
+			JSONFactoryUtil.createJSONArray(), null, id, name, null);
 	}
 
 	@Override
@@ -93,6 +94,10 @@ public class LayoutStructureRule {
 		return _name;
 	}
 
+	public String getScript() {
+		return _script;
+	}
+
 	@Override
 	public int hashCode() {
 		return HashUtil.hash(0, getId());
@@ -118,6 +123,10 @@ public class LayoutStructureRule {
 		_name = name;
 	}
 
+	public void setScript(String script) {
+		_script = script;
+	}
+
 	public JSONObject toJSONObject() {
 		return JSONUtil.put(
 			"actions", _actionsJSONArray
@@ -129,6 +138,8 @@ public class LayoutStructureRule {
 			"id", getId()
 		).put(
 			"name", getName()
+		).put(
+			"script", getScript()
 		);
 	}
 
@@ -144,5 +155,6 @@ public class LayoutStructureRule {
 	private String _conditionType = "all";
 	private String _id;
 	private String _name;
+	private String _script;
 
 }

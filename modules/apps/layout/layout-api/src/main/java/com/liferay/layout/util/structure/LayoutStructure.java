@@ -1075,7 +1075,7 @@ public class LayoutStructure {
 
 	public LayoutStructureRule updateLayoutStructureRule(
 		JSONArray actionsJSONArray, JSONArray conditionsJSONArray,
-		String conditionType, String name, String ruleId) {
+		String conditionType, String name, String script, String ruleId) {
 
 		LayoutStructureRule layoutStructureRule = _layoutStructureRulesMap.get(
 			ruleId);
@@ -1085,6 +1085,7 @@ public class LayoutStructure {
 			layoutStructureRule.setConditionsJSONArray(conditionsJSONArray);
 			layoutStructureRule.setConditionType(conditionType);
 			layoutStructureRule.setName(name);
+			layoutStructureRule.setScript(script);
 		}
 
 		return layoutStructureRule;
