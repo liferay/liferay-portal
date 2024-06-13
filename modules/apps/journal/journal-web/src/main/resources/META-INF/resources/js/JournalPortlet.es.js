@@ -65,31 +65,6 @@ export default function _JournalPortlet({
 
 	const lockHolder = {};
 
-	if (!Liferay.FeatureFlags['LPD-15596']) {
-		initializeLock('publishing', {
-			errorIndicator: document.getElementById(
-				`${namespace}lockErrorIndicator`
-			),
-			lockedIndicator: document.getElementById(
-				`${namespace}savingChangesIndicator`
-			),
-			namespace,
-			onLockChange: ({isLocked}) => {
-				[publishButton, resetValuesButton, saveButton].forEach(
-					(triggerElement) => {
-						if (triggerElement) {
-							triggerElement.disabled = isLocked;
-						}
-					}
-				);
-			},
-			triggerElements: [publishButton, resetValuesButton, saveButton],
-			unlockedIndicator: document.getElementById(
-				`${namespace}changesSavedIndicator`
-			),
-		});
-	}
-
 	Liferay.componentReady(`${namespace}publishing`).then((lock) => {
 		lockHolder.lock = lock;
 	});
@@ -278,8 +253,7 @@ export default function _JournalPortlet({
 		lockHolder.lock?.lock();
 
 		if (
-			Liferay.FeatureFlags['LPD-11228'] &&
-			Liferay.FeatureFlags['LPD-15596']
+			Liferay.FeatureFlags['LPD-11228']
 		) {
 			return;
 		}

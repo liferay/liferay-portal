@@ -86,7 +86,6 @@ const translationAndAutosaveTest = mergeTests(
 	baseTest,
 	featureFlagsTest({
 		'LPD-11228': true,
-		'LPD-15596': true,
 	})
 );
 

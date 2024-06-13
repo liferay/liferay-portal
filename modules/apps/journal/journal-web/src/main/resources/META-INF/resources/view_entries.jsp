@@ -156,7 +156,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 									label="<%= WorkflowConstants.getStatusLabel(curArticle.getStatus()) %>"
 								/>
 
-							<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-15596") && curArticle.isScheduled() %>'>
+							<c:if test="<%= curArticle.isScheduled() %>">
 
 								<%
 								String scheduledArticleMessage = journalDisplayContext.getScheduledArticleMessage(curArticle);

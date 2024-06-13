@@ -210,11 +210,9 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 					actionRequest, portletResource + "requestProcessed");
 			}
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					themeDisplay.getCompanyId(), "LPD-15596")) {
+			if (article.isPending()) {
 
-				if (article.isPending()) {
-					User user = themeDisplay.getUser();
+				User user = themeDisplay.getUser();
 
 					Date displayDate = _portal.getDate(
 						ParamUtil.getInteger(
@@ -229,43 +227,29 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 							uploadPortletRequest, "displayDateMinute"),
 						user.getTimeZone(), null);
 
-					if (displayDate != null) {
-						MultiSessionMessages.add(
-							actionRequest, "articlePendingScheduled",
-							article.getId());
-					}
-					else {
-						MultiSessionMessages.add(
-							actionRequest, "articlePending", article.getId());
-					}
-				}
-				else if (article.isScheduled()) {
+				if (displayDate != null) {
 					MultiSessionMessages.add(
-						actionRequest, "articleScheduled", article.getId());
+						actionRequest, "articlePendingScheduled",
+						article.getId());
 				}
 				else {
-					if (actionName.equals("/journal/add_article")) {
-						MultiSessionMessages.add(
-							actionRequest, "articleCreated", article.getId());
-					}
-					else {
-						MultiSessionMessages.add(
-							actionRequest, "articleUpdated", article.getId());
-					}
+					MultiSessionMessages.add(
+						actionRequest, "articlePending", article.getId());
 				}
 			}
-		}
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-15596")) {
-
-			if (actionName.equals("/journal/add_article")) {
+			else if (article.isScheduled()) {
 				MultiSessionMessages.add(
-					actionRequest, "articleCreated", article.getId());
+					actionRequest, "articleScheduled", article.getId());
 			}
 			else {
-				MultiSessionMessages.add(
-					actionRequest, "articleUpdated", article.getId());
+				if (actionName.equals("/journal/add_article")) {
+					MultiSessionMessages.add(
+						actionRequest, "articleCreated", article.getId());
+				}
+				else {
+					MultiSessionMessages.add(
+						actionRequest, "articleUpdated", article.getId());
+				}
 			}
 		}
 

@@ -22,16 +22,9 @@ JournalEditArticleDisplayContext journalEditArticleDisplayContext = (JournalEdit
 <liferay-ui:error exception="<%= ArticleExpirationDateException.class %>" message="please-enter-a-valid-expiration-date" />
 
 <div class="schedule">
-	<c:choose>
-		<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-15596") %>'>
-			<div class="font-weight-semi-bold mb-4">
-				<liferay-ui:message arguments="<%= journalEditArticleDisplayContext.getTimeZoneName() %>" key="time-zone-x" />
-			</div>
-		</c:when>
-		<c:otherwise>
-			<aui:input formName="fm1" name="displayDate" wrapperCssClass="mb-3" />
-		</c:otherwise>
-	</c:choose>
+	<div class="font-weight-semi-bold mb-4">
+		<liferay-ui:message arguments="<%= journalEditArticleDisplayContext.getTimeZoneName() %>" key="time-zone-x" />
+	</div>
 
 	<aui:input dateTogglerCheckboxLabel="never-expire" disabled="<%= journalEditArticleDisplayContext.isNeverExpire() %>" formName="fm1" name="expirationDate" wrapperCssClass="expiration-date mb-3" />
 
