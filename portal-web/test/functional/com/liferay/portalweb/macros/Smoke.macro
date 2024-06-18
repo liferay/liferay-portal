@@ -133,21 +133,6 @@ definition {
 
 			SiteAdmin.viewPortletTitle(portletTitle = ${portlet});
 		}
-
-		var webContentContent = "Web Content Content";
-		var webContentTitle = "Web Content Title";
-
-		task ("Add a web content article with '${webContentTitle}' as the title and '${webContentContent}' as the content") {
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addCP(
-				webContentContent = ${webContentContent},
-				webContentTitle = ${webContentTitle});
-
-			PortletEntry.publish();
-
-			WebContent.viewTitle(webContentTitle = ${webContentTitle});
-		}
 	}
 
 	@summary = "Assert the Welcome Page elements"
