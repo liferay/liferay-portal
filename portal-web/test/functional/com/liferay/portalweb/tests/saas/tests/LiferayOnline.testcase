@@ -506,7 +506,7 @@ definition {
 				webContentContent = ${webContentContent},
 				webContentTitle = ${webContentTitle});
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = ${webContentTitle});
 		}

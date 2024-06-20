@@ -293,7 +293,7 @@ definition {
 
 		Button.clickSaveAsDraft();
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
@@ -397,7 +397,7 @@ definition {
 
 		IFrame.closeFrame();
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@description = "This is a use case for LRQA-61632. Enable Staging,Publish to live site, assert value entered persists,including images and links  With First Complex Structure"

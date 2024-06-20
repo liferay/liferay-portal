@@ -8,7 +8,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -173,7 +173,7 @@ definition {
 
 		AssertElementPresent(locator1 = "AssetRelatedAssets#RELATED_ASSETS_TABLE_REMOVE_LINK");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -307,7 +307,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WaitForPageLoad();
 
@@ -395,7 +395,7 @@ definition {
 			userSegmentDetailTitle = ${userSegmentDetailTitle},
 			vocabularyName = ${vocabularyName});
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -431,7 +431,7 @@ definition {
 
 		SelectFrameTop();
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -445,7 +445,7 @@ definition {
 			locator1 = "TextInput#INPUT_ID",
 			value1 = ${friendlyURL});
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -474,7 +474,7 @@ definition {
 			Alert.viewErrorMessage(errorMessage = "You cannot select more than one category for Vocabulary Name.");
 		}
 		else {
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 	}
 
@@ -490,7 +490,7 @@ definition {
 			locator1 = "TextInput#ASSET_PRIORITY",
 			value1 = ${assetPriority});
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -898,7 +898,7 @@ definition {
 			AssetCategorization.addTag(tagName = ${tagName});
 		}
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -1187,7 +1187,7 @@ definition {
 				value1 = "Draft");
 		}
 		else {
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
@@ -1484,7 +1484,7 @@ definition {
 				value1 = "Draft");
 		}
 		else {
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 	}
 
@@ -1529,7 +1529,7 @@ definition {
 				value1 = "Draft");
 		}
 		else {
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 	}
 

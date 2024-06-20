@@ -319,7 +319,7 @@ definition {
 					index = 2);
 			}
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Remove duplicates") {
@@ -349,7 +349,7 @@ definition {
 					locator1 = "DDMField#REMOVE_REPEATED_FIELD");
 			}
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 	}
 
@@ -432,7 +432,7 @@ definition {
 
 			Button.clickSaveAsDraft();
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
@@ -484,7 +484,7 @@ definition {
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Complex Title 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 	}
 
@@ -516,7 +516,7 @@ definition {
 
 			Button.clickSaveAsDraft();
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Display in Web Content Display widget") {

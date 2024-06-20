@@ -39,7 +39,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -92,7 +92,7 @@ definition {
 				value1 = ${tagName});
 		}
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		SelectFrame(value1 = "relative=top");
 	}
@@ -178,7 +178,7 @@ definition {
 				fieldLabel = "Content");
 		}
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		SelectFrame(value1 = "relative=top");
 	}

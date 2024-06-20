@@ -289,7 +289,7 @@ definition {
 				webContentText = "WC WebContent Text",
 				webContentTitle = "WC WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Move WC to recycle bin and view in recycle bin") {
