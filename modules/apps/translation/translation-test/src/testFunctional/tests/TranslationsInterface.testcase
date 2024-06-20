@@ -71,7 +71,7 @@ definition {
 			webContentNumeric = 100,
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title");
 
@@ -167,7 +167,7 @@ definition {
 			webContentRichText = '''<h2 class="text-center">This is a HTML title</h2>''',
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title");
 
@@ -185,7 +185,7 @@ definition {
 			webContentSourceHtml = '''<h2 class="text-center">Este es un título HTML</h2>''',
 			webContentTitle = "WC WebContent Título");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title");
 
@@ -263,7 +263,7 @@ definition {
 			webContentText = "Text",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title");
 
@@ -460,7 +460,7 @@ definition {
 			webContentDescription = "WC WebContent Descripción",
 			webContentTitle = "WC WebContent Título");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Translations.openTranslationAdmin(siteURLKey = "guest");
 

@@ -60,7 +60,7 @@ definition {
 			webContentText = "Text",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Site.openSiteSettingsAdmin(siteURLKey = "guest");
 
@@ -144,7 +144,7 @@ definition {
 			webContentText = "Text EN",
 			webContentTitle = "WC WebContent Title EN");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
 

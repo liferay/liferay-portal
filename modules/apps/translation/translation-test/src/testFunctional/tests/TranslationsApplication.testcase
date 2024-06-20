@@ -337,7 +337,7 @@ definition {
 			webContentText = "WC WebContent Text",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title");
 
@@ -353,7 +353,7 @@ definition {
 			webContentText = "Mensaje de texto",
 			webContentTitle = "WC WebContent Título");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		NavItem.gotoStructures();
 
@@ -379,7 +379,7 @@ definition {
 
 		Translations.translateFields(webContentNumber = 200);
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Translations.openTranslationAdmin(siteURLKey = "guest");
 
