@@ -1776,6 +1776,24 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro publishWithPermissions() {
+		Button.clickPublish();
+
+		Click(locator1 = "WCEditWebContent#PUBLISH_WITH_PERMISSIONS_BUTTON");
+
+		Click(locator1 = "WCEditWebContent#PUBLISH_IN_MODAL");
+
+		WaitForElementPresent.waitForElementPresentNoException(locator1 = "Message#ALERT_DISMISSIBLE");
+
+		if (IsElementPresent(locator1 = "Message#WARNING")) {
+			VerifyElementPresent(locator1 = "Message#WARNING");
+		}
+		else {
+			Alert.viewSuccessMessage();
+		}
+	}
+
+	@summary = "Default summary"
 	macro removeDuplicatedFieldsGroup(index = null) {
 		Click(
 			key_class = "delete-button",
