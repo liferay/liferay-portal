@@ -3725,7 +3725,7 @@ definition {
 			dmDocumentTitle = "Document_1.doc",
 			fieldLabel = "Content");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
