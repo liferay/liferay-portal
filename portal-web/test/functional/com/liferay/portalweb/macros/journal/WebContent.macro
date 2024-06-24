@@ -1813,6 +1813,13 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro saveAsDraftWithPermissions() {
+		Button.clickSaveAsDraft();
+
+		Click(locator1 = "WCEditWebContent#SAVE_AS_DRAFT_IN_MODAL");
+	}
+
+	@summary = "Default summary"
 	macro searchCP(webContentTitle = null) {
 		Search.searchCP(searchTerm = ${webContentTitle});
 
