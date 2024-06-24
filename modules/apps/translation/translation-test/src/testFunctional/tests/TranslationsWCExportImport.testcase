@@ -359,7 +359,7 @@ definition {
 			webContentContent = "<h1>Webcontent</h1>",
 			webContentTitle = "WebContentTitle");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
 

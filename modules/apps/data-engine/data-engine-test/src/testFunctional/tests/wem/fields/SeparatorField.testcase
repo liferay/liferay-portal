@@ -150,7 +150,7 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Separator");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

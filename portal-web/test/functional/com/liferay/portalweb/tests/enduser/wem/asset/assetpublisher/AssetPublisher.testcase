@@ -335,7 +335,7 @@ definition {
 				webContentContent = "WebContent Content 1 Edit",
 				webContentTitle = "WebContent Title 1 Edit");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the order of web contents") {
@@ -370,7 +370,7 @@ definition {
 
 				WebContent.addPriority(priority = ${i});
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 		}
 

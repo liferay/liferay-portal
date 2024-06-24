@@ -209,7 +209,7 @@ definition {
 
 		WebContent.increaseDisplayDate(minuteIncrease = 2);
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		TestUtils.hardRefresh();
 
@@ -235,7 +235,7 @@ definition {
 
 		WebContent.increaseDisplayDate(minuteIncrease = 2);
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		TestUtils.hardRefresh();
 
@@ -680,7 +680,7 @@ definition {
 
 			WebContent.increaseDisplayDate(minuteIncrease = 4);
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			TestUtils.hardRefresh();
 
@@ -705,7 +705,7 @@ definition {
 
 			WebContent.increaseDisplayDate(minuteIncrease = 2);
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			TestUtils.hardRefresh();
 

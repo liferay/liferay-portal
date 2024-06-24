@@ -519,7 +519,7 @@ definition {
 			webContentContent = "WC WebContent Content Cluster2",
 			webContentTitle = "WC WebContent Title Cluster2");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "WC WebContent Title Cluster2");
 

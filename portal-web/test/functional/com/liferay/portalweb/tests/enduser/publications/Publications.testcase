@@ -1659,7 +1659,7 @@ definition {
 			displayDate = "01/01/2050",
 			displayTime = "12:30 AM");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Publications.publishPublication(
 			gotoPublicationsAdmin = "true",

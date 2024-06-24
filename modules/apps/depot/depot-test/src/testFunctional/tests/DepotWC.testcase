@@ -210,7 +210,7 @@ definition {
 
 		Depot.viewNoPanel(panelName = "Display Page");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 

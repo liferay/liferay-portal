@@ -170,7 +170,7 @@ definition {
 
 		DMDocument.viewInternalVideoPreview(videoName = "Document_1.mp4");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "Site Name");
 
@@ -199,7 +199,7 @@ definition {
 
 		DMDocument.viewInternalVideoPreview(videoName = "Document_1.mp4");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "Site Name");
 

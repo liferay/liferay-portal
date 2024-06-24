@@ -69,7 +69,7 @@ definition {
 <p class="text-center">Dare to Dream out of this world</p>
 ''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then the site designer could view web content in Web Content Display") {
@@ -103,7 +103,7 @@ definition {
 <p class="text-center">地球から、宇宙の果てへ</p>
 ''');
 
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then the site designer could view the translation after changing the user language to Chinese") {
@@ -162,7 +162,7 @@ definition {
 				webContentContent = "Web Contenido Contenido",
 				webContentTitle = "Web Contenido Titulo");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			Navigator.gotoSitePage(
 				pageName = "Test Page Name",

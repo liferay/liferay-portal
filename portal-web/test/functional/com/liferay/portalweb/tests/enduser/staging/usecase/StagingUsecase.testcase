@@ -1214,7 +1214,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then: User can publish it directly from the portlet") {
@@ -1413,7 +1413,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			FormsAdminNavigator.openFormsAdmin(siteURLKey = "site-name-staging");
 

@@ -325,7 +325,7 @@ definition {
 				webContentContent = "WC WebContent Content Edit",
 				webContentTitle = "${title} Edit");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the edited content shown in Asset Publisher") {
@@ -519,7 +519,7 @@ definition {
 
 			WebContent.addWithStructureCP(webContentNumeric = 3);
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add the second web content based on new structure") {
@@ -539,7 +539,7 @@ definition {
 
 			WebContent.addWithStructureCP(webContentNumeric = 8);
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add the third web content based on new structure") {
@@ -559,7 +559,7 @@ definition {
 
 			WebContent.addWithStructureCP(webContentNumeric = 5);
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add the fourth web content based on Basic Web Content") {
@@ -569,7 +569,7 @@ definition {
 				webContentContent = "Web Content4 Content",
 				webContentTitle = "Web Content4 Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add the second structure with Text field") {
@@ -1642,7 +1642,7 @@ definition {
 
 		WebContent.editFriendlyURL(webContentFriendlyURL = "webcontentgerman");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.gotoSitePage(
 			pageName = "Asset Publisher Page",
@@ -1901,7 +1901,7 @@ definition {
 				key_toggleSwitchLabel = "Searchable",
 				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Assert both web contents are present in AP") {
@@ -2229,7 +2229,7 @@ definition {
 				webContentContent = "WC WebContent Content",
 				webContentTitle = "WC WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the web content author in Asset Publisher") {
@@ -2342,7 +2342,7 @@ definition {
 
 			WebContent.addCP(webContentContent = "Webcontent Content Edit");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the friendly URL shown in address") {
@@ -2372,7 +2372,7 @@ definition {
 				webContentContent = "WC WebContent Content",
 				webContentTitle = "WC WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content in associated public page") {
@@ -2412,7 +2412,7 @@ definition {
 				webContentContent = "WC WebContent Content",
 				webContentTitle = "WC WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the web content in Asset Publisher") {

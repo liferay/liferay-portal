@@ -1016,7 +1016,7 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONLayout.addWidgetToPublicLayout(
 			column = 2,
@@ -1100,7 +1100,7 @@ definition {
 			webContentContent = "Web Content Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.gotoSitePage(
 			pageName = "Staging DM Page",
@@ -1595,7 +1595,7 @@ definition {
 			webContentContent = "Web Content Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.gotoSitePage(
 			pageName = "Staging DM Page",

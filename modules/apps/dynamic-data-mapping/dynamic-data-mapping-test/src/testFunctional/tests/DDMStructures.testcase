@@ -391,7 +391,7 @@ definition {
 			fieldName = "Image",
 			fieldValue = "Portuguese (Brazil) Image Description");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		AssertClick(
 			buttonName = "Publish With Permissions",

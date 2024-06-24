@@ -97,7 +97,7 @@ definition {
 				webContentContent = "WC Content Content",
 				webContentTitle = "Web Content Title 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "test@liferay.com",
@@ -6281,7 +6281,7 @@ definition {
 				webContentContent = "WC Content 2",
 				webContentTitle = "WC Title 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Login with Admin user") {
@@ -6364,7 +6364,7 @@ definition {
 				webContentContent = "WC Content",
 				webContentTitle = "WC Title 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Login with Admin user") {
@@ -6441,7 +6441,7 @@ definition {
 				webContentContent = "WC Content",
 				webContentTitle = "WC Title 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Edit Web Content created by Test user") {
@@ -6756,7 +6756,7 @@ definition {
 				webContentContent = "WC Content Content",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Login with Test user once more") {

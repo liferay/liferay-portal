@@ -460,7 +460,7 @@ definition {
 			pageName = "Display Page Name",
 			pageType = "Display Page Templates");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/site-name/w/webcontent-title");
 

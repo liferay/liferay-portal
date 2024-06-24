@@ -85,7 +85,7 @@ definition {
 			depotName = "Test Depot Name",
 			imageFileName = "Document_2.jpg");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.openSiteURL(siteName = "Site Name");
 
@@ -301,7 +301,7 @@ definition {
 			depotName = "Test Depot Name",
 			imageFileName = "Document_2.jpg");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.openSiteURL(siteName = "Site Name");
 
@@ -556,7 +556,7 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		DepotNavigator.switchStagingStatus(stagingItem = "Publish to Live");
 
@@ -728,7 +728,7 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		DepotNavigator.openDepotWebContentAdminStaging(depotName = "Test Embedded Video Depot Name");
 

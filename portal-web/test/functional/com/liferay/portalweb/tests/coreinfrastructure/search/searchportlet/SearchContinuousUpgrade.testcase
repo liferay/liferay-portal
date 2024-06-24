@@ -37,7 +37,7 @@ definition {
 
 			WebContent.addCP(webContentTitle = "WC Title ${count}");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		Navigator.openSpecificURL(url = "http://localhost:8080");

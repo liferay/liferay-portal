@@ -74,7 +74,7 @@ definition {
 
 			CKEditor.addSourceContent(content = '''<p><a href="${portalURL}/web/site-name/test-page">test page</a></p>''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When: Export and download the web content to a LAR file") {

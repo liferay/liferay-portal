@@ -2098,7 +2098,7 @@ definition {
 
 		WebContent.addCP(webContentTitle = "WebContent Title 1.1");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewVersion(
 			version = "1.1",

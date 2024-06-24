@@ -296,7 +296,7 @@ definition {
 			webContentContent = "Web Content Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONFolder.addFolder(
 			dmFolderDescription = "DM Folder Description",

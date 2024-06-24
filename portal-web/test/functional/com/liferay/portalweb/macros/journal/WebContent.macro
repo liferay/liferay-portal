@@ -336,7 +336,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 	}
 
 	@summary = "Default summary"
@@ -1414,7 +1414,7 @@ definition {
 				fieldLabel = "Content");
 		}
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		AssertElementPresent(locator1 = "TextInput#REQUIRED_ALERT");
 	}
@@ -1458,7 +1458,7 @@ definition {
 				value1 = "Draft");
 		}
 		else {
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 		}
 	}
 

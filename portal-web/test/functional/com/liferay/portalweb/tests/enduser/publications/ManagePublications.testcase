@@ -502,7 +502,7 @@ definition {
 			webContentContent = "WC WebContent Content 1",
 			webContentTitle = "Web Content Title 1");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Publications.createNewPublication(
 			gotoPublicationsAdmin = "true",
@@ -520,7 +520,7 @@ definition {
 			webContentContent = "WC WebContent Content 2",
 			webContentTitle = "Web Content Title 2");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Publications.selectPublication(publicationName = "Publication Name");
 

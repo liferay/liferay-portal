@@ -3601,7 +3601,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Open site and Add WC with malicious url") {
@@ -3621,7 +3621,7 @@ definition {
 				webContentContent = "Web Content Content 2",
 				webContentTitle = "Web Content Title 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 	}
 

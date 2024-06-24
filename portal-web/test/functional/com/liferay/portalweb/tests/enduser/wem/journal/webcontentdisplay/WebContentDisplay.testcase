@@ -185,7 +185,7 @@ definition {
 
 			CKEditor.addSourceContent(content = '''<p><span><a href="${portalURL}/web/test-site-name/test-page-name/-/com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet">text</a></span></p>''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content title is shown") {
@@ -1323,7 +1323,7 @@ ${runtimeInstance}
 				webContentContent = "Web Contenido Contenido 1",
 				webContentTitle = "Web Contenido Título 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content title is shown") {

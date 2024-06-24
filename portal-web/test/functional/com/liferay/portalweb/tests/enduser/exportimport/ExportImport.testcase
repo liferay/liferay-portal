@@ -396,7 +396,7 @@ definition {
 				webContentContent = "WC WebContent Content",
 				webContentTitle = "WC WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then: Site can be exported then published") {
@@ -1156,7 +1156,7 @@ definition {
 <p>Test: <a href="/web/test-site-name/test-site-name">Link</a></p>
 ''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add the second web content") {
@@ -1168,7 +1168,7 @@ definition {
 				webContentContent = "WC WebContent Content",
 				webContentTitle = "WC WebContent 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Select display the second Web Content article in WCD") {

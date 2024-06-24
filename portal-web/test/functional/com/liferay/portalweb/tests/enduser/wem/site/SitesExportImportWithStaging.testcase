@@ -187,7 +187,7 @@ definition {
 				pageName = "Display Page Name",
 				pageType = "Display Page Templates");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Publish the first site to live") {

@@ -930,7 +930,7 @@ definition {
 			webContentContent = "Depot WebContent Content",
 			webContentTitle = "Depot WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoViewStatus(
 			webContentStatus = "Approved",

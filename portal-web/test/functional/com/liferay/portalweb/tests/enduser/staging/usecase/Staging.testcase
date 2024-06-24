@@ -149,7 +149,7 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONStaging.enableLocalStaging(groupName = "Site Name");
 
@@ -197,7 +197,7 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "site-name");
 
@@ -1108,7 +1108,7 @@ definition {
 					webContentContent = "Quality Content",
 					webContentTitle = ${webContentTitle});
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 
 			Staging.openStagingAdmin(siteURLKey = ${randomSiteURLKey});
@@ -1127,7 +1127,7 @@ definition {
 				webContentContent = "Quality Content",
 				webContentTitle = "Vader");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "Palpatine");
 
@@ -1416,7 +1416,7 @@ definition {
 					webContentContent = "Quality Content",
 					webContentTitle = ${webContentTitle});
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 		}
 
@@ -2155,7 +2155,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			FormsAdminNavigator.openFormsAdmin(siteURLKey = "site-name-staging");
 
@@ -2484,7 +2484,7 @@ definition {
 			imageSourceURL = ${dmDocumentURL},
 			navTab = "URL");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.gotoSitePage(
 			pageName = "Staging Test Page",
@@ -2579,7 +2579,7 @@ definition {
 				webContentContent = "Quality Content",
 				webContentTitle = "Mirage");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.moveToFolderCP(
 				folderName = "AC",
@@ -2619,7 +2619,7 @@ definition {
 				webContentContent = "Web Content - Content",
 				webContentTitle = "Web Content - Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When: The new Web Content is Published to Live") {
@@ -3245,7 +3245,7 @@ definition {
 			webContentContent = "Web Content Content 2",
 			webContentTitle = "Web Content Title 2");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONStaging.enableLocalStaging(groupName = "Site Name");
 
@@ -3350,7 +3350,7 @@ definition {
 			webContentContent = "Web Content Content",
 			webContentTitle = '''Special Char aŐb''');
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = '''Special Char aŐb''');
 

@@ -96,7 +96,7 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Shortened URL Depot Name");
 
@@ -522,7 +522,7 @@ definition {
 			webContentContent = "Web Content Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Publications.publishPublication(
 			gotoPublicationsAdmin = "true",
@@ -574,7 +574,7 @@ definition {
 			assetType = "External Video Shortcut",
 			depotName = "Test Depot Name");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.openSiteURL(siteName = "Site Name");
 

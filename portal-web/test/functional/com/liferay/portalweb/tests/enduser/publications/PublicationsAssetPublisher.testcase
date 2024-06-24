@@ -58,7 +58,7 @@ definition {
 			webContentContent = "Web Content Content",
 			webContentTitle = "Publication WC");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.openSitePage(
 			pageName = "Test Page Name",

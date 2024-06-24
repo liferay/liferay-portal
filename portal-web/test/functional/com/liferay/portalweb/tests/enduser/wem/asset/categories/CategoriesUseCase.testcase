@@ -1298,7 +1298,7 @@ definition {
 				categoryName = "Category Name",
 				vocabularyName = "Vocabulary Name");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the vocabulary for asset subtype not shown in web content editor based on new structure") {

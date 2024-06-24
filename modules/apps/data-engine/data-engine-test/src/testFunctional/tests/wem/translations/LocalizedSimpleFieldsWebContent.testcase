@@ -913,7 +913,7 @@ definition {
 
 		WebContent.addCP(webContentTitle = "测试");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Test");
 

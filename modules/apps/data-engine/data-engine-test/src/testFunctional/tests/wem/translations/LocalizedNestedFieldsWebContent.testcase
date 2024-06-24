@@ -380,7 +380,7 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Grupo de Campos");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title");
 

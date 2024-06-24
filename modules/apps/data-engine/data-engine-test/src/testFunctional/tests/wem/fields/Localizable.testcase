@@ -168,7 +168,7 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Título do conteudo da Web");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		NavItem.gotoStructures();
 
@@ -268,7 +268,7 @@ definition {
 
 		WebContent.addCP(webContentTitle = "Título do conteudo da Web");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -325,7 +325,7 @@ definition {
 			webContentDate = "09/04/2021",
 			webContentNumeric = 456);
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -399,7 +399,7 @@ definition {
 			DataEngine.assertNonLocalizableField(fieldFieldName = ${fieldFieldName});
 		}
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		NavItem.gotoStructures();
 
@@ -493,7 +493,7 @@ definition {
 			webContentNumeric = 456,
 			webContentText = "Este é um campo de texto");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -554,7 +554,7 @@ definition {
 			webContentNumeric = 456,
 			webContentText = "Este é um campo de texto");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -673,7 +673,7 @@ definition {
 			DataEngine.assertNonLocalizableField(fieldFieldName = ${fieldFieldLabel});
 		}
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewWithStructureCP(
 			webContentDate = "01/04/2021",

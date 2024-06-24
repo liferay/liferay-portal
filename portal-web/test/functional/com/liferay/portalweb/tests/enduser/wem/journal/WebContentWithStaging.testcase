@@ -361,7 +361,7 @@ definition {
 				dmFolderName = "Provided by Liferay",
 				imageFileName = "earth.png");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When the user publishes the web content to the live site") {
@@ -827,7 +827,7 @@ definition {
 					webContentContent = "WC WebContent Content",
 					webContentTitle = ${webContentTitle});
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 
 				WebContentNavigator.openWebContentAdmin(siteURLKey = ${randomSiteURLKey});
 

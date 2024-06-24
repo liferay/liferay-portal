@@ -40,7 +40,7 @@ definition {
 			webContentContent = "WC WebContent Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "WC WebContent Title");
 
@@ -91,7 +91,7 @@ definition {
 			webContentContent = "WC WebContent Content 1",
 			webContentTitle = "WC WebContent Title 1");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "WC WebContent Title 1");
 
@@ -101,7 +101,7 @@ definition {
 			webContentContent = "WC WebContent Content 2",
 			webContentTitle = "WC WebContent Title 2");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "WC WebContent Title 2");
 
@@ -111,7 +111,7 @@ definition {
 			webContentContent = "WC WebContent Content 3",
 			webContentTitle = "WC WebContent Title 3");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "WC WebContent Title 3");
 
@@ -683,7 +683,7 @@ definition {
 			webContentContent = "WC Contenido de la web Contenido",
 			webContentTitle = "WC Contenido de la web Titulo");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 

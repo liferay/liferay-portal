@@ -76,7 +76,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = '''<!-- -->''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View escape title in web content admin") {
@@ -111,7 +111,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = '''<!-- -->''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View escape title in web content admin") {

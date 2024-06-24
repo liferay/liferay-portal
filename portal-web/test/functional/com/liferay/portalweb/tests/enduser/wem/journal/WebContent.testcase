@@ -98,7 +98,7 @@ definition {
 
 			WebContent.addExpirationDateCP(expirationDate = "01/02/3000");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View expeiration date is shown") {
@@ -139,7 +139,7 @@ definition {
 		}
 
 		task ("Then the user cannot publish the web content without select an existing small image") {
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 
 			Alert.viewErrorMessage(errorMessage = "Please select an existing small image.");
 		}
@@ -664,7 +664,7 @@ definition {
 		}
 
 		task ("Publish Web Content and view the error message") {
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 
 			Alert.viewErrorMessage(errorMessage = "Another user has made changes since you started editing. Publish this version to save it and overwrite the recent changes.");
 		}
@@ -721,7 +721,7 @@ definition {
 
 			WebContent.addFeaturedImageFromComputer(uploadFileName = "Document_1.jpg");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Edit the web content") {
@@ -1391,7 +1391,7 @@ definition {
 				displayDate = "01/01/2100",
 				displayTime = "01:01 AM");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a page with a Web Content Display widget and display the Web Content article in the Web Content Display widget") {
@@ -1659,7 +1659,7 @@ definition {
 		task ("Select the new folder") {
 			WebContent.selectFolder(folderName = "WC Folder Name");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the new folder and web content are shown in Asset Publisher") {
@@ -1775,7 +1775,7 @@ definition {
 				pageName = "Test Page Name 2",
 				pageType = "Pages");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Copy the Web Content") {
@@ -1795,7 +1795,7 @@ definition {
 				pageName = "Test Page Name 2",
 				pageType = "Pages");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View the friendly URL shown in address") {
@@ -1981,7 +1981,7 @@ definition {
 				pageName = "Test Page Name",
 				pageType = "Pages");
 
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View publishing fails and no error in console") {
@@ -2736,7 +2736,7 @@ definition {
 
 				WebContent.editFriendlyURL(webContentFriendlyURL = "wc-es");
 
-				Button.clickPublish();
+				WebContent.publishWithPermissions();
 			}
 
 			task ("Add a second site and connect it to asset library") {
@@ -2841,7 +2841,7 @@ definition {
 
 			WebContent.editFriendlyURL(webContentFriendlyURL = "wc-de");
 
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then there's warning message in pop up") {

@@ -568,7 +568,7 @@ definition {
 			assetTitle = "Document_1.jpg",
 			assetType = "DM Document Type Depot");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.openToEditWCInSite(
 			groupName = "Site Name",
@@ -845,7 +845,7 @@ definition {
 			webContentContent = "Web Content Content",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Publications.publishPublication(
 			gotoPublicationsAdmin = "true",
