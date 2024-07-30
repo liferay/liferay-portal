@@ -149,20 +149,22 @@ export class JournalEditArticlePage {
 		await this.publishArticle();
 	}
 
-	async publishArticle() {
+	async publishArticle(existingArticle?: boolean) {
 		await clickAndExpectToBeVisible({
 			autoClick: true,
 			target: this.page.getByRole('menuitem', {
-				name: 'Publish With Permissions',
+				name: existingArticle ? 'Publish' : 'Publish With Permissions',
 			}),
 			trigger: this.page.getByRole('button', {
 				name: 'Select and Confirm Publish Settings',
 			}),
 		});
 
-		await this.page
-			.getByRole('button', {exact: true, name: 'Publish'})
-			.click();
+		if (!existingArticle) {
+			await this.page
+				.getByRole('button', {exact: true, name: 'Publish'})
+				.click();
+		}
 	}
 
 	async editArticle(title: string) {
@@ -255,11 +257,7 @@ export class JournalEditArticlePage {
 
 		await this.fillTitle(title);
 
-		await this.selectAndConfirmPublishButton.waitFor();
-
-		await this.selectAndConfirmPublishButton.click();
-
-		await this.publishButton.click();
+		await this.publishArticle(true);
 
 		await waitForAlert(
 			this.page,
