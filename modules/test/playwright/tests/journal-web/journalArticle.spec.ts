@@ -709,7 +709,7 @@ baseTest(
 			});
 		}
 
-		await journalEditArticlePage.publishButton.click();
+		await journalEditArticlePage.publishArticle();
 
 		await waitForAlert(page, `Success:${title} was created successfully.`);
 
@@ -1379,7 +1379,7 @@ baseTest(
 			});
 		}).toPass();
 
-		await journalEditArticlePage.publishButton.click();
+		await journalEditArticlePage.publishArticle();
 
 		await waitForAlert(page, `Success:${title} was created successfully.`);
 
