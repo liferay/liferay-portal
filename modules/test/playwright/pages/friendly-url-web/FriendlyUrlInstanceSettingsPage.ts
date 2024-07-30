@@ -5,7 +5,6 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 

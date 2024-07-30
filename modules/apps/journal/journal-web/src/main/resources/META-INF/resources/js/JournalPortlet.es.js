@@ -12,7 +12,6 @@ import {
 } from 'frontend-js-web';
 
 import {LocaleChangedHandler} from './LocaleChangedHandler.es';
-import initializeLock from './initializeLock';
 import removeAlert from './removeAlert';
 import showAlert from './showAlert';
 
