@@ -394,7 +394,7 @@ definition {
 			webContentText = "This is a Text field",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONPublications.addPublication(publicationName = "Publication Name");
 
@@ -406,7 +406,7 @@ definition {
 
 		WebContent.addWithStructureCP(webContentText = "This is a edited Text field");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		PublicationsNavigator.gotoPublish(
 			gotoPublicationsAdmin = "true",
@@ -695,7 +695,7 @@ definition {
 			pageName = "Test Page",
 			pageType = "Pages");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		var portalURL = PropsUtil.get("portal.url");
 
@@ -773,13 +773,13 @@ definition {
 			webContentText = "WC Web Content Text",
 			webContentTitle = "WC Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Web Content Title");
 
 		WebContent.addCP(webContentDescription = "Web Content Description");
 
-		WebContent.publishWithPermissions();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		PublicationsNavigator.gotoReviewChanges();
 

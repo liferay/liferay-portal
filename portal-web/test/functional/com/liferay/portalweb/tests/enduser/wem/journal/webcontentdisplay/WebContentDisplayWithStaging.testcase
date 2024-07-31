@@ -397,7 +397,7 @@ definition {
 				locator1 = "WCEditWebContent#IMAGE_DESCRIPTION",
 				value1 = "Web Content Image Description");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Publish to live") {

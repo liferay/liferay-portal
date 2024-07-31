@@ -522,7 +522,7 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 				dmDocumentURL = ${dmDocumentURL},
 				navTab = "URL");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Select the web content article in Web Content Display") {
@@ -566,7 +566,7 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 				navTab = "Documents and Media",
 				uploadFileName = "Document_3.png");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Select the web content article in Web Content Display") {
@@ -617,7 +617,7 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 				navTab = "Documents and Media",
 				videoShortcutTitle = "Liferay Digital Experience Platform");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Select the web content article in Web Content Display") {
@@ -1323,7 +1323,7 @@ ${runtimeInstance}
 				webContentContent = "Web Contenido Contenido 1",
 				webContentTitle = "Web Contenido Título 1");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View web content title is shown") {

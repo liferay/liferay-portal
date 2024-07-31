@@ -411,7 +411,7 @@ definition {
 
 			WebContent.editFriendlyURL(webContentFriendlyURL = "titulo-del-contenido-web");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Then the site designer could view the default user language of web content is es-ES") {

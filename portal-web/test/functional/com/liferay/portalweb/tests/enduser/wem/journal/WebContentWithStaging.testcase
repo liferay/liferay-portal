@@ -389,7 +389,7 @@ definition {
 				dmFolderName = "Provided by Liferay",
 				imageFileName = "moon.png");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Then the user could publish changes to the live site") {

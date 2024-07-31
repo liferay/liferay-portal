@@ -816,7 +816,7 @@ definition {
 			webContentText = "This is a Text field",
 			webContentTitle = "Web Content Title With Structure");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
 

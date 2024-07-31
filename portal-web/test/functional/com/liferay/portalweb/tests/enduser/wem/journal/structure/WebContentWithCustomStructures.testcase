@@ -189,7 +189,7 @@ definition {
 				locator1 = "DDMField#MULTIPLE_LINES",
 				value1 = "Contenido web Contenido");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View web content is shown in English") {
@@ -1254,7 +1254,7 @@ definition {
 				structureName = "WC Structure Name",
 				templateName = "WC Template Name 1");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View first template is shown within web content") {
@@ -1289,7 +1289,7 @@ definition {
 
 			WebContent.addWithStructureCP(webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content is shown") {

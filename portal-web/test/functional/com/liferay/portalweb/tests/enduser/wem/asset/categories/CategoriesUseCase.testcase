@@ -264,7 +264,7 @@ definition {
 				categoryNameList = "Internal Category Name",
 				vocabularyName = "Internal Vocabulary Name");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 	}
 

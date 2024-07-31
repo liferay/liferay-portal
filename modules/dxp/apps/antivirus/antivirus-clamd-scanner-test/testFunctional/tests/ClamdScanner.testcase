@@ -172,7 +172,7 @@ definition {
 			webContentTitle = "Web Content Title",
 			webContentUpload = "eicar.com");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

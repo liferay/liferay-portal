@@ -19,7 +19,7 @@ definition {
 			webContentDescription = "wc webcontent記述 編集",
 			webContentTitle = "wc webcontentタイトルを並べて 編集");
 
-		WebContent.publishWithPermissions();
+		PortletEntry.publish();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title Side By Side");
 
@@ -35,7 +35,7 @@ definition {
 			webContentContent = "Contenido de WC WebContent",
 			webContentTitle = "Título del contenido web de WC");
 
-		WebContent.publishWithPermissions();
+		PortletEntry.publish();
 	}
 
 	@summary = "Default summary"
@@ -137,7 +137,7 @@ definition {
 			webContentDescription = "wc webcontent記述 編集",
 			webContentTitle = "wc webcontentタイトルを並べて 編集");
 
-		WebContent.publishWithPermissions();
+		PortletEntry.publish();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title Side By Side");
 

@@ -732,7 +732,7 @@ definition {
 			pageName = "Staging Test Page",
 			pageType = "Pages");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		Navigator.openStagingSiteURL(siteName = "Site Name");
 

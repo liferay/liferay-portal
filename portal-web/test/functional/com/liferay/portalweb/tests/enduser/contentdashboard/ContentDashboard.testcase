@@ -1577,7 +1577,7 @@ definition {
 				categoryNameList = "Substage_4",
 				vocabularyName = "Stage");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Navigate to the content panel and see if, in the new category order, the new category receives a new color, placed in the last position") {
@@ -2440,7 +2440,7 @@ definition {
 
 			WebContent.editDisplayDate(displayDate = "01/01/2100");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Go to Content Dashboard and click on the title") {
@@ -4609,7 +4609,7 @@ definition {
 
 			WebContent.editDisplayDate(displayDate = "01/01/2100");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Filter asset at Content Dashboard using status") {
@@ -4790,7 +4790,7 @@ definition {
 
 			WebContent.addReviewDate(reviewDate = "01/01/2100");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("When navigating to the content dashboard") {
@@ -5763,13 +5763,13 @@ definition {
 
 			WebContent.addReviewDate(reviewDate = "01/01/2100");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "WC Title 2");
 
 			WebContent.addReviewDate(reviewDate = "01/01/2200");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("When navigating to the content dashboard") {
@@ -6697,7 +6697,7 @@ definition {
 
 			WebContent.addReviewDate(reviewDate = "01/01/2100");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("When navigating to the content dashboard") {
@@ -6895,7 +6895,7 @@ definition {
 
 			AssertChecked(locator1 = "Checkbox#NEVER_REVIEW");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("When navigating to the content dashboard") {
@@ -6927,7 +6927,7 @@ definition {
 
 			WebContent.addReviewDate(reviewDate = "01/01/2100");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("When navigating to the content dashboard") {

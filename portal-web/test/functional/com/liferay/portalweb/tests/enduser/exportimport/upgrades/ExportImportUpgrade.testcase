@@ -381,7 +381,7 @@ definition {
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
-			Button.clickPublish();
+			WebContent.publishExistingWCArticleWithPermissions();
 
 			ExportImport.viewValidationMessage(
 				url = "/dl/XYZ123",

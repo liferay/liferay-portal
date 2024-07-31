@@ -94,7 +94,7 @@ definition {
 
 			AssetCategorization.addTag(tagName = "test tag");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Switch to Production and edit web content adding the Tag created") {
@@ -106,7 +106,7 @@ definition {
 
 			AssetCategorization.addTag(tagName = "test tag");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Publish Publication and assert that the Tag show up in production") {
