@@ -186,7 +186,7 @@ definition {
 			content = "Rich Text",
 			fieldLabel = "Rich Text");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -216,7 +216,7 @@ definition {
 
 		DERenderer.addSourceContentonRichText(content = "Rich Text");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -258,7 +258,7 @@ definition {
 			fieldLabel = "Rich Text",
 			index = 2);
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -322,13 +322,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Rich Text");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Rich Text");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

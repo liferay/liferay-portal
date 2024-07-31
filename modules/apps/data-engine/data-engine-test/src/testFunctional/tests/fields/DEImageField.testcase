@@ -111,13 +111,13 @@ definition {
 			navTab = "Documents and Media",
 			webContentImage = "Document Title");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.clearDataOnField(fieldLabel = "Image");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -163,7 +163,7 @@ definition {
 			navTab = "Documents and Media",
 			webContentImage = "Document Title 1");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -178,7 +178,7 @@ definition {
 			imageFile = "",
 			imageTitle = "Document Title 2");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -274,13 +274,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Image");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Image");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -450,7 +450,7 @@ definition {
 			imageFile = "",
 			imageTitle = "Document Title");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -502,7 +502,7 @@ definition {
 			navTab = "Documents and Media",
 			webContentImage = "Document Title 1");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

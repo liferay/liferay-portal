@@ -148,7 +148,7 @@ definition {
 			fieldLabel = "Text",
 			value = "This is a Text field");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -156,7 +156,7 @@ definition {
 			fieldLabel = "Text",
 			value = "This is a Text field Edited");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -228,7 +228,7 @@ definition {
 			fieldLabel = "Text",
 			value = "This is a Text field");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -270,7 +270,7 @@ definition {
 			index = 2,
 			value = "This is a Text field 2");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -334,13 +334,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Text");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Text");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -372,7 +372,7 @@ definition {
 			fieldLabel = "Text",
 			value = "This is a Text field");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -380,7 +380,7 @@ definition {
 			fieldLabel = "Text",
 			value = "");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

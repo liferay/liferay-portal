@@ -676,7 +676,7 @@ definition {
 
 		WebContent.removeDuplicatedFieldsGroup(index = 1);
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -926,7 +926,7 @@ definition {
 				index = 2,
 				value = 2);
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When the user re-orders the repeatable fields groups using drag and drop") {
@@ -941,7 +941,7 @@ definition {
 				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL_ANY",
 				locator2 = "DDMEditStructure#FORM_FIELD_GROUP_TARGET_SPACE");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Then the field groups are re-ordered") {
@@ -1022,7 +1022,7 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Fields Group");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 

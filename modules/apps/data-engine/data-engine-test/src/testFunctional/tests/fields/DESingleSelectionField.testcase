@@ -143,7 +143,7 @@ definition {
 			fieldLabel = "Single Selection",
 			optionValue = "Option 1");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -151,7 +151,7 @@ definition {
 			fieldLabel = "Single Selection",
 			optionValue = "Option 2");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -234,7 +234,7 @@ definition {
 			fieldLabel = "Single Selection",
 			optionValue = "Option 2");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -298,13 +298,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Single Selection");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Single Selection");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -340,7 +340,7 @@ definition {
 			fieldLabel = "Single Selection",
 			optionValue = "Option 1");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

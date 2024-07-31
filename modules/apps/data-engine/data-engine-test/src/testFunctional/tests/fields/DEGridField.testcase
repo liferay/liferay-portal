@@ -118,7 +118,7 @@ definition {
 			}
 		}
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -129,7 +129,7 @@ definition {
 				row = ${index});
 		}
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -240,7 +240,7 @@ definition {
 				row = ${index});
 		}
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

@@ -106,7 +106,7 @@ definition {
 
 		SelectFrame.selectFrameTop();
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -114,7 +114,7 @@ definition {
 
 		DERenderer.clearDataOnField(fieldLabel = "Upload");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -184,7 +184,7 @@ definition {
 
 		SelectFrame.selectFrameTop();
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -228,7 +228,7 @@ definition {
 			index = 2,
 			webContentUpload = "Document_2.jpg");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -292,13 +292,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Upload");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Upload");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

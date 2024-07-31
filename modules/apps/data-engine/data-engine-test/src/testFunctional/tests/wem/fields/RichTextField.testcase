@@ -91,7 +91,7 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Rich Text");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 
@@ -103,7 +103,7 @@ definition {
 			key_fieldName = "RichText",
 			locator1 = "DDMField#REMOVE_REPEATED_FIELD");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 
@@ -127,7 +127,7 @@ definition {
 			content = "Hello",
 			fieldLabel = "Rich Text");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 

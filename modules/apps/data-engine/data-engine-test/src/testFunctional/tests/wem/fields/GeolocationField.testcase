@@ -160,7 +160,7 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = ${key_fieldName});
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 

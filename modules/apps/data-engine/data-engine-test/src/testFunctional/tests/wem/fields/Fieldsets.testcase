@@ -181,7 +181,7 @@ definition {
 			key_index = 2,
 			locator1 = "FormFields#FIELD_REMOVE");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

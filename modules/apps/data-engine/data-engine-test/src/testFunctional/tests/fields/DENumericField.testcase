@@ -105,7 +105,7 @@ definition {
 			fieldLabel = "Numeric",
 			value = 123);
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -113,7 +113,7 @@ definition {
 			fieldLabel = "Numeric",
 			value = 456);
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -231,7 +231,7 @@ definition {
 			index = 2,
 			value = 456);
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -269,7 +269,7 @@ definition {
 			fieldLabel = "Numeric",
 			value = 123);
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -363,13 +363,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Numeric");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Numeric");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -401,7 +401,7 @@ definition {
 			fieldLabel = "Numeric",
 			value = 123);
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -409,7 +409,7 @@ definition {
 			fieldLabel = "Numeric",
 			value = "");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

@@ -431,7 +431,7 @@ definition {
 			locator1 = "WCEditWebContent#ANY_TEXT_INPUT",
 			value1 = "Este é um campo de texto duplicado");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -532,7 +532,7 @@ definition {
 			webContentTextFieldLabel = "文本",
 			webContentTitle = "测试");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title");
 
@@ -654,7 +654,7 @@ definition {
 			webContentTextFieldLabel = "文本",
 			webContentTitle = "测试");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Test");
 
@@ -800,7 +800,7 @@ definition {
 			webContentText = "This is a Text field - en-US",
 			webContentTitle = "Web Content Title - en-US");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		AssertClick(
 			buttonName = "Publish",
@@ -875,7 +875,7 @@ definition {
 
 		WebContent.addWithStructureCP(webContentTitle = "Web Content Title - ca_ES");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -974,7 +974,7 @@ definition {
 			webContentTextFieldLabel = "Texto",
 			webContentTitle = "Título do conteúdo da web");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -1169,7 +1169,7 @@ definition {
 				webContentGridFieldLabel = "Grid - ca-ES");
 		}
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		AssertClick(
 			buttonName = "Publish With Permissions",
@@ -1221,7 +1221,7 @@ definition {
 				webContentGrid = "true");
 		}
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		AssertClick(
 			buttonName = "Publish",
@@ -1310,7 +1310,7 @@ definition {
 			webContentText = "This is a Text field - ca-ES",
 			webContentTitle = "Web Content Title - ca-ES");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewWithStructureCP(
 			webContentDate = "04/01/2021",
@@ -1744,7 +1744,7 @@ definition {
 			webContentTextFieldLabel = "文本",
 			webContentTitle = "测试");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title");
 
@@ -1787,7 +1787,7 @@ definition {
 			webContentTextFieldLabel = "文本",
 			webContentTitle = "测试标题");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title Edited");
 

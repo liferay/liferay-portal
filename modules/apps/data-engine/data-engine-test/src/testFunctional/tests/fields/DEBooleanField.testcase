@@ -189,13 +189,13 @@ definition {
 
 		AssertElementPresent(locator1 = "Icon#ASTERISK");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		FormViewBuilder.validateObjectLabelOptionTextIsShown(text = "This field is required.");
 
 		FormFields.enableCheckbox(fieldName = "Boolean");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content 1");
 
@@ -237,7 +237,7 @@ definition {
 
 		FormFields.enableSwitch(fieldName = "Boolean");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content 1");
 
@@ -281,7 +281,7 @@ definition {
 
 		FormFields.enableCheckbox(fieldName = "Boolean 2");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content 1");
 

@@ -150,7 +150,7 @@ definition {
 			index = 2,
 			value = "ff21a0");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -188,13 +188,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Color");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Color");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -226,7 +226,7 @@ definition {
 			fieldLabel = "Color",
 			value = "006ef8");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -259,7 +259,7 @@ definition {
 			fieldLabel = "Color",
 			value = "006EF8");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -294,7 +294,7 @@ definition {
 			valueGreen = 110,
 			valueRed = 0);
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -327,7 +327,7 @@ definition {
 			fieldLabel = "Color",
 			value = "006EF8");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

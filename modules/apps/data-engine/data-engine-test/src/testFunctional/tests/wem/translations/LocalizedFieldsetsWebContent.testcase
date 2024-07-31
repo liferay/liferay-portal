@@ -144,7 +144,7 @@ definition {
 
 		AssertElementPresent(locator1 = "WCD#WEB_CONTENT_TRANSLATION_SPAN_LANGUAGE_ENGLISH");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title");
 
@@ -530,7 +530,7 @@ definition {
 
 		PortletEntry.inputTitle(title = "测试标题");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title");
 
@@ -641,7 +641,7 @@ definition {
 			locale = "pt-BR",
 			translated = "true");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title");
 
@@ -1028,7 +1028,7 @@ definition {
 			fieldLabel = "Text",
 			text = "This is a text in ES");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC Title");
 

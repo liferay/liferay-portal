@@ -61,7 +61,7 @@ definition {
 			webContentImage = "Document Title",
 			webContentTitle = ${webTitle});
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = ${webTitle});
 
@@ -70,7 +70,7 @@ definition {
 			locator1 = "AppBuilder#CLEAR_SEARCH",
 			value1 = "Clear");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = ${webTitle});
 
@@ -127,7 +127,7 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Image");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -218,7 +218,7 @@ definition {
 			webContentImage = "Document Title",
 			webContentTitle = ${webContentName});
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		NavItem.gotoStructures();
 
@@ -232,7 +232,7 @@ definition {
 
 		WebContentNavigator.gotoEditCP(webContentTitle = ${webContentName});
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "Message#WARNING_FEEDBACK",
@@ -242,7 +242,7 @@ definition {
 			fieldFieldLabel = "Image",
 			webContentImageDescription = "Description");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = ${webContentName});
 
@@ -326,7 +326,7 @@ definition {
 			webContentImageDescription = "My description",
 			webContentTitle = ${webTitle});
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = ${webTitle});
 

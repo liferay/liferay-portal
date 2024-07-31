@@ -561,7 +561,7 @@ definition {
 			webContentText = "This is a Text field",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -624,7 +624,7 @@ definition {
 			webContentText = "Este é um campo de texto",
 			webContentTitle = "Título do conteúdo da web");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

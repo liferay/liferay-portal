@@ -103,7 +103,7 @@ definition {
 			fieldLabel = "Date",
 			value = "08/06/2021");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -111,7 +111,7 @@ definition {
 			fieldLabel = "Date",
 			value = "08/07/2021");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -180,7 +180,7 @@ definition {
 			fieldLabel = "Date",
 			value = "08/06/2021");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -222,7 +222,7 @@ definition {
 			index = 2,
 			value = "08/07/2021");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -323,13 +323,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Date");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Date");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -361,7 +361,7 @@ definition {
 			fieldLabel = "Date",
 			value = "08/06/2021");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -369,7 +369,7 @@ definition {
 			fieldLabel = "Date",
 			value = "");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 

@@ -107,13 +107,13 @@ definition {
 			linkToPageContent = "Test Page Name",
 			linkToPageFieldLabel = "Link to Page");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.clearDataOnField(fieldLabel = "Link to Page");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -196,7 +196,7 @@ definition {
 			linkToPageContent = "Test Page Name",
 			linkToPageFieldLabel = "Link to Page");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -238,7 +238,7 @@ definition {
 			linkToPageContent = "Test Page Name",
 			linkToPageFieldLabel = "Link to Page");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -274,7 +274,7 @@ definition {
 			linkToPageContent = "Test Page Name",
 			linkToPageFieldLabel = "Link to Page");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
@@ -332,13 +332,13 @@ definition {
 
 		DataEngine.addRepeatableField(fieldLabel = "Link to Page");
 
-		Button.clickPublish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
 		DERenderer.removeRepeatableField(fieldLabel = "Link to Page");
 
-		Button.clickPublish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
