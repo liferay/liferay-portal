@@ -119,6 +119,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SAVE_AS_DRAFT_IN_MODAL</td>
+	<td>//div[contains(@class,'modal-content')]//button[contains(text(),'Save as Draft')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SELECT_BUTTON_2</td>
 	<td>xpath=(//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div[contains(@class,'form')]//button[normalize-space()='Select'])[2]</td>
 	<td></td>
