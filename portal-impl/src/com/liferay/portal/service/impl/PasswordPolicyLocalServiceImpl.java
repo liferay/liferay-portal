@@ -244,10 +244,6 @@ public class PasswordPolicyLocalServiceImpl
 			long companyId, long[] organizationIds)
 		throws PortalException {
 
-		if (LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
-			return null;
-		}
-
 		if (ArrayUtil.isEmpty(organizationIds)) {
 			return getDefaultPasswordPolicy(companyId);
 		}
