@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.ldap.LDAPSettingsUtil;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -307,14 +308,18 @@ public class EditPasswordPolicyAssignmentsManagementToolbarDisplayContext {
 		UserSearchTerms searchTerms =
 			(UserSearchTerms)userSearch.getSearchTerms();
 
-		userSearch.setResultsAndTotal(
-			() -> UserLocalServiceUtil.search(
-				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
-				searchTerms.getStatus(), userParams, userSearch.getStart(),
-				userSearch.getEnd(), userSearch.getOrderByComparator()),
-			UserLocalServiceUtil.searchCount(
-				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
-				searchTerms.getStatus(), userParams));
+		List<User> users = UserLocalServiceUtil.search(
+			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+			searchTerms.getStatus(), userParams, userSearch.getStart(),
+			userSearch.getEnd(), userSearch.getOrderByComparator());
+
+		if (LDAPSettingsUtil.isPasswordPolicyEnabled(
+				themeDisplay.getCompanyId())) {
+
+			users.removeIf(user -> user.getLdapServerId() > 0);
+		}
+
+		userSearch.setResultsAndTotal(users);
 
 		userSearch.setRowChecker(rowChecker);
 
