@@ -19,8 +19,6 @@ else {
 	request.setAttribute(WebKeys.SINGLE_PAGE_APPLICATION_CLEAR_CACHE, Boolean.TRUE);
 }
 
-boolean passwordPolicyEnabled = LDAPSettingsUtil.isPasswordPolicyEnabled(company.getCompanyId());
-
 String description = LanguageUtil.get(request, "javax.portlet.description.com_liferay_password_policies_admin_web_portlet_PasswordPoliciesAdminPortlet") + " " + LanguageUtil.get(request, "when-no-password-policy-is-assigned-to-a-user,-either-explicitly-or-through-an-organization,-the-default-password-policy-is-used");
 
 portletDisplay.setDescription(description);
@@ -64,13 +62,7 @@ PortletURL portletURL = viewPasswordPoliciesManagementToolbarDisplayContext.getP
 		/>
 	</div>
 
-	<c:if test="<%= passwordPolicyEnabled %>">
-		<div class="alert alert-info">
-			<liferay-ui:message key="you-are-using-ldaps-password-policy" />
-		</div>
-	</c:if>
-
-	<c:if test="<%= !passwordPolicyEnabled && windowState.equals(WindowState.MAXIMIZED) %>">
+	<c:if test="<%= windowState.equals(WindowState.MAXIMIZED) %>">
 		<liferay-ui:search-container
 			id="passwordPolicies"
 			searchContainer="<%= searchContainer %>"
