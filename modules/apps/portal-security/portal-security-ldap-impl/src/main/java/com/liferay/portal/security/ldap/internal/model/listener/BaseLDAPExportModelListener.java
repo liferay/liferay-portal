@@ -79,7 +79,8 @@ public abstract class BaseLDAPExportModelListener<T extends BaseModel<T>>
 		};
 
 		if (ldapSettings.isPasswordPolicyEnabled(user.getCompanyId()) &&
-			PasswordModificationThreadLocal.isPasswordModified()) {
+			PasswordModificationThreadLocal.isPasswordModified() &&
+			(user.getLdapServerId() > 0)) {
 
 			callable.call();
 		}

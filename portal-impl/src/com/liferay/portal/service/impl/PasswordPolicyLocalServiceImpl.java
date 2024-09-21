@@ -266,7 +266,9 @@ public class PasswordPolicyLocalServiceImpl
 	public PasswordPolicy getPasswordPolicyByUser(User user)
 		throws PortalException {
 
-		if (LDAPSettingsUtil.isPasswordPolicyEnabled(user.getCompanyId())) {
+		if ((user.getLdapServerId() > 0) &&
+			LDAPSettingsUtil.isPasswordPolicyEnabled(user.getCompanyId())) {
+
 			return null;
 		}
 

@@ -11,18 +11,17 @@
 PasswordPolicy passwordPolicy = userDisplayContext.getPasswordPolicy();
 User selUser = userDisplayContext.getSelectedUser();
 
-boolean ldapPasswordPolicyEnabled = LDAPSettingsUtil.isPasswordPolicyEnabled(company.getCompanyId());
 boolean passwordReset = false;
 boolean passwordResetDisabled = false;
 
-if (((selUser == null) || (selUser.getLastLoginDate() == null)) && (((passwordPolicy == null) && !ldapPasswordPolicyEnabled) || ((passwordPolicy != null) && passwordPolicy.isChangeable() && passwordPolicy.isChangeRequired()))) {
+if (((selUser == null) || (selUser.getLastLoginDate() == null)) && (passwordPolicy != null) && passwordPolicy.isChangeable() && passwordPolicy.isChangeRequired()) {
 	passwordReset = true;
 	passwordResetDisabled = true;
 }
 else {
 	passwordReset = BeanParamUtil.getBoolean(selUser, request, "passwordReset");
 
-	if ((passwordPolicy != null) && !passwordPolicy.isChangeable()) {
+	if ((passwordPolicy == null) || !passwordPolicy.isChangeable()) {
 		passwordResetDisabled = true;
 	}
 }

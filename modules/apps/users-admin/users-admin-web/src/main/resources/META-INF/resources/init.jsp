@@ -103,7 +103,6 @@ page import="com.liferay.portal.kernel.portlet.PortletProviderUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder" %><%@
 page import="com.liferay.portal.kernel.security.auth.AuthTokenUtil" %><%@
 page import="com.liferay.portal.kernel.security.auth.ScreenNameValidator" %><%@
-page import="com.liferay.portal.kernel.security.ldap.LDAPSettingsUtil" %><%@
 page import="com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyUtil" %><%@
 page import="com.liferay.portal.kernel.security.permission.ActionKeys" %><%@
 page import="com.liferay.portal.kernel.service.AddressServiceUtil" %><%@
