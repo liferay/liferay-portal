@@ -61,69 +61,50 @@ public class ForgotPasswordMVCActionCommandTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testLDAPPasswordPolicyPreventsPasswordReset() throws Exception {
-		_user = UserTestUtil.addUser();
+	public void testLDAPPasswordPolicyPreventsLDAPUserPasswordReset()
+		throws Exception {
 
-		Dictionary<String, Object> configurations =
-			_ldapAuthConfigurationProvider.getConfigurationProperties(
-				_user.getCompanyId());
+		_createUser(true, false);
 
-		Object existingValue = configurations.put(
-			"passwordPolicyEnabled", true);
+		List<Ticket> tickets = _performForgotPasswordAction(true);
 
-		_ldapAuthConfigurationProvider.updateProperties(
-			_user.getCompanyId(), configurations);
+		Assert.assertTrue(
+			"New ticket created for LDAP user during password reset while " +
+				"LDAP password policy is enabled",
+			tickets.isEmpty());
+	}
 
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					"com.liferay.captcha.configuration.CaptchaConfiguration",
-					HashMapDictionaryBuilder.<String, Object>put(
-						"sendPasswordCaptchaEnabled", false
-					).build());
-			SafeCloseable safeCloseable =
-				PrefsPropsTestUtil.swapWithSafeCloseable(
-					_user.getCompanyId(),
-					PropsKeys.USERS_REMINDER_QUERIES_ENABLED,
-					Boolean.FALSE.toString())) {
+	@Test
+	public void testLDAPUserWithoutLDAPPasswordPolicyCanResetPassword()
+		throws Exception {
 
-			List<Ticket> tickets = _ticketLocalService.getTickets(
-				_user.getCompanyId(), User.class.getName(), _user.getUserId());
+		_createUser(true, false);
 
-			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-				_getMockLiferayPortletActionRequest();
+		List<Ticket> tickets = _performForgotPasswordAction(false);
 
-			_mvcActionCommand.processAction(
-				mockLiferayPortletActionRequest,
-				new MockLiferayPortletActionResponse());
+		Assert.assertTrue(
+			"No ticket created for LDAP user during password reset while " +
+				"LDAP password policy is not enabled",
+			tickets.size() == 1);
+	}
 
-			Object message = SessionMessages.get(
-				_portal.getHttpServletRequest(mockLiferayPortletActionRequest),
-				"forgotPasswordSent");
+	@Test
+	public void testPortalUserWithLDAPPasswordPolicyCanResetPassword()
+		throws Exception {
 
-			Assert.assertNotNull(message);
+		_createUser(false, false);
 
-			Assert.assertEquals(
-				tickets,
-				_ticketLocalService.getTickets(
-					_user.getCompanyId(), User.class.getName(),
-					_user.getUserId()));
-		}
-		finally {
-			if (existingValue != null) {
-				configurations.put("passwordPolicyEnabled", existingValue);
-			}
-			else {
-				configurations.remove("passwordPolicyEnabled");
-			}
+		List<Ticket> tickets = _performForgotPasswordAction(true);
 
-			_ldapAuthConfigurationProvider.updateProperties(
-				_user.getCompanyId(), configurations);
-		}
+		Assert.assertTrue(
+			"No ticket created for portal user during password reset while " +
+				"LDAP password policy is enabled",
+			tickets.size() == 1);
 	}
 
 	@Test
 	public void testSendPasswordReminderToLockedOutUser() throws Exception {
-		_createUser();
+		_createUser(false, true);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -151,10 +132,16 @@ public class ForgotPasswordMVCActionCommandTest {
 		}
 	}
 
-	private void _createUser() throws Exception {
+	private void _createUser(boolean ldapUser, boolean lockout)
+		throws Exception {
+
 		_user = UserTestUtil.addUser();
 
-		_user.setLockout(true);
+		if (ldapUser) {
+			_user.setLdapServerId(1);
+		}
+
+		_user.setLockout(lockout);
 		_user.setLockoutDate(new Date());
 
 		_user = _userLocalService.updateUser(_user);
@@ -170,7 +157,7 @@ public class ForgotPasswordMVCActionCommandTest {
 			serviceContext);
 
 		_testPasswordPolicy.setChangeable(true);
-		_testPasswordPolicy.setLockout(true);
+		_testPasswordPolicy.setLockout(lockout);
 		_testPasswordPolicy.setLockoutDuration(0);
 		_testPasswordPolicy.setResetTicketMaxAge(10);
 
@@ -205,6 +192,61 @@ public class ForgotPasswordMVCActionCommandTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		return mockLiferayPortletActionRequest;
+	}
+
+	private List<Ticket> _performForgotPasswordAction(
+			boolean passwordPolicyEnabled)
+		throws Exception {
+
+		Dictionary<String, Object> configurations =
+			_ldapAuthConfigurationProvider.getConfigurationProperties(
+				_user.getCompanyId());
+
+		Object existingValue = configurations.put(
+			"passwordPolicyEnabled", passwordPolicyEnabled);
+
+		_ldapAuthConfigurationProvider.updateProperties(
+			_user.getCompanyId(), configurations);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.captcha.configuration.CaptchaConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"sendPasswordCaptchaEnabled", false
+					).build());
+			SafeCloseable safeCloseable =
+				PrefsPropsTestUtil.swapWithSafeCloseable(
+					_user.getCompanyId(),
+					PropsKeys.USERS_REMINDER_QUERIES_ENABLED,
+					Boolean.FALSE.toString())) {
+
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+				_getMockLiferayPortletActionRequest();
+
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+
+			Object message = SessionMessages.get(
+				_portal.getHttpServletRequest(mockLiferayPortletActionRequest),
+				"forgotPasswordSent");
+
+			Assert.assertNotNull(message);
+
+			return _ticketLocalService.getTickets(
+				_user.getCompanyId(), User.class.getName(), _user.getUserId());
+		}
+		finally {
+			if (existingValue != null) {
+				configurations.put("passwordPolicyEnabled", existingValue);
+			}
+			else {
+				configurations.remove("passwordPolicyEnabled");
+			}
+
+			_ldapAuthConfigurationProvider.updateProperties(
+				_user.getCompanyId(), configurations);
+		}
 	}
 
 	@DeleteAfterTestRun
