@@ -1,5 +1,6 @@
 dependencies {
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:password-policies-admin:password-policies-admin-api")
+	testIntegrationImplementation project(":apps:portal-security:portal-security-ldap-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
