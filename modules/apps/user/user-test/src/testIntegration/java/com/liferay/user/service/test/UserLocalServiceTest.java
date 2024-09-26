@@ -382,6 +382,257 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testCheckLockoutLDAPUserWithLDAPPasswordPolicy()
+		throws Exception {
+
+		PasswordPolicy passwordPolicy =
+			_passwordPolicyLocalService.getDefaultPasswordPolicy(
+				TestPropsValues.getCompanyId());
+
+		passwordPolicy.setLockout(true);
+
+		passwordPolicy = _passwordPolicyLocalService.updatePasswordPolicy(
+			passwordPolicy);
+
+		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
+			true);
+
+		try {
+			User user = UserTestUtil.addUser();
+
+			user.setLdapServerId(1);
+			user.setLockout(true);
+			user.setLockoutDate(user.getModifiedDate());
+
+			user = _userLocalService.updateUser(user);
+
+			try {
+				_userLocalService.checkLockout(user);
+			}
+			catch (UserLockoutException userLockoutException) {
+				throw new Exception("Password policy is being enforced");
+			}
+			catch (Throwable throwable) {
+				throw new Exception(
+					"Exception unrelated to lockout was thrown", throwable);
+			}
+		}
+		finally {
+			passwordPolicy.setLockout(false);
+
+			_passwordPolicyLocalService.updatePasswordPolicy(passwordPolicy);
+
+			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
+		}
+	}
+
+	@Test
+	public void testCheckLockoutLDAPUserWithoutLDAPPasswordPolicy()
+		throws Exception {
+
+		PasswordPolicy passwordPolicy =
+			_passwordPolicyLocalService.getDefaultPasswordPolicy(
+				TestPropsValues.getCompanyId());
+
+		passwordPolicy.setLockout(true);
+
+		passwordPolicy = _passwordPolicyLocalService.updatePasswordPolicy(
+			passwordPolicy);
+
+		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
+			false);
+
+		try {
+			User user = UserTestUtil.addUser();
+
+			user.setLdapServerId(1);
+			user.setLockout(true);
+			user.setLockoutDate(user.getModifiedDate());
+
+			user = _userLocalService.updateUser(user);
+
+			try {
+				_userLocalService.checkLockout(user);
+
+				Assert.fail("Password policy is not being enforced");
+			}
+			catch (UserLockoutException userLockoutException) {
+			}
+			catch (Throwable throwable) {
+				throw new Exception(
+					"Exception unrelated to lockout was thrown", throwable);
+			}
+		}
+		finally {
+			passwordPolicy.setLockout(false);
+
+			_passwordPolicyLocalService.updatePasswordPolicy(passwordPolicy);
+
+			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
+		}
+	}
+
+	@Test
+	public void testCheckLockoutPortalUserWithLDAPPasswordPolicy()
+		throws Exception {
+
+		PasswordPolicy passwordPolicy =
+			_passwordPolicyLocalService.getDefaultPasswordPolicy(
+				TestPropsValues.getCompanyId());
+
+		passwordPolicy.setLockout(true);
+
+		passwordPolicy = _passwordPolicyLocalService.updatePasswordPolicy(
+			passwordPolicy);
+
+		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
+			true);
+
+		try {
+			User user = UserTestUtil.addUser();
+
+			user.setLockout(true);
+			user.setLockoutDate(user.getModifiedDate());
+
+			user = _userLocalService.updateUser(user);
+
+			try {
+				_userLocalService.checkLockout(user);
+
+				Assert.fail("Password policy is not being enforced");
+			}
+			catch (UserLockoutException userLockoutException) {
+			}
+			catch (Throwable throwable) {
+				throw new Exception(
+					"Exception unrelated to lockout was thrown", throwable);
+			}
+		}
+		finally {
+			passwordPolicy.setLockout(false);
+
+			_passwordPolicyLocalService.updatePasswordPolicy(passwordPolicy);
+
+			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
+		}
+	}
+
+	@Test
+	public void testCheckPasswordExpiredLDAPUserWithLDAPPasswordPolicy()
+		throws Exception {
+
+		PasswordPolicy passwordPolicy =
+			_passwordPolicyLocalService.getDefaultPasswordPolicy(
+				TestPropsValues.getCompanyId());
+
+		passwordPolicy.setChangeRequired(true);
+
+		passwordPolicy = _passwordPolicyLocalService.updatePasswordPolicy(
+			passwordPolicy);
+
+		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
+			true);
+
+		try {
+			User user = _attemptUserCreation(_VALID_PASSWORD, true);
+
+			_userLocalService.checkPasswordExpired(user);
+
+			user = _userLocalService.fetchUser(user.getUserId());
+
+			Assert.assertFalse(
+				"LDAP user is not bypassing password policy check",
+				user.isPasswordReset());
+		}
+		finally {
+			passwordPolicy.setChangeRequired(false);
+
+			_passwordPolicyLocalService.updatePasswordPolicy(passwordPolicy);
+
+			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
+		}
+	}
+
+	@Test
+	public void testCheckPasswordExpiredLDAPUserWithoutLDAPPasswordPolicy()
+		throws Exception {
+
+		PasswordPolicy passwordPolicy =
+			_passwordPolicyLocalService.getDefaultPasswordPolicy(
+				TestPropsValues.getCompanyId());
+
+		passwordPolicy.setChangeRequired(true);
+
+		passwordPolicy = _passwordPolicyLocalService.updatePasswordPolicy(
+			passwordPolicy);
+
+		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
+			false);
+
+		try {
+			User user = _attemptUserCreation(_VALID_PASSWORD, true);
+
+			_userLocalService.checkPasswordExpired(user);
+
+			user = _userLocalService.fetchUser(user.getUserId());
+
+			Assert.assertTrue(
+				"LDAP user is not adhering to password policy check",
+				user.isPasswordReset());
+		}
+		finally {
+			passwordPolicy.setChangeRequired(false);
+
+			_passwordPolicyLocalService.updatePasswordPolicy(passwordPolicy);
+
+			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
+		}
+	}
+
+	@Test
+	public void testCheckPasswordExpiredPortalUser() throws Exception {
+		PasswordPolicy passwordPolicy =
+			_passwordPolicyLocalService.getDefaultPasswordPolicy(
+				TestPropsValues.getCompanyId());
+
+		passwordPolicy.setChangeable(false);
+
+		passwordPolicy = _passwordPolicyLocalService.updatePasswordPolicy(
+			passwordPolicy);
+
+		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
+			true);
+
+		try {
+			User user = UserTestUtil.addUser();
+
+			Assert.assertFalse(user.isPasswordReset());
+
+			passwordPolicy.setChangeable(true);
+			passwordPolicy.setChangeRequired(true);
+
+			passwordPolicy = _passwordPolicyLocalService.updatePasswordPolicy(
+				passwordPolicy);
+
+			_userLocalService.checkPasswordExpired(user);
+
+			user = _userLocalService.fetchUser(user.getUserId());
+
+			Assert.assertTrue(
+				"User should have to reset their password on first login",
+				user.isPasswordReset());
+		}
+		finally {
+			passwordPolicy.setChangeable(true);
+			passwordPolicy.setChangeRequired(false);
+
+			_passwordPolicyLocalService.updatePasswordPolicy(passwordPolicy);
+
+			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
+		}
+	}
+
+	@Test
 	public void testDeleteUserDeletesNotificationEvents() throws Exception {
 		User user = UserTestUtil.addUser();
 
