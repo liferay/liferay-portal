@@ -10,12 +10,17 @@ import {ViewObjectDefinitionsPage} from '../ViewObjectDefinitionsPage';
 export class EditObjectDetailsPage {
 	readonly detailsTabItem: Locator;
 	readonly page: Page;
+	readonly publishButton: Locator;
 	readonly saveButton: Locator;
 	readonly viewObjectDefinitionsPage: ViewObjectDefinitionsPage;
 
 	constructor(page: Page) {
 		this.detailsTabItem = page.getByRole('link', {name: 'Details'});
 		this.page = page;
+		this.publishButton = page.getByRole('button', {
+			exact: true,
+			name: 'Publish',
+		});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.viewObjectDefinitionsPage = new ViewObjectDefinitionsPage(page);
 	}
