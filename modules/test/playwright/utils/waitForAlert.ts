@@ -4,12 +4,25 @@ import {FrameLocator, Page} from '@playwright/test';
  * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
-export async function waitForSuccessAlert(
-	page: Page | FrameLocator,
+
+interface waitForAlert {
+	autoClose?: boolean;
+	displayType?:
+		| '.alert-success'
+		| '.alert-info'
+		| '.alert-warning'
+		| '.alert-danger';
+	page: Page | FrameLocator;
+	text?: string;
+}
+
+export async function waitForAlert({
+	autoClose = true,
+	displayType = '.alert-success',
+	page,
 	text = 'Success:Your request completed successfully.',
-	{autoClose} = {autoClose: true}
-) {
-	const alert = page.locator('.alert-success', {
+}: waitForAlert) {
+	const alert = page.locator(displayType, {
 		hasText: text,
 	});
 
