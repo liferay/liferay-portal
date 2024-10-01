@@ -13,7 +13,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {serverAdministrationPageTest} from '../../fixtures/serverAdministrationPageTest';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout, userData} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	accountsPagesTest,
@@ -344,7 +344,7 @@ test('LPD-33636 Email address is not deleted by saving in the UI', async ({
 	await accountsPage.goto();
 	await (await accountsPage.accountsTableRowLink(account.name)).click();
 	await editAccountPage.saveButton.click();
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await applicationsMenuPage.goToServerAdministration();
 

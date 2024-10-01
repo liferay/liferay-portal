@@ -13,7 +13,7 @@ import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout, userData} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	documentLibraryPagesTest,
@@ -59,7 +59,7 @@ test.beforeEach(
 
 		await documentLibraryEditFilePage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'Success:Your request completed successfully.'
 		);
@@ -312,10 +312,7 @@ test('LPD-26155 Conflict warning is visible when content is edited in more than 
 
 	await documentLibraryEditFilePage.publishButton.click();
 
-	await waitForSuccessAlert(
-		page,
-		'Success:Your request completed successfully.'
-	);
+	await waitForAlert(page, 'Success:Your request completed successfully.');
 
 	const timelineButton = page.locator('.change-tracking-timeline-button svg');
 	await timelineButton.waitFor();
@@ -374,10 +371,7 @@ test('LPD-26155 Production conflict info is visible when new changes have been m
 
 	await documentLibraryEditFilePage.publishButton.click();
 
-	await waitForSuccessAlert(
-		page,
-		'Success:Your request completed successfully.'
-	);
+	await waitForAlert(page, 'Success:Your request completed successfully.');
 
 	await changeTrackingPage.workOnPublication(ctCollection);
 

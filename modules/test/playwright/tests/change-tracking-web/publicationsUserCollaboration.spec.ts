@@ -11,7 +11,7 @@ import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {productMenuPageTest} from '../../fixtures/productMenuPageTest';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 
 export const test = mergeTests(
@@ -48,10 +48,7 @@ test('LPD-30098 Invite user as admin', async ({
 
 	await page.getByRole('button', {name: 'Publish'}).click();
 
-	await waitForSuccessAlert(
-		page,
-		`Success:${title} was created successfully.`
-	);
+	await waitForAlert(page, `Success:${title} was created successfully.`);
 
 	await performLogout(page);
 
@@ -79,7 +76,7 @@ test('LPD-30098 Invite user as admin', async ({
 
 	await page.getByRole('button', {name: 'Save'}).click();
 
-	await waitForSuccessAlert(page, 'Success:Successfully updated');
+	await waitForAlert(page, 'Success:Successfully updated');
 
 	await changeTrackingPage.addUserToPublication(title, 'Admin', user2);
 
@@ -97,10 +94,7 @@ test('LPD-30098 Invite user as admin', async ({
 		page.locator('div').filter({hasText: title}).first()
 	).toBeVisible();
 
-	await waitForSuccessAlert(
-		page,
-		'Success:Your request completed successfully.'
-	);
+	await waitForAlert(page, 'Success:Your request completed successfully.');
 
 	await performLogout(page);
 

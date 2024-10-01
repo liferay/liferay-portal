@@ -9,7 +9,7 @@ import path from 'path';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export class TemplatesPage {
 	readonly page: Page;
@@ -50,7 +50,7 @@ export class TemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Copy'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async createInformationTemplate({
@@ -76,7 +76,7 @@ export class TemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async deleteInformationTemplate(title: string) {
@@ -84,7 +84,7 @@ export class TemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async editInformationTemplate(name: string) {
@@ -110,7 +110,7 @@ export class TemplatesPage {
 			path.join(dirname, '/dependencies/' + fileName)
 		);
 
-		await waitForSuccessAlert(this.page, `Success:${fileName} Imported`);
+		await waitForAlert(this.page, `Success:${fileName} Imported`);
 	}
 
 	async saveInformationTemplate() {
@@ -118,6 +118,6 @@ export class TemplatesPage {
 			.getByRole('button', {exact: true, name: 'Save'})
 			.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

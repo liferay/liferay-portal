@@ -8,7 +8,7 @@ import {Locator, Page} from '@playwright/test';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {expandSection} from '../../utils/expandSection';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {DocumentLibraryPage} from './DocumentLibraryPage';
 
 export class DocumentLibraryEditFilePage {
@@ -95,7 +95,7 @@ export class DocumentLibraryEditFilePage {
 			await this.publishButton.click();
 		}
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async publishNewBasicFileEntry(
@@ -112,7 +112,7 @@ export class DocumentLibraryEditFilePage {
 		else {
 			await this.publishButton.click();
 		}
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:Your request completed successfully.'
 		);

@@ -8,7 +8,7 @@ import {FrameLocator, Page, expect} from '@playwright/test';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class FragmentsPage {
 	readonly page: Page;
@@ -104,7 +104,7 @@ export class FragmentsPage {
 	async copyFragment(title: string) {
 		await this.clickAction('Make a Copy', title);
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The fragment was copied successfully.'
 		);
@@ -137,7 +137,7 @@ export class FragmentsPage {
 			.getByRole('button', {exact: true, name: 'Save'})
 			.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The fragment was copied successfully.'
 		);
@@ -164,7 +164,7 @@ export class FragmentsPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async createFragment(
@@ -198,7 +198,7 @@ export class FragmentsPage {
 
 		await this.page.getByText('Add', {exact: true}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async deleteFragment(title: string) {
@@ -206,7 +206,7 @@ export class FragmentsPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async deleteFragmentSet(setName: string) {
@@ -221,7 +221,7 @@ export class FragmentsPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async markAsCacheable(title: string) {
@@ -229,7 +229,7 @@ export class FragmentsPage {
 
 		await this.clickAction('Mark as Cacheable', title);
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async renameFragment(newName: string, oldName: string) {
@@ -239,6 +239,6 @@ export class FragmentsPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

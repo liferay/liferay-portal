@@ -16,7 +16,7 @@ import {liferayConfig} from '../../liferay.config';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -120,7 +120,7 @@ test('LPD-33439 Default order display page template is accessible via friendly U
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon
@@ -233,7 +233,7 @@ test('LPD-32227 Order info box fragment configuration', async ({
 		await commerceLayoutsPage.infoBoxLabelInput.fill('PON');
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -241,7 +241,7 @@ test('LPD-32227 Order info box fragment configuration', async ({
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon
@@ -319,7 +319,7 @@ test('LPD-32227 Order info box fragment configuration', async ({
 		await commerceLayoutsPage.infoBoxLabelInput.fill('Account Info');
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -385,7 +385,7 @@ test('LPD-32236 Order Step Tracker fragment configuration', async ({
 		await commerceLayoutsPage.addFragment('Step Tracker', 'Order');
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -393,7 +393,7 @@ test('LPD-32236 Order Step Tracker fragment configuration', async ({
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon
@@ -521,7 +521,7 @@ test('LPD-32232 Edit Requested Delivery Date in Open Order Details', async ({
 		);
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -529,7 +529,7 @@ test('LPD-32232 Edit Requested Delivery Date in Open Order Details', async ({
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon
@@ -666,7 +666,7 @@ test('LPD-33808 Edit Shipping Method in Open Order Details', async ({
 
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -674,7 +674,7 @@ test('LPD-33808 Edit Shipping Method in Open Order Details', async ({
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon
@@ -874,7 +874,7 @@ test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -882,7 +882,7 @@ test('LPD-33809 Edit Payment Method in Open Order Details', async ({
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon
@@ -1127,7 +1127,7 @@ test('LPD-35558 Order Details - Order Summary', async ({
 
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -1135,7 +1135,7 @@ test('LPD-35558 Order Details - Order Summary', async ({
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon
@@ -1262,7 +1262,7 @@ test('LPD-32237 Order actions and redirect fragments', async ({
 
 		await commerceLayoutsPage.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			'The display page template was published successfully.'
 		);
@@ -1270,7 +1270,7 @@ test('LPD-32237 Order actions and redirect fragments', async ({
 		await commerceLayoutsPage.moreActionsButton.click();
 		await commerceLayoutsPage.markAsDefaultMenuItem.click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		await expect(
 			commerceLayoutsPage.defaultDisplayPageTemplateIcon

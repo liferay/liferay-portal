@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {JournalStructuresPage} from './JournalStructuresPage';
 
 export class JournalEditStructureDefaultValuesPage {
@@ -53,7 +53,7 @@ export class JournalEditStructureDefaultValuesPage {
 	async save() {
 		await this.saveButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			`Success:Your request completed successfully.`
 		);

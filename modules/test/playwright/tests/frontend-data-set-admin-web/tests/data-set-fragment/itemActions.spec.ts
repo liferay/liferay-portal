@@ -10,7 +10,7 @@ import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {liferayConfig} from '../../../../liferay.config';
 import getRandomString from '../../../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import {
 	EAsyncActionMethod,
@@ -441,7 +441,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 				})
 				.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 		});
 
 		await test.step('Click in the async item action executes the action', async () => {
@@ -473,7 +473,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 				})
 				.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 		});
 	});
 
@@ -583,7 +583,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 				})
 				.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 
 			await expect(page.getByText(headlessItemNewLabel)).toBeVisible();
 		});
@@ -617,7 +617,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 				})
 				.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 
 			await expect(page.getByText(asyncItemNewLabel)).toBeVisible();
 		});

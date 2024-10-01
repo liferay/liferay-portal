@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class UserPersonalSitePage {
 	readonly addWidgetButton: Locator;
@@ -43,7 +43,7 @@ export class UserPersonalSitePage {
 			await this.page.keyboard.press('Enter');
 			await this.languageSelectorMenuItem.waitFor({state: 'visible'});
 			await this.languageSelectorMenuItem.click();
-			await waitForSuccessAlert(
+			await waitForAlert(
 				this.page,
 				'Success:The application was added to the page.'
 			);

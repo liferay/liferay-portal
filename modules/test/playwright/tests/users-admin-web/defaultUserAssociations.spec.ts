@@ -9,7 +9,7 @@ import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {instanceSettingsPagesTest} from '../../fixtures/instanceSettingsPagesTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../fixtures/usersAndOrganizationsPagesTest';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -36,7 +36,7 @@ test('LPD-30006 Configure default userGroup associations', async ({
 	await defaultUserAssociationsPage.userGroupsInput.fill(userGroup.name);
 	await defaultUserAssociationsPage.saveButton.click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	const user = await apiHelpers.headlessAdminUser.postUserAccount();
 

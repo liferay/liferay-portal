@@ -10,7 +10,7 @@ import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import getRandomString from '../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {blogsPagesTest} from '../blogs-web/fixtures/blogsPagesTest';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 
@@ -148,10 +148,7 @@ test('Publish Parallel Publications', async ({
 
 	await publishButton.click();
 
-	await waitForSuccessAlert(
-		page,
-		`Success:${title1} was created successfully.`
-	);
+	await waitForAlert(page, `Success:${title1} was created successfully.`);
 
 	const ctCollection2 =
 		await apiHelpers.headlessChangeTracking.createCTCollection(
@@ -178,10 +175,7 @@ test('Publish Parallel Publications', async ({
 
 	await publishButton.click();
 
-	await waitForSuccessAlert(
-		page,
-		`Success:${title2} was created successfully.`
-	);
+	await waitForAlert(page, `Success:${title2} was created successfully.`);
 
 	await apiHelpers.headlessChangeTracking.publishCTCollection(
 		ctCollection.id

@@ -13,7 +13,7 @@ import {expandSection} from '../../utils/expandSection';
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import {hoverAndExpectToBeVisible} from '../../utils/hoverAndExpectToBeVisible';
 import {selectElement} from '../../utils/selectElement';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {SegmentEditorPage} from '../segments-web/SegmentEditorPage';
 
 const VIEWPORTS_CLASSNAMES = {
@@ -391,7 +391,7 @@ export class PageEditorPage {
 
 		await this.closeExperienceSelector();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The experience was created successfully.',
 			{autoClose: false}
@@ -420,7 +420,7 @@ export class PageEditorPage {
 
 		await this.closeExperienceSelector();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The experience was deleted successfully.',
 			{autoClose: false}
@@ -442,7 +442,7 @@ export class PageEditorPage {
 			.getByLabel('Duplicate Experience')
 			.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The experience was duplicated successfully.',
 			{autoClose: false}
@@ -559,7 +559,7 @@ export class PageEditorPage {
 
 		await this.closeExperienceSelector();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The experience was updated successfully.',
 			{autoClose: false}
@@ -606,7 +606,7 @@ export class PageEditorPage {
 
 		await this.closeExperienceSelector();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The experience was updated successfully.',
 			{autoClose: false}
@@ -754,7 +754,7 @@ export class PageEditorPage {
 			trigger: this.page.locator('.modal-footer').getByText('Save'),
 		});
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:Your form has been successfully loaded.'
 		);
@@ -826,7 +826,7 @@ export class PageEditorPage {
 		await button.waitFor();
 		await button.click();
 
-		await waitForSuccessAlert(this.page, successMessage);
+		await waitForAlert(this.page, successMessage);
 	}
 
 	async removeFragment(fragmentId: string) {

@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {ApplicationsMenuPage} from './ApplicationsMenuPage';
 
 const MOCK_API_KEY = 'VALID_API_KEY';
@@ -39,7 +39,7 @@ export class AICreatorInstanceSettingsPage {
 		await this.dalleCheckbox.check();
 		await this.saveButton.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async disableDalleCreateImages() {
@@ -48,7 +48,7 @@ export class AICreatorInstanceSettingsPage {
 		await this.dalleCheckbox.uncheck();
 		await this.saveButton.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async addApiKey() {
@@ -64,6 +64,6 @@ export class AICreatorInstanceSettingsPage {
 
 		await this.apiKeyInput.fill(apikey);
 		await this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

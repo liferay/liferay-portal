@@ -15,7 +15,7 @@ import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {getTempDir} from '../../utils/temp';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 
 export const test = mergeTests(
@@ -84,7 +84,7 @@ test('LPS-117642 NoSuchTagException throws when adding a web content with tag wi
 	const tagName = getRandomString();
 	await page.getByPlaceholder('Name').fill(tagName);
 	await page.getByRole('button', {name: 'Save'}).click();
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await journalPage.goto();
 	await journalPage.goToCreateArticle();

@@ -31,7 +31,7 @@ import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
 import {reloadUntilVisible} from '../../utils/reloadUntilVisible';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {
 	TIdentityProvider,
 	configureIdentityProvider,
@@ -1320,7 +1320,7 @@ test('Verify SSO login and logout mechanism works the same when having multiple 
 
 	await siteSettingsPage.page.getByRole('button', {name: 'Save'}).click();
 
-	await waitForSuccessAlert(siteSettingsPage.page);
+	await waitForAlert(siteSettingsPage.page);
 
 	await secondarySpAdminPage.goto(`/web/${site2Name}`);
 
@@ -1338,7 +1338,7 @@ test('Verify SSO login and logout mechanism works the same when having multiple 
 
 	await siteSettingsPage.page.getByRole('button', {name: 'Save'}).click();
 
-	await waitForSuccessAlert(siteSettingsPage.page);
+	await waitForAlert(siteSettingsPage.page);
 
 	// Create users for both IdP virtual instances
 
@@ -1606,7 +1606,7 @@ test('Verify the SAML configuration is not applied to the sites when ACS is disa
 
 	await siteSettingsPage.page.getByRole('button', {name: 'Save'}).click();
 
-	await waitForSuccessAlert(siteSettingsPage.page);
+	await waitForAlert(siteSettingsPage.page);
 
 	// Create IdP user
 

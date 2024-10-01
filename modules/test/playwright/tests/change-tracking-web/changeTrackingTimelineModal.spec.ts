@@ -10,7 +10,7 @@ import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {JournalPage} from '../journal-web/pages/JournalPage';
 
@@ -43,7 +43,7 @@ test.beforeEach(
 		await page.locator('div[data-qa-id="content"]').waitFor();
 		await journalEditArticlePage.fillTitle(articleTitle);
 		await page.getByRole('button', {name: 'Publish'}).click();
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			`Success:${articleTitle} was created successfully.`
 		);
@@ -76,7 +76,7 @@ test.beforeEach(
 					'Delete',
 					articleTitle
 				);
-				await waitForSuccessAlert(
+				await waitForAlert(
 					page,
 					`Success: The element ${articleTitle} was moved to the Recycle Bin.`
 				);
@@ -97,7 +97,7 @@ test.afterEach(async ({apiHelpers, changeTrackingPage, journalPage, page}) => {
 	await journalPage.goto();
 	await page.getByRole('heading', {name: 'Web Content'}).waitFor();
 	await journalPage.goToJournalArticleAction('Delete', articleTitle);
-	await waitForSuccessAlert(
+	await waitForAlert(
 		page,
 		`Success: The element ${articleTitle} was moved to the Recycle Bin.`
 	);

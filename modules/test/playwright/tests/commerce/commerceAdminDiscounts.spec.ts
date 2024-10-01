@@ -10,7 +10,7 @@ import {commercePagesTest} from '../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../fixtures/loginTest';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -101,7 +101,7 @@ test('LPD-26243 Verify that discount rule field Cart Total Minimum Amount only a
 
 	await commerceAdminDiscountDetailsPage.saveButton.click();
 
-	waitForSuccessAlert(
+	waitForAlert(
 		commerceAdminDiscountDetailsPage.editDiscountRuleFrame,
 		'Success:Your request completed successfully.',
 		{autoClose: false}

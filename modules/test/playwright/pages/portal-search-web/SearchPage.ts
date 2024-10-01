@@ -6,7 +6,7 @@
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class SearchPage {
 	readonly page: Page;
@@ -151,7 +151,7 @@ export class SearchPage {
 	async savePortletConfiguration() {
 		await this.modalIFrame.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.modalIFrame,
 			'Success:You have successfully updated the setup.'
 		);

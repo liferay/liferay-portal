@@ -8,7 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {isolatedLayoutTest} from '../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../fixtures/systemSettingsPageTest';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	isolatedLayoutTest(),
@@ -50,7 +50,7 @@ test('LPD-25440 Cookie Banner Cadmin', async ({page, systemSettingsPage}) => {
 			await updateButton.click();
 		}
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 	});
 
 	await test.step('Open Configuration', async () => {

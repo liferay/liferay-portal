@@ -7,7 +7,7 @@ import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class WorkflowTasksPage {
 	readonly assignedToMyRolesLink: Locator;
@@ -49,7 +49,7 @@ export class WorkflowTasksPage {
 
 		await this.page.getByRole('button', {name: 'Done'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async assignToMe(articleTitle: string) {
@@ -75,7 +75,7 @@ export class WorkflowTasksPage {
 			.getByRole('button', {name: 'Done'})
 			.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async reject(articleTitle: string) {
@@ -93,7 +93,7 @@ export class WorkflowTasksPage {
 
 		await this.page.getByRole('button', {name: 'Done'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async resubmit(articleTitle: string) {
@@ -115,6 +115,6 @@ export class WorkflowTasksPage {
 
 		await this.page.getByRole('button', {name: 'Done'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

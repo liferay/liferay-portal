@@ -18,7 +18,7 @@ import performLogin, {
 	userData,
 } from '../../../utils/performLogin';
 import {getTempDir} from '../../../utils/temp';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
 	applicationsMenuPageTest,
@@ -719,7 +719,7 @@ test(`LPD-29993 Users can view and download a product's attachments`, async ({
 		'B2B'
 	);
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await applicationsMenuPage.goToSite(site.name);
 	await commerceLayoutsPage.goToPages(false);

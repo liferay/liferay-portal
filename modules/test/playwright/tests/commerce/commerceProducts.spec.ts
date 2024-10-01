@@ -12,7 +12,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	applicationsMenuPageTest,
@@ -709,7 +709,7 @@ test('LPD-33075 Verify buyers can view the SKU of a product on the product card 
 		'B2B'
 	);
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await applicationsMenuPage.goToSite(site.name);
 

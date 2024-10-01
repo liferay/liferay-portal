@@ -5,7 +5,7 @@
 
 import {Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class FragmentEditorPage {
 	readonly page: Page;
@@ -60,6 +60,6 @@ export class FragmentEditorPage {
 	async publish() {
 		await this.page.getByRole('button', {name: 'Publish'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

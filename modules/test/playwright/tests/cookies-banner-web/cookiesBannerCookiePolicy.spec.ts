@@ -8,7 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../fixtures/systemSettingsPageTest';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	featureFlagsTest({
@@ -75,7 +75,7 @@ test('LPD-30561 Cookie Banner Cookie Policy Page', async ({
 			await updateButton.click();
 		}
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 	});
 
 	await test.step('Go to Cookie Policy page', async () => {

@@ -11,7 +11,7 @@ import {editObjectDefinitionPagesTest} from '../../fixtures/editObjectDefinition
 import {loginTest} from '../../fixtures/loginTest';
 import {objectPagesTest} from '../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {mockedObjectFields} from './dependencies/objectMockedFields';
 
 export const test = mergeTests(
@@ -282,7 +282,7 @@ test('can send notification email via download action', async ({
 
 	await viewObjectEntriesPage.saveObjectEntryButton.click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	// Download attachment from object entry
 

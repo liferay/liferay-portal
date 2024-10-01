@@ -8,7 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {isolatedLayoutTest} from '../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../fixtures/systemSettingsPageTest';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	isolatedLayoutTest(),
@@ -79,7 +79,7 @@ test('@LPD-25701 Cookie Banner Script', async ({
 
 		await page.getByLabel('Publish', {exact: true}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			page,
 			`Success:The page was published successfully.`
 		);
@@ -118,7 +118,7 @@ test('@LPD-25701 Cookie Banner Script', async ({
 			await updateButton.click();
 		}
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 	});
 
 	await test.step('Accept Cookies', async () => {

@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import {InstanceSettingsPage} from '../../../pages/configuration-admin-web/InstanceSettingsPage';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export class FileSizeLimitsInstanceSettingsPage {
 	readonly page: Page;
@@ -32,6 +32,6 @@ export class FileSizeLimitsInstanceSettingsPage {
 		await inputField.fill(value);
 
 		await this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

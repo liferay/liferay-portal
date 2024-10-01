@@ -9,7 +9,7 @@ import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {PageEditorPage} from '../layout-content-page-editor-web/PageEditorPage';
 
 export class PagesAdminPage {
@@ -222,7 +222,7 @@ export class PagesAdminPage {
 		await this.addButton.hover();
 		await this.addButton.click();
 
-		await waitForSuccessAlert(this.page, successMessage);
+		await waitForAlert(this.page, successMessage);
 	}
 
 	private async addThemeFaviconClientExtension(clientExtensionName: string) {
@@ -305,7 +305,7 @@ export class PagesAdminPage {
 
 		await this.configurationSaveButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The page was updated successfully.'
 		);
@@ -361,10 +361,10 @@ export class PagesAdminPage {
 		await this.configurationSaveButton.click();
 
 		if (!layoutTitle) {
-			await waitForSuccessAlert(this.page);
+			await waitForAlert(this.page);
 		}
 		else {
-			await waitForSuccessAlert(
+			await waitForAlert(
 				this.page,
 				'Success:The page was updated successfully.'
 			);
@@ -433,7 +433,7 @@ export class PagesAdminPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:Your request completed successfully.'
 		);
@@ -521,10 +521,10 @@ export class PagesAdminPage {
 		}
 
 		if (!layoutTitle) {
-			await waitForSuccessAlert(this.page);
+			await waitForAlert(this.page);
 		}
 		else {
-			await waitForSuccessAlert(
+			await waitForAlert(
 				this.page,
 				'Success:The page was updated successfully.'
 			);
@@ -616,7 +616,7 @@ export class PagesAdminPage {
 				? `Success:${pageNames.length} permissions were updated successfully.`
 				: undefined;
 
-		await waitForSuccessAlert(permissionsFrame, successMessage);
+		await waitForAlert(permissionsFrame, successMessage);
 
 		await this.page.getByLabel('close', {exact: true}).click();
 

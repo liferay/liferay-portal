@@ -5,7 +5,7 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
 import {searchTableRowByValue} from './commerceDNDTablePage';
 
@@ -132,7 +132,7 @@ export class CommerceAdminChannelsPage {
 		});
 		await this.headerActionsSaveButton.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async changeCommerceChannelSellerOrderAcceptanceWorkflow(
@@ -151,7 +151,7 @@ export class CommerceAdminChannelsPage {
 		});
 		await this.headerActionsSaveButton.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async changeCommerceChannelSiteType(

@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {ApplicationsMenuPage} from './ApplicationsMenuPage';
 
 export class GogoShellPage {
@@ -32,6 +32,6 @@ export class GogoShellPage {
 		await this.commandInput.waitFor();
 		await this.commandInput.fill(command);
 		await this.executeButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

@@ -5,7 +5,7 @@
 
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {WorkflowTasksPage} from './WorkflowTasksPage';
 
 export class WorkflowTaskDetailsPage {
@@ -74,7 +74,7 @@ export class WorkflowTaskDetailsPage {
 	async clickDoneButton() {
 		await this.doneButton.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async goTo(assetTitle: string) {

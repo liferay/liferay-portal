@@ -10,7 +10,7 @@ import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
 import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 
 export const test = mergeTests(
@@ -63,7 +63,7 @@ test('LPD-17130 Only comment owners are allowed to perform actions on the commen
 	await journalEditArticlePage.goto();
 	await journalEditArticlePage.fillTitle(journalName);
 	await page.getByRole('button', {name: 'Publish'}).click();
-	await waitForSuccessAlert(
+	await waitForAlert(
 		page,
 		`Success:${journalName} was created successfully.`
 	);

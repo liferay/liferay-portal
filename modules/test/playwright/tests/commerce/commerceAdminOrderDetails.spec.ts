@@ -13,7 +13,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {miniumSetUp} from './utils/commerce';
 
 export const test = mergeTests(
@@ -662,7 +662,7 @@ test('LPD-30856 Can update order status by deleting unshipped items', async ({
 	await commerceAdminOrdersPage.orderStatusLink('Accept Order').click();
 	await commerceAdminOrdersPage.orderStatusLink('Create Shipment').click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await commerceAdminShipmentsPage.addProductsToShipment.click();
 	await (
@@ -679,7 +679,7 @@ test('LPD-30856 Can update order status by deleting unshipped items', async ({
 		.click();
 	await commerceAdminShipmentsPage.shipmentStatusLink('Ship').click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	const shipments =
 		await apiHelpers.headlessCommerceAdminShipment.getShipments();
@@ -697,7 +697,7 @@ test('LPD-30856 Can update order status by deleting unshipped items', async ({
 	await (await commerceAdminOrdersPage.itemsTableRowAction(sku2.sku)).click();
 	await commerceAdminOrdersPage.deleteItemMenuItem.click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await commerceAdminOrdersPage.backLink.click();
 	await commerceAdminOrdersPage

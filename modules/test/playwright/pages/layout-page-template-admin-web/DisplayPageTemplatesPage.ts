@@ -7,7 +7,7 @@ import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class DisplayPageTemplatesPage {
 	readonly page: Page;
@@ -48,7 +48,7 @@ export class DisplayPageTemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:You successfully deleted 1 display page template(s).'
 		);
@@ -114,7 +114,7 @@ export class DisplayPageTemplatesPage {
 			.getByRole('button', {exact: true, name: 'Save'})
 			.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The page was updated successfully.'
 		);
@@ -127,7 +127,7 @@ export class DisplayPageTemplatesPage {
 
 		await this.clickMoreActions(name, 'Mark as Default');
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async renameTemplate(newName: string, oldName: string) {
@@ -137,7 +137,7 @@ export class DisplayPageTemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async createFolder(name: string) {
@@ -153,7 +153,7 @@ export class DisplayPageTemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Create'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async createTemplate({
@@ -209,7 +209,7 @@ export class DisplayPageTemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The display page template was created successfully.'
 		);
@@ -221,7 +221,7 @@ export class DisplayPageTemplatesPage {
 		await this.publishButton.waitFor();
 		await this.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The display page template was published successfully.'
 		);

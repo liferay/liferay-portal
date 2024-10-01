@@ -10,7 +10,7 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import {fdsFragmentPageTest} from './fixtures/fdsFragmentPageTest';
 
@@ -280,7 +280,7 @@ test.describe('Sorting Dropdown in Data Set Fragment', () => {
 
 					await page.getByRole('button', {name: 'Guardar'}).click();
 
-					await waitForSuccessAlert(page);
+					await waitForAlert(page);
 				});
 			}
 		}

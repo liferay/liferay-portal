@@ -20,7 +20,7 @@ import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import {performLogout} from '../../utils/performLogin';
 import {selectAndExpectToHaveValue} from '../../utils/selectAndExpectToHaveValue';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {pagesPagesTest} from './fixtures/pagesPagesTest';
 
 const test = mergeTests(
@@ -394,7 +394,7 @@ test.describe('SEO configuration', () => {
 
 		await page.locator('.btn-primary').click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		// Assert open graph section is not present
 
@@ -416,7 +416,7 @@ test.describe('SEO configuration', () => {
 
 		await page.locator('.btn-primary').click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		// Assert open graph section is present
 

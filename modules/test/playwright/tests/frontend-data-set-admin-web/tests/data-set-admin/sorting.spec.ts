@@ -8,7 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import saveFromModal from '../../utils/saveFromModal';
 import {dataSetsPageTest} from './fixtures/dataSetsPageTest';
@@ -112,7 +112,7 @@ test.describe('Sorting in Data Set Manager', () => {
 		});
 
 		await test.step('Wait for success message to be displayed', async () => {
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 		});
 	});
 
@@ -560,7 +560,7 @@ test.describe('Sorting in Data Set Manager', () => {
 
 				await page.getByRole('button', {name: 'Save'}).click();
 
-				await waitForSuccessAlert(page);
+				await waitForAlert(page);
 
 				spanishLanguage = true;
 
@@ -623,7 +623,7 @@ test.describe('Sorting in Data Set Manager', () => {
 
 					await page.getByRole('button', {name: 'Save'}).click();
 
-					await waitForSuccessAlert(page);
+					await waitForAlert(page);
 				});
 			}
 		}

@@ -9,7 +9,7 @@ import {ApiHelpers} from '../../helpers/ApiHelpers';
 import getRandomString from '../../utils/getRandomString';
 import {userData} from '../../utils/performLogin';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 
 export class ChangeTrackingPage {
@@ -68,7 +68,7 @@ export class ChangeTrackingPage {
 
 		await this.page.getByLabel('Submit').click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:Users were invited successfully.'
 		);
@@ -274,7 +274,7 @@ export class ChangeTrackingPage {
 
 		await this.instanceSettingsPage.saveButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			`Success:Your request completed successfully.`
 		);
@@ -295,7 +295,7 @@ export class ChangeTrackingPage {
 
 			await this.instanceSettingsPage.saveButton.click();
 
-			await waitForSuccessAlert(
+			await waitForAlert(
 				this.page,
 				`Success:Your request completed successfully.`
 			);
@@ -305,7 +305,7 @@ export class ChangeTrackingPage {
 
 			await this.instanceSettingsPage.saveButton.click();
 
-			await waitForSuccessAlert(
+			await waitForAlert(
 				this.page,
 				`Success:Your request completed successfully.`
 			);

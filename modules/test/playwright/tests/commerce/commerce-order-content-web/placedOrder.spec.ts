@@ -16,7 +16,7 @@ import performLogin, {
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {miniumSetUp} from '../utils/commerce';
 
 export const test = mergeTests(
@@ -135,7 +135,7 @@ test('LPD-25831 Placed orders widget configuration to display full addresses and
 	await placedOrdersPage.configurationIFrameShowFullAddressToggle.check();
 	await placedOrdersPage.configurationIFrameShowPhoneNumberToggle.check();
 	await placedOrdersPage.configurationIFrameSaveButton.click();
-	await waitForSuccessAlert(placedOrdersPage.configurationIFrame);
+	await waitForAlert(placedOrdersPage.configurationIFrame);
 	await page.reload();
 
 	await placedOrdersPage.viewButton.click();

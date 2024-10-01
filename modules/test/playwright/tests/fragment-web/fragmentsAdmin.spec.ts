@@ -16,7 +16,7 @@ import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getGlobalSiteId from '../../utils/getGlobalSiteId';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import getFormContainerDefinition from '../layout-content-page-editor-web/utils/getFormContainerDefinition';
 import getFragmentDefinition from '../layout-content-page-editor-web/utils/getFragmentDefinition';
 import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
@@ -380,7 +380,7 @@ test(
 
 		await page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(page);
+		await waitForAlert(page);
 
 		const fragmentInput = page
 			.locator('tr')

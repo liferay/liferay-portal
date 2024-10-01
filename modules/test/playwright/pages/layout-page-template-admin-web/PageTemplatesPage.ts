@@ -8,7 +8,7 @@ import {Locator, Page} from '@playwright/test';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class PageTemplatesPage {
 	readonly page: Page;
@@ -58,7 +58,7 @@ export class PageTemplatesPage {
 			.getByRole('button', {exact: true, name: 'Save'})
 			.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async clickAction(action: string, title: string) {
@@ -73,6 +73,6 @@ export class PageTemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

@@ -13,7 +13,7 @@ import {WidgetPagePage} from '../../pages/layout-admin-web/WidgetPagePage';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {expandSection} from '../../utils/expandSection';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -157,7 +157,7 @@ test('The user can choose which languages will be available to site via language
 
 	await configurationIFrame.getByRole('button', {name: 'Save'}).click();
 
-	await waitForSuccessAlert(
+	await waitForAlert(
 		configurationIFrame,
 		'Success:You have successfully updated the setup.'
 	);

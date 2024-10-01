@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import {SystemSettingsPage} from '../../../pages/configuration-admin-web/SystemSettingsPage';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export class FileSizeLimitsSystemSettingsPage {
 	readonly page: Page;
@@ -32,6 +32,6 @@ export class FileSizeLimitsSystemSettingsPage {
 		await inputField.fill(value);
 
 		await this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {ProcessBuilderPage} from './ProcessBuilderPage';
 
 export class ConfigurationTabPage {
@@ -52,7 +52,7 @@ export class ConfigurationTabPage {
 		await saveButton.click();
 
 		if (actionResult === 'assigned') {
-			await waitForSuccessAlert(
+			await waitForAlert(
 				this.page,
 				`Success:Workflow ${actionResult} to ${assetType}.`
 			);

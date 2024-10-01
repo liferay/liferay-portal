@@ -29,7 +29,7 @@ import {ProductMenuPage} from '../../pages/product-navigation-control-menu-web/P
 import {UIElementsPage} from '../../pages/uielements/UIElementsPage';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {JournalPage} from '../journal-web/pages/JournalPage';
 import {pagesPagesTest} from '../layout-admin-web/fixtures/pagesPagesTest';
@@ -611,7 +611,7 @@ async function createSiteTemplateWithContentPageAndAssetPublisher({
 	if (!(await configurationManualInput.isChecked())) {
 		await configurationManualInput.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			configurationModal,
 			'Success:You have successfully updated the setup.'
 		);
@@ -633,7 +633,7 @@ async function createSiteTemplateWithContentPageAndAssetPublisher({
 	});
 	await globalOption.click();
 
-	await waitForSuccessAlert(
+	await waitForAlert(
 		configurationModal,
 		'Success:You have successfully updated the setup.'
 	);
@@ -643,7 +643,7 @@ async function createSiteTemplateWithContentPageAndAssetPublisher({
 		.getByLabel('Delete');
 	await currentSiteDeleteButton.click();
 
-	await waitForSuccessAlert(
+	await waitForAlert(
 		configurationModal,
 		'Success:You have successfully updated the setup.'
 	);
@@ -684,14 +684,14 @@ async function createSiteTemplateWithContentPageAndAssetPublisher({
 	const addButton = configurationModal.getByRole('button', {name: 'Add'});
 	await addButton.click();
 
-	await waitForSuccessAlert(
+	await waitForAlert(
 		configurationModal,
 		'Success:You have successfully updated the setup.'
 	);
 
 	await configurationModal.getByRole('button', {name: 'Save'}).click();
 
-	await waitForSuccessAlert(
+	await waitForAlert(
 		configurationModal,
 		'Success:You have successfully updated the setup.'
 	);

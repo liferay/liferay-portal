@@ -10,7 +10,7 @@ import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {portalDefaultPermissionsPagesTest} from '../../fixtures/portalDefaultPermissionsPagesTest';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -53,7 +53,7 @@ const setupInstanceDefaultPermissions = async ({
 		state: 'detached',
 	});
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 };
 
 const setupSiteDefaultPermissions = async ({
@@ -86,7 +86,7 @@ const setupSiteDefaultPermissions = async ({
 		state: 'detached',
 	});
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 };
 
 test('LPD-21645 Set up the default permissions for pages', async ({
@@ -125,7 +125,7 @@ test('LPD-21645 Set up the default permissions for pages', async ({
 		state: 'detached',
 	});
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 });
 
 test('LPD-22038 Set up the default site permissions for pages', async ({
@@ -171,7 +171,7 @@ test('LPD-22038 Set up the default site permissions for pages', async ({
 		state: 'detached',
 	});
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	const dialogPromise = page.waitForEvent('dialog').then(async (dialog) => {
 		await dialog.accept();
@@ -184,7 +184,7 @@ test('LPD-22038 Set up the default site permissions for pages', async ({
 
 	await dialogPromise;
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await defaultPermissionsSiteConfigurationPage.actionsPageButton.click();
 	await defaultPermissionsSiteConfigurationPage.editPageButton.click();

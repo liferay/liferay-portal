@@ -7,7 +7,7 @@ import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {openFieldset} from '../../../utils/openFieldset';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {BlogsPage} from './BlogsPage';
 
 import type {postTaxonomyVocabularyTaxonomyCategoryProps} from '../../../helpers/HeadlessAdminTaxonomyApiHelper';
@@ -121,7 +121,7 @@ export class BlogsEditBlogEntryPage {
 
 	async publishBlogEntry() {
 		await this.publishButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async selectSpecificDisplayPage(displayPageName: string) {
@@ -157,6 +157,6 @@ export class BlogsEditBlogEntryPage {
 
 	async submitBlogEntryToWorkflow() {
 		await this.submitToWorkflowButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

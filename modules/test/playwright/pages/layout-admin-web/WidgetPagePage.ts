@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class WidgetPagePage {
 	readonly page: Page;
@@ -50,7 +50,7 @@ export class WidgetPagePage {
 			.getByRole('button', {name: 'Add Content'})
 			.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The application was added to the page.'
 		);
@@ -90,7 +90,7 @@ export class WidgetPagePage {
 				.click();
 		}
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The application was added to the page.'
 		);
@@ -168,7 +168,7 @@ export class WidgetPagePage {
 
 		await configurationIFrame.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			configurationIFrame,
 			'Success:You have successfully updated the setup.'
 		);

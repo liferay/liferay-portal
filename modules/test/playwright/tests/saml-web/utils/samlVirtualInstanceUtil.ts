@@ -15,7 +15,7 @@ import {SamlAdminPage} from '../../../pages/saml-web/SamlAdminPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import performLogin, {userData} from '../../../utils/performLogin';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {
 	deleteAfterTestProviderConnections,
 	deleteAfterTestVirtualInstances,
@@ -194,7 +194,7 @@ export async function resetSamlConfiguration(page: Page) {
 			}),
 		});
 
-		await waitForSuccessAlert(systemSettingsPage.page);
+		await waitForAlert(systemSettingsPage.page);
 	}
 }
 
@@ -214,7 +214,7 @@ export async function resetSamlKeystoreManagerTarget(page: Page) {
 		trigger: systemSettingsPage.page.getByRole('button', {name: 'Actions'}),
 	});
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 }
 
 export async function setupSamlInstances(
@@ -283,7 +283,7 @@ export async function updateRuntimeMetadataRefreshInterval(
 
 	await updateButton.click();
 
-	await waitForSuccessAlert(systemSettingsPage.page);
+	await waitForAlert(systemSettingsPage.page);
 }
 
 export async function updateSamlKeystoreManagerTarget(
@@ -313,5 +313,5 @@ export async function updateSamlKeystoreManagerTarget(
 
 	await updateButton.click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 }

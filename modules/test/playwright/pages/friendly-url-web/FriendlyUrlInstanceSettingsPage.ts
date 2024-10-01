@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 
 export class FriendlyUrlInstanceSettingsPage {
@@ -33,7 +33,7 @@ export class FriendlyUrlInstanceSettingsPage {
 		await separatorInput.fill(value);
 
 		await this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async resetSeparator(label: string) {
@@ -46,6 +46,6 @@ export class FriendlyUrlInstanceSettingsPage {
 		});
 
 		await this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

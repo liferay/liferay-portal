@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 
 export class LoginInstanceSettingsPage {
@@ -28,13 +28,13 @@ export class LoginInstanceSettingsPage {
 	async enableLoginPrompt() {
 		await this.page.getByLabel('Prompt Enabled').check();
 		await this.saveConfiguration();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async disableLoginPrompt() {
 		await this.page.getByLabel('Prompt Enabled').uncheck();
 		await this.saveConfiguration();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async saveConfiguration() {

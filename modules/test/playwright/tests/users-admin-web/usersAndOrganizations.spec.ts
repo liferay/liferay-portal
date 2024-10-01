@@ -10,7 +10,7 @@ import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../fixtures/usersAndOrganizationsPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -179,7 +179,7 @@ test('LPD-30589 Add Organization Team', async ({
 	await siteConfigurationDetailsPage.allowManualMembershipManagementToggle.check();
 	await siteConfigurationDetailsPage.saveButton.click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await teamsPage.goTo('/' + organization.name);
 
@@ -189,7 +189,7 @@ test('LPD-30589 Add Organization Team', async ({
 	await teamsPage.nameInput.fill(newTeamName);
 	await teamsPage.saveButton.click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await expect(
 		(await teamsPage.teamsTableRow(1, newTeamName, true)).row
@@ -219,7 +219,7 @@ test('LPD-31669 Check whether admin user is redirected to organization page afte
 	await (await assignUsersPage.usersTableRowCheckbox(userName)).check();
 	await assignUsersPage.doneButton.click();
 
-	await waitForSuccessAlert(page);
+	await waitForAlert(page);
 
 	await expect(
 		await organizationUsersPage.usersTableRowLink(userName)

@@ -8,7 +8,7 @@ import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {expandSection} from '../../../utils/expandSection';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export class JournalPage {
 	readonly page: Page;
@@ -178,7 +178,7 @@ export class JournalPage {
 	async publishArticle() {
 		await this.publishButton.click();
 
-		await waitForSuccessAlert(this.page, `was created successfully.`);
+		await waitForAlert(this.page, `was created successfully.`);
 	}
 
 	async setJournalArticlePermissions(

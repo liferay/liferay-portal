@@ -17,7 +17,7 @@ import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import {performLogout} from '../../utils/performLogin';
 import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {blogsPagesTest} from '../blogs-web/fixtures/blogsPagesTest';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {JournalEditArticlePage} from '../journal-web/pages/JournalEditArticlePage';
@@ -70,7 +70,7 @@ async function addBasicJournalArticleWithSpecificDisplayPageTemplate(
 
 	await page.getByRole('button', {name: 'Publish'}).click();
 
-	await waitForSuccessAlert(
+	await waitForAlert(
 		page,
 		`Success:${journalArticleTitle} was updated successfully.`
 	);

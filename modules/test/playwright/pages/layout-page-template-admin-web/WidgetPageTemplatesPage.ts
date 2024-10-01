@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class WidgetPageTemplatesPage {
 	readonly page: Page;
@@ -28,7 +28,7 @@ export class WidgetPageTemplatesPage {
 		await this.page.getByPlaceholder('Name').fill(name);
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async deactivateGlobalWidgetPageTemplate(name: string) {
@@ -38,7 +38,7 @@ export class WidgetPageTemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async clickMoreActions(name: string, actionName: string) {
@@ -61,7 +61,7 @@ export class WidgetPageTemplatesPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async renameGlobalWidgetPageTemplate(newName: string, oldName: string) {
@@ -70,6 +70,6 @@ export class WidgetPageTemplatesPage {
 		await this.page.getByPlaceholder('Name').fill(newName);
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

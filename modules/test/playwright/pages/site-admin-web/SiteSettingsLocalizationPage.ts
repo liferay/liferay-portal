@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {SiteSettingsPage} from './SiteSettingsPage';
 
 export class SiteSettingsLocalizationPage {
@@ -39,7 +39,7 @@ export class SiteSettingsLocalizationPage {
 
 	async saveConfiguration() {
 		this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async selectCustomDefaultLanguageOption() {

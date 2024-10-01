@@ -8,7 +8,7 @@ import {Page} from '@playwright/test';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {openFieldset} from '../../../utils/openFieldset';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import getPageDefinition from '../../layout-content-page-editor-web/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/utils/getWidgetDefinition';
 
@@ -70,7 +70,7 @@ export async function createAssetPublisherAndConfigure({
 	if (!(await configurationDynamicInput.isChecked())) {
 		await configurationDynamicInput.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			configurationModal,
 			'Success:You have successfully updated the setup.'
 		);
@@ -82,7 +82,7 @@ export async function createAssetPublisherAndConfigure({
 	});
 
 	await configurationModal.getByRole('button', {name: 'Save'}).click();
-	await waitForSuccessAlert(
+	await waitForAlert(
 		configurationModal,
 		'Success:You have successfully updated the setup.'
 	);

@@ -8,7 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
 import {detailsPageTest} from './fixtures/detailsPageTest';
@@ -61,7 +61,7 @@ test.describe('Data Set Details', () => {
 			await test.step('Save the data set', async () => {
 				await detailsPage.saveButton.click();
 
-				await waitForSuccessAlert(page);
+				await waitForAlert(page);
 			});
 
 			await test.step('Reload the page', async () => {

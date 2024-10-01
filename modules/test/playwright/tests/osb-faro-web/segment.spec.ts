@@ -14,7 +14,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {liferayConfig} from '../../liferay.config';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout, userData} from '../../utils/performLogin';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {syncAnalyticsCloud} from '../analytics-settings-web/utils/analytics-settings';
 import {createChannel, switchChannel} from './utils/channel';
 import {
@@ -1435,7 +1435,7 @@ test(
 			);
 			await defaultUserAssociationsPage.saveButton.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 		});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();

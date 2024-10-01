@@ -7,7 +7,7 @@ import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export class NavigationMenusPage {
 	readonly page: Page;
@@ -39,7 +39,7 @@ export class NavigationMenusPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async openAddPageModal() {

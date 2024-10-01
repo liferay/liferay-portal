@@ -5,7 +5,7 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
-import {waitForSuccessAlert} from '../../../../../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../../../../../utils/waitForAlert';
 import {ICreationAction, IItemAction} from '../../../../../utils/types';
 import {DataSetPage} from '../DataSetPage';
 
@@ -140,7 +140,7 @@ export class ActionsPage {
 
 		await this.actionForm.saveButton.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async createItemAction(itemActionProps: IItemAction) {
@@ -150,7 +150,7 @@ export class ActionsPage {
 
 		await this.actionForm.saveButton.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async fillCreationActionFormValues(creationActionProps: ICreationAction) {

@@ -9,7 +9,7 @@ import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
 import {productMenuPageTest} from '../../fixtures/productMenuPageTest';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {blogsPagesTest} from '../blogs-web/fixtures/blogsPagesTest';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 
@@ -42,10 +42,7 @@ test('Resolve deletion modification conflict publications by discarding', async 
 
 	await page.getByRole('button', {name: 'Publish'}).click();
 
-	await waitForSuccessAlert(
-		page,
-		`Success:${title} was created successfully.`
-	);
+	await waitForAlert(page, `Success:${title} was created successfully.`);
 
 	await changeTrackingPage.workOnPublication(ctCollection);
 
@@ -72,10 +69,7 @@ test('Resolve deletion modification conflict publications by discarding', async 
 
 	await page.getByRole('button', {name: 'Publish'}).click();
 
-	await waitForSuccessAlert(
-		page,
-		`Success:${title} was updated successfully.`
-	);
+	await waitForAlert(page, `Success:${title} was updated successfully.`);
 
 	await blogsEditBlogEntryPage.goto();
 
@@ -164,8 +158,5 @@ test('Resolve deletion modification conflict publications by discarding', async 
 		.getByRole('button', {name: 'Delete'})
 		.click();
 
-	await waitForSuccessAlert(
-		page,
-		'Success:Your request completed successfully.'
-	);
+	await waitForAlert(page, 'Success:Your request completed successfully.');
 });

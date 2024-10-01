@@ -10,7 +10,7 @@ import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTe
 import {commercePagesTest} from '../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -77,7 +77,7 @@ test('LPD-21637 Virtual item details section visible for product and sku', async
 	);
 	await commerceAdminProductPage.productSkuVirtualFileEntrySaveButton.click();
 
-	await waitForSuccessAlert(
+	await waitForAlert(
 		page.frameLocator('iframe').frameLocator('iframe >> nth=1')
 	);
 

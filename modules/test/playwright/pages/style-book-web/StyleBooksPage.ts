@@ -7,7 +7,7 @@ import {Locator, Page, expect} from '@playwright/test';
 
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export class StyleBooksPage {
 	readonly page: Page;
@@ -71,7 +71,7 @@ export class StyleBooksPage {
 			.getByRole('button', {name: 'Publish'})
 			.click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async search(styleBookName: string) {

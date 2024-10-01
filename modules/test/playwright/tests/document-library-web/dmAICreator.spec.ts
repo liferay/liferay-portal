@@ -8,7 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {documentLibraryPagesTest} from '../../fixtures/documentLibraryPages.fixtures';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 const MOCKED_IMAGE_PATH =
 	'USER_IMAGES_URL_https://images.freeimages.com/images/large-previews/83f/paris-1213603.jpg';
@@ -90,10 +90,7 @@ test(
 		await createAIImageModalPage
 			.getByRole('button', {name: 'Add Selected'})
 			.click();
-		await waitForSuccessAlert(
-			page,
-			'Success:1 files were successfully added.'
-		);
+		await waitForAlert(page, 'Success:1 files were successfully added.');
 		await expect(
 			page.getByRole('link').filter({hasText: 'AI-image-'})
 		).toHaveCount(1);

@@ -8,7 +8,7 @@ import {Locator, expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import checkHelperTooltip from '../../utils/checkHelperTooltip';
 import checkLocalized from '../../utils/checkLocalized';
@@ -224,7 +224,7 @@ test(
 
 			await actionsPage.actionForm.saveButton.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 		});
 
 		await test.step('Open edit page of the saved item', async () => {
@@ -346,7 +346,7 @@ test(
 
 			await actionsPage.actionForm.saveButton.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 		});
 
 		await test.step('Open edit page of the saved item', async () => {
@@ -463,7 +463,7 @@ test(
 
 			await actionsPage.actionForm.saveButton.click();
 
-			await waitForSuccessAlert(page);
+			await waitForAlert(page);
 		});
 
 		await test.step('Open edit page of the saved item', async () => {

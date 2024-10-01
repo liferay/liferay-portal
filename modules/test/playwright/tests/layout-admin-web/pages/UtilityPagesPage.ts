@@ -8,7 +8,7 @@ import {Locator, Page, expect} from '@playwright/test';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export class UtilityPagesPage {
 	readonly page: Page;
@@ -60,7 +60,7 @@ export class UtilityPagesPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The utility page was created successfully.'
 		);
@@ -118,7 +118,7 @@ export class UtilityPagesPage {
 
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:You successfully deleted 1 utility page(s).'
 		);
@@ -146,7 +146,7 @@ export class UtilityPagesPage {
 
 		await this.clickOnAction('Make a Copy', name);
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async markAsDefault(name: string) {
@@ -156,7 +156,7 @@ export class UtilityPagesPage {
 
 		await this.clickOnAction('Mark as Default', name);
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async previewPage(name: string) {
@@ -173,7 +173,7 @@ export class UtilityPagesPage {
 		await this.publishButton.waitFor();
 		await this.publishButton.click();
 
-		await waitForSuccessAlert(
+		await waitForAlert(
 			this.page,
 			'Success:The utility page was published successfully.'
 		);
@@ -186,7 +186,7 @@ export class UtilityPagesPage {
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async unmarkAsDefault(name: string) {
@@ -196,6 +196,6 @@ export class UtilityPagesPage {
 
 		await this.clickOnAction('Unmark as Default', name);
 
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

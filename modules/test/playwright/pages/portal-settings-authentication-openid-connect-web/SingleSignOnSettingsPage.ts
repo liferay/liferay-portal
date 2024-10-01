@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 
 export class SingleSignOnSettingsPage {
@@ -69,7 +69,7 @@ export class SingleSignOnSettingsPage {
 		await this.clickSetupOpenIdConnectionMenuItem();
 		await this.enabledCheckbox.check();
 		await this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async AddOpenIDConnectProviderConnectionConfiguration(
@@ -83,7 +83,7 @@ export class SingleSignOnSettingsPage {
 		await this.openIDConnectClientIDField.fill(getRandomString());
 		await this.openIDConnectClientSecret.fill(getRandomString());
 		await this.saveButton.click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 
 	async removeOpenIDConnectProviderConnectionConfiguration(
@@ -96,6 +96,6 @@ export class SingleSignOnSettingsPage {
 			.getByTitle('Actions')
 			.click();
 		await this.page.getByText('Delete').click();
-		await waitForSuccessAlert(this.page);
+		await waitForAlert(this.page);
 	}
 }

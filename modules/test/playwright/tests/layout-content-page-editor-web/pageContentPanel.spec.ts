@@ -12,7 +12,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import getRandomString from '../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {ANIMALS_COLLECTION_NAME} from '../setup/page-management-site/constants';
 import getCollectionDefinition from './utils/getCollectionDefinition';
@@ -161,7 +161,7 @@ test(
 			.getByRole('button', {exact: true, name: 'Save'})
 			.click();
 
-		await waitForSuccessAlert(permissionsFrame);
+		await waitForAlert(permissionsFrame);
 
 		await expect(guestActionViewCheckBox).not.toBeChecked();
 	}

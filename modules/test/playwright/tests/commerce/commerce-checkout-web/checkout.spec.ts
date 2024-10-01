@@ -12,7 +12,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {notificationPagesTest} from '../../../fixtures/notificationPagesTest';
 import getRandomString from '../../../utils/getRandomString';
-import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
 	applicationsMenuPageTest,
@@ -130,7 +130,7 @@ test('LPD-25860 Checkout widget configuration to display full addresses and phon
 	await checkoutPage.configurationIFrameShowFullAddressToggle.check();
 	await checkoutPage.configurationIFrameShowPhoneNumberToggle.check();
 	await checkoutPage.configurationIFrameSaveButton.click();
-	await waitForSuccessAlert(checkoutPage.configurationIFrame);
+	await waitForAlert(checkoutPage.configurationIFrame);
 
 	await page.reload();
 
