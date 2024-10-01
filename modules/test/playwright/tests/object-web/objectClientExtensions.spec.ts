@@ -12,7 +12,7 @@ import {objectPagesTest} from '../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import {waitForAlert} from '../../utils/waitForAlert';
-import {mockObjectFields} from './utils/mockObjectFields';
+import {createObjectField, mockObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -37,6 +37,36 @@ test.afterEach(async ({apiHelpers}) => {
 	}
 
 	createdEntities.objectDefinitions = [];
+});
+
+test.beforeEach(async ({apiHelpers}) => {
+	const objectField = createObjectField('text', {
+		label: 'Name',
+		name: 'name',
+	});
+
+	const objectDefinition = await apiHelpers.objectAdmin.postObjectDefinition({
+		active: true,
+		externalReferenceCode: getRandomString(),
+		label: {
+			en_US: 'Employee',
+		},
+		name: 'Employee',
+		objectFields: [objectField],
+		objectFolderExternalReferenceCode: 'default',
+		panelCategoryKey: 'control_panel.object',
+		pluralLabel: {
+			en_US: 'Employees',
+		},
+		portlet: true,
+		scope: 'company',
+		status: {
+			code: 0,
+		},
+		storageType: 'default',
+	});
+
+	createdEntities.objectDefinitions.push(objectDefinition);
 });
 
 test('Can create, read, update, and delete object entries that use the client extension as a storage type', async ({
@@ -166,5 +196,84 @@ test('Can create, read, update, and delete object entries that use the client ex
 			.locator(`.cell-${label['en_US']}`)
 			.nth(1)
 			.getByText(objectEntryUpdatedValue, {exact: true})
+	).toBeHidden();
+});
+
+test('Can trigger object validation as a client extension', async ({
+	editObjectValidationPage,
+	modalAddObjectValidationPage,
+	objectValidationsPage,
+	page,
+	viewObjectEntriesPage,
+}) => {
+	const [objectDefinition] = createdEntities.objectDefinitions;
+
+	const objectField = objectDefinition.objectFields.find(
+		({system}) => !system
+	);
+
+	await objectValidationsPage.goto(objectDefinition.label['en_US']);
+
+	await objectValidationsPage.addObjectValidationButton.click();
+
+	const objectValidationLabel = 'ClientExtensionValidation' + getRandomInt();
+
+	await modalAddObjectValidationPage.fillObjectValidationInputs(
+		objectValidationLabel,
+		'Liferay Sample Etc Spring Boot Spring Boot Object Validation Rule 1'
+	);
+
+	await page.getByText(objectValidationLabel).click();
+
+	await objectValidationsPage.activeValitionToggle.check();
+
+	await objectValidationsPage.errorMessageInput.fill(
+		'This entry is not possible.'
+	);
+
+	await editObjectValidationPage.saveObjectValidationButton.click();
+
+	await page.waitForEvent('domcontentloaded');
+
+	await viewObjectEntriesPage.goto(objectDefinition.id);
+
+	await viewObjectEntriesPage.clickAddObjectEntry(
+		objectDefinition.label['en_US']
+	);
+
+	await viewObjectEntriesPage.fillObjectEntry({
+		objectFieldBusinessType: objectField.businessType,
+		objectFieldLabel: objectField.label['en_US'],
+		objectFieldValue: 'Invalid Name',
+	});
+
+	await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+	await waitForAlert(page, 'This entry is not possible.', {type: 'danger'});
+
+	await viewObjectEntriesPage.backButton.click();
+
+	await expect(
+		page.locator('.cell-name').getByText('Invalid Name')
+	).toBeHidden();
+
+	await viewObjectEntriesPage.clickAddObjectEntry(
+		objectDefinition.label['en_US']
+	);
+
+	await viewObjectEntriesPage.fillObjectEntry({
+		objectFieldBusinessType: objectField.businessType,
+		objectFieldLabel: objectField.label['en_US'],
+		objectFieldValue: 'Valied Name',
+	});
+
+	await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+	await waitForAlert(page);
+
+	await viewObjectEntriesPage.backButton.click();
+
+	await expect(
+		page.locator('.cell-name').getByText('Valid Name')
 	).toBeHidden();
 });
