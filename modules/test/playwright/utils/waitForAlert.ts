@@ -5,24 +5,27 @@ import {FrameLocator, Page} from '@playwright/test';
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-interface waitForAlert {
+type Options = {
 	autoClose?: boolean;
-	displayType?:
-		| '.alert-success'
-		| '.alert-info'
-		| '.alert-warning'
-		| '.alert-danger';
-	page: Page | FrameLocator;
-	text?: string;
-}
+	type?: 'success' | 'info' | 'warning' | 'danger';
+};
 
-export async function waitForAlert({
-	autoClose = true,
-	displayType = '.alert-success',
-	page,
+const CSS_CLASSES = {
+	danger: '.alert-danger',
+	info: '.alert-info',
+	success: '.alert-success',
+	warning: '.alert-warning',
+};
+
+export async function waitForAlert(
+	parent: Page | FrameLocator,
 	text = 'Success:Your request completed successfully.',
-}: waitForAlert) {
-	const alert = page.locator(displayType, {
+	{autoClose = true, type = 'success'}: Options = {
+		autoClose: true,
+		type: 'success',
+	}
+) {
+	const alert = parent.locator(CSS_CLASSES[type], {
 		hasText: text,
 	});
 
