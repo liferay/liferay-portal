@@ -199,6 +199,48 @@ test('Can create, read, update, and delete object entries that use the client ex
 	).toBeHidden();
 });
 
+test('Can trigger object action as a client extension', async ({
+	editObjectActionPage,
+	page,
+	viewObjectActionsPage,
+	viewObjectEntriesPage,
+}) => {
+	const [objectDefinition] = createdEntities.objectDefinitions;
+
+	const objectField = objectDefinition.objectFields.find(
+		({system}) => !system
+	);
+
+	await viewObjectActionsPage.goto(objectDefinition.label['en_US']);
+
+	await editObjectActionPage.addNewAction(
+		'object-action-executor[function#liferay-sample-etc-spring-boot-object-action-1]',
+		'On After Add'
+	);
+
+	viewObjectEntriesPage.goto(objectDefinition.id);
+
+	await viewObjectEntriesPage.clickAddObjectEntry(
+		objectDefinition.label['en_US']
+	);
+
+	await viewObjectEntriesPage.fillObjectEntry({
+		objectFieldBusinessType: objectField.businessType,
+		objectFieldLabel: objectField.label['en_US'],
+		objectFieldValue: getRandomString(),
+	});
+
+	await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+	await waitForAlert(page);
+
+	await viewObjectActionsPage.goto(objectDefinition.label['en_US']);
+
+	await expect(viewObjectActionsPage.lastExecutionCell.nth(1)).toContainText(
+		'Success'
+	);
+});
+
 test('Can trigger object validation as a client extension', async ({
 	editObjectValidationPage,
 	modalAddObjectValidationPage,

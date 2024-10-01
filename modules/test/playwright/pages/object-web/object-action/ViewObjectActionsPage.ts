@@ -11,12 +11,14 @@ export class ViewObjectActionsPage {
 	readonly actionsTabItem: Locator;
 	readonly addObjectActionButton: Locator;
 	readonly frontendDataSetItems: Locator;
+	readonly lastExecutionCell: Locator;
 	readonly viewObjectDefinitionsPage: ViewObjectDefinitionsPage;
 
 	constructor(page: Page) {
 		this.actionsTabItem = page.getByRole('link', {name: 'Actions'});
 		this.addObjectActionButton = page.getByLabel('Add Object Action');
 		this.frontendDataSetItems = page.locator('div.table-list-title a');
+		this.lastExecutionCell = page.locator('.cell-status');
 		this.viewObjectDefinitionsPage = new ViewObjectDefinitionsPage(page);
 	}
 
