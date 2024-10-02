@@ -14,6 +14,7 @@ import {EN_BASE_URL, ES_BASE_URL, PT_BASE_URL} from '../../utils/constants';
 import saveFromModal from '../../utils/saveFromModal';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
 import {visualizationModesPageTest} from './fixtures/visualizationModesPageTest';
+import clickActionInRow from '../../utils/clickActionInRow';
 
 export const test = mergeTests(
 	dataSetManagerApiHelpersTest,
@@ -48,25 +49,6 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 		erc: dataSetERC,
 	});
 });
-
-const clickActionInRow = async ({
-	actionName,
-	rowName,
-	visualizationModesPage,
-}) => {
-	await visualizationModesPage
-		.getRowByText(rowName)
-		.locator('.actions-cell button')
-		.click();
-
-	const actionButton = visualizationModesPage.page.getByRole('menuitem', {
-		name: actionName,
-	});
-
-	await expect(actionButton).toBeInViewport();
-
-	await actionButton.click();
-};
 
 test.describe('Visualization Modes in Data Set Manager', () => {
 	test('Configure cards visualization mode @LPD-10735', async ({
