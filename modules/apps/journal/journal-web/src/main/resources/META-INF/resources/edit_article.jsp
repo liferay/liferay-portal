@@ -80,47 +80,49 @@ journalEditArticleDisplayContext.setViewAttributes();
 							/>
 						</div>
 
-						<div class="c-ml-2">
-							<div class="inline-item my-5 p-5 w-100">
-								<span aria-hidden="true" class="loading-animation"></span>
+						<c:if test="<%= !JournalUtil.isEditDefaultValues(article) %>">
+							<div class="c-ml-2">
+								<div class="inline-item my-5 p-5 w-100">
+									<span aria-hidden="true" class="loading-animation"></span>
+								</div>
+
+								<react:component
+									module="{TranslationOptions} from journal-web"
+									props='<%=
+										HashMapBuilder.<String, Object>put(
+											"defaultLanguageId", journalEditArticleDisplayContext.getDefaultArticleLanguageId()
+										).put(
+											"fields", journalEditArticleDisplayContext.getFieldMap()
+										).put(
+											"locales", journalEditArticleDisplayContext.getLocales()
+										).put(
+											"namespace", liferayPortletResponse.getNamespace()
+										).put(
+											"selectedLanguageId", journalEditArticleDisplayContext.getSelectedLanguageId()
+										).build()
+									%>'
+								/>
 							</div>
 
-							<react:component
-								module="{TranslationOptions} from journal-web"
-								props='<%=
-									HashMapBuilder.<String, Object>put(
-										"defaultLanguageId", journalEditArticleDisplayContext.getDefaultArticleLanguageId()
-									).put(
-										"fields", journalEditArticleDisplayContext.getFieldMap()
-									).put(
-										"locales", journalEditArticleDisplayContext.getLocales()
-									).put(
-										"namespace", liferayPortletResponse.getNamespace()
-									).put(
-										"selectedLanguageId", journalEditArticleDisplayContext.getSelectedLanguageId()
-									).build()
-								%>'
-							/>
-						</div>
-
-						<div class="autofit-col c-ml-2">
-							<react:component
-								module="{TranslationFilter} from journal-web"
-								props='<%=
-									HashMapBuilder.<String, Object>put(
-										"defaultLanguageId", journalEditArticleDisplayContext.getDefaultArticleLanguageId()
-									).put(
-										"fields", journalEditArticleDisplayContext.getFieldMap()
-									).put(
-										"locales", journalEditArticleDisplayContext.getLocales()
-									).put(
-										"namespace", liferayPortletResponse.getNamespace()
-									).put(
-										"selectedLanguageId", journalEditArticleDisplayContext.getSelectedLanguageId()
-									).build()
-								%>'
-							/>
-						</div>
+							<div class="autofit-col c-ml-2">
+								<react:component
+									module="{TranslationFilter} from journal-web"
+									props='<%=
+										HashMapBuilder.<String, Object>put(
+											"defaultLanguageId", journalEditArticleDisplayContext.getDefaultArticleLanguageId()
+										).put(
+											"fields", journalEditArticleDisplayContext.getFieldMap()
+										).put(
+											"locales", journalEditArticleDisplayContext.getLocales()
+										).put(
+											"namespace", liferayPortletResponse.getNamespace()
+										).put(
+											"selectedLanguageId", journalEditArticleDisplayContext.getSelectedLanguageId()
+										).build()
+									%>'
+								/>
+							</div>
+						</c:if>
 					</div>
 				</li>
 				<li class="tbar-item">
