@@ -100,6 +100,11 @@ export default function useTranslationProgress({
 
 			setDefaultLanguageId(selectedLanguageId);
 			setSelectedLanguageId(selectedLanguageId);
+			Liferay.fire('journal:updateSelectedLanguage', {
+				item: document.querySelector(
+					`[data-languageid="${selectedLanguageId}"][data-value="${selectedLanguageId}"]`
+				),
+			});
 		},
 		[namespace, setDefaultLanguageId, setSelectedLanguageId]
 	);
