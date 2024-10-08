@@ -3450,10 +3450,12 @@ public class ObjectEntryLocalServiceTest {
 					"listTypeEntryKeyRequired", "listTypeEntryKey1"
 				).build());
 
-			_addObjectValidationRule(
-				key,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				"");
+			ObjectValidationRule objectValidationRule =
+				_addObjectValidationRule(
+					key,
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString()),
+					"");
 
 			_objectEntryLocalService.updateObjectEntry(
 				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
@@ -3463,6 +3465,9 @@ public class ObjectEntryLocalServiceTest {
 					"listTypeEntryKeyRequired", "listTypeEntryKey1"
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
+
+			_objectValidationRuleLocalService.deleteObjectValidationRule(
+				objectValidationRule);
 		}
 	}
 
@@ -3662,15 +3667,21 @@ public class ObjectEntryLocalServiceTest {
 					).build(),
 					serviceContext);
 
-			_objectValidationRuleLocalService.addObjectValidationRule(
-				StringPool.BLANK, TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId(), true, key,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION, "",
-				false, Collections.emptyList());
+			ObjectValidationRule objectValidationRule =
+				_objectValidationRuleLocalService.addObjectValidationRule(
+					StringPool.BLANK, TestPropsValues.getUserId(),
+					objectDefinition.getObjectDefinitionId(), true, key,
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString()),
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString()),
+					ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION,
+					"", false, Collections.emptyList());
 
 			UserTestUtil.updateUser(user);
+
+			_objectValidationRuleLocalService.deleteObjectValidationRule(
+				objectValidationRule);
 		}
 	}
 
