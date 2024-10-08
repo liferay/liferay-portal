@@ -9,7 +9,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -913,6 +915,18 @@ public class ObjectEntryRelatedObjectsResourceTest {
 	}
 
 	@Test
+	public void testPostCustomObjectEntryWithNestedObjectEntry()
+		throws Exception {
+
+		// Mandatory One to many custom-custom
+
+		_testPostCustomObjectEntryWithNestedObjectEntryMandatoryRelationship(
+			_addObjectRelationship(
+				_objectDefinition1, _objectDefinition2,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY));
+	}
+
+	@Test
 	public void testPostCustomObjectEntryWithNestedSystemObjectEntry()
 		throws Exception {
 
@@ -1678,6 +1692,75 @@ public class ObjectEntryRelatedObjectsResourceTest {
 			_objectDefinition1.getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
+	}
+
+	private void
+			_testPostCustomObjectEntryWithNestedObjectEntryMandatoryRelationship(
+				ObjectRelationship objectRelationship)
+		throws Exception {
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		objectField.setRequired(true);
+
+		objectField = _objectFieldLocalService.updateObjectField(objectField);
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				ObjectFieldSettingUtil.getValue(
+					ObjectFieldSettingConstants.
+						NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
+					objectField),
+				_objectEntry1.getExternalReferenceCode()
+			).put(
+				objectRelationship.getName(),
+				JSONUtil.put(
+					_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1
+				).put(
+					"externalReferenceCode",
+					_objectEntry1.getExternalReferenceCode()
+				).put(
+					"status",
+					JSONUtil.put(
+						"code", 0
+					).put(
+						"label", "approved"
+					).put(
+						"label_i18n", "Approved"
+					)
+				)
+			).put(
+				_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2
+			).put(
+				"status",
+				JSONUtil.put(
+					"code", 0
+				).put(
+					"label", "approved"
+				).put(
+					"label_i18n", "Approved"
+				)
+			).toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2
+				).put(
+					objectRelationship.getName(),
+					JSONUtil.put(
+						_OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1
+					).put(
+						"externalReferenceCode",
+						_objectEntry1.getExternalReferenceCode()
+					)
+				).toString(),
+				_objectDefinition2.getRESTContextPath(
+				).substring(
+					1
+				),
+				Http.Method.POST
+			).toString(),
+			JSONCompareMode.LENIENT);
 	}
 
 	private void _testPostCustomObjectEntryWithNestedSystemObjectEntry(
