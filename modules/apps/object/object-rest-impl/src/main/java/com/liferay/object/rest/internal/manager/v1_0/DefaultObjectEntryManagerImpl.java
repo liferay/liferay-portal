@@ -1781,6 +1781,32 @@ public class DefaultObjectEntryManagerImpl
 				continue;
 			}
 
+			if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP) &&
+				objectField.isRequired()) {
+
+				Map<String, ObjectRelationship> objectRelationships =
+					_getObjectRelationships(objectDefinition, objectEntry);
+
+				for (Map.Entry<String, ObjectRelationship> objectRelationship :
+						objectRelationships.entrySet()) {
+
+					if (StringUtil.equals(
+							objectRelationship.getValue(
+							).getType(),
+							ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+
+						values.put(
+							objectField.getName(),
+							objectRelationship.getValue(
+							).getObjectRelationshipId());
+					}
+				}
+
+				continue;
+			}
+
 			values.put(objectField.getName(), (Serializable)value);
 		}
 
