@@ -5,8 +5,8 @@
 
 import {test} from '@playwright/test';
 
-import {SiteSettingsPage} from '../pages/configuration-admin-web/SiteSettingsPage';
 import {SiteConfigurationDetailsPage} from '../pages/site-admin-web/SiteConfigurationDetailsPage';
+import { SiteSettingsPage } from '../pages/site-admin-web/SiteSettingsPage';
 import {ExportUserDataPage} from '../pages/user-associated-data-web/ExportUserDataPage';
 import {PersonalDataErasurePage} from '../pages/user-associated-data-web/PersonalDataErasurePage';
 import {AssignUsersPage} from '../pages/users-admin-web/AssignUsersPage';

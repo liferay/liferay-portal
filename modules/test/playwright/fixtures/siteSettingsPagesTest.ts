@@ -6,13 +6,18 @@
 import {test} from '@playwright/test';
 
 import {SiteSettingsLocalizationPage} from '../pages/site-admin-web/SiteSettingsLocalizationPage';
+import { SiteSettingsPage } from '../pages/site-admin-web/SiteSettingsPage';
 
-const siteSettingsPageTests = test.extend<{
+const siteSettingsPagesTest = test.extend<{
 	siteSettingsLocalizationPage: SiteSettingsLocalizationPage;
+	siteSettingsPage: SiteSettingsPage
 }>({
 	siteSettingsLocalizationPage: async ({page}, use) => {
 		await use(new SiteSettingsLocalizationPage(page));
 	},
+	siteSettingsPage: async ({page}, use) => {
+		await use(new SiteSettingsPage(page));
+	}
 });
 
-export {siteSettingsPageTests};
+export {siteSettingsPagesTest};

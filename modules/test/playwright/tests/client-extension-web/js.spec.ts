@@ -7,9 +7,9 @@ import {Page, expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
-import {localizationSiteSettingsPageTest} from '../../fixtures/localizationSiteSettingsPageTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pagesAdminPagesTest} from '../../fixtures/pagesAdminPagesTest';
+import { siteSettingsPagesTest } from '../../fixtures/siteSettingsPagesTest';
 import {styleBookPageTest} from '../../fixtures/styleBookPageTest';
 import {PagesAdminPage} from '../../pages/layout-admin-web/PagesAdminPage';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
@@ -112,7 +112,7 @@ export const test = mergeTests(
 	clientExtensionsPageTest,
 	editJSClientExtensionsPageTest,
 	isolatedSiteTest,
-	localizationSiteSettingsPageTest,
+	siteSettingsPagesTest,
 	loginTest(),
 	pagesAdminPagesTest
 );
@@ -444,12 +444,12 @@ test('JS client extension with async and defer attributes set to false and data-
 test('JS client extension can be created with name translations while having a language configuration for the site settings', async ({
 	clientExtensionsPage,
 	editJSClientExtensionsPage,
-	localizationSiteSettingsPage,
 	page,
 	site,
+	siteSettingsLocalizationPage,
 }) => {
 	await test.step('Set spanish as default language for the site', async () => {
-		await localizationSiteSettingsPage.setDefaultCustomLanguage(
+		await siteSettingsLocalizationPage.setCustomDefaultLanguage(
 			'Spanish (Spain)',
 			site.friendlyUrlPath
 		);

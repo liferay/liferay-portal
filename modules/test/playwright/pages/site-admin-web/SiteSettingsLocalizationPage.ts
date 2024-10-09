@@ -33,8 +33,8 @@ export class SiteSettingsLocalizationPage {
 		this.siteSettingsPage = new SiteSettingsPage(page);
 	}
 
-	async goto() {
-		await this.siteSettingsPage.goToSiteSetting('Localization');
+	async goto(siteUrl?: Site['friendlyUrlPath']) {
+		await this.siteSettingsPage.goToSiteSetting('Localization', siteUrl);
 	}
 
 	async saveConfiguration() {
@@ -50,7 +50,11 @@ export class SiteSettingsLocalizationPage {
 		await this.defaultLanguageOption.click();
 	}
 
-	async setCustomDefaultLanguage(languageOption: string) {
+	async setCustomDefaultLanguage(languageOption: string, siteUrl?: Site['friendlyUrlPath']) {
+		if (siteUrl) {
+			this.goto(siteUrl);
+		}
+
 		await this.defaultLanguageSingleSelect.click();
 		await this.defaultLanguageSingleSelect.selectOption(languageOption);
 		await this.saveConfiguration();

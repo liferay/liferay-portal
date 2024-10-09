@@ -6,6 +6,7 @@
 import {Page} from '@playwright/test';
 
 import {ProductMenuPage} from '../../pages/product-navigation-control-menu-web/ProductMenuPage';
+import { PORTLET_URLS } from '../../utils/portletUrls';
 
 export class SiteSettingsPage {
 	readonly page: Page;
@@ -18,19 +19,25 @@ export class SiteSettingsPage {
 		this.productMenuPage = new ProductMenuPage(page);
 	}
 
-	async goto() {
-		await this.productMenuPage.openProductMenuIfClosed();
-		await this.productMenuPage.goToSiteSettings();
+	async goto(siteUrl?: Site['friendlyUrlPath']) {
+		await this.page.goto(
+			`/group${siteUrl || '/guest'}${PORTLET_URLS.siteSettings}`
+		);
 	}
 
-	async goToSiteSetting(categoryKey: string, configurationName?: string) {
-		await this.goto();
+	async goToSiteSetting(
+		categoryKey: string,
+		configurationName?: string,
+		siteUrl?: Site['friendlyUrlPath']
+	) {
+		await this.goto(siteUrl);
 		await this.page
 			.getByRole('link', {
 				exact: true,
 				name: categoryKey,
 			})
 			.click();
+
 		if (configurationName) {
 			await this.page
 				.getByRole('menuitem', {

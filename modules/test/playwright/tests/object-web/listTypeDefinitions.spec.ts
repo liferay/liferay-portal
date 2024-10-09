@@ -15,7 +15,7 @@ import {formsPagesTest} from '../../fixtures/formsPagesTest';
 import {listTypeDefinitionsPagesTest} from '../../fixtures/listTypeDefinitionsPagesTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {objectPagesTest} from '../../fixtures/objectPagesTest';
-import {siteSettingsPageTests} from '../../fixtures/siteSettingsPagesTest';
+import {siteSettingsPagesTest} from '../../fixtures/siteSettingsPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 
 export const test = mergeTests(
@@ -25,7 +25,7 @@ export const test = mergeTests(
 	listTypeDefinitionsPagesTest,
 	loginTest(),
 	objectPagesTest,
-	siteSettingsPageTests
+	siteSettingsPagesTest
 );
 
 let customDefaultSiteLanguage: string;

@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {SiteSettingsPage} from '../../../pages/configuration-admin-web/SiteSettingsPage';
+import { SiteSettingsPage } from '../../../pages/site-admin-web/SiteSettingsPage';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 export class FileSizeLimitsSiteSettingsPage {
