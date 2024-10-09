@@ -6,19 +6,17 @@
 import {expect, mergeTests} from '@playwright/test';
 import {readFile} from 'fs/promises';
 
+import { instanceSettingsPagesTest } from '../../fixtures/instanceSettingsPagesTest';
 import {loginTest} from '../../fixtures/loginTest';
-import {InstanceSettingsPage} from '../../pages/configuration-admin-web/InstanceSettingsPage';
 import {UsersAndOrganizationsPage} from '../../pages/users-admin-web/UsersAndOrganizationsPage';
 import getRandomString from '../../utils/getRandomString';
 
-export const test = mergeTests(loginTest());
+export const test = mergeTests(loginTest(), instanceSettingsPagesTest);
 
-test('Asserts that a user can export a configuration', async ({page}) => {
+test('Asserts that a user can export a configuration', async ({instanceSettingsPage, page}) => {
 	const emailDomainValidationSwitcher = page.getByRole('switch', {
 		name: 'Enable Email Domain Validation',
 	});
-
-	const instanceSettingsPage = new InstanceSettingsPage(page);
 
 	await instanceSettingsPage.goToInstanceSetting('Accounts', 'Email Domains');
 
@@ -54,9 +52,7 @@ test('Asserts that a user can export a configuration', async ({page}) => {
 	}
 });
 
-test('LPD-35562 Enter reserved screen name', async ({page}) => {
-	const instanceSettingsPage = new InstanceSettingsPage(page);
-
+test('LPD-35562 Enter reserved screen name', async ({instanceSettingsPage, page}) => {
 	const emailAddress = getRandomString() + '@liferay.com';
 	const firstName = getRandomString();
 	const lastName = getRandomString();
