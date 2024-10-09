@@ -66,7 +66,6 @@ test('LPD-35562 Enter reserved screen name', async ({instanceSettingsPage, page}
 	await page.getByLabel('Screen Names').fill(reservedScreenName);
 
 	await instanceSettingsPage.saveAndWaitForAlert(
-		'Success:Your request completed successfully.',
 		{autoClose: true, type: 'success'}
 	);
 
@@ -85,7 +84,6 @@ test('LPD-35562 Enter reserved screen name', async ({instanceSettingsPage, page}
 	await page.getByLabel('Last Name').fill(lastName);
 
 	await instanceSettingsPage.saveAndWaitForAlert(
-		'Error:The screen name you requested is reserved.',
-		{autoClose: false, type: 'danger'}
+        { autoClose: false, text: 'Error:The screen name you requested is reserved.', type: 'danger'}
 	);
 });

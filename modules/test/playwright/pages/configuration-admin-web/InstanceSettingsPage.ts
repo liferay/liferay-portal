@@ -55,12 +55,13 @@ export class InstanceSettingsPage {
 	}
 
 	async saveAndWaitForAlert(
-		text,
 		{
 			autoClose,
+            text = 'Success:Your request completed successfully.',
 			type,
 		}: {
 			autoClose?: boolean;
+            text?: string,
 			type?: 'success' | 'info' | 'warning' | 'danger';
 		}
 	) {
