@@ -5,7 +5,6 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {waitForAlert} from '../../utils/waitForAlert';
 import {SiteSettingsPage} from './SiteSettingsPage';
 
 export class SiteSettingsLocalizationPage {
@@ -14,7 +13,6 @@ export class SiteSettingsLocalizationPage {
 	readonly customDefaultLanguageOption: Locator;
 	readonly defaultLanguageOption: Locator;
 	readonly defaultLanguageSingleSelect: Locator;
-	readonly saveButton: Locator;
 	readonly siteSettingsPage: SiteSettingsPage;
 
 	constructor(page: Page) {
@@ -29,17 +27,11 @@ export class SiteSettingsLocalizationPage {
 		this.defaultLanguageSingleSelect = page.locator(
 			`select[name="_com_liferay_site_admin_web_portlet_SiteSettingsPortlet_TypeSettingsProperties--languageId--"]`
 		);
-		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.siteSettingsPage = new SiteSettingsPage(page);
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
 		await this.siteSettingsPage.goToSiteSetting('Localization', siteUrl);
-	}
-
-	async saveConfiguration() {
-		this.saveButton.click();
-		await waitForAlert(this.page);
 	}
 
 	async selectCustomDefaultLanguageOption() {
@@ -57,6 +49,6 @@ export class SiteSettingsLocalizationPage {
 
 		await this.defaultLanguageSingleSelect.click();
 		await this.defaultLanguageSingleSelect.selectOption(languageOption);
-		await this.saveConfiguration();
+		await this.siteSettingsPage.saveConfiguration();
 	}
 }

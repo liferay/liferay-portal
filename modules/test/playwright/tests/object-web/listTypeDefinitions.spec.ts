@@ -46,6 +46,7 @@ test.afterEach(
 		apiHelpers,
 		page,
 		siteSettingsLocalizationPage,
+		siteSettingsPage,
 	}) => {
 		const objectAdminRestClient = await apiHelpers.buildRestClient(
 			ObjectAdminRestClient
@@ -93,7 +94,7 @@ test.afterEach(
 			await page.goto('/');
 			await siteSettingsLocalizationPage.goto();
 			await siteSettingsLocalizationPage.selectDefaultLanguageOption();
-			await siteSettingsLocalizationPage.saveConfiguration();
+			await siteSettingsPage.saveConfiguration();
 			customDefaultSiteLanguage = '';
 		}
 	}
