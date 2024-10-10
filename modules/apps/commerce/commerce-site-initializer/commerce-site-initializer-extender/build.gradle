@@ -16,6 +16,8 @@ dependencies {
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-channel-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-order-api")
+	compileOnly project(":apps:object:object-api")
+	compileOnly project(":apps:object:object-rest-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:site-initializer:site-initializer-extender:site-initializer-extender-api")

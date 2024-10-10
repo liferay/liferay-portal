@@ -837,6 +837,22 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 	}
 
+	private void _addFDSEntries(
+			ServiceContext serviceContext,
+			Map<String, String> stringUtilReplaceValues)
+		throws Exception {
+
+		CommerceSiteInitializer commerceSiteInitializer =
+			_commerceSiteInitializerSnapshot.get();
+
+		if (commerceSiteInitializer == null) {
+			return;
+		}
+
+		commerceSiteInitializer.addFDSEntries(
+			_bundle, serviceContext, _servletContext, stringUtilReplaceValues);
+	}
+
 	private void _addFragmentEntries(
 			long groupId, String parentResourcePath,
 			ServiceContext serviceContext,
@@ -5004,9 +5020,15 @@ public class BundleSiteInitializer implements SiteInitializer {
 		R addCPDefinitionsR = new R(
 			"addCPDefinitions",
 			() -> _addCPDefinitions(serviceContext, stringUtilReplaceValues));
+		R addFDSEntriesR = new R(
+			"addFDSEntries",
+			() -> _addFDSEntries(serviceContext, stringUtilReplaceValues));
 		R addExpandoValuesR = new R(
 			"addExpandoValues",
 			() -> _addExpandoValues(serviceContext, stringUtilReplaceValues));
+		R addFDSEntriesR = new R(
+			"addFDSEntries",
+			() -> _addFDSEntries(serviceContext, stringUtilReplaceValues));
 		R addFragmentEntriesR = new R(
 			"addFragmentEntries",
 			() -> _addFragmentEntries(serviceContext, stringUtilReplaceValues));
@@ -5191,11 +5213,17 @@ public class BundleSiteInitializer implements SiteInitializer {
 			addCPDefinitionsR,
 			_dependsOn(addOrUpdateLayoutsR, addOrUpdateObjectEntriesR)
 		).put(
+			addFDSEntriesR,
+			_dependsOn(addOrUpdateLayoutsR, addOrUpdateObjectEntriesR)
+		).put(
 			addExpandoValuesR,
 			_dependsOn(
 				addOrUpdateBlogPostingsR, addOrUpdateJournalArticlesR,
 				addOrUpdateKnowledgeBaseArticlesR, addOrUpdateLayoutsContentR,
 				addOrUpdateSegmentsEntriesR, addOrUpdateUserGroupsR)
+		).put(
+			addFDSEntriesR,
+			_dependsOn(addOrUpdateLayoutsR, addOrUpdateObjectEntriesR)
 		).put(
 			addFragmentEntriesR, _dependsOn(addOrUpdateDocumentsR)
 		).put(

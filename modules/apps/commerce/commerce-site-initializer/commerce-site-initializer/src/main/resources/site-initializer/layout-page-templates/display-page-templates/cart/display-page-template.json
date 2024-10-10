@@ -1,0 +1,6 @@
+{
+	"contentType": {
+		"className": "com.liferay.commerce.model.CommerceOrder"
+	},
+	"name": "cart"
+}

@@ -24,15 +24,14 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gianmarco Brunialti Masera
  */
 @Component(
-	property = "fds.rest.application.key=/headless-commerce-delivery-cart/v1.0/Cart",
+	property = "fds.rest.application.key=/headless-commerce-delivery-order/v1.0/PlacedOrder",
 	service = FDSAPIURLResolver.class
 )
-public class PendingCommerceOrderFDSAPIURLResolver
-	implements FDSAPIURLResolver {
+public class PlacedCommerceOrderFDSAPIURLResolver implements FDSAPIURLResolver {
 
 	@Override
 	public String getSchema() {
-		return "Cart";
+		return "PlacedOrder";
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class PendingCommerceOrderFDSAPIURLResolver
 
 			if (Validator.isNotNull(commerceOrder)) {
 				baseURL = baseURL.replaceAll(
-					"\\{cartId\\}",
+					"\\{placedOrderId\\}",
 					String.valueOf(commerceOrder.getCommerceOrderId())
 				).replaceAll(
 					"\\{externalReferenceCode\\}",

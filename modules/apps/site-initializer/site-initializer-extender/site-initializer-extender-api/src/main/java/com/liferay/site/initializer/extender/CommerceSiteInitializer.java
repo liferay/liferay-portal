@@ -16,6 +16,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * @author Nilton Vieira
+ * @author Gianmarco Brunialti Masera
  */
 @ProviderType
 public interface CommerceSiteInitializer {
@@ -25,6 +26,12 @@ public interface CommerceSiteInitializer {
 		throws Exception;
 
 	public void addCPDefinitions(
+			Bundle bundle, ServiceContext serviceContext,
+			ServletContext servletContext,
+			Map<String, String> stringUtilReplaceValues)
+		throws Exception;
+
+	public void addFDSEntries(
 			Bundle bundle, ServiceContext serviceContext,
 			ServletContext servletContext,
 			Map<String, String> stringUtilReplaceValues)

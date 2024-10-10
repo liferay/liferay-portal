@@ -1,0 +1,132 @@
+{
+	"dataSet": {
+		"externalReferenceCode": "commerce-pending-order-items-data-set",
+		"label": "Pending Order Items",
+		"restApplication": "/headless-commerce-delivery-cart/v1.0",
+		"restEndpoint": "/v1.0/carts/{cartId}/cart-items",
+		"restSchema": "CartItem"
+	},
+	"views": [
+		{
+			"actions": [
+				{
+					"confirmationMessage_i18n": {
+					},
+					"icon": "view",
+					"label_i18n": {
+						"en_US": "View"
+					},
+					"method": "",
+					"modalSize": "",
+					"permissionKey": "",
+					"title_i18n": {
+					},
+					"type": "link",
+					"url": "{productURLs.en_US}"
+				},
+				{
+					"confirmationMessage_i18n": {
+					},
+					"icon": "trash",
+					"label_i18n": {
+						"en_US": "Remove"
+					},
+					"method": "DELETE",
+					"modalSize": "",
+					"permissionKey": "",
+					"title_i18n": {
+					},
+					"type": "async",
+					"url": "/o/headless-commerce-delivery-cart/v1.0/cart-items/{id}"
+				}
+			],
+			"externalReferenceCode": "commerce-pending-order-items-data-set-view",
+			"label": "Pending Order Items View",
+			"visualizationModes": {
+				"table": [
+					{
+						"label_i18n": {
+							"en_US": ""
+						},
+						"name": "thumbnail",
+						"renderer": "image",
+						"sortable": false,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "SKU"
+						},
+						"name": "sku",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Name"
+						},
+						"name": "name",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "List Price"
+						},
+						"name": "price.priceFormatted",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Promotion Price"
+						},
+						"name": "price.promoPriceFormatted",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Discount"
+						},
+						"name": "price.discountFormatted",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Quantity"
+						},
+						"name": "quantity",
+						"renderer": "default",
+						"sortable": true,
+						"type": "integer"
+					},
+					{
+						"label_i18n": {
+							"en_US": "UOM"
+						},
+						"name": "skuUnitOfMeasure.name",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Total"
+						},
+						"name": "price.finalPriceFormatted",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					}
+				]
+			}
+		}
+	]
+}

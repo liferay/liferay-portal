@@ -1,0 +1,117 @@
+{
+	"dataSet": {
+		"externalReferenceCode": "commerce-pending-orders-data-set",
+		"label": "Pending Orders",
+		"restApplication": "/headless-commerce-delivery-cart/v1.0",
+		"restEndpoint": "/v1.0/channels/{channelId}/carts",
+		"restSchema": "Cart"
+	},
+	"views": [
+		{
+			"actions": [
+				{
+					"confirmationMessage_i18n": {
+					},
+					"icon": "view",
+					"label_i18n": {
+						"en_US": "View"
+					},
+					"method": "",
+					"modalSize": "",
+					"permissionKey": "",
+					"title_i18n": {
+					},
+					"type": "link",
+					"url": "cart/{id}"
+				}
+			],
+			"externalReferenceCode": "commerce-pending-orders-data-set-view",
+			"label": "Pending Orders View",
+			"visualizationModes": {
+				"table": [
+					{
+						"label_i18n": {
+							"en_US": "Order ID"
+						},
+						"name": "id",
+						"renderer": "actionLink",
+						"sortable": true,
+						"type": "integer"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Order Name"
+						},
+						"name": "name",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Order Date"
+						},
+						"name": "createDate",
+						"renderer": "Date",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "ERC"
+						},
+						"name": "externalReferenceCode",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Purchase Order Number"
+						},
+						"name": "purchaseOrderNumber",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Account"
+						},
+						"name": "account",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Amount"
+						},
+						"name": "summary.totalFormatted",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Created by"
+						},
+						"name": "author",
+						"renderer": "default",
+						"sortable": true,
+						"type": "string"
+					},
+					{
+						"label_i18n": {
+							"en_US": "Status"
+						},
+						"name": "workflowStatusInfo.label_i18n",
+						"renderer": "label",
+						"sortable": true,
+						"type": "string"
+					}
+				]
+			}
+		}
+	]
+}

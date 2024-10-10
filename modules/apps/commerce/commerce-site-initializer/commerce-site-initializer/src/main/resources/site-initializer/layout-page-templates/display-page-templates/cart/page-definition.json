@@ -18,8 +18,8 @@
 					"fragmentConfig": {
 						"itemSelector": {
 							"className": "com.liferay.object.model.ObjectDefinition#[$OBJECT_DEFINITION_ID:FDSView$]",
-							"classPK": "[$FDS_VIEW_ERC:commerce-pending-orders-data-set-view$]",
-							"externalReferenceCode": "commerce-pending-orders-data-set-view",
+							"classPK": "[$FDS_VIEW_ERC:commerce-pending-order-items-data-set-view$]",
+							"externalReferenceCode": "commerce-pending-order-items-data-set-view",
 							"itemType": "_com_liferay_layout_content_page_editor_web_internal_portlet_ContentPageEditorPortlet_selectInfoItem"
 						}
 					},
