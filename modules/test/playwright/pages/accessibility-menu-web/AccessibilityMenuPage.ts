@@ -17,8 +17,9 @@ export class AccessibilityMenuPage {
 
 	constructor(page: Page) {
 		this.closeButton = page.getByLabel('close', {exact: true});
-		this.enableAccessibilityMenuCheckbox = page.getByLabel(
-			'Enable Accessibility Menu'
+		this.enableAccessibilityMenuCheckbox = page.getByRole(
+            "checkbox",
+			{name: 'Enable Accessibility Menu'}
 		);
 		this.openAccessibilityMenuButton = page.getByRole('button', {
 			name: 'Open Accessibility Menu',

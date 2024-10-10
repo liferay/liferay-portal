@@ -198,7 +198,7 @@ export default defineConfig({
 	],
 	retries: process.env.CI ? 2 : 0,
 	testDir: './tests',
-	timeout: 90 * 1000,
+	timeout: 30 * 1000,
 	use: {
 		...devices['Desktop Chrome'],
 		baseURL: process.env.PORTAL_URL

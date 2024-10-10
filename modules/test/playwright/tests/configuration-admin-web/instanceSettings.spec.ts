@@ -6,12 +6,15 @@
 import {expect, mergeTests} from '@playwright/test';
 import {readFile} from 'fs/promises';
 
+import { accessibilityMenuPagesTest } from '../../fixtures/accessibilityMenuPagesTest';
 import { instanceSettingsPagesTest } from '../../fixtures/instanceSettingsPagesTest';
+import { isolatedSiteTest } from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
+import { siteSettingsPagesTest } from '../../fixtures/siteSettingsPagesTest';
 import {UsersAndOrganizationsPage} from '../../pages/users-admin-web/UsersAndOrganizationsPage';
 import getRandomString from '../../utils/getRandomString';
 
-export const test = mergeTests(loginTest(), instanceSettingsPagesTest);
+export const test = mergeTests(accessibilityMenuPagesTest, instanceSettingsPagesTest, isolatedSiteTest, loginTest(), siteSettingsPagesTest);
 
 test('Asserts that a user can export a configuration', async ({instanceSettingsPage, page}) => {
 	const emailDomainValidationSwitcher = page.getByRole('switch', {
@@ -86,4 +89,60 @@ test('LPD-35562 Enter reserved screen name', async ({instanceSettingsPage, page}
 	await instanceSettingsPage.saveAndWaitForAlert(
         { autoClose: false, text: 'Error:The screen name you requested is reserved.', type: 'danger'}
 	);
+});
+
+test('LPD-38043 Assert that a site configuration overrides its instance version',
+	async ({ accessibilityMenuPage, instanceSettingsPage, page, site, siteSettingsPage }) => {
+
+    await test.step("Make sure the instance accessibility configuration is disabled", async() => {
+        await instanceSettingsPage.goToInstanceSetting(
+            'Accessibility',
+            'Accessibility Menu'
+        );
+    
+        if (await accessibilityMenuPage.enableAccessibilityMenuCheckbox.isChecked()) {
+            await accessibilityMenuPage.enableAccessibilityMenuCheckbox.uncheck();
+
+            await instanceSettingsPage.saveButton.click();
+        }
+    });
+
+    await test.step("Make sure the accessibility menu is not accessible in the site scope", async () => {
+        await siteSettingsPage.goToSiteSetting(
+            'Accessibility',
+            "Accessibility Menu",
+            site.friendlyUrlPath
+        );
+
+        await page.waitForLoadState();
+
+        await expect(accessibilityMenuPage.openAccessibilityMenuButton).not.toBeAttached();
+    });
+
+    await test.step("Enable the site accessibility configuration", async () => {
+        await expect(async () => {
+            await accessibilityMenuPage.enableAccessibilityMenuCheckbox.check();
+
+            await expect(accessibilityMenuPage.enableAccessibilityMenuCheckbox).toBeChecked({timeout: 5000});
+        }).toPass();
+
+        await siteSettingsPage.saveConfiguration();
+    });
+
+    await test.step("Make sure the accessibility menu is accessible in the site scope", async () => {
+        await page.waitForLoadState();
+
+        await expect(accessibilityMenuPage.openAccessibilityMenuButton).toBeAttached();
+    });
+
+    await test.step("Make sure the accessibility menu is not accessible in the instance scope", async () => {
+        await instanceSettingsPage.goToInstanceSetting(
+            'Accessibility',
+            'Accessibility Menu'
+        );
+
+        await page.waitForLoadState();
+
+        await expect(accessibilityMenuPage.openAccessibilityMenuButton).not.toBeAttached();
+    });
 });
