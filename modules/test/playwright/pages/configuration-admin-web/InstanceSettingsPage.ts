@@ -33,20 +33,28 @@ export class InstanceSettingsPage {
 		await this.page.getByRole('menuitem', {name: 'Export'}).click();
 	}
 
-	async goToInstanceSetting(categoryKey: string, configurationName: string) {
+	async goToInstanceSetting(categoryKey: string, configurationName: string, nthChild?: number) {
 		await this.goto();
+
 		await this.page
 			.getByRole('link', {
 				exact: true,
 				name: categoryKey,
 			})
 			.click();
-		await this.page
+
+		const configurationMenuItem = this.page
 			.getByRole('menuitem', {
 				exact: true,
 				name: configurationName,
-			})
-			.click();
+			});
+
+        if (nthChild === undefined) {
+            await configurationMenuItem.first().click()
+        } else {    
+            await configurationMenuItem.nth(nthChild).click()
+        }
+
 	}
 
 	async goToSSO() {
