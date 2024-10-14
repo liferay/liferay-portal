@@ -46,15 +46,12 @@ export default function BaseAPISchemaProperty({
 				objectDefinition.externalReferenceCode
 			));
 
-	const localizedPropertyName =
-		objectField.label[Liferay.ThemeDisplay.getDefaultLanguageId()]!;
-
 	const handleClick = () => {
 		setSchemaUIData((previous) => {
 			if (previous.schemaProperties) {
 				previous.schemaProperties.unshift({
 					businessType: objectField.businessType,
-					name: localizedPropertyName,
+					name: objectField.name,
 					objectDefinitionName: objectDefinition.name,
 					objectFieldERC: objectField.externalReferenceCode,
 					objectFieldId: objectField.id,
@@ -75,6 +72,9 @@ export default function BaseAPISchemaProperty({
 			return previous;
 		});
 	};
+
+	const localizedPropertyName =
+		objectField.label[Liferay.ThemeDisplay.getDefaultLanguageId()]!;
 
 	return (
 		<ClayButton
