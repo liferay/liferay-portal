@@ -1581,9 +1581,6 @@ definition {
 	@description = "This is a test case for LPS-128652. View the changes of fragment on content page still persist after overwrite the fragment."
 	@priority = 4
 	test ViewChangesOfFragmentOnContentPagePersistAfterOverwriteTheFragment {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
 		task ("Enable Propagate Fragment Changes Automatically in System Settings") {
 			ApplicationsMenu.gotoPortlet(
 				category = "Configuration",
@@ -1702,6 +1699,24 @@ definition {
 				editableText = "Test",
 				fragmentName = "Tabs (Copy)",
 				id = "title5");
+		}
+
+		task ("Reset Propagate Fragment Changes Automatically to default configuration") {
+			FragmentsAdminNavigator.openFragmentsAdmin(siteURLKey = "test-site-name");
+
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
+
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Page Fragments",
+				configurationName = "Page Fragments",
+				configurationScope = "System Scope");
+
+			FormFields.disableCheckbox(fieldName = "Propagate Fragment Changes Automatically");
+
+			SystemSettings.saveConfiguration();
 		}
 	}
 

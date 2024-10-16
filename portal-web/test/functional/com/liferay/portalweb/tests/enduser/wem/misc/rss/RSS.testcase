@@ -449,10 +449,6 @@ definition {
 	@priority = 4
 	@uitest
 	test EditRSSFeedViaAssetpublisherWhenSetFeedTimeToOne {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-		property testray.component.names = "Asset Publisher,RSS";
-
 		task ("Change the RSS Feed Time on System Settings") {
 			ApplicationsMenu.gotoPortlet(
 				category = "Configuration",

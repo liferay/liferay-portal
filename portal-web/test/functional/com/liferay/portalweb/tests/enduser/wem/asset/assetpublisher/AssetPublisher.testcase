@@ -592,9 +592,6 @@ definition {
 	@description = "LPS-135554 This test asserts that the Web Content Article Structures should appear after uncheck Search With Index configuration."
 	@priority = 4
 	test WebContentArticleStructuresCanAppearAfterUncheckingSearchWithIndexConfiguration {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
 		task ("Uncheck Search with Index Configuration") {
 			APNavigator.openToConfigInSystemSettings(portlet = "Asset Publisher");
 
@@ -626,6 +623,14 @@ definition {
 				assetSubtypeConfiguration = "Any",
 				selectedAsset = "Basic Web Content",
 				selectedAssetConfiguration = "Web Content Article");
+		}
+
+		task ("Reset Search with Index to default configuration") {
+			APNavigator.openToConfigInSystemSettings(portlet = "Asset Publisher");
+
+			FormFields.enableCheckbox(fieldName = "searchWithIndex");
+
+			SystemSettings.saveConfiguration();
 		}
 	}
 

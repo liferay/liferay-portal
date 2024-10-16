@@ -1780,9 +1780,6 @@ definition {
 	@priority = 3
 	@uitest
 	test ViewOpenOfficeFileTypeLinks {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
 		task ("Enable OpenOffice Integration") {
 			SystemSettings.openSystemSettingsAdmin();
 
@@ -1869,6 +1866,19 @@ definition {
 				documentTypes = "doc,odt,pdf,rtf,sxw,txt",
 				webContentContent = "WC WebContent Content",
 				webContentTitle = "WC WebContent Title");
+		}
+
+		task ("Reset OpenOffice Integration to default configuration") {
+			SystemSettings.openSystemSettingsAdmin();
+
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Connectors",
+				configurationName = "OpenOffice Integration",
+				configurationScope = "System Scope");
+
+			FormFields.disableCheckbox(fieldName = "serverEnabled");
+
+			SystemSettings.saveConfiguration();
 		}
 	}
 
