@@ -713,15 +713,13 @@ definition {
 		var userPassword = PropsUtil.get("default.admin.password");
 		var osgiConfigFileName = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration~KeycloakLimitedSession.config";
 
-		//removed the google openId connection (there needs a keycloak connection
+		task ("Startup Keycloak for test") {
+        	AntCommands.runCommand("build-test-keycloak.xml", "prepare-selenium-keycloak-server");
+        }
 
-		//task ("Startup Keycloak for test") {
-        		//	AntCommands.runCommand("build-test-keycloak.xml", "prepare-selenium-keycloak-server");
-        		//}
-
-        //task ("Add OIDC provider configuration") {
-        		//	AntCommands.runCommand("build-test-openid-connect.xml", "prepare-openid-connect-osgi-configuration -DopenIdConnectClientId=${openIdConnectClientId} -DopenIdConnectClientSecret=${openIdConnectClientSecret} -Dosgi.config.file.name=${osgiConfigFileName}");
-        		//}
+        task ("Add OIDC provider configuration") {
+        	AntCommands.runCommand("build-test-openid-connect.xml", "prepare-openid-connect-osgi-configuration -DopenIdConnectClientId=${openIdConnectClientId} -DopenIdConnectClientSecret=${openIdConnectClientSecret} -Dosgi.config.file.name=${osgiConfigFileName}");
+        }
 
 		task ("Logout and login with OpenID Connect") {
 			User.logoutPG();
