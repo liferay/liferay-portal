@@ -420,6 +420,8 @@ export default {
 		'The selected project does not meet the necessary resource requirements for this app. Please contact sales to request additional resources.',
 	'there-was-an-unexpected-error-while-attempting-to-deactivate-key-please-try-again-in-a-few-moments':
 		'There was an unexpected error while attempting to deactivate key. Please try again in a few moments.',
+	'this-app-is-already-installed-in-this-environment':
+		'This app is already installed in this environment.',
 	'this-field-is-required': 'This field is required',
 	'this-key-is-expired-and-cannot-be-downloaded':
 		'This key is expired and cannot be downloaded.',

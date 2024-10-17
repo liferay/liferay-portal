@@ -4,12 +4,15 @@
  */
 
 import ClayBadge from '@clayui/badge';
-import {UseFormSetValue} from 'react-hook-form';
-import {z} from 'zod';
+import { UseFormSetValue } from 'react-hook-form';
+import { useOutletContext } from 'react-router-dom';
+import { z } from 'zod';
 
 import RadioCard from '../../../../../../../components/RadioCardList/components/RadioCard';
+import i18n from '../../../../../../../i18n';
 import zodSchema from '../../../../../../../schema/zod';
-import {ConsoleUserProject} from '../../../../../../../services/oauth/types';
+import { ConsoleUserProject } from '../../../../../../../services/oauth/types';
+import { CloudProvisioningOutletContext } from '../pages/CloudProvisioningOutlet';
 
 type EnvironmentRadioProps = {
 	selectedEnvironment?: z.infer<
@@ -19,11 +22,18 @@ type EnvironmentRadioProps = {
 	setValue: UseFormSetValue<z.infer<typeof zodSchema.installProductSchema>>;
 };
 
+const CUSTOMFIELD_KEY = 'cloud-provisioning';
+
 const EnvironmentRadio: React.FC<EnvironmentRadioProps> = ({
 	selectedEnvironment,
 	selectedProject,
 	setValue,
 }) => {
+	const { placedOrder } = useOutletContext<CloudProvisioningOutletContext>();
+	const deploiments = JSON.parse(
+		placedOrder.customFields[CUSTOMFIELD_KEY]
+	)[0].deployments;
+
 	const handleSelectRadio = (selectedRadio: RadioOption<any>) => {
 		setValue('environment', selectedRadio.value);
 	};
@@ -34,12 +44,20 @@ const EnvironmentRadio: React.FC<EnvironmentRadioProps> = ({
 				const [projectName = '', environment = ''] =
 					projectEnvironment.projectId.split('-');
 
+				const hasDisabled = deploiments.find((deployment: any) => {
+					const [_, hasInstallationOnEnvironment = ''] =
+						deployment.projectId.split('-');
+
+					return hasInstallationOnEnvironment === environment;
+				});
+
 				return (
 					<RadioCard
 						activeRadio={
 							projectEnvironment.projectId ===
 							selectedEnvironment?.projectId
 						}
+						disabled={hasDisabled}
 						key={index}
 						leftRadio
 						selectRadio={() =>
@@ -50,16 +68,26 @@ const EnvironmentRadio: React.FC<EnvironmentRadioProps> = ({
 						}
 						title={
 							<>
-								<span className="h5 mr-3">
-									{projectName.toUpperCase()}
-								</span>
+								<div>
+									<span className="h5 mr-3">
+										{projectName.toUpperCase()}
+									</span>
 
-								<ClayBadge
-									className="text-uppercase"
-									label={environment}
-								>
-									{environment}
-								</ClayBadge>
+									<ClayBadge
+										className="text-uppercase"
+										label={environment}
+									>
+										{environment}
+									</ClayBadge>
+								</div>
+
+								{hasDisabled && (
+									<span className="text-red">
+										{i18n.translate(
+											'this-app-is-already-installed-in-this-environment'
+										)}
+									</span>
+								)}
 							</>
 						}
 					/>

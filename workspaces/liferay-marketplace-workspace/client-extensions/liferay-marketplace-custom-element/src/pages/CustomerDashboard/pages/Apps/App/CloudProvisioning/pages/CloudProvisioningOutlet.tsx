@@ -185,6 +185,7 @@ const CloudProvisioningOutlet = () => {
 								),
 							onSubmit: form.handleSubmit(onSubmit),
 							orderId,
+							placedOrder: orderInfo.data?.placedOrder,
 							projects,
 							selectedAccount,
 						}}
@@ -205,6 +206,7 @@ export type CloudProvisioningOutletContext = {
 	onClickCancel: () => void;
 	onSubmit: () => void;
 	orderId: number;
+	placedOrder: any;
 	projects: ConsoleUserProjectWithExtension[];
 	selectedAccount: ReturnType<typeof useAccount>;
 };

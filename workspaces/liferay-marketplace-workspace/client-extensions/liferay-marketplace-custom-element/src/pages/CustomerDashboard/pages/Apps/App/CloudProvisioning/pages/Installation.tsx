@@ -4,6 +4,7 @@
  */
 
 import ClayIcon from '@clayui/icon';
+import classNames from 'classnames';
 import {useEffect, useMemo} from 'react';
 import {useOutletContext} from 'react-router-dom';
 
@@ -100,17 +101,9 @@ const CloudProvisioningInstallation = () => {
 			className="align-items-center d-flex flex-column mt-5"
 			footerProps={{
 				backButtonProps: {
-					children: i18n.translate(
-						isLoading
-							? 'go-to-my-apps'
-							: isSubmitSuccessful
-								? 'go-to-app-provisioning'
-								: 'exit'
-					),
+					children: i18n.translate('go-to-app-provisioning'),
 					onClick: () =>
-						isLoading || !isSubmitSuccessful
-							? navigate('..')
-							: navigate(`/order/${orderId}/cloud-provisioning`),
+						navigate(`/order/${orderId}/cloud-provisioning`),
 				},
 				cancelButtonProps: {
 					children: <></>,
@@ -124,9 +117,12 @@ const CloudProvisioningInstallation = () => {
 								environment.projectId
 							)
 						),
-					...((isLoading || !isSubmitSuccessful) && {
-						className: 'd-none',
-					}),
+					...{
+						className: classNames({
+							'd-none': !isSubmitSuccessful,
+							'ml-3': !isLoading || isSubmitSuccessful,
+						}),
+					},
 				},
 			}}
 			title={status.title}
