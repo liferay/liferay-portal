@@ -205,15 +205,15 @@ definition {
 		var openIdConnectClientSecret = PropsUtil.get("openid.provider.keycloak.client.password.1");
 		var osgiConfigFileName = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration~KeycloakLimitedSession.config";
 
-		//task ("Startup Keycloak for test") { //just for windows run
-		//	AntCommands.runCommand("build-test-keycloak.xml", "prepare-selenium-keycloak-server");
-		//}
+		task ("Startup Keycloak for test") {
+			AntCommands.runCommand("build-test-keycloak.xml", "prepare-selenium-keycloak-server");
+		}
 
-		//task ("Add OIDC provider configuration and logout") { //just for ci run
-		//	AntCommands.runCommand("build-test-openid-connect.xml", "prepare-openid-connect-osgi-configuration -DopenIdConnectClientId=${openIdConnectClientId} -DopenIdConnectClientSecret=${openIdConnectClientSecret} -Dosgi.config.file.name=${osgiConfigFileName}");
+		task ("Add OIDC provider configuration and logout") {
+			AntCommands.runCommand("build-test-openid-connect.xml", "prepare-openid-connect-osgi-configuration -DopenIdConnectClientId=${openIdConnectClientId} -DopenIdConnectClientSecret=${openIdConnectClientSecret} -Dosgi.config.file.name=${osgiConfigFileName}");
 
 			User.logoutPG();
-		//}
+		}
 
 		task ("Login with User and wait till token's max idle time is over") {
 			User.loginUserWithOpenIDConnectEnabledPG(
@@ -646,7 +646,11 @@ definition {
 		var openIdConnectClientSecret = PropsUtil.get("openid.provider.keycloak.client.password.1");
         var userEmailAddress = "user1";
         var userPassword = PropsUtil.get("default.admin.password");
-		var osgiConfigFileName = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration~KeycloakLimitedSession.config";
+		var osgiConfigFileName = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration~default.config";
+
+		task ("Startup Keycloak for test") {
+			AntCommands.runCommand("build-test-keycloak.xml", "prepare-selenium-keycloak-server");
+		}
 
 		task ("Add CP") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
@@ -659,11 +663,11 @@ definition {
 			User.firstLoginUI(
 				domain = "www.able.com",
 				password = PropsUtil.get("default.admin.password"),
-				specificURL = "http://www.able.com:8443",
+				specificURL = "https://www.able.com:8443",
 				userEmailAddress = "test@www.able.com");
 
 			PortalSettings.gotoConfiguration(
-				baseURL = "http://www.able.com:8443",
+				baseURL = "https://www.able.com:8443",
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect",
 				configurationScope = "Virtual Instance Scope");
@@ -671,14 +675,26 @@ definition {
 			PortalSettings.enableOpenIDConnectCP();
 		}
 
+		task ("And: Add Auth Server Local Metadata") {
+			OAuthClient.openOAuthClientAdmin(
+				baseURL = "https://www.able.com:8443",
+				navbar = "Auth Server Local Metadata");
+
+			OAuthClient.addAuthServer(jsonFileName = "keycloak-local-metadata.json");
+
+			var wellknownURI = OAuthClient.getWellKnownURI();
+		}
+
 		task ("Add OAuth Client") {
 			OAuthClient.openOAuthClientAdmin(
-				baseURL = "http://www.able.com:8443",
+				baseURL = "https://www.able.com:8443",
 				navbar = "Clients");
 
-			//AntCommands.runCommand("build-test-openid-connect.xml", "prepare-openid-connect-json-configuration -DopenIdConnectClientSecret=${openIdConnectClientSecret} -Dosgi.config.file.name=${osgiConfigFileName}");
+			AntCommands.runCommand("build-test-openid-connect.xml", "prepare-openid-connect-json-configuration -DopenIdConnectClientSecret=${openIdConnectClientSecret} -Dosgi.config.file.name=${osgiConfigFileName}");
 
-			OAuthClient.addClient(jsonFileName = "keycloak.json");
+			OAuthClient.addClient(
+				jsonFileName = "keycloak1.json",
+				wellknownURI = ${wellknownURI});
 		}
 
 		task ("Sign out and Login at able.com with OpenID Connect enabled") {

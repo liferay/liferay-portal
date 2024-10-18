@@ -1,0 +1,21 @@
+{
+	"application_type": "web",
+	"client_id": "liferay-system-level",
+	"client_name": "liferay-system-level",
+	"client_secret": "",
+	"client_secret_expires_at": 0,
+	"grant_types": [
+		"authorization_code",
+		"refresh_token"
+	],
+	"id_token_signed_response_alg": "RS256",
+	"redirect_uris": [
+		"https://www.able.com:8443"
+	],
+	"response_types": [
+		"code"
+	],
+	"scope": "openid email profile",
+	"subject_type": "public",
+	"token_endpoint_auth_method": "client_secret_basic"
+}
