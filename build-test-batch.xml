@@ -3383,12 +3383,12 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
 
 			<if>
-				<equals arg1="${jdk.jdk.bundle.version}" arg2="none" />
+				<equals arg1="${java.jdk.bundle.version}" arg2="none" />
 				<then>
 					<property name="java.version" value="${java.jdk.default.runtime.version}" />
 				</then>
 				<else>
-					<property name="java.version" value="${jdk.jdk.bundle.version}" />
+					<property name="java.version" value="${java.jdk.bundle.version}" />
 				</else>
 			</if>
 
