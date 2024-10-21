@@ -429,6 +429,10 @@
 	</entity>
 	<entity local-service="true" name="DDMStructure" remote-service="true" uuid="true">
 
+		<!-- External reference code -->
+
+		<column name="externalReferenceCode" type="String" />
+
 		<!-- PK fields -->
 
 		<column name="structureId" primary="true" type="long" />
@@ -481,6 +485,11 @@
 		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="ERC_G_C" return-type="DDMStructure" unique="true">
+			<finder-column name="externalReferenceCode" />
+			<finder-column name="groupId" />
 			<finder-column name="classNameId" />
 		</finder>
 		<finder name="G_C_S" return-type="DDMStructure" unique="true">
