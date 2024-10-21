@@ -596,6 +596,17 @@ public class DDMServiceUpgradeStepRegistrator
 					_classNameLocalService, _dlFileEntryLocalService,
 					_fileEntryFriendlyURLResolver, _groupLocalService,
 					_userLocalService));
+
+		registry.register(
+			"5.6.1", "5.7.0",
+			new BaseExternalReferenceCodeUpgradeProcess() {
+
+				@Override
+				protected String[][] getTableAndPrimaryKeyColumnNames() {
+					return new String[][] {{"DDMStructure", "structureId"}};
+				}
+
+			});
 	}
 
 	@Activate
