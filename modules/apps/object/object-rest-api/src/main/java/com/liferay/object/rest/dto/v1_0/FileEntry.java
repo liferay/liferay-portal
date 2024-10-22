@@ -136,6 +136,51 @@ public class FileEntry implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _fileBase64Supplier;
 
+	@Schema(
+		description = "optional field that specifies the source of the file to be downloaded, can be embedded with nestedFields (the format of the nested field must be `<attachment field name>.fileSourceURL`)"
+	)
+	public String getFileSourceURL() {
+		if (_fileSourceURLSupplier != null) {
+			fileSourceURL = _fileSourceURLSupplier.get();
+
+			_fileSourceURLSupplier = null;
+		}
+
+		return fileSourceURL;
+	}
+
+	public void setFileSourceURL(String fileSourceURL) {
+		this.fileSourceURL = fileSourceURL;
+
+		_fileSourceURLSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFileSourceURL(
+		UnsafeSupplier<String, Exception> fileSourceURLUnsafeSupplier) {
+
+		_fileSourceURLSupplier = () -> {
+			try {
+				return fileSourceURLUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "optional field that specifies the source of the file to be downloaded, can be embedded with nestedFields (the format of the nested field must be `<attachment field name>.fileSourceURL`)"
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String fileSourceURL;
+
+	@JsonIgnore
+	private Supplier<String> _fileSourceURLSupplier;
+
 	@Schema
 	@Valid
 	public Folder getFolder() {
@@ -391,6 +436,22 @@ public class FileEntry implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(fileBase64));
+
+			sb.append("\"");
+		}
+
+		String fileSourceURL = getFileSourceURL();
+
+		if (fileSourceURL != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fileSourceURL\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(fileSourceURL));
 
 			sb.append("\"");
 		}
