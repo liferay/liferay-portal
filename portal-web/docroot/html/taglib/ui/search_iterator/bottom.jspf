@@ -109,7 +109,10 @@
 
 						var fixedHeaderEventHandler = function(event) {
 							var scrollTop = verticalScrollingContainer.scrollTop;
-							var trDomRecTop = trDomRect.top;
+
+							var trDomRect = fixedHeader.previousElementSibling.getBoundingClientRect();
+
+							var trDomRecTop = (trDomRect.top + 70);
 
 							if (fixedHeader.classList.contains('hide') && (scrollTop >= trDomRecTop)) {
 								fixedHeader.classList.remove('hide');
@@ -136,14 +139,7 @@
 				}
 			}
 
-			if (inModal) {
-				Liferay.Util.getOpener().Liferay.on('modalIframeLoaded', function () {
-					initFixedHeaderSync();
-				});
-			}
-			else {
-				initFixedHeaderSync();
-			}
+			initFixedHeaderSync();
 		</c:if>
 
 		searchContainer.updateDataStore(<%= primaryKeysJSONArray.toString() %>);
