@@ -35,6 +35,8 @@ components:
                     additionalProperties:
                         type: object
                     type: object
+                externalReferenceCode:
+                    type: string
                 id:
                     format: int64
                     type: integer
@@ -1479,6 +1481,98 @@ paths:
                   required: true
                   schema:
                       type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinition"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinition"
+            tags: ["DataDefinition"]
+    "/sites/{siteId}/data-definitions/by-content-type/{contentType}/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteSiteDataDefinitionByContentTypeByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: contentType
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["DataDefinition"]
+        get:
+            operationId: getSiteDataDefinitionByContentTypeByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: contentType
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinition"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataDefinition"
+            tags: ["DataDefinition"]
+        put:
+            operationId: putSiteDataDefinitionByContentTypeByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: contentType
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinition"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DataDefinition"
             responses:
                 200:
                     content:
