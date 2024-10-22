@@ -35,6 +35,12 @@ components:
                         optional field with the content of the document in Base64, can be embedded with nestedFields
                         (the format of the nested field must be `<attachment field name>.fileBase64`)
                     type: string
+                fileSourceURL:
+                    # @review
+                    description:
+                        optional field that specifies the source of the file to be downloaded, can be embedded with
+                        nestedFields (the format of the nested field must be `<attachment field name>.fileSourceURL`)
+                    type: string
                 folder:
                     $ref: "#/components/schemas/Folder"
                 id:
