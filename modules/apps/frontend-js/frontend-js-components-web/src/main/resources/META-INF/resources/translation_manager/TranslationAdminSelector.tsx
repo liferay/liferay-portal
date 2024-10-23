@@ -60,7 +60,7 @@ const TriggerButton = React.forwardRef(
 	) => {
 		const ariaLabelButton = sub(
 			Liferay.Language.get('select-a-language.-current-language-x'),
-			selectedItem.displayName
+			selectedItem?.displayName
 		);
 
 		return displayType === DISPLAY_TYPE.HORIZONTAL ? (
@@ -73,10 +73,10 @@ const TriggerButton = React.forwardRef(
 				size="sm"
 			>
 				<span className="inline-item-before">
-					<ClayIcon symbol={selectedItem.symbol} />
+					<ClayIcon symbol={selectedItem?.symbol} />
 				</span>
 
-				<span aria-hidden="true">{selectedItem.label}</span>
+				<span aria-hidden="true">{selectedItem?.label}</span>
 			</ClayButton>
 		) : (
 			<ClayButton
@@ -90,11 +90,11 @@ const TriggerButton = React.forwardRef(
 				title={Liferay.Language.get('select-a-language')}
 			>
 				<span className="inline-item">
-					<ClayIcon symbol={selectedItem.symbol} />
+					<ClayIcon symbol={selectedItem?.symbol} />
 				</span>
 
 				<span aria-hidden="true" className="btn-section">
-					{selectedItem.label}
+					{selectedItem?.label}
 				</span>
 			</ClayButton>
 		);
