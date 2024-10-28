@@ -107,6 +107,21 @@ public interface DataDefinitionResource {
 			Long siteId, String contentType, String dataDefinitionKey)
 		throws Exception;
 
+	public void deleteSiteDataDefinitionByContentTypeByExternalReferenceCode(
+			Long siteId, String contentType, String externalReferenceCode)
+		throws Exception;
+
+	public DataDefinition
+			getSiteDataDefinitionByContentTypeByExternalReferenceCode(
+				Long siteId, String contentType, String externalReferenceCode)
+		throws Exception;
+
+	public DataDefinition
+			putSiteDataDefinitionByContentTypeByExternalReferenceCode(
+				Long siteId, String contentType, String externalReferenceCode,
+				DataDefinition dataDefinition)
+		throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}

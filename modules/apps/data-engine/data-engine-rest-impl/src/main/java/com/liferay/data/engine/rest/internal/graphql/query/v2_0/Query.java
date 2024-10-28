@@ -146,7 +146,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {dataDefinition(dataDefinitionId: ___){availableLanguageIds, contentType, dataDefinitionFields, dataDefinitionKey, dataRules, dateCreated, dateModified, defaultDataLayout, defaultLanguageId, description, id, name, siteId, storageType, userId}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {dataDefinition(dataDefinitionId: ___){availableLanguageIds, contentType, dataDefinitionFields, dataDefinitionKey, dataRules, dateCreated, dateModified, defaultDataLayout, defaultLanguageId, description, externalReferenceCode, id, name, siteId, storageType, userId}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public DataDefinition dataDefinition(
@@ -209,7 +209,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {dataDefinitionByContentTypeByDataDefinitionKey(contentType: ___, dataDefinitionKey: ___, siteKey: ___){availableLanguageIds, contentType, dataDefinitionFields, dataDefinitionKey, dataRules, dateCreated, dateModified, defaultDataLayout, defaultLanguageId, description, id, name, siteId, storageType, userId}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {dataDefinitionByContentTypeByDataDefinitionKey(contentType: ___, dataDefinitionKey: ___, siteKey: ___){availableLanguageIds, contentType, dataDefinitionFields, dataDefinitionKey, dataRules, dateCreated, dateModified, defaultDataLayout, defaultLanguageId, description, externalReferenceCode, id, name, siteId, storageType, userId}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public DataDefinition dataDefinitionByContentTypeByDataDefinitionKey(
@@ -225,6 +225,28 @@ public class Query {
 				dataDefinitionResource.
 					getSiteDataDefinitionByContentTypeByDataDefinitionKey(
 						Long.valueOf(siteKey), contentType, dataDefinitionKey));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {dataDefinitionByContentTypeByExternalReferenceCode(contentType: ___, externalReferenceCode: ___, siteKey: ___){availableLanguageIds, contentType, dataDefinitionFields, dataDefinitionKey, dataRules, dateCreated, dateModified, defaultDataLayout, defaultLanguageId, description, externalReferenceCode, id, name, siteId, storageType, userId}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public DataDefinition dataDefinitionByContentTypeByExternalReferenceCode(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dataDefinitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataDefinitionResource ->
+				dataDefinitionResource.
+					getSiteDataDefinitionByContentTypeByExternalReferenceCode(
+						Long.valueOf(siteKey), contentType,
+						externalReferenceCode));
 	}
 
 	/**

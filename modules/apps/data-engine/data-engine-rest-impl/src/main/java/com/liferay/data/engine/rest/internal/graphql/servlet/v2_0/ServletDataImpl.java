@@ -151,6 +151,16 @@ public class ServletDataImpl implements ServletData {
 							DataDefinitionResourceImpl.class,
 							"postSiteDataDefinitionByContentType"));
 					put(
+						"mutation#deleteSiteDataDefinitionByContentTypeByExternalReferenceCode",
+						new ObjectValuePair<>(
+							DataDefinitionResourceImpl.class,
+							"deleteSiteDataDefinitionByContentTypeByExternalReferenceCode"));
+					put(
+						"mutation#updateSiteDataDefinitionByContentTypeByExternalReferenceCode",
+						new ObjectValuePair<>(
+							DataDefinitionResourceImpl.class,
+							"putSiteDataDefinitionByContentTypeByExternalReferenceCode"));
+					put(
 						"mutation#createDataDefinitionDataDefinitionFieldLinksPageExportBatch",
 						new ObjectValuePair<>(
 							DataDefinitionFieldLinkResourceImpl.class,
@@ -360,6 +370,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							DataDefinitionResourceImpl.class,
 							"getSiteDataDefinitionByContentTypeByDataDefinitionKey"));
+					put(
+						"query#dataDefinitionByContentTypeByExternalReferenceCode",
+						new ObjectValuePair<>(
+							DataDefinitionResourceImpl.class,
+							"getSiteDataDefinitionByContentTypeByExternalReferenceCode"));
 					put(
 						"query#dataDefinitionDataDefinitionFieldLinks",
 						new ObjectValuePair<>(

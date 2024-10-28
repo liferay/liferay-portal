@@ -232,6 +232,45 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean deleteSiteDataDefinitionByContentTypeByExternalReferenceCode(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_dataDefinitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataDefinitionResource ->
+				dataDefinitionResource.
+					deleteSiteDataDefinitionByContentTypeByExternalReferenceCode(
+						Long.valueOf(siteKey), contentType,
+						externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField
+	public DataDefinition
+			updateSiteDataDefinitionByContentTypeByExternalReferenceCode(
+				@GraphQLName("siteKey") @NotEmpty String siteKey,
+				@GraphQLName("contentType") String contentType,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("dataDefinition") DataDefinition dataDefinition)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dataDefinitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dataDefinitionResource ->
+				dataDefinitionResource.
+					putSiteDataDefinitionByContentTypeByExternalReferenceCode(
+						Long.valueOf(siteKey), contentType,
+						externalReferenceCode, dataDefinition));
+	}
+
+	@GraphQLField
 	public Response createDataDefinitionDataDefinitionFieldLinksPageExportBatch(
 			@GraphQLName("dataDefinitionId") Long dataDefinitionId,
 			@GraphQLName("fieldName") String fieldName,

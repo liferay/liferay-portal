@@ -171,6 +171,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		dataDefinition.setContentType(regex);
 		dataDefinition.setDataDefinitionKey(regex);
 		dataDefinition.setDefaultLanguageId(regex);
+		dataDefinition.setExternalReferenceCode(regex);
 		dataDefinition.setStorageType(regex);
 
 		String json = DataDefinitionSerDes.toJSON(dataDefinition);
@@ -182,6 +183,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		Assert.assertEquals(regex, dataDefinition.getContentType());
 		Assert.assertEquals(regex, dataDefinition.getDataDefinitionKey());
 		Assert.assertEquals(regex, dataDefinition.getDefaultLanguageId());
+		Assert.assertEquals(regex, dataDefinition.getExternalReferenceCode());
 		Assert.assertEquals(regex, dataDefinition.getStorageType());
 	}
 
@@ -1566,6 +1568,335 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		return testGraphQLDataDefinition_addDataDefinition();
 	}
 
+	@Test
+	public void testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DataDefinition dataDefinition =
+			testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition();
+
+		assertHttpResponseStatusCode(
+			204,
+			dataDefinitionResource.
+				deleteSiteDataDefinitionByContentTypeByExternalReferenceCodeHttpResponse(
+					testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						dataDefinition),
+					dataDefinition.getContentType(),
+					dataDefinition.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			dataDefinitionResource.
+				getSiteDataDefinitionByContentTypeByExternalReferenceCodeHttpResponse(
+					testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						dataDefinition),
+					dataDefinition.getContentType(),
+					dataDefinition.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			dataDefinitionResource.
+				getSiteDataDefinitionByContentTypeByExternalReferenceCodeHttpResponse(
+					testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						dataDefinition),
+					dataDefinition.getContentType(),
+					dataDefinition.getExternalReferenceCode()));
+	}
+
+	protected Long
+			testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+				DataDefinition dataDefinition)
+		throws Exception {
+
+		return dataDefinition.getSiteId();
+	}
+
+	protected DataDefinition
+			testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetSiteDataDefinitionByContentTypeByExternalReferenceCode()
+		throws Exception {
+
+		DataDefinition postDataDefinition =
+			testGetSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition();
+
+		DataDefinition getDataDefinition =
+			dataDefinitionResource.
+				getSiteDataDefinitionByContentTypeByExternalReferenceCode(
+					testGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						postDataDefinition),
+					postDataDefinition.getContentType(),
+					postDataDefinition.getExternalReferenceCode());
+
+		assertEquals(postDataDefinition, getDataDefinition);
+		assertValid(getDataDefinition);
+	}
+
+	protected Long
+			testGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+				DataDefinition dataDefinition)
+		throws Exception {
+
+		return dataDefinition.getSiteId();
+	}
+
+	protected DataDefinition
+			testGetSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode()
+		throws Exception {
+
+		DataDefinition dataDefinition =
+			testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				dataDefinition,
+				DataDefinitionSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"dataDefinitionByContentTypeByExternalReferenceCode",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"siteKey",
+											"\"" +
+												testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+													dataDefinition) + "\"");
+
+										put(
+											"contentType",
+											"\"" +
+												dataDefinition.
+													getContentType() + "\"");
+
+										put(
+											"externalReferenceCode",
+											"\"" +
+												dataDefinition.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/dataDefinitionByContentTypeByExternalReferenceCode"))));
+
+		// Using the namespace dataEngine_v2_0
+
+		Assert.assertTrue(
+			equals(
+				dataDefinition,
+				DataDefinitionSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"dataEngine_v2_0",
+								new GraphQLField(
+									"dataDefinitionByContentTypeByExternalReferenceCode",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"siteKey",
+												"\"" +
+													testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+														dataDefinition) + "\"");
+
+											put(
+												"contentType",
+												"\"" +
+													dataDefinition.
+														getContentType() +
+															"\"");
+
+											put(
+												"externalReferenceCode",
+												"\"" +
+													dataDefinition.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data", "JSONObject/dataEngine_v2_0",
+						"Object/dataDefinitionByContentTypeByExternalReferenceCode"))));
+	}
+
+	protected Long
+			testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+				DataDefinition dataDefinition)
+		throws Exception {
+
+		return dataDefinition.getSiteId();
+	}
+
+	@Test
+	public void testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCodeNotFound()
+		throws Exception {
+
+		String irrelevantContentType =
+			"\"" + RandomTestUtil.randomString() + "\"";
+		String irrelevantExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"dataDefinitionByContentTypeByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteKey",
+									"\"" + irrelevantGroup.getGroupId() + "\"");
+								put("contentType", irrelevantContentType);
+								put(
+									"externalReferenceCode",
+									irrelevantExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace dataEngine_v2_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"dataEngine_v2_0",
+						new GraphQLField(
+							"dataDefinitionByContentTypeByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"siteKey",
+										"\"" + irrelevantGroup.getGroupId() +
+											"\"");
+									put("contentType", irrelevantContentType);
+									put(
+										"externalReferenceCode",
+										irrelevantExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected DataDefinition
+			testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
+		throws Exception {
+
+		return testGraphQLDataDefinition_addDataDefinition();
+	}
+
+	@Test
+	public void testPutSiteDataDefinitionByContentTypeByExternalReferenceCode()
+		throws Exception {
+
+		DataDefinition postDataDefinition =
+			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition();
+
+		DataDefinition randomDataDefinition = randomDataDefinition();
+
+		DataDefinition putDataDefinition =
+			dataDefinitionResource.
+				putSiteDataDefinitionByContentTypeByExternalReferenceCode(
+					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						postDataDefinition),
+					postDataDefinition.getContentType(),
+					postDataDefinition.getExternalReferenceCode(),
+					randomDataDefinition);
+
+		assertEquals(randomDataDefinition, putDataDefinition);
+		assertValid(putDataDefinition);
+
+		DataDefinition getDataDefinition =
+			dataDefinitionResource.
+				getSiteDataDefinitionByContentTypeByExternalReferenceCode(
+					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						putDataDefinition),
+					putDataDefinition.getContentType(),
+					putDataDefinition.getExternalReferenceCode());
+
+		assertEquals(randomDataDefinition, getDataDefinition);
+		assertValid(getDataDefinition);
+
+		DataDefinition newDataDefinition =
+			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_createDataDefinition();
+
+		putDataDefinition =
+			dataDefinitionResource.
+				putSiteDataDefinitionByContentTypeByExternalReferenceCode(
+					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						newDataDefinition),
+					newDataDefinition.getContentType(),
+					newDataDefinition.getExternalReferenceCode(),
+					newDataDefinition);
+
+		assertEquals(newDataDefinition, putDataDefinition);
+		assertValid(putDataDefinition);
+
+		getDataDefinition =
+			dataDefinitionResource.
+				getSiteDataDefinitionByContentTypeByExternalReferenceCode(
+					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+						putDataDefinition),
+					putDataDefinition.getContentType(),
+					putDataDefinition.getExternalReferenceCode());
+
+		assertEquals(newDataDefinition, getDataDefinition);
+
+		Assert.assertEquals(
+			newDataDefinition.getExternalReferenceCode(),
+			putDataDefinition.getExternalReferenceCode());
+	}
+
+	protected Long
+			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
+				DataDefinition dataDefinition)
+		throws Exception {
+
+		return dataDefinition.getSiteId();
+	}
+
+	protected DataDefinition
+			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_createDataDefinition()
+		throws Exception {
+
+		return randomDataDefinition();
+	}
+
+	protected DataDefinition
+			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected DataDefinition testGraphQLDataDefinition_addDataDefinition()
 		throws Exception {
 
@@ -1735,6 +2066,16 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (dataDefinition.getDescription() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (dataDefinition.getExternalReferenceCode() == null) {
 					valid = false;
 				}
 
@@ -2005,6 +2346,19 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				if (!equals(
 						(Map)dataDefinition1.getDescription(),
 						(Map)dataDefinition2.getDescription())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						dataDefinition1.getExternalReferenceCode(),
+						dataDefinition2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -2388,6 +2742,52 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = dataDefinition.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2506,6 +2906,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				defaultLanguageId = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				siteId = testGroup.getGroupId();
