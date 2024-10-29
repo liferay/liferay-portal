@@ -69,7 +69,7 @@ public class DDMStructureCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(45);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -77,6 +77,8 @@ public class DDMStructureCacheModel
 		sb.append(ctCollectionId);
 		sb.append(", uuid=");
 		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", structureId=");
 		sb.append(structureId);
 		sb.append(", groupId=");
@@ -132,6 +134,13 @@ public class DDMStructureCacheModel
 		}
 		else {
 			ddmStructureImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			ddmStructureImpl.setExternalReferenceCode("");
+		}
+		else {
+			ddmStructureImpl.setExternalReferenceCode(externalReferenceCode);
 		}
 
 		ddmStructureImpl.setStructureId(structureId);
@@ -242,6 +251,7 @@ public class DDMStructureCacheModel
 
 		ctCollectionId = objectInput.readLong();
 		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		structureId = objectInput.readLong();
 
@@ -288,6 +298,13 @@ public class DDMStructureCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(structureId);
@@ -374,6 +391,7 @@ public class DDMStructureCacheModel
 	public long mvccVersion;
 	public long ctCollectionId;
 	public String uuid;
+	public String externalReferenceCode;
 	public long structureId;
 	public long groupId;
 	public long companyId;

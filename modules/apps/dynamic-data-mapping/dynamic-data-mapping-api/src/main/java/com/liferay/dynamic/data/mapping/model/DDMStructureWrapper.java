@@ -39,6 +39,7 @@ public class DDMStructureWrapper
 		attributes.put("mvccVersion", getMvccVersion());
 		attributes.put("ctCollectionId", getCtCollectionId());
 		attributes.put("uuid", getUuid());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put("structureId", getStructureId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
@@ -80,6 +81,13 @@ public class DDMStructureWrapper
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long structureId = (Long)attributes.get("structureId");
@@ -403,6 +411,16 @@ public class DDMStructureWrapper
 	@Override
 	public Map<java.util.Locale, String> getDescriptionMap() {
 		return model.getDescriptionMap();
+	}
+
+	/**
+	 * Returns the external reference code of this ddm structure.
+	 *
+	 * @return the external reference code of this ddm structure
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
 	}
 
 	@Override
@@ -969,6 +987,16 @@ public class DDMStructureWrapper
 		java.util.Locale defaultLocale) {
 
 		model.setDescriptionMap(descriptionMap, defaultLocale);
+	}
+
+	/**
+	 * Sets the external reference code of this ddm structure.
+	 *
+	 * @param externalReferenceCode the external reference code of this ddm structure
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
 	}
 
 	/**
