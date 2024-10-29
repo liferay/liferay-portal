@@ -8,6 +8,7 @@ package com.liferay.dynamic.data.mapping.service.impl;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
+import com.liferay.dynamic.data.mapping.exception.DuplicateDDMStructureExternalReferenceCodeException;
 import com.liferay.dynamic.data.mapping.exception.InvalidParentStructureException;
 import com.liferay.dynamic.data.mapping.exception.InvalidStructureVersionException;
 import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
@@ -68,6 +69,7 @@ import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
@@ -162,91 +164,10 @@ public class DDMStructureLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		// Structure
-
-		User user = _userLocalService.getUser(userId);
-
-		if (Validator.isNull(structureKey)) {
-			structureKey = String.valueOf(counterLocalService.increment());
-		}
-		else {
-			structureKey = StringUtil.toUpperCase(structureKey.trim());
-		}
-
-		if (classNameId == _classNameLocalService.getClassNameId(
-				JournalArticle.class)) {
-
-			long parentStructureLayoutId = 0;
-
-			if (parentStructureId > 0) {
-				DDMStructure ddmStructure = fetchDDMStructure(
-					parentStructureId);
-
-				parentStructureLayoutId =
-					ddmStructure.getDefaultDDMStructureLayoutId();
-			}
-
-			ddmForm = _ddmDataDefinitionConverter.convertDDMFormDataDefinition(
-				ddmForm, parentStructureId, parentStructureLayoutId);
-
-			if (ddmFormLayout != null) {
-				ddmFormLayout =
-					_ddmDataDefinitionConverter.
-						convertDDMFormLayoutDataDefinition(
-							ddmForm, ddmFormLayout);
-			}
-		}
-
-		_validate(
-			groupId, parentStructureId, classNameId, structureKey, nameMap,
-			ddmForm);
-
-		DDMStructure structure = _addStructure(
-			user, groupId, parentStructureId, classNameId, structureKey,
-			nameMap, descriptionMap, ddmForm, storageType, type,
+		return addStructure(
+			null, userId, groupId, parentStructureId, classNameId, structureKey,
+			nameMap, descriptionMap, ddmForm, ddmFormLayout, storageType, type,
 			serviceContext);
-
-		// Resources
-
-		if (serviceContext.isAddGroupPermissions() ||
-			serviceContext.isAddGuestPermissions()) {
-
-			addStructureResources(
-				structure, serviceContext.isAddGroupPermissions(),
-				serviceContext.isAddGuestPermissions());
-		}
-		else {
-			addStructureResources(
-				structure, serviceContext.getModelPermissions());
-		}
-
-		// Structure version
-
-		DDMStructureVersion structureVersion = _addStructureVersion(
-			user, structure, DDMStructureConstants.VERSION_DEFAULT,
-			serviceContext);
-
-		// Structure layout
-
-		if (ddmFormLayout != null) {
-			DDMStructureLayout structureLayout =
-				_ddmStructureLayoutLocalService.addStructureLayout(
-					userId, groupId, structureVersion.getStructureVersionId(),
-					ddmFormLayout, serviceContext);
-
-			structureLayout.setClassNameId(structure.getClassNameId());
-			structureLayout.setStructureLayoutKey(structure.getStructureKey());
-
-			_ddmStructureLayoutLocalService.updateDDMStructureLayout(
-				structureLayout);
-		}
-
-		// Data provider instance links
-
-		_addDataProviderInstanceLinks(
-			groupId, structure.getStructureId(), ddmForm);
-
-		return structure;
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -267,28 +188,13 @@ public class DDMStructureLocalServiceImpl
 			structureKey = StringUtil.toUpperCase(structureKey.trim());
 		}
 
-		long structureId = counterLocalService.increment();
+		DDMStructure structure = _addStructure(
+			null, user, groupId, parentStructureId, classNameId, structureKey,
+			LocaleUtil.getSiteDefault(), nameMap, descriptionMap, definition,
+			storageType, DDMStructureConstants.TYPE_DEFAULT, serviceContext);
 
-		DDMStructure structure = ddmStructurePersistence.create(structureId);
-
-		structure.setUuid(serviceContext.getUuid());
-		structure.setGroupId(groupId);
-		structure.setCompanyId(user.getCompanyId());
-		structure.setUserId(user.getUserId());
-		structure.setUserName(user.getFullName());
-		structure.setVersionUserId(user.getUserId());
-		structure.setVersionUserName(user.getFullName());
 		structure.setCreateDate(new Date());
 		structure.setModifiedDate(new Date());
-		structure.setParentStructureId(parentStructureId);
-		structure.setClassNameId(classNameId);
-		structure.setStructureKey(structureKey);
-		structure.setVersion(DDMStructureConstants.VERSION_DEFAULT);
-		structure.setNameMap(nameMap);
-		structure.setDescriptionMap(descriptionMap);
-		structure.setDefinition(definition);
-		structure.setStorageType(storageType);
-		structure.setType(DDMStructureConstants.TYPE_DEFAULT);
 
 		structure = ddmStructurePersistence.update(structure);
 
@@ -336,6 +242,105 @@ public class DDMStructureLocalServiceImpl
 			userId, groupId, parentStructureId, classNameId, structureKey,
 			nameMap, descriptionMap, ddmForm, ddmFormLayout, storageType, type,
 			serviceContext);
+	}
+
+	public DDMStructure addStructure(
+			String externalReferenceCode, long userId, long groupId,
+			long parentStructureId, long classNameId, String structureKey,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			DDMForm ddmForm, DDMFormLayout ddmFormLayout, String storageType,
+			int type, ServiceContext serviceContext)
+		throws PortalException {
+
+		// Structure
+
+		User user = _userLocalService.getUser(userId);
+
+		if (Validator.isNull(structureKey)) {
+			structureKey = String.valueOf(counterLocalService.increment());
+		}
+		else {
+			structureKey = StringUtil.toUpperCase(structureKey.trim());
+		}
+
+		if (classNameId == _classNameLocalService.getClassNameId(
+				JournalArticle.class)) {
+
+			long parentStructureLayoutId = 0;
+
+			if (parentStructureId > 0) {
+				DDMStructure ddmStructure = fetchDDMStructure(
+					parentStructureId);
+
+				parentStructureLayoutId =
+					ddmStructure.getDefaultDDMStructureLayoutId();
+			}
+
+			ddmForm = _ddmDataDefinitionConverter.convertDDMFormDataDefinition(
+				ddmForm, parentStructureId, parentStructureLayoutId);
+
+			if (ddmFormLayout != null) {
+				ddmFormLayout =
+					_ddmDataDefinitionConverter.
+						convertDDMFormLayoutDataDefinition(
+							ddmForm, ddmFormLayout);
+			}
+		}
+
+		_validateExternalReferenceCode(
+			externalReferenceCode, groupId, classNameId);
+
+		_validate(
+			groupId, parentStructureId, classNameId, structureKey, nameMap,
+			ddmForm);
+
+		DDMStructure structure = _addStructure(
+			externalReferenceCode, user, groupId, parentStructureId,
+			classNameId, structureKey, ddmForm.getDefaultLocale(), nameMap,
+			descriptionMap, _serializeJSONDDMForm(ddmForm), storageType, type,
+			serviceContext);
+
+		// Resources
+
+		if (serviceContext.isAddGroupPermissions() ||
+			serviceContext.isAddGuestPermissions()) {
+
+			addStructureResources(
+				structure, serviceContext.isAddGroupPermissions(),
+				serviceContext.isAddGuestPermissions());
+		}
+		else {
+			addStructureResources(
+				structure, serviceContext.getModelPermissions());
+		}
+
+		// Structure version
+
+		DDMStructureVersion structureVersion = _addStructureVersion(
+			user, structure, DDMStructureConstants.VERSION_DEFAULT,
+			serviceContext);
+
+		// Structure layout
+
+		if (ddmFormLayout != null) {
+			DDMStructureLayout structureLayout =
+				_ddmStructureLayoutLocalService.addStructureLayout(
+					userId, groupId, structureVersion.getStructureVersionId(),
+					ddmFormLayout, serviceContext);
+
+			structureLayout.setClassNameId(structure.getClassNameId());
+			structureLayout.setStructureLayoutKey(structure.getStructureKey());
+
+			_ddmStructureLayoutLocalService.updateDDMStructureLayout(
+				structureLayout);
+		}
+
+		// Data provider instance links
+
+		_addDataProviderInstanceLinks(
+			groupId, structure.getStructureId(), ddmForm);
+
+		return structure;
 	}
 
 	/**
@@ -418,13 +423,15 @@ public class DDMStructureLocalServiceImpl
 			sourceStructure.getClassNameId(), structureKey, nameMap,
 			sourceStructure.getDDMForm());
 
+		DDMForm ddmForm = sourceStructure.getDDMForm();
+
 		DDMStructure targetStructure = _addStructure(
-			user, sourceStructure.getGroupId(),
+			null, user, sourceStructure.getGroupId(),
 			sourceStructure.getParentStructureId(),
-			sourceStructure.getClassNameId(), structureKey, nameMap,
-			descriptionMap, sourceStructure.getDDMForm(),
-			sourceStructure.getStorageType(), sourceStructure.getType(),
-			serviceContext);
+			sourceStructure.getClassNameId(), structureKey,
+			ddmForm.getDefaultLocale(), nameMap, descriptionMap,
+			_serializeJSONDDMForm(ddmForm), sourceStructure.getStorageType(),
+			sourceStructure.getType(), serviceContext);
 
 		// Resources
 
@@ -612,6 +619,20 @@ public class DDMStructureLocalServiceImpl
 		ddmStructureLocalService.deleteStructure(structure);
 	}
 
+	@Override
+	public void deleteStructure(
+			String externalReferenceCode, long groupId, long classNameId)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-34651")) {
+			throw new UnsupportedOperationException();
+		}
+
+		ddmStructureLocalService.deleteStructure(
+			ddmStructurePersistence.findByERC_G_C(
+				externalReferenceCode, groupId, classNameId));
+	}
+
 	/**
 	 * Deletes all the structures of the group.
 	 *
@@ -726,6 +747,18 @@ public class DDMStructureLocalServiceImpl
 		}
 
 		return null;
+	}
+
+	@Override
+	public DDMStructure fetchStructure(
+		String externalReferenceCode, long groupId, long classNameId) {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-34651")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return ddmStructurePersistence.fetchByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
 	}
 
 	@Override
@@ -928,6 +961,19 @@ public class DDMStructureLocalServiceImpl
 		long groupId, String name, String description) {
 
 		return ddmStructurePersistence.findByG_N_D(groupId, name, description);
+	}
+
+	@Override
+	public DDMStructure getStructure(
+			String externalReferenceCode, long groupId, long classNameId)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-34651")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return ddmStructurePersistence.findByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
 	}
 
 	@Override
@@ -1557,41 +1603,44 @@ public class DDMStructureLocalServiceImpl
 		DDMStructure structure = ddmStructurePersistence.findByPrimaryKey(
 			structureId);
 
-		User user = _userLocalService.getUser(userId);
+		return _updateStructure(
+			userId, structureId, parentStructureId, structureKey, nameMap,
+			descriptionMap, definition, structure, serviceContext);
+	}
 
-		structure.setUserId(userId);
-		structure.setParentStructureId(parentStructureId);
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public DDMStructure updateStructure(
+			String externalReferenceCode, long userId, long groupId,
+			long structureId, long parentStructureId, long classNameId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			DDMForm ddmForm, DDMFormLayout ddmFormLayout,
+			ServiceContext serviceContext)
+		throws PortalException {
 
-		if (Validator.isNotNull(structureKey)) {
-			structureKey = StringUtil.toUpperCase(structureKey.trim());
+		return _updateStructure(
+			userId, parentStructureId, nameMap, descriptionMap, ddmForm,
+			ddmFormLayout, serviceContext,
+			_addStructureExternalReferenceCode(
+				externalReferenceCode, groupId, structureId, classNameId));
+	}
 
-			_validateStructureKey(
-				structureId, structure.getGroupId(), structure.getClassNameId(),
-				structureKey);
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public DDMStructure updateStructure(
+			String externalReferenceCode, long userId, long groupId,
+			long structureId, long parentStructureId, long classNameId,
+			String structureKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, String definition,
+			ServiceContext serviceContext)
+		throws PortalException {
 
-			structure.setStructureKey(structureKey);
-		}
-
-		DDMStructureVersion latestStructureVersion =
-			_ddmStructureVersionLocalService.getLatestStructureVersion(
-				structure.getStructureId());
-
-		structure.setVersion(latestStructureVersion.getVersion());
-
-		structure.setVersionUserId(user.getUserId());
-		structure.setVersionUserName(user.getFullName());
-		structure.setModifiedDate(new Date());
-		structure.setNameMap(
-			nameMap,
-			LocaleUtil.fromLanguageId(structure.getDefaultLanguageId()));
-		structure.setDescriptionMap(descriptionMap);
-		structure.setDefinition(definition);
-
-		structure = ddmStructurePersistence.update(structure);
-
-		_reindexStructure(structure, serviceContext);
-
-		return structure;
+		return _updateStructure(
+			userId, structureId, parentStructureId, structureKey, nameMap,
+			descriptionMap, definition,
+			_addStructureExternalReferenceCode(
+				externalReferenceCode, groupId, structureId, classNameId),
+			serviceContext);
 	}
 
 	@Activate
@@ -1615,9 +1664,10 @@ public class DDMStructureLocalServiceImpl
 	}
 
 	private DDMStructure _addStructure(
-			User user, long groupId, long parentStructureId, long classNameId,
-			String structureKey, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, DDMForm ddmForm,
+			String externalReferenceCode, User user, long groupId,
+			long parentStructureId, long classNameId, String structureKey,
+			Locale locale, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, String definition,
 			String storageType, int type, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -1626,6 +1676,11 @@ public class DDMStructureLocalServiceImpl
 		DDMStructure structure = ddmStructurePersistence.create(structureId);
 
 		structure.setUuid(serviceContext.getUuid());
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-34651")) {
+			structure.setExternalReferenceCode(externalReferenceCode);
+		}
+
 		structure.setGroupId(groupId);
 		structure.setCompanyId(user.getCompanyId());
 		structure.setUserId(user.getUserId());
@@ -1636,13 +1691,29 @@ public class DDMStructureLocalServiceImpl
 		structure.setClassNameId(classNameId);
 		structure.setStructureKey(structureKey);
 		structure.setVersion(DDMStructureConstants.VERSION_DEFAULT);
-		structure.setNameMap(nameMap, ddmForm.getDefaultLocale());
-		structure.setDescriptionMap(descriptionMap, ddmForm.getDefaultLocale());
-		structure.setDefinition(_serializeJSONDDMForm(ddmForm));
+		structure.setNameMap(nameMap, locale);
+		structure.setDescriptionMap(descriptionMap, locale);
+		structure.setDefinition(definition);
 		structure.setStorageType(storageType);
 		structure.setType(type);
 
 		return ddmStructurePersistence.update(structure);
+	}
+
+	private DDMStructure _addStructureExternalReferenceCode(
+			String externalReferenceCode, long groupId, long structureId,
+			long classNameId)
+		throws PortalException {
+
+		DDMStructure structure = ddmStructurePersistence.findByPrimaryKey(
+			structureId);
+
+		_validateExternalReferenceCode(
+			externalReferenceCode, groupId, classNameId);
+
+		structure.setExternalReferenceCode(externalReferenceCode);
+
+		return structure;
 	}
 
 	private DDMStructureVersion _addStructureVersion(
@@ -2062,6 +2133,50 @@ public class DDMStructureLocalServiceImpl
 	}
 
 	private DDMStructure _updateStructure(
+			long userId, long structureId, long parentStructureId,
+			String structureKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, String definition,
+			DDMStructure structure, ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = _userLocalService.getUser(userId);
+
+		structure.setUserId(userId);
+		structure.setParentStructureId(parentStructureId);
+
+		if (Validator.isNotNull(structureKey)) {
+			structureKey = StringUtil.toUpperCase(structureKey.trim());
+
+			_validateStructureKey(
+				structureId, structure.getGroupId(), structure.getClassNameId(),
+				structureKey);
+
+			structure.setStructureKey(structureKey);
+		}
+
+		DDMStructureVersion latestStructureVersion =
+			_ddmStructureVersionLocalService.getLatestStructureVersion(
+				structure.getStructureId());
+
+		structure.setVersion(latestStructureVersion.getVersion());
+
+		structure.setVersionUserId(user.getUserId());
+		structure.setVersionUserName(user.getFullName());
+		structure.setModifiedDate(new Date());
+		structure.setNameMap(
+			nameMap,
+			LocaleUtil.fromLanguageId(structure.getDefaultLanguageId()));
+		structure.setDescriptionMap(descriptionMap);
+		structure.setDefinition(definition);
+
+		structure = ddmStructurePersistence.update(structure);
+
+		_reindexStructure(structure, serviceContext);
+
+		return structure;
+	}
+
+	private DDMStructure _updateStructure(
 			long userId, long parentStructureId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, DDMForm ddmForm,
 			DDMFormLayout ddmFormLayout, ServiceContext serviceContext,
@@ -2286,6 +2401,29 @@ public class DDMStructureLocalServiceImpl
 				_language.getAvailableLocales());
 
 			throw localeException;
+		}
+	}
+
+	private void _validateExternalReferenceCode(
+		String externalReferenceCode, long groupId, long classNameId) {
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return;
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-34651")) {
+			throw new UnsupportedOperationException();
+		}
+
+		DDMStructure structure = ddmStructurePersistence.fetchByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
+
+		if (structure != null) {
+			throw new DuplicateDDMStructureExternalReferenceCodeException(
+				StringBundler.concat(
+					"Duplicate structure with the external reference code \"",
+					externalReferenceCode, "\" and class name ID \"",
+					classNameId, "\" on site ID \"", groupId, "\""));
 		}
 	}
 
