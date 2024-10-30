@@ -43,4 +43,24 @@ export const ALLOWED_UNMODIFIABLE_OBJECTS = Liferay.FeatureFlags['LPD-21414']
 	? ['L_ACCOUNT', 'L_USER']
 	: [];
 
+export const ALLOWED_BUSINESS_TYPES = [
+	'Aggregation',
+	'Attachment',
+	'Date',
+	'DateTime',
+	'Decimal',
+	'Encrypted',
+	'Formula',
+	'Integer',
+	'LongInteger',
+	'LongText',
+	'MultiselectPicklist',
+	'Picklist',
+	'PrecisionDecimal',
+	'Record',
+	'RichText',
+	'Text',
+	'Workflow Status',
+];
+
 export const UNSUPPORTED_BUSINESS_TYPES = ['Record'];
