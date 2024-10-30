@@ -12,8 +12,8 @@ import React, {Dispatch, SetStateAction} from 'react';
 
 import EditAPIPropertyModalContent from './modals/EditAPIPropertyModalContent';
 import {
+	ALLOWED_BUSINESS_TYPES,
 	BUSINESS_TYPES_TO_SYMBOLS,
-	UNSUPPORTED_BUSINESS_TYPES,
 } from './utils/constants';
 
 interface PropertiesTreeViewProps {
@@ -33,7 +33,10 @@ export default function PropertiesTreeView({
 	setSchemaUIData,
 }: PropertiesTreeViewProps) {
 	const getIconName = (businessType: ObjectFieldBusinessType) => {
-		if (businessType) {
+		if (
+			businessType &&
+			Object.keys(BUSINESS_TYPES_TO_SYMBOLS).includes(businessType)
+		) {
 			return BUSINESS_TYPES_TO_SYMBOLS[businessType];
 		}
 
@@ -178,9 +181,7 @@ export default function PropertiesTreeView({
 								{objectFieldName ? objectFieldName : name}
 							</span>
 
-							{UNSUPPORTED_BUSINESS_TYPES.includes(
-								businessType
-							) && (
+							{!ALLOWED_BUSINESS_TYPES.includes(businessType) && (
 								<ClayTooltipProvider>
 									<span
 										className="inline-item-after"
@@ -198,7 +199,7 @@ export default function PropertiesTreeView({
 
 							<span className="text-truncate treeview-item-path">
 								&nbsp;
-								{!UNSUPPORTED_BUSINESS_TYPES.includes(
+								{ALLOWED_BUSINESS_TYPES.includes(
 									businessType
 								) &&
 									`(${objectDefinitionName}.${objectFieldName})`}
