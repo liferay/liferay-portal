@@ -52,9 +52,10 @@ public class OpenAPIUtil {
 
 	public static String formatSingular(ConfigYAML configYAML, String s) {
 		if (ConfigUtil.isVersionCompatible(configYAML, 6)) {
-			String lowerCaseS = StringUtil.lowerCase(s);
 
-			if (StringUtil.endsWith(lowerCaseS, "address")) {
+			// words already singular
+
+			if (s.endsWith("ss")) {
 				return s;
 			}
 		}
