@@ -1618,11 +1618,15 @@ public class DDMStructureLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		DDMStructure structure = ddmStructurePersistence.findByPrimaryKey(
+			structureId);
+
+		_setExternalReferenceCode(
+			externalReferenceCode, groupId, classNameId, structure);
+
 		return _updateStructure(
 			userId, parentStructureId, nameMap, descriptionMap, ddmForm,
-			ddmFormLayout, serviceContext,
-			_addStructureExternalReferenceCode(
-				externalReferenceCode, groupId, structureId, classNameId));
+			ddmFormLayout, serviceContext, structure);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1635,12 +1639,15 @@ public class DDMStructureLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		DDMStructure structure = ddmStructurePersistence.findByPrimaryKey(
+			structureId);
+
+		_setExternalReferenceCode(
+			externalReferenceCode, groupId, classNameId, structure);
+
 		return _updateStructure(
 			userId, structureId, parentStructureId, structureKey, nameMap,
-			descriptionMap, definition,
-			_addStructureExternalReferenceCode(
-				externalReferenceCode, groupId, structureId, classNameId),
-			serviceContext);
+			descriptionMap, definition, structure, serviceContext);
 	}
 
 	@Activate
@@ -1698,22 +1705,6 @@ public class DDMStructureLocalServiceImpl
 		structure.setType(type);
 
 		return ddmStructurePersistence.update(structure);
-	}
-
-	private DDMStructure _addStructureExternalReferenceCode(
-			String externalReferenceCode, long groupId, long structureId,
-			long classNameId)
-		throws PortalException {
-
-		DDMStructure structure = ddmStructurePersistence.findByPrimaryKey(
-			structureId);
-
-		_validateExternalReferenceCode(
-			externalReferenceCode, groupId, classNameId);
-
-		structure.setExternalReferenceCode(externalReferenceCode);
-
-		return structure;
 	}
 
 	private DDMStructureVersion _addStructureVersion(
@@ -2081,6 +2072,16 @@ public class DDMStructureLocalServiceImpl
 			_jsonDDMFormSerializer.serialize(builder.build());
 
 		return ddmFormSerializerSerializeResponse.getContent();
+	}
+
+	private void _setExternalReferenceCode(
+		String externalReferenceCode, long groupId, long classNameId,
+		DDMStructure structure) {
+
+		_validateExternalReferenceCode(
+			externalReferenceCode, groupId, classNameId);
+
+		structure.setExternalReferenceCode(externalReferenceCode);
 	}
 
 	private void _syncStructureTemplatesFields(DDMStructure structure) {
