@@ -153,16 +153,18 @@ export class JournalEditArticlePage {
 		await clickAndExpectToBeVisible({
 			autoClick: true,
 			target: this.page.getByRole('menuitem', {
-				name: existingArticle ? 'Publish' : 'Publish With Permissions',
+				name: existingArticle
+					? /publish|publier/i
+					: /publish with permissions|publier avec permissions/i,
 			}),
 			trigger: this.page.getByRole('button', {
-				name: 'Select and Confirm Publish Settings',
+				name: /select and confirm publish settings|sélectionnez et confirmez les/i,
 			}),
 		});
 
 		if (!existingArticle) {
 			await this.page
-				.getByRole('button', {exact: true, name: 'Publish'})
+				.locator('[role="dialog"]').getByRole('button', { name: /publish|publier/i })
 				.click();
 		}
 	}
@@ -198,14 +200,13 @@ export class JournalEditArticlePage {
 		await this.fillTitle(title);
 		await this.fillFriendlyURL('test');
 
-		await this.publishButton.click();
+		await this.publishArticle();
 		await expect(this.page.getByTitle(title, {exact: true})).toBeVisible();
 	}
 
 	async createWCWithBasicPublishButton(articleTitle: string) {
 		await this.titleInput.fill(articleTitle);
-		await this.publishButton.waitFor();
-		await this.publishButton.click();
+		this.publishArticle();
 
 		await waitForAlert(
 			this.page,
@@ -243,7 +244,7 @@ export class JournalEditArticlePage {
 			.nth(1)
 			.fill('Duplicated Text Field');
 
-		await this.publishButton.click();
+		await this.publishArticle()
 	}
 
 	async fillTitle(title: string) {

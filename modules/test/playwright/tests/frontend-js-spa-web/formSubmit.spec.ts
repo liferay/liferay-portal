@@ -87,7 +87,7 @@ test(
 				.getByRole('textbox')
 				.fill(content);
 
-			await journalEditArticlePage.publishButton.click();
+			await journalEditArticlePage.publishArticle();
 		});
 
 		await test.step('Set Safari as the browser and check submit buttons in form', async () => {

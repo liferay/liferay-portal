@@ -685,7 +685,7 @@ autoSaveTest(
 );
 
 autosaveWithoutPermissionsTest(
-	'Web Content is published when Feature Flag LPD-11228 is enabled but LPD-15596 is disabled',
+	'Web Content is published when Feature Flag LPD-11228 is enabled',
 	{
 		tag: '@LPD-37606',
 	},
@@ -710,7 +710,11 @@ autosaveWithoutPermissionsTest(
 
 		const articleTitle = 'Web Content Title';
 
-		await journalEditArticlePage.publishButton.click();
+		await journalEditArticlePage.page.getByRole('button', {
+			name: 'select and confirm publish settings'}).click();
+		await journalEditArticlePage.page.getByRole('menuitem', {
+			name: 'publish with permissions'}).click();
+
 
 		await expect(
 			page.getByText('The Title field is required.')
@@ -718,7 +722,7 @@ autosaveWithoutPermissionsTest(
 
 		await journalEditArticlePage.fillTitle(articleTitle);
 
-		await journalEditArticlePage.publishButton.click();
+		await journalEditArticlePage.publishArticle();
 
 		await expect(page.getByTitle(articleTitle)).toBeVisible();
 	}

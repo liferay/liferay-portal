@@ -15,9 +15,6 @@ import getDataStructureDefinition from './utils/getDataStructureDefinition';
 
 export const test = mergeTests(
 	apiHelpersTest,
-	featureFlagsTest({
-		'LPD-15596': true,
-	}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest()
