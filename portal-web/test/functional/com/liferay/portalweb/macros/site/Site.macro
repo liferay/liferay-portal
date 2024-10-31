@@ -554,6 +554,9 @@ definition {
 
 	@summary = "Default summary"
 	macro configureCurrentLanguagesCP(currentSiteLanguages = null, localizedSaveButton = null, category = null) {
+
+		takeScreenshot();
+
 		if (isSet(category)) {
 			Click(
 				key_itemName = ${category},
@@ -630,6 +633,8 @@ definition {
 				value1 = ${defaultSiteLanguage});
 		}
 
+		takeScreenshot();
+
 		if (isSet(localizedSaveButton)) {
 			var key_saveButton = ${localizedSaveButton};
 
@@ -644,6 +649,8 @@ definition {
 
 			Click(locator1 = "Button#SAVE");
 		}
+
+		takeScreenshot();
 
 		if (isSet(localizedSuccessMessage)) {
 			var localizedSuccessMessage = ${localizedSuccessMessage};

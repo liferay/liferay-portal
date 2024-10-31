@@ -68,6 +68,8 @@ definition {
 			currentSiteLanguages = "Spanish (Spain)",
 			defaultSiteLanguage = "Spanish (Spain)");
 
+		takeScreenshot();
+
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
 
 		Translations.viewTranslationOptions(
