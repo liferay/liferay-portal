@@ -308,16 +308,16 @@ public class EditPasswordPolicyAssignmentsManagementToolbarDisplayContext {
 		UserSearchTerms searchTerms =
 			(UserSearchTerms)userSearch.getSearchTerms();
 
+		if (LDAPSettingsUtil.isPasswordPolicyEnabled(
+				themeDisplay.getCompanyId())) {
+
+			userParams.put("nonLDAPUsers", true);
+		}
+
 		List<User> users = UserLocalServiceUtil.search(
 			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
 			searchTerms.getStatus(), userParams, userSearch.getStart(),
 			userSearch.getEnd(), userSearch.getOrderByComparator());
-
-		if (LDAPSettingsUtil.isPasswordPolicyEnabled(
-				themeDisplay.getCompanyId())) {
-
-			users.removeIf(user -> user.getLdapServerId() > 0);
-		}
 
 		userSearch.setResultsAndTotal(users);
 
