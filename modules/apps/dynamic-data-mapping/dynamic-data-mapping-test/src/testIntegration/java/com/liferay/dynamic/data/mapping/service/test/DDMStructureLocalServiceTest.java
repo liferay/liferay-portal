@@ -1346,7 +1346,7 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 			Collections.singletonMap(LocaleUtil.getSiteDefault(), name),
 			structure.getDescriptionMap(), structure.getDDMForm(),
 			structure.getDDMFormLayout(),
-			ServiceContextTestUtil.getServiceContext(structure.getGroupId()));
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
 	private DDMStructure _updateStructure(
