@@ -223,7 +223,7 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_updateLDAPAuthConfigurationWithSafeCloseable(true)) {
 
-			User user = _createUser(true, _INVALID_PASSWORD);
+			User user = _createUser(true, "abc");
 
 			Assert.assertEquals(
 				"User was created with incorrect LDAP Server Id", 1,
@@ -270,9 +270,9 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_updateLDAPAuthConfigurationWithSafeCloseable(false)) {
 
-			_assertUserPasswordException(true, _INVALID_PASSWORD);
+			_assertUserPasswordException(true, "abc");
 
-			_assertUserCreatedWithPasswordPolicy(true, _VALID_PASSWORD);
+			_assertUserCreatedWithPasswordPolicy(true, "Liferay123");
 		}
 		finally {
 			passwordPolicy.setChangeRequired(false);
@@ -299,9 +299,9 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_updateLDAPAuthConfigurationWithSafeCloseable(true)) {
 
-			_assertUserPasswordException(false, _INVALID_PASSWORD);
+			_assertUserPasswordException(false, "abc");
 
-			_assertUserCreatedWithPasswordPolicy(false, _VALID_PASSWORD);
+			_assertUserCreatedWithPasswordPolicy(false, "Liferay123");
 		}
 		finally {
 			passwordPolicy.setChangeRequired(false);
@@ -514,7 +514,7 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_updateLDAPAuthConfigurationWithSafeCloseable(true)) {
 
-			User user = _createUser(true, _VALID_PASSWORD);
+			User user = _createUser(true, "Liferay123");
 
 			_userLocalService.checkPasswordExpired(user);
 
@@ -547,7 +547,7 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_updateLDAPAuthConfigurationWithSafeCloseable(false)) {
 
-			User user = _createUser(true, _VALID_PASSWORD);
+			User user = _createUser(true, "Liferay123");
 
 			_userLocalService.checkPasswordExpired(user);
 
@@ -1800,10 +1800,6 @@ public class UserLocalServiceTest {
 			company.isStrangersWithMx(), originalStrangersVerify,
 			company.isSiteLogo());
 	}
-
-	private static final String _INVALID_PASSWORD = "abc";
-
-	private static final String _VALID_PASSWORD = "Liferay123";
 
 	private static Company _company;
 
