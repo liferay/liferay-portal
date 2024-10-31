@@ -489,31 +489,25 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 
 	@Test
 	public void testGetStructureByExternalReferenceCode() throws Exception {
-		String externalReferenceCode = RandomTestUtil.randomString();
-
 		DDMStructure ddmStructure = _addStructure(
-			externalReferenceCode, RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		Assert.assertEquals(
-			externalReferenceCode, ddmStructure.getExternalReferenceCode());
-
-		Assert.assertNotNull(
+			ddmStructure,
 			_ddmStructureLocalService.getStructure(
-				externalReferenceCode, ddmStructure.getGroupId(),
-				ddmStructure.getClassNameId()));
-
-		long classNameId = PortalUtil.getClassNameId(
-			_CLASS_NAME_JOURNAL_ARTICLE);
-
-		AssertUtils.assertFailure(
-			NoSuchStructureException.class,
-			StringBundler.concat(
-				"No DDMStructure exists with the key {externalReferenceCode=",
-				ddmStructure.getExternalReferenceCode(), ", groupId=",
-				ddmStructure.getGroupId(), ", classNameId=", classNameId, "}"),
-			() -> _ddmStructureLocalService.deleteStructure(
 				ddmStructure.getExternalReferenceCode(),
-				ddmStructure.getGroupId(), classNameId));
+				ddmStructure.getGroupId(), ddmStructure.getClassNameId()));
+
+		try {
+			_ddmStructureLocalService.getStructure(
+				RandomTestUtil.randomString(), ddmStructure.getGroupId(),
+				ddmStructure.getClassNameId());
+
+			Assert.fail();
+		}
+		catch (NoSuchStructureException noSuchStructureException) {
+			Assert.assertNotNull(noSuchStructureException);
+		}
 	}
 
 	@Test
