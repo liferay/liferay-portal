@@ -224,10 +224,6 @@ public class PasswordPolicyLocalServiceImpl
 	public PasswordPolicy getDefaultPasswordPolicy(long companyId)
 		throws PortalException {
 
-		if (LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
-			return null;
-		}
-
 		return passwordPolicyPersistence.findByC_DP(companyId, true);
 	}
 
