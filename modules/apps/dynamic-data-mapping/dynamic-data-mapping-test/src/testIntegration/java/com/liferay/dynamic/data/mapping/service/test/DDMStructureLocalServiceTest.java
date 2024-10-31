@@ -84,6 +84,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 /**
  * @author Eduardo García
  */
+@FeatureFlags("LPD-34651")
 @RunWith(Arquillian.class)
 public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 
