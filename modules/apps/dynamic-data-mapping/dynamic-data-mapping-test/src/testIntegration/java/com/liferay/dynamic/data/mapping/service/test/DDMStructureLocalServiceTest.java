@@ -1004,43 +1004,31 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 	}
 
 	@Test
-	public void testUpdateStructure() throws Exception {
-		DDMStructure structure1 = _addStructure(RandomTestUtil.randomString());
+	public void testUpdateStructureByExternalReferenceCode() throws Exception {
+		DDMStructure structure = _addStructure(RandomTestUtil.randomString());
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		structure1 = _updateStructure(
-			externalReferenceCode, structure1.getClassNameId(),
-			structure1.getGroupId(), RandomTestUtil.randomString(), structure1);
+		structure = _updateStructure(
+			externalReferenceCode, structure.getClassNameId(),
+			structure.getGroupId(), RandomTestUtil.randomString(), structure);
 
 		Assert.assertEquals(
-			externalReferenceCode, structure1.getExternalReferenceCode());
+			externalReferenceCode, structure.getExternalReferenceCode());
 
-		structure1 = _addStructure(
-			externalReferenceCode,
-			PortalUtil.getClassNameId(_CLASS_NAME_JOURNAL_ARTICLE),
-			group.getGroupId(), RandomTestUtil.randomString(),
-			TestPropsValues.getUserId());
-
-		DDMStructure structure2 = _addStructure(
-			externalReferenceCode,
-			PortalUtil.getClassNameId(_CLASS_NAME_DL_FILE_ENTRY_METADATA),
-			group.getGroupId(), RandomTestUtil.randomString(),
-			TestPropsValues.getUserId());
-
-		DDMStructure finalStructure = structure1;
+		DDMStructure finalStructure = structure;
 
 		AssertUtils.assertFailure(
 			DuplicateDDMStructureExternalReferenceCodeException.class,
 			StringBundler.concat(
 				"Duplicate structure with the external reference code \"",
-				externalReferenceCode, "\" and class name ID \"",
-				PortalUtil.getClassNameId(_CLASS_NAME_JOURNAL_ARTICLE),
-				"\" on site ID \"", finalStructure.getGroupId(), "\""),
+				externalReferenceCode, "\" and class name ID \"", _classNameId,
+				"\" on site ID \"", structure.getGroupId(), "\""),
 			() -> _updateStructure(
-				externalReferenceCode,
-				PortalUtil.getClassNameId(_CLASS_NAME_JOURNAL_ARTICLE),
+				externalReferenceCode, finalStructure.getClassNameId(),
 				finalStructure.getGroupId(), finalStructure.getName(),
-				structure2));
+				finalStructure));
+
+		_ddmStructureLocalService.deleteDDMStructure(structure);
 	}
 
 	@Test
