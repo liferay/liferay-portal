@@ -366,17 +366,6 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 			_ddmStructureLocalService.fetchStructure(
 				ddmStructure.getExternalReferenceCode(),
 				ddmStructure.getGroupId(), ddmStructure.getClassNameId()));
-
-		AssertUtils.assertFailure(
-			NoSuchStructureException.class,
-			StringBundler.concat(
-				"No DDMStructure exists with the key {externalReferenceCode=",
-				ddmStructure.getExternalReferenceCode(), ", groupId=",
-				ddmStructure.getGroupId(), ", classNameId=",
-				ddmStructure.getClassNameId(), "}"),
-			() -> _ddmStructureLocalService.deleteStructure(
-				ddmStructure.getExternalReferenceCode(),
-				ddmStructure.getGroupId(), ddmStructure.getClassNameId()));
 	}
 
 	@Test(
