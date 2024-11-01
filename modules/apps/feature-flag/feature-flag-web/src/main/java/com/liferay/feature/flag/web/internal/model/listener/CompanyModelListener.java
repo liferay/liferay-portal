@@ -68,6 +68,8 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 					return;
 				}
 
+				System.out.println("Disabling deprecated in model listener " + companyId);
+
 				FeatureFlagsBag featureFlagsBag =
 					_featureFlagsBagProvider.getOrCreateFeatureFlagsBag(
 						companyId);
