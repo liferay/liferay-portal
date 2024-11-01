@@ -20,15 +20,16 @@ public class FeatureFlagUpgradeProcess extends UpgradeProcess {
 
 	public FeatureFlagUpgradeProcess(
 		CompanyLocalService companyLocalService,
-		PortalPreferencesLocalService portalPreferencesLocalService) {
+		PortalPreferencesLocalService portalPreferencesLocalService, String version) {
 
+		_version = version;
 		_companyLocalService = companyLocalService;
 		_portalPreferencesLocalService = portalPreferencesLocalService;
 	}
 
 	@Override
-	protected void doUpgrade() {
-		System.out.println("Running upgrade!!!");
+	protected void doUpgrade() throws Exception {
+		System.out.printf("\nRunning upgrade for version %s!!!\n", _version);
 		_companyLocalService.forEachCompanyId(
 			companyId -> {
 				PortalPreferences portalPreferences = _getPortalPreferences(
@@ -56,5 +57,6 @@ public class FeatureFlagUpgradeProcess extends UpgradeProcess {
 
 	private final CompanyLocalService _companyLocalService;
 	private final PortalPreferencesLocalService _portalPreferencesLocalService;
+	private final String _version;
 
 }
