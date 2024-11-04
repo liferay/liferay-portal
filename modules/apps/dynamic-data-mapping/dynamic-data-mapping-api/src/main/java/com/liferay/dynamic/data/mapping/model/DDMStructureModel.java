@@ -8,6 +8,7 @@ package com.liferay.dynamic.data.mapping.model;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.LocalizedModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
@@ -34,8 +35,9 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface DDMStructureModel
-	extends BaseModel<DDMStructure>, CTModel<DDMStructure>, LocalizedModel,
-			MVCCModel, ShardedModel, StagedGroupedModel, TypedModel {
+	extends BaseModel<DDMStructure>, CTModel<DDMStructure>,
+			ExternalReferenceCodeModel, LocalizedModel, MVCCModel, ShardedModel,
+			StagedGroupedModel, TypedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -107,6 +109,23 @@ public interface DDMStructureModel
 	 */
 	@Override
 	public void setUuid(String uuid);
+
+	/**
+	 * Returns the external reference code of this ddm structure.
+	 *
+	 * @return the external reference code of this ddm structure
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this ddm structure.
+	 *
+	 * @param externalReferenceCode the external reference code of this ddm structure
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the structure ID of this ddm structure.

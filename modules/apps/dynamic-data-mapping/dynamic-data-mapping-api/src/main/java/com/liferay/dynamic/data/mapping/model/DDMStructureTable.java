@@ -30,6 +30,10 @@ public class DDMStructureTable extends BaseTable<DDMStructureTable> {
 		"ctCollectionId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<DDMStructureTable, String> uuid = createColumn(
 		"uuid_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<DDMStructureTable, String> externalReferenceCode =
+		createColumn(
+			"externalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<DDMStructureTable, Long> structureId = createColumn(
 		"structureId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<DDMStructureTable, Long> groupId = createColumn(

@@ -2178,6 +2178,88 @@ public class DDMStructureUtil {
 	}
 
 	/**
+	 * Returns the ddm structure where externalReferenceCode = &#63; and groupId = &#63; and classNameId = &#63; or throws a <code>NoSuchStructureException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @return the matching ddm structure
+	 * @throws NoSuchStructureException if a matching ddm structure could not be found
+	 */
+	public static DDMStructure findByERC_G_C(
+			String externalReferenceCode, long groupId, long classNameId)
+		throws com.liferay.dynamic.data.mapping.exception.
+			NoSuchStructureException {
+
+		return getPersistence().findByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
+	}
+
+	/**
+	 * Returns the ddm structure where externalReferenceCode = &#63; and groupId = &#63; and classNameId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @return the matching ddm structure, or <code>null</code> if a matching ddm structure could not be found
+	 */
+	public static DDMStructure fetchByERC_G_C(
+		String externalReferenceCode, long groupId, long classNameId) {
+
+		return getPersistence().fetchByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
+	}
+
+	/**
+	 * Returns the ddm structure where externalReferenceCode = &#63; and groupId = &#63; and classNameId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching ddm structure, or <code>null</code> if a matching ddm structure could not be found
+	 */
+	public static DDMStructure fetchByERC_G_C(
+		String externalReferenceCode, long groupId, long classNameId,
+		boolean useFinderCache) {
+
+		return getPersistence().fetchByERC_G_C(
+			externalReferenceCode, groupId, classNameId, useFinderCache);
+	}
+
+	/**
+	 * Removes the ddm structure where externalReferenceCode = &#63; and groupId = &#63; and classNameId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @return the ddm structure that was removed
+	 */
+	public static DDMStructure removeByERC_G_C(
+			String externalReferenceCode, long groupId, long classNameId)
+		throws com.liferay.dynamic.data.mapping.exception.
+			NoSuchStructureException {
+
+		return getPersistence().removeByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
+	}
+
+	/**
+	 * Returns the number of ddm structures where externalReferenceCode = &#63; and groupId = &#63; and classNameId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @return the number of matching ddm structures
+	 */
+	public static int countByERC_G_C(
+		String externalReferenceCode, long groupId, long classNameId) {
+
+		return getPersistence().countByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
+	}
+
+	/**
 	 * Returns the ddm structure where groupId = &#63; and classNameId = &#63; and structureKey = &#63; or throws a <code>NoSuchStructureException</code> if it could not be found.
 	 *
 	 * @param groupId the group ID
