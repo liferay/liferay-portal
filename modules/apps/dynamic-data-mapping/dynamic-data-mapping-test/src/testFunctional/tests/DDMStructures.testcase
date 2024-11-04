@@ -314,7 +314,7 @@ definition {
 	@description = "This is a use case for LPS-69593 and LRQA-61632. Assert the selected image is kept in Image field under localized."
 	@priority = 4
 	test ViewFieldTranslationsWithImageField {
-		property custom.properties = "feature.flag.LPD-11228=true${line.separator}feature.flag.LPD-15596=true";
+		property custom.properties = "feature.flag.LPD-11228=true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

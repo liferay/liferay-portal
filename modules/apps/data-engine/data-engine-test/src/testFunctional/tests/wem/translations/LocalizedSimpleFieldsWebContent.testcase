@@ -29,7 +29,7 @@ definition {
 	@description = "This is a test for LRQA-66585. This test validates the creation, edition and persistence of fields with Options on the Web Content Admin."
 	@priority = 5
 	test AddAndEditTranslatedFieldsWithOptions {
-		property custom.properties = "feature.flag.LPD-11228=true${line.separator}feature.flag.LPD-15596=true";
+		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
 
 		NavItem.gotoStructures();
@@ -675,7 +675,7 @@ definition {
 	@description = "This is a test for LRQA-66639. This test validates the creation, edition, deletion and persistence of fields into Web Contents."
 	@priority = 5
 	test CreateEditAndDeleteLocalizedWebContent {
-		property custom.properties = "feature.flag.LPD-11228=true${line.separator}feature.flag.LPD-15596=true";
+		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
 
 		NavItem.gotoStructures();
@@ -1007,7 +1007,7 @@ definition {
 	@description = "This is a test for LRQA-66585. This test validates the creation, edition, duplication and persistence of Grid field on the Web Content Admin."
 	@priority = 5
 	test DuplicateAndEditTranslatedFieldsWithOptions {
-		property custom.properties = "feature.flag.LPD-11228=true${line.separator}feature.flag.LPD-15596=true";
+		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
 
 		NavItem.gotoStructures();
