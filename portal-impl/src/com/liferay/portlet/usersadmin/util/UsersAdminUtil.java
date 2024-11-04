@@ -86,6 +86,7 @@ import com.liferay.portal.kernel.util.comparator.UserFirstNameComparator;
 import com.liferay.portal.kernel.util.comparator.UserGroupDescriptionComparator;
 import com.liferay.portal.kernel.util.comparator.UserGroupNameComparator;
 import com.liferay.portal.kernel.util.comparator.UserJobTitleComparator;
+import com.liferay.portal.kernel.util.comparator.UserLastLoginDateComparator;
 import com.liferay.portal.kernel.util.comparator.UserLastNameComparator;
 import com.liferay.portal.kernel.util.comparator.UserScreenNameComparator;
 import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
@@ -1220,6 +1221,10 @@ public class UsersAdminUtil {
 		}
 		else if (orderByCol.equals("job-title")) {
 			orderByComparator = UserJobTitleComparator.getInstance(orderByAsc);
+		}
+		else if (orderByCol.equals("last-login-date")) {
+			orderByComparator = UserLastLoginDateComparator.getInstance(
+				orderByAsc);
 		}
 		else if (orderByCol.equals("last-name")) {
 			orderByComparator = UserLastNameComparator.getInstance(orderByAsc);
