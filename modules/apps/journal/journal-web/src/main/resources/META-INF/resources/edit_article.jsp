@@ -208,10 +208,12 @@ journalEditArticleDisplayContext.setViewAttributes();
 									type="submit"
 								/>
 
-								<react:component
-									module="{SaveButtons} from journal-web"
-									props="<%= journalEditArticleDisplayContext.getSaveButtonsContext() %>"
-								/>
+								<c:if test="<%= !JournalUtil.isEditDefaultValues(article) %>">
+									<react:component
+										module="{SaveButtons} from journal-web"
+										props="<%= journalEditArticleDisplayContext.getSaveButtonsContext() %>"
+									/>
+								</c:if>
 							</div>
 						</c:if>
 
