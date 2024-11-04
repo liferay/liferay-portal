@@ -214,18 +214,18 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 
 				User user = themeDisplay.getUser();
 
-					Date displayDate = _portal.getDate(
-						ParamUtil.getInteger(
-							uploadPortletRequest, "displayDateMonth"),
-						ParamUtil.getInteger(
-							uploadPortletRequest, "displayDateDay"),
-						ParamUtil.getInteger(
-							uploadPortletRequest, "displayDateYear"),
-						ParamUtil.getInteger(
-							uploadPortletRequest, "displayDateHour"),
-						ParamUtil.getInteger(
-							uploadPortletRequest, "displayDateMinute"),
-						user.getTimeZone(), null);
+				Date displayDate = _portal.getDate(
+					ParamUtil.getInteger(
+						uploadPortletRequest, "displayDateMonth"),
+					ParamUtil.getInteger(
+						uploadPortletRequest, "displayDateDay"),
+					ParamUtil.getInteger(
+						uploadPortletRequest, "displayDateYear"),
+					ParamUtil.getInteger(
+						uploadPortletRequest, "displayDateHour"),
+					ParamUtil.getInteger(
+						uploadPortletRequest, "displayDateMinute"),
+					user.getTimeZone(), null);
 
 				if (displayDate != null) {
 					MultiSessionMessages.add(

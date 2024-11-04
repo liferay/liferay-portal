@@ -710,11 +710,16 @@ autosaveWithoutPermissionsTest(
 
 		const articleTitle = 'Web Content Title';
 
-		await journalEditArticlePage.page.getByRole('button', {
-			name: 'select and confirm publish settings'}).click();
-		await journalEditArticlePage.page.getByRole('menuitem', {
-			name: 'publish with permissions'}).click();
-
+		await journalEditArticlePage.page
+			.getByRole('button', {
+				name: 'select and confirm publish settings',
+			})
+			.click();
+		await journalEditArticlePage.page
+			.getByRole('menuitem', {
+				name: 'publish with permissions',
+			})
+			.click();
 
 		await expect(
 			page.getByText('The Title field is required.')

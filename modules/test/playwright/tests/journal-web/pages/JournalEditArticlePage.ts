@@ -164,7 +164,8 @@ export class JournalEditArticlePage {
 
 		if (!existingArticle) {
 			await this.page
-				.locator('[role="dialog"]').getByRole('button', { name: /publish|publier/i })
+				.locator('[role="dialog"]')
+				.getByRole('button', {name: /publish|publier/i})
 				.click();
 		}
 	}
@@ -244,7 +245,7 @@ export class JournalEditArticlePage {
 			.nth(1)
 			.fill('Duplicated Text Field');
 
-		await this.publishArticle()
+		await this.publishArticle();
 	}
 
 	async fillTitle(title: string) {
