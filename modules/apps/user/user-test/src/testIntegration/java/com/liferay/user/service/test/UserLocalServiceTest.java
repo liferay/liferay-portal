@@ -73,6 +73,8 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.comparator.UserLastLoginDateComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
@@ -80,6 +82,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.DigesterImpl;
+import com.liferay.portal.util.PropsUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -835,6 +838,74 @@ public class UserLocalServiceTest {
 		user = _userLocalService.getUser(user.getUserId());
 
 		Assert.assertTrue(ArrayUtil.contains(user.getRoleIds(), roleId));
+	}
+
+	@Test
+	public void testSortUsersByLastLoginDate() throws Exception {
+		String featureFlag = "feature.flag.LPD-36010";
+
+		String value = PropsUtil.get(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
+			featureFlag);
+
+		try {
+			PropsUtil.addProperties(
+				UnicodePropertiesBuilder.setProperty(
+					featureFlag, "false"
+				).build());
+
+			Calendar calendar = Calendar.getInstance();
+			String middleName = "middleName";
+
+			User user1 = UserTestUtil.addUser();
+
+			user1.setMiddleName(middleName);
+			user1.setLastLoginDate(calendar.getTime());
+
+			user1 = _userLocalService.updateUser(user1);
+
+			calendar.add(Calendar.MINUTE, -5);
+
+			User user2 = UserTestUtil.addUser();
+
+			user2.setMiddleName(middleName);
+			user2.setLastLoginDate(calendar.getTime());
+
+			user2 = _userLocalService.updateUser(user2);
+
+			calendar.add(Calendar.MINUTE, 2);
+
+			User user3 = UserTestUtil.addUser();
+
+			user3.setMiddleName(middleName);
+			user3.setLastLoginDate(calendar.getTime());
+
+			user3 = _userLocalService.updateUser(user3);
+
+			List<User> users = _userLocalService.search(
+				user1.getCompanyId(), middleName, 0, null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
+				UserLastLoginDateComparator.getInstance(false));
+
+			Assert.assertEquals(user1, users.get(0));
+			Assert.assertEquals(user2, users.get(2));
+			Assert.assertEquals(user3, users.get(1));
+
+			users = _userLocalService.search(
+				user1.getCompanyId(), middleName, 0, null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
+				UserLastLoginDateComparator.getInstance(true));
+
+			Assert.assertEquals(user1, users.get(2));
+			Assert.assertEquals(user2, users.get(0));
+			Assert.assertEquals(user3, users.get(1));
+		}
+		finally {
+			PropsUtil.addProperties(
+				UnicodePropertiesBuilder.setProperty(
+					featureFlag, value
+				).build());
+		}
 	}
 
 	@Test
