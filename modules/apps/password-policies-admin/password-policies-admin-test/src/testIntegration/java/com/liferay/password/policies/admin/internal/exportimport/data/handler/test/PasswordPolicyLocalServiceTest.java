@@ -6,6 +6,7 @@
 package com.liferay.password.policies.admin.internal.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
@@ -14,7 +15,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.test.rule.Inject;
@@ -45,16 +45,15 @@ public class PasswordPolicyLocalServiceTest {
 
 	@Test
 	public void testPasswordPolicyGettersWithLDAPUser() throws Exception {
-		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
-			false);
-
 		User user = UserTestUtil.addUser();
 
 		user.setLdapServerId(1);
 
 		user = _userLocalService.updateUser(user);
 
-		try {
+		try (SafeCloseable safeCloseable =
+				_setLDAPAuthConfigurationWithSafeCloseable(false)) {
+
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
 					TestPropsValues.getCompanyId()));
@@ -69,9 +68,6 @@ public class PasswordPolicyLocalServiceTest {
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getPasswordPolicyByUserId(
 					user.getUserId()));
-		}
-		finally {
-			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
 		}
 	}
 
@@ -79,16 +75,15 @@ public class PasswordPolicyLocalServiceTest {
 	public void testPasswordPolicyGettersWithLDAPUserAndLDAPPasswordPolicy()
 		throws Exception {
 
-		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
-			true);
-
 		User user = UserTestUtil.addUser();
 
 		user.setLdapServerId(1);
 
 		user = _userLocalService.updateUser(user);
 
-		try {
+		try (SafeCloseable safeCloseable =
+				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
+
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
 					TestPropsValues.getCompanyId()));
@@ -103,9 +98,6 @@ public class PasswordPolicyLocalServiceTest {
 			Assert.assertNull(
 				_passwordPolicyLocalService.getPasswordPolicyByUserId(
 					user.getUserId()));
-		}
-		finally {
-			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
 		}
 	}
 
@@ -113,12 +105,11 @@ public class PasswordPolicyLocalServiceTest {
 	public void testPasswordPolicyGettersWithPortalUserAndLDAPPasswordPolicy()
 		throws Exception {
 
-		boolean ldapPasswordPolicyEnabled = _updateLDAPPasswordPolicyEnabled(
-			true);
-
 		User user = UserTestUtil.addUser();
 
-		try {
+		try (SafeCloseable safeCloseable =
+				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
+
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
 					TestPropsValues.getCompanyId()));
@@ -134,26 +125,36 @@ public class PasswordPolicyLocalServiceTest {
 				_passwordPolicyLocalService.getPasswordPolicyByUserId(
 					user.getUserId()));
 		}
-		finally {
-			_updateLDAPPasswordPolicyEnabled(ldapPasswordPolicyEnabled);
-		}
 	}
 
-	private boolean _updateLDAPPasswordPolicyEnabled(
+	private SafeCloseable _setLDAPAuthConfigurationWithSafeCloseable(
 			boolean passwordPolicyEnabled)
 		throws PortalException {
 
-		Dictionary<String, Object> configurations =
-			_ldapAuthConfigurationProvider.getConfigurationProperties(
-				TestPropsValues.getCompanyId());
+		long companyId = TestPropsValues.getCompanyId();
 
-		boolean existingValue = GetterUtil.getBoolean(
-			configurations.put("passwordPolicyEnabled", passwordPolicyEnabled));
+		Dictionary<String, Object> configurationProperties =
+			_ldapAuthConfigurationProvider.getConfigurationProperties(
+				companyId);
+
+		Object existingValue = configurationProperties.put(
+			"passwordPolicyEnabled", passwordPolicyEnabled);
 
 		_ldapAuthConfigurationProvider.updateProperties(
-			TestPropsValues.getCompanyId(), configurations);
+			TestPropsValues.getCompanyId(), configurationProperties);
 
-		return existingValue;
+		return () -> {
+			if (existingValue != null) {
+				configurationProperties.put(
+					"passwordPolicyEnabled", existingValue);
+			}
+			else {
+				configurationProperties.remove("passwordPolicyEnabled");
+			}
+
+			_ldapAuthConfigurationProvider.updateProperties(
+				companyId, configurationProperties);
+		};
 	}
 
 	@Inject(
