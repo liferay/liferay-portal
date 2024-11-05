@@ -45,38 +45,48 @@ public class MembershipsUserFieldExpressionHandler
 	public void bindProcessorContext(
 		UserProcessorContext userProcessorContext) {
 
-		List<Long> userGroupIds = new ArrayList<>();
+		for (String validFieldExpression : getValidFieldExpressions()) {
+			if (!userProcessorContext.isDefined(
+					String.class, validFieldExpression)) {
 
-		UserProcessorContext.UserBind<User> userBind =
-			userProcessorContext.bind(
-				_processingIndex,
-				(currentUser, newUser, serviceContext) -> {
-					_userGroupLocalService.setUserUserGroups(
-						newUser.getUserId(),
-						ArrayUtil.toArray(userGroupIds.toArray(new Long[0])));
+				continue;
+			}
 
-					return newUser;
+			List<Long> userGroupIds = new ArrayList<>();
+
+			UserProcessorContext.UserBind<User> userBind =
+				userProcessorContext.bind(
+					_processingIndex,
+					(currentUser, newUser, serviceContext) -> {
+						_userGroupLocalService.setUserUserGroups(
+							newUser.getUserId(),
+							ArrayUtil.toArray(
+								userGroupIds.toArray(new Long[0])));
+
+						return newUser;
+					});
+
+			userBind.mapStringArray(
+				"userGroups",
+				(user, values) -> {
+					if (values == null) {
+						return;
+					}
+
+					for (String value : values) {
+						UserGroup userGroup =
+							_userGroupLocalService.fetchUserGroup(
+								user.getCompanyId(), value);
+
+						if (userGroup != null) {
+							userGroupIds.add(userGroup.getUserGroupId());
+						}
+						else if (_log.isWarnEnabled()) {
+							_log.warn("Ignored unknown user group: " + value);
+						}
+					}
 				});
-
-		userBind.mapStringArray(
-			"userGroups",
-			(user, values) -> {
-				if (values == null) {
-					return;
-				}
-
-				for (String value : values) {
-					UserGroup userGroup = _userGroupLocalService.fetchUserGroup(
-						user.getCompanyId(), value);
-
-					if (userGroup != null) {
-						userGroupIds.add(userGroup.getUserGroupId());
-					}
-					else if (_log.isWarnEnabled()) {
-						_log.warn("Ignored unknown user group: " + value);
-					}
-				}
-			});
+		}
 	}
 
 	@Override
