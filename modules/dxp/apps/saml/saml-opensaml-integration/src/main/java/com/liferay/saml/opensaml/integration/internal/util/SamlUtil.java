@@ -142,6 +142,14 @@ public class SamlUtil {
 			attributesMap.put(key, values);
 		}
 
+		if (!attributesMap.containsKey(_EXPLICITLY_MAPPED_ATTRIBUTE_NAMES) &&
+			attributeMappingsProperties.containsValue(
+				_EXPLICITLY_MAPPED_ATTRIBUTE_NAMES)) {
+
+			attributesMap.put(
+				_EXPLICITLY_MAPPED_ATTRIBUTE_NAMES, new ArrayList<>());
+		}
+
 		return attributesMap;
 	}
 
@@ -446,5 +454,8 @@ public class SamlUtil {
 
 		return null;
 	}
+
+	private static final String _EXPLICITLY_MAPPED_ATTRIBUTE_NAMES =
+		"membership:userGroups";
 
 }
