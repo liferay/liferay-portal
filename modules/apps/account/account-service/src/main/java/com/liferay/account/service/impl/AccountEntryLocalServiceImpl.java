@@ -33,14 +33,17 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
+import com.liferay.portal.defaultpermissions.util.PortalDefaultPermissionsUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -236,6 +239,11 @@ public class AccountEntryLocalServiceImpl
 			accountEntry = updateStatus(
 				userId, accountEntryId, status, workflowServiceContext,
 				Collections.emptyMap());
+		}
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-21265")) {
+			PortalDefaultPermissionsUtil.setModelDefaultPermissions(
+				accountEntry, accountEntry.getCompanyId(), 0, serviceContext);
 		}
 
 		return accountEntry;
