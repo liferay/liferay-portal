@@ -406,7 +406,7 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:RaylifeApplication$]",
+		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:RaylifeApplication$]",
 		"roleName": "Producer",
 		"scope": "1"
 	},
@@ -416,7 +416,7 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:RaylifeApplication$]",
+		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:RaylifeApplication$]",
 		"roleName": "Underwriter",
 		"scope": "1"
 	},
@@ -426,7 +426,7 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:RaylifeClaim$]",
+		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:RaylifeClaim$]",
 		"roleName": "Producer",
 		"scope": "1"
 	},
@@ -436,7 +436,7 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:RaylifePolicy$]",
+		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:RaylifePolicy$]",
 		"roleName": "Producer",
 		"scope": "1"
 	},
@@ -446,7 +446,7 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:RaylifeQuote$]",
+		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:RaylifeQuote$]",
 		"roleName": "Producer",
 		"scope": "1"
 	},
@@ -456,7 +456,7 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:RaylifeSalesGoal$]",
+		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:RaylifeSalesGoal$]",
 		"roleName": "Producer",
 		"scope": "1"
 	}

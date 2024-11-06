@@ -1178,6 +1178,12 @@ public class BundleSiteInitializer implements SiteInitializer {
 					serviceBuilderObjectDefinition.getShortName(),
 				serviceBuilderObjectDefinition.getClassName());
 			stringUtilReplaceValues.put(
+				"OBJECT_DEFINITION_CLASS_NAME_SUFFIX:" +
+					serviceBuilderObjectDefinition.getShortName(),
+				StringUtil.split(
+					serviceBuilderObjectDefinition.getClassName(),
+					StringPool.POUND)[1]);
+			stringUtilReplaceValues.put(
 				"OBJECT_DEFINITION_ID:" +
 					serviceBuilderObjectDefinition.getShortName(),
 				String.valueOf(
@@ -1248,6 +1254,11 @@ public class BundleSiteInitializer implements SiteInitializer {
 			stringUtilReplaceValues.put(
 				"OBJECT_DEFINITION_CLASS_NAME:" + objectDefinition.getName(),
 				objectDefinition.getClassName());
+			stringUtilReplaceValues.put(
+				"OBJECT_DEFINITION_CLASS_NAME_SUFFIX:" +
+					objectDefinition.getName(),
+				StringUtil.split(
+					objectDefinition.getClassName(), StringPool.POUND)[1]);
 			stringUtilReplaceValues.put(
 				"OBJECT_DEFINITION_ID:" + objectDefinition.getName(),
 				String.valueOf(objectDefinition.getId()));

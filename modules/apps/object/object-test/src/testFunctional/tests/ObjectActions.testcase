@@ -1965,6 +1965,8 @@ definition {
 
 			var objectId = JSONObject.getObjectId(objectName = "CustomObject185");
 
+			var objectDefinitionClassNameSuffix = ObjectDefinitionAPI._getObjectDefinitionClassNameSuffix(objectDefinitionId = ${objectId});
+
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "VIEW_CONTROL_PANEL",
 				resourceName = 90,
@@ -1973,13 +1975,13 @@ definition {
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "ACCESS_IN_CONTROL_PANEL",
-				resourceName = "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectId}",
+				resourceName = "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinitionClassNameSuffix}",
 				roleTitle = "Regular Role",
 				roleType = "regular");
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "VIEW",
-				resourceName = "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectId}",
+				resourceName = "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinitionClassNameSuffix}",
 				roleTitle = "Regular Role",
 				roleType = "regular");
 

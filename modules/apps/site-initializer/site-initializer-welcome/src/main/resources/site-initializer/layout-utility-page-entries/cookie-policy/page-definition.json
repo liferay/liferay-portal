@@ -258,7 +258,7 @@
 															"widgetInstance": {
 																"widgetConfig": {
 																},
-																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:NecessaryCookieEntry$]"
+																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:NecessaryCookieEntry$]"
 															}
 														},
 														"type": "Widget"
@@ -376,7 +376,7 @@
 															"widgetInstance": {
 																"widgetConfig": {
 																},
-																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:FunctionalCookieEntry$]"
+																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:FunctionalCookieEntry$]"
 															}
 														},
 														"type": "Widget"
@@ -494,7 +494,7 @@
 															"widgetInstance": {
 																"widgetConfig": {
 																},
-																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:PerformanceCookieEntry$]"
+																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:PerformanceCookieEntry$]"
 															}
 														},
 														"type": "Widget"
@@ -613,7 +613,7 @@
 															"widgetInstance": {
 																"widgetConfig": {
 																},
-																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:PersonalizationCookieEntry$]"
+																"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_CLASS_NAME_SUFFIX:PersonalizationCookieEntry$]"
 															}
 														},
 														"type": "Widget"

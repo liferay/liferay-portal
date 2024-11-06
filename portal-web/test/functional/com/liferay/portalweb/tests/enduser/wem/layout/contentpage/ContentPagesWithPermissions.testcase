@@ -2301,9 +2301,10 @@ definition {
 				objectName = "${objectName}2",
 				value = "Liferay");
 			var objectDefinitionClassName = ObjectDefinitionAPI._getObjectDefinitionClassNameById(objectDefinitionId = ${objectDefinitionId});
+			var objectDefinitionClassNameSuffix = ObjectDefinitionAPI._getObjectDefinitionClassNameSuffix(objectDefinitionId = ${objectDefinitionId});
 
 			Permissions.definePermissionsViaJSONAPI(
-				resourceNameActionList = "com.liferay.portal.kernel.model.Layout,UPDATE:com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinitionId},VIEW:${objectDefinitionClassName},VIEW",
+				resourceNameActionList = "com.liferay.portal.kernel.model.Layout,UPDATE:com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinitionClassNameSuffix},VIEW:${objectDefinitionClassName},VIEW",
 				roleTitle = ${randomRoleKey},
 				roleType = "regular");
 

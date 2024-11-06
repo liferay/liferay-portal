@@ -262,6 +262,15 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro _getObjectDefinitionClassNameSuffix(objectDefinitionId = null) {
+		var objectDefinitionClassName = ObjectDefinitionAPI._getObjectDefinitionClassNameById(objectDefinitionId = ${objectDefinitionId});
+
+		var objectDefinitionClassNameSuffix = StringUtil.extractLast(${objectDefinitionClassName}, "#");
+
+		return ${objectDefinitionClassNameSuffix};
+	}
+
+	@summary = "Default summary"
 	macro _getObjectDefinitionStatusById(objectDefinitionId = null, virtualHost = null, token = null) {
 		Variables.assertDefined(parameterList = ${objectDefinitionId});
 
