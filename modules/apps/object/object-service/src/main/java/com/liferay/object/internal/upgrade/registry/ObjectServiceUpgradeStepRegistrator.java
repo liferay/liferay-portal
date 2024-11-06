@@ -9,6 +9,7 @@ import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
+import com.liferay.object.internal.upgrade.v10_0_1.ObjectDefinitionPortletIdUpgradeProcess;
 import com.liferay.object.internal.upgrade.v1_2_0.util.ObjectViewColumnTable;
 import com.liferay.object.internal.upgrade.v1_2_0.util.ObjectViewTable;
 import com.liferay.object.internal.upgrade.v2_1_0.ObjectFieldBusinessTypeUpgradeProcess;
@@ -475,6 +476,9 @@ public class ObjectServiceUpgradeStepRegistrator
 			"9.2.2", "10.0.0",
 			new com.liferay.object.internal.upgrade.v10_0_0.
 				ObjectDefinitionUpgradeProcess());
+
+		registry.register(
+			"10.0.0", "10.0.1", new ObjectDefinitionPortletIdUpgradeProcess());
 	}
 
 	@Reference
