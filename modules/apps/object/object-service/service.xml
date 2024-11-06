@@ -491,6 +491,10 @@
 		<finder name="ObjectDefinitionId" return-type="Collection">
 			<finder-column name="objectDefinitionId" />
 		</finder>
+		<finder name="C_DOL" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="defaultObjectLayout" />
+		</finder>
 		<finder name="ODI_DOL" return-type="Collection">
 			<finder-column name="objectDefinitionId" />
 			<finder-column name="defaultObjectLayout" />
