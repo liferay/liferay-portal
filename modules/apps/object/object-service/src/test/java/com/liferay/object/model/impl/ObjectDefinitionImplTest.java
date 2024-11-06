@@ -5,6 +5,7 @@
 
 package com.liferay.object.model.impl;
 
+import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
@@ -32,6 +33,18 @@ public class ObjectDefinitionImplTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testGetPortletId() {
+		ObjectDefinition objectDefinition = new ObjectDefinitionImpl();
+
+		objectDefinition.setClassName(
+			"com.liferay.object.model.ObjectDefinition#A1B2");
+
+		Assert.assertEquals(
+			ObjectPortletKeys.OBJECT_DEFINITIONS + "_A1B2",
+			objectDefinition.getPortletId());
+	}
 
 	@Test
 	public void testGetRESTContextPath() {
