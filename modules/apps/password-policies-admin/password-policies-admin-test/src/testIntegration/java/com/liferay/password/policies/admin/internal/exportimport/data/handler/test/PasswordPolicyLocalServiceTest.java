@@ -45,14 +45,14 @@ public class PasswordPolicyLocalServiceTest {
 
 	@Test
 	public void testPasswordPolicyGettersWithLDAPUser() throws Exception {
-		User user = UserTestUtil.addUser();
-
-		user.setLdapServerId(1);
-
-		user = _userLocalService.updateUser(user);
-
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(false)) {
+
+			User user = UserTestUtil.addUser();
+
+			user.setLdapServerId(1);
+
+			user = _userLocalService.updateUser(user);
 
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
@@ -75,14 +75,14 @@ public class PasswordPolicyLocalServiceTest {
 	public void testPasswordPolicyGettersWithLDAPUserAndLDAPPasswordPolicy()
 		throws Exception {
 
-		User user = UserTestUtil.addUser();
-
-		user.setLdapServerId(1);
-
-		user = _userLocalService.updateUser(user);
-
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
+
+			User user = UserTestUtil.addUser();
+
+			user.setLdapServerId(1);
+
+			user = _userLocalService.updateUser(user);
 
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
@@ -105,10 +105,10 @@ public class PasswordPolicyLocalServiceTest {
 	public void testPasswordPolicyGettersWithPortalUserAndLDAPPasswordPolicy()
 		throws Exception {
 
-		User user = UserTestUtil.addUser();
-
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
+
+			User user = UserTestUtil.addUser();
 
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
