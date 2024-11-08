@@ -618,8 +618,8 @@ public class ObjectRelatedModelsProviderTest {
 		List<ObjectEntry> unrelatedObjectEntries =
 			_objectRelatedModelsProvider.getUnrelatedModels(
 				0, 0, _objectDefinition1, objectEntry1.getObjectEntryId(),
-				objectRelationship.getObjectRelationshipId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+				objectRelationship.getObjectRelationshipId(), null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
 			unrelatedObjectEntries.toString(), objectEntriesCount,
@@ -635,7 +635,7 @@ public class ObjectRelatedModelsProviderTest {
 			objectEntriesCount - 1,
 			_objectRelatedModelsProvider.getUnrelatedModelsCount(
 				0, 0, _objectDefinition1, objectEntry1.getObjectEntryId(),
-				objectRelationship.getObjectRelationshipId()));
+				objectRelationship.getObjectRelationshipId(), null));
 	}
 
 	private AccountEntry _addAccountEntry(long userId) throws Exception {
@@ -791,7 +791,7 @@ public class ObjectRelatedModelsProviderTest {
 				_objectRelatedModelsProvider.getUnrelatedModels(
 					companyId, 0, systemObjectDefinition,
 					objectEntry.getObjectEntryId(),
-					_objectRelationship.getObjectRelationshipId(),
+					_objectRelationship.getObjectRelationshipId(), null,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			Assert.assertEquals(
@@ -812,7 +812,7 @@ public class ObjectRelatedModelsProviderTest {
 				_objectRelatedModelsProvider.getUnrelatedModels(
 					companyId, 0, systemObjectDefinition,
 					objectEntry.getObjectEntryId(),
-					_objectRelationship.getObjectRelationshipId(),
+					_objectRelationship.getObjectRelationshipId(), null,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			Assert.assertEquals(

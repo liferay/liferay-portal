@@ -175,22 +175,23 @@ public class ObjectEntry1toMObjectRelatedModelsProviderImpl
 	@Override
 	public List<ObjectEntry> getUnrelatedModels(
 			long companyId, long groupId, ObjectDefinition objectDefinition,
-			long objectEntryId, long objectRelationshipId, int start, int end)
+			long objectEntryId, long objectRelationshipId, String search,
+			int start, int end)
 		throws PortalException {
 
 		return _objectEntryService.getOneToManyObjectEntries(
-			groupId, objectRelationshipId, objectEntryId, false, null, start,
+			groupId, objectRelationshipId, objectEntryId, false, search, start,
 			end);
 	}
 
 	@Override
 	public int getUnrelatedModelsCount(
 			long companyId, long groupId, ObjectDefinition objectDefinition,
-			long objectEntryId, long objectRelationshipId)
+			long objectEntryId, long objectRelationshipId, String search)
 		throws PortalException {
 
 		return _objectEntryService.getOneToManyObjectEntriesCount(
-			groupId, objectRelationshipId, objectEntryId, false, null);
+			groupId, objectRelationshipId, objectEntryId, false, search);
 	}
 
 	private final String _className;

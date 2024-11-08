@@ -71,6 +71,7 @@ public class ObjectEntryItemSelectorViewDescriptor
 		_portal = portal;
 		_portletURL = portletURL;
 
+		_keywords = ParamUtil.getString(httpServletRequest, "keywords");
 		_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
 			JavaConstants.JAVAX_PORTLET_REQUEST);
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
@@ -149,7 +150,7 @@ public class ObjectEntryItemSelectorViewDescriptor
 							ParamUtil.getLong(_portletRequest, "objectEntryId"),
 							ParamUtil.getLong(
 								_portletRequest, "objectRelationshipId"),
-							searchContainer.getStart(),
+							_keywords, searchContainer.getStart(),
 							searchContainer.getEnd());
 					},
 					objectRelatedModelsProvider.getUnrelatedModelsCount(
@@ -157,7 +158,8 @@ public class ObjectEntryItemSelectorViewDescriptor
 						_objectDefinition,
 						ParamUtil.getLong(_portletRequest, "objectEntryId"),
 						ParamUtil.getLong(
-							_portletRequest, "objectRelationshipId")));
+							_portletRequest, "objectRelationshipId"),
+						_keywords));
 			}
 			else {
 				Group scopeGroup = _themeDisplay.getScopeGroup();
@@ -223,6 +225,7 @@ public class ObjectEntryItemSelectorViewDescriptor
 
 	private final HttpServletRequest _httpServletRequest;
 	private final InfoItemItemSelectorCriterion _infoItemItemSelectorCriterion;
+	private final String _keywords;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntryManager _objectEntryManager;
 	private final ObjectRelatedModelsProviderRegistry
