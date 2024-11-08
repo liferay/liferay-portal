@@ -15,6 +15,7 @@ export class ViewObjectEntriesPage {
 	readonly deleteFileButton: Locator;
 	readonly duplicateEntryErrorMessage: Locator;
 	readonly editObjectEntryForm: Locator;
+	readonly frameSelect: FrameLocator;
 	readonly frontendDatasetActions: Locator;
 	readonly frontendDatasetDeleteAction: Locator;
 	readonly page: Page;
@@ -22,6 +23,9 @@ export class ViewObjectEntriesPage {
 	readonly richTextInput: Locator;
 	readonly saveObjectEntryButton: Locator;
 	readonly saveObjectEntryButtonArabic: Locator;
+	readonly searchBar: Locator;
+	readonly searchButton: Locator;
+	readonly searchContainer: Locator;
 	readonly selectFileButton: Locator;
 	readonly selectFileButtonArabic: Locator;
 	readonly selectFileIframe: FrameLocator;
@@ -42,6 +46,9 @@ export class ViewObjectEntriesPage {
 			'Error:The field values are already in use. Please choose unique values.'
 		);
 		this.editObjectEntryForm = page.locator('[id="editObjectEntry"]');
+		this.frameSelect = page
+			.locator('iframe[title="Select"]')
+			.contentFrame();
 		this.frontendDatasetActions = page.getByRole('button', {
 			name: 'Actions',
 		});
@@ -55,6 +62,13 @@ export class ViewObjectEntriesPage {
 			})
 			.frameLocator('iframe');
 		this.richTextInput = this.richTextIFrame.getByRole('textbox');
+		this.searchBar = this.frameSelect.getByPlaceholder('Search for');
+		this.searchButton = this.frameSelect.getByRole('button', {
+			name: 'Search for',
+		});
+		this.searchContainer = this.frameSelect.locator(
+			'[id="_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_entriesSearchContainer"]'
+		);
 		this.saveObjectEntryButton = page.getByRole('button', {name: 'Save'});
 		this.saveObjectEntryButtonArabic = page.getByRole('button', {
 			name: 'إحفظ',
