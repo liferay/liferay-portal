@@ -5,6 +5,7 @@
 
 import {expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
+import moment from 'moment';
 import path from 'path';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
@@ -125,19 +126,11 @@ test(
 		await expect(toastAlertContainer).toBeVisible();
 
 		await expect(toastAlertContainer).toHaveText(
-			`Success:${title} will be published on ${new Intl.DateTimeFormat(
-				'en-US',
-				{
-					day: 'numeric',
-					hour: 'numeric',
-					hour12: true,
-					minute: 'numeric',
-					month: 'numeric',
-					year: '2-digit',
-				}
-			)
-				.format(new Date(scheduleDate))
-				.replace(',', '')}.`
+			'Success:' +
+				title +
+				' will be published on ' +
+				moment(new Date(scheduleDate)).format('M/D/YY h:mm A') +
+				'.'
 		);
 	}
 );
