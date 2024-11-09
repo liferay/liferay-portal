@@ -68,7 +68,7 @@
 			</header>
 		</#if>
 
-		<section class="${portal_content_css_class} flex-fill" id="content">
+		<div class="${portal_content_css_class} flex-fill" id="content">
 			<#if selectable>
 				<@liferay_util["include"] page=content_include />
 			<#else>
@@ -80,7 +80,7 @@
 					<@liferay_util["include"] page=content_include />
 				</@>
 			</#if>
-		</section>
+		</div>
 
 		<#if show_footer>
 			<footer id="footer">
