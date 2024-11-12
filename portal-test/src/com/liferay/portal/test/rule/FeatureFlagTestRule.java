@@ -46,7 +46,7 @@ public class FeatureFlagTestRule
 	protected Map<String, String> beforeClass(Description description)
 		throws Throwable {
 
-		return _enableFeatureFlags(description);
+		return _updateFeatureFlags(description);
 	}
 
 	@Override
@@ -54,10 +54,17 @@ public class FeatureFlagTestRule
 			Description description, Object target)
 		throws Throwable {
 
-		return _enableFeatureFlags(description);
+		return _updateFeatureFlags(description);
 	}
 
-	private Map<String, String> _enableFeatureFlags(Description description) {
+	private void _restoreFeatureFlags(Map<String, String> previousValues) {
+		PropsUtil.addProperties(
+			UnicodePropertiesBuilder.create(
+				previousValues, true
+			).build());
+	}
+
+	private Map<String, String> _updateFeatureFlags(Description description) {
 		FeatureFlags featureFlags = description.getAnnotation(
 			FeatureFlags.class);
 
@@ -78,18 +85,11 @@ public class FeatureFlagTestRule
 
 			PropsUtil.addProperties(
 				UnicodePropertiesBuilder.setProperty(
-					featureFlagKey, "true"
+					featureFlagKey, String.valueOf(featureFlags.enable())
 				).build());
 		}
 
 		return previousValues;
-	}
-
-	private void _restoreFeatureFlags(Map<String, String> previousValues) {
-		PropsUtil.addProperties(
-			UnicodePropertiesBuilder.create(
-				previousValues, true
-			).build());
 	}
 
 }

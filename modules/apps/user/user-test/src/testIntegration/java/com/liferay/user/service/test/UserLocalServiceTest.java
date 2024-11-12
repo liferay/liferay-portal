@@ -73,16 +73,15 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.comparator.UserLastLoginDateComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.DigesterImpl;
-import com.liferay.portal.util.PropsUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -840,72 +839,52 @@ public class UserLocalServiceTest {
 		Assert.assertTrue(ArrayUtil.contains(user.getRoleIds(), roleId));
 	}
 
+	@FeatureFlags(enable = false, value = "LPD-36010")
 	@Test
 	public void testSortUsersByLastLoginDate() throws Exception {
-		String featureFlag = "feature.flag.LPD-36010";
+		Calendar calendar = Calendar.getInstance();
+		String middleName = RandomTestUtil.randomString();
 
-		String value = PropsUtil.get(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
-			featureFlag);
+		User user1 = UserTestUtil.addUser();
 
-		try {
-			PropsUtil.addProperties(
-				UnicodePropertiesBuilder.setProperty(
-					featureFlag, "false"
-				).build());
+		user1.setMiddleName(middleName);
+		user1.setLastLoginDate(calendar.getTime());
 
-			Calendar calendar = Calendar.getInstance();
-			String middleName = "middleName";
+		user1 = _userLocalService.updateUser(user1);
 
-			User user1 = UserTestUtil.addUser();
+		calendar.add(Calendar.MINUTE, -5);
 
-			user1.setMiddleName(middleName);
-			user1.setLastLoginDate(calendar.getTime());
+		User user2 = UserTestUtil.addUser();
 
-			user1 = _userLocalService.updateUser(user1);
+		user2.setMiddleName(middleName);
+		user2.setLastLoginDate(calendar.getTime());
 
-			calendar.add(Calendar.MINUTE, -5);
+		user2 = _userLocalService.updateUser(user2);
 
-			User user2 = UserTestUtil.addUser();
+		calendar.add(Calendar.MINUTE, 2);
 
-			user2.setMiddleName(middleName);
-			user2.setLastLoginDate(calendar.getTime());
+		User user3 = UserTestUtil.addUser();
 
-			user2 = _userLocalService.updateUser(user2);
+		user3.setMiddleName(middleName);
+		user3.setLastLoginDate(calendar.getTime());
 
-			calendar.add(Calendar.MINUTE, 2);
+		user3 = _userLocalService.updateUser(user3);
 
-			User user3 = UserTestUtil.addUser();
+		List<User> users = _userLocalService.search(
+			user1.getCompanyId(), middleName, 0, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, UserLastLoginDateComparator.getInstance(false));
 
-			user3.setMiddleName(middleName);
-			user3.setLastLoginDate(calendar.getTime());
+		Assert.assertEquals(user1, users.get(0));
+		Assert.assertEquals(user2, users.get(2));
+		Assert.assertEquals(user3, users.get(1));
 
-			user3 = _userLocalService.updateUser(user3);
+		users = _userLocalService.search(
+			user1.getCompanyId(), middleName, 0, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, UserLastLoginDateComparator.getInstance(true));
 
-			List<User> users = _userLocalService.search(
-				user1.getCompanyId(), middleName, 0, null, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				UserLastLoginDateComparator.getInstance(false));
-
-			Assert.assertEquals(user1, users.get(0));
-			Assert.assertEquals(user2, users.get(2));
-			Assert.assertEquals(user3, users.get(1));
-
-			users = _userLocalService.search(
-				user1.getCompanyId(), middleName, 0, null, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				UserLastLoginDateComparator.getInstance(true));
-
-			Assert.assertEquals(user1, users.get(2));
-			Assert.assertEquals(user2, users.get(0));
-			Assert.assertEquals(user3, users.get(1));
-		}
-		finally {
-			PropsUtil.addProperties(
-				UnicodePropertiesBuilder.setProperty(
-					featureFlag, value
-				).build());
-		}
+		Assert.assertEquals(user1, users.get(2));
+		Assert.assertEquals(user2, users.get(0));
+		Assert.assertEquals(user3, users.get(1));
 	}
 
 	@Test

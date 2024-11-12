@@ -19,6 +19,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface FeatureFlags {
 
+	public boolean enable() default true;
+
 	public String[] value();
 
 }
