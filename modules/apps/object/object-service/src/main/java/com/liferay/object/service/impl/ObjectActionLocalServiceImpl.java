@@ -173,7 +173,7 @@ public class ObjectActionLocalServiceImpl
 					new ObjectDefinitionTreeFactory(
 						_objectDefinitionPersistence,
 						_objectRelationshipLocalService),
-					_portletLocalService, _resourceActions);
+					_portletLocalService, _resourceActions, null);
 			}
 			catch (Exception exception) {
 				ReflectionUtil.throwException(exception);

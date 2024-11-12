@@ -12,6 +12,7 @@ import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.notification.handler.NotificationHandler;
 import com.liferay.notification.term.evaluator.NotificationTermEvaluator;
+import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.internal.layout.tab.screen.navigation.category.ObjectLayoutTabScreenNavigationCategory;
 import com.liferay.object.internal.notification.handler.ObjectDefinitionNotificationHandler;
@@ -34,6 +35,7 @@ import com.liferay.object.internal.uad.anonymizer.ObjectEntryUADAnonymizer;
 import com.liferay.object.internal.uad.display.ObjectEntryUADDisplay;
 import com.liferay.object.internal.uad.exporter.ObjectEntryUADExporter;
 import com.liferay.object.internal.workflow.ObjectEntryWorkflowHandler;
+import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectLayout;
@@ -175,7 +177,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
 
-		return _deploy(null, objectDefinition);
+		return _deploy(null, objectDefinition, null);
 	}
 
 	@Override
@@ -187,6 +189,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		List<ObjectLayout> defaultObjectLayouts =
 			_objectLayoutLocalService.getDefaultObjectLayouts(companyId);
+		List<ObjectAction> standaloneObjectActions =
+			_objectActionLocalService.getObjectActions(
+				companyId, true, ObjectActionTriggerConstants.KEY_STANDALONE);
 
 		for (ObjectDefinition objectDefinition : objectDefinitions) {
 			activeServiceRegistrationsMap.put(
@@ -197,7 +202,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 						objectLayout ->
 							objectLayout.getObjectDefinitionId() ==
 								objectDefinition.getObjectDefinitionId()),
-					objectDefinition));
+					objectDefinition,
+					ListUtil.filter(
+						standaloneObjectActions,
+						objectAction ->
+							objectAction.getObjectDefinitionId() ==
+								objectDefinition.getObjectDefinitionId())));
 		}
 
 		return activeServiceRegistrationsMap;
@@ -205,7 +215,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	private List<ServiceRegistration<?>> _deploy(
 		List<ObjectLayout> defaultObjectLayouts,
-		ObjectDefinition objectDefinition) {
+		ObjectDefinition objectDefinition,
+		List<ObjectAction> standaloneObjectActions) {
 
 		if (objectDefinition.isUnmodifiableSystemObject()) {
 			return Collections.emptyList();
@@ -217,7 +228,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				(ObjectDefinitionPersistence)
 					_objectDefinitionLocalService.getBasePersistence(),
 				_objectDefinitionTreeFactory, _portletLocalService,
-				_resourceActions);
+				_resourceActions, standaloneObjectActions);
 		}
 		catch (Exception exception) {
 			return ReflectionUtil.throwException(exception);
