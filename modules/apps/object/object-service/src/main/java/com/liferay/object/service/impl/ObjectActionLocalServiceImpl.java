@@ -320,6 +320,14 @@ public class ObjectActionLocalServiceImpl
 
 	@Override
 	public List<ObjectAction> getObjectActions(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		return objectActionPersistence.findByC_A_OATK(
+			companyId, active, objectActionTriggerKey);
+	}
+
+	@Override
+	public List<ObjectAction> getObjectActions(
 		long objectDefinitionId, String objectActionTriggerKey) {
 
 		return objectActionPersistence.findByO_A_OATK(

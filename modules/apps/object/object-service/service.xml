@@ -55,6 +55,11 @@
 			<finder-column name="companyId" />
 			<finder-column name="objectDefinitionId" />
 		</finder>
+		<finder name="C_A_OATK" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+			<finder-column name="objectActionTriggerKey" />
+		</finder>
 		<finder name="O_A_OATK" return-type="Collection">
 			<finder-column name="objectDefinitionId" />
 			<finder-column name="active" />
