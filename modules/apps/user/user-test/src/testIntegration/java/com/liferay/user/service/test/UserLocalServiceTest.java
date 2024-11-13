@@ -230,16 +230,6 @@ public class UserLocalServiceTest {
 				"LDAP user is not bypassing portal password policy",
 				user.getPasswordPolicy());
 		}
-		catch (Throwable throwable) {
-			if (throwable instanceof UserPasswordException) {
-				throw new Exception(
-					"Exception relate to password policy was thrown",
-					throwable);
-			}
-
-			throw new Exception(
-				"Exception unrelated to password policy was thrown", throwable);
-		}
 		finally {
 			passwordPolicy.setChangeRequired(false);
 			passwordPolicy.setCheckSyntax(false);
@@ -390,16 +380,7 @@ public class UserLocalServiceTest {
 
 			user = _userLocalService.updateUser(user);
 
-			try {
-				_userLocalService.checkLockout(user);
-			}
-			catch (UserLockoutException userLockoutException) {
-				throw new Exception("Password policy is being enforced");
-			}
-			catch (Throwable throwable) {
-				throw new Exception(
-					"Exception unrelated to lockout was thrown", throwable);
-			}
+			_userLocalService.checkLockout(user);
 		}
 		finally {
 			passwordPolicy.setLockout(false);
@@ -1623,22 +1604,17 @@ public class UserLocalServiceTest {
 			boolean ldapUser, String password)
 		throws Exception {
 
-		try {
-			User user = _createUser(ldapUser, password);
+		User user = _createUser(ldapUser, password);
 
-			Assert.assertEquals(
-				"User was created with incorrect LDAP Server Id",
-				ldapUser ? 1 : -1, user.getLdapServerId());
-			Assert.assertTrue(
-				"During creation, user did not have password policy applied",
-				user.isPasswordReset());
-			Assert.assertNotNull(
-				"User is bypassing portal password policy",
-				user.getPasswordPolicy());
-		}
-		catch (Throwable throwable) {
-			throw new Exception("Unable to create user", throwable);
-		}
+		Assert.assertEquals(
+			"User was created with incorrect LDAP Server Id", ldapUser ? 1 : -1,
+			user.getLdapServerId());
+		Assert.assertTrue(
+			"During creation, user did not have password policy applied",
+			user.isPasswordReset());
+		Assert.assertNotNull(
+			"User is bypassing portal password policy",
+			user.getPasswordPolicy());
 	}
 
 	private void _assertUserPasswordException(boolean ldapUser, String password)
