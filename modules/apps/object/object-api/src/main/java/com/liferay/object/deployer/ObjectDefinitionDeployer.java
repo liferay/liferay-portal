@@ -7,9 +7,9 @@ package com.liferay.object.deployer;
 
 import com.liferay.object.model.ObjectDefinition;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.ServiceRegistration;
 
@@ -26,7 +26,16 @@ public interface ObjectDefinitionDeployer {
 		deployObjectDefinitions(
 			long companyId, List<ObjectDefinition> objectDefinitions) {
 
-		return Collections.emptyMap();
+		Map<Long, List<ServiceRegistration<?>>> serviceRegistrationsMap =
+			new ConcurrentHashMap<>();
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			serviceRegistrationsMap.put(
+				objectDefinition.getObjectDefinitionId(),
+				deploy(objectDefinition));
+		}
+
+		return serviceRegistrationsMap;
 	}
 
 	public default void undeploy(ObjectDefinition objectDefinition) {
