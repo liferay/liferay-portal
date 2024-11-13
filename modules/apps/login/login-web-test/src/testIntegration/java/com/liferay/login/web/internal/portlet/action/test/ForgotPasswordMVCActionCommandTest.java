@@ -82,10 +82,10 @@ public class ForgotPasswordMVCActionCommandTest {
 
 		List<Ticket> tickets = _performForgotPasswordAction(false);
 
-		Assert.assertTrue(
+		Assert.assertEquals(
 			"No ticket created for LDAP user during password reset while " +
 				"LDAP password policy is not enabled",
-			tickets.size() == 1);
+			1, tickets.size());
 	}
 
 	@Test
@@ -96,10 +96,10 @@ public class ForgotPasswordMVCActionCommandTest {
 
 		List<Ticket> tickets = _performForgotPasswordAction(true);
 
-		Assert.assertTrue(
+		Assert.assertEquals(
 			"No ticket created for portal user during password reset while " +
 				"LDAP password policy is enabled",
-			tickets.size() == 1);
+			1, tickets.size());
 	}
 
 	@Test
