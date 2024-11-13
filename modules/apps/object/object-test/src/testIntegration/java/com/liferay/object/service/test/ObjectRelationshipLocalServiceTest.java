@@ -1329,7 +1329,7 @@ public class ObjectRelationshipLocalServiceTest {
 
 		_objectRelationshipLocalService.
 			registerObjectRelationshipsRelatedInfoCollectionProviders(
-				objectDefinition1, _objectDefinitionLocalService);
+				objectDefinition1, _objectDefinitionLocalService, null);
 
 		Bundle bundle = FrameworkUtil.getBundle(
 			ObjectRelationshipLocalServiceTest.class);

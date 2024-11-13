@@ -177,7 +177,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
 
-		return _deploy(null, objectDefinition, null);
+		return _deploy(null, objectDefinition, null, null);
 	}
 
 	@Override
@@ -189,6 +189,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		List<ObjectLayout> defaultObjectLayouts =
 			_objectLayoutLocalService.getDefaultObjectLayouts(companyId);
+		List<ObjectRelationship> objectRelationships =
+			_objectRelationshipLocalService.getObjectRelationshipsByCompanyId(
+				companyId);
 		List<ObjectAction> standaloneObjectActions =
 			_objectActionLocalService.getObjectActions(
 				companyId, true, ObjectActionTriggerConstants.KEY_STANDALONE);
@@ -204,6 +207,11 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 								objectDefinition.getObjectDefinitionId()),
 					objectDefinition,
 					ListUtil.filter(
+						objectRelationships,
+						objectRelationship ->
+							objectRelationship.getObjectDefinitionId1() ==
+								objectDefinition.getObjectDefinitionId()),
+					ListUtil.filter(
 						standaloneObjectActions,
 						objectAction ->
 							objectAction.getObjectDefinitionId() ==
@@ -216,6 +224,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private List<ServiceRegistration<?>> _deploy(
 		List<ObjectLayout> defaultObjectLayouts,
 		ObjectDefinition objectDefinition,
+		List<ObjectRelationship> objectRelationships,
 		List<ObjectAction> standaloneObjectActions) {
 
 		if (objectDefinition.isUnmodifiableSystemObject()) {
@@ -448,7 +457,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		_objectRelationshipLocalService.
 			registerObjectRelationshipsRelatedInfoCollectionProviders(
-				objectDefinition, _objectDefinitionLocalService);
+				objectDefinition, _objectDefinitionLocalService,
+				objectRelationships);
 
 		try {
 			if (objectDefinition.isRootNode()) {

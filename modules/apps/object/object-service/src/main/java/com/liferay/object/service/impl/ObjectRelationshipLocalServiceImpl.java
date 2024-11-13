@@ -826,11 +826,14 @@ public class ObjectRelationshipLocalServiceImpl
 	@Override
 	public void registerObjectRelationshipsRelatedInfoCollectionProviders(
 		ObjectDefinition objectDefinition1,
-		ObjectDefinitionLocalService objectDefinitionLocalService) {
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		List<ObjectRelationship> objectRelationships) {
 
-		List<ObjectRelationship> objectRelationships =
-			objectRelationshipLocalService.getObjectRelationships(
-				objectDefinition1.getObjectDefinitionId());
+		if (objectRelationships == null) {
+			objectRelationships =
+				objectRelationshipLocalService.getObjectRelationships(
+					objectDefinition1.getObjectDefinitionId());
+		}
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
 			if (!objectRelationship.isAllowedObjectRelationshipType(
