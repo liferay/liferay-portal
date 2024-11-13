@@ -44,15 +44,11 @@ public class PasswordPolicyLocalServiceTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testPasswordPolicyGettersWithLDAPUser() throws Exception {
+	public void testCompanyPasswordPolicyGettersWithLDAPPasswordPolicy()
+		throws Exception {
+
 		try (SafeCloseable safeCloseable =
-				_setLDAPAuthConfigurationWithSafeCloseable(false)) {
-
-			User user = UserTestUtil.addUser();
-
-			user.setLdapServerId(1);
-
-			user = _userLocalService.updateUser(user);
+				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
 
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getDefaultPasswordPolicy(
@@ -63,6 +59,20 @@ public class PasswordPolicyLocalServiceTest {
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getPasswordPolicy(
 					TestPropsValues.getCompanyId(), new long[0]));
+		}
+	}
+
+	@Test
+	public void testPasswordPolicyGettersWithLDAPUser() throws Exception {
+		try (SafeCloseable safeCloseable =
+				_setLDAPAuthConfigurationWithSafeCloseable(false)) {
+
+			User user = UserTestUtil.addUser();
+
+			user.setLdapServerId(1);
+
+			user = _userLocalService.updateUser(user);
+
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getPasswordPolicyByUser(user));
 			Assert.assertNotNull(
@@ -84,15 +94,6 @@ public class PasswordPolicyLocalServiceTest {
 
 			user = _userLocalService.updateUser(user);
 
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getDefaultPasswordPolicy(
-					TestPropsValues.getCompanyId()));
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicy(
-					TestPropsValues.getCompanyId(), true));
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicy(
-					TestPropsValues.getCompanyId(), new long[0]));
 			Assert.assertNull(
 				_passwordPolicyLocalService.getPasswordPolicyByUser(user));
 			Assert.assertNull(
@@ -110,15 +111,6 @@ public class PasswordPolicyLocalServiceTest {
 
 			User user = UserTestUtil.addUser();
 
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getDefaultPasswordPolicy(
-					TestPropsValues.getCompanyId()));
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicy(
-					TestPropsValues.getCompanyId(), true));
-			Assert.assertNotNull(
-				_passwordPolicyLocalService.getPasswordPolicy(
-					TestPropsValues.getCompanyId(), new long[0]));
 			Assert.assertNotNull(
 				_passwordPolicyLocalService.getPasswordPolicyByUser(user));
 			Assert.assertNotNull(
