@@ -514,6 +514,11 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	@Override
+	public List<ObjectField> getObjectFieldsByCompanyId(long companyId) {
+		return objectFieldPersistence.findByCompanyId(companyId);
+	}
+
+	@Override
 	public int getObjectFieldsCount(long objectDefinitionId) {
 		return objectFieldPersistence.countByObjectDefinitionId(
 			objectDefinitionId);
