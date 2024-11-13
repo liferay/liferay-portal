@@ -20,7 +20,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface DBPartitionConfiguration {
 
 	@Meta.AD(
-		deflt = "liferay/background_task|liferay/background_task_status|liferay/scheduler_engine|liferay/scheduler_scripting",
+		deflt = "liferay/background_task|liferay/background_task_status|liferay/scheduler_engine|liferay/scheduler_scripting|liferay/cache_replication",
 		description = "excluded-message-bus-destination-names-description",
 		name = "excluded-message-bus-destination-names", required = false
 	)
