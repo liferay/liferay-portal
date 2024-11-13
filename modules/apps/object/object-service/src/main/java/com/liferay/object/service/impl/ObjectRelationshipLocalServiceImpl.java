@@ -809,6 +809,13 @@ public class ObjectRelationshipLocalServiceImpl
 	}
 
 	@Override
+	public List<ObjectRelationship> getObjectRelationshipsByCompanyId(
+		long companyId) {
+
+		return objectRelationshipPersistence.findByCompanyId(companyId);
+	}
+
+	@Override
 	public List<ObjectRelationship> getObjectRelationshipsByObjectDefinitionId2(
 		long objectDefinitionId2) {
 

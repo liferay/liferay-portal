@@ -653,6 +653,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
 		<finder name="ObjectDefinitionId1" return-type="Collection">
 			<finder-column name="objectDefinitionId1" />
 		</finder>
