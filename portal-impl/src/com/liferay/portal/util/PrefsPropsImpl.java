@@ -7,17 +7,20 @@ package com.liferay.portal.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
+import com.liferay.portal.kernel.cache.PortalCacheMapSynchronizeUtil;
 import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
 import com.liferay.portal.kernel.cluster.ClusterRequest;
+import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.model.PortalPreferenceValue;
 import com.liferay.portal.kernel.model.PortalPreferences;
+import com.liferay.portal.kernel.module.util.ServiceLatch;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.PortalPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
@@ -29,11 +32,14 @@ import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.model.impl.PortalPreferenceValueCacheModel;
+import com.liferay.portal.model.impl.PortalPreferenceValueImpl;
 import com.liferay.portlet.PortalPreferencesImpl;
 import com.liferay.portlet.PortalPreferencesWrapper;
 import com.liferay.portlet.PortletPreferencesImpl;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import java.util.Enumeration;
 import java.util.Map;
@@ -45,24 +51,31 @@ import javax.portlet.PortletPreferences;
 import javax.portlet.ReadOnlyException;
 import javax.portlet.ValidatorException;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-
 /**
  * @author Brian Wing Shun Chan
  */
 public class PrefsPropsImpl implements PrefsProps {
 
 	public void afterPropertiesSet() {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		ServiceLatch serviceLatch = SystemBundleUtil.newServiceLatch();
 
-		_serviceRegistration = bundleContext.registerService(
-			ModelListener.class, new PortalPreferenceValueModelListener(),
-			null);
-	}
+		serviceLatch.waitFor(
+			EntityCache.class,
+			entityCache -> {
+				PortalCache<?, ?> portalCache = entityCache.getPortalCache(
+					PortalPreferenceValueImpl.class);
 
-	public void destroy() {
-		_serviceRegistration.unregister();
+				PortalCacheMapSynchronizeUtil.synchronize(
+					PortalCacheHelperUtil.getPortalCache(
+						PortalCacheManagerNames.MULTI_VM,
+						portalCache.getPortalCacheName(), portalCache.isMVCC(),
+						portalCache.isSharded()),
+					null, _synchronizer);
+			});
+
+		serviceLatch.openOn(
+			() -> {
+			});
 	}
 
 	@Override
@@ -529,7 +542,43 @@ public class PrefsPropsImpl implements PrefsProps {
 	private PortalPreferenceValueLocalService
 		_portalPreferenceValueLocalService;
 
-	private ServiceRegistration<?> _serviceRegistration;
+	private final PortalCacheMapSynchronizeUtil.Synchronizer
+		<Serializable, Serializable> _synchronizer =
+			new PortalCacheMapSynchronizeUtil.Synchronizer
+				<Serializable, Serializable>() {
+
+				@Override
+				public void onSynchronize(
+					Map<? extends Serializable, ? extends Serializable> map,
+					Serializable key, Serializable value, int timeToLive) {
+
+					if (!(value instanceof PortalPreferenceValueCacheModel)) {
+						return;
+					}
+
+					PortalPreferenceValueCacheModel
+						portalPreferenceValueCacheModel =
+							(PortalPreferenceValueCacheModel)value;
+
+					try {
+						PortalPreferences portalPreferences =
+							_portalPreferencesLocalService.getPortalPreferences(
+								portalPreferenceValueCacheModel.
+									portalPreferencesId);
+
+						if (portalPreferences.getOwnerType() ==
+								PortletKeys.PREFS_OWNER_TYPE_COMPANY) {
+
+							_removePortletPreference(
+								portalPreferenceValueCacheModel.companyId);
+						}
+					}
+					catch (PortalException portalException) {
+						throw new ModelListenerException(portalException);
+					}
+				}
+
+			};
 
 	private static class LazyPortletPreferences implements PortletPreferences {
 
@@ -610,58 +659,6 @@ public class PrefsPropsImpl implements PrefsProps {
 		private PortletPreferences _portletPreferences;
 		private final Supplier<PortletPreferences>
 			_writePortletPreferencesSupplier;
-
-	}
-
-	private class PortalPreferenceValueModelListener
-		extends BaseModelListener<PortalPreferenceValue> {
-
-		@Override
-		public Class<?> getModelClass() {
-			return PortalPreferenceValue.class;
-		}
-
-		@Override
-		public void onBeforeCreate(PortalPreferenceValue portalPreferenceValue)
-			throws ModelListenerException {
-
-			_clearPortletPreferencce(portalPreferenceValue);
-		}
-
-		@Override
-		public void onBeforeRemove(PortalPreferenceValue portalPreferenceValue)
-			throws ModelListenerException {
-
-			_clearPortletPreferencce(portalPreferenceValue);
-		}
-
-		@Override
-		public void onBeforeUpdate(
-			PortalPreferenceValue originalPortalPreferenceValue,
-			PortalPreferenceValue portalPreferenceValue) {
-
-			_clearPortletPreferencce(portalPreferenceValue);
-		}
-
-		private void _clearPortletPreferencce(
-			PortalPreferenceValue portalPreferenceValue) {
-
-			try {
-				PortalPreferences portalPreferences =
-					_portalPreferencesLocalService.getPortalPreferences(
-						portalPreferenceValue.getPortalPreferencesId());
-
-				if (portalPreferences.getOwnerType() ==
-						PortletKeys.PREFS_OWNER_TYPE_COMPANY) {
-
-					_removePortletPreference(
-						portalPreferenceValue.getCompanyId());
-				}
-			}
-			catch (PortalException portalException) {
-				throw new ModelListenerException(portalException);
-			}
-		}
 
 	}
 
