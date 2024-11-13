@@ -82,7 +82,9 @@ public class ObjectDefinitionGraphQLDTOContributor
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryManager objectEntryManager,
 		ObjectFieldLocalService objectFieldLocalService,
+		List<ObjectField> objectFields,
 		ObjectRelationshipLocalService objectRelationshipLocalService,
+		List<ObjectRelationship> objectRelationships,
 		ObjectScopeProvider objectScopeProvider,
 		SystemObjectDefinitionManagerRegistry
 			systemObjectDefinitionManagerRegistry) {
@@ -108,9 +110,10 @@ public class ObjectDefinitionGraphQLDTOContributor
 		List<GraphQLDTOProperty> relationshipGraphQLDTOProperties =
 			new ArrayList<>();
 
-		List<ObjectField> objectFields =
-			objectFieldLocalService.getObjectFields(
+		if (objectFields == null) {
+			objectFields = objectFieldLocalService.getObjectFields(
 				objectDefinition.getObjectDefinitionId());
+		}
 
 		for (ObjectField objectField : objectFields) {
 			if (Objects.equals(
@@ -159,9 +162,11 @@ public class ObjectDefinitionGraphQLDTOContributor
 			}
 		}
 
-		List<ObjectRelationship> objectRelationships =
-			objectRelationshipLocalService.getObjectRelationships(
-				objectDefinition.getObjectDefinitionId());
+		if (objectRelationships == null) {
+			objectRelationships =
+				objectRelationshipLocalService.getObjectRelationships(
+					objectDefinition.getObjectDefinitionId());
+		}
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
 			if (!Objects.equals(

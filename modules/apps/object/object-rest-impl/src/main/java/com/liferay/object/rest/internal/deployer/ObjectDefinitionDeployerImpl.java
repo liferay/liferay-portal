@@ -8,6 +8,8 @@ package com.liferay.object.rest.internal.deployer;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.exception.NoSuchObjectDefinitionException;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.internal.graphql.dto.v1_0.ObjectDefinitionGraphQLDTOContributor;
@@ -86,6 +88,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import javax.ws.rs.Path;
@@ -116,51 +119,40 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	public synchronized List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
 
-		if (objectDefinition.isUnmodifiableSystemObject()) {
-			_initSystemObjectDefinition(
-				objectDefinition,
-				_systemObjectDefinitionManagerRegistry.
-					getSystemObjectDefinitionManager(
-						objectDefinition.getName()));
+		return _deploy(objectDefinition, null, null);
+	}
 
-			return Collections.emptyList();
+	@Override
+	public Map<Long, List<ServiceRegistration<?>>> deployObjectDefinitions(
+		long companyId, List<ObjectDefinition> objectDefinitions) {
+
+		Map<Long, List<ServiceRegistration<?>>> serviceRegistrationsMap =
+			new ConcurrentHashMap<>();
+
+		List<ObjectField> objectFields =
+			_objectFieldLocalService.getObjectFieldsByCompanyId(companyId);
+		List<ObjectRelationship> objectRelationships =
+			_objectRelationshipLocalService.getObjectRelationshipsByCompanyId(
+				companyId);
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			serviceRegistrationsMap.put(
+				objectDefinition.getObjectDefinitionId(),
+				_deploy(
+					objectDefinition,
+					ListUtil.filter(
+						objectFields,
+						objectField ->
+							objectField.getObjectDefinitionId() ==
+								objectDefinition.getObjectDefinitionId()),
+					ListUtil.filter(
+						objectRelationships,
+						objectRelationship ->
+							objectRelationship.getObjectDefinitionId1() ==
+								objectDefinition.getObjectDefinitionId())));
 		}
 
-		ObjectScopeProvider objectScopeProvider =
-			_objectScopeProviderRegistry.getObjectScopeProvider(
-				objectDefinition.getScope());
-
-		Map<Long, ObjectDefinition> objectDefinitions =
-			_objectDefinitionsMap.get(objectDefinition.getRESTContextPath());
-
-		if (objectDefinitions == null) {
-			objectDefinitions = new HashMap<>();
-
-			_objectDefinitionsMap.put(
-				objectDefinition.getRESTContextPath(), objectDefinitions);
-		}
-
-		_excludeMethods(objectDefinition, objectScopeProvider);
-
-		_initCustomObjectDefinition(objectDefinition);
-
-		objectDefinitions.put(
-			objectDefinition.getCompanyId(), objectDefinition);
-
-		return Collections.singletonList(
-			_bundleContext.registerService(
-				GraphQLDTOContributor.class,
-				ObjectDefinitionGraphQLDTOContributor.of(
-					_entityModelProvider, _extensionProviderRegistry,
-					objectDefinition, _objectDefinitionLocalService,
-					_objectEntryManagerRegistry.getObjectEntryManager(
-						objectDefinition.getStorageType()),
-					_objectFieldLocalService, _objectRelationshipLocalService,
-					objectScopeProvider,
-					_systemObjectDefinitionManagerRegistry),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"dto.name", objectDefinition.getDBTableName()
-				).build()));
+		return serviceRegistrationsMap;
 	}
 
 	public ObjectDefinition getObjectDefinition(
@@ -207,6 +199,58 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_objectEntryManagerRegistry, _objectFieldLocalService,
 			_objectRelationshipService, _objectScopeProviderRegistry,
 			_systemObjectDefinitionManagerRegistry);
+	}
+
+	private List<ServiceRegistration<?>> _deploy(
+		ObjectDefinition objectDefinition, List<ObjectField> objectFields,
+		List<ObjectRelationship> objectRelationships) {
+
+		if (objectDefinition.isUnmodifiableSystemObject()) {
+			_initSystemObjectDefinition(
+				objectDefinition,
+				_systemObjectDefinitionManagerRegistry.
+					getSystemObjectDefinitionManager(
+						objectDefinition.getName()));
+
+			return Collections.emptyList();
+		}
+
+		ObjectScopeProvider objectScopeProvider =
+			_objectScopeProviderRegistry.getObjectScopeProvider(
+				objectDefinition.getScope());
+
+		Map<Long, ObjectDefinition> objectDefinitions =
+			_objectDefinitionsMap.get(objectDefinition.getRESTContextPath());
+
+		if (objectDefinitions == null) {
+			objectDefinitions = new HashMap<>();
+
+			_objectDefinitionsMap.put(
+				objectDefinition.getRESTContextPath(), objectDefinitions);
+		}
+
+		_excludeMethods(objectDefinition, objectScopeProvider);
+
+		_initCustomObjectDefinition(objectDefinition);
+
+		objectDefinitions.put(
+			objectDefinition.getCompanyId(), objectDefinition);
+
+		return Collections.singletonList(
+			_bundleContext.registerService(
+				GraphQLDTOContributor.class,
+				ObjectDefinitionGraphQLDTOContributor.of(
+					_entityModelProvider, _extensionProviderRegistry,
+					objectDefinition, _objectDefinitionLocalService,
+					_objectEntryManagerRegistry.getObjectEntryManager(
+						objectDefinition.getStorageType()),
+					_objectFieldLocalService, objectFields,
+					_objectRelationshipLocalService, objectRelationships,
+					objectScopeProvider,
+					_systemObjectDefinitionManagerRegistry),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"dto.name", objectDefinition.getDBTableName()
+				).build()));
 	}
 
 	private void _disposeComponentInstances(String restContextPath) {
