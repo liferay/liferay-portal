@@ -26,6 +26,9 @@ String navigation = ParamUtil.getString(request, "navigation", "fieldset");
 	<c:when test='<%= navigation.equals("input-localized") %>'>
 		<liferay-util:include page="/partials/input_localized.jsp" servletContext="<%= application %>" />
 	</c:when>
+	<c:when test='<%= navigation.equals("logo-selector") %>'>
+		<liferay-util:include page="/partials/logo_selector.jsp" servletContext="<%= application %>" />
+	</c:when>
 	<c:when test='<%= navigation.equals("search-iterator") %>'>
 		<liferay-util:include page="/partials/search_iterator.jsp" servletContext="<%= application %>" />
 	</c:when>

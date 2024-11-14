@@ -50,6 +50,14 @@ public class SampleDisplayContext {
 				"Input Localized"
 			).build(),
 			NavigationItemBuilder.setActive(
+				navigation.equals("logo-selector")
+			).setHref(
+				_renderResponse.createRenderURL(), "navigation",
+				"logo-selector"
+			).setLabel(
+				"Logo Selector"
+			).build(),
+			NavigationItemBuilder.setActive(
 				navigation.equals("search-iterator")
 			).setHref(
 				_renderResponse.createRenderURL(), "navigation",
