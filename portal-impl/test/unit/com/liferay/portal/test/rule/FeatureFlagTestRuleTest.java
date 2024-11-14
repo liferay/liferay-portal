@@ -35,4 +35,10 @@ public class FeatureFlagTestRuleTest {
 		Assert.assertTrue(FeatureFlagManagerUtil.isEnabled("METHOD-123"));
 	}
 
+	@FeatureFlags(enable = false, value = "DISABLED-123")
+	@Test
+	public void testDisableFeatureFlag() {
+		Assert.assertFalse(FeatureFlagManagerUtil.isEnabled("DISABLED-123"));
+	}
+
 }
