@@ -90,6 +90,11 @@ public class MembershipsUserFieldExpressionHandler
 	}
 
 	@Override
+	public List<String> getExplicitFieldExpressions() {
+		return _explicitFieldExpressions;
+	}
+
+	@Override
 	public User getLdapUser(
 			long companyId, String userIdentifier,
 			String userIdentifierExpression)
@@ -134,6 +139,8 @@ public class MembershipsUserFieldExpressionHandler
 	private static final Log _log = LogFactoryUtil.getLog(
 		MembershipsUserFieldExpressionHandler.class);
 
+	private final List<String> _explicitFieldExpressions =
+		Collections.unmodifiableList(Arrays.asList("membership:userGroups"));
 	private int _processingIndex;
 
 	@Reference

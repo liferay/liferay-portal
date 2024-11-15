@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.saml.opensaml.integration.processor.context.UserProcessorContext;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,10 @@ import java.util.Locale;
 @ProviderType
 public interface UserFieldExpressionHandler
 	extends FieldExpressionHandler<User, UserProcessorContext> {
+
+	public default List<String> getExplicitFieldExpressions() {
+		return Collections.emptyList();
+	}
 
 	public User getLdapUser(
 			long companyId, String userIdentifier,
