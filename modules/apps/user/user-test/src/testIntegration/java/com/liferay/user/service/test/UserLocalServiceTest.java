@@ -299,15 +299,13 @@ public class UserLocalServiceTest {
 					user.getCompanyId(), user.getEmailAddress(),
 					RandomTestUtil.randomString(), null, null, null));
 
-			try {
-				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(), password, null,
-					null, null);
-			}
-			catch (PortalException portalException) {
-				Assert.assertEquals(
-					PasswordExpiredException.class, portalException.getClass());
-			}
+			long companyId = user.getCompanyId();
+			String emailAddress = user.getEmailAddress();
+
+			AssertUtils.assertFailure(
+				PasswordExpiredException.class, null,
+				() -> _userLocalService.authenticateByEmailAddress(
+					companyId, emailAddress, password, null, null, null));
 
 			user = _userLocalService.fetchUser(user.getUserId());
 
@@ -790,16 +788,23 @@ public class UserLocalServiceTest {
 					user.getCompanyId(), user.getEmailAddress(),
 					RandomTestUtil.randomString(), null, null, null));
 
-			try {
-				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(), password, null,
-					null, null);
-			}
-			catch (PortalException portalException) {
-				Assert.assertEquals(
-					UserLockoutException.PasswordPolicyLockout.class,
-					portalException.getClass());
-			}
+			user = _userLocalService.getUser(user.getUserId());
+
+			long companyId = user.getCompanyId();
+			String emailAddress = user.getEmailAddress();
+
+			PasswordPolicy passwordPolicy = user.getPasswordPolicy();
+
+			String message = String.format(
+				"User %s was locked on %s by password policy %s and will be " +
+					"automatically unlocked on %s",
+				user.getUserId(), user.getLockoutDate(),
+				passwordPolicy.getName(), user.getUnlockDate(passwordPolicy));
+
+			AssertUtils.assertFailure(
+				UserLockoutException.PasswordPolicyLockout.class, message,
+				() -> _userLocalService.authenticateByEmailAddress(
+					companyId, emailAddress, password, null, null, null));
 
 			try {
 				_userLocalService.authenticateByEmailAddress(
@@ -892,8 +897,6 @@ public class UserLocalServiceTest {
 					PasswordEncryptorUtil.class,
 					"_PASSWORDS_ENCRYPTION_ALGORITHM", "SHA-384")) {
 
-			User user = UserTestUtil.addUser();
-
 			try (SafeCloseable safeCloseable =
 					_updateDefaultPasswordPolicyWithSafeCloseable(
 						passwordPolicy -> {
@@ -903,6 +906,8 @@ public class UserLocalServiceTest {
 
 				String password1 = "password1";
 				String password2 = "password2";
+
+				User user = UserTestUtil.addUser();
 
 				try {
 					ServiceContextThreadLocal.pushServiceContext(
@@ -938,10 +943,8 @@ public class UserLocalServiceTest {
 
 					Assert.fail();
 				}
-				catch (PortalException portalException) {
-					Assert.assertEquals(
-						UserPasswordException.MustNotBeRecentlyUsed.class,
-						portalException.getClass());
+				catch (UserPasswordException.MustNotBeRecentlyUsed
+							userPasswordException) {
 
 					Assert.assertEquals(
 						"{SHA-384}66b6aa56af08dc8caf7e001683058338244f436de61" +
@@ -1171,14 +1174,14 @@ public class UserLocalServiceTest {
 	public void testUnlockoutUserWithStaleLastFailedLoginDate()
 		throws Exception {
 
-		User user = UserTestUtil.addUser();
-
 		try (SafeCloseable safeCloseable =
 				_updateDefaultPasswordPolicyWithSafeCloseable(
 					passwordPolicy -> {
 						passwordPolicy.setLockout(false);
 						passwordPolicy.setResetFailureCount(3L);
 					})) {
+
+			User user = UserTestUtil.addUser();
 
 			long companyId = user.getCompanyId();
 			String emailAddress = user.getEmailAddress();
@@ -1206,8 +1209,6 @@ public class UserLocalServiceTest {
 
 	@Test
 	public void testUnlockoutUserWithStaleLockoutDate() throws Exception {
-		User user = UserTestUtil.addUser();
-
 		try (SafeCloseable safeCloseable =
 				_updateDefaultPasswordPolicyWithSafeCloseable(
 					passwordPolicy -> {
@@ -1215,6 +1216,8 @@ public class UserLocalServiceTest {
 						passwordPolicy.setMaxFailure(0);
 						passwordPolicy.setLockoutDuration(3L);
 					})) {
+
+			User user = UserTestUtil.addUser();
 
 			long companyId = user.getCompanyId();
 			String emailAddress = user.getEmailAddress();
