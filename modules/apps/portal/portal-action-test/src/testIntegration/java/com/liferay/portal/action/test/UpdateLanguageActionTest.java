@@ -9,12 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.action.UpdateLanguageAction;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -25,7 +23,6 @@ import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -39,6 +36,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
@@ -47,14 +45,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,6 +60,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Ricardo Couso
  */
+@LanguageIds(
+	availableLanguageIds = {"de_DE", "en_GB", "en_US", "fr_FR"},
+	defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class UpdateLanguageActionTest {
 
@@ -72,33 +71,6 @@ public class UpdateLanguageActionTest {
 	@Rule
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		_originalAvailableLocales = _language.getAvailableLocales();
-		_originalDefaultLocale = LocaleUtil.getDefault();
-		_originalLocalesEnabled = PropsValues.LOCALES_ENABLED;
-
-		_language.init();
-
-		CompanyTestUtil.resetCompanyLocales(
-			_portal.getDefaultCompanyId(), _availableLocales, _defaultLocale);
-
-		PropsValues.LOCALES_ENABLED = TransformUtil.transformToArray(
-			_availableLocales, locale -> _language.getLanguageId(locale),
-			String.class);
-	}
-
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		_language.init();
-
-		CompanyTestUtil.resetCompanyLocales(
-			_portal.getDefaultCompanyId(), _originalAvailableLocales,
-			_originalDefaultLocale);
-
-		PropsValues.LOCALES_ENABLED = _originalLocalesEnabled;
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -495,16 +467,6 @@ public class UpdateLanguageActionTest {
 	private static final List<Locale> _availableLocales = Arrays.asList(
 		LocaleUtil.GERMANY, LocaleUtil.FRANCE, LocaleUtil.UK, LocaleUtil.US);
 	private static final Locale _defaultLocale = LocaleUtil.US;
-
-	@Inject
-	private static Language _language;
-
-	private static Set<Locale> _originalAvailableLocales;
-	private static Locale _originalDefaultLocale;
-	private static String[] _originalLocalesEnabled;
-
-	@Inject
-	private static Portal _portal;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

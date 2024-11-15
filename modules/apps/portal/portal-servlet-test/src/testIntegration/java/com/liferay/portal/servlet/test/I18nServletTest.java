@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -27,20 +26,18 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.I18nServlet;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,6 +51,10 @@ import org.springframework.mock.web.MockServletContext;
 /**
  * @author Juan González
  */
+@LanguageIds(
+	availableLanguageIds = {"en_GB", "en_US", "es_ES", "fr_CA", "iw_IL"},
+	defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class I18nServletTest extends I18nServlet {
 
@@ -61,41 +62,6 @@ public class I18nServletTest extends I18nServlet {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		_availableLocales = _language.getAvailableLocales();
-		_defaultLocale = LocaleUtil.getDefault();
-		_hebrewLocale = new Locale("iw", "IL");
-		_localesEnabled = PropsValues.LOCALES_ENABLED;
-
-		_language.init();
-
-		CompanyTestUtil.resetCompanyLocales(
-			_portal.getDefaultCompanyId(),
-			Arrays.asList(
-				LocaleUtil.CANADA_FRENCH, LocaleUtil.SPAIN, LocaleUtil.UK,
-				LocaleUtil.US, _hebrewLocale),
-			LocaleUtil.US);
-
-		PropsValues.LOCALES_ENABLED = new String[] {
-			_language.getLanguageId(LocaleUtil.CANADA_FRENCH),
-			_language.getLanguageId(LocaleUtil.SPAIN),
-			_language.getLanguageId(LocaleUtil.UK),
-			_language.getLanguageId(LocaleUtil.US),
-			_language.getLanguageId(_hebrewLocale)
-		};
-	}
-
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		_language.init();
-
-		CompanyTestUtil.resetCompanyLocales(
-			_portal.getDefaultCompanyId(), _availableLocales, _defaultLocale);
-
-		PropsValues.LOCALES_ENABLED = _localesEnabled;
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -391,6 +357,8 @@ public class I18nServletTest extends I18nServlet {
 
 	@Test
 	public void testSendRedirectWithLegacyLanguageCode() throws Exception {
+		Locale hebrewLocale = new Locale("iw", "IL");
+
 		MockServletContext mockServletContext = new MockServletContext();
 
 		String contextPath = StringPool.SLASH + RandomTestUtil.randomString(10);
@@ -404,8 +372,8 @@ public class I18nServletTest extends I18nServlet {
 
 		mockHttpServletRequest.setServletPath(
 			String.format(
-				"/%s_%s", _hebrewLocale.getLanguage(),
-				_hebrewLocale.getCountry()));
+				"/%s_%s", hebrewLocale.getLanguage(),
+				hebrewLocale.getCountry()));
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
@@ -420,8 +388,8 @@ public class I18nServletTest extends I18nServlet {
 
 		Assert.assertEquals(
 			String.format(
-				"%s/%s-%s/", contextPath, _hebrewLocale.getLanguage(),
-				_hebrewLocale.getCountry()),
+				"%s/%s-%s/", contextPath, hebrewLocale.getLanguage(),
+				hebrewLocale.getCountry()),
 			mockHttpServletResponse.getHeader("Location"));
 	}
 
@@ -587,14 +555,8 @@ public class I18nServletTest extends I18nServlet {
 	private static final boolean _ORIGINAL_LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE =
 		PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE;
 
-	private static Set<Locale> _availableLocales;
-	private static Locale _defaultLocale;
-	private static Locale _hebrewLocale;
-
 	@Inject
 	private static Language _language;
-
-	private static String[] _localesEnabled;
 
 	@Inject
 	private static Portal _portal;

@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -21,7 +20,6 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -34,13 +32,12 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.portlet.PortletPreferences;
 
@@ -48,7 +45,6 @@ import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -62,6 +58,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Sergio González
  */
+@LanguageIds(
+	availableLanguageIds = {"en_US", "es_ES", "fr_CA"},
+	defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class FriendlyURLServletLocalizedFriendlyURLTest {
 
@@ -72,15 +72,6 @@ public class FriendlyURLServletLocalizedFriendlyURLTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		_availableLocales = _language.getAvailableLocales();
-		_defaultLocale = LocaleUtil.getDefault();
-
-		CompanyTestUtil.resetCompanyLocales(
-			_portal.getDefaultCompanyId(),
-			Arrays.asList(
-				LocaleUtil.CANADA_FRENCH, LocaleUtil.SPAIN, LocaleUtil.US),
-			LocaleUtil.US);
-
 		_nameMap = HashMapBuilder.put(
 			LocaleUtil.CANADA_FRENCH, "Accueil"
 		).put(
@@ -96,12 +87,6 @@ public class FriendlyURLServletLocalizedFriendlyURLTest {
 		).put(
 			LocaleUtil.US, "/home"
 		).build();
-	}
-
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		CompanyTestUtil.resetCompanyLocales(
-			_portal.getDefaultCompanyId(), _availableLocales, _defaultLocale);
 	}
 
 	@Before
@@ -901,13 +886,7 @@ public class FriendlyURLServletLocalizedFriendlyURLTest {
 
 	private static final String _VIRTUAL_HOSTNAME = "test.com";
 
-	private static Set<Locale> _availableLocales;
-	private static Locale _defaultLocale;
 	private static Map<Locale, String> _friendlyURLMap;
-
-	@Inject
-	private static Language _language;
-
 	private static Map<Locale, String> _nameMap;
 
 	@Inject
