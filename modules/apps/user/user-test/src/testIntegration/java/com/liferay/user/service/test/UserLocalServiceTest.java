@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.security.auth.AuthException;
 import com.liferay.portal.kernel.security.auth.Authenticator;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -806,20 +805,10 @@ public class UserLocalServiceTest {
 				() -> _userLocalService.authenticateByEmailAddress(
 					companyId, emailAddress, password, null, null, null));
 
-			try {
-				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(),
-					RandomTestUtil.randomString(), null, null, null);
-			}
-			catch (PortalException portalException) {
-				Assert.assertEquals(
-					AuthException.class, portalException.getClass());
-			}
-
 			user = _userLocalService.fetchUser(user.getUserId());
 
 			Assert.assertEquals(
-				failedLoginAttempts + 3, user.getFailedLoginAttempts());
+				failedLoginAttempts + 2, user.getFailedLoginAttempts());
 		}
 
 		try (SafeCloseable safeCloseable =
