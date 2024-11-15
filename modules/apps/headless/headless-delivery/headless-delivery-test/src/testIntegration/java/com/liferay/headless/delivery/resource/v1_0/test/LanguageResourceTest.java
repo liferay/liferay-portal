@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.rule.LanguageIds;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -26,6 +27,10 @@ import org.junit.runner.RunWith;
 /**
  * @author Javier Gamarra
  */
+@LanguageIds(
+	availableLanguageIds = {"en_US", "es_ES", "fr_FR", "zh_CN"},
+	defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class LanguageResourceTest extends BaseLanguageResourceTestCase {
 

@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
@@ -88,6 +89,10 @@ import org.junit.runner.RunWith;
  * @author Roberto Díaz
  * @author Sergio González
  */
+@LanguageIds(
+	availableLanguageIds = {"de_DE", "en", "en_US", "es_ES", "pt_BR", "zh_CN"},
+	defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 @Sync(cleanTransaction = true)
 public class GroupServiceTest {
