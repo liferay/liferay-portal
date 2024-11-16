@@ -41,7 +41,7 @@ public class SegmentsExperienceManager {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		if ((segmentsExperienceId != -1) &&
+		if ((segmentsExperienceId != -1) && (themeDisplay != null) &&
 			permissionChecker.isGroupAdmin(themeDisplay.getScopeGroupId())) {
 
 			return segmentsExperienceId;
