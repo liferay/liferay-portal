@@ -277,10 +277,9 @@ public class UserLocalServiceTest {
 	@Test
 	public void testAuthenticateByEmailAddress() throws Exception {
 		User user = UserTestUtil.addUser();
-		String password = "password";
 
 		user = _userLocalService.updatePassword(
-			user.getUserId(), password, password, false, true);
+			user.getUserId(), "password", "password", false, true);
 
 		try (SafeCloseable safeCloseable =
 				_updateDefaultPasswordPolicyWithSafeCloseable(
@@ -303,7 +302,7 @@ public class UserLocalServiceTest {
 			AssertUtils.assertFailure(
 				PasswordExpiredException.class, null,
 				() -> _userLocalService.authenticateByEmailAddress(
-					companyId, emailAddress, password, null, null, null));
+					companyId, emailAddress, "password", null, null, null));
 
 			user = _userLocalService.fetchUser(user.getUserId());
 
@@ -321,8 +320,8 @@ public class UserLocalServiceTest {
 			Assert.assertEquals(
 				Authenticator.SUCCESS,
 				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(), password, null,
-					null, null));
+					user.getCompanyId(), user.getEmailAddress(), "password",
+					null, null, null));
 		}
 	}
 
@@ -759,15 +758,14 @@ public class UserLocalServiceTest {
 	@Test
 	public void testLockoutUser() throws Exception {
 		User user = UserTestUtil.addUser();
-		String password = "password";
 
 		user = _userLocalService.updatePassword(
-			user.getUserId(), password, password, false, true);
+			user.getUserId(), "password", "password", false, true);
 
 		Assert.assertEquals(
 			Authenticator.SUCCESS,
 			_userLocalService.authenticateByEmailAddress(
-				user.getCompanyId(), user.getEmailAddress(), password, null,
+				user.getCompanyId(), user.getEmailAddress(), "password", null,
 				null, null));
 
 		try (SafeCloseable safeCloseable =
@@ -801,7 +799,7 @@ public class UserLocalServiceTest {
 			AssertUtils.assertFailure(
 				UserLockoutException.PasswordPolicyLockout.class, message,
 				() -> _userLocalService.authenticateByEmailAddress(
-					companyId, emailAddress, password, null, null, null));
+					companyId, emailAddress, "password", null, null, null));
 
 			user = _userLocalService.fetchUser(user.getUserId());
 
@@ -816,16 +814,14 @@ public class UserLocalServiceTest {
 			Assert.assertEquals(
 				Authenticator.SUCCESS,
 				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(), password, null,
-					null, null));
+					user.getCompanyId(), user.getEmailAddress(), "password",
+					null, null, null));
 		}
 	}
 
 	@Test
 	public void testPasswordHistory() throws Exception {
 		User user = UserTestUtil.addUser();
-		String password1 = "password1";
-		String password2 = "password2";
 
 		try (SafeCloseable safeCloseable =
 				_updateDefaultPasswordPolicyWithSafeCloseable(
@@ -839,19 +835,19 @@ public class UserLocalServiceTest {
 					user.getGroupId(), user.getUserId()));
 
 			user = _userLocalService.updatePassword(
-				user.getUserId(), password1, password1, false, false);
+				user.getUserId(), "password1", "password1", false, false);
 
 			user = _userLocalService.updatePassword(
-				user.getUserId(), password2, password2, false, false);
+				user.getUserId(), "password2", "password2", false, false);
 
 			Assert.assertEquals(
 				Authenticator.SUCCESS,
 				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(), password2,
+					user.getCompanyId(), user.getEmailAddress(), "password2",
 					null, null, null));
 
 			_userLocalService.updatePassword(
-				user.getUserId(), password1, password1, false, false);
+				user.getUserId(), "password1", "password1", false, false);
 
 			Assert.fail();
 		}
@@ -863,7 +859,7 @@ public class UserLocalServiceTest {
 			Assert.assertEquals(
 				Authenticator.SUCCESS,
 				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(), password2,
+					user.getCompanyId(), user.getEmailAddress(), "password2",
 					null, null, null));
 		}
 		finally {
@@ -874,8 +870,6 @@ public class UserLocalServiceTest {
 	@Test
 	public void testPasswordHistoryWithModifiedEncryption() throws Exception {
 		User user = UserTestUtil.addUser();
-		String password1 = "password1";
-		String password2 = "password2";
 
 		try (AutoCloseable autoCloseable1 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
@@ -896,7 +890,7 @@ public class UserLocalServiceTest {
 					user.getGroupId(), user.getUserId()));
 
 			user = _userLocalService.updatePassword(
-				user.getUserId(), password1, password1, false, false);
+				user.getUserId(), "password1", "password1", false, false);
 
 			Assert.assertEquals(
 				"{SHA-384}f5e2dd85fe11cec4c913f0f1fcecddb4a654dd92852f978d634" +
@@ -904,7 +898,7 @@ public class UserLocalServiceTest {
 				user.getPassword());
 
 			user = _userLocalService.updatePassword(
-				user.getUserId(), password2, password2, false, false);
+				user.getUserId(), "password2", "password2", false, false);
 
 			Assert.assertEquals(
 				"{SHA-384}66b6aa56af08dc8caf7e001683058338244f436de61d40e342d" +
@@ -914,11 +908,11 @@ public class UserLocalServiceTest {
 			Assert.assertEquals(
 				Authenticator.SUCCESS,
 				_userLocalService.authenticateByEmailAddress(
-					user.getCompanyId(), user.getEmailAddress(), password2,
+					user.getCompanyId(), user.getEmailAddress(), "password2",
 					null, null, null));
 
 			_userLocalService.updatePassword(
-				user.getUserId(), password1, password1, false, false);
+				user.getUserId(), "password1", "password1", false, false);
 
 			Assert.fail();
 		}
