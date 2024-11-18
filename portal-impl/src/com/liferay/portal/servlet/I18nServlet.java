@@ -125,17 +125,23 @@ public class I18nServlet extends HttpServlet {
 
 		String i18nLanguageId = httpServletRequest.getServletPath();
 
+		_log.error("i18nLanguageId = " + i18nLanguageId);
+
 		int pos = i18nLanguageId.lastIndexOf(CharPool.SLASH);
 
 		i18nLanguageId = StringUtil.replace(
 			i18nLanguageId.substring(pos + 1), CharPool.DASH,
 			CharPool.UNDERLINE);
 
+		_log.error("i18nLanguageId = " + i18nLanguageId);
+
 		if (_log.isDebugEnabled()) {
 			_log.debug("Language ID " + i18nLanguageId);
 		}
 
 		if (Validator.isNull(i18nLanguageId)) {
+			_log.error("Returning early");
+
 			return null;
 		}
 
@@ -147,7 +153,11 @@ public class I18nServlet extends HttpServlet {
 			i18nLanguageCode = i18nLanguageId.substring(0, pos);
 		}
 
+		_log.error("i18nLanguageId = " + i18nLanguageId);
+
 		Locale targetLocale = LanguageUtil.getLocale(i18nLanguageCode);
+
+		_log.error("targetLocale = " + targetLocale);
 
 		Group siteGroup = null;
 
@@ -155,7 +165,11 @@ public class I18nServlet extends HttpServlet {
 
 		Locale i18nLocale = LocaleUtil.fromLanguageId(i18nLanguageId);
 
+		_log.error("i18nLocale = " + i18nLocale);
+
 		String i18nPath = StringPool.SLASH + i18nLocale.toLanguageTag();
+
+		_log.error("i18nPath = " + i18nPath);
 
 		if (Validator.isNull(path)) {
 			path = "/";
@@ -175,6 +189,8 @@ public class I18nServlet extends HttpServlet {
 				if (siteGroup == null) {
 					httpServletRequest.setAttribute(
 						WebKeys.I18N_ERROR_PATH, i18nPath);
+
+					_log.error("Returning early");
 
 					return null;
 				}
@@ -201,6 +217,8 @@ public class I18nServlet extends HttpServlet {
 				i18nLanguageId = LocaleUtil.toLanguageId(targetLocale);
 			}
 			else {
+				_log.error("Returning early");
+
 				return null;
 			}
 		}
