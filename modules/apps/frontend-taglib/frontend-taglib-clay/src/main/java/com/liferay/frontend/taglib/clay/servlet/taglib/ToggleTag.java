@@ -266,15 +266,6 @@ public class ToggleTag extends BaseContainerTag {
 			jspWriter.write("\"");
 		}
 
-		if (Validator.isNotNull(_type)) {
-			jspWriter.write(" type=\"");
-			jspWriter.write(_type);
-			jspWriter.write("\"");
-		}
-		else {
-			jspWriter.write(" type=\"checkbox\"");
-		}
-
 		if (Validator.isNotNull(_role)) {
 			jspWriter.write(" role=\"");
 			jspWriter.write(_role);
@@ -282,6 +273,15 @@ public class ToggleTag extends BaseContainerTag {
 		}
 		else {
 			jspWriter.write(" role=\"switch\"");
+		}
+
+		if (Validator.isNotNull(_type)) {
+			jspWriter.write(" type=\"");
+			jspWriter.write(_type);
+			jspWriter.write("\"");
+		}
+		else {
+			jspWriter.write(" type=\"checkbox\"");
 		}
 
 		if (Validator.isNotNull(_value)) {
