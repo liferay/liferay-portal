@@ -16,6 +16,9 @@ public class FDSSampleFDSNames {
 	public static final String CONTROLLED =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-controlled";
 
+	public static final String CUSTOM_INTERNAL_VIEW =
+		FDSSamplePortletKeys.FDS_SAMPLE + "-custom-internal-view";
+
 	public static final String CUSTOMIZED =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-customized";
 
