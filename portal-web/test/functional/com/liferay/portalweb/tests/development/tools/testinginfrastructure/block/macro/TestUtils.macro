@@ -129,6 +129,47 @@ document.getElementById('${elementId}').value = '${newValue}';
 	}
 
 	@summary = "Default summary"
+	macro checkElementAttributeIsNotNull(id = null, attribute = null) {
+		WaitForSPARefresh();
+
+		var javascript = '''
+			return document.getElementById("${id}").getAttribute("${attribute}").toString();
+		''';
+
+		var attributeValue = selenium.getEval(${javascript});
+
+		if (${attributeValue} != "null") {
+			echo("PASSED");
+		}
+		else {
+			TestUtils.fail(message = "FAILED: Element '${elementExpression}' does not exists");
+		}
+	}
+
+	@summary = "Default summary"
+	macro checkElementAttributeIsNull(id = null, attribute = null) {
+		WaitForSPARefresh();
+
+		var javascript = '''
+			let value = document.getElementById("${id}").getAttribute("${attribute}");
+			if(value === null){
+				return "null";
+			}else{
+				return value;
+			}
+		''';
+
+		var attributeValue = selenium.getEval(${javascript});
+
+		if (${attributeValue} == "null") {
+			echo("PASSED");
+		}
+		else {
+			TestUtils.fail(message = "FAILED: Element '${elementExpression}' does not exists");
+		}
+	}
+
+	@summary = "Default summary"
 	macro fail() {
 		if (!(isSet(message))) {
 			var message = "FAIL";
