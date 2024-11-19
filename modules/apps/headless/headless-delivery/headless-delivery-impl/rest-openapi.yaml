@@ -1770,6 +1770,11 @@ components:
                     description:
                         The localized Document Metadata Set descriptions.
                     type: object
+                externalReferenceCode:
+                    # @review
+                    description:
+                        The Document Metadata Set's external reference code.
+                    type: string
                 id:
                     description:
                         The ID of the Document Metadata Set.
@@ -6809,6 +6814,104 @@ paths:
                   schema:
                       format: int64
                       type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DocumentMetadataSet"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DocumentMetadataSet"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+            tags: ["DocumentMetadataSet"]
+    "/asset-libraries/{assetLibraryId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes the asset library's Document Metadata Set by external reference code.
+            operationId: deleteAssetLibraryDocumentMetadataSetByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["DocumentMetadataSet"]
+        get:
+            description:
+                Retrieves the asset library's Document Metadata Set by external reference code.
+            operationId: getAssetLibraryDocumentMetadataSetByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+            tags: ["DocumentMetadataSet"]
+        put:
+            # @review
+            description:
+                Updates the asset Library's Document Metadata Set with the given external reference code, or creates it
+                if it does not exists.
+            operationId: putAssetLibraryDocumentMetadataSetByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
             requestBody:
                 content:
                     application/json:
@@ -13472,6 +13575,104 @@ paths:
                   schema:
                       format: int64
                       type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DocumentMetadataSet"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DocumentMetadataSet"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+            tags: ["DocumentMetadataSet"]
+    "/sites/{siteId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes the site's Document Metadata Set by external reference code.
+            operationId: deleteSiteDocumentMetadataSetByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["DocumentMetadataSet"]
+        get:
+            description:
+                Retrieves the site's Document Metadata Set by external reference code.
+            operationId: getSiteDocumentMetadataSetByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetadataSet"
+            tags: ["DocumentMetadataSet"]
+        put:
+            # @review
+            description:
+                Updates the site's Document Metadata Set with the given external reference code, or creates it if it
+                does not exist.
+            operationId: putSiteDocumentMetadataSetByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
             requestBody:
                 content:
                     application/json:
