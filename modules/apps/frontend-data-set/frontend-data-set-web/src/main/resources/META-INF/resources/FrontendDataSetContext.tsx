@@ -69,8 +69,10 @@ export interface IClientExtensionRenderer {
 
 export interface IInternalRenderer {
 	component: React.ComponentType<any>;
+	default?: boolean;
 	label?: string;
 	name?: string;
+	symbol?: string;
 	type: 'internal';
 	url?: string;
 }

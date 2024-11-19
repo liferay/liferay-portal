@@ -90,8 +90,8 @@ export function viewsReducer(state, {type, value}) {
 		}
 
 		activeCustomView.activeView.component =
-			getViewComponent(activeCustomView.activeView.contentRenderer) ??
-			getViewComponent(defaultView.activeView.contentRenderer);
+			getViewComponent(activeCustomView.activeView) ??
+			getViewComponent(defaultView.activeView);
 
 		return {
 			...state,
@@ -105,7 +105,7 @@ export function viewsReducer(state, {type, value}) {
 		const activeView = views.find(({name}) => name === value);
 
 		if (activeView) {
-			activeView.component = getViewComponent(activeView.contentRenderer);
+			activeView.component = getViewComponent(activeView);
 		}
 
 		return {

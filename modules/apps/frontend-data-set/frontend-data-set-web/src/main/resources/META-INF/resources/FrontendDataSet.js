@@ -117,8 +117,22 @@ const FrontendDataSet = ({
 	const [total, setTotal] = useState(0);
 
 	const getInitialViewsState = () => {
+		const customInternalViews =
+			customRenderers?.view?.map((customRenderer) => ({
+				component: customRenderer.component,
+				default: customRenderer.default,
+				label: customRenderer.label,
+				name: customRenderer.name,
+				thumbnail: customRenderer.symbol,
+			})) || [];
+
 		let initialActiveView =
-			views.find(({default: defaultProp}) => defaultProp) || views[0];
+			views.find(({default: defaultProp}) => defaultProp) ||
+			customInternalViews?.find(
+				({default: defaultProp}) => defaultProp
+			) ||
+			views[0] ||
+			(customInternalViews?.length && customInternalViews[0]);
 
 		let initialVisibleFieldNames = {};
 
@@ -142,7 +156,7 @@ const FrontendDataSet = ({
 		}
 
 		const activeView = {
-			component: getViewComponent(initialActiveView.contentRenderer),
+			component: getViewComponent(initialActiveView),
 			...initialActiveView,
 		};
 
@@ -186,7 +200,7 @@ const FrontendDataSet = ({
 			modifiedFields: {},
 			paginationDelta,
 			sorts: sortsProp,
-			views,
+			views: [...views, ...customInternalViews],
 			visibleFieldNames: initialVisibleFieldNames,
 		};
 	};
