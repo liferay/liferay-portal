@@ -89,8 +89,8 @@
 >
 	<clay:col>
 		<clay:toggle
-			labelOff="Off"
-			labelOn="On"
+			offLabel="Off"
+			onLabel="On"
 		/>
 	</clay:col>
 </clay:row>
