@@ -27,10 +27,12 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.layout.service.LayoutClassedModelUsageLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -563,6 +565,28 @@ public class UIItemsBuilder {
 		).build();
 	}
 
+	public DropdownItem createViewUsagesDropdownItem() {
+		long count =
+			LayoutClassedModelUsageLocalServiceUtil.
+				getLayoutClassedModelUsagesCount(
+					PortalUtil.getClassNameId(FileEntry.class),
+					_fileEntry.getFileEntryId());
+
+		return DropdownItemBuilder.setDisabled(
+			count == 0
+		).setHref(
+			PortletURLBuilder.create(
+				_getRenderURL("/document_library/view_file_entry_usages")
+			).setParameter(
+				"fileEntryId", _fileEntry.getFileEntryId()
+			).buildString()
+		).setIcon(
+			"list-ul"
+		).setLabel(
+			LanguageUtil.get(_httpServletRequest, "view-usages")
+		).build();
+	}
+
 	public DropdownItem createViewVersionDropdownItem() {
 		return DropdownItemBuilder.setHref(
 			PortletURLBuilder.create(
@@ -806,6 +830,16 @@ public class UIItemsBuilder {
 
 	public boolean isViewOriginalFileActionAvailable() {
 		if (_fileShortcut != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isViewUsagesActionAvailable() {
+		if (FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-36446")) {
+
 			return true;
 		}
 
