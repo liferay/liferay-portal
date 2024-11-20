@@ -124,6 +124,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SCHEDULE_IN_MODAL</td>
+	<td>//div[contains(@class,'modal-content')]//button[contains(text(),'Schedule')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SCHEDULE_PUBLICATION_BUTTON</td>
+	<td>//button[contains(@class, 'dropdown-item') and contains(text(), 'Schedule Publication')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SELECT_BUTTON_2</td>
 	<td>xpath=(//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div[contains(@class,'form')]//button[normalize-space()='Select'])[2]</td>
 	<td></td>
@@ -146,6 +156,16 @@
 <tr>
 	<td>SELECT_FIELD_TRIGGER_2</td>
 	<td>xpath=(//div[contains(@class,'ddm-field')][.//label[normalize-space(text())='${key_fieldFieldLabel}']]//button[@role='combobox'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBMIT_FOR_WORKFLOW_IN_MODAL</td>
+	<td>//div[contains(@class,'modal-content')]//button[contains(text(),'Submit for Workflow')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUBMIT_FOR_WORKFLOW_WITH_PERMISSIONS_BUTTON</td>
+	<td>//button[contains(@class, 'dropdown-item') and contains(text(), 'Submit for Workflow With Permissions')]</td>
 	<td></td>
 </tr>
 <tr>

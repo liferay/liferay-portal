@@ -103,7 +103,7 @@ definition {
 <p class="text-center">地球から、宇宙の果てへ</p>
 ''');
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Then the site designer could view the translation after changing the user language to Chinese") {
@@ -276,7 +276,7 @@ definition {
 					webContentText = "Contenu de Contenu Web",
 					webContentTitle = "Titre du contenu Web");
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 
 			task ("Select the web content in Web Content Display") {

@@ -4607,9 +4607,7 @@ definition {
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "WC Title Scheduled");
 
-			WebContent.editDisplayDate(displayDate = "01/01/2100");
-
-			WebContent.publishExistingWCArticleWithPermissions();
+			WebContent.scheduleExistingWCArticleWithPermissions(displayDate = "2100-11-20 01:00");
 		}
 
 		task ("Filter asset at Content Dashboard using status") {

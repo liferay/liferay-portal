@@ -664,7 +664,7 @@ definition {
 		}
 
 		task ("Publish Web Content and view the error message") {
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 
 			Alert.viewErrorMessage(errorMessage = "Another user has made changes since you started editing. Publish this version to save it and overwrite the recent changes.");
 		}
@@ -1473,7 +1473,7 @@ definition {
 
 			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View approved status in the web content") {

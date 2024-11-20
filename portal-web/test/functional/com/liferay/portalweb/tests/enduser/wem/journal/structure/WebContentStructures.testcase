@@ -809,7 +809,7 @@ definition {
 				webContentImage = "Document Title",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a widget page") {

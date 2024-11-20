@@ -652,7 +652,7 @@ definition {
 				locator1 = "WCEditWebContent#ANY_TEXT_INPUT",
 				value1 = "Liferay 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "Exported Article");
 		}
@@ -783,7 +783,7 @@ definition {
 				webContentLinkToPage = "Test Page",
 				webContentTitle = "WC WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "WC WebContent Title");
 		}

@@ -93,6 +93,7 @@ definition {
 			WebContent.addExistingRelatedAssetCP(
 				assetTitle = "Web Content Title 1",
 				assetType = "Basic Web Content",
+				edit = "true",
 				siteName = "Site Name");
 		}
 
@@ -249,7 +250,7 @@ definition {
 				entryExternalURL = ${entryExternalURL},
 				fieldLabel = "Content");
 
-			Button.clickPublish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then: The publish process fails with corresponding error message") {
@@ -590,7 +591,7 @@ definition {
 				webContentLinkToPage = "Page B",
 				webContentTitle = "Web Content Title A");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("And: Add a new WC which is based on the WC template and structure and linked to the first page, then publish it") {
@@ -742,7 +743,7 @@ definition {
 				webContentLinkToPage = "Site Child Page",
 				webContentTitle = "WC WebContent Title 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("And: Add a second WC based on the new structure and template and linked to the child page of the child page then publish it") {
@@ -1563,7 +1564,7 @@ definition {
 				templateName = "WC Template Name",
 				webContentTitle = "WC WebContent Title 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("And: Add a second WC based on the WC template and structure, pointing to the first WC then publish it") {
@@ -1577,7 +1578,7 @@ definition {
 				webContentTitle = "WC WebContent Title 2",
 				webContentWebContent = "WC WebContent Title 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When: User edit the first WC then export the site") {
@@ -1735,7 +1736,7 @@ definition {
 
 			CKEditor.addSourceContent(content = '''<a href="${editDocumentURL}jpg">Link to Document</a>''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When: User export with default settings") {
@@ -1868,7 +1869,7 @@ definition {
 				webContentLinkToPage = "Page B",
 				webContentTitle = "WC WebContent Title 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("And: Add a second WC based on the second structure and second template, with a reference to the first WC") {

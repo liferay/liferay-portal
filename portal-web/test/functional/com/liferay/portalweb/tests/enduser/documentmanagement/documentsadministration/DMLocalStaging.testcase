@@ -2285,7 +2285,7 @@ definition {
 				webContentImage = "Document_2.jpg",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		Navigator.gotoStagedSitePage(
@@ -2385,7 +2385,7 @@ definition {
 				webContentImage = "Document_2.jpg",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		Navigator.gotoStagedSitePage(

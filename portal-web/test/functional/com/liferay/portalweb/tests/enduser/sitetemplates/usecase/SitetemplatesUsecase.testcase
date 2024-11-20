@@ -642,7 +642,7 @@ definition {
 				entryExternalURL = ${cleanEntryExternalURL},
 				fieldLabel = "Content");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When: User add a new Site based on the Site Template") {

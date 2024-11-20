@@ -252,7 +252,7 @@ definition {
 				webContentText = "This is a Text field",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a Content Display to page") {
@@ -1055,7 +1055,7 @@ definition {
 				webContentSingleSelection = "Option 3",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a Content Display to a content page") {
@@ -1118,7 +1118,7 @@ definition {
 				webContentText = "This is a Text field",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a Content Display to a content page") {
@@ -1182,7 +1182,7 @@ definition {
 				webContentTitle = "Web Content Title",
 				webContentUpload = "Document_1.jpg");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a Content Display to a content page") {
@@ -1251,7 +1251,7 @@ definition {
 				webContentTitle = "Web Content Title",
 				webContentWebContent = "WC Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a Content Display to page") {

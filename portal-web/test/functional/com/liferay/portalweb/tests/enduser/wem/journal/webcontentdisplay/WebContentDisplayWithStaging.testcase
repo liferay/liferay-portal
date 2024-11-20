@@ -352,7 +352,7 @@ definition {
 				webContentImage = "Document_2.jpeg",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Select the web content in Web Content Display") {

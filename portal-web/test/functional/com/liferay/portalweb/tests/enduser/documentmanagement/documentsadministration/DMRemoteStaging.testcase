@@ -421,7 +421,7 @@ definition {
 			webContentImage = "Document_2.jpg",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.gotoSitePage(
 			pageName = "Staging DM Page",
@@ -1823,7 +1823,7 @@ definition {
 			webContentImage = "Document_2.jpg",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		Navigator.gotoSitePage(
 			pageName = "Staging DM Page",

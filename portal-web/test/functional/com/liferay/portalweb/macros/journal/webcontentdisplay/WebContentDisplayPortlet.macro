@@ -67,7 +67,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addTag(tagNameList = null) {
+	macro addTag(tagNameList = null, edit = null) {
 		Panel.expandPanel(panel = "Categorization");
 
 		for (var tagName : list ${tagNameList}) {
@@ -92,7 +92,12 @@ definition {
 				value1 = ${tagName});
 		}
 
-		WebContent.publishWithPermissions();
+		if (${edit} == "true") {
+			WebContent.publishExistingWCArticleWithPermissions();
+		}
+		else {
+			WebContent.publishWithPermissions();
+		}
 
 		SelectFrame(value1 = "relative=top");
 	}
@@ -178,7 +183,7 @@ definition {
 				fieldLabel = "Content");
 		}
 
-		WebContent.publishWithPermissions();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		SelectFrame(value1 = "relative=top");
 	}

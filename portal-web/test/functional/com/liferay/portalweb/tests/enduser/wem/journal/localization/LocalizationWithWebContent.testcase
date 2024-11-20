@@ -83,7 +83,7 @@ definition {
 				webContentContent = "世界您好 Content",
 				webContentTitle = "世界您好 Title");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Then the site designer could view the translation after changing the user language to Chinese") {
@@ -291,7 +291,7 @@ definition {
 				locator1 = "WCEditWebContent#TEXT_INPUT",
 				value1 = "Este es un campo de texto");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Then the site designer could view the translated web content at edit mode") {
@@ -460,7 +460,7 @@ definition {
 		task ("When the site designer deletes the Spanish translation in the content field") {
 			WebContent.addCP(webContentContent = "");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("Then the site designer could view the empty field for Spanish translation") {
@@ -522,7 +522,7 @@ definition {
 				webContentContent = "世界您好 Content",
 				webContentTitle = "世界您好 Title");
 
-			WebContent.publishWithPermissions();
+			PortletEntry.publish();
 		}
 
 		task ("Then the site designer could view the translation after changing the user language to Chinese") {

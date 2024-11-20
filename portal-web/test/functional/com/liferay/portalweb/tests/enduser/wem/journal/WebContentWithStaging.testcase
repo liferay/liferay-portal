@@ -81,7 +81,7 @@ definition {
 				webContentUpload = "Document_1.doc",
 				webContentWebContent = "WC 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "WC WebContent Title 1");
 		}
@@ -315,7 +315,7 @@ definition {
 				webContentUpload = "Document_1.doc",
 				webContentWebContent = "WC 1");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Publish Web Content to live") {
@@ -677,7 +677,7 @@ definition {
 				webContentText = "Web Content Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "Web Content Title");
 		}

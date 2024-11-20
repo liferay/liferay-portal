@@ -124,7 +124,7 @@ definition {
 
 			AssertElementAccessible(locator1 = "//div[contains(@class,'ddm-field-container')][contains(@data-field-name,'DateTime')]");
 
-			PageEditor.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When we have a content page with a date fragment") {

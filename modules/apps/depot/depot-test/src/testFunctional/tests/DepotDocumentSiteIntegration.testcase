@@ -158,7 +158,7 @@ definition {
 			webContentImage = "Document_2.jpeg",
 			webContentTitle = "WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "WC WebContent Title");
 

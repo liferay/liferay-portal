@@ -146,7 +146,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addExistingRelatedAssetCP(scopeSite = null, webContentTitle = null, otherSite = null, assetTitle = null, siteName = null, assetType = null) {
+	macro addExistingRelatedAssetCP(scopeSite = null, webContentTitle = null, otherSite = null, assetTitle = null, siteName = null, assetType = null, edit = null) {
 		var key_webContentTitle = ${webContentTitle};
 
 		RelatedAssets.selectAsset(
@@ -173,7 +173,12 @@ definition {
 
 		AssertElementPresent(locator1 = "AssetRelatedAssets#RELATED_ASSETS_TABLE_REMOVE_LINK");
 
-		WebContent.publishWithPermissions();
+		if (${edit} == "true") {
+			WebContent.publishExistingWCArticleWithPermissions();
+		}
+		else {
+			WebContent.publishWithPermissions();
+		}
 	}
 
 	@summary = "Default summary"
@@ -377,7 +382,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addWithCategoryCP(userSegmentDetailTitle = null, webContentTitle = null, webContentContent = null, vocabularyName = null, categoryName = null) {
+	macro addWithCategoryCP(userSegmentDetailTitle = null, webContentTitle = null, webContentContent = null, vocabularyName = null, categoryName = null, edit = null) {
 		for (var key_panel : list "Basic Information,Default Template,Display Page Template,Featured Image ") {
 			if ((IsElementPresent(locator1 = "Panel#PANEL_EXPANDED")) && (IsVisible(locator1 = "Panel#PANEL_EXPANDED"))) {
 				AssertClick(
@@ -395,7 +400,12 @@ definition {
 			userSegmentDetailTitle = ${userSegmentDetailTitle},
 			vocabularyName = ${vocabularyName});
 
-		WebContent.publishWithPermissions();
+		if (${edit} == "true") {
+			WebContent.publishExistingWCArticleWithPermissions();
+		}
+		else {
+			WebContent.publishWithPermissions();
+		}
 	}
 
 	@summary = "Default summary"
@@ -907,7 +917,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		Button.clickSubmitForWorkflow();
+		WebContent.submitForWorkflowWithPermission();
 
 		Alert.viewSuccessMessage();
 	}
@@ -1187,7 +1197,7 @@ definition {
 				value1 = "Draft");
 		}
 		else {
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 
 			LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
@@ -1458,7 +1468,7 @@ definition {
 				value1 = "Draft");
 		}
 		else {
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 	}
 
@@ -1783,10 +1793,16 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro publishWithPermissions() {
+	macro publishWithPermissions(viewableBy = null) {
 		Button.clickPublish();
 
 		Click(locator1 = "WCEditWebContent#PUBLISH_WITH_PERMISSIONS_BUTTON");
+
+		if (isSet(viewableBy)) {
+			Select(
+				locator1 = "Select#PERMISSIONS",
+				value1 = ${viewableBy});
+		}
 
 		Click(locator1 = "WCEditWebContent#PUBLISH_IN_MODAL");
 
@@ -1824,6 +1840,36 @@ definition {
 		Button.clickSaveAsDraft();
 
 		Click(locator1 = "WCEditWebContent#SAVE_AS_DRAFT_IN_MODAL");
+	}
+
+	@summary = "Default summary"
+	macro scheduleExistingWCArticleWithPermissions(displayDate = null) {
+		Button.clickPublish();
+
+		Click(locator1 = "WCEditWebContent#SCHEDULE_PUBLICATION_BUTTON");
+
+		Type.clickAtType(
+			locator1 = "TextInput#DISPLAY_DATE",
+			value1 = ${displayDate});
+
+		if (isSet(displayTime)) {
+			var displayTime = StringUtil.removeSpaces(${displayTime});
+
+			Type.sendKeys(
+				locator1 = "TextInput#DISPLAY_DATE_TIME",
+				value1 = ${displayTime});
+		}
+
+		Click(locator1 = "WCEditWebContent#SCHEDULE_IN_MODAL");
+
+		WaitForElementPresent.waitForElementPresentNoException(locator1 = "Message#ALERT_DISMISSIBLE");
+
+		if (IsElementPresent(locator1 = "Message#WARNING")) {
+			VerifyElementPresent(locator1 = "Message#WARNING");
+		}
+		else {
+			Alert.viewSuccessMessage();
+		}
 	}
 
 	@summary = "Default summary"
@@ -2012,6 +2058,30 @@ definition {
 			key_fieldFieldLabel = ${fieldFieldLabel},
 			locator1 = "WCEditWebContent#IMAGE_DESCRIPTION",
 			value1 = ${webContentImageDescription});
+	}
+
+	@summary = "Default summary"
+	macro submitForWorkflowWithPermission(viewableBy = null) {
+		Button.clickSubmitForWorkflow();
+
+		Click(locator1 = "WCEditWebContent#SUBMIT_FOR_WORKFLOW_WITH_PERMISSIONS_BUTTON");
+
+		if (isSet(viewableBy)) {
+			Select(
+				locator1 = "Select#PERMISSIONS",
+				value1 = ${viewableBy});
+		}
+
+		Click(locator1 = "WCEditWebContent#SUBMIT_FOR_WORKFLOW_IN_MODAL");
+
+		WaitForElementPresent.waitForElementPresentNoException(locator1 = "Message#ALERT_DISMISSIBLE");
+
+		if (IsElementPresent(locator1 = "Message#WARNING")) {
+			VerifyElementPresent(locator1 = "Message#WARNING");
+		}
+		else {
+			Alert.viewSuccessMessage();
+		}
 	}
 
 	@summary = "Default summary"

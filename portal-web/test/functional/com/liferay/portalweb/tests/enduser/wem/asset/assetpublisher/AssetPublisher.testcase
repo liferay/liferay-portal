@@ -335,7 +335,7 @@ definition {
 				webContentContent = "WebContent Content 1 Edit",
 				webContentTitle = "WebContent Title 1 Edit");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View the order of web contents") {

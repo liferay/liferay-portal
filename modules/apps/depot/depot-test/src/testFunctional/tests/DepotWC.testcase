@@ -319,7 +319,7 @@ definition {
 			webContentText = "WC WebContent Text",
 			webContentTitle = "Remove and Restore WC WebContent Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.moveToRecycleBinCP(
 			assetType = "Web Content Article",

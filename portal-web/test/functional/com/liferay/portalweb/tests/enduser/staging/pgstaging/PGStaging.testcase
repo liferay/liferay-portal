@@ -649,7 +649,7 @@ definition {
 			imageSourceURL = ${dmDocumentURL},
 			navTab = "URL");
 
-		PortletEntry.publish();
+		WebContent.publishExistingWCArticleWithPermissions();
 
 		JSONStaging.enableLocalStaging(
 			branchingPrivate = "true",

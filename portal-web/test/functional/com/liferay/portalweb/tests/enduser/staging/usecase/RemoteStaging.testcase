@@ -782,7 +782,7 @@ definition {
 			webContentText = "Staging Web Content Text",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "Web Content Title");
 
@@ -1094,7 +1094,7 @@ definition {
 				webContentImage = "Document Title",
 				webContentTitle = "WebContentA");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When: Publish to live") {

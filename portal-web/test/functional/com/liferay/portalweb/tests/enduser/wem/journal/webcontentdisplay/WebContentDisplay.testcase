@@ -1141,7 +1141,7 @@ ${company.getKeyObj()}
 
 			WebContent.addWithStructureCP(webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Select the web content in Web Content Display") {
@@ -1208,7 +1208,7 @@ ${runtimeInstance}
 
 			WebContent.addWithStructureCP(webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Select the web content in Web Content Display") {
@@ -1336,6 +1336,7 @@ ${runtimeInstance}
 			WebContent.addExistingRelatedAssetCP(
 				assetTitle = "Web Content Title 2",
 				assetType = "Basic Web Content",
+				edit = "true",
 				siteName = "Test Site Name");
 		}
 
@@ -1673,7 +1674,7 @@ ${httpUtil.URLtoString(request.getAttribute("CTX").getResource(".").toURI().crea
 
 			WebContent.addWithStructureCP(webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Select the web content in Web Content Display") {
@@ -1732,6 +1733,7 @@ ${httpUtil.URLtoString(request.getAttribute("CTX").getResource(".").toURI().crea
 			WebContent.addExistingRelatedAssetCP(
 				assetTitle = "Web Content Title 5",
 				assetType = "Basic Web Content",
+				edit = "true",
 				siteName = "Test Site Name");
 		}
 

@@ -221,7 +221,7 @@ definition {
 				webContentLinkToPage = "Second Test Page",
 				webContentTitle = "WC WebContent Title 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("And: Add the WC to the first page of the staging site and publish it") {
@@ -941,7 +941,7 @@ definition {
 				navTab = "Documents and Media",
 				uploadFileName = "Document_1.png");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 
 			Navigator.openStagingSiteURL(siteName = "Site Name");
 
@@ -1069,7 +1069,7 @@ definition {
 				navTab = "Documents and Media",
 				uploadFileName = "Document_1.png");
 
-			PortletEntry.publish();
+			WebContent.publishExistingWCArticleWithPermissions();
 
 			Navigator.openStagingSiteURL(siteName = "Site Name");
 
@@ -2050,7 +2050,7 @@ definition {
 				webContentTitle = "WC WebContent 1 Title",
 				webContentWebContent = "WC WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "WC WebContent 1 Title");
 
@@ -2757,7 +2757,7 @@ definition {
 				webContentTitle = "WC WebContent Title",
 				webContentUpload = '''example (“PDF”).pdf''');
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "WC WebContent Title");
 		}
@@ -2865,7 +2865,7 @@ definition {
 				webContentImageDescription = "this image doesn't work",
 				webContentTitle = "WebContent Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 
 			WebContent.viewTitle(webContentTitle = "WebContent Title");
 		}

@@ -325,7 +325,7 @@ definition {
 				webContentContent = "WC WebContent Content Edit",
 				webContentTitle = "${title} Edit");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View the edited content shown in Asset Publisher") {
@@ -2342,7 +2342,7 @@ definition {
 
 			WebContent.addCP(webContentContent = "Webcontent Content Edit");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 
 		task ("View the friendly URL shown in address") {
@@ -2408,11 +2408,10 @@ definition {
 			WebContentNavigator.gotoAddCP();
 
 			WebContent.addCP(
-				viewableBy = "Site Members",
 				webContentContent = "WC WebContent Content",
 				webContentTitle = "WC WebContent Title");
 
-			WebContent.publishWithPermissions();
+			WebContent.publishWithPermissions(viewableBy = "Site Members");
 		}
 
 		task ("View the web content in Asset Publisher") {

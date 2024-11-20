@@ -772,7 +772,7 @@ definition {
 					value = "/web/site-name/page-${num}");
 			}
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("And: Add another structure and template with 2 text fields and create 10 WC articles for their pages using the created structure 2") {
@@ -817,7 +817,7 @@ definition {
 					fieldLabel = "Content",
 					value = "Text Content-${num}");
 
-				PortletEntry.publish();
+				WebContent.publishWithPermissions();
 			}
 		}
 
@@ -1594,7 +1594,7 @@ definition {
 			webContentText = "Web Content Content",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContent.viewTitle(webContentTitle = "Web Content Title");
 
@@ -1829,7 +1829,9 @@ definition {
 			menuItem = "Edit Web Content",
 			webContentTitle = "WebContent Title");
 
-		WebContentDisplayPortlet.addTag(tagNameList = "tag name");
+		WebContentDisplayPortlet.addTag(
+			edit = "true",
+			tagNameList = "tag name");
 
 		JSONStaging.enableLocalStaging(groupName = "Site Name");
 
@@ -3237,7 +3239,7 @@ definition {
 			webContentContent = "Web Content Content 1",
 			webContentTitle = "Web Content Title 1");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		WebContentNavigator.gotoAddCP();
 
@@ -3834,6 +3836,7 @@ definition {
 
 		WebContent.addWithCategoryCP(
 			categoryName = "Category Name",
+			edit = "true",
 			vocabularyName = "Vocabulary Name",
 			webContentContent = "Web Content With Category",
 			webContentTitle = "Web Content Title 2");

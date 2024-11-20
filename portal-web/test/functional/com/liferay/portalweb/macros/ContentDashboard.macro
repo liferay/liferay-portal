@@ -186,7 +186,7 @@ definition {
 			Click(locator1 = "Icon#BACK");
 		}
 		else {
-			Button.clickPublish();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 	}
 

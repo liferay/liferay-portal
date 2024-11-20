@@ -185,7 +185,7 @@ definition {
 			webContentSourceHtml = '''<h2 class="text-center">Este es un título HTML</h2>''',
 			webContentTitle = "WC WebContent Título");
 
-		WebContent.publishWithPermissions();
+		PortletEntry.publish();
 
 		Translations.gotoTranslate(webContentTitle = "WC WebContent Title");
 
@@ -460,7 +460,7 @@ definition {
 			webContentDescription = "WC WebContent Descripción",
 			webContentTitle = "WC WebContent Título");
 
-		WebContent.publishWithPermissions();
+		PortletEntry.publish();
 
 		Translations.openTranslationAdmin(siteURLKey = "guest");
 

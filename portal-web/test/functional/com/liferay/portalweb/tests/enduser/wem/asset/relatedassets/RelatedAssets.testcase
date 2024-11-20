@@ -332,6 +332,7 @@ definition {
 			WebContent.addExistingRelatedAssetCP(
 				assetTitle = "Blogs Entry Title",
 				assetType = "Blogs Entry",
+				edit = "true",
 				siteName = "Site Name");
 		}
 
@@ -395,6 +396,7 @@ definition {
 			WebContent.addExistingRelatedAssetCP(
 				assetTitle = "Web Content Title 1",
 				assetType = "Basic Web Content",
+				edit = "true",
 				otherSite = "Global",
 				siteName = "Global",
 				webContentTitle = "Web Content Title 2");
@@ -499,6 +501,7 @@ definition {
 			WebContent.addExistingRelatedAssetCP(
 				assetTitle = "Web Content Title 1",
 				assetType = "Basic Web Content",
+				edit = "true",
 				siteName = "Site Name");
 		}
 

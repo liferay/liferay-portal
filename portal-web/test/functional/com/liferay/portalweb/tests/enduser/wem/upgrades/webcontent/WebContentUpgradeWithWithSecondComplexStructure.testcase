@@ -349,7 +349,7 @@ definition {
 					locator1 = "DDMField#REMOVE_REPEATED_FIELD");
 			}
 
-			WebContent.publishWithPermissions();
+			WebContent.publishExistingWCArticleWithPermissions();
 		}
 	}
 

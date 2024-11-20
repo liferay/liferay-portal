@@ -158,7 +158,7 @@ definition {
 				locator1 = "DDMField#MULTIPLE_LINES_2",
 				value1 = "Web Content Content 2");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content is shown after selected in the Web Content Display") {
@@ -289,7 +289,7 @@ definition {
 				content = "Web Content Content",
 				fieldLabel = "Rich Text");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content is shown in web content admin") {
@@ -527,7 +527,7 @@ definition {
 				webContentImage = "Document_2.jpeg",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content is shown in web content admin") {
@@ -603,7 +603,7 @@ definition {
 				webContentText = "Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View custom values are shown in web content") {
@@ -666,7 +666,7 @@ definition {
 				webContentText = "Web Content Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Assert the web content article was added properly") {
@@ -767,7 +767,7 @@ definition {
 
 			SelectFrame(value1 = "relative=top");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Add a widget page") {
@@ -838,7 +838,7 @@ definition {
 				templateName = "WC Template Name",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View no error is thrown on console") {
@@ -888,7 +888,7 @@ definition {
 				webContentText = "Web Content Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content is shown in web content admin") {
@@ -1028,7 +1028,7 @@ definition {
 				webContentText = "Web Content Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("View web content is shown in web content admin") {
@@ -1878,7 +1878,7 @@ definition {
 				webContentText = "Web Content Text",
 				webContentTitle = "Web Content Title");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("Edit the web content") {

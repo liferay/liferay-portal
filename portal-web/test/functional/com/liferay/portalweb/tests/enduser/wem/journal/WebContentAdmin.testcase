@@ -833,7 +833,7 @@ definition {
 				webContentText = "LXC",
 				webContentTitle = "LXC");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When the site administrator navigates to the configuration page") {
@@ -1272,7 +1272,7 @@ definition {
 				webContentText = "Liferay Commerce",
 				webContentTitle = "Liferay Commerce");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When the site administrator navigates to the Content Library sheet") {
@@ -1327,7 +1327,7 @@ definition {
 				webContentText = "Liferay Commerce",
 				webContentTitle = "Liferay Commerce");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		task ("When the site administrator navigates to the highlighted structure sheet") {

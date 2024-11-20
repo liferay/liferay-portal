@@ -207,7 +207,7 @@ definition {
 			webContentText = "Text",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		DepotNavigator.openDepotAdmin();
 
@@ -350,7 +350,7 @@ definition {
 			webContentTitle = "WC WebContent Title",
 			webContentWebContent = "WC Depot WebContent");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONLayout.addWidgetToPublicLayout(
 			groupName = "Site Name",
@@ -678,7 +678,7 @@ definition {
 				webContentText = "Text${count}",
 				webContentTitle = "Web Content Title${count}");
 
-			PortletEntry.publish();
+			WebContent.publishWithPermissions();
 		}
 
 		JSONLayout.addWidgetToPublicLayout(
@@ -753,7 +753,7 @@ definition {
 			webContentText = "Web Content Text",
 			webContentTitle = "Web Content Title");
 
-		PortletEntry.publish();
+		WebContent.publishWithPermissions();
 
 		JSONLayout.addWidgetToPublicLayout(
 			groupName = "Site Name",
