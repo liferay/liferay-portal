@@ -140,3 +140,4 @@ const Cards = ({items, schema}: {items: Array<any>; schema: ICardSchema}) => {
 };
 
 export default Cards;
+export {Card};
