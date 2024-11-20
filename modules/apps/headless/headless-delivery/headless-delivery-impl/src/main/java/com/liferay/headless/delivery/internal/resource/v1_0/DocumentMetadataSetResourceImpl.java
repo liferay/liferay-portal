@@ -45,6 +45,15 @@ public class DocumentMetadataSetResourceImpl
 	extends BaseDocumentMetadataSetResourceImpl {
 
 	@Override
+	public void deleteAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+			Long assetLibraryId, String externalReferenceCode)
+		throws Exception {
+
+		deleteSiteDocumentMetadataSetByExternalReferenceCode(
+			assetLibraryId, externalReferenceCode);
+	}
+
+	@Override
 	public void deleteDocumentMetadataSet(Long documentMetadataSetId)
 		throws Exception {
 
@@ -60,6 +69,32 @@ public class DocumentMetadataSetResourceImpl
 		).build();
 
 		dataDefinitionResource.deleteDataDefinition(documentMetadataSetId);
+	}
+
+	@Override
+	public void deleteSiteDocumentMetadataSetByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-32247")) {
+			throw new UnsupportedOperationException();
+		}
+
+		DocumentMetadataSet documentMetadataSet =
+			getSiteDocumentMetadataSetByExternalReferenceCode(
+				siteId, externalReferenceCode);
+
+		deleteDocumentMetadataSet(documentMetadataSet.getId());
+	}
+
+	@Override
+	public DocumentMetadataSet
+			getAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode)
+		throws Exception {
+
+		return getSiteDocumentMetadataSetByExternalReferenceCode(
+			assetLibraryId, externalReferenceCode);
 	}
 
 	@Override
@@ -103,6 +138,23 @@ public class DocumentMetadataSetResourceImpl
 
 		return _toDocumentMetadataSet(
 			_ddmStructureService.getStructure(documentMetadataSetId));
+	}
+
+	@Override
+	public DocumentMetadataSet
+			getSiteDocumentMetadataSetByExternalReferenceCode(
+				Long siteId, String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-32247")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _toDocumentMetadataSet(
+			_ddmStructureService.getStructureByExternalReferenceCode(
+				externalReferenceCode, siteId,
+				_classNameLocalService.getClassNameId(
+					DLFileEntryMetadata.class)));
 	}
 
 	@Override
@@ -155,6 +207,45 @@ public class DocumentMetadataSetResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
+		return _addDocumentMetadataSet(siteId, documentMetadataSet);
+	}
+
+	@Override
+	public DocumentMetadataSet
+			putAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode,
+				DocumentMetadataSet documentMetadataSet)
+		throws Exception {
+
+		return putSiteDocumentMetadataSetByExternalReferenceCode(
+			assetLibraryId, externalReferenceCode, documentMetadataSet);
+	}
+
+	@Override
+	public DocumentMetadataSet
+			putSiteDocumentMetadataSetByExternalReferenceCode(
+				Long siteId, String externalReferenceCode,
+				DocumentMetadataSet documentMetadataSet)
+		throws Exception {
+
+		DDMStructure ddmStructure =
+			_ddmStructureService.fetchStructureByExternalReferenceCode(
+				externalReferenceCode, siteId,
+				_classNameLocalService.getClassNameId(
+					DLFileEntryMetadata.class));
+
+		if (ddmStructure != null) {
+			return _updateDocumentMetadataSet(
+				ddmStructure, documentMetadataSet);
+		}
+
+		return _addDocumentMetadataSet(siteId, documentMetadataSet);
+	}
+
+	private DocumentMetadataSet _addDocumentMetadataSet(
+			long groupId, DocumentMetadataSet documentMetadataSet)
+		throws Exception {
+
 		DataDefinitionResource.Builder builder =
 			_dataDefinitionResourceFactory.create();
 
@@ -164,35 +255,41 @@ public class DocumentMetadataSetResourceImpl
 
 		DataDefinition dataDefinition =
 			dataDefinitionResource.postSiteDataDefinitionByContentType(
-				siteId, "document-library",
-				new DataDefinition() {
-					{
-						setAvailableLanguageIds(
-							documentMetadataSet::getAvailableLanguages);
-						setDataDefinitionFields(
-							documentMetadataSet::getDataDefinitionFields);
-						setDefaultDataLayout(
-							documentMetadataSet::getDataLayout);
-						setDescription(
-							() -> LocalizedValueUtil.toStringObjectMap(
-								LocalizedMapUtil.getLocalizedMap(
-									contextAcceptLanguage.getPreferredLocale(),
-									documentMetadataSet.getDescription(),
-									documentMetadataSet.
-										getDescription_i18n())));
-						setName(
-							() -> LocalizedValueUtil.toStringObjectMap(
-								LocalizedMapUtil.getLocalizedMap(
-									contextAcceptLanguage.getPreferredLocale(),
-									documentMetadataSet.getName(),
-									documentMetadataSet.getName_i18n())));
-						setSiteId(() -> siteId);
-						setUserId(contextUser::getUserId);
-					}
-				});
+				groupId, "document-library",
+				_getDataDefinition(documentMetadataSet));
 
 		return _toDocumentMetadataSet(
 			_ddmStructureService.getStructure(dataDefinition.getId()));
+	}
+
+	private DataDefinition _getDataDefinition(
+		DocumentMetadataSet documentMetadataSet) {
+
+		return new DataDefinition() {
+			{
+				setAvailableLanguageIds(
+					documentMetadataSet::getAvailableLanguages);
+				setDataDefinitionFields(
+					documentMetadataSet::getDataDefinitionFields);
+				setDefaultDataLayout(documentMetadataSet::getDataLayout);
+				setDescription(
+					() -> LocalizedValueUtil.toStringObjectMap(
+						LocalizedMapUtil.getLocalizedMap(
+							contextAcceptLanguage.getPreferredLocale(),
+							documentMetadataSet.getDescription(),
+							documentMetadataSet.getDescription_i18n())));
+				setExternalReferenceCode(
+					documentMetadataSet::getExternalReferenceCode);
+				setName(
+					() -> LocalizedValueUtil.toStringObjectMap(
+						LocalizedMapUtil.getLocalizedMap(
+							contextAcceptLanguage.getPreferredLocale(),
+							documentMetadataSet.getName(),
+							documentMetadataSet.getName_i18n())));
+				setSiteId(() -> siteId);
+				setUserId(contextUser::getUserId);
+			}
+		};
 	}
 
 	private Page<DocumentMetadataSet> _getPage(
@@ -238,6 +335,26 @@ public class DocumentMetadataSetResourceImpl
 				_dtoConverterRegistry, ddmStructure.getStructureId(),
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 				contextUser));
+	}
+
+	private DocumentMetadataSet _updateDocumentMetadataSet(
+			DDMStructure ddmStructure, DocumentMetadataSet documentMetadataSet)
+		throws Exception {
+
+		DataDefinitionResource.Builder builder =
+			_dataDefinitionResourceFactory.create();
+
+		DataDefinitionResource dataDefinitionResource = builder.user(
+			contextUser
+		).build();
+
+		DataDefinition dataDefinition =
+			dataDefinitionResource.patchDataDefinition(
+				ddmStructure.getStructureId(),
+				_getDataDefinition(documentMetadataSet));
+
+		return _toDocumentMetadataSet(
+			_ddmStructureService.getStructure(dataDefinition.getId()));
 	}
 
 	@Reference

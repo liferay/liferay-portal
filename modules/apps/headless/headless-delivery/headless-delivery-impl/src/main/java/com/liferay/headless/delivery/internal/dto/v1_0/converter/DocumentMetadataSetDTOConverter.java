@@ -77,6 +77,8 @@ public class DocumentMetadataSetDTOConverter
 				setDescription_i18n(
 					() -> LocalizedMapUtil.getI18nMap(
 						ddmStructure.getDescriptionMap()));
+				setExternalReferenceCode(
+					ddmStructure::getExternalReferenceCode);
 				setId(ddmStructure::getStructureId);
 				setName(
 					() -> ddmStructure.getName(
