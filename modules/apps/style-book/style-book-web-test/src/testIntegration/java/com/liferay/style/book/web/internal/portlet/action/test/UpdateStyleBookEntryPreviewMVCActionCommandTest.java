@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -90,6 +91,60 @@ public class UpdateStyleBookEntryPreviewMVCActionCommandTest {
 		_themeDisplay.setScopeGroupId(_group.getGroupId());
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(TestPropsValues.getUser());
+	}
+
+	@Test(expected = NoSuchFileEntryException.class)
+	public void testInvalidStyleBookEntryPreview() throws Exception {
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, RandomTestUtil.randomString(),
+				_serviceContext);
+
+		Class<?> clazz = getClass();
+
+		FileEntry fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
+			null, _group.getGroupId(), TestPropsValues.getUserId(),
+			StyleBookEntry.class.getName(),
+			styleBookEntry.getStyleBookEntryId(), RandomTestUtil.randomString(),
+			_repository.getDlFolderId(),
+			clazz.getResourceAsStream(
+				"dependencies/frontend-tokens-values.json"),
+			"frontend-tokens-values.json", ContentTypes.APPLICATION_JSON,
+			false);
+
+		mockLiferayPortletActionRequest.addParameter(
+			"fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
+
+		mockLiferayPortletActionRequest.addParameter(
+			"styleBookEntryId",
+			String.valueOf(styleBookEntry.getStyleBookEntryId()));
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.PORTLET_ID, StyleBookPortletKeys.STYLE_BOOK);
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+
+		_updateStyleBookEntryPreviewMVCActionCommandTest.processAction(
+			mockLiferayPortletActionRequest, new MockActionResponse());
+
+		styleBookEntry = _styleBookEntryLocalService.fetchStyleBookEntry(
+			styleBookEntry.getStyleBookEntryId());
+
+		Assert.assertEquals(0, styleBookEntry.getPreviewFileEntryId());
+
+		Assert.assertTrue(
+			SessionErrors.contains(
+				mockLiferayPortletActionRequest, "invalidThumbnailFormat"));
+
+		PortletFileRepositoryUtil.getPortletFileEntry(
+			_group.getGroupId(), _repository.getDlFolderId(),
+			_getFileName(
+				fileEntry.getExtension(),
+				styleBookEntry.getStyleBookEntryId()));
 	}
 
 	@Test(expected = NoSuchFileEntryException.class)
