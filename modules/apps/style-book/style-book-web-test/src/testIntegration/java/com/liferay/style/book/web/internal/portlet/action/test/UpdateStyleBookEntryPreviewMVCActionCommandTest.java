@@ -63,14 +63,19 @@ public class UpdateStyleBookEntryPreviewMVCActionCommandTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_serviceContext = new ServiceContext();
+		ServiceContext serviceContext = new ServiceContext();
 
-		_serviceContext.setScopeGroupId(_group.getGroupId());
-		_serviceContext.setUserId(TestPropsValues.getUserId());
+		serviceContext.setScopeGroupId(_group.getGroupId());
+		serviceContext.setUserId(TestPropsValues.getUserId());
 
 		_repository = PortletFileRepositoryUtil.addPortletRepository(
 			_group.getGroupId(), StyleBookPortletKeys.STYLE_BOOK,
-			_serviceContext);
+			serviceContext);
+
+		_styleBookEntry = _styleBookEntryLocalService.addStyleBookEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			StringPool.BLANK, RandomTestUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), serviceContext);
 
 		_themeDisplay = new ThemeDisplay();
 
@@ -95,46 +100,29 @@ public class UpdateStyleBookEntryPreviewMVCActionCommandTest {
 
 	@Test(expected = NoSuchFileEntryException.class)
 	public void testInvalidStyleBookEntryPreview() throws Exception {
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
-
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-				StringPool.BLANK, RandomTestUtil.randomString(),
-				StringPool.BLANK, RandomTestUtil.randomString(),
-				_serviceContext);
-
 		Class<?> clazz = getClass();
 
 		FileEntry fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
 			null, _group.getGroupId(), TestPropsValues.getUserId(),
 			StyleBookEntry.class.getName(),
-			styleBookEntry.getStyleBookEntryId(), RandomTestUtil.randomString(),
-			_repository.getDlFolderId(),
+			_styleBookEntry.getStyleBookEntryId(),
+			RandomTestUtil.randomString(), _repository.getDlFolderId(),
 			clazz.getResourceAsStream(
 				"dependencies/frontend-tokens-values.json"),
 			"frontend-tokens-values.json", ContentTypes.APPLICATION_JSON,
 			false);
 
-		mockLiferayPortletActionRequest.addParameter(
-			"fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
 
-		mockLiferayPortletActionRequest.addParameter(
-			"styleBookEntryId",
-			String.valueOf(styleBookEntry.getStyleBookEntryId()));
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.PORTLET_ID, StyleBookPortletKeys.STYLE_BOOK);
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
+		_processAction(
+			fileEntry.getFileEntryId(), mockLiferayPortletActionRequest,
+			_styleBookEntry.getStyleBookEntryId());
 
-		_updateStyleBookEntryPreviewMVCActionCommandTest.processAction(
-			mockLiferayPortletActionRequest, new MockActionResponse());
+		_styleBookEntry = _styleBookEntryLocalService.fetchStyleBookEntry(
+			_styleBookEntry.getStyleBookEntryId());
 
-		styleBookEntry = _styleBookEntryLocalService.fetchStyleBookEntry(
-			styleBookEntry.getStyleBookEntryId());
-
-		Assert.assertEquals(0, styleBookEntry.getPreviewFileEntryId());
+		Assert.assertEquals(0, _styleBookEntry.getPreviewFileEntryId());
 
 		Assert.assertTrue(
 			SessionErrors.contains(
@@ -144,157 +132,93 @@ public class UpdateStyleBookEntryPreviewMVCActionCommandTest {
 			_group.getGroupId(), _repository.getDlFolderId(),
 			_getFileName(
 				fileEntry.getExtension(),
-				styleBookEntry.getStyleBookEntryId()));
+				_styleBookEntry.getStyleBookEntryId()));
 	}
 
 	@Test(expected = NoSuchFileEntryException.class)
-	public void testReplaceStyleBookEntryPreview() throws Exception {
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-				StringPool.BLANK, RandomTestUtil.randomString(),
-				StringPool.BLANK, RandomTestUtil.randomString(),
-				_serviceContext);
+	public void testUpdateStyleBookEntryPreview() throws Exception {
+		_testUpdateStyleBookEntryPreview("thumbnail1.png");
 
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
-
-		FileEntry tempFileEntry1 = _addFileEntry(
-			"thumbnail1.png", styleBookEntry);
-
-		mockLiferayPortletActionRequest.addParameter(
-			"fileEntryId", String.valueOf(tempFileEntry1.getFileEntryId()));
-
-		mockLiferayPortletActionRequest.addParameter(
-			"styleBookEntryId",
-			String.valueOf(styleBookEntry.getStyleBookEntryId()));
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.PORTLET_ID, StyleBookPortletKeys.STYLE_BOOK);
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-
-		_updateStyleBookEntryPreviewMVCActionCommandTest.processAction(
-			mockLiferayPortletActionRequest, new MockActionResponse());
-
-		Assert.assertNotNull(
-			PortletFileRepositoryUtil.getPortletFileEntry(
-				styleBookEntry.getPreviewFileEntryId()));
-
-		FileEntry fileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
-			_group.getGroupId(), _repository.getDlFolderId(),
-			_getFileName(
-				tempFileEntry1.getExtension(),
-				styleBookEntry.getStyleBookEntryId()));
-
-		Assert.assertNotNull(fileEntry);
-		Assert.assertEquals(
-			fileEntry.getFileEntryId(), styleBookEntry.getPreviewFileEntryId());
-
-		mockLiferayPortletActionRequest = new MockLiferayPortletActionRequest();
-
-		FileEntry tempFileEntry2 = _addFileEntry(
-			"thumbnail2.png", styleBookEntry);
-
-		mockLiferayPortletActionRequest.addParameter(
-			"fileEntryId", String.valueOf(tempFileEntry2.getFileEntryId()));
-
-		mockLiferayPortletActionRequest.addParameter(
-			"styleBookEntryId",
-			String.valueOf(styleBookEntry.getStyleBookEntryId()));
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.PORTLET_ID, StyleBookPortletKeys.STYLE_BOOK);
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-
-		_updateStyleBookEntryPreviewMVCActionCommandTest.processAction(
-			mockLiferayPortletActionRequest, new MockActionResponse());
-
-		StyleBookEntry updateStyleBookEntry =
+		StyleBookEntry updatedStyleBookEntry =
 			_styleBookEntryLocalService.fetchStyleBookEntry(
-				styleBookEntry.getStyleBookEntryId());
+				_styleBookEntry.getStyleBookEntryId());
+
+		long previewFileEntryId = updatedStyleBookEntry.getPreviewFileEntryId();
+
+		_testUpdateStyleBookEntryPreview("thumbnail2.png");
+
+		updatedStyleBookEntry = _styleBookEntryLocalService.fetchStyleBookEntry(
+			_styleBookEntry.getStyleBookEntryId());
 
 		Assert.assertNotEquals(
-			styleBookEntry.getPreviewFileEntryId(),
-			updateStyleBookEntry.getPreviewFileEntryId());
+			previewFileEntryId, updatedStyleBookEntry.getPreviewFileEntryId());
 
-		fileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
-			_group.getGroupId(), _repository.getDlFolderId(),
-			_getFileName(
-				tempFileEntry2.getExtension(),
-				styleBookEntry.getStyleBookEntryId()));
-
-		Assert.assertNotNull(fileEntry);
-		Assert.assertEquals(
-			fileEntry.getFileEntryId(), styleBookEntry.getPreviewFileEntryId());
-
-		PortletFileRepositoryUtil.getPortletFileEntry(
-			styleBookEntry.getPreviewFileEntryId());
+		PortletFileRepositoryUtil.getPortletFileEntry(previewFileEntryId);
 	}
 
-	@Test
-	public void testUpdateStyleBookEntryPreview() throws Exception {
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
-
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-				StringPool.BLANK, RandomTestUtil.randomString(),
-				StringPool.BLANK, RandomTestUtil.randomString(),
-				_serviceContext);
-
-		FileEntry tempFileEntry = _addFileEntry(
-			"thumbnail.png", styleBookEntry);
-
-		mockLiferayPortletActionRequest.addParameter(
-			"fileEntryId", String.valueOf(tempFileEntry.getFileEntryId()));
-
-		mockLiferayPortletActionRequest.addParameter(
-			"styleBookEntryId",
-			String.valueOf(styleBookEntry.getStyleBookEntryId()));
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.PORTLET_ID, StyleBookPortletKeys.STYLE_BOOK);
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-
-		_updateStyleBookEntryPreviewMVCActionCommandTest.processAction(
-			mockLiferayPortletActionRequest, new MockActionResponse());
-
-		styleBookEntry = _styleBookEntryLocalService.fetchStyleBookEntry(
-			styleBookEntry.getStyleBookEntryId());
-
-		Assert.assertNotNull(
-			PortletFileRepositoryUtil.getPortletFileEntry(
-				styleBookEntry.getPreviewFileEntryId()));
-
-		FileEntry fileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
-			_group.getGroupId(), _repository.getDlFolderId(),
-			_getFileName(
-				tempFileEntry.getExtension(),
-				styleBookEntry.getStyleBookEntryId()));
-
-		Assert.assertNotNull(fileEntry);
-		Assert.assertEquals(
-			fileEntry.getFileEntryId(), styleBookEntry.getPreviewFileEntryId());
-	}
-
-	private FileEntry _addFileEntry(
-			String fileName, StyleBookEntry styleBookEntry)
-		throws Exception {
-
+	private FileEntry _addFileEntry(String fileName) throws Exception {
 		Class<?> clazz = getClass();
 
 		return PortletFileRepositoryUtil.addPortletFileEntry(
 			null, _group.getGroupId(), TestPropsValues.getUserId(),
 			StyleBookEntry.class.getName(),
-			styleBookEntry.getStyleBookEntryId(), RandomTestUtil.randomString(),
-			_repository.getDlFolderId(),
+			_styleBookEntry.getStyleBookEntryId(),
+			RandomTestUtil.randomString(), _repository.getDlFolderId(),
 			clazz.getResourceAsStream("dependencies/thumbnail.png"), fileName,
 			ContentTypes.IMAGE_PNG, false);
 	}
 
 	private String _getFileName(String extension, long styleBookEntryId) {
 		return styleBookEntryId + "_preview." + extension;
+	}
+
+	private void _processAction(
+			long fileEntryId,
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest,
+			long styleBookEntryId)
+		throws Exception {
+
+		mockLiferayPortletActionRequest.addParameter(
+			"fileEntryId", String.valueOf(fileEntryId));
+		mockLiferayPortletActionRequest.addParameter(
+			"styleBookEntryId", String.valueOf(styleBookEntryId));
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.PORTLET_ID, StyleBookPortletKeys.STYLE_BOOK);
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+
+		_updateStyleBookEntryPreviewMVCActionCommandTest.processAction(
+			mockLiferayPortletActionRequest, new MockActionResponse());
+	}
+
+	private void _testUpdateStyleBookEntryPreview(String fileName)
+		throws Exception {
+
+		FileEntry tempFileEntry = _addFileEntry(fileName);
+
+		_processAction(
+			tempFileEntry.getFileEntryId(),
+			new MockLiferayPortletActionRequest(),
+			_styleBookEntry.getStyleBookEntryId());
+
+		StyleBookEntry updatedStyleBookEntry =
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				_styleBookEntry.getStyleBookEntryId());
+
+		Assert.assertNotNull(
+			PortletFileRepositoryUtil.getPortletFileEntry(
+				updatedStyleBookEntry.getPreviewFileEntryId()));
+
+		FileEntry fileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
+			_group.getGroupId(), _repository.getDlFolderId(),
+			_getFileName(
+				tempFileEntry.getExtension(),
+				updatedStyleBookEntry.getStyleBookEntryId()));
+
+		Assert.assertNotNull(fileEntry);
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(),
+			updatedStyleBookEntry.getPreviewFileEntryId());
 	}
 
 	@Inject
@@ -304,7 +228,7 @@ public class UpdateStyleBookEntryPreviewMVCActionCommandTest {
 	private Group _group;
 
 	private Repository _repository;
-	private ServiceContext _serviceContext;
+	private StyleBookEntry _styleBookEntry;
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
