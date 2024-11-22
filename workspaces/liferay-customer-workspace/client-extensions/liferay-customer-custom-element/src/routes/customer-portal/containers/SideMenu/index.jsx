@@ -41,11 +41,12 @@ const SideMenu = () => {
 		() =>
 			subscriptionGroups?.filter(
 				(subscriptionGroup) => {
+					
 					if (subscriptionGroup.name === MENU_TYPES.liferayPaaS) {
 						setHasLiferayPaasActivation(true);
 					}
 
-					return subscriptionGroup.hasActivation && subscriptionGroup.name !== MENU_TYPES.liferayPaaS
+					return subscriptionGroup.hasActivation && subscriptionGroup.name !== MENU_TYPES.liferayPaaS && subscriptionGroup.name !== MENU_TYPES.liferaySaaS
 				}
 			),
 		[subscriptionGroups]
@@ -81,38 +82,37 @@ const SideMenu = () => {
 	const accountSubscriptionGroupsMenuItem = useMemo(
 		() =>
 			activationSubscriptionGroups?.map(({ activationProductName, name }, index) => {
-				if (name !== PRODUCT_TYPES.liferayExperienceCloud) {
-					const displayName = activationProductName ? activationProductName : name;
+				const displayName = activationProductName ? activationProductName : name;
 
-					const redirectPage = getKebabCase(displayName);
+				const redirectPage = getKebabCase(displayName);
 
-					const menuUpdateStatus = (isActive) =>
-						setMenuItemActiveStatus(
-							(previousMenuItemActiveStatus) => {
-								const menuItemStatus = [
-									...previousMenuItemActiveStatus,
-								];
-								menuItemStatus[index] = isActive;
+				const menuUpdateStatus = (isActive) =>
+					setMenuItemActiveStatus(
+						(previousMenuItemActiveStatus) => {
+							const menuItemStatus = [
+								...previousMenuItemActiveStatus,
+							];
+							menuItemStatus[index] = isActive;
 
-								setIsOpenedProductsMenu(
-									menuItemStatus.some(Boolean)
-								);
+							setIsOpenedProductsMenu(
+								menuItemStatus.some(Boolean)
+							);
 
-								return menuItemStatus;
-							}
-						);
-
-					return (
-						<MenuItem
-							iconKey={redirectPage.split('-')[0]}
-							key={`${displayName}-${index}`}
-							setActive={menuUpdateStatus}
-							to={`${ACTIVATION_PATH}/${redirectPage}`}
-						>
-							{displayName}
-						</MenuItem>
+							return menuItemStatus;
+						}
 					);
-				}
+
+				return (
+					<MenuItem
+						iconKey={redirectPage.split('-')[0]}
+						key={`${displayName}-${index}`}
+						setActive={menuUpdateStatus}
+						to={`${ACTIVATION_PATH}/${redirectPage}`}
+					>
+						{displayName}
+					</MenuItem>
+				);
+				
 			}),
 		[activationSubscriptionGroups]
 	);
