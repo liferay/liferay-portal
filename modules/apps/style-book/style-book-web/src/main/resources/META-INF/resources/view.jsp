@@ -7,6 +7,19 @@
 
 <%@ include file="/init.jsp" %>
 
+<c:if test='<%= SessionErrors.contains(liferayPortletRequest, "invalidThumbnailFormat") %>'>
+	<aui:script>
+		Liferay.Util.openToast({
+			message: '<liferay-ui:message key="file-type-is-invalid" />',
+			title: Liferay.Language.get('error'),
+			toastProps: {
+				autoClose: 5000,
+			},
+			type: 'danger',
+		});
+	</aui:script>
+</c:if>
+
 <%
 StyleBookDisplayContext styleBookDisplayContext = new StyleBookDisplayContext(request, liferayPortletRequest, liferayPortletResponse);
 %>

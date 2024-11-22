@@ -245,6 +245,8 @@ public class StyleBookEntryActionDropdownItemsProvider {
 			UploadItemSelectorCriterion.builder(
 			).desiredItemSelectorReturnTypes(
 				new FileEntryItemSelectorReturnType()
+			).extensions(
+				new String[] {".bmp", ".jpeg", ".jpg", ".png", ".tiff"}
 			).maxFileSize(
 				UploadServletRequestConfigurationProviderUtil.getMaxSize()
 			).portletId(

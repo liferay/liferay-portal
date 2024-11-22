@@ -7,18 +7,24 @@ package com.liferay.style.book.web.internal.portlet.action;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryService;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -44,64 +50,85 @@ public class UpdateStyleBookEntryPreviewMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		long styleBookEntryId = ParamUtil.getLong(
-			actionRequest, "styleBookEntryId");
-
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
 		FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
 
 		FileEntry tempFileEntry = fileEntry;
 
-		Repository repository =
-			PortletFileRepositoryUtil.fetchPortletRepository(
-				themeDisplay.getScopeGroupId(),
-				StyleBookPortletKeys.STYLE_BOOK);
+		String extension = fileEntry.getExtension();
 
-		if (repository == null) {
-			ServiceContext serviceContext = new ServiceContext();
+		Matcher matcher = _pattern.matcher(extension);
 
-			serviceContext.setAddGroupPermissions(true);
-			serviceContext.setAddGuestPermissions(true);
+		String mimeType = fileEntry.getMimeType();
 
-			repository = PortletFileRepositoryUtil.addPortletRepository(
-				themeDisplay.getScopeGroupId(), StyleBookPortletKeys.STYLE_BOOK,
-				serviceContext);
+		if (!matcher.find() || !mimeType.startsWith("image/")) {
+			LiferayPortletRequest liferayPortletRequest =
+				_portal.getLiferayPortletRequest(actionRequest);
+
+			hideDefaultErrorMessage(liferayPortletRequest);
+
+			SessionErrors.add(liferayPortletRequest, "invalidThumbnailFormat");
 		}
+		else {
+			long styleBookEntryId = ParamUtil.getLong(
+				actionRequest, "styleBookEntryId");
 
-		String fileName =
-			styleBookEntryId + "_preview." + fileEntry.getExtension();
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-		FileEntry oldFileEntry =
-			PortletFileRepositoryUtil.fetchPortletFileEntry(
-				themeDisplay.getScopeGroupId(), repository.getDlFolderId(),
-				fileName);
+			Repository repository =
+				PortletFileRepositoryUtil.fetchPortletRepository(
+					themeDisplay.getScopeGroupId(),
+					StyleBookPortletKeys.STYLE_BOOK);
 
-		if (oldFileEntry != null) {
-			PortletFileRepositoryUtil.deletePortletFileEntry(
-				oldFileEntry.getFileEntryId());
+			if (repository == null) {
+				ServiceContext serviceContext = new ServiceContext();
+
+				serviceContext.setAddGroupPermissions(true);
+				serviceContext.setAddGuestPermissions(true);
+
+				repository = PortletFileRepositoryUtil.addPortletRepository(
+					themeDisplay.getScopeGroupId(),
+					StyleBookPortletKeys.STYLE_BOOK, serviceContext);
+			}
+
+			String fileName = styleBookEntryId + "_preview." + extension;
+
+			FileEntry oldFileEntry =
+				PortletFileRepositoryUtil.fetchPortletFileEntry(
+					themeDisplay.getScopeGroupId(), repository.getDlFolderId(),
+					fileName);
+
+			if (oldFileEntry != null) {
+				PortletFileRepositoryUtil.deletePortletFileEntry(
+					oldFileEntry.getFileEntryId());
+			}
+
+			fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
+				null, themeDisplay.getScopeGroupId(), themeDisplay.getUserId(),
+				StyleBookEntry.class.getName(), styleBookEntryId,
+				StyleBookPortletKeys.STYLE_BOOK, repository.getDlFolderId(),
+				fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
+				false);
+
+			_styleBookEntryService.updatePreviewFileEntryId(
+				styleBookEntryId, fileEntry.getFileEntryId());
 		}
-
-		fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
-			null, themeDisplay.getScopeGroupId(), themeDisplay.getUserId(),
-			StyleBookEntry.class.getName(), styleBookEntryId,
-			StyleBookPortletKeys.STYLE_BOOK, repository.getDlFolderId(),
-			fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
-			false);
-
-		_styleBookEntryService.updatePreviewFileEntryId(
-			styleBookEntryId, fileEntry.getFileEntryId());
 
 		TempFileEntryUtil.deleteTempFileEntry(tempFileEntry.getFileEntryId());
 
 		sendRedirect(actionRequest, actionResponse);
 	}
 
+	private static final Pattern _pattern = Pattern.compile(
+		"(bmp|jpeg|jpg|png|tiff)$");
+
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private StyleBookEntryService _styleBookEntryService;
