@@ -523,6 +523,18 @@ public class DBPartitionUtil {
 								"companyId = ", fromCompanyId));
 					}
 
+					if (fromTableName.startsWith("Object") &&
+						dbInspector.hasColumn(fromTableName, "dbTableName")) {
+
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set ",
+								"dbTableName = REPLACE(dbTableName, ",
+								fromCompanyId, ", ", toCompanyId,
+								") where dbTableName like '%", fromCompanyId,
+								"%'"));
+					}
+
 					if (StringUtil.equalsIgnoreCase(fromTableName, "Group_")) {
 						statement.executeUpdate(
 							StringBundler.concat(
