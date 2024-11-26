@@ -536,6 +536,13 @@ public class ObjectFieldLocalServiceWrapper
 			objectDefinitionId, businessType);
 	}
 
+	@Override
+	public java.util.List<com.liferay.object.model.ObjectField>
+		getObjectFieldsByCompanyId(long companyId) {
+
+		return _objectFieldLocalService.getObjectFieldsByCompanyId(companyId);
+	}
+
 	/**
 	 * Returns the number of object fields.
 	 *

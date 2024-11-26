@@ -464,6 +464,10 @@ public class ObjectFieldLocalServiceUtil {
 			objectDefinitionId, businessType);
 	}
 
+	public static List<ObjectField> getObjectFieldsByCompanyId(long companyId) {
+		return getService().getObjectFieldsByCompanyId(companyId);
+	}
+
 	/**
 	 * Returns the number of object fields.
 	 *

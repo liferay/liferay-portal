@@ -2752,6 +2752,640 @@ public class ObjectActionPersistenceImpl
 	private static final String _FINDER_COLUMN_ERC_C_ODI_OBJECTDEFINITIONID_2 =
 		"objectAction.objectDefinitionId = ?";
 
+	private FinderPath _finderPathWithPaginationFindByC_A_OATK;
+	private FinderPath _finderPathWithoutPaginationFindByC_A_OATK;
+	private FinderPath _finderPathCountByC_A_OATK;
+
+	/**
+	 * Returns all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @return the matching object actions
+	 */
+	@Override
+	public List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		return findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectActionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param start the lower bound of the range of object actions
+	 * @param end the upper bound of the range of object actions (not inclusive)
+	 * @return the range of matching object actions
+	 */
+	@Override
+	public List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey,
+		int start, int end) {
+
+		return findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectActionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param start the lower bound of the range of object actions
+	 * @param end the upper bound of the range of object actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object actions
+	 */
+	@Override
+	public List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey,
+		int start, int end, OrderByComparator<ObjectAction> orderByComparator) {
+
+		return findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectActionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param start the lower bound of the range of object actions
+	 * @param end the upper bound of the range of object actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching object actions
+	 */
+	@Override
+	public List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey,
+		int start, int end, OrderByComparator<ObjectAction> orderByComparator,
+		boolean useFinderCache) {
+
+		objectActionTriggerKey = Objects.toString(objectActionTriggerKey, "");
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath = _finderPathWithoutPaginationFindByC_A_OATK;
+				finderArgs = new Object[] {
+					companyId, active, objectActionTriggerKey
+				};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByC_A_OATK;
+			finderArgs = new Object[] {
+				companyId, active, objectActionTriggerKey, start, end,
+				orderByComparator
+			};
+		}
+
+		List<ObjectAction> list = null;
+
+		if (useFinderCache) {
+			list = (List<ObjectAction>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ObjectAction objectAction : list) {
+					if ((companyId != objectAction.getCompanyId()) ||
+						(active != objectAction.isActive()) ||
+						!objectActionTriggerKey.equals(
+							objectAction.getObjectActionTriggerKey())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					5 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(5);
+			}
+
+			sb.append(_SQL_SELECT_OBJECTACTION_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_A_OATK_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_A_OATK_ACTIVE_2);
+
+			boolean bindObjectActionTriggerKey = false;
+
+			if (objectActionTriggerKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_3);
+			}
+			else {
+				bindObjectActionTriggerKey = true;
+
+				sb.append(_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(ObjectActionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				queryPos.add(active);
+
+				if (bindObjectActionTriggerKey) {
+					queryPos.add(objectActionTriggerKey);
+				}
+
+				list = (List<ObjectAction>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object action
+	 * @throws NoSuchObjectActionException if a matching object action could not be found
+	 */
+	@Override
+	public ObjectAction findByC_A_OATK_First(
+			long companyId, boolean active, String objectActionTriggerKey,
+			OrderByComparator<ObjectAction> orderByComparator)
+		throws NoSuchObjectActionException {
+
+		ObjectAction objectAction = fetchByC_A_OATK_First(
+			companyId, active, objectActionTriggerKey, orderByComparator);
+
+		if (objectAction != null) {
+			return objectAction;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", active=");
+		sb.append(active);
+
+		sb.append(", objectActionTriggerKey=");
+		sb.append(objectActionTriggerKey);
+
+		sb.append("}");
+
+		throw new NoSuchObjectActionException(sb.toString());
+	}
+
+	/**
+	 * Returns the first object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object action, or <code>null</code> if a matching object action could not be found
+	 */
+	@Override
+	public ObjectAction fetchByC_A_OATK_First(
+		long companyId, boolean active, String objectActionTriggerKey,
+		OrderByComparator<ObjectAction> orderByComparator) {
+
+		List<ObjectAction> list = findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object action
+	 * @throws NoSuchObjectActionException if a matching object action could not be found
+	 */
+	@Override
+	public ObjectAction findByC_A_OATK_Last(
+			long companyId, boolean active, String objectActionTriggerKey,
+			OrderByComparator<ObjectAction> orderByComparator)
+		throws NoSuchObjectActionException {
+
+		ObjectAction objectAction = fetchByC_A_OATK_Last(
+			companyId, active, objectActionTriggerKey, orderByComparator);
+
+		if (objectAction != null) {
+			return objectAction;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", active=");
+		sb.append(active);
+
+		sb.append(", objectActionTriggerKey=");
+		sb.append(objectActionTriggerKey);
+
+		sb.append("}");
+
+		throw new NoSuchObjectActionException(sb.toString());
+	}
+
+	/**
+	 * Returns the last object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object action, or <code>null</code> if a matching object action could not be found
+	 */
+	@Override
+	public ObjectAction fetchByC_A_OATK_Last(
+		long companyId, boolean active, String objectActionTriggerKey,
+		OrderByComparator<ObjectAction> orderByComparator) {
+
+		int count = countByC_A_OATK(companyId, active, objectActionTriggerKey);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ObjectAction> list = findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the object actions before and after the current object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param objectActionId the primary key of the current object action
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next object action
+	 * @throws NoSuchObjectActionException if a object action with the primary key could not be found
+	 */
+	@Override
+	public ObjectAction[] findByC_A_OATK_PrevAndNext(
+			long objectActionId, long companyId, boolean active,
+			String objectActionTriggerKey,
+			OrderByComparator<ObjectAction> orderByComparator)
+		throws NoSuchObjectActionException {
+
+		objectActionTriggerKey = Objects.toString(objectActionTriggerKey, "");
+
+		ObjectAction objectAction = findByPrimaryKey(objectActionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ObjectAction[] array = new ObjectActionImpl[3];
+
+			array[0] = getByC_A_OATK_PrevAndNext(
+				session, objectAction, companyId, active,
+				objectActionTriggerKey, orderByComparator, true);
+
+			array[1] = objectAction;
+
+			array[2] = getByC_A_OATK_PrevAndNext(
+				session, objectAction, companyId, active,
+				objectActionTriggerKey, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ObjectAction getByC_A_OATK_PrevAndNext(
+		Session session, ObjectAction objectAction, long companyId,
+		boolean active, String objectActionTriggerKey,
+		OrderByComparator<ObjectAction> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		sb.append(_SQL_SELECT_OBJECTACTION_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_A_OATK_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_A_OATK_ACTIVE_2);
+
+		boolean bindObjectActionTriggerKey = false;
+
+		if (objectActionTriggerKey.isEmpty()) {
+			sb.append(_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_3);
+		}
+		else {
+			bindObjectActionTriggerKey = true;
+
+			sb.append(_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(ObjectActionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(companyId);
+
+		queryPos.add(active);
+
+		if (bindObjectActionTriggerKey) {
+			queryPos.add(objectActionTriggerKey);
+		}
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(objectAction)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<ObjectAction> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 */
+	@Override
+	public void removeByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		for (ObjectAction objectAction :
+				findByC_A_OATK(
+					companyId, active, objectActionTriggerKey,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			remove(objectAction);
+		}
+	}
+
+	/**
+	 * Returns the number of object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @return the number of matching object actions
+	 */
+	@Override
+	public int countByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		objectActionTriggerKey = Objects.toString(objectActionTriggerKey, "");
+
+		FinderPath finderPath = _finderPathCountByC_A_OATK;
+
+		Object[] finderArgs = new Object[] {
+			companyId, active, objectActionTriggerKey
+		};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_COUNT_OBJECTACTION_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_A_OATK_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_A_OATK_ACTIVE_2);
+
+			boolean bindObjectActionTriggerKey = false;
+
+			if (objectActionTriggerKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_3);
+			}
+			else {
+				bindObjectActionTriggerKey = true;
+
+				sb.append(_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				queryPos.add(active);
+
+				if (bindObjectActionTriggerKey) {
+					queryPos.add(objectActionTriggerKey);
+				}
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_C_A_OATK_COMPANYID_2 =
+		"objectAction.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_A_OATK_ACTIVE_2 =
+		"objectAction.active = ? AND ";
+
+	private static final String
+		_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_2 =
+			"objectAction.objectActionTriggerKey = ?";
+
+	private static final String
+		_FINDER_COLUMN_C_A_OATK_OBJECTACTIONTRIGGERKEY_3 =
+			"(objectAction.objectActionTriggerKey IS NULL OR objectAction.objectActionTriggerKey = '')";
+
 	private FinderPath _finderPathWithPaginationFindByO_A_OATK;
 	private FinderPath _finderPathWithoutPaginationFindByO_A_OATK;
 	private FinderPath _finderPathCountByO_A_OATK;
@@ -4427,6 +5061,34 @@ public class ObjectActionPersistenceImpl
 				"externalReferenceCode", "companyId", "objectDefinitionId"
 			},
 			true);
+
+		_finderPathWithPaginationFindByC_A_OATK = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_OATK",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				String.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"companyId", "active_", "objectActionTriggerKey"},
+			true);
+
+		_finderPathWithoutPaginationFindByC_A_OATK = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_A_OATK",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				String.class.getName()
+			},
+			new String[] {"companyId", "active_", "objectActionTriggerKey"},
+			true);
+
+		_finderPathCountByC_A_OATK = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_A_OATK",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				String.class.getName()
+			},
+			new String[] {"companyId", "active_", "objectActionTriggerKey"},
+			false);
 
 		_finderPathWithPaginationFindByO_A_OATK = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByO_A_OATK",

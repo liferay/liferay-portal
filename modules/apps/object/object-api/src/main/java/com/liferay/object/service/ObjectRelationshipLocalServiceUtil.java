@@ -491,6 +491,12 @@ public class ObjectRelationshipLocalServiceUtil {
 			objectDefinitionId1, deletionType, reverse);
 	}
 
+	public static List<ObjectRelationship> getObjectRelationshipsByCompanyId(
+		long companyId) {
+
+		return getService().getObjectRelationshipsByCompanyId(companyId);
+	}
+
 	public static List<ObjectRelationship>
 		getObjectRelationshipsByObjectDefinitionId2(long objectDefinitionId2) {
 
@@ -528,10 +534,12 @@ public class ObjectRelationshipLocalServiceUtil {
 	public static void
 		registerObjectRelationshipsRelatedInfoCollectionProviders(
 			com.liferay.object.model.ObjectDefinition objectDefinition1,
-			ObjectDefinitionLocalService objectDefinitionLocalService) {
+			ObjectDefinitionLocalService objectDefinitionLocalService,
+			List<ObjectRelationship> objectRelationships) {
 
 		getService().registerObjectRelationshipsRelatedInfoCollectionProviders(
-			objectDefinition1, objectDefinitionLocalService);
+			objectDefinition1, objectDefinitionLocalService,
+			objectRelationships);
 	}
 
 	/**

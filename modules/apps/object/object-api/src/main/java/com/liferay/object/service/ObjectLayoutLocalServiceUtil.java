@@ -253,6 +253,10 @@ public class ObjectLayoutLocalServiceUtil {
 		return getService().getDefaultObjectLayout(objectDefinitionId);
 	}
 
+	public static List<ObjectLayout> getDefaultObjectLayouts(long companyId) {
+		return getService().getDefaultObjectLayouts(companyId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext

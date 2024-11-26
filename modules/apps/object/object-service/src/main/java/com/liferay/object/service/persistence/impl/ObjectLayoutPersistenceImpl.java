@@ -1707,6 +1707,551 @@ public class ObjectLayoutPersistenceImpl
 		_FINDER_COLUMN_OBJECTDEFINITIONID_OBJECTDEFINITIONID_2 =
 			"objectLayout.objectDefinitionId = ?";
 
+	private FinderPath _finderPathWithPaginationFindByC_DOL;
+	private FinderPath _finderPathWithoutPaginationFindByC_DOL;
+	private FinderPath _finderPathCountByC_DOL;
+
+	/**
+	 * Returns all the object layouts where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @return the matching object layouts
+	 */
+	@Override
+	public List<ObjectLayout> findByC_DOL(
+		long companyId, boolean defaultObjectLayout) {
+
+		return findByC_DOL(
+			companyId, defaultObjectLayout, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the object layouts where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectLayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param start the lower bound of the range of object layouts
+	 * @param end the upper bound of the range of object layouts (not inclusive)
+	 * @return the range of matching object layouts
+	 */
+	@Override
+	public List<ObjectLayout> findByC_DOL(
+		long companyId, boolean defaultObjectLayout, int start, int end) {
+
+		return findByC_DOL(companyId, defaultObjectLayout, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the object layouts where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectLayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param start the lower bound of the range of object layouts
+	 * @param end the upper bound of the range of object layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object layouts
+	 */
+	@Override
+	public List<ObjectLayout> findByC_DOL(
+		long companyId, boolean defaultObjectLayout, int start, int end,
+		OrderByComparator<ObjectLayout> orderByComparator) {
+
+		return findByC_DOL(
+			companyId, defaultObjectLayout, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the object layouts where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectLayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param start the lower bound of the range of object layouts
+	 * @param end the upper bound of the range of object layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching object layouts
+	 */
+	@Override
+	public List<ObjectLayout> findByC_DOL(
+		long companyId, boolean defaultObjectLayout, int start, int end,
+		OrderByComparator<ObjectLayout> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath = _finderPathWithoutPaginationFindByC_DOL;
+				finderArgs = new Object[] {companyId, defaultObjectLayout};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByC_DOL;
+			finderArgs = new Object[] {
+				companyId, defaultObjectLayout, start, end, orderByComparator
+			};
+		}
+
+		List<ObjectLayout> list = null;
+
+		if (useFinderCache) {
+			list = (List<ObjectLayout>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ObjectLayout objectLayout : list) {
+					if ((companyId != objectLayout.getCompanyId()) ||
+						(defaultObjectLayout !=
+							objectLayout.isDefaultObjectLayout())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(4);
+			}
+
+			sb.append(_SQL_SELECT_OBJECTLAYOUT_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_DOL_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_DOL_DEFAULTOBJECTLAYOUT_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(ObjectLayoutModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				queryPos.add(defaultObjectLayout);
+
+				list = (List<ObjectLayout>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first object layout in the ordered set where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object layout
+	 * @throws NoSuchObjectLayoutException if a matching object layout could not be found
+	 */
+	@Override
+	public ObjectLayout findByC_DOL_First(
+			long companyId, boolean defaultObjectLayout,
+			OrderByComparator<ObjectLayout> orderByComparator)
+		throws NoSuchObjectLayoutException {
+
+		ObjectLayout objectLayout = fetchByC_DOL_First(
+			companyId, defaultObjectLayout, orderByComparator);
+
+		if (objectLayout != null) {
+			return objectLayout;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", defaultObjectLayout=");
+		sb.append(defaultObjectLayout);
+
+		sb.append("}");
+
+		throw new NoSuchObjectLayoutException(sb.toString());
+	}
+
+	/**
+	 * Returns the first object layout in the ordered set where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object layout, or <code>null</code> if a matching object layout could not be found
+	 */
+	@Override
+	public ObjectLayout fetchByC_DOL_First(
+		long companyId, boolean defaultObjectLayout,
+		OrderByComparator<ObjectLayout> orderByComparator) {
+
+		List<ObjectLayout> list = findByC_DOL(
+			companyId, defaultObjectLayout, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last object layout in the ordered set where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object layout
+	 * @throws NoSuchObjectLayoutException if a matching object layout could not be found
+	 */
+	@Override
+	public ObjectLayout findByC_DOL_Last(
+			long companyId, boolean defaultObjectLayout,
+			OrderByComparator<ObjectLayout> orderByComparator)
+		throws NoSuchObjectLayoutException {
+
+		ObjectLayout objectLayout = fetchByC_DOL_Last(
+			companyId, defaultObjectLayout, orderByComparator);
+
+		if (objectLayout != null) {
+			return objectLayout;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", defaultObjectLayout=");
+		sb.append(defaultObjectLayout);
+
+		sb.append("}");
+
+		throw new NoSuchObjectLayoutException(sb.toString());
+	}
+
+	/**
+	 * Returns the last object layout in the ordered set where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object layout, or <code>null</code> if a matching object layout could not be found
+	 */
+	@Override
+	public ObjectLayout fetchByC_DOL_Last(
+		long companyId, boolean defaultObjectLayout,
+		OrderByComparator<ObjectLayout> orderByComparator) {
+
+		int count = countByC_DOL(companyId, defaultObjectLayout);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ObjectLayout> list = findByC_DOL(
+			companyId, defaultObjectLayout, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the object layouts before and after the current object layout in the ordered set where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * @param objectLayoutId the primary key of the current object layout
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next object layout
+	 * @throws NoSuchObjectLayoutException if a object layout with the primary key could not be found
+	 */
+	@Override
+	public ObjectLayout[] findByC_DOL_PrevAndNext(
+			long objectLayoutId, long companyId, boolean defaultObjectLayout,
+			OrderByComparator<ObjectLayout> orderByComparator)
+		throws NoSuchObjectLayoutException {
+
+		ObjectLayout objectLayout = findByPrimaryKey(objectLayoutId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ObjectLayout[] array = new ObjectLayoutImpl[3];
+
+			array[0] = getByC_DOL_PrevAndNext(
+				session, objectLayout, companyId, defaultObjectLayout,
+				orderByComparator, true);
+
+			array[1] = objectLayout;
+
+			array[2] = getByC_DOL_PrevAndNext(
+				session, objectLayout, companyId, defaultObjectLayout,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ObjectLayout getByC_DOL_PrevAndNext(
+		Session session, ObjectLayout objectLayout, long companyId,
+		boolean defaultObjectLayout,
+		OrderByComparator<ObjectLayout> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_OBJECTLAYOUT_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_DOL_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_DOL_DEFAULTOBJECTLAYOUT_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(ObjectLayoutModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(companyId);
+
+		queryPos.add(defaultObjectLayout);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(objectLayout)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<ObjectLayout> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the object layouts where companyId = &#63; and defaultObjectLayout = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 */
+	@Override
+	public void removeByC_DOL(long companyId, boolean defaultObjectLayout) {
+		for (ObjectLayout objectLayout :
+				findByC_DOL(
+					companyId, defaultObjectLayout, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(objectLayout);
+		}
+	}
+
+	/**
+	 * Returns the number of object layouts where companyId = &#63; and defaultObjectLayout = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param defaultObjectLayout the default object layout
+	 * @return the number of matching object layouts
+	 */
+	@Override
+	public int countByC_DOL(long companyId, boolean defaultObjectLayout) {
+		FinderPath finderPath = _finderPathCountByC_DOL;
+
+		Object[] finderArgs = new Object[] {companyId, defaultObjectLayout};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_COUNT_OBJECTLAYOUT_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_DOL_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_DOL_DEFAULTOBJECTLAYOUT_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				queryPos.add(defaultObjectLayout);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_C_DOL_COMPANYID_2 =
+		"objectLayout.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_DOL_DEFAULTOBJECTLAYOUT_2 =
+		"objectLayout.defaultObjectLayout = ?";
+
 	private FinderPath _finderPathWithPaginationFindByODI_DOL;
 	private FinderPath _finderPathWithoutPaginationFindByODI_DOL;
 	private FinderPath _finderPathCountByODI_DOL;
@@ -2879,6 +3424,25 @@ public class ObjectLayoutPersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
 			"countByObjectDefinitionId", new String[] {Long.class.getName()},
 			new String[] {"objectDefinitionId"}, false);
+
+		_finderPathWithPaginationFindByC_DOL = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_DOL",
+			new String[] {
+				Long.class.getName(), Boolean.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"companyId", "defaultObjectLayout"}, true);
+
+		_finderPathWithoutPaginationFindByC_DOL = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_DOL",
+			new String[] {Long.class.getName(), Boolean.class.getName()},
+			new String[] {"companyId", "defaultObjectLayout"}, true);
+
+		_finderPathCountByC_DOL = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_DOL",
+			new String[] {Long.class.getName(), Boolean.class.getName()},
+			new String[] {"companyId", "defaultObjectLayout"}, false);
 
 		_finderPathWithPaginationFindByODI_DOL = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByODI_DOL",

@@ -351,6 +351,13 @@ public class ObjectActionLocalServiceUtil {
 	}
 
 	public static List<ObjectAction> getObjectActions(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		return getService().getObjectActions(
+			companyId, active, objectActionTriggerKey);
+	}
+
+	public static List<ObjectAction> getObjectActions(
 		long objectDefinitionId, String objectActionTriggerKey) {
 
 		return getService().getObjectActions(

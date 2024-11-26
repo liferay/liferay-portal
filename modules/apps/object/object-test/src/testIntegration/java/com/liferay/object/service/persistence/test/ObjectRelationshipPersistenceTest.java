@@ -249,6 +249,13 @@ public class ObjectRelationshipPersistenceTest {
 	}
 
 	@Test
+	public void testCountByCompanyId() throws Exception {
+		_persistence.countByCompanyId(RandomTestUtil.nextLong());
+
+		_persistence.countByCompanyId(0L);
+	}
+
+	@Test
 	public void testCountByObjectDefinitionId1() throws Exception {
 		_persistence.countByObjectDefinitionId1(RandomTestUtil.nextLong());
 

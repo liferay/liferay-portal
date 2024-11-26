@@ -573,6 +573,14 @@ public class ObjectRelationshipLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.object.model.ObjectRelationship>
+		getObjectRelationshipsByCompanyId(long companyId) {
+
+		return _objectRelationshipLocalService.
+			getObjectRelationshipsByCompanyId(companyId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.object.model.ObjectRelationship>
 		getObjectRelationshipsByObjectDefinitionId2(long objectDefinitionId2) {
 
 		return _objectRelationshipLocalService.
@@ -613,11 +621,14 @@ public class ObjectRelationshipLocalServiceWrapper
 	@Override
 	public void registerObjectRelationshipsRelatedInfoCollectionProviders(
 		com.liferay.object.model.ObjectDefinition objectDefinition1,
-		ObjectDefinitionLocalService objectDefinitionLocalService) {
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		java.util.List<com.liferay.object.model.ObjectRelationship>
+			objectRelationships) {
 
 		_objectRelationshipLocalService.
 			registerObjectRelationshipsRelatedInfoCollectionProviders(
-				objectDefinition1, objectDefinitionLocalService);
+				objectDefinition1, objectDefinitionLocalService,
+				objectRelationships);
 	}
 
 	/**

@@ -288,6 +288,13 @@ public class ObjectLayoutLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<com.liferay.object.model.ObjectLayout>
+		getDefaultObjectLayouts(long companyId) {
+
+		return _objectLayoutLocalService.getDefaultObjectLayouts(companyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext

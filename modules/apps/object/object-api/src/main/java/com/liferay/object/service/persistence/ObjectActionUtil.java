@@ -977,6 +977,216 @@ public class ObjectActionUtil {
 	}
 
 	/**
+	 * Returns all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @return the matching object actions
+	 */
+	public static List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		return getPersistence().findByC_A_OATK(
+			companyId, active, objectActionTriggerKey);
+	}
+
+	/**
+	 * Returns a range of all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectActionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param start the lower bound of the range of object actions
+	 * @param end the upper bound of the range of object actions (not inclusive)
+	 * @return the range of matching object actions
+	 */
+	public static List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey,
+		int start, int end) {
+
+		return getPersistence().findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectActionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param start the lower bound of the range of object actions
+	 * @param end the upper bound of the range of object actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object actions
+	 */
+	public static List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey,
+		int start, int end, OrderByComparator<ObjectAction> orderByComparator) {
+
+		return getPersistence().findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, start, end,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectActionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param start the lower bound of the range of object actions
+	 * @param end the upper bound of the range of object actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching object actions
+	 */
+	public static List<ObjectAction> findByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey,
+		int start, int end, OrderByComparator<ObjectAction> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByC_A_OATK(
+			companyId, active, objectActionTriggerKey, start, end,
+			orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object action
+	 * @throws NoSuchObjectActionException if a matching object action could not be found
+	 */
+	public static ObjectAction findByC_A_OATK_First(
+			long companyId, boolean active, String objectActionTriggerKey,
+			OrderByComparator<ObjectAction> orderByComparator)
+		throws com.liferay.object.exception.NoSuchObjectActionException {
+
+		return getPersistence().findByC_A_OATK_First(
+			companyId, active, objectActionTriggerKey, orderByComparator);
+	}
+
+	/**
+	 * Returns the first object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object action, or <code>null</code> if a matching object action could not be found
+	 */
+	public static ObjectAction fetchByC_A_OATK_First(
+		long companyId, boolean active, String objectActionTriggerKey,
+		OrderByComparator<ObjectAction> orderByComparator) {
+
+		return getPersistence().fetchByC_A_OATK_First(
+			companyId, active, objectActionTriggerKey, orderByComparator);
+	}
+
+	/**
+	 * Returns the last object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object action
+	 * @throws NoSuchObjectActionException if a matching object action could not be found
+	 */
+	public static ObjectAction findByC_A_OATK_Last(
+			long companyId, boolean active, String objectActionTriggerKey,
+			OrderByComparator<ObjectAction> orderByComparator)
+		throws com.liferay.object.exception.NoSuchObjectActionException {
+
+		return getPersistence().findByC_A_OATK_Last(
+			companyId, active, objectActionTriggerKey, orderByComparator);
+	}
+
+	/**
+	 * Returns the last object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object action, or <code>null</code> if a matching object action could not be found
+	 */
+	public static ObjectAction fetchByC_A_OATK_Last(
+		long companyId, boolean active, String objectActionTriggerKey,
+		OrderByComparator<ObjectAction> orderByComparator) {
+
+		return getPersistence().fetchByC_A_OATK_Last(
+			companyId, active, objectActionTriggerKey, orderByComparator);
+	}
+
+	/**
+	 * Returns the object actions before and after the current object action in the ordered set where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param objectActionId the primary key of the current object action
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next object action
+	 * @throws NoSuchObjectActionException if a object action with the primary key could not be found
+	 */
+	public static ObjectAction[] findByC_A_OATK_PrevAndNext(
+			long objectActionId, long companyId, boolean active,
+			String objectActionTriggerKey,
+			OrderByComparator<ObjectAction> orderByComparator)
+		throws com.liferay.object.exception.NoSuchObjectActionException {
+
+		return getPersistence().findByC_A_OATK_PrevAndNext(
+			objectActionId, companyId, active, objectActionTriggerKey,
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 */
+	public static void removeByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		getPersistence().removeByC_A_OATK(
+			companyId, active, objectActionTriggerKey);
+	}
+
+	/**
+	 * Returns the number of object actions where companyId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param active the active
+	 * @param objectActionTriggerKey the object action trigger key
+	 * @return the number of matching object actions
+	 */
+	public static int countByC_A_OATK(
+		long companyId, boolean active, String objectActionTriggerKey) {
+
+		return getPersistence().countByC_A_OATK(
+			companyId, active, objectActionTriggerKey);
+	}
+
+	/**
 	 * Returns all the object actions where objectDefinitionId = &#63; and active = &#63; and objectActionTriggerKey = &#63;.
 	 *
 	 * @param objectDefinitionId the object definition ID

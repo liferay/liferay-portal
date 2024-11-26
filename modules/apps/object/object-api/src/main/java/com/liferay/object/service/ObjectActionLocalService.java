@@ -301,6 +301,10 @@ public interface ObjectActionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectAction> getObjectActions(
+		long companyId, boolean active, String objectActionTriggerKey);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectAction> getObjectActions(
 		long objectDefinitionId, String objectActionTriggerKey);
 
 	/**

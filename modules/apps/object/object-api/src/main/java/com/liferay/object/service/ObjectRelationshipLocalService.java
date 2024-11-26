@@ -377,6 +377,10 @@ public interface ObjectRelationshipLocalService
 		long objectDefinitionId1, String deletionType, boolean reverse);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectRelationship> getObjectRelationshipsByCompanyId(
+		long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectRelationship> getObjectRelationshipsByObjectDefinitionId2(
 		long objectDefinitionId2);
 
@@ -405,7 +409,8 @@ public interface ObjectRelationshipLocalService
 
 	public void registerObjectRelationshipsRelatedInfoCollectionProviders(
 		ObjectDefinition objectDefinition1,
-		ObjectDefinitionLocalService objectDefinitionLocalService);
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		List<ObjectRelationship> objectRelationships);
 
 	/**
 	 * Updates the object relationship in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
