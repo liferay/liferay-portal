@@ -41,4 +41,12 @@ public interface ObjectDefinitionDeployer {
 	public default void undeploy(ObjectDefinition objectDefinition) {
 	}
 
+	public default void undeployObjectDefinitions(
+		long companyId, List<ObjectDefinition> objectDefinitions) {
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			undeploy(objectDefinition);
+		}
+	}
+
 }

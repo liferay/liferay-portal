@@ -1044,20 +1044,13 @@ public class ObjectDefinitionLocalServiceImpl
 					ObjectDefinitionDeployer objectDefinitionDeployer) {
 
 					_companyLocalService.forEachCompanyId(
-						companyId -> {
-							for (ObjectDefinition objectDefinition :
-									objectDefinitionLocalService.
-										getObjectDefinitions(
-											companyId,
-											WorkflowConstants.
-												STATUS_APPROVED)) {
-
-								if (objectDefinition.isActive()) {
-									objectDefinitionDeployer.undeploy(
-										objectDefinition);
-								}
-							}
-						});
+						companyId ->
+							objectDefinitionDeployer.undeployObjectDefinitions(
+								companyId,
+								objectDefinitionLocalService.
+									getObjectDefinitions(
+										companyId, true,
+										WorkflowConstants.STATUS_APPROVED)));
 
 					Map<Long, List<ServiceRegistration<?>>>
 						serviceRegistrationsMap =
