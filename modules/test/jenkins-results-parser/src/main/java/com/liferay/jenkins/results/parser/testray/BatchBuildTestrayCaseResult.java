@@ -370,27 +370,36 @@ public class BatchBuildTestrayCaseResult extends BuildTestrayCaseResult {
 		TestResult testResult = getTestResult();
 
 		Build build = getBuild();
-
+		
 		if (testResult == null) {
+			String failureMessage = "Failed prior to running test";
+
 			if (build == null) {
-				return "Unable to run build on CI";
+				failureMessage = "Unable to run build on CI";
 			}
 
 			String result = build.getResult();
 
 			if (result == null) {
-				return "Unable to finish build on CI";
+				failureMessage = "Unable to finish build on CI";
 			}
 
 			if (result.equals("ABORTED")) {
-				return build.getJobName() + " timed out after 2 hours";
+				failureMessage = build.getJobName() + " timed out after 2 hours";
 			}
 
 			if (result.equals("SUCCESS") || result.equals("UNSTABLE")) {
-				return "Unable to run test on CI";
+				failureMessage = "Unable to run test on CI";
 			}
 
-			return "Failed prior to running test";
+			String buildFailureMessage = build.getFailureMessage();
+
+			if (buildFailureMessage == null) {
+				return failureMessage;
+			}
+
+			return failureMessage + ": " + buildFailureMessage;
+
 		}
 
 		if (testResult.isSkipped()) {
