@@ -8,6 +8,7 @@ package com.liferay.object.deployer;
 import com.liferay.object.model.ObjectDefinition;
 
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.framework.ServiceRegistration;
 
@@ -18,5 +19,8 @@ public interface InactiveObjectDefinitionDeployer {
 
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition);
+
+	public Map<Long, List<ServiceRegistration<?>>> deployObjectDefinitions(
+		long companyId, List<ObjectDefinition> objectDefinitions);
 
 }

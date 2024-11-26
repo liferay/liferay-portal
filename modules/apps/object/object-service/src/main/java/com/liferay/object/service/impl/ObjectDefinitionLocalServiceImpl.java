@@ -994,23 +994,23 @@ public class ObjectDefinitionLocalServiceImpl
 
 		_companyLocalService.forEachCompanyId(
 			companyId -> {
+				List<ObjectDefinition> objectDefinitions =
+					objectDefinitionLocalService.getObjectDefinitions(
+						companyId, WorkflowConstants.STATUS_APPROVED);
+
 				activeServiceRegistrationsMap.putAll(
 					objectDefinitionDeployer.deployObjectDefinitions(
 						companyId,
-						objectDefinitionLocalService.getObjectDefinitions(
-							companyId, true,
-							WorkflowConstants.STATUS_APPROVED)));
+						ListUtil.filter(
+							objectDefinitions,
+							objectDefinition -> objectDefinition.isActive())));
 
-				for (ObjectDefinition objectDefinition :
-						objectDefinitionLocalService.getObjectDefinitions(
-							companyId, false,
-							WorkflowConstants.STATUS_APPROVED)) {
-
-					inactiveServiceRegistrationsMap.put(
-						objectDefinition.getObjectDefinitionId(),
-						inactiveObjectDefinitionDeployer.deploy(
-							objectDefinition));
-				}
+				inactiveServiceRegistrationsMap.putAll(
+					inactiveObjectDefinitionDeployer.deployObjectDefinitions(
+						companyId,
+						ListUtil.filter(
+							objectDefinitions,
+							objectDefinition -> !objectDefinition.isActive())));
 			});
 
 		_inactiveObjectDefinitionsServiceRegistrationsMaps.put(

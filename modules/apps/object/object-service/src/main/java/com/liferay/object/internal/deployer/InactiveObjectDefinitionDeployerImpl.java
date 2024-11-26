@@ -17,6 +17,8 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -63,6 +65,22 @@ public class InactiveObjectDefinitionDeployerImpl
 					objectDefinition, _objectEntryService,
 					_objectFieldLocalService,
 					_objectRelationshipLocalService)));
+	}
+
+	@Override
+	public Map<Long, List<ServiceRegistration<?>>> deployObjectDefinitions(
+		long companyId, List<ObjectDefinition> objectDefinitions) {
+
+		Map<Long, List<ServiceRegistration<?>>> serviceRegistrationsMap =
+			new ConcurrentHashMap<>();
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			serviceRegistrationsMap.put(
+				objectDefinition.getObjectDefinitionId(),
+				deploy(objectDefinition));
+		}
+
+		return serviceRegistrationsMap;
 	}
 
 	private final BundleContext _bundleContext;
