@@ -5,10 +5,13 @@
 
 package com.liferay.journal.content.web.internal.upgrade.registry;
 
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.journal.content.web.internal.upgrade.v1_0_0.UpgradePortletId;
 import com.liferay.journal.content.web.internal.upgrade.v1_0_0.UpgradePortletPreferences;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.Portal;
@@ -38,7 +41,21 @@ public class JournalContentWebUpgradeStepRegistrator
 				UpgradePortletPreferences(
 					_groupLocalService, _journalArticleLocalService, _language,
 					_layoutLocalService, _portal));
+
+		registry.register(
+			"1.1.0", "1.1.1",
+			new com.liferay.journal.content.web.internal.upgrade.v1_1_1.
+				UpgradePortletPreferences(
+					_classNameLocalService.getClassNameId(DDMStructure.class),
+					_ddmTemplateLocalService, _groupLocalService,
+					_journalArticleLocalService, _layoutLocalService, _portal));
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private DDMTemplateLocalService _ddmTemplateLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
