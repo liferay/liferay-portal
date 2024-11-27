@@ -370,7 +370,7 @@ public class BatchBuildTestrayCaseResult extends BuildTestrayCaseResult {
 		TestResult testResult = getTestResult();
 
 		Build build = getBuild();
-		
+
 		if (testResult == null) {
 			String failureMessage = "Failed prior to running test";
 
@@ -385,7 +385,8 @@ public class BatchBuildTestrayCaseResult extends BuildTestrayCaseResult {
 			}
 
 			if (result.equals("ABORTED")) {
-				failureMessage = build.getJobName() + " timed out after 2 hours";
+				failureMessage =
+					build.getJobName() + " timed out after 2 hours";
 			}
 
 			if (result.equals("SUCCESS") || result.equals("UNSTABLE")) {
@@ -399,7 +400,6 @@ public class BatchBuildTestrayCaseResult extends BuildTestrayCaseResult {
 			}
 
 			return failureMessage + ": " + buildFailureMessage;
-
 		}
 
 		if (testResult.isSkipped()) {
