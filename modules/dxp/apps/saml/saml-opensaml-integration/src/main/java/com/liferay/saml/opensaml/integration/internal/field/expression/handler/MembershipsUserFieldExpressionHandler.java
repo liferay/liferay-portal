@@ -45,53 +45,38 @@ public class MembershipsUserFieldExpressionHandler
 	public void bindProcessorContext(
 		UserProcessorContext userProcessorContext) {
 
-		for (String validFieldExpression : getValidFieldExpressions()) {
-			if (!userProcessorContext.isDefined(
-					String.class, validFieldExpression)) {
+		List<Long> userGroupIds = new ArrayList<>();
 
-				continue;
-			}
+		UserProcessorContext.UserBind<User> userBind =
+			userProcessorContext.bind(
+				_processingIndex,
+				(currentUser, newUser, serviceContext) -> {
+					_userGroupLocalService.setUserUserGroups(
+						newUser.getUserId(),
+						ArrayUtil.toArray(userGroupIds.toArray(new Long[0])));
 
-			List<Long> userGroupIds = new ArrayList<>();
-
-			UserProcessorContext.UserBind<User> userBind =
-				userProcessorContext.bind(
-					_processingIndex,
-					(currentUser, newUser, serviceContext) -> {
-						_userGroupLocalService.setUserUserGroups(
-							newUser.getUserId(),
-							ArrayUtil.toArray(
-								userGroupIds.toArray(new Long[0])));
-
-						return newUser;
-					});
-
-			userBind.mapStringArray(
-				"userGroups",
-				(user, values) -> {
-					if (values == null) {
-						return;
-					}
-
-					for (String value : values) {
-						UserGroup userGroup =
-							_userGroupLocalService.fetchUserGroup(
-								user.getCompanyId(), value);
-
-						if (userGroup != null) {
-							userGroupIds.add(userGroup.getUserGroupId());
-						}
-						else if (_log.isWarnEnabled()) {
-							_log.warn("Ignored unknown user group: " + value);
-						}
-					}
+					return newUser;
 				});
-		}
-	}
 
-	@Override
-	public List<String> getExplicitFieldExpressions() {
-		return _explicitFieldExpressions;
+		userBind.mapStringArray(
+			"userGroups",
+			(user, values) -> {
+				if (values == null) {
+					return;
+				}
+
+				for (String value : values) {
+					UserGroup userGroup = _userGroupLocalService.fetchUserGroup(
+						user.getCompanyId(), value);
+
+					if (userGroup != null) {
+						userGroupIds.add(userGroup.getUserGroupId());
+					}
+					else if (_log.isWarnEnabled()) {
+						_log.warn("Ignored unknown user group: " + value);
+					}
+				}
+			});
 	}
 
 	@Override
@@ -139,8 +124,6 @@ public class MembershipsUserFieldExpressionHandler
 	private static final Log _log = LogFactoryUtil.getLog(
 		MembershipsUserFieldExpressionHandler.class);
 
-	private final List<String> _explicitFieldExpressions =
-		Collections.unmodifiableList(Arrays.asList("membership:userGroups"));
 	private int _processingIndex;
 
 	@Reference

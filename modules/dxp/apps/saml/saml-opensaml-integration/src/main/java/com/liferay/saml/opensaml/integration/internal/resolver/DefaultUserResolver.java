@@ -38,13 +38,9 @@ import com.liferay.saml.runtime.exception.SubjectException;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -90,24 +86,6 @@ public class DefaultUserResolver implements UserResolver {
 			companyId, samlSpIdpConnection,
 			userResolverSAMLContext.resolveSubjectNameIdentifier(),
 			subjectNameFormat, userResolverSAMLContext, serviceContext);
-	}
-
-	private void _addExplicitAttributesIfMapped(
-		Properties userAttributeMappings,
-		Map<String, List<Serializable>> mappedAttributes) {
-
-		Set<Object> mappedFieldExpressions = new HashSet<>(
-			userAttributeMappings.values());
-
-		for (String validFieldExpression :
-				_getValidExplicitUserFieldExpressions()) {
-
-			if (!mappedAttributes.containsKey(validFieldExpression) &&
-				mappedFieldExpressions.contains(validFieldExpression)) {
-
-				mappedAttributes.put(validFieldExpression, new ArrayList<>());
-			}
-		}
 	}
 
 	private User _addUser(
@@ -158,17 +136,9 @@ public class DefaultUserResolver implements UserResolver {
 		UserResolverSAMLContext userResolverSAMLContext) {
 
 		try {
-			Map<String, List<Serializable>> mappedAttributes =
-				userResolverSAMLContext.
-					resolveBearerAssertionAttributesWithMapping(
-						samlSpIdpConnection.
-							getNormalizedUserAttributeMappings());
-
-			_addExplicitAttributesIfMapped(
-				samlSpIdpConnection.getNormalizedUserAttributeMappings(),
-				mappedAttributes);
-
-			return mappedAttributes;
+			return userResolverSAMLContext.
+				resolveBearerAssertionAttributesWithMapping(
+					samlSpIdpConnection.getNormalizedUserAttributeMappings());
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -218,25 +188,6 @@ public class DefaultUserResolver implements UserResolver {
 
 		return _userFieldExpressionResolverRegistry.
 			getUserFieldExpressionResolver(userFieldExpressionResolverKey);
-	}
-
-	private Set<String> _getValidExplicitUserFieldExpressions() {
-		Set<String> validExplicitUserFieldExpressions = new HashSet<>();
-
-		Set<String> fieldExpressionHandlerPrefixes =
-			_userFieldExpressionHandlerRegistry.
-				getFieldExpressionHandlerPrefixes();
-
-		for (String prefix : fieldExpressionHandlerPrefixes) {
-			UserFieldExpressionHandler userFieldExpressionHandler =
-				_userFieldExpressionHandlerRegistry.getFieldExpressionHandler(
-					prefix);
-
-			validExplicitUserFieldExpressions.addAll(
-				userFieldExpressionHandler.getExplicitFieldExpressions());
-		}
-
-		return validExplicitUserFieldExpressions;
 	}
 
 	private String _getValueAsString(
