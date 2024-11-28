@@ -52,7 +52,7 @@ public class MembershipsUserFieldExpressionHandler
 				_processingIndex,
 				(currentUser, newUser, serviceContext) -> {
 					if (userProcessorContext.isDefined(
-						String.class, "userGroups")) {
+							String.class, "userGroups")) {
 
 						_userGroupLocalService.setUserUserGroups(
 							newUser.getUserId(),
