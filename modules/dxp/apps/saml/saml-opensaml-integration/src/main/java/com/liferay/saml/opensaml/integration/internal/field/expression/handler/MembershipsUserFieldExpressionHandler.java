@@ -51,9 +51,14 @@ public class MembershipsUserFieldExpressionHandler
 			userProcessorContext.bind(
 				_processingIndex,
 				(currentUser, newUser, serviceContext) -> {
-					_userGroupLocalService.setUserUserGroups(
-						newUser.getUserId(),
-						ArrayUtil.toArray(userGroupIds.toArray(new Long[0])));
+					if (userProcessorContext.isDefined(
+						String.class, "userGroups")) {
+
+						_userGroupLocalService.setUserUserGroups(
+							newUser.getUserId(),
+							ArrayUtil.toArray(
+								userGroupIds.toArray(new Long[0])));
+					}
 
 					return newUser;
 				});
