@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,53 +41,34 @@ public class UserProcessorFactoryTest {
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
 
-	@Before
-	public void setUp() throws Exception {
+	@Test
+	public void testUserGroups() throws Exception {
 		_user = UserTestUtil.addUser();
-
 		_userGroup = UserGroupTestUtil.addUserGroup();
 
-		_userGroupLocalService.addUserUserGroup(_user.getUserId(), _userGroup);
-	}
-
-	@Test
-	public void testUserAddsUserGroupsWhenMappedUserGroupComesInTheAssertion()
-		throws Exception {
-
-		User processedUser = _processUser(
+		_user = _processUser(
 			HashMapBuilder.put(
 				"membership:userGroups", new String[] {_userGroup.getName()}
 			).build());
 
 		Assert.assertEquals(
 			1,
-			_userGroupLocalService.getUserUserGroupsCount(
-				processedUser.getUserId()));
-	}
+			_userGroupLocalService.getUserUserGroupsCount(_user.getUserId()));
 
-	@Test
-	public void testUserKeepsUserGroupsWhenMappingIsNotSet() throws Exception {
-		User processedUser = _processUser(Collections.emptyMap());
+		_user = _processUser(Collections.emptyMap());
 
 		Assert.assertEquals(
 			1,
-			_userGroupLocalService.getUserUserGroupsCount(
-				processedUser.getUserId()));
-	}
+			_userGroupLocalService.getUserUserGroupsCount(_user.getUserId()));
 
-	@Test
-	public void testUserNotKeepsUserGroupsWhenMappedUserGroupNotComesInTheAssertion()
-		throws Exception {
-
-		User processedUser = _processUser(
+		_user = _processUser(
 			HashMapBuilder.put(
 				"membership:userGroups", new String[0]
 			).build());
 
 		Assert.assertEquals(
 			0,
-			_userGroupLocalService.getUserUserGroupsCount(
-				processedUser.getUserId()));
+			_userGroupLocalService.getUserUserGroupsCount(_user.getUserId()));
 	}
 
 	private User _processUser(Map<String, String[]> attributesMap)
