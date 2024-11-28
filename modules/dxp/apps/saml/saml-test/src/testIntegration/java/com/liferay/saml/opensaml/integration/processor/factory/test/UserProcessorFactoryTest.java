@@ -21,6 +21,7 @@ import com.liferay.saml.opensaml.integration.field.expression.handler.registry.U
 import com.liferay.saml.opensaml.integration.processor.UserProcessor;
 import com.liferay.saml.opensaml.integration.processor.factory.UserProcessorFactory;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -56,15 +57,7 @@ public class UserProcessorFactoryTest {
 
 		User processedUser = _processUser(
 			HashMapBuilder.put(
-				"emailAddress", new String[] {_user.getEmailAddress()}
-			).put(
-				"firstName", new String[] {_user.getFirstName()}
-			).put(
-				"lastName", new String[] {_user.getLastName()}
-			).put(
 				"membership:userGroups", new String[] {_userGroup.getName()}
-			).put(
-				"screenName", new String[] {_user.getScreenName()}
 			).build());
 
 		Assert.assertEquals(
@@ -75,16 +68,7 @@ public class UserProcessorFactoryTest {
 
 	@Test
 	public void testUserKeepsUserGroupsWhenMappingIsNotSet() throws Exception {
-		User processedUser = _processUser(
-			HashMapBuilder.put(
-				"emailAddress", new String[] {_user.getEmailAddress()}
-			).put(
-				"firstName", new String[] {_user.getFirstName()}
-			).put(
-				"lastName", new String[] {_user.getLastName()}
-			).put(
-				"screenName", new String[] {_user.getScreenName()}
-			).build());
+		User processedUser = _processUser(Collections.emptyMap());
 
 		Assert.assertEquals(
 			1,
@@ -98,15 +82,7 @@ public class UserProcessorFactoryTest {
 
 		User processedUser = _processUser(
 			HashMapBuilder.put(
-				"emailAddress", new String[] {_user.getEmailAddress()}
-			).put(
-				"firstName", new String[] {_user.getFirstName()}
-			).put(
-				"lastName", new String[] {_user.getLastName()}
-			).put(
 				"membership:userGroups", new String[0]
-			).put(
-				"screenName", new String[] {_user.getScreenName()}
 			).build());
 
 		Assert.assertEquals(
