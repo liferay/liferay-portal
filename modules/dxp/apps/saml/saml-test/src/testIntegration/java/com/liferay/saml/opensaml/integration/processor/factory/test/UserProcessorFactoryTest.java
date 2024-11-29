@@ -42,7 +42,7 @@ public class UserProcessorFactoryTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testUserGroups() throws Exception {
+	public void testMembershipUserGroups() throws Exception {
 		_user = UserTestUtil.addUser();
 		_userGroup = UserGroupTestUtil.addUserGroup();
 
