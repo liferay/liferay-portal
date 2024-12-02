@@ -259,6 +259,8 @@ components:
                 className:
                     type: string
                 externalReferenceCode:
+                    type: string    
+                groupExternalReferenceCode:
                     type: string
                 groupId:
                     format: int64
@@ -270,10 +272,8 @@ components:
                 workflowDefinitionName:
                     description:
                         The name of the instance's workflow definition.
-                    readOnly: true
                     type: string
                 workflowDefinitionVersion:
-                    readOnly: true
                     type: integer
             type: object
         WorkflowInstance:
@@ -679,6 +679,33 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/workflow-definition-links/by-external-reference-code/{externalReferenceCode}":
+        put:
+            operationId: putWorkflowDefinitionLinkByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/WorkflowDefinitionLink"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/WorkflowDefinitionLink"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/WorkflowDefinitionLink"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/WorkflowDefinitionLink"
+            tags: ["WorkflowDefinitionLink"]
     "/workflow-definitions":
         get:
             operationId: getWorkflowDefinitionsPage
