@@ -259,7 +259,7 @@ components:
                 className:
                     type: string
                 externalReferenceCode:
-                    type: string    
+                    type: string
                 groupExternalReferenceCode:
                     type: string
                 groupId:
