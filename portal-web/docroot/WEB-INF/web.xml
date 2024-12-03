@@ -70,7 +70,11 @@
 			<url-pattern>/da-DK/c/portal/protected</url-pattern>
 			<url-pattern>/da_DK/c/portal/protected</url-pattern>
 			<url-pattern>/de/c/portal/protected</url-pattern>
+			<url-pattern>/de-AT/c/portal/protected</url-pattern>
+			<url-pattern>/de-CH/c/portal/protected</url-pattern>
 			<url-pattern>/de-DE/c/portal/protected</url-pattern>
+			<url-pattern>/de_AT/c/portal/protected</url-pattern>
+			<url-pattern>/de_CH/c/portal/protected</url-pattern>
 			<url-pattern>/de_DE/c/portal/protected</url-pattern>
 			<url-pattern>/el/c/portal/protected</url-pattern>
 			<url-pattern>/el-GR/c/portal/protected</url-pattern>
@@ -106,9 +110,13 @@
 			<url-pattern>/fi-FI/c/portal/protected</url-pattern>
 			<url-pattern>/fi_FI/c/portal/protected</url-pattern>
 			<url-pattern>/fr/c/portal/protected</url-pattern>
+			<url-pattern>/fr-BE/c/portal/protected</url-pattern>
 			<url-pattern>/fr-CA/c/portal/protected</url-pattern>
+			<url-pattern>/fr-CH/c/portal/protected</url-pattern>
 			<url-pattern>/fr-FR/c/portal/protected</url-pattern>
+			<url-pattern>/fr_BE/c/portal/protected</url-pattern>
 			<url-pattern>/fr_CA/c/portal/protected</url-pattern>
+			<url-pattern>/fr_CH/c/portal/protected</url-pattern>
 			<url-pattern>/fr_FR/c/portal/protected</url-pattern>
 			<url-pattern>/gl/c/portal/protected</url-pattern>
 			<url-pattern>/gl-ES/c/portal/protected</url-pattern>
@@ -126,7 +134,9 @@
 			<url-pattern>/in-ID/c/portal/protected</url-pattern>
 			<url-pattern>/in_ID/c/portal/protected</url-pattern>
 			<url-pattern>/it/c/portal/protected</url-pattern>
+			<url-pattern>/it-CH/c/portal/protected</url-pattern>
 			<url-pattern>/it-IT/c/portal/protected</url-pattern>
+			<url-pattern>/it_CH/c/portal/protected</url-pattern>
 			<url-pattern>/it_IT/c/portal/protected</url-pattern>
 			<url-pattern>/iw/c/portal/protected</url-pattern>
 			<url-pattern>/iw-IL/c/portal/protected</url-pattern>
@@ -149,6 +159,9 @@
 			<url-pattern>/lt/c/portal/protected</url-pattern>
 			<url-pattern>/lt-LT/c/portal/protected</url-pattern>
 			<url-pattern>/lt_LT/c/portal/protected</url-pattern>
+			<url-pattern>/mk/c/portal/protected</url-pattern>
+			<url-pattern>/mk-MK/c/portal/protected</url-pattern>
+			<url-pattern>/mk_MK/c/portal/protected</url-pattern>
 			<url-pattern>/ms/c/portal/protected</url-pattern>
 			<url-pattern>/ms-MY/c/portal/protected</url-pattern>
 			<url-pattern>/ms_MY/c/portal/protected</url-pattern>

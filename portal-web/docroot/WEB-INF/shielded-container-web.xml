@@ -330,7 +330,23 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/de-AT/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/de-CH/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
 		<url-pattern>/de-DE/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/de_AT/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/de_CH/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
@@ -474,7 +490,15 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/fr-BE/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
 		<url-pattern>/fr-CA/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/fr-CH/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
@@ -482,7 +506,15 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/fr_BE/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
 		<url-pattern>/fr_CA/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/fr_CH/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
@@ -554,7 +586,15 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/it-CH/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
 		<url-pattern>/it-IT/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/it_CH/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
@@ -643,6 +683,18 @@
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
 		<url-pattern>/lt_LT/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/mk/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/mk-MK/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>I18n Servlet</servlet-name>
+		<url-pattern>/mk_MK/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>I18n Servlet</servlet-name>
