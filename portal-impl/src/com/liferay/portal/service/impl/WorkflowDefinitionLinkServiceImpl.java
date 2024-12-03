@@ -84,4 +84,24 @@ public class WorkflowDefinitionLinkServiceImpl
 			companyId, workflowDefinitionName, workflowDefinitionVersion);
 	}
 
+	@Override
+	public WorkflowDefinitionLink updateWorkflowDefinitionLink(
+			String externalReferenceCode, long userId, long companyId,
+			long groupId, String className, long classPK, long typePK,
+			String workflowDefinitionName, int workflowDefinitionVersion)
+		throws PortalException {
+
+		ModelResourcePermission<WorkflowDefinitionLink>
+			modelResourcePermission =
+				ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+					"com.liferay.portal.workflow.kaleo.model.KaleoDefinition");
+
+		modelResourcePermission.check(
+			getPermissionChecker(), null, ActionKeys.UPDATE);
+
+		return workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+			externalReferenceCode, userId, companyId, groupId, className,
+			classPK, typePK, workflowDefinitionName, workflowDefinitionVersion);
+	}
+
 }
