@@ -201,7 +201,7 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-delivery/v1.0/asset-libraries/{assetLibraryId}/document-metadata-sets' -d $'{"availableLanguages": ___, "dataDefinitionFields": ___, "dataLayout": ___, "description": ___, "description_i18n": ___, "name": ___, "name_i18n": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-delivery/v1.0/asset-libraries/{assetLibraryId}/document-metadata-sets' -d $'{"availableLanguages": ___, "dataDefinitionFields": ___, "dataLayout": ___, "description": ___, "description_i18n": ___, "externalReferenceCode": ___, "name": ___, "name_i18n": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -292,6 +292,161 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 			vulcanBatchEngineImportTaskResource.postImportTask(
 				DocumentMetadataSet.class.getName(), callbackURL, null, object)
 		).build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-delivery/v1.0/asset-libraries/{assetLibraryId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the asset library's Document Metadata Set by external reference code."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "assetLibraryId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "DocumentMetadataSet"
+			)
+		}
+	)
+	@javax.ws.rs.DELETE
+	@javax.ws.rs.Path(
+		"/asset-libraries/{assetLibraryId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void deleteAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("assetLibraryId")
+			Long assetLibraryId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-delivery/v1.0/asset-libraries/{assetLibraryId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the asset library's Document Metadata Set by external reference code."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "assetLibraryId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "nestedFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "restrictFields"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "DocumentMetadataSet"
+			)
+		}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path(
+		"/asset-libraries/{assetLibraryId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public DocumentMetadataSet
+			getAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("assetLibraryId")
+				Long assetLibraryId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode)
+		throws Exception {
+
+		return new DocumentMetadataSet();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-delivery/v1.0/asset-libraries/{assetLibraryId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}' -d $'{"availableLanguages": ___, "dataDefinitionFields": ___, "dataLayout": ___, "description": ___, "description_i18n": ___, "externalReferenceCode": ___, "name": ___, "name_i18n": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Updates the asset Library's Document Metadata Set with the given external reference code, or creates it if it does not exists."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "assetLibraryId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "DocumentMetadataSet"
+			)
+		}
+	)
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.Path(
+		"/asset-libraries/{assetLibraryId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@javax.ws.rs.PUT
+	@Override
+	public DocumentMetadataSet
+			putAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("assetLibraryId")
+				Long assetLibraryId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				DocumentMetadataSet documentMetadataSet)
+		throws Exception {
+
+		return new DocumentMetadataSet();
 	}
 
 	/**
@@ -553,7 +708,7 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-delivery/v1.0/sites/{siteId}/document-metadata-sets' -d $'{"availableLanguages": ___, "dataDefinitionFields": ___, "dataLayout": ___, "description": ___, "description_i18n": ___, "name": ___, "name_i18n": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-delivery/v1.0/sites/{siteId}/document-metadata-sets' -d $'{"availableLanguages": ___, "dataDefinitionFields": ___, "dataLayout": ___, "description": ___, "description_i18n": ___, "externalReferenceCode": ___, "name": ___, "name_i18n": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -642,6 +797,161 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 		).build();
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-delivery/v1.0/sites/{siteId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the site's Document Metadata Set by external reference code."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "siteId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "DocumentMetadataSet"
+			)
+		}
+	)
+	@javax.ws.rs.DELETE
+	@javax.ws.rs.Path(
+		"/sites/{siteId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void deleteSiteDocumentMetadataSetByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("siteId")
+			Long siteId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-delivery/v1.0/sites/{siteId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the site's Document Metadata Set by external reference code."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "siteId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "nestedFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "restrictFields"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "DocumentMetadataSet"
+			)
+		}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path(
+		"/sites/{siteId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public DocumentMetadataSet
+			getSiteDocumentMetadataSetByExternalReferenceCode(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("siteId")
+				Long siteId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode)
+		throws Exception {
+
+		return new DocumentMetadataSet();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-delivery/v1.0/sites/{siteId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}' -d $'{"availableLanguages": ___, "dataDefinitionFields": ___, "dataLayout": ___, "description": ___, "description_i18n": ___, "externalReferenceCode": ___, "name": ___, "name_i18n": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Updates the site's Document Metadata Set with the given external reference code, or creates it if it does not exist."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "siteId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "DocumentMetadataSet"
+			)
+		}
+	)
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.Path(
+		"/sites/{siteId}/document-metadata-sets/by-external-reference-code/{externalReferenceCode}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@javax.ws.rs.PUT
+	@Override
+	public DocumentMetadataSet
+			putSiteDocumentMetadataSetByExternalReferenceCode(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("siteId")
+				Long siteId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				DocumentMetadataSet documentMetadataSet)
+		throws Exception {
+
+		return new DocumentMetadataSet();
+	}
+
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
@@ -670,6 +980,21 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 			else {
 				throw new NotSupportedException(
 					"One of the following parameters must be specified: [assetLibraryId, siteId]");
+			}
+		}
+
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				documentMetadataSetUnsafeFunction = documentMetadataSet ->
+					putSiteDocumentMetadataSetByExternalReferenceCode(
+						documentMetadataSet.getSiteId() != null ?
+							documentMetadataSet.getSiteId() :
+								(Long)parameters.get("siteId"),
+						documentMetadataSet.getExternalReferenceCode(),
+						documentMetadataSet);
 			}
 		}
 
@@ -708,7 +1033,7 @@ public abstract class BaseDocumentMetadataSetResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray("INSERT", "UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {

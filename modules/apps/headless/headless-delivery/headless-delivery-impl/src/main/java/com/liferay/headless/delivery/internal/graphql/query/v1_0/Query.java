@@ -1876,7 +1876,31 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {documentMetadataSet(documentMetadataSetId: ___){actions, assetLibraryKey, availableLanguages, dataDefinitionFields, dataLayout, dateCreated, dateModified, description, description_i18n, id, name, name_i18n, siteId}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryDocumentMetadataSetByExternalReferenceCode(assetLibraryId: ___, externalReferenceCode: ___){actions, assetLibraryKey, availableLanguages, dataDefinitionFields, dataLayout, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, siteId}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Retrieves the asset library's Document Metadata Set by external reference code."
+	)
+	public DocumentMetadataSet
+			assetLibraryDocumentMetadataSetByExternalReferenceCode(
+				@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_documentMetadataSetResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			documentMetadataSetResource ->
+				documentMetadataSetResource.
+					getAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+						Long.valueOf(assetLibraryId), externalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {documentMetadataSet(documentMetadataSetId: ___){actions, assetLibraryKey, availableLanguages, dataDefinitionFields, dataLayout, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, siteId}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(description = "Retrieves the document metadata set.")
 	public DocumentMetadataSet documentMetadataSet(
@@ -1909,6 +1933,28 @@ public class Query {
 			documentMetadataSetResource -> new DocumentMetadataSetPage(
 				documentMetadataSetResource.getSiteDocumentMetadataSetsPage(
 					Long.valueOf(siteKey), Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {documentMetadataSetByExternalReferenceCode(externalReferenceCode: ___, siteKey: ___){actions, assetLibraryKey, availableLanguages, dataDefinitionFields, dataLayout, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, siteId}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Retrieves the site's Document Metadata Set by external reference code."
+	)
+	public DocumentMetadataSet documentMetadataSetByExternalReferenceCode(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_documentMetadataSetResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			documentMetadataSetResource ->
+				documentMetadataSetResource.
+					getSiteDocumentMetadataSetByExternalReferenceCode(
+						Long.valueOf(siteKey), externalReferenceCode));
 	}
 
 	/**

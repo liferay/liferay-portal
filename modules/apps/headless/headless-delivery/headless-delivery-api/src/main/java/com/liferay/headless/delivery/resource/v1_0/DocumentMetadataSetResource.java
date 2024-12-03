@@ -67,6 +67,21 @@ public interface DocumentMetadataSetResource {
 			Long assetLibraryId, String callbackURL, Object object)
 		throws Exception;
 
+	public void deleteAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+			Long assetLibraryId, String externalReferenceCode)
+		throws Exception;
+
+	public DocumentMetadataSet
+			getAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode)
+		throws Exception;
+
+	public DocumentMetadataSet
+			putAssetLibraryDocumentMetadataSetByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode,
+				DocumentMetadataSet documentMetadataSet)
+		throws Exception;
+
 	public void deleteDocumentMetadataSet(Long documentMetadataSetId)
 		throws Exception;
 
@@ -93,6 +108,21 @@ public interface DocumentMetadataSetResource {
 
 	public Response postSiteDocumentMetadataSetBatch(
 			Long siteId, String callbackURL, Object object)
+		throws Exception;
+
+	public void deleteSiteDocumentMetadataSetByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
+		throws Exception;
+
+	public DocumentMetadataSet
+			getSiteDocumentMetadataSetByExternalReferenceCode(
+				Long siteId, String externalReferenceCode)
+		throws Exception;
+
+	public DocumentMetadataSet
+			putSiteDocumentMetadataSetByExternalReferenceCode(
+				Long siteId, String externalReferenceCode,
+				DocumentMetadataSet documentMetadataSet)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
