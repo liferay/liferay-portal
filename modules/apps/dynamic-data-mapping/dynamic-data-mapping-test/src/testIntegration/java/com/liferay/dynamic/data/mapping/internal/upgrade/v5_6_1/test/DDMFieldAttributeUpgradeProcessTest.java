@@ -13,10 +13,12 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.util.DLURLHelperUtil;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -74,6 +76,8 @@ public class DDMFieldAttributeUpgradeProcessTest {
 		_assertContains(
 			journalArticle.getContent(),
 			"data-fileentryid=\"" + _dlFileEntry.getFileEntryId() + "\"");
+		_assertContains(
+			journalArticle.getContent(), "/documents/d/orphan/document");
 	}
 
 	private void _addDLFileEntry() throws Exception {
@@ -91,19 +95,35 @@ public class DDMFieldAttributeUpgradeProcessTest {
 	}
 
 	private void _addJournalArticle() throws Exception {
-		String previewURL = DLURLHelperUtil.getPreviewURL(
-			new LiferayFileEntry(_dlFileEntry),
-			new LiferayFileVersion(_dlFileEntry.getFileVersion()), null, null);
+		boolean portletImportInProcess =
+			ExportImportThreadLocal.isPortletImportInProcess();
 
-		_journalArticle = JournalTestUtil.addArticleWithXMLContent(
-			DDMStructureTestUtil.getSampleStructuredContent(
-				"content",
-				Collections.singletonList(
-					HashMapBuilder.put(
-						LocaleUtil.US, "<img src=\"" + previewURL + "\"/>"
-					).build()),
-				LanguageUtil.getLanguageId(LocaleUtil.US)),
-			"BASIC-WEB-CONTENT", "BASIC-WEB-CONTENT");
+		try {
+			ExportImportThreadLocal.setPortletImportInProcess(true);
+
+			_journalArticle = JournalTestUtil.addArticleWithXMLContent(
+				DDMStructureTestUtil.getSampleStructuredContent(
+					"content",
+					Collections.singletonList(
+						HashMapBuilder.put(
+							LocaleUtil.US,
+							StringBundler.concat(
+								"<img src=\"",
+								DLURLHelperUtil.getPreviewURL(
+									new LiferayFileEntry(_dlFileEntry),
+									new LiferayFileVersion(
+										_dlFileEntry.getFileVersion()),
+									null, null),
+								"\"/><img src=\"/documents/d/orphan/document\"",
+								"/>")
+						).build()),
+					LanguageUtil.getLanguageId(LocaleUtil.US)),
+				"BASIC-WEB-CONTENT", "BASIC-WEB-CONTENT");
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(
+				portletImportInProcess);
+		}
 	}
 
 	private void _assertContains(String content, String fragment) {
