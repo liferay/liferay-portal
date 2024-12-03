@@ -127,6 +127,10 @@ public class DDMFieldAttributeUpgradeProcess extends UpgradeProcess {
 				_fileEntryFriendlyURLResolver.resolveFriendlyURL(
 					group.getGroupId(), friendlyURL);
 
+			if (fileEntry == null) {
+				return null;
+			}
+
 			return (DLFileEntry)fileEntry.getModel();
 		}
 
@@ -184,6 +188,14 @@ public class DDMFieldAttributeUpgradeProcess extends UpgradeProcess {
 		if (matcher.find()) {
 			try {
 				DLFileEntry dlFileEntry = _getDLFileEntry(companyId, matcher);
+
+				if (dlFileEntry == null) {
+					if (_log.isWarnEnabled()) {
+						_log.warn("Missing file entry for URL " + src);
+					}
+
+					return 0;
+				}
 
 				return dlFileEntry.getFileEntryId();
 			}
