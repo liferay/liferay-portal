@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.service.base.WorkflowDefinitionLinkLocalServiceBaseImpl;
 
 import java.util.List;
@@ -43,12 +44,26 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 			int workflowDefinitionVersion)
 		throws PortalException {
 
+		WorkflowDefinitionLink workflowDefinitionLink =
+			workflowDefinitionLinkPersistence.fetchByG_C_C_W(
+				groupId, companyId,
+				_classNameLocalService.getClassNameId(className),
+				workflowDefinitionName);
+
+		if (workflowDefinitionLink != null) {
+			throw new WorkflowException(
+				StringBundler.concat(
+					"WorkflowDefinitionLink ",
+					workflowDefinitionLink.getWorkflowDefinitionName(), " and ",
+					workflowDefinitionLink.getClassName(), " already exists"));
+		}
+
 		User user = _userPersistence.findByPrimaryKey(userId);
 
 		long workflowDefinitionLinkId = counterLocalService.increment();
 
-		WorkflowDefinitionLink workflowDefinitionLink =
-			workflowDefinitionLinkPersistence.create(workflowDefinitionLinkId);
+		workflowDefinitionLink = workflowDefinitionLinkPersistence.create(
+			workflowDefinitionLinkId);
 
 		workflowDefinitionLink.setGroupId(StagingUtil.getLiveGroupId(groupId));
 		workflowDefinitionLink.setCompanyId(companyId);
@@ -380,6 +395,32 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 			workflowDefinitionVersion);
 
 		return workflowDefinitionLinkPersistence.update(workflowDefinitionLink);
+	}
+
+	@Override
+	public WorkflowDefinitionLink updateWorkflowDefinitionLink(
+			String externalReferenceCode, long userId, long companyId,
+			long groupId, String className, long classPK, long typePK,
+			String workflowDefinitionName, int workflowDefinitionVersion)
+		throws PortalException {
+
+		WorkflowDefinitionLink serviceBuilderWorkflowDefinitionLink =
+			workflowDefinitionLinkPersistence.fetchByERC_G(
+				externalReferenceCode, groupId);
+
+		if (serviceBuilderWorkflowDefinitionLink == null) {
+			return addWorkflowDefinitionLink(
+				userId, companyId, StagingUtil.getLiveGroupId(groupId),
+				className, classPK, typePK, workflowDefinitionName,
+				workflowDefinitionVersion);
+		}
+
+		serviceBuilderWorkflowDefinitionLink.setClassName(className);
+		serviceBuilderWorkflowDefinitionLink.setWorkflowDefinitionName(
+			workflowDefinitionName);
+
+		return workflowDefinitionLinkPersistence.update(
+			serviceBuilderWorkflowDefinitionLink);
 	}
 
 	@Override
