@@ -7,8 +7,12 @@ package com.liferay.headless.admin.workflow.internal.resource.v1_0;
 
 import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowDefinitionLink;
 import com.liferay.headless.admin.workflow.resource.v1_0.WorkflowDefinitionLinkResource;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
+import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -133,23 +137,66 @@ public class WorkflowDefinitionLinkResourceImpl
 				workflowDefinition.getName(), workflowDefinition.getVersion()));
 	}
 
+	@Override
+	public WorkflowDefinitionLink
+			putWorkflowDefinitionLinkByExternalReferenceCode(
+				String externalReferenceCode,
+				WorkflowDefinitionLink workflowDefinitionLink)
+		throws Exception {
+
+		return _toWorkflowDefinitionLink(
+			_workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				externalReferenceCode, contextUser.getUserId(),
+				contextCompany.getCompanyId(),
+				workflowDefinitionLink.getGroupId(),
+				workflowDefinitionLink.getClassName(), 0, 0,
+				workflowDefinitionLink.getWorkflowDefinitionName(),
+				workflowDefinitionLink.getWorkflowDefinitionVersion()));
+	}
+
 	private WorkflowDefinitionLink _toWorkflowDefinitionLink(
 			com.liferay.portal.kernel.model.WorkflowDefinitionLink
-				workflowDefinitionLink)
-		throws Exception {
+				serviceBuilderWorkflowDefinitionLink)
+		throws PortalException {
+
+		Group group;
+
+		if (serviceBuilderWorkflowDefinitionLink.getGroupId() != 0) {
+			group = _groupService.getGroup(
+				serviceBuilderWorkflowDefinitionLink.getGroupId());
+		}
+		else {
+			group = null;
+		}
 
 		return new WorkflowDefinitionLink() {
 			{
-				setClassName(workflowDefinitionLink::getClassName);
-				setGroupId(workflowDefinitionLink::getGroupId);
-				setId(workflowDefinitionLink::getWorkflowDefinitionLinkId);
+				setClassName(
+					serviceBuilderWorkflowDefinitionLink::getClassName);
+				setExternalReferenceCode(
+					serviceBuilderWorkflowDefinitionLink::
+						getExternalReferenceCode);
+				setGroupExternalReferenceCode(
+					() -> (group != null) ? group.getExternalReferenceCode() :
+						StringPool.BLANK);
+				setGroupId(
+					() -> (group != null) ? group.getGroupId() :
+						serviceBuilderWorkflowDefinitionLink.getGroupId());
+				setId(
+					serviceBuilderWorkflowDefinitionLink::
+						getWorkflowDefinitionLinkId);
 				setWorkflowDefinitionName(
-					workflowDefinitionLink::getWorkflowDefinitionName);
+					serviceBuilderWorkflowDefinitionLink::
+						getWorkflowDefinitionName);
 				setWorkflowDefinitionVersion(
-					workflowDefinitionLink::getWorkflowDefinitionVersion);
+					serviceBuilderWorkflowDefinitionLink::
+						getWorkflowDefinitionVersion);
 			}
 		};
 	}
+
+	@Reference
+	private GroupService _groupService;
 
 	@Reference
 	private WorkflowDefinitionLinkService _workflowDefinitionLinkService;
