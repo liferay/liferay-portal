@@ -103,11 +103,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 	@Test
 	public void testAddWorkflowDefinitionLink() throws Exception {
-		KaleoDefinition kaleoDefinition =
-			_kaleoDefinitionLocalService.addKaleoDefinition(
-				null, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				null, StringPool.BLANK, 1, _serviceContext);
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
 
 		_kaleoDefinitionLocalService.activateKaleoDefinition(
 			kaleoDefinition.getKaleoDefinitionId(), _serviceContext);
@@ -176,6 +172,66 @@ public class WorkflowDefinitionLinkServiceImplTest {
 		Assert.assertEquals(
 			workflowDefinitionLink1.getWorkflowDefinitionName(),
 			workflowDefinitionLink2.getWorkflowDefinitionName());
+	}
+
+	@Test
+	public void testUpdateWorkflowDefinitionLink() throws Exception {
+		_setUpPermissionThreadLocal(_companyAdminUser);
+
+		ConfigurationTestUtil.saveConfiguration(
+			_configuration,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"company.administrator.can.publish", true
+			).build());
+
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
+
+		WorkflowDefinitionLink workflowDefinitionLink1 =
+			_addWorkflowDefinitionLink(
+				"Single Approver", BlogsEntry.class.getName());
+
+		User user = _addUser();
+
+		_setUpPermissionThreadLocal(user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustBeCompanyAdmin.class,
+			StringBundler.concat(
+				"User ", user.getUserId(), " must be the company ",
+				"administrator to perform the action"),
+			() -> _workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				workflowDefinitionLink1.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+				workflowDefinitionLink1.getGroupId(),
+				"com.liferay.account.model.AccountEntry", 0, 0,
+				kaleoDefinition.getName(),
+				workflowDefinitionLink1.getWorkflowDefinitionVersion()));
+
+		_setUpPermissionThreadLocal(_companyAdminUser);
+
+		WorkflowDefinitionLink workflowDefinitionLink2 =
+			_workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				workflowDefinitionLink1.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+				workflowDefinitionLink1.getGroupId(),
+				"com.liferay.account.model.AccountEntry", 0, 0,
+				kaleoDefinition.getName(),
+				workflowDefinitionLink1.getWorkflowDefinitionVersion());
+
+		Assert.assertEquals(
+			"com.liferay.account.model.AccountEntry",
+			workflowDefinitionLink2.getClassName());
+
+		Assert.assertEquals(
+			kaleoDefinition.getName(),
+			workflowDefinitionLink2.getWorkflowDefinitionName());
+	}
+
+	private KaleoDefinition _addKaleoDefinition() throws Exception {
+		return _kaleoDefinitionLocalService.addKaleoDefinition(
+			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null, StringPool.BLANK, 1,
+			_serviceContext);
 	}
 
 	private User _addUser() throws Exception {
