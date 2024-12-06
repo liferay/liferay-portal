@@ -74,10 +74,10 @@ public class DDMFieldAttributeUpgradeProcessTest {
 				_journalArticle.getId());
 
 		_assertContains(
+			journalArticle.getContent(), "/documents/d/orphan/document");
+		_assertContains(
 			journalArticle.getContent(),
 			"data-fileentryid=\"" + _dlFileEntry.getFileEntryId() + "\"");
-		_assertContains(
-			journalArticle.getContent(), "/documents/d/orphan/document");
 	}
 
 	private void _addDLFileEntry() throws Exception {
