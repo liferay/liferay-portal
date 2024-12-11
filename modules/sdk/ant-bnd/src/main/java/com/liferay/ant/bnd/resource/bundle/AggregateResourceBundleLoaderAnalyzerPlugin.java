@@ -95,7 +95,8 @@ public class AggregateResourceBundleLoaderAnalyzerPlugin
 		Parameters parameters = new Parameters();
 
 		parameters.add(
-			ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE, attrs);
+			ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES,
+			attrs);
 
 		provideCapabilityHeaders.mergeWith(parameters, false);
 
@@ -120,7 +121,7 @@ public class AggregateResourceBundleLoaderAnalyzerPlugin
 			attrs.put("filter:", filter.toString());
 
 			parameters.add(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
+				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES,
 				attrs);
 		}
 

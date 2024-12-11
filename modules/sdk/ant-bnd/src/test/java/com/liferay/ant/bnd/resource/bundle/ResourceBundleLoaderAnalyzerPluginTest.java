@@ -65,7 +65,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Map.Entry<String, Attrs> entry = provides.get(0);
 
 			Assert.assertEquals(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
+				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES,
 				entry.getKey());
 
 			Attrs attrs = entry.getValue();
@@ -126,7 +126,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Map.Entry<String, Attrs> aggregateEntry = provides.get(0);
 
 			Assert.assertEquals(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
+				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES,
 				aggregateEntry.getKey());
 
 			Attrs aggregateEntryAttrs = aggregateEntry.getValue();
@@ -161,7 +161,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 				1);
 
 			Assert.assertEquals(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE +
+				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES +
 					"~",
 				liferayResourceBundleEntry.getKey());
 
@@ -240,7 +240,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 				analyzer.getProperty(Constants.PROVIDE_CAPABILITY));
 
 			Attrs attrs = provideCapabilityHeaders.get(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE);
+				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES);
 
 			Assert.assertNotNull(attrs);
 
@@ -272,7 +272,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 				analyzer.getProperty(Constants.PROVIDE_CAPABILITY));
 
 			Attrs attrs = provideCapabilityHeaders.get(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE);
+				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES);
 
 			Assert.assertNull(attrs);
 		}

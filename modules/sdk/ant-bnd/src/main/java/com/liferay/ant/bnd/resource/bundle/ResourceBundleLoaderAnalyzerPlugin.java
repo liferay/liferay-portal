@@ -27,8 +27,8 @@ public class ResourceBundleLoaderAnalyzerPlugin implements AnalyzerPlugin {
 		return modified;
 	}
 
-	protected static final String LIFERAY_RESOURCE_BUNDLE =
-		"liferay.resource.bundle";
+	protected static final String LIFERAY_LANGUAGE_RESOURCES =
+		"liferay.language.resources";
 
 	private final AnalyzerPlugin[] _analyzerPlugins = {
 		new AggregateResourceBundleLoaderAnalyzerPlugin(),

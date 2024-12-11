@@ -38,13 +38,15 @@ public class ProvidesResourceBundleLoaderAnalyzerPlugin
 		attrs.put("resource.bundle.base.name", "content.Language");
 
 		parameters.add(
-			ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE, attrs);
+			ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES,
+			attrs);
 
 		if (provideCapabilityHeaders.containsKey(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE)) {
+				ResourceBundleLoaderAnalyzerPlugin.
+					LIFERAY_LANGUAGE_RESOURCES)) {
 
 			provideCapabilityHeaders.add(
-				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_RESOURCE_BUNDLE,
+				ResourceBundleLoaderAnalyzerPlugin.LIFERAY_LANGUAGE_RESOURCES,
 				attrs);
 		}
 		else {
