@@ -65,98 +65,7 @@ public class LanguageExtension {
 		BundleWiring bundleWiring = _bundle.adapt(BundleWiring.class);
 
 		for (BundleCapability bundleCapability : _bundleCapabilities) {
-			ResourceBundleLoader resourceBundleLoader = null;
-
-			Dictionary<String, Object> attributes = new HashMapDictionary<>(
-				bundleCapability.getAttributes());
-
-			Object aggregate = attributes.get("resource.bundle.aggregate");
-			Object baseName = attributes.get("resource.bundle.base.name");
-			Object serviceRanking = attributes.get(Constants.SERVICE_RANKING);
-			Object servletContextName = attributes.get("servlet.context.name");
-
-			if (aggregate instanceof String) {
-				int aggregateId = _atomicInteger.incrementAndGet();
-
-				ServiceTrackerResourceBundleLoader
-					serviceTrackerResourceBundleLoader =
-						new ServiceTrackerResourceBundleLoader(
-							_bundleContext, (String)aggregate, aggregateId,
-							GetterUtil.getInteger(serviceRanking));
-
-				attributes.put("aggregateId", String.valueOf(aggregateId));
-
-				_serviceTrackerResourceBundleLoaders.add(
-					serviceTrackerResourceBundleLoader);
-
-				resourceBundleLoader = serviceTrackerResourceBundleLoader;
-			}
-			else if (baseName instanceof String) {
-				Object excludePortalResources = attributes.get(
-					"exclude.portal.resources");
-
-				if (excludePortalResources == null) {
-					excludePortalResources = StringPool.FALSE;
-				}
-
-				resourceBundleLoader = _processBaseName(
-					bundleWiring.getClassLoader(), (String)baseName,
-					GetterUtil.getBoolean(excludePortalResources));
-			}
-			else {
-				attributes.put("resource.bundle.base.name", "content.Language");
-
-				resourceBundleLoader =
-					ResourceBundleLoaderUtil.getPortalResourceBundleLoader();
-			}
-
-			if (Validator.isNotNull(serviceRanking)) {
-				attributes.put(
-					Constants.SERVICE_RANKING,
-					GetterUtil.getInteger(serviceRanking));
-			}
-
-			if (Validator.isNull(servletContextName)) {
-				Dictionary<String, String> headers = _bundle.getHeaders(
-					StringPool.BLANK);
-
-				String webContextName = headers.get("Web-ContextName");
-
-				if (Validator.isNotNull(webContextName)) {
-					attributes.put("servlet.context.name", webContextName);
-				}
-				else {
-					String webContextPath = headers.get("Web-ContextPath");
-
-					if (Validator.isNotNull(webContextPath)) {
-						attributes.put(
-							"servlet.context.name",
-							webContextPath.substring(1));
-					}
-				}
-			}
-
-			if (resourceBundleLoader != null) {
-				if (Validator.isNull(attributes.get("bundle.symbolic.name"))) {
-					attributes.put(
-						"bundle.symbolic.name", _bundle.getSymbolicName());
-				}
-
-				if (Validator.isNull(attributes.get("service.ranking"))) {
-					attributes.put("service.ranking", Integer.MIN_VALUE);
-				}
-
-				_serviceRegistrations.add(
-					_bundleContext.registerService(
-						ResourceBundleLoader.class, resourceBundleLoader,
-						attributes));
-			}
-			else if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"Unable to handle ", bundleCapability, " in ",
-						_bundle.getSymbolicName()));
-			}
+			_registerResourceBundleLoader(bundleWiring, bundleCapability);
 		}
 	}
 
@@ -177,6 +86,103 @@ public class LanguageExtension {
 				ResourceBundleLoaderUtil.getPortalResourceBundleLoader());
 
 		return new CacheResourceBundleLoader(aggregateResourceBundleLoader);
+	}
+
+	private void _registerResourceBundleLoader(
+			BundleWiring bundleWiring, BundleCapability bundleCapability)
+		throws InvalidSyntaxException {
+
+		ResourceBundleLoader resourceBundleLoader = null;
+
+		Dictionary<String, Object> attributes = new HashMapDictionary<>(
+			bundleCapability.getAttributes());
+
+		Object aggregate = attributes.get("resource.bundle.aggregate");
+		Object baseName = attributes.get("resource.bundle.base.name");
+		Object serviceRanking = attributes.get(Constants.SERVICE_RANKING);
+		Object servletContextName = attributes.get("servlet.context.name");
+
+		if (aggregate instanceof String) {
+			int aggregateId = _atomicInteger.incrementAndGet();
+
+			ServiceTrackerResourceBundleLoader
+				serviceTrackerResourceBundleLoader =
+					new ServiceTrackerResourceBundleLoader(
+						_bundleContext, (String)aggregate, aggregateId,
+						GetterUtil.getInteger(serviceRanking));
+
+			attributes.put("aggregateId", String.valueOf(aggregateId));
+
+			_serviceTrackerResourceBundleLoaders.add(
+				serviceTrackerResourceBundleLoader);
+
+			resourceBundleLoader = serviceTrackerResourceBundleLoader;
+		}
+		else if (baseName instanceof String) {
+			Object excludePortalResources = attributes.get(
+				"exclude.portal.resources");
+
+			if (excludePortalResources == null) {
+				excludePortalResources = StringPool.FALSE;
+			}
+
+			resourceBundleLoader = _processBaseName(
+				bundleWiring.getClassLoader(), (String)baseName,
+				GetterUtil.getBoolean(excludePortalResources));
+		}
+		else {
+			attributes.put("resource.bundle.base.name", "content.Language");
+
+			resourceBundleLoader =
+				ResourceBundleLoaderUtil.getPortalResourceBundleLoader();
+		}
+
+		if (Validator.isNotNull(serviceRanking)) {
+			attributes.put(
+				Constants.SERVICE_RANKING,
+				GetterUtil.getInteger(serviceRanking));
+		}
+
+		if (Validator.isNull(servletContextName)) {
+			Dictionary<String, String> headers = _bundle.getHeaders(
+				StringPool.BLANK);
+
+			String webContextName = headers.get("Web-ContextName");
+
+			if (Validator.isNotNull(webContextName)) {
+				attributes.put("servlet.context.name", webContextName);
+			}
+			else {
+				String webContextPath = headers.get("Web-ContextPath");
+
+				if (Validator.isNotNull(webContextPath)) {
+					attributes.put(
+						"servlet.context.name", webContextPath.substring(1));
+				}
+			}
+		}
+
+		if (resourceBundleLoader != null) {
+			if (Validator.isNull(attributes.get("bundle.symbolic.name"))) {
+				attributes.put(
+					"bundle.symbolic.name", _bundle.getSymbolicName());
+			}
+
+			if (Validator.isNull(attributes.get("service.ranking"))) {
+				attributes.put("service.ranking", Integer.MIN_VALUE);
+			}
+
+			_serviceRegistrations.add(
+				_bundleContext.registerService(
+					ResourceBundleLoader.class, resourceBundleLoader,
+					attributes));
+		}
+		else if (_log.isWarnEnabled()) {
+			_log.warn(
+				StringBundler.concat(
+					"Unable to handle ", bundleCapability, " in ",
+					_bundle.getSymbolicName()));
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
