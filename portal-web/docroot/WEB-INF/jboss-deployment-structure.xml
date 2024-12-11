@@ -3,8 +3,8 @@
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
 	<deployment>
 		<dependencies>
-			<module name="javax.mail.api" />
-			<module name="org.apache.xerces" />
+			<module name="jakarta.mail.api" />
+			<module name="java.xml" />
 			<module name="org.jboss.modules" />
 		</dependencies>
 	</deployment>
