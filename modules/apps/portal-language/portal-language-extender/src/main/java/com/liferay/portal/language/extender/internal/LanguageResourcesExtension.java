@@ -63,13 +63,15 @@ public class LanguageResourcesExtension {
 		for (BundleCapability bundleCapability : _bundleCapabilities) {
 			String namespace = bundleCapability.getNamespace();
 
-			if (namespace.equals("liferay.resource.bundle")) {
+			Map<String, Object> attributes = bundleCapability.getAttributes();
+
+			if (GetterUtil.getBoolean(
+					attributes.get("module.only"),
+					namespace.equals("liferay.resource.bundle"))) {
+
 				_registerResourceBundleLoader(bundleWiring, bundleCapability);
 			}
 			else {
-				Map<String, Object> attributes =
-					bundleCapability.getAttributes();
-
 				Object baseName = attributes.get("resource.bundle.base.name");
 
 				if (baseName instanceof String) {
