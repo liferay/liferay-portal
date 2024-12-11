@@ -5,13 +5,18 @@
 
 package com.liferay.portal.language.extender.internal;
 
+import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
+import com.liferay.portal.kernel.resource.bundle.CacheResourceBundleLoader;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.annotations.Activate;
@@ -37,14 +42,26 @@ public class LanguageResourcesExtender
 			bundleWiring.getCapabilities("liferay.language.resources");
 
 		if (ListUtil.isEmpty(bundleCapabilities)) {
-			return null;
+			bundleCapabilities = bundleWiring.getCapabilities(
+				"liferay.resource.bundle");
+
+			if (ListUtil.isEmpty(bundleCapabilities)) {
+				return null;
+			}
 		}
 
 		LanguageResourcesExtension languageResourcesExtension =
 			new LanguageResourcesExtension(
 				_bundleContext, bundle, bundleCapabilities);
 
-		languageResourcesExtension.start();
+		try {
+			languageResourcesExtension.start();
+		}
+		catch (InvalidSyntaxException invalidSyntaxException) {
+			languageResourcesExtension.stop();
+
+			throw new RuntimeException(invalidSyntaxException);
+		}
 
 		return languageResourcesExtension;
 	}
@@ -70,15 +87,29 @@ public class LanguageResourcesExtender
 		_bundleTracker = new BundleTracker<>(
 			bundleContext, Bundle.ACTIVE, this);
 
+		DependencyManagerSyncUtil.registerSyncCallable(
+			() -> {
+				bundleContext.addServiceListener(
+					_serviceListener,
+					"(&(!(javax.portlet.name=*))(language.id=*)(objectClass=" +
+						ResourceBundle.class.getName() + "))");
+
+				return null;
+			});
+
 		_bundleTracker.open();
 	}
 
 	@Deactivate
 	protected void deactivate() {
+		_bundleContext.removeServiceListener(_serviceListener);
+
 		_bundleTracker.close();
 	}
 
 	private BundleContext _bundleContext;
 	private BundleTracker<?> _bundleTracker;
+	private final ServiceListener _serviceListener =
+		serviceEvent -> CacheResourceBundleLoader.clearCache();
 
 }

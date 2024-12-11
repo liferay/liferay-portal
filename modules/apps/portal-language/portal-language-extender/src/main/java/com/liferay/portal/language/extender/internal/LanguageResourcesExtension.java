@@ -57,19 +57,27 @@ public class LanguageResourcesExtension {
 		_bundleCapabilities = bundleCapabilities;
 	}
 
-	public void start() {
+	public void start() throws InvalidSyntaxException {
 		BundleWiring bundleWiring = _bundle.adapt(BundleWiring.class);
 
 		for (BundleCapability bundleCapability : _bundleCapabilities) {
-			Map<String, Object> attributes = bundleCapability.getAttributes();
+			String namespace = bundleCapability.getNamespace();
 
-			Object baseName = attributes.get("resource.bundle.base.name");
+			if (namespace.equals("liferay.resource.bundle")) {
+				_registerResourceBundleLoader(bundleWiring, bundleCapability);
+			}
+			else {
+				Map<String, Object> attributes =
+					bundleCapability.getAttributes();
 
-			if (baseName instanceof String) {
-				_registerResourceBundles(
-					bundleWiring, (String)baseName,
-					GetterUtil.getInteger(
-						attributes.get(Constants.SERVICE_RANKING)));
+				Object baseName = attributes.get("resource.bundle.base.name");
+
+				if (baseName instanceof String) {
+					_registerResourceBundles(
+						bundleWiring, (String)baseName,
+						GetterUtil.getInteger(
+							attributes.get(Constants.SERVICE_RANKING)));
+				}
 			}
 		}
 	}
