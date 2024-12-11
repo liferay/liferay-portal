@@ -3,12 +3,22 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {getCheckedCheckboxes, openSimpleInputModal} from 'frontend-js-web';
+import {
+	getCheckedCheckboxes,
+	openModal,
+	openSimpleInputModal,
+} from 'frontend-js-web';
 
+import AddStyleBookModalContent from './AddStyleBookModalContent';
 import openDeleteStyleBookModal from './openDeleteStyleBookModal';
 
 export default function propsTransformer({
-	additionalProps: {copyStyleBookEntryURL, exportStyleBookEntriesURL},
+	additionalProps: {
+		addStyleBookEntryURL,
+		copyStyleBookEntryURL,
+		exportStyleBookEntriesURL,
+		frontendTokenDefinitionProviders,
+	},
 	portletNamespace,
 	...otherProps
 }) {
@@ -74,16 +84,29 @@ export default function propsTransformer({
 			}
 		},
 		onCreateButtonClick(event, {item}) {
-			const data = item?.data;
+			if (Liferay?.FeatureFlags?.['LPD-30204']) {
+				openModal({
+					contentComponent: ({closeModal}) =>
+						AddStyleBookModalContent({
+							addStyleBookEntryURL,
+							closeModal,
+							frontendTokenDefinitionProviders,
+							namespace: portletNamespace,
+						}),
+				});
+			}
+			else {
+				const data = item?.data;
 
-			openSimpleInputModal({
-				dialogTitle: data?.title,
-				formSubmitURL: data?.addStyleBookEntryURL,
-				mainFieldLabel: Liferay.Language.get('name'),
-				mainFieldName: 'name',
-				mainFieldPlaceholder: Liferay.Language.get('name'),
-				namespace: `${portletNamespace}`,
-			});
+				openSimpleInputModal({
+					dialogTitle: data?.title,
+					formSubmitURL: data?.addStyleBookEntryURL,
+					mainFieldLabel: Liferay.Language.get('name'),
+					mainFieldName: 'name',
+					mainFieldPlaceholder: Liferay.Language.get('name'),
+					namespace: `${portletNamespace}`,
+				});
+			}
 		},
 	};
 }
