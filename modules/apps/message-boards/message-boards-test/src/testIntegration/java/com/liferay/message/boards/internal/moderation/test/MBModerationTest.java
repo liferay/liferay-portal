@@ -10,6 +10,7 @@ import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -123,6 +124,14 @@ public class MBModerationTest {
 					dictionary)) {
 
 			unsafeRunnable.run();
+		}
+		finally {
+			dictionary.put("enableMessageBoardsModeration", false);
+
+			ConfigurationTestUtil.saveConfiguration(
+				"com.liferay.message.boards.moderation.configuration." +
+					"MBModerationGroupConfiguration",
+				dictionary);
 		}
 	}
 
