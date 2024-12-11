@@ -5,30 +5,13 @@
 
 package com.liferay.portal.language.extender.internal;
 
-import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.language.UTF8Control;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
-import java.net.URL;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceFactory;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.annotations.Activate;
@@ -42,10 +25,10 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
  */
 @Component(service = {})
 public class LanguageResourcesExtender
-	implements BundleTrackerCustomizer<List<ServiceRegistration<?>>> {
+	implements BundleTrackerCustomizer<LanguageResourcesExtension> {
 
 	@Override
-	public List<ServiceRegistration<?>> addingBundle(
+	public LanguageResourcesExtension addingBundle(
 		Bundle bundle, BundleEvent bundleEvent) {
 
 		BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
@@ -57,41 +40,27 @@ public class LanguageResourcesExtender
 			return null;
 		}
 
-		List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<>();
+		LanguageResourcesExtension languageResourcesExtension =
+			new LanguageResourcesExtension(
+				_bundleContext, bundle, bundleCapabilities);
 
-		for (BundleCapability bundleCapability : bundleCapabilities) {
-			Map<String, Object> attributes = bundleCapability.getAttributes();
+		languageResourcesExtension.start();
 
-			Object baseName = attributes.get("resource.bundle.base.name");
-
-			if (baseName instanceof String) {
-				_registerResourceBundles(
-					bundle, (String)baseName,
-					GetterUtil.getInteger(
-						attributes.get(Constants.SERVICE_RANKING)),
-					serviceRegistrations);
-			}
-		}
-
-		return serviceRegistrations;
+		return languageResourcesExtension;
 	}
 
 	@Override
 	public void modifiedBundle(
 		Bundle bundle, BundleEvent bundleEvent,
-		List<ServiceRegistration<?>> serviceRegistrations) {
+		LanguageResourcesExtension languageResourcesExtension) {
 	}
 
 	@Override
 	public void removedBundle(
 		Bundle bundle, BundleEvent bundleEvent,
-		List<ServiceRegistration<?>> serviceRegistrations) {
+		LanguageResourcesExtension languageResourcesExtension) {
 
-		for (ServiceRegistration<?> serviceRegistration :
-				serviceRegistrations) {
-
-			serviceRegistration.unregister();
-		}
+		languageResourcesExtension.stop();
 	}
 
 	@Activate
@@ -107,85 +76,6 @@ public class LanguageResourcesExtender
 	@Deactivate
 	protected void deactivate() {
 		_bundleTracker.close();
-	}
-
-	private void _registerResourceBundles(
-		Bundle bundle, String baseName, int serviceRanking,
-		List<ServiceRegistration<?>> serviceRegistrations) {
-
-		BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
-
-		int index = baseName.lastIndexOf(StringPool.PERIOD);
-
-		String path = StringPool.SLASH;
-		String name = baseName;
-
-		if (index > 0) {
-			path = baseName.substring(0, index);
-
-			path =
-				StringPool.SLASH +
-					StringUtil.replace(path, CharPool.PERIOD, CharPool.SLASH);
-
-			name = baseName.substring(index + 1);
-		}
-
-		Enumeration<URL> enumeration = bundle.findEntries(
-			path, name.concat("*.properties"), false);
-
-		if (enumeration == null) {
-			return;
-		}
-
-		while (enumeration.hasMoreElements()) {
-			URL url = enumeration.nextElement();
-
-			String urlPath = url.getPath();
-
-			String languageId = StringPool.BLANK;
-
-			index = urlPath.indexOf(StringPool.UNDERLINE, path.length());
-
-			if (index > -1) {
-				languageId = urlPath.substring(
-					index + 1, urlPath.length() - ".properties".length());
-			}
-
-			Locale locale = LocaleUtil.fromLanguageId(languageId, false);
-
-			ServiceRegistration<?> serviceRegistration =
-				_bundleContext.registerService(
-					ResourceBundle.class,
-					new ServiceFactory<ResourceBundle>() {
-
-						@Override
-						public ResourceBundle getService(
-							Bundle bundle,
-							ServiceRegistration<ResourceBundle>
-								serviceRegistration) {
-
-							return ResourceBundle.getBundle(
-								baseName, locale, bundleWiring.getClassLoader(),
-								UTF8Control.INSTANCE);
-						}
-
-						@Override
-						public void ungetService(
-							Bundle bundle,
-							ServiceRegistration<ResourceBundle>
-								serviceRegistration,
-							ResourceBundle resourceBundle) {
-						}
-
-					},
-					HashMapDictionaryBuilder.<String, Object>put(
-						Constants.SERVICE_RANKING, serviceRanking
-					).put(
-						"language.id", languageId
-					).build());
-
-			serviceRegistrations.add(serviceRegistration);
-		}
 	}
 
 	private BundleContext _bundleContext;

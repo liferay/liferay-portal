@@ -2,6 +2,6 @@
 
 <suppressions>
 	<source-check>
-		<suppress checks="ResourceBundleCheck" files="portal-language-extender/src/main/java/com/liferay/portal/language/extender/internal/LanguageResourcesExtender\.java" />
+		<suppress checks="ResourceBundleCheck" files="portal-language-extender/src/main/java/com/liferay/portal/language/extender/internal/LanguageResourcesExtension\.java" />
 	</source-check>
 </suppressions>
