@@ -35,6 +35,7 @@ public class ProvidesResourceBundleLoaderAnalyzerPlugin
 		Attrs attrs = new Attrs();
 
 		attrs.put("bundle.symbolic.name", analyzer.getBsn());
+		attrs.put("module.only", "true");
 		attrs.put("resource.bundle.base.name", "content.Language");
 
 		parameters.add(
