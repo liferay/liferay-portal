@@ -70,10 +70,11 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 
 			Attrs attrs = entry.getValue();
 
-			Assert.assertEquals(2, attrs.size());
+			Assert.assertEquals(3, attrs.size());
 
 			Assert.assertEquals(
 				"resources.test", attrs.get("bundle.symbolic.name"));
+			Assert.assertEquals("true", attrs.get("module.only"));
 			Assert.assertEquals(
 				"content.Language", attrs.get("resource.bundle.base.name"));
 		}
@@ -102,13 +103,6 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Assert.assertTrue(
 				resourceBundleLoaderAnalyzerPlugin.analyzeJar(analyzer));
 
-			Parameters requireCapabilityHeaders = new Parameters(
-				analyzer.getProperty(Constants.REQUIRE_CAPABILITY));
-
-			Collection<Attrs> requires = requireCapabilityHeaders.values();
-
-			Assert.assertEquals(requires.toString(), 3, requires.size());
-
 			String provideCapabilityProperty = analyzer.getProperty(
 				Constants.PROVIDE_CAPABILITY);
 
@@ -131,7 +125,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 
 			Attrs aggregateEntryAttrs = aggregateEntry.getValue();
 
-			Assert.assertEquals(6, aggregateEntryAttrs.size());
+			Assert.assertEquals(7, aggregateEntryAttrs.size());
 
 			Assert.assertEquals("true", aggregateEntryAttrs.get("aggregate"));
 
@@ -150,6 +144,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Assert.assertEquals(
 				"resources.test",
 				aggregateEntryAttrs.get("bundle.symbolic.name"));
+			Assert.assertEquals("true", aggregateEntryAttrs.get("module.only"));
 			Assert.assertEquals(
 				"content.Language",
 				aggregateEntryAttrs.get("resource.bundle.base.name"));
@@ -168,11 +163,13 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Attrs liferayResourceBundleAttrs =
 				liferayResourceBundleEntry.getValue();
 
-			Assert.assertEquals(2, liferayResourceBundleAttrs.size());
+			Assert.assertEquals(3, liferayResourceBundleAttrs.size());
 
 			Assert.assertEquals(
 				"resources.test",
 				liferayResourceBundleAttrs.get("bundle.symbolic.name"));
+			Assert.assertEquals(
+				"true", liferayResourceBundleAttrs.get("module.only"));
 			Assert.assertEquals(
 				"content.Language",
 				liferayResourceBundleAttrs.get("resource.bundle.base.name"));
@@ -245,6 +242,7 @@ public class ResourceBundleLoaderAnalyzerPluginTest {
 			Assert.assertNotNull(attrs);
 
 			Assert.assertTrue(attrs.containsKey("bundle.symbolic.name"));
+			Assert.assertTrue(attrs.containsKey("module.only"));
 			Assert.assertTrue(attrs.containsKey("resource.bundle.base.name"));
 		}
 	}
