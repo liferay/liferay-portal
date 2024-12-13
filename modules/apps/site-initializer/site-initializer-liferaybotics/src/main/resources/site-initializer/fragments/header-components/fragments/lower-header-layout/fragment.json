@@ -1,9 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"icon": "container",
-	"jsPath": "index.js",
-	"name": "Lower Header Bar",
-	"type": "component"
-}

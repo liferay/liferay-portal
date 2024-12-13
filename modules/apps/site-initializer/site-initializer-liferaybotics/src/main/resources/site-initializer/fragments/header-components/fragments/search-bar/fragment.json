@@ -1,9 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"icon": "search-experiences",
-	"jsPath": "index.js",
-	"name": "Search Bar",
-	"type": "component"
-}

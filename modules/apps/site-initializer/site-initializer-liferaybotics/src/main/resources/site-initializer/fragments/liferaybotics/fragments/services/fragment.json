@@ -1,9 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"icon": "align-justify",
-	"jsPath": "index.js",
-	"name": "Services",
-	"type": "component"
-}

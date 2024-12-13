@@ -1,9 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"icon": "rectangle-split",
-	"jsPath": "index.js",
-	"name": "Slider",
-	"type": "component"
-}

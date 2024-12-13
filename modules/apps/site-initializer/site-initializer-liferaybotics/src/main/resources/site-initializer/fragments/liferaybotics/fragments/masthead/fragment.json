@@ -1,9 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"icon": "align-image-center",
-	"jsPath": "index.js",
-	"name": "Masthead",
-	"type": "component"
-}

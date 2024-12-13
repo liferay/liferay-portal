@@ -1,8 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"jsPath": "index.js",
-	"name": "Blog Details Display Page",
-	"type": "component"
-}

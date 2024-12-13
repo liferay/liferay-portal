@@ -1,9 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"icon": "logout",
-	"jsPath": "index.js",
-	"name": "Site Logo",
-	"type": "component"
-}

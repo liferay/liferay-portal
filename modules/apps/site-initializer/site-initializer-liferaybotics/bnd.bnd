@@ -1,6 +1,0 @@
-Bundle-Name: Liferay Site Initializer Liferaybotics
-Bundle-SymbolicName: com.liferay.site.initializer.liferaybotics
-Bundle-Version: 1.0.0
-Liferay-Site-Initializer-Name: Liferaybotics
-Provide-Capability: liferay.site.initializer
-Web-ContextPath: /site-initializer-liferaybotics

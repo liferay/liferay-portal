@@ -1,9 +1,0 @@
-{
-	"configurationPath": "index.json",
-	"cssPath": "index.css",
-	"htmlPath": "index.html",
-	"icon": "user",
-	"jsPath": "index.js",
-	"name": "User Personal Bar",
-	"type": "component"
-}
