@@ -9,10 +9,12 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.db.partition.db.DBPartitionDB;
 import com.liferay.portal.db.partition.test.util.BaseDBPartitionTestCase;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
@@ -46,6 +48,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -411,6 +414,9 @@ public class CompanyLocalServiceDBPartitionTest
 				rulesCount,
 				_getRulesCount(getPartitionName(copiedCompany.getCompanyId())));
 
+			_checkCompanyIdValue(
+				company.getCompanyId(), copiedCompany.getCompanyId());
+
 			SafeCloseable safeCloseable =
 				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
 					copiedCompanyId);
@@ -738,6 +744,77 @@ public class CompanyLocalServiceDBPartitionTest
 		Assert.assertEquals(webId, company.getWebId());
 
 		_virtualHostLocalService.getVirtualHost(virtualHostname);
+	}
+
+	private void _checkCompanyIdValue(long fromCompanyId, long toCompanyId)
+		throws Exception {
+
+		List<String> tableNames = new ArrayList<>();
+
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
+		DBInspector dbInspector = new DBInspector(connection);
+
+		try (ResultSet resultSet = databaseMetaData.getTables(
+				dbPartitionDB.getCatalog(
+					connection, getPartitionName(toCompanyId)),
+				dbPartitionDB.getCatalog(
+					connection, getPartitionName(toCompanyId)),
+				null, new String[] {"TABLE"})) {
+
+			while (resultSet.next()) {
+				String tableName = resultSet.getString("TABLE_NAME");
+
+				if (dbInspector.isControlTable(tableName)) {
+					continue;
+				}
+
+				tableNames.add(tableName);
+			}
+		}
+
+		for (String tableName : tableNames) {
+			try (ResultSet resultSet = databaseMetaData.getColumns(
+					dbPartitionDB.getCatalog(
+						connection, getPartitionName(toCompanyId)),
+					dbPartitionDB.getCatalog(
+						connection, getPartitionName(toCompanyId)),
+					tableName, null)) {
+
+				while (resultSet.next()) {
+					int columnType = resultSet.getInt("DATA_TYPE");
+
+					if ((columnType != Types.BIGINT) &&
+						(columnType != Types.LONGVARCHAR) &&
+						(columnType != Types.VARCHAR)) {
+
+						continue;
+					}
+
+					String columnName = resultSet.getString("COLUMN_NAME");
+
+					PreparedStatement preparedStatement =
+						connection.prepareStatement(
+							StringBundler.concat(
+								"select ", columnName, " from ",
+								DBPartitionUtil.getPartitionName(toCompanyId),
+								StringPool.PERIOD, tableName, " where ",
+								columnName, " like '%", fromCompanyId, "%'"));
+
+					try (ResultSet resultSet2 =
+							preparedStatement.executeQuery()) {
+
+						if (resultSet2.next()) {
+							Assert.fail(
+								StringBundler.concat(
+									"Company ID ", fromCompanyId,
+									" is present in database for company ",
+									toCompanyId, " at table ", tableName,
+									" column ", columnName, "."));
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private void _checkPartitionDoesNotExist(long companyId)
