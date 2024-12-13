@@ -1,0 +1,58 @@
+name: Liferay Customer Workspace
+
+env:
+  BRANCH_NAME: ${{ github.ref_name }}
+  PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+  WORKING_DIR: workspaces/liferay-customer-workspace
+
+on:
+  push:
+    branches: [ "prd", "uat" ]
+    paths:
+      - $WORKING_DIR/**
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Build Extensions
+        run: |
+          ./gradlew clean deploy
+        working-directory: $WORKING_DIR
+      - name: Set up LCP
+        run: |
+          curl -fsSL https://cdn.liferay.cloud/lcp/stable/latest/install.sh | bash
+      - name: LCP Login and Set Remote
+        env:
+          LCP_USER: ${{ secrets.LCP_USER }}
+          LCP_PASS: ${{ secrets.LCP_PASS }}
+        run: |
+          echo "${LCP_USER} ${LCP_PASS}" | lcp login
+          lcp remote set liferay.sh https://api.liferay.cloud
+          lcp remote default liferay.sh
+      - name: Deploy to DXP Cloud
+        run: |
+          git fetch origin ${BRANCH_NAME}:refs/remotes/origin/${BRANCH_NAME}
+          PREVIOUS_COMMIT=$(git rev-parse origin/${BRANCH_NAME}~1)
+          CHANGED_FILES=$(git diff --name-only ${PREVIOUS_COMMIT} HEAD | grep "${WORKING_DIR}/client-extensions")
+          if [[ -n "${CHANGED_FILES}" ]]
+          then
+            echo "Found changes in ${WORKING_DIR}/client-extensions"
+            CHANGED_DIRS=$(echo "${CHANGED_FILES}" | sed 's/\/[^/]*$//' | sort -u)
+            for DIR in ${CHANGED_DIRS}
+            do
+              echo "Deploying: ${DIR}"
+              lcp deploy --ext "build/docker/client-extensions/${DIR}.zip" --project "${PROJECT_NAME}-ext${BRANCH_NAME}"
+            done
+          else
+            echo "No changed files found in ${WORKING_DIR}. Skipping deployment."
+          fi
+        working-directory: $WORKING_DIR
