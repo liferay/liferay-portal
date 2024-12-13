@@ -132,6 +132,51 @@ public class WorkflowDefinitionLink implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@Schema
+	public String getGroupExternalReferenceCode() {
+		if (_groupExternalReferenceCodeSupplier != null) {
+			groupExternalReferenceCode =
+				_groupExternalReferenceCodeSupplier.get();
+
+			_groupExternalReferenceCodeSupplier = null;
+		}
+
+		return groupExternalReferenceCode;
+	}
+
+	public void setGroupExternalReferenceCode(
+		String groupExternalReferenceCode) {
+
+		this.groupExternalReferenceCode = groupExternalReferenceCode;
+
+		_groupExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setGroupExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			groupExternalReferenceCodeUnsafeSupplier) {
+
+		_groupExternalReferenceCodeSupplier = () -> {
+			try {
+				return groupExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String groupExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _groupExternalReferenceCodeSupplier;
+
+	@Schema
 	public Long getGroupId() {
 		if (_groupIdSupplier != null) {
 			groupId = _groupIdSupplier.get();
@@ -249,7 +294,7 @@ public class WorkflowDefinitionLink implements Serializable {
 	@GraphQLField(
 		description = "The name of the instance's workflow definition."
 	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String workflowDefinitionName;
 
 	@JsonIgnore
@@ -294,7 +339,7 @@ public class WorkflowDefinitionLink implements Serializable {
 	}
 
 	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer workflowDefinitionVersion;
 
 	@JsonIgnore
@@ -356,6 +401,22 @@ public class WorkflowDefinitionLink implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(externalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		String groupExternalReferenceCode = getGroupExternalReferenceCode();
+
+		if (groupExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"groupExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(groupExternalReferenceCode));
 
 			sb.append("\"");
 		}

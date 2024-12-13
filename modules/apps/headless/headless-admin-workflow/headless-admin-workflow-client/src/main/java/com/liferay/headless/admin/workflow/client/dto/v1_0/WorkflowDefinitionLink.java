@@ -67,6 +67,31 @@ public class WorkflowDefinitionLink implements Cloneable, Serializable {
 
 	protected String externalReferenceCode;
 
+	public String getGroupExternalReferenceCode() {
+		return groupExternalReferenceCode;
+	}
+
+	public void setGroupExternalReferenceCode(
+		String groupExternalReferenceCode) {
+
+		this.groupExternalReferenceCode = groupExternalReferenceCode;
+	}
+
+	public void setGroupExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			groupExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			groupExternalReferenceCode =
+				groupExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String groupExternalReferenceCode;
+
 	public Long getGroupId() {
 		return groupId;
 	}

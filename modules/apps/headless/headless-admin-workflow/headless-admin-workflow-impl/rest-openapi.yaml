@@ -671,7 +671,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.workflow.client', and version '4.0.34'."
+        'com.liferay.headless.admin.workflow.client', and version '4.0.35'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"

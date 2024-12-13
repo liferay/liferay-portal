@@ -48,6 +48,12 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface WorkflowDefinitionLinkResource {
 
+	public WorkflowDefinitionLink
+			putWorkflowDefinitionLinkByExternalReferenceCode(
+				String externalReferenceCode,
+				WorkflowDefinitionLink workflowDefinitionLink)
+		throws Exception;
+
 	public Page<WorkflowDefinitionLink>
 			getWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLinksPage(
 				String externalReferenceCode, Pagination pagination)

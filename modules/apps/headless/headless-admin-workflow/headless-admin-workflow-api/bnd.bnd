@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Admin Workflow API
 Bundle-SymbolicName: com.liferay.headless.admin.workflow.api
-Bundle-Version: 23.2.2
+Bundle-Version: 23.3.0
 Export-Package:\
 	com.liferay.headless.admin.workflow.dto.v1_0,\
 	com.liferay.headless.admin.workflow.resource.v1_0

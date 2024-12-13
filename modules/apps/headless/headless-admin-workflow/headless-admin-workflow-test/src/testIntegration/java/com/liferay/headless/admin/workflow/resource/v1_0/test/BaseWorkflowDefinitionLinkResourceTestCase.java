@@ -177,6 +177,7 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 
 		workflowDefinitionLink.setClassName(regex);
 		workflowDefinitionLink.setExternalReferenceCode(regex);
+		workflowDefinitionLink.setGroupExternalReferenceCode(regex);
 		workflowDefinitionLink.setWorkflowDefinitionName(regex);
 
 		String json = WorkflowDefinitionLinkSerDes.toJSON(
@@ -190,7 +191,81 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 		Assert.assertEquals(
 			regex, workflowDefinitionLink.getExternalReferenceCode());
 		Assert.assertEquals(
+			regex, workflowDefinitionLink.getGroupExternalReferenceCode());
+		Assert.assertEquals(
 			regex, workflowDefinitionLink.getWorkflowDefinitionName());
+	}
+
+	@Test
+	public void testPutWorkflowDefinitionLinkByExternalReferenceCode()
+		throws Exception {
+
+		WorkflowDefinitionLink postWorkflowDefinitionLink =
+			testPutWorkflowDefinitionLinkByExternalReferenceCode_addWorkflowDefinitionLink();
+
+		WorkflowDefinitionLink randomWorkflowDefinitionLink =
+			randomWorkflowDefinitionLink();
+
+		WorkflowDefinitionLink putWorkflowDefinitionLink =
+			workflowDefinitionLinkResource.
+				putWorkflowDefinitionLinkByExternalReferenceCode(
+					postWorkflowDefinitionLink.getExternalReferenceCode(),
+					randomWorkflowDefinitionLink);
+
+		assertEquals(randomWorkflowDefinitionLink, putWorkflowDefinitionLink);
+		assertValid(putWorkflowDefinitionLink);
+
+		WorkflowDefinitionLink getWorkflowDefinitionLink =
+			testPutWorkflowDefinitionLinkByExternalReferenceCode_getWorkflowDefinitionLink(
+				putWorkflowDefinitionLink.getExternalReferenceCode());
+
+		assertEquals(randomWorkflowDefinitionLink, getWorkflowDefinitionLink);
+		assertValid(getWorkflowDefinitionLink);
+
+		WorkflowDefinitionLink newWorkflowDefinitionLink =
+			testPutWorkflowDefinitionLinkByExternalReferenceCode_createWorkflowDefinitionLink();
+
+		putWorkflowDefinitionLink =
+			workflowDefinitionLinkResource.
+				putWorkflowDefinitionLinkByExternalReferenceCode(
+					newWorkflowDefinitionLink.getExternalReferenceCode(),
+					newWorkflowDefinitionLink);
+
+		assertEquals(newWorkflowDefinitionLink, putWorkflowDefinitionLink);
+		assertValid(putWorkflowDefinitionLink);
+
+		getWorkflowDefinitionLink =
+			testPutWorkflowDefinitionLinkByExternalReferenceCode_getWorkflowDefinitionLink(
+				putWorkflowDefinitionLink.getExternalReferenceCode());
+
+		assertEquals(newWorkflowDefinitionLink, getWorkflowDefinitionLink);
+
+		Assert.assertEquals(
+			newWorkflowDefinitionLink.getExternalReferenceCode(),
+			putWorkflowDefinitionLink.getExternalReferenceCode());
+	}
+
+	protected WorkflowDefinitionLink
+		testPutWorkflowDefinitionLinkByExternalReferenceCode_getWorkflowDefinitionLink(
+			String externalReferenceCode) {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected WorkflowDefinitionLink
+			testPutWorkflowDefinitionLinkByExternalReferenceCode_createWorkflowDefinitionLink()
+		throws Exception {
+
+		return randomWorkflowDefinitionLink();
+	}
+
+	protected WorkflowDefinitionLink
+			testPutWorkflowDefinitionLinkByExternalReferenceCode_addWorkflowDefinitionLink()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -811,6 +886,18 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"groupExternalReferenceCode", additionalAssertFieldName)) {
+
+				if (workflowDefinitionLink.getGroupExternalReferenceCode() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("groupId", additionalAssertFieldName)) {
 				if (workflowDefinitionLink.getGroupId() == null) {
 					valid = false;
@@ -981,6 +1068,20 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 				if (!Objects.deepEquals(
 						workflowDefinitionLink1.getExternalReferenceCode(),
 						workflowDefinitionLink2.getExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"groupExternalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						workflowDefinitionLink1.getGroupExternalReferenceCode(),
+						workflowDefinitionLink2.
+							getGroupExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1237,6 +1338,53 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("groupExternalReferenceCode")) {
+			Object object =
+				workflowDefinitionLink.getGroupExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("groupId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1351,6 +1499,8 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 				className = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				groupExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				groupId = RandomTestUtil.randomLong();
 				id = RandomTestUtil.randomLong();

@@ -283,6 +283,24 @@ public class Mutation {
 
 	@GraphQLField
 	public WorkflowDefinitionLink
+			updateWorkflowDefinitionLinkByExternalReferenceCode(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("workflowDefinitionLink") WorkflowDefinitionLink
+					workflowDefinitionLink)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_workflowDefinitionLinkResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			workflowDefinitionLinkResource ->
+				workflowDefinitionLinkResource.
+					putWorkflowDefinitionLinkByExternalReferenceCode(
+						externalReferenceCode, workflowDefinitionLink));
+	}
+
+	@GraphQLField
+	public WorkflowDefinitionLink
 			createWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLink(
 				@GraphQLName("externalReferenceCode") String
 					externalReferenceCode,
