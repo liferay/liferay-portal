@@ -529,6 +529,32 @@ public class DBPartitionUtil {
 								"update ", partitionTableName, " set classPK ",
 								"= ", toCompanyId, " where classPK = ",
 								fromCompanyId));
+
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set groupKey ",
+								"= '", toCompanyId, "' where groupKey = '",
+								fromCompanyId, "'"));
+					}
+
+					if (StringUtil.equalsIgnoreCase(
+							fromTableName, "PortalPreferences")) {
+
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set ownerId ",
+								"= ", toCompanyId, " where ownerId = ",
+								fromCompanyId));
+					}
+
+					if (StringUtil.equalsIgnoreCase(
+							fromTableName, "PortletPreferences")) {
+
+						statement.executeUpdate(
+							StringBundler.concat(
+								"update ", partitionTableName, " set ownerId ",
+								"= ", toCompanyId, " where ownerId = ",
+								fromCompanyId));
 					}
 
 					if (StringUtil.equalsIgnoreCase(
