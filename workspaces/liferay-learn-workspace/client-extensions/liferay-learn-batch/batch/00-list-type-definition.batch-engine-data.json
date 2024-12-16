@@ -66,6 +66,11 @@
 					"name": "Architect"
 				},
 				{
+					"externalReferenceCode": "BUSINESS_ANALYST",
+					"key": "businessAnalyst",
+					"name": "Business Analyst"
+				},
+				{
 					"externalReferenceCode": "CLOUD_ARCHITECT",
 					"key": "cloudArchitect",
 					"name": "Cloud Architect"
