@@ -66,7 +66,7 @@ public class ForgotPasswordMVCActionCommandTest {
 
 		_createUser(true, false);
 
-		List<Ticket> tickets = _performForgotPasswordAction(true);
+		List<Ticket> tickets = _processAction(true);
 
 		Assert.assertTrue(
 			"New ticket created for LDAP user during password reset while " +
@@ -80,7 +80,7 @@ public class ForgotPasswordMVCActionCommandTest {
 
 		_createUser(true, false);
 
-		List<Ticket> tickets = _performForgotPasswordAction(false);
+		List<Ticket> tickets = _processAction(false);
 
 		Assert.assertEquals(
 			"No ticket created for LDAP user during password reset while " +
@@ -94,7 +94,7 @@ public class ForgotPasswordMVCActionCommandTest {
 
 		_createUser(false, false);
 
-		List<Ticket> tickets = _performForgotPasswordAction(true);
+		List<Ticket> tickets = _processAction(true);
 
 		Assert.assertEquals(
 			"No ticket created for portal user during password reset while " +
@@ -194,8 +194,7 @@ public class ForgotPasswordMVCActionCommandTest {
 		return mockLiferayPortletActionRequest;
 	}
 
-	private List<Ticket> _performForgotPasswordAction(
-			boolean passwordPolicyEnabled)
+	private List<Ticket> _processAction(boolean passwordPolicyEnabled)
 		throws Exception {
 
 		Dictionary<String, Object> configurations =

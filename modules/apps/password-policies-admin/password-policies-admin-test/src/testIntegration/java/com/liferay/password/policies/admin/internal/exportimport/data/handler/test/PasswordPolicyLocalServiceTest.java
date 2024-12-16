@@ -63,7 +63,7 @@ public class PasswordPolicyLocalServiceTest {
 	}
 
 	@Test
-	public void testPasswordPolicyGettersWithLDAPUser() throws Exception {
+	public void testUserPasswordPolicyGettersWithLDAPUser() throws Exception {
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(false)) {
 
@@ -82,7 +82,7 @@ public class PasswordPolicyLocalServiceTest {
 	}
 
 	@Test
-	public void testPasswordPolicyGettersWithLDAPUserAndLDAPPasswordPolicy()
+	public void testUserPasswordPolicyGettersWithLDAPUserAndLDAPPasswordPolicy()
 		throws Exception {
 
 		try (SafeCloseable safeCloseable =
@@ -103,7 +103,7 @@ public class PasswordPolicyLocalServiceTest {
 	}
 
 	@Test
-	public void testPasswordPolicyGettersWithPortalUserAndLDAPPasswordPolicy()
+	public void testUserPasswordPolicyGettersWithPortalUserAndLDAPPasswordPolicy()
 		throws Exception {
 
 		try (SafeCloseable safeCloseable =

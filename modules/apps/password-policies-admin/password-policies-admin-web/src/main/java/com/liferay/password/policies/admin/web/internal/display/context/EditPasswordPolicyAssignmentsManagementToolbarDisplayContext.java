@@ -305,14 +305,14 @@ public class EditPasswordPolicyAssignmentsManagementToolbarDisplayContext {
 			(ThemeDisplay)_httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		UserSearchTerms searchTerms =
-			(UserSearchTerms)userSearch.getSearchTerms();
-
 		if (LDAPSettingsUtil.isPasswordPolicyEnabled(
 				themeDisplay.getCompanyId())) {
 
 			userParams.put("nonLDAPUsers", true);
 		}
+
+		UserSearchTerms searchTerms =
+			(UserSearchTerms)userSearch.getSearchTerms();
 
 		userSearch.setResultsAndTotal(
 			() -> UserLocalServiceUtil.search(
