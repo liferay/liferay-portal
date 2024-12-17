@@ -45,9 +45,9 @@ public class StyleBookManagementToolbarDisplayContext
 	extends SearchContainerManagementToolbarDisplayContext {
 
 	public StyleBookManagementToolbarDisplayContext(
-		CETManager cetManager, HttpServletRequest httpServletRequest,
+		HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse,
+		LiferayPortletResponse liferayPortletResponse, CETManager cetManager,
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		SearchContainer<StyleBookEntry> searchContainer) {
 
