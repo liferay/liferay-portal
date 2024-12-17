@@ -36,10 +36,6 @@ const AddStyleBookModalContent = ({
 		frontendTokenDefinitionProviders[0].themeId
 	);
 
-	const handleFormError = (responseContent: any) => {
-		setErrorMessage(responseContent.error || '');
-	};
-
 	const validateName = (name: string) => {
 		setErrorMessage(
 			!name.trim() ? Liferay.Language.get('this-field-is-required') : ''
@@ -78,7 +74,9 @@ const AddStyleBookModalContent = ({
 					});
 				}
 			})
-			.catch((response) => handleFormError(response));
+			.catch((response) => {
+				setErrorMessage(response.error || '');
+			});
 	};
 
 	const formId = `${namespace}saveButton`;
