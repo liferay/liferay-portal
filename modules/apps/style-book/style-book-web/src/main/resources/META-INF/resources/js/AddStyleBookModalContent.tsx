@@ -37,15 +37,19 @@ const AddStyleBookModalContent = ({
 	);
 
 	const validateName = (name: string) => {
-		setErrorMessage(
-			!name.trim() ? Liferay.Language.get('this-field-is-required') : ''
-		);
+		const errorMessage = !name.trim()
+			? Liferay.Language.get('this-field-is-required')
+			: '';
+
+		setErrorMessage(errorMessage);
+
+		return errorMessage;
 	};
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		validateName(name);
+		const errorMessage = validateName(name);
 
 		if (errorMessage) {
 			return;
