@@ -60,12 +60,18 @@ public class CallFunctionTest {
 	public void testGetFieldValueFromJSONArray() {
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
-		jsonArray.put("test");
+		jsonArray.put("value_1, value_2");
 
 		_mockDDMExpressionFieldAccessor(jsonArray);
 
 		Assert.assertEquals(
-			"test", _callFunction.getDDMFormFieldValue("field0"));
+			"value_1, value_2", _callFunction.getDDMFormFieldValue("field0"));
+
+		jsonArray.put("value_3");
+
+		Assert.assertEquals(
+			"value_1, value_2, value_3",
+			_callFunction.getDDMFormFieldValue("field0"));
 	}
 
 	@Test
