@@ -156,7 +156,11 @@ public class CallFunction
 			JSONArray jsonArray = jsonFactory.createJSONArray(
 				String.valueOf(value));
 
-			return (String)jsonArray.get(0);
+			return jsonArray.join(
+				StringPool.COMMA_AND_SPACE
+			).replaceAll(
+				StringPool.QUOTE, StringPool.BLANK
+			);
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
