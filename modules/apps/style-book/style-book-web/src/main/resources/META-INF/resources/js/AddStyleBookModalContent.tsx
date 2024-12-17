@@ -121,9 +121,7 @@ const AddStyleBookModalContent = ({
 					</FieldBase>
 
 					<FieldBase
-						className={`control-label ${
-							errorMessage ? 'has-error' : ''
-						}`}
+						className="mb-0"
 						errorMessage={errorMessage}
 						id={nameId}
 						label={Liferay.Language.get('name')}
