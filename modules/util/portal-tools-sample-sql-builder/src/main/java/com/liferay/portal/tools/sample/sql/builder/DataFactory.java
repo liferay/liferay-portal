@@ -793,6 +793,10 @@ public class DataFactory {
 		return BenchmarksPropsValues.MAX_JOURNAL_ARTICLE_VERSION_COUNT;
 	}
 
+	public int getMaxObjectEntryPageCount() {
+		return BenchmarksPropsValues.MAX_OBJECT_ENTRY_PAGE_COUNT;
+	}
+
 	public int getMaxSegmentsEntrySegmentsExperienceCount() {
 		return BenchmarksPropsValues.
 			MAX_SEGMENTS_ENTRY_SEGMENTS_EXPERIENCE_COUNT;

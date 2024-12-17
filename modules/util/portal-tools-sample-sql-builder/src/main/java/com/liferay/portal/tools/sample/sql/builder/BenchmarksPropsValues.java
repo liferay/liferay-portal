@@ -219,6 +219,9 @@ public class BenchmarksPropsValues {
 	public static final int MAX_OBJECT_ENTRY_COUNT = GetterUtil.getInteger(
 		PropertiesHolder._get(BenchmarksPropsKeys.MAX_OBJECT_ENTRY_COUNT));
 
+	public static final int MAX_OBJECT_ENTRY_PAGE_COUNT = GetterUtil.getInteger(
+		PropertiesHolder._get(BenchmarksPropsKeys.MAX_OBJECT_ENTRY_PAGE_COUNT));
+
 	public static final int MAX_SEGMENTS_ENTRY_COUNT = GetterUtil.getInteger(
 		PropertiesHolder._get(BenchmarksPropsKeys.MAX_SEGMENTS_ENTRY_COUNT));
 
