@@ -67,44 +67,44 @@ const AddStyleBookModalContent = ({
 			method: 'POST',
 		})
 			.then((response) => response.json())
-			.then((responseContent) => {
-				if (responseContent.error) {
+			.then(({error, redirectURL}) => {
+				if (error) {
+					setErrorMessage(error);
 					setLoading(false);
-					setErrorMessage(responseContent.error);
 				}
-				else if (responseContent.redirectURL) {
-					navigate(responseContent.redirectURL, {
+				else if (redirectURL) {
+					navigate(redirectURL, {
 						beforeScreenFlip: closeModal,
 					});
 				}
 			})
-			.catch((response) => {
-				setErrorMessage(response.error || '');
+			.catch(({error}) => {
+				setErrorMessage(error || '');
 			});
 	};
 
-	const formId = `${namespace}saveButton`;
+	const formId = `${namespace}form`;
+	const frontendTokenDefinitionProviderId = `${namespace}frontendTokenDefinitionProvider`;
 	const nameId = `${namespace}name`;
-	const themeIdId = `${namespace}tokenDefinition`;
 
 	return (
 		<>
 			<ClayModal.Header>
 				{Liferay.Language.get('add-style-book')}
 			</ClayModal.Header>
+
 			<ClayModal.Body>
 				<ClayForm id={formId} onSubmit={handleSubmit}>
 					<FieldBase
-						className="themeId"
 						helpMessage={Liferay.Language.get(
 							'the-style-book-will-be-created-based-on-the-provided-frontend-token-definition'
 						)}
-						id={themeIdId}
+						id={frontendTokenDefinitionProviderId}
 						label={Liferay.Language.get('create-style-book-for')}
 					>
 						<Picker
 							defaultSelectedKey={themeId}
-							id={themeIdId}
+							id={frontendTokenDefinitionProviderId}
 							items={frontendTokenDefinitionProviders}
 							onSelectionChange={setThemeId}
 							selectedKey={themeId}
@@ -129,9 +129,11 @@ const AddStyleBookModalContent = ({
 					>
 						<ClayInput
 							onChange={(event) => {
-								setName(event.target.value);
+								const name = event.target.value;
 
-								validateName(event.target.value);
+								setName(name);
+
+								validateName(name);
 							}}
 							value={name}
 						/>
