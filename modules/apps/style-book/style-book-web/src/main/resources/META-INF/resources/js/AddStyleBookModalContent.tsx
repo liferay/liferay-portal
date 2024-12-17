@@ -95,7 +95,7 @@ const AddStyleBookModalContent = ({
 					<FieldBase
 						className="themeId"
 						helpMessage={Liferay.Language.get(
-							'the-style-book-will-be-created-based-on-the-selected-token-definition'
+							'the-style-book-will-be-created-based-on-the-provided-frontend-token-definition'
 						)}
 						id={themeIdId}
 						label={Liferay.Language.get('create-style-book-for')}
