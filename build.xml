@@ -1109,6 +1109,30 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 		<ant antfile="build-test.xml" inheritAll="false" target="test-unit" />
 	</target>
 
+	<target name="transform-jakarta-ee-source">
+		<gradle-execute dir="${project.dir}/modules" task=":util:portal-tools-jakarta-ee-transformer:clean" />
+		<gradle-execute dir="${project.dir}/modules" task=":util:portal-tools-jakarta-ee-transformer:jar" />
+
+		<path id="jakarta.ee.transformer.classpath">
+			<fileset
+				dir="${sdk.dir}/dist"
+				includes="com.liferay.portal.tools.jakarta.ee.transformer-*.jar"
+			/>
+		</path>
+
+		<java
+			classname="com.liferay.portal.tools.jakarta.ee.transformer.SourceTransformer"
+			classpathref="jakarta.ee.transformer.classpath"
+			failonerror="true"
+			fork="true"
+		>
+			<jvmarg if:true="${jvm.debug}" line="${jpda.settings}" />
+			<arg value="${build.jakarta.transformer.include.dirs}" />
+		</java>
+
+		<ant antfile="portal-impl/build.xml" inheritAll="false" target="format-source-local-changes" />
+	</target>
+
 	<target name="update-app-server-scripts">
 		<if>
 			<equals arg1="${app.server.type}" arg2="tomcat" />
