@@ -1,0 +1,1351 @@
+components:
+    schemas:
+        Clause:
+            properties:
+                enabled:
+                    type: boolean
+                occur:
+                    type: string
+                query:
+                    type: object
+            type: object
+        Condition:
+            properties:
+                in:
+                    properties:
+                        parameterName:
+                            type: string
+                        value:
+                            type: object
+                    type: object
+                allConditions:
+                    items:
+                        $ref: "#/components/schemas/Condition"
+                    type: array
+                anyConditions:
+                    items:
+                        $ref: "#/components/schemas/Condition"
+                    type: array
+                contains:
+                    properties:
+                        parameterName:
+                            type: string
+                        value:
+                            type: object
+                    type: object
+                equals:
+                    properties:
+                        format:
+                            type: string
+                        parameterName:
+                            type: string
+                        value:
+                            type: object
+                    type: object
+                exists:
+                    properties:
+                        parameterName:
+                            type: string
+                    type: object
+                not:
+                    $ref: "#/components/schemas/Condition"
+                range:
+                    properties:
+                        format:
+                            type: string
+                        gt:
+                            type: object
+                        gte:
+                            type: object
+                        lt:
+                            type: object
+                        lte:
+                            type: object
+                        parameterName:
+                            type: string
+                    type: object
+            type: object
+        Configuration:
+            properties:
+                advancedConfiguration:
+                    properties:
+                        collapse:
+                            properties:
+                                field:
+                                    type: string
+                                innerHits:
+                                    items:
+                                        $ref: "#/components/schemas/InnerHit"
+                                    type: array
+                                maxConcurrentGroupRequests:
+                                    type: integer
+                            type: object
+                        fields:
+                            items:
+                                type: string
+                            type: array
+                        source:
+                            properties:
+                                excludes:
+                                    items:
+                                        type: string
+                                    type: array
+                                fetchSource:
+                                    type: boolean
+                                includes:
+                                    items:
+                                        type: string
+                                    type: array
+                            type: object
+                        stored_fields:
+                            items:
+                                type: string
+                            type: array
+                    type: object
+                aggregationConfiguration:
+                    properties:
+                        aggregations:
+                            type: object
+                    type: object
+                conditionConfiguration:
+                    properties:
+                        conditions:
+                            items:
+                                $ref: "#/components/schemas/Condition"
+                            type: array
+                    type: object
+                generalConfiguration:
+                    properties:
+                        applyIndexerClauses:
+                            type: boolean
+                        clauseContributorsExcludes:
+                            items:
+                                type: string
+                            type: array
+                        clauseContributorsIncludes:
+                            items:
+                                type: string
+                            type: array
+                        collectionProvider:
+                            type: boolean
+                        emptySearchEnabled:
+                            type: boolean
+                        explain:
+                            type: boolean
+                        includeResponseString:
+                            type: boolean
+                        searchableAssetTypes:
+                            items:
+                                type: string
+                            type: array
+                    type: object
+                highlightConfiguration:
+                    properties:
+                        fields:
+                            additionalProperties:
+                                $ref: "#/components/schemas/HighlightField"
+                            type: object
+                        fragment_size:
+                            type: integer
+                        number_of_fragments:
+                            type: integer
+                        post_tags:
+                            items:
+                                type: string
+                            type: array
+                        pre_tags:
+                            items:
+                                type: string
+                            type: array
+                        require_field_match:
+                            type: boolean
+                        type:
+                            type: string
+                    type: object
+                indexConfiguration:
+                    properties:
+                        external:
+                            type: boolean
+                        indexName:
+                            type: string
+                    type: object
+                parameterConfiguration:
+                    properties:
+                        parameters:
+                            additionalProperties:
+                                $ref: "#/components/schemas/SXPParameter"
+                            type: object
+                    type: object
+                postFilterConfiguration:
+                    properties:
+                        clauses:
+                            items:
+                                $ref: "#/components/schemas/Clause"
+                            type: array
+                    type: object
+                queryConfiguration:
+                    properties:
+                        clauses:
+                            items:
+                                $ref: "#/components/schemas/Clause"
+                            type: array
+                    type: object
+                rescoreConfiguration:
+                    properties:
+                        clauses:
+                            items:
+                                $ref: "#/components/schemas/Clause"
+                            type: array
+                        queryWeight:
+                            type: object
+                        rescoreQueryWeight:
+                            type: object
+                        scoreMode:
+                            type: string
+                        windowSize:
+                            type: object
+                    type: object
+                scopeConfiguration:
+                    type: object
+                searchContextAttributes:
+                    additionalProperties:
+                        type: object
+                    type: object
+                sortConfiguration:
+                    properties:
+                        sorts:
+                            items:
+                                type: object
+                            type: array
+                    type: object
+            type: object
+        DocumentField:
+            properties:
+                values:
+                    items:
+                        type: object
+                    type: array
+        ElementDefinition:
+            properties:
+                category:
+                    type: string
+                configuration:
+                    $ref: "#/components/schemas/Configuration"
+                icon:
+                    type: string
+                uiConfiguration:
+                    properties:
+                        fieldSets:
+                            items:
+                                properties:
+                                    fields:
+                                        items:
+                                            properties:
+                                                defaultValue:
+                                                    type: object
+                                                fieldMappings:
+                                                    items:
+                                                        properties:
+                                                            boost:
+                                                                format: float
+                                                                type: number
+                                                            field:
+                                                                type: string
+                                                            locale:
+                                                                type: string
+                                                        type: object
+                                                    type: array
+                                                helpText:
+                                                    type: string
+                                                helpTextLocalized:
+                                                    type: string
+                                                label:
+                                                    type: string
+                                                labelLocalized:
+                                                    type: string
+                                                name:
+                                                    type: string
+                                                type:
+                                                    type: string
+                                                typeOptions:
+                                                    properties:
+                                                        boost:
+                                                            type: boolean
+                                                        format:
+                                                            type: string
+                                                        max:
+                                                            type: object
+                                                        min:
+                                                            type: object
+                                                        nullable:
+                                                            type: boolean
+                                                        options:
+                                                            items:
+                                                                properties:
+                                                                    label:
+                                                                        type: string
+                                                                    value:
+                                                                        type: string
+                                                                type: object
+                                                            type: array
+                                                        required:
+                                                            type: boolean
+                                                        step:
+                                                            type: object
+                                                        unit:
+                                                            type: string
+                                                        unitSuffix:
+                                                            type: string
+                                                    type: object
+                                            type: object
+                                        type: array
+                                type: object
+                            type: array
+                    type: object
+            type: object
+        ElementInstance:
+            properties:
+                configurationEntry:
+                    $ref: "#/components/schemas/Configuration"
+                sxpElement:
+                    $ref: "#/components/schemas/SXPElement"
+                sxpElementId:
+                    format: int64
+                    type: integer
+                type:
+                    type: integer
+                uiConfigurationValues:
+                    additionalProperties:
+                        type: object
+                    type: object
+            type: object
+        FieldMappingInfo:
+            properties:
+                languageIdPosition:
+                    type: integer
+                name:
+                    type: string
+                type:
+                    type: string
+        HighlightField:
+            properties:
+                fragment_offset:
+                    type: integer
+                fragment_size:
+                    type: integer
+                number_of_fragments:
+                    type: integer
+        InnerHit:
+            properties:
+                innerCollapse:
+                    properties:
+                        field:
+                            type: string
+                    type: object
+                name:
+                    type: string
+                size:
+                    type: integer
+                sorts:
+                    items:
+                        type: object
+                    type: array
+        KeywordQueryContributor:
+            properties:
+                className:
+                    type: string
+        ModelPrefilterContributor:
+            properties:
+                className:
+                    type: string
+        QueryPrefilterContributor:
+            properties:
+                className:
+                    type: string
+        SXPBlueprint:
+            properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    readOnly: true
+                    type: object
+                collectionProvider:
+                    type: boolean
+                configuration:
+                    $ref: "#/components/schemas/Configuration"
+                createDate:
+                    format: date
+                    type: string
+                description:
+                    type: string
+                description_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                elementInstances:
+                    items:
+                        $ref: "#/components/schemas/ElementInstance"
+                    type: array
+                externalReferenceCode:
+                    example: AB-34098-789-N
+                    type: string
+                fallbackDescription:
+                    type: string
+                fallbackTitle:
+                    type: string
+                id:
+                    format: int64
+                    type: integer
+                modifiedDate:
+                    format: date
+                    type: string
+                schemaVersion:
+                    type: string
+                title:
+                    type: string
+                title_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                userName:
+                    type: string
+                version:
+                    type: string
+            type: object
+        SXPElement:
+            properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    readOnly: true
+                    type: object
+                createDate:
+                    format: date
+                    type: string
+                description:
+                    type: string
+                description_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                elementDefinition:
+                    $ref: "#/components/schemas/ElementDefinition"
+                externalReferenceCode:
+                    example: AB-34098-789-N
+                    type: string
+                fallbackDescription:
+                    type: string
+                fallbackTitle:
+                    type: string
+                hidden:
+                    type: boolean
+                id:
+                    format: int64
+                    type: integer
+                modifiedDate:
+                    format: date
+                    type: string
+                readOnly:
+                    type: boolean
+                schemaVersion:
+                    type: string
+                title:
+                    type: string
+                title_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                type:
+                    type: integer
+                userName:
+                    type: string
+                version:
+                    type: string
+            type: object
+        SXPParameter:
+            properties:
+                defaultValue:
+                    type: object
+                format:
+                    type: string
+                max:
+                    type: object
+                min:
+                    type: object
+                type:
+                    enum: [Boolean, Date, Double, Float, Integer, IntegerArray, Long, LongArray, String, StringArray, TimeRange]
+                    type: string
+            type: object
+        SXPParameterContributorDefinition:
+            properties:
+                className:
+                    type: string
+                helpText:
+                    type: string
+                templateVariable:
+                    type: string
+                title:
+                    type: string
+            type: object
+        SearchIndex:
+            properties:
+                external:
+                    type: boolean
+                name:
+                    type: string
+        SearchRequest:
+            properties:
+                queryString:
+                    type: string
+            type: object
+        SearchResponse:
+            properties:
+                errors:
+                    items:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    type: array
+                page:
+                    type: integer
+                pageSize:
+                    type: integer
+                request:
+                    type: object
+                requestString:
+                    type: string
+                response:
+                    type: object
+                responseString:
+                    type: string
+                searchHits:
+                    properties:
+                        hits:
+                            items:
+                                properties:
+                                    assetSearchSummary:
+                                        type: string
+                                    assetTitle:
+                                        type: string
+                                    documentFields:
+                                        additionalProperties:
+                                            $ref: "#/components/schemas/DocumentField"
+                                        type: object
+                                    explanation:
+                                        type: string
+                                    id:
+                                        type: string
+                                    score:
+                                        format: float
+                                        type: number
+                                    version:
+                                        format: int64
+                                        type: integer
+                                type: object
+                            type: array
+                        maxScore:
+                            format: float
+                            type: number
+                        totalHits:
+                            format: int64
+                            type: integer
+                    type: object
+                searchRequest:
+                    $ref: "#/components/schemas/SearchRequest"
+            type: object
+        SearchableAssetName:
+            properties:
+                className:
+                    type: string
+                displayName:
+                    type: string
+            type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
+        'com.liferay.search.experiences.rest.client', and version '3.0.33'."
+    license:
+        name: "Apache 2.0"
+        url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+    title: ""
+    version: v2.0
+openapi: "3.0.1"
+paths:
+    "/search":
+        post:
+            description:
+                Does a search using the provided Blueprint. This API is only for the Blueprints application's preview.
+                For a search API, use search/v1.0/search instead.
+            operationId: postSearch
+            parameters:
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+                - in: query
+                  name: query
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SearchResponse"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SearchResponse"
+            tags: ["SearchResponse"]
+    /field-mapping-infos:
+        get:
+            description:
+                Gets the field mappings
+            operationId: getFieldMappingInfosPage
+            parameters:
+                - in: query
+                  name: external
+                  schema:
+                      type: boolean
+                - in: query
+                  name: indexName
+                  schema:
+                      type: string
+                - in: query
+                  name: query
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/FieldMappingInfo"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/FieldMappingInfo"
+                                type: array
+            tags: ["FieldMappingInfo"]
+    /keyword-query-contributors:
+        get:
+            description:
+                Gets the keyword query contributors
+            operationId: getKeywordQueryContributorsPage
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/KeywordQueryContributor"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/KeywordQueryContributor"
+                                type: array
+            tags: ["KeywordQueryContributor"]
+    /model-prefilter-contributors:
+        get:
+            description:
+                Gets the model prefilter contributors
+            operationId: getModelPrefilterContributorsPage
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ModelPrefilterContributor"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ModelPrefilterContributor"
+                                type: array
+            tags: ["ModelPrefilterContributor"]
+    /query-prefilter-contributors:
+        get:
+            description:
+                Gets the query prefilter contributors
+            operationId: getQueryPrefilterContributorsPage
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/QueryPrefilterContributor"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/QueryPrefilterContributor"
+                                type: array
+            tags: ["QueryPrefilterContributor"]
+    /search-indexes:
+        get:
+            description:
+                Gets the index names
+            operationId: getSearchIndexesPage
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SearchIndex"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SearchIndex"
+                                type: array
+            tags: ["SearchIndex"]
+    /searchable-asset-names/{languageId}:
+        get:
+            description:
+                Gets the searchable asset names
+            operationId: getSearchableAssetNamesLanguagePage
+            parameters:
+                - in: path
+                  name: languageId
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SearchableAssetName"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SearchableAssetName"
+                                type: array
+            tags: ["SearchableAssetName"]
+    /sxp-blueprints:
+        get:
+            description:
+                Gets the Blueprints
+            operationId: getSXPBlueprintsPage
+            parameters:
+                - in: query
+                  name: filter
+                  schema:
+                      type: string
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+                - in: query
+                  name: search
+                  schema:
+                      type: string
+                - in: query
+                  name: sort
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SXPBlueprint"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SXPBlueprint"
+                                type: array
+            tags: ["SXPBlueprint"]
+        post:
+            description:
+                Creates a Blueprint
+            operationId: postSXPBlueprint
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+    /sxp-blueprints/by-external-reference-code/{externalReferenceCode}:
+        get:
+            description:
+                Gets a Blueprint by external reference code
+            operationId: getSXPBlueprintByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+        put:
+            description:
+                Creates or updates a Blueprint
+            operationId: putSXPBlueprintByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+    /sxp-blueprints/validate:
+        post:
+            description:
+                Validates a Blueprint
+            operationId: postSXPBlueprintValidate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: string
+                    application/xml:
+                        schema:
+                            type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+    /sxp-blueprints/{sxpBlueprintId}:
+        delete:
+            description:
+                Deletes a Blueprint
+            operationId: deleteSXPBlueprint
+            parameters:
+                - in: path
+                  name: sxpBlueprintId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["SXPBlueprint"]
+        get:
+            description:
+                Gets a Blueprint
+            operationId: getSXPBlueprint
+            parameters:
+                - in: path
+                  name: sxpBlueprintId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+        patch:
+            description:
+                Updates a Blueprint
+            operationId: patchSXPBlueprint
+            parameters:
+                - in: path
+                  name: sxpBlueprintId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+        put:
+            description:
+                Creates or updates a Blueprint
+            operationId: putSXPBlueprint
+            parameters:
+                - in: path
+                  name: sxpBlueprintId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPBlueprint"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+    /sxp-blueprints/{sxpBlueprintId}/copy:
+        post:
+            description:
+                Creates a copy of a Blueprint
+            operationId: postSXPBlueprintCopy
+            parameters:
+                - in: path
+                  name: sxpBlueprintId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPBlueprint"
+            tags: ["SXPBlueprint"]
+    /sxp-blueprints/{sxpBlueprintId}/export:
+        get:
+            description:
+                Exports a Blueprint
+            operationId: getSXPBlueprintExport
+            parameters:
+                - in: path
+                  name: sxpBlueprintId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                format: binary
+                                type: string
+                        application/xml:
+                            schema:
+                                format: binary
+                                type: string
+                    headers:
+                        Content-Disposition:
+                            schema:
+                                type: string
+            tags: ["SXPBlueprint"]
+    /sxp-elements:
+        get:
+            description:
+                Gets the Elements
+            operationId: getSXPElementsPage
+            parameters:
+                - in: query
+                  name: filter
+                  schema:
+                      type: string
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+                - in: query
+                  name: search
+                  schema:
+                      type: string
+                - in: query
+                  name: sort
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SXPElement"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SXPElement"
+                                type: array
+            tags: ["SXPElement"]
+        post:
+            description:
+                Creates an Element
+            operationId: postSXPElement
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+    /sxp-elements/by-external-reference-code/{externalReferenceCode}:
+        get:
+            description:
+                Gets an Element by external reference code
+            operationId: getSXPElementByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+        put:
+            description:
+                Creates or updates an Element
+            operationId: putSXPElementByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+    /sxp-elements/preview:
+        post:
+            description:
+                Creates an Element preview
+            operationId: postSXPElementPreview
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+    /sxp-elements/validate:
+        post:
+            description:
+                Validates an Element
+            operationId: postSXPElementValidate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: string
+                    application/xml:
+                        schema:
+                            type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+    /sxp-elements/{sxpElementId}:
+        delete:
+            description:
+                Deletes an Element
+            operationId: deleteSXPElement
+            parameters:
+                - in: path
+                  name: sxpElementId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["SXPElement"]
+        get:
+            description:
+                Gets an Element
+            operationId: getSXPElement
+            parameters:
+                - in: path
+                  name: sxpElementId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+        patch:
+            description:
+                Updates an Element
+            operationId: patchSXPElement
+            parameters:
+                - in: path
+                  name: sxpElementId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+        put:
+            description:
+                Creates or updates an Element
+            operationId: putSXPElement
+            parameters:
+                - in: path
+                  name: sxpElementId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/SXPElement"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+    /sxp-elements/{sxpElementId}/copy:
+        description:
+            Creates a copy of an Element
+        post:
+            operationId: postSXPElementCopy
+            parameters:
+                - in: path
+                  name: sxpElementId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SXPElement"
+            tags: ["SXPElement"]
+    /sxp-elements/{sxpElementId}/export:
+        description:
+            Exports an Element
+        get:
+            operationId: getSXPElementExport
+            parameters:
+                - in: path
+                  name: sxpElementId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                format: binary
+                                type: string
+                        application/xml:
+                            schema:
+                                format: binary
+                                type: string
+                    headers:
+                        Content-Disposition:
+                            schema:
+                                type: string
+            tags: ["SXPElement"]
+    /sxp-parameter-contributor-definitions:
+        description:
+            Retrieves the globally available Blueprint parameters.
+        get:
+            operationId: getSXPParameterContributorDefinitionsPage
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SXPParameterContributorDefinition"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/SXPParameterContributorDefinition"
+                                type: array
+            tags: ["SXPParameterContributorDefinition"]
