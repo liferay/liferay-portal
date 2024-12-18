@@ -118,6 +118,17 @@ public class SXPServiceUpgradeStepRegistrator
 			"3.1.3", "3.1.4",
 			new SXPBlueprintAndSXPElementUpgradeProcess(
 				_assetCategoryLocalService, _groupLocalService, _jsonFactory));
+
+		registry.register(
+			"3.1.4", "3.1.5",
+			UpgradeProcessFactory.addColumns(
+				"SXPBlueprint", "collectionProvider BOOLEAN",
+				"compatibility INTEGER", "fallbackDescription VARCHAR(75) null",
+				"fallbackTitle VARCHAR(75) null"));
+
+		UpgradeProcessFactory.addColumns("SXPElement", "compatibility INTEGER");
+
+		UpgradeProcessFactory.dropColumns("SXPElement", "status");
 	}
 
 	@Reference
