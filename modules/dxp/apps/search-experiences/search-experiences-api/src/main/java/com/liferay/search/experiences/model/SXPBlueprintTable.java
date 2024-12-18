@@ -44,6 +44,13 @@ public class SXPBlueprintTable extends BaseTable<SXPBlueprintTable> {
 		"createDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<SXPBlueprintTable, Date> modifiedDate = createColumn(
 		"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<SXPBlueprintTable, Boolean> collectionProvider =
+		createColumn(
+			"collectionProvider", Boolean.class, Types.BOOLEAN,
+			Column.FLAG_DEFAULT);
+	public final Column<SXPBlueprintTable, Integer> compatibility =
+		createColumn(
+			"compatibility", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<SXPBlueprintTable, Clob> configurationJSON =
 		createColumn(
 			"configurationJSON", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
@@ -53,6 +60,12 @@ public class SXPBlueprintTable extends BaseTable<SXPBlueprintTable> {
 		createColumn(
 			"elementInstancesJSON", Clob.class, Types.CLOB,
 			Column.FLAG_DEFAULT);
+	public final Column<SXPBlueprintTable, String> fallbackDescription =
+		createColumn(
+			"fallbackDescription", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<SXPBlueprintTable, String> fallbackTitle = createColumn(
+		"fallbackTitle", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<SXPBlueprintTable, String> schemaVersion = createColumn(
 		"schemaVersion", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<SXPBlueprintTable, String> title = createColumn(

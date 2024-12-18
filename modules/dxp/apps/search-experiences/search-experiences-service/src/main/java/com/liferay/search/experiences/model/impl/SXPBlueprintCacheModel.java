@@ -68,7 +68,7 @@ public class SXPBlueprintCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(39);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -88,12 +88,20 @@ public class SXPBlueprintCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", collectionProvider=");
+		sb.append(collectionProvider);
+		sb.append(", compatibility=");
+		sb.append(compatibility);
 		sb.append(", configurationJSON=");
 		sb.append(configurationJSON);
 		sb.append(", description=");
 		sb.append(description);
 		sb.append(", elementInstancesJSON=");
 		sb.append(elementInstancesJSON);
+		sb.append(", fallbackDescription=");
+		sb.append(fallbackDescription);
+		sb.append(", fallbackTitle=");
+		sb.append(fallbackTitle);
 		sb.append(", schemaVersion=");
 		sb.append(schemaVersion);
 		sb.append(", title=");
@@ -158,6 +166,9 @@ public class SXPBlueprintCacheModel
 			sxpBlueprintImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
+		sxpBlueprintImpl.setCollectionProvider(collectionProvider);
+		sxpBlueprintImpl.setCompatibility(compatibility);
+
 		if (configurationJSON == null) {
 			sxpBlueprintImpl.setConfigurationJSON("");
 		}
@@ -177,6 +188,20 @@ public class SXPBlueprintCacheModel
 		}
 		else {
 			sxpBlueprintImpl.setElementInstancesJSON(elementInstancesJSON);
+		}
+
+		if (fallbackDescription == null) {
+			sxpBlueprintImpl.setFallbackDescription("");
+		}
+		else {
+			sxpBlueprintImpl.setFallbackDescription(fallbackDescription);
+		}
+
+		if (fallbackTitle == null) {
+			sxpBlueprintImpl.setFallbackTitle("");
+		}
+		else {
+			sxpBlueprintImpl.setFallbackTitle(fallbackTitle);
 		}
 
 		if (schemaVersion == null) {
@@ -238,9 +263,15 @@ public class SXPBlueprintCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
+		collectionProvider = objectInput.readBoolean();
+
+		compatibility = objectInput.readInt();
 		configurationJSON = (String)objectInput.readObject();
 		description = objectInput.readUTF();
 		elementInstancesJSON = (String)objectInput.readObject();
+		fallbackDescription = objectInput.readUTF();
+		fallbackTitle = objectInput.readUTF();
 		schemaVersion = objectInput.readUTF();
 		title = objectInput.readUTF();
 		version = objectInput.readUTF();
@@ -286,6 +317,10 @@ public class SXPBlueprintCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
+		objectOutput.writeBoolean(collectionProvider);
+
+		objectOutput.writeInt(compatibility);
+
 		if (configurationJSON == null) {
 			objectOutput.writeObject("");
 		}
@@ -305,6 +340,20 @@ public class SXPBlueprintCacheModel
 		}
 		else {
 			objectOutput.writeObject(elementInstancesJSON);
+		}
+
+		if (fallbackDescription == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(fallbackDescription);
+		}
+
+		if (fallbackTitle == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(fallbackTitle);
 		}
 
 		if (schemaVersion == null) {
@@ -351,9 +400,13 @@ public class SXPBlueprintCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public boolean collectionProvider;
+	public int compatibility;
 	public String configurationJSON;
 	public String description;
 	public String elementInstancesJSON;
+	public String fallbackDescription;
+	public String fallbackTitle;
 	public String schemaVersion;
 	public String title;
 	public String version;

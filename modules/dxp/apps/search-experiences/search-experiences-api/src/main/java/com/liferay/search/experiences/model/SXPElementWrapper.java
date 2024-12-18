@@ -43,6 +43,7 @@ public class SXPElementWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("compatibility", getCompatibility());
 		attributes.put("description", getDescription());
 		attributes.put("elementDefinitionJSON", getElementDefinitionJSON());
 		attributes.put("fallbackDescription", getFallbackDescription());
@@ -53,7 +54,6 @@ public class SXPElementWrapper
 		attributes.put("title", getTitle());
 		attributes.put("type", getType());
 		attributes.put("version", getVersion());
-		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -113,6 +113,12 @@ public class SXPElementWrapper
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		Integer compatibility = (Integer)attributes.get("compatibility");
+
+		if (compatibility != null) {
+			setCompatibility(compatibility);
 		}
 
 		String description = (String)attributes.get("description");
@@ -176,12 +182,6 @@ public class SXPElementWrapper
 		if (version != null) {
 			setVersion(version);
 		}
-
-		Integer status = (Integer)attributes.get("status");
-
-		if (status != null) {
-			setStatus(status);
-		}
 	}
 
 	@Override
@@ -202,6 +202,16 @@ public class SXPElementWrapper
 	@Override
 	public long getCompanyId() {
 		return model.getCompanyId();
+	}
+
+	/**
+	 * Returns the compatibility of this sxp element.
+	 *
+	 * @return the compatibility of this sxp element
+	 */
+	@Override
+	public int getCompatibility() {
+		return model.getCompatibility();
 	}
 
 	/**
@@ -393,16 +403,6 @@ public class SXPElementWrapper
 	@Override
 	public String getSchemaVersion() {
 		return model.getSchemaVersion();
-	}
-
-	/**
-	 * Returns the status of this sxp element.
-	 *
-	 * @return the status of this sxp element
-	 */
-	@Override
-	public int getStatus() {
-		return model.getStatus();
 	}
 
 	/**
@@ -602,6 +602,16 @@ public class SXPElementWrapper
 	}
 
 	/**
+	 * Sets the compatibility of this sxp element.
+	 *
+	 * @param compatibility the compatibility of this sxp element
+	 */
+	@Override
+	public void setCompatibility(int compatibility) {
+		model.setCompatibility(compatibility);
+	}
+
+	/**
 	 * Sets the create date of this sxp element.
 	 *
 	 * @param createDate the create date of this sxp element
@@ -776,16 +786,6 @@ public class SXPElementWrapper
 	@Override
 	public void setSchemaVersion(String schemaVersion) {
 		model.setSchemaVersion(schemaVersion);
-	}
-
-	/**
-	 * Sets the status of this sxp element.
-	 *
-	 * @param status the status of this sxp element
-	 */
-	@Override
-	public void setStatus(int status) {
-		model.setStatus(status);
 	}
 
 	/**

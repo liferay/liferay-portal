@@ -133,6 +133,8 @@ public class SXPElementPersistenceTest {
 
 		newSXPElement.setModifiedDate(RandomTestUtil.nextDate());
 
+		newSXPElement.setCompatibility(RandomTestUtil.nextInt());
+
 		newSXPElement.setDescription(RandomTestUtil.randomString());
 
 		newSXPElement.setElementDefinitionJSON(RandomTestUtil.randomString());
@@ -152,8 +154,6 @@ public class SXPElementPersistenceTest {
 		newSXPElement.setType(RandomTestUtil.nextInt());
 
 		newSXPElement.setVersion(RandomTestUtil.randomString());
-
-		newSXPElement.setStatus(RandomTestUtil.nextInt());
 
 		_sxpElements.add(_persistence.update(newSXPElement));
 
@@ -184,6 +184,9 @@ public class SXPElementPersistenceTest {
 			Time.getShortTimestamp(existingSXPElement.getModifiedDate()),
 			Time.getShortTimestamp(newSXPElement.getModifiedDate()));
 		Assert.assertEquals(
+			existingSXPElement.getCompatibility(),
+			newSXPElement.getCompatibility());
+		Assert.assertEquals(
 			existingSXPElement.getDescription(),
 			newSXPElement.getDescription());
 		Assert.assertEquals(
@@ -208,8 +211,6 @@ public class SXPElementPersistenceTest {
 			existingSXPElement.getType(), newSXPElement.getType());
 		Assert.assertEquals(
 			existingSXPElement.getVersion(), newSXPElement.getVersion());
-		Assert.assertEquals(
-			existingSXPElement.getStatus(), newSXPElement.getStatus());
 	}
 
 	@Test(expected = DuplicateSXPElementExternalReferenceCodeException.class)
@@ -274,15 +275,6 @@ public class SXPElementPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_T_S() throws Exception {
-		_persistence.countByC_T_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByC_T_S(0L, 0, 0);
-	}
-
-	@Test
 	public void testCountByERC_C() throws Exception {
 		_persistence.countByERC_C("", RandomTestUtil.nextLong());
 
@@ -319,10 +311,10 @@ public class SXPElementPersistenceTest {
 			"SXPElement", "mvccVersion", true, "uuid", true,
 			"externalReferenceCode", true, "sxpElementId", true, "companyId",
 			true, "userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "description", true, "fallbackDescription",
-			true, "fallbackTitle", true, "hidden", true, "readOnly", true,
-			"schemaVersion", true, "title", true, "type", true, "version", true,
-			"status", true);
+			"modifiedDate", true, "compatibility", true, "description", true,
+			"fallbackDescription", true, "fallbackTitle", true, "hidden", true,
+			"readOnly", true, "schemaVersion", true, "title", true, "type",
+			true, "version", true);
 	}
 
 	@Test
@@ -618,6 +610,8 @@ public class SXPElementPersistenceTest {
 
 		sxpElement.setModifiedDate(RandomTestUtil.nextDate());
 
+		sxpElement.setCompatibility(RandomTestUtil.nextInt());
+
 		sxpElement.setDescription(RandomTestUtil.randomString());
 
 		sxpElement.setElementDefinitionJSON(RandomTestUtil.randomString());
@@ -637,8 +631,6 @@ public class SXPElementPersistenceTest {
 		sxpElement.setType(RandomTestUtil.nextInt());
 
 		sxpElement.setVersion(RandomTestUtil.randomString());
-
-		sxpElement.setStatus(RandomTestUtil.nextInt());
 
 		_sxpElements.add(_persistence.update(sxpElement));
 

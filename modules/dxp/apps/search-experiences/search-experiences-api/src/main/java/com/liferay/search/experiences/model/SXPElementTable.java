@@ -44,6 +44,8 @@ public class SXPElementTable extends BaseTable<SXPElementTable> {
 		"createDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<SXPElementTable, Date> modifiedDate = createColumn(
 		"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<SXPElementTable, Integer> compatibility = createColumn(
+		"compatibility", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<SXPElementTable, String> description = createColumn(
 		"description", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<SXPElementTable, Clob> elementDefinitionJSON =
@@ -68,8 +70,6 @@ public class SXPElementTable extends BaseTable<SXPElementTable> {
 		"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<SXPElementTable, String> version = createColumn(
 		"version", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<SXPElementTable, Integer> status = createColumn(
-		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private SXPElementTable() {
 		super("SXPElement", SXPElementTable::new);

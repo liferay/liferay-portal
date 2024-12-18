@@ -8,9 +8,13 @@ create table SXPBlueprint (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	collectionProvider BOOLEAN,
+	compatibility INTEGER,
 	configurationJSON TEXT null,
 	description STRING null,
 	elementInstancesJSON TEXT null,
+	fallbackDescription VARCHAR(75) null,
+	fallbackTitle VARCHAR(75) null,
 	schemaVersion VARCHAR(75) null,
 	title STRING null,
 	version VARCHAR(75) null,
@@ -30,6 +34,7 @@ create table SXPElement (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	compatibility INTEGER,
 	description STRING null,
 	elementDefinitionJSON TEXT null,
 	fallbackDescription STRING null,
@@ -39,6 +44,5 @@ create table SXPElement (
 	schemaVersion VARCHAR(75) null,
 	title STRING null,
 	type_ INTEGER,
-	version VARCHAR(75) null,
-	status INTEGER
+	version VARCHAR(75) null
 );

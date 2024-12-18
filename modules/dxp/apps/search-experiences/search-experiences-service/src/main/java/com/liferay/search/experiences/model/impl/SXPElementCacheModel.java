@@ -88,6 +88,8 @@ public class SXPElementCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", compatibility=");
+		sb.append(compatibility);
 		sb.append(", description=");
 		sb.append(description);
 		sb.append(", elementDefinitionJSON=");
@@ -108,8 +110,6 @@ public class SXPElementCacheModel
 		sb.append(type);
 		sb.append(", version=");
 		sb.append(version);
-		sb.append(", status=");
-		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -159,6 +159,8 @@ public class SXPElementCacheModel
 		else {
 			sxpElementImpl.setModifiedDate(new Date(modifiedDate));
 		}
+
+		sxpElementImpl.setCompatibility(compatibility);
 
 		if (description == null) {
 			sxpElementImpl.setDescription("");
@@ -214,8 +216,6 @@ public class SXPElementCacheModel
 			sxpElementImpl.setVersion(version);
 		}
 
-		sxpElementImpl.setStatus(status);
-
 		sxpElementImpl.resetOriginalValues();
 
 		return sxpElementImpl;
@@ -237,6 +237,8 @@ public class SXPElementCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
+		compatibility = objectInput.readInt();
 		description = objectInput.readUTF();
 		elementDefinitionJSON = (String)objectInput.readObject();
 		fallbackDescription = objectInput.readUTF();
@@ -250,8 +252,6 @@ public class SXPElementCacheModel
 
 		type = objectInput.readInt();
 		version = objectInput.readUTF();
-
-		status = objectInput.readInt();
 	}
 
 	@Override
@@ -287,6 +287,8 @@ public class SXPElementCacheModel
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
+		objectOutput.writeInt(compatibility);
 
 		if (description == null) {
 			objectOutput.writeUTF("");
@@ -342,8 +344,6 @@ public class SXPElementCacheModel
 		else {
 			objectOutput.writeUTF(version);
 		}
-
-		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -355,6 +355,7 @@ public class SXPElementCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public int compatibility;
 	public String description;
 	public String elementDefinitionJSON;
 	public String fallbackDescription;
@@ -365,6 +366,5 @@ public class SXPElementCacheModel
 	public String title;
 	public int type;
 	public String version;
-	public int status;
 
 }

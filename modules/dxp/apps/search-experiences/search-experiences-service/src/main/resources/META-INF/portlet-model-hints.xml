@@ -11,6 +11,8 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="collectionProvider" type="boolean" />
+		<field name="compatibility" type="int" />
 		<field name="configurationJSON" type="String">
 			<hint-collection name="CLOB" />
 		</field>
@@ -20,6 +22,8 @@
 		<field name="elementInstancesJSON" type="String">
 			<hint-collection name="CLOB" />
 		</field>
+		<field name="fallbackDescription" type="String" />
+		<field name="fallbackTitle" type="String" />
 		<field name="schemaVersion" type="String" />
 		<field localized="true" name="title" type="String">
 			<hint name="max-length">500</hint>
@@ -42,6 +46,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="compatibility" type="int" />
 		<field localized="true" name="description" type="String">
 			<hint-collection name="TEXTAREA" />
 		</field>
@@ -64,6 +69,5 @@
 		</field>
 		<field name="type" type="int" />
 		<field name="version" type="String" />
-		<field name="status" type="int" />
 	</model>
 </model-hints>

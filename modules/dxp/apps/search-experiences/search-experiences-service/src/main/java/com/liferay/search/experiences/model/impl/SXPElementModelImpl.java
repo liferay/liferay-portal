@@ -76,12 +76,13 @@ public class SXPElementModelImpl
 		{"sxpElementId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"description", Types.VARCHAR}, {"elementDefinitionJSON", Types.CLOB},
+		{"compatibility", Types.INTEGER}, {"description", Types.VARCHAR},
+		{"elementDefinitionJSON", Types.CLOB},
 		{"fallbackDescription", Types.VARCHAR},
 		{"fallbackTitle", Types.VARCHAR}, {"hidden_", Types.BOOLEAN},
 		{"readOnly", Types.BOOLEAN}, {"schemaVersion", Types.VARCHAR},
 		{"title", Types.VARCHAR}, {"type_", Types.INTEGER},
-		{"version", Types.VARCHAR}, {"status", Types.INTEGER}
+		{"version", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -97,6 +98,7 @@ public class SXPElementModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("compatibility", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("elementDefinitionJSON", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("fallbackDescription", Types.VARCHAR);
@@ -107,11 +109,10 @@ public class SXPElementModelImpl
 		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("version", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table SXPElement (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,sxpElementId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,description STRING null,elementDefinitionJSON TEXT null,fallbackDescription STRING null,fallbackTitle VARCHAR(500) null,hidden_ BOOLEAN,readOnly BOOLEAN,schemaVersion VARCHAR(75) null,title STRING null,type_ INTEGER,version VARCHAR(75) null,status INTEGER)";
+		"create table SXPElement (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,sxpElementId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,compatibility INTEGER,description STRING null,elementDefinitionJSON TEXT null,fallbackDescription STRING null,fallbackTitle VARCHAR(500) null,hidden_ BOOLEAN,readOnly BOOLEAN,schemaVersion VARCHAR(75) null,title STRING null,type_ INTEGER,version VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table SXPElement";
 
@@ -152,26 +153,20 @@ public class SXPElementModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long STATUS_COLUMN_BITMASK = 8L;
+	public static final long TYPE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 16L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SXPELEMENTID_COLUMN_BITMASK = 64L;
+	public static final long SXPELEMENTID_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -295,6 +290,8 @@ public class SXPElementModelImpl
 			attributeGetterFunctions.put(
 				"modifiedDate", SXPElement::getModifiedDate);
 			attributeGetterFunctions.put(
+				"compatibility", SXPElement::getCompatibility);
+			attributeGetterFunctions.put(
 				"description", SXPElement::getDescription);
 			attributeGetterFunctions.put(
 				"elementDefinitionJSON", SXPElement::getElementDefinitionJSON);
@@ -309,7 +306,6 @@ public class SXPElementModelImpl
 			attributeGetterFunctions.put("title", SXPElement::getTitle);
 			attributeGetterFunctions.put("type", SXPElement::getType);
 			attributeGetterFunctions.put("version", SXPElement::getVersion);
-			attributeGetterFunctions.put("status", SXPElement::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -353,6 +349,9 @@ public class SXPElementModelImpl
 				"modifiedDate",
 				(BiConsumer<SXPElement, Date>)SXPElement::setModifiedDate);
 			attributeSetterBiConsumers.put(
+				"compatibility",
+				(BiConsumer<SXPElement, Integer>)SXPElement::setCompatibility);
+			attributeSetterBiConsumers.put(
 				"description",
 				(BiConsumer<SXPElement, String>)SXPElement::setDescription);
 			attributeSetterBiConsumers.put(
@@ -382,9 +381,6 @@ public class SXPElementModelImpl
 			attributeSetterBiConsumers.put(
 				"version",
 				(BiConsumer<SXPElement, String>)SXPElement::setVersion);
-			attributeSetterBiConsumers.put(
-				"status",
-				(BiConsumer<SXPElement, Integer>)SXPElement::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -590,6 +586,21 @@ public class SXPElementModelImpl
 		}
 
 		_modifiedDate = modifiedDate;
+	}
+
+	@JSON
+	@Override
+	public int getCompatibility() {
+		return _compatibility;
+	}
+
+	@Override
+	public void setCompatibility(int compatibility) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_compatibility = compatibility;
 	}
 
 	@JSON
@@ -990,31 +1001,6 @@ public class SXPElementModelImpl
 		_version = version;
 	}
 
-	@JSON
-	@Override
-	public int getStatus() {
-		return _status;
-	}
-
-	@Override
-	public void setStatus(int status) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_status = status;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public int getOriginalStatus() {
-		return GetterUtil.getInteger(
-			this.<Integer>getColumnOriginalValue("status"));
-	}
-
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1174,6 +1160,7 @@ public class SXPElementModelImpl
 		sxpElementImpl.setUserName(getUserName());
 		sxpElementImpl.setCreateDate(getCreateDate());
 		sxpElementImpl.setModifiedDate(getModifiedDate());
+		sxpElementImpl.setCompatibility(getCompatibility());
 		sxpElementImpl.setDescription(getDescription());
 		sxpElementImpl.setElementDefinitionJSON(getElementDefinitionJSON());
 		sxpElementImpl.setFallbackDescription(getFallbackDescription());
@@ -1184,7 +1171,6 @@ public class SXPElementModelImpl
 		sxpElementImpl.setTitle(getTitle());
 		sxpElementImpl.setType(getType());
 		sxpElementImpl.setVersion(getVersion());
-		sxpElementImpl.setStatus(getStatus());
 
 		sxpElementImpl.resetOriginalValues();
 
@@ -1211,6 +1197,8 @@ public class SXPElementModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		sxpElementImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
+		sxpElementImpl.setCompatibility(
+			this.<Integer>getColumnOriginalValue("compatibility"));
 		sxpElementImpl.setDescription(
 			this.<String>getColumnOriginalValue("description"));
 		sxpElementImpl.setElementDefinitionJSON(
@@ -1229,8 +1217,6 @@ public class SXPElementModelImpl
 		sxpElementImpl.setType(this.<Integer>getColumnOriginalValue("type_"));
 		sxpElementImpl.setVersion(
 			this.<String>getColumnOriginalValue("version"));
-		sxpElementImpl.setStatus(
-			this.<Integer>getColumnOriginalValue("status"));
 
 		return sxpElementImpl;
 	}
@@ -1361,6 +1347,8 @@ public class SXPElementModelImpl
 			sxpElementCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
+		sxpElementCacheModel.compatibility = getCompatibility();
+
 		sxpElementCacheModel.description = getDescription();
 
 		String description = sxpElementCacheModel.description;
@@ -1427,8 +1415,6 @@ public class SXPElementModelImpl
 		if ((version != null) && (version.length() == 0)) {
 			sxpElementCacheModel.version = null;
 		}
-
-		sxpElementCacheModel.status = getStatus();
 
 		return sxpElementCacheModel;
 	}
@@ -1501,6 +1487,7 @@ public class SXPElementModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private int _compatibility;
 	private String _description;
 	private String _descriptionCurrentLanguageId;
 	private String _elementDefinitionJSON;
@@ -1513,7 +1500,6 @@ public class SXPElementModelImpl
 	private String _titleCurrentLanguageId;
 	private int _type;
 	private String _version;
-	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1555,6 +1541,7 @@ public class SXPElementModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
+		_columnOriginalValues.put("compatibility", _compatibility);
 		_columnOriginalValues.put("description", _description);
 		_columnOriginalValues.put(
 			"elementDefinitionJSON", _elementDefinitionJSON);
@@ -1566,7 +1553,6 @@ public class SXPElementModelImpl
 		_columnOriginalValues.put("title", _title);
 		_columnOriginalValues.put("type_", _type);
 		_columnOriginalValues.put("version", _version);
-		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1610,27 +1596,27 @@ public class SXPElementModelImpl
 
 		columnBitmasks.put("modifiedDate", 256L);
 
-		columnBitmasks.put("description", 512L);
+		columnBitmasks.put("compatibility", 512L);
 
-		columnBitmasks.put("elementDefinitionJSON", 1024L);
+		columnBitmasks.put("description", 1024L);
 
-		columnBitmasks.put("fallbackDescription", 2048L);
+		columnBitmasks.put("elementDefinitionJSON", 2048L);
 
-		columnBitmasks.put("fallbackTitle", 4096L);
+		columnBitmasks.put("fallbackDescription", 4096L);
 
-		columnBitmasks.put("hidden_", 8192L);
+		columnBitmasks.put("fallbackTitle", 8192L);
 
-		columnBitmasks.put("readOnly", 16384L);
+		columnBitmasks.put("hidden_", 16384L);
 
-		columnBitmasks.put("schemaVersion", 32768L);
+		columnBitmasks.put("readOnly", 32768L);
 
-		columnBitmasks.put("title", 65536L);
+		columnBitmasks.put("schemaVersion", 65536L);
 
-		columnBitmasks.put("type_", 131072L);
+		columnBitmasks.put("title", 131072L);
 
-		columnBitmasks.put("version", 262144L);
+		columnBitmasks.put("type_", 262144L);
 
-		columnBitmasks.put("status", 524288L);
+		columnBitmasks.put("version", 524288L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

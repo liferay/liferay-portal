@@ -43,9 +43,13 @@ public class SXPBlueprintWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put("collectionProvider", isCollectionProvider());
+		attributes.put("compatibility", getCompatibility());
 		attributes.put("configurationJSON", getConfigurationJSON());
 		attributes.put("description", getDescription());
 		attributes.put("elementInstancesJSON", getElementInstancesJSON());
+		attributes.put("fallbackDescription", getFallbackDescription());
+		attributes.put("fallbackTitle", getFallbackTitle());
 		attributes.put("schemaVersion", getSchemaVersion());
 		attributes.put("title", getTitle());
 		attributes.put("version", getVersion());
@@ -114,6 +118,19 @@ public class SXPBlueprintWrapper
 			setModifiedDate(modifiedDate);
 		}
 
+		Boolean collectionProvider = (Boolean)attributes.get(
+			"collectionProvider");
+
+		if (collectionProvider != null) {
+			setCollectionProvider(collectionProvider);
+		}
+
+		Integer compatibility = (Integer)attributes.get("compatibility");
+
+		if (compatibility != null) {
+			setCompatibility(compatibility);
+		}
+
 		String configurationJSON = (String)attributes.get("configurationJSON");
 
 		if (configurationJSON != null) {
@@ -131,6 +148,19 @@ public class SXPBlueprintWrapper
 
 		if (elementInstancesJSON != null) {
 			setElementInstancesJSON(elementInstancesJSON);
+		}
+
+		String fallbackDescription = (String)attributes.get(
+			"fallbackDescription");
+
+		if (fallbackDescription != null) {
+			setFallbackDescription(fallbackDescription);
+		}
+
+		String fallbackTitle = (String)attributes.get("fallbackTitle");
+
+		if (fallbackTitle != null) {
+			setFallbackTitle(fallbackTitle);
 		}
 
 		String schemaVersion = (String)attributes.get("schemaVersion");
@@ -187,6 +217,16 @@ public class SXPBlueprintWrapper
 	}
 
 	/**
+	 * Returns the collection provider of this sxp blueprint.
+	 *
+	 * @return the collection provider of this sxp blueprint
+	 */
+	@Override
+	public boolean getCollectionProvider() {
+		return model.getCollectionProvider();
+	}
+
+	/**
 	 * Returns the company ID of this sxp blueprint.
 	 *
 	 * @return the company ID of this sxp blueprint
@@ -194,6 +234,16 @@ public class SXPBlueprintWrapper
 	@Override
 	public long getCompanyId() {
 		return model.getCompanyId();
+	}
+
+	/**
+	 * Returns the compatibility of this sxp blueprint.
+	 *
+	 * @return the compatibility of this sxp blueprint
+	 */
+	@Override
+	public int getCompatibility() {
+		return model.getCompatibility();
 	}
 
 	/**
@@ -315,6 +365,26 @@ public class SXPBlueprintWrapper
 	@Override
 	public String getExternalReferenceCode() {
 		return model.getExternalReferenceCode();
+	}
+
+	/**
+	 * Returns the fallback description of this sxp blueprint.
+	 *
+	 * @return the fallback description of this sxp blueprint
+	 */
+	@Override
+	public String getFallbackDescription() {
+		return model.getFallbackDescription();
+	}
+
+	/**
+	 * Returns the fallback title of this sxp blueprint.
+	 *
+	 * @return the fallback title of this sxp blueprint
+	 */
+	@Override
+	public String getFallbackTitle() {
+		return model.getFallbackTitle();
 	}
 
 	/**
@@ -554,6 +624,16 @@ public class SXPBlueprintWrapper
 	}
 
 	/**
+	 * Returns <code>true</code> if this sxp blueprint is collection provider.
+	 *
+	 * @return <code>true</code> if this sxp blueprint is collection provider; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isCollectionProvider() {
+		return model.isCollectionProvider();
+	}
+
+	/**
 	 * Returns <code>true</code> if this sxp blueprint is denied.
 	 *
 	 * @return <code>true</code> if this sxp blueprint is denied; <code>false</code> otherwise
@@ -644,6 +724,16 @@ public class SXPBlueprintWrapper
 	}
 
 	/**
+	 * Sets whether this sxp blueprint is collection provider.
+	 *
+	 * @param collectionProvider the collection provider of this sxp blueprint
+	 */
+	@Override
+	public void setCollectionProvider(boolean collectionProvider) {
+		model.setCollectionProvider(collectionProvider);
+	}
+
+	/**
 	 * Sets the company ID of this sxp blueprint.
 	 *
 	 * @param companyId the company ID of this sxp blueprint
@@ -651,6 +741,16 @@ public class SXPBlueprintWrapper
 	@Override
 	public void setCompanyId(long companyId) {
 		model.setCompanyId(companyId);
+	}
+
+	/**
+	 * Sets the compatibility of this sxp blueprint.
+	 *
+	 * @param compatibility the compatibility of this sxp blueprint
+	 */
+	@Override
+	public void setCompatibility(int compatibility) {
+		model.setCompatibility(compatibility);
 	}
 
 	/**
@@ -758,6 +858,26 @@ public class SXPBlueprintWrapper
 	@Override
 	public void setExternalReferenceCode(String externalReferenceCode) {
 		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
+	 * Sets the fallback description of this sxp blueprint.
+	 *
+	 * @param fallbackDescription the fallback description of this sxp blueprint
+	 */
+	@Override
+	public void setFallbackDescription(String fallbackDescription) {
+		model.setFallbackDescription(fallbackDescription);
+	}
+
+	/**
+	 * Sets the fallback title of this sxp blueprint.
+	 *
+	 * @param fallbackTitle the fallback title of this sxp blueprint
+	 */
+	@Override
+	public void setFallbackTitle(String fallbackTitle) {
+		model.setFallbackTitle(fallbackTitle);
 	}
 
 	/**

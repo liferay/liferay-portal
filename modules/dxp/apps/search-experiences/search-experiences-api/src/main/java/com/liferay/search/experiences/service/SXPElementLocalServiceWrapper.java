@@ -397,15 +397,6 @@ public class SXPElementLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.search.experiences.model.SXPElement updateStatus(
-			long userId, long sxpElementId, int status)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _sxpElementLocalService.updateStatus(
-			userId, sxpElementId, status);
-	}
-
-	@Override
 	public com.liferay.search.experiences.model.SXPElement updateSXPElement(
 			String externalReferenceCode, long userId, long sxpElementId,
 			java.util.Map<java.util.Locale, String> descriptionMap,

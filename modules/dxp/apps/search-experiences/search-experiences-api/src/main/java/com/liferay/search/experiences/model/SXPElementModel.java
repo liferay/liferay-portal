@@ -218,6 +218,20 @@ public interface SXPElementModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the compatibility of this sxp element.
+	 *
+	 * @return the compatibility of this sxp element
+	 */
+	public int getCompatibility();
+
+	/**
+	 * Sets the compatibility of this sxp element.
+	 *
+	 * @param compatibility the compatibility of this sxp element
+	 */
+	public void setCompatibility(int compatibility);
+
+	/**
 	 * Returns the description of this sxp element.
 	 *
 	 * @return the description of this sxp element
@@ -547,20 +561,6 @@ public interface SXPElementModel
 	 * @param version the version of this sxp element
 	 */
 	public void setVersion(String version);
-
-	/**
-	 * Returns the status of this sxp element.
-	 *
-	 * @return the status of this sxp element
-	 */
-	public int getStatus();
-
-	/**
-	 * Sets the status of this sxp element.
-	 *
-	 * @param status the status of this sxp element
-	 */
-	public void setStatus(int status);
 
 	@Override
 	public String[] getAvailableLanguageIds();

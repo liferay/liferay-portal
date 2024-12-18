@@ -219,6 +219,41 @@ public interface SXPBlueprintModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the collection provider of this sxp blueprint.
+	 *
+	 * @return the collection provider of this sxp blueprint
+	 */
+	public boolean getCollectionProvider();
+
+	/**
+	 * Returns <code>true</code> if this sxp blueprint is collection provider.
+	 *
+	 * @return <code>true</code> if this sxp blueprint is collection provider; <code>false</code> otherwise
+	 */
+	public boolean isCollectionProvider();
+
+	/**
+	 * Sets whether this sxp blueprint is collection provider.
+	 *
+	 * @param collectionProvider the collection provider of this sxp blueprint
+	 */
+	public void setCollectionProvider(boolean collectionProvider);
+
+	/**
+	 * Returns the compatibility of this sxp blueprint.
+	 *
+	 * @return the compatibility of this sxp blueprint
+	 */
+	public int getCompatibility();
+
+	/**
+	 * Sets the compatibility of this sxp blueprint.
+	 *
+	 * @param compatibility the compatibility of this sxp blueprint
+	 */
+	public void setCompatibility(int compatibility);
+
+	/**
 	 * Returns the configuration json of this sxp blueprint.
 	 *
 	 * @return the configuration json of this sxp blueprint
@@ -348,6 +383,36 @@ public interface SXPBlueprintModel
 	 * @param elementInstancesJSON the element instances json of this sxp blueprint
 	 */
 	public void setElementInstancesJSON(String elementInstancesJSON);
+
+	/**
+	 * Returns the fallback description of this sxp blueprint.
+	 *
+	 * @return the fallback description of this sxp blueprint
+	 */
+	@AutoEscape
+	public String getFallbackDescription();
+
+	/**
+	 * Sets the fallback description of this sxp blueprint.
+	 *
+	 * @param fallbackDescription the fallback description of this sxp blueprint
+	 */
+	public void setFallbackDescription(String fallbackDescription);
+
+	/**
+	 * Returns the fallback title of this sxp blueprint.
+	 *
+	 * @return the fallback title of this sxp blueprint
+	 */
+	@AutoEscape
+	public String getFallbackTitle();
+
+	/**
+	 * Sets the fallback title of this sxp blueprint.
+	 *
+	 * @param fallbackTitle the fallback title of this sxp blueprint
+	 */
+	public void setFallbackTitle(String fallbackTitle);
 
 	/**
 	 * Returns the schema version of this sxp blueprint.

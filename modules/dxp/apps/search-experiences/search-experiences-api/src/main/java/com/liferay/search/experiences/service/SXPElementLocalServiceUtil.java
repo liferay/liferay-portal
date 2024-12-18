@@ -350,13 +350,6 @@ public class SXPElementLocalServiceUtil {
 		return getService().getSXPElementsCount();
 	}
 
-	public static SXPElement updateStatus(
-			long userId, long sxpElementId, int status)
-		throws PortalException {
-
-		return getService().updateStatus(userId, sxpElementId, status);
-	}
-
 	public static SXPElement updateSXPElement(
 			String externalReferenceCode, long userId, long sxpElementId,
 			Map<java.util.Locale, String> descriptionMap,

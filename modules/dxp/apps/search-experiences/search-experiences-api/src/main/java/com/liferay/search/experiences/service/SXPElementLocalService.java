@@ -305,10 +305,6 @@ public interface SXPElementLocalService
 	public int getSXPElementsCount();
 
 	@Indexable(type = IndexableType.REINDEX)
-	public SXPElement updateStatus(long userId, long sxpElementId, int status)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
 	public SXPElement updateSXPElement(
 			String externalReferenceCode, long userId, long sxpElementId,
 			Map<Locale, String> descriptionMap, String elementDefinitionJSON,
