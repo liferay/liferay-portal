@@ -1297,15 +1297,15 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		user.setPasswordEncrypted(true);
 
+		boolean passwordReset = false;
+
 		if ((ldapServerId <= 0) ||
 			!LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
 
-			user.setPasswordReset(_isPasswordReset(companyId));
-		}
-		else {
-			user.setPasswordReset(false);
+			passwordReset = _isPasswordReset(companyId);
 		}
 
+		user.setPasswordReset(passwordReset);
 		user.setScreenName(screenName);
 		user.setEmailAddress(emailAddress);
 		user.setLdapServerId(ldapServerId);

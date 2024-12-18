@@ -450,7 +450,7 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable1 =
 				_updateLDAPAuthConfigurationWithSafeCloseable(true)) {
 
-			User user;
+			User user = null;
 
 			try (SafeCloseable safeCloseable2 =
 					_updateDefaultPasswordPolicyWithSafeCloseable(
