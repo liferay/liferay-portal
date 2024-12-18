@@ -308,7 +308,7 @@ public class EditPasswordPolicyAssignmentsManagementToolbarDisplayContext {
 		if (LDAPSettingsUtil.isPasswordPolicyEnabled(
 				themeDisplay.getCompanyId())) {
 
-			userParams.put("nonLDAPUsers", true);
+			userParams.put("noLDAPUsers", true);
 		}
 
 		UserSearchTerms searchTerms =
