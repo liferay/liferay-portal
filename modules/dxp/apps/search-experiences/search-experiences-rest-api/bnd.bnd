@@ -4,5 +4,7 @@ Bundle-Version: 13.2.0
 Export-Package:\
 	com.liferay.search.experiences.rest.dto.v1_0,\
 	com.liferay.search.experiences.rest.dto.v1_0.util,\
-	com.liferay.search.experiences.rest.resource.v1_0
+	com.liferay.search.experiences.rest.dto.v2_0,\
+	com.liferay.search.experiences.rest.resource.v1_0,\
+	com.liferay.search.experiences.rest.resource.v2_0
 Liferay-Enterprise-App: dxp.only=true;product.id=22b7e30f-34d4-4a63-9696-56987ad66e4e
