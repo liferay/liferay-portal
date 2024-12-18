@@ -193,6 +193,15 @@ public class DefaultLDAPSettings implements LDAPSettings {
 		return ldapAuthConfiguration.passwordPolicyEnabled();
 	}
 
+	@Override
+	public boolean isPasswordPolicyEnabled(long ldapServerId, long companyId) {
+		if (isPasswordPolicyEnabled(companyId) && (ldapServerId > 0)) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private Properties _getProperties(String[] keyValuePairs) {
 		Properties properties = new Properties();
 

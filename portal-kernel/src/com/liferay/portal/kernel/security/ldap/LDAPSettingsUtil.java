@@ -107,6 +107,14 @@ public class LDAPSettingsUtil {
 		return ldapSettings.isPasswordPolicyEnabled(companyId);
 	}
 
+	public static boolean isPasswordPolicyEnabled(
+		long ldapServerId, long companyId) {
+
+		LDAPSettings ldapSettings = _ldapSettingsSnapshot.get();
+
+		return ldapSettings.isPasswordPolicyEnabled(ldapServerId, companyId);
+	}
+
 	private static final Snapshot<LDAPSettings> _ldapSettingsSnapshot =
 		new Snapshot<>(LDAPSettingsUtil.class, LDAPSettings.class);
 

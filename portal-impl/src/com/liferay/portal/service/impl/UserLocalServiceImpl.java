@@ -1299,8 +1299,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		boolean passwordReset = false;
 
-		if ((ldapServerId <= 0) ||
-			!LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
+		if (!LDAPSettingsUtil.isPasswordPolicyEnabled(
+				ldapServerId, companyId)) {
 
 			passwordReset = _isPasswordReset(companyId);
 		}
@@ -1913,8 +1913,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			serviceContext, "autoPassword");
 
 		if (autoPassword) {
-			if (LDAPSettingsUtil.isPasswordPolicyEnabled(user.getCompanyId()) &&
-				(user.getLdapServerId() > 0)) {
+			if (LDAPSettingsUtil.isPasswordPolicyEnabled(
+					user.getLdapServerId(), user.getCompanyId())) {
 
 				if (_log.isWarnEnabled()) {
 					_log.warn(
@@ -5288,8 +5288,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		catch (ModelListenerException modelListenerException) {
 			Throwable throwable = modelListenerException.getCause();
 
-			if (LDAPSettingsUtil.isPasswordPolicyEnabled(user.getCompanyId()) &&
-				(user.getLdapServerId() > 0)) {
+			if (LDAPSettingsUtil.isPasswordPolicyEnabled(
+					user.getLdapServerId(), user.getCompanyId())) {
 
 				String msg = GetterUtil.getString(throwable.getMessage());
 
@@ -6392,8 +6392,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			// Let LDAP handle max failure event
 
-			if (!LDAPSettingsUtil.isPasswordPolicyEnabled(companyId) ||
-				(user.getLdapServerId() <= 0)) {
+			if (!LDAPSettingsUtil.isPasswordPolicyEnabled(
+					user.getLdapServerId(), companyId)) {
 
 				PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 
@@ -7051,8 +7051,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		if (!autoPassword) {
 			PasswordPolicy passwordPolicy = null;
 
-			if ((ldapServerId <= 0) ||
-				!LDAPSettingsUtil.isPasswordPolicyEnabled(companyId)) {
+			if (!LDAPSettingsUtil.isPasswordPolicyEnabled(
+					ldapServerId, companyId)) {
 
 				passwordPolicy =
 					_passwordPolicyLocalService.getDefaultPasswordPolicy(
