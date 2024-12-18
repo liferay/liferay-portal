@@ -19,9 +19,13 @@
 
 		<!-- Other fields -->
 
+		<column name="collectionProvider" type="boolean" />
+		<column name="compatibility" type="int" />
 		<column name="configurationJSON" type="String" />
 		<column localized="true" name="description" type="String" />
 		<column name="elementInstancesJSON" type="String" />
+		<column name="fallbackDescription" type="String" />
+		<column name="fallbackTitle" type="String" />
 		<column name="schemaVersion" type="String" />
 		<column localized="true" name="title" type="String" />
 		<column name="version" type="String" />
@@ -52,6 +56,7 @@
 
 		<!-- Other fields -->
 
+		<column name="compatibility" type="int" />
 		<column localized="true" name="description" type="String" />
 		<column name="elementDefinitionJSON" type="String" />
 		<column name="fallbackDescription" type="String" />
@@ -62,7 +67,6 @@
 		<column localized="true" name="title" type="String" />
 		<column name="type" type="int" />
 		<column name="version" type="String" />
-		<column name="status" type="int" />
 
 		<!-- Finder methods -->
 
@@ -76,11 +80,6 @@
 		<finder name="C_T" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="type" />
-		</finder>
-		<finder name="C_T_S" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="type" />
-			<finder-column name="status" />
 		</finder>
 	</entity>
 	<exceptions>
