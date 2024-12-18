@@ -1,0 +1,3339 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.portal.kernel" auto-import-default-references="false" mvcc-enabled="true" package-path="com.liferay.portal">
+	<namespace>Portal</namespace>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="Address" persistence-class="com.liferay.portal.service.persistence.impl.AddressPersistenceImpl2" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="addressId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="countryId" type="long" />
+		<column name="listTypeId" type="long" />
+		<column name="regionId" type="long" />
+		<column name="city" type="String" />
+		<column name="description" type="String" />
+		<column name="latitude" type="double" />
+		<column name="longitude" type="double" />
+		<column name="mailing" type="boolean" />
+		<column name="name" type="String" />
+		<column name="primary" type="boolean" />
+		<column name="street1" type="String" />
+		<column name="street2" type="String" />
+		<column name="street3" type="String" />
+		<column name="validationDate" type="Date" />
+		<column name="validationStatus" type="int" />
+		<column name="zip" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="CountryId" return-type="Collection">
+			<finder-column name="countryId" />
+		</finder>
+		<finder name="RegionId" return-type="Collection">
+			<finder-column name="regionId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_C_L" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column arrayable-operator="true" name="listTypeId" />
+		</finder>
+		<finder name="C_C_C_M" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="mailing" />
+		</finder>
+		<finder name="C_C_C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="primary" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="BrowserTracker" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="browserTrackerId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="browserKey" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="BrowserTracker" unique="true">
+			<finder-column name="userId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="ClassName" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="classNameId" primary="true" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="value" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="Value" return-type="ClassName" unique="true">
+			<finder-column name="value" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Company" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="companyId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="webId" type="String" />
+		<column name="mx" type="String" />
+		<column name="homeURL" type="String" />
+		<column name="logoId" type="long" />
+		<column name="maxUsers" type="int" />
+		<column name="active" type="boolean" />
+		<column name="name" type="String" />
+		<column name="legalName" type="String" />
+		<column name="legalId" type="String" />
+		<column name="legalType" type="String" />
+		<column name="sicCode" type="String" />
+		<column name="tickerSymbol" type="String" />
+		<column name="industry" type="String" />
+		<column name="type" type="String" />
+		<column name="size" type="String" />
+		<column name="indexNameCurrent" type="String" />
+		<column name="indexNameNext" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="WebId" return-type="Company" unique="true">
+			<finder-column name="webId" />
+		</finder>
+		<finder name="Mx" return-type="Company">
+			<finder-column name="mx" />
+		</finder>
+		<finder name="LogoId" return-type="Company">
+			<finder-column name="logoId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="CompanyInfo" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="companyInfoId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="key" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="CompanyInfo" unique="true">
+			<finder-column name="companyId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Contact" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="contactId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="parentContactId" type="long" />
+		<column name="emailAddress" type="String" />
+		<column name="firstName" type="String" />
+		<column name="middleName" type="String" />
+		<column name="lastName" type="String" />
+		<column name="prefixListTypeId" type="long" />
+		<column name="suffixListTypeId" type="long" />
+		<column name="male" type="boolean" />
+		<column name="birthday" type="Date" />
+		<column name="smsSn" type="String" />
+		<column name="facebookSn" type="String" />
+		<column name="jabberSn" type="String" />
+		<column name="skypeSn" type="String" />
+		<column name="twitterSn" type="String" />
+		<column name="employeeStatusId" type="String" />
+		<column name="employeeNumber" type="String" />
+		<column name="jobTitle" type="String" />
+		<column name="jobClass" type="String" />
+		<column name="hoursOfOperation" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="contactId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_U" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="Country" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="countryId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="a2" type="String" />
+		<column name="a3" type="String" />
+		<column name="active" type="boolean" />
+		<column name="billingAllowed" type="boolean" />
+		<column name="groupFilterEnabled" type="boolean" />
+		<column name="idd" type="String" />
+		<column name="name" type="String" />
+		<column name="number" type="String" />
+		<column name="position" type="double" />
+		<column name="shippingAllowed" type="boolean" />
+		<column name="subjectToVAT" type="boolean" />
+		<column name="zipRequired" type="boolean" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Localized entity -->
+
+		<localized-entity>
+			<localized-column name="title" />
+		</localized-entity>
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="Active" return-type="Collection">
+			<finder-column name="active" />
+		</finder>
+		<finder name="C_A2" return-type="Country" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="a2" />
+		</finder>
+		<finder name="C_A3" return-type="Country" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="a3" />
+		</finder>
+		<finder name="C_Active" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+		</finder>
+		<finder name="C_Name" return-type="Country" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="C_Number" return-type="Country" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="number" />
+		</finder>
+		<finder name="C_A_B" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+			<finder-column name="billingAllowed" />
+		</finder>
+		<finder name="C_A_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+			<finder-column name="shippingAllowed" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="EmailAddress" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="emailAddressId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="address" type="String" />
+		<column name="listTypeId" type="long" />
+		<column name="primary" type="boolean" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="primary" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="Group" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column accessor="true" name="groupId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="creatorUserId" type="long" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="parentGroupId" type="long" />
+		<column name="liveGroupId" type="long" />
+		<column name="treePath" type="String" />
+		<column name="groupKey" type="String" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="type" type="int" />
+		<column name="typeSettings" type="String" />
+		<column name="manualMembership" type="boolean" />
+		<column name="membershipRestriction" type="int" />
+		<column name="friendlyURL" type="String" />
+		<column name="site" type="boolean" />
+		<column name="remoteStagingGroupCount" type="int" />
+		<column name="inheritContent" type="boolean" />
+		<column name="active" type="boolean" />
+
+		<!-- Relationships -->
+
+		<column entity="Organization" mapping-table="Groups_Orgs" name="orgs" type="Collection" />
+		<column entity="Role" mapping-table="Groups_Roles" name="roles" type="Collection" />
+		<column entity="UserGroup" mapping-table="Groups_UserGroups" name="userGroups" type="Collection" />
+		<column entity="User" mapping-table="Users_Groups" name="users" type="Collection" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column case-sensitive="false" name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="LiveGroupId" return-type="Group">
+			<finder-column name="liveGroupId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentGroupId" />
+		</finder>
+		<finder name="C_GK" return-type="Collection" unique="true">
+			<finder-column name="companyId" />
+			<finder-column arrayable-operator="OR" name="groupKey" />
+		</finder>
+		<finder name="C_F" return-type="Group" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="friendlyURL" />
+		</finder>
+		<finder name="C_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="site" />
+		</finder>
+		<finder name="C_A" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+		</finder>
+		<finder name="C_CPK" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="T_A" return-type="Collection">
+			<finder-column name="type" />
+			<finder-column name="active" />
+		</finder>
+		<finder db-index="false" name="GtG_C_P" return-type="Collection">
+			<finder-column comparator="&gt;" name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentGroupId" />
+		</finder>
+		<finder name="C_C_C" return-type="Group" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="parentGroupId" />
+		</finder>
+		<finder name="C_C_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="site" />
+		</finder>
+		<finder name="C_P_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentGroupId" />
+			<finder-column name="site" />
+		</finder>
+		<finder name="C_L_GK" return-type="Group" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="liveGroupId" />
+			<finder-column name="groupKey" />
+		</finder>
+		<finder db-index="false" name="C_LikeT_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="LIKE" name="treePath" />
+			<finder-column name="site" />
+		</finder>
+		<finder db-index="false" name="C_LikeN_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+			<finder-column name="site" />
+		</finder>
+		<finder name="C_S_A" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="site" />
+			<finder-column name="active" />
+		</finder>
+		<finder db-index="false" name="GtG_C_C_P" return-type="Collection">
+			<finder-column comparator="&gt;" name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="parentGroupId" />
+		</finder>
+		<finder db-index="false" name="GtG_C_P_S" return-type="Collection">
+			<finder-column comparator="&gt;" name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentGroupId" />
+			<finder-column name="site" />
+		</finder>
+		<finder name="C_C_L_GK" return-type="Group" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="liveGroupId" />
+			<finder-column name="groupKey" />
+		</finder>
+		<finder db-index="false" name="C_P_LikeN_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentGroupId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+			<finder-column name="site" />
+		</finder>
+		<finder name="C_P_S_I" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentGroupId" />
+			<finder-column name="site" />
+			<finder-column name="inheritContent" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="Image" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="imageId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="type" type="String" />
+		<column name="height" type="int" />
+		<column name="width" type="int" />
+		<column name="size" type="int" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="imageId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="LtSize" return-type="Collection">
+			<finder-column comparator="&lt;" name="size" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="group" local-service="true" name="Layout" remote-service="true" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="plid" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentPlid" type="long" />
+		<column name="privateLayout" type="boolean" />
+		<column accessor="true" name="layoutId" type="long" />
+		<column name="parentLayoutId" type="long" />
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="title" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column localized="true" name="keywords" type="String" />
+		<column localized="true" name="robots" type="String" />
+		<column name="type" type="String" />
+		<column name="typeSettings" type="String" />
+		<column name="hidden" type="boolean" />
+		<column name="system" type="boolean" />
+		<column name="friendlyURL" type="String" />
+		<column name="iconImageId" type="long" />
+		<column name="themeId" type="String" />
+		<column name="colorSchemeId" type="String" />
+		<column name="styleBookEntryId" type="long" />
+		<column name="css" type="String" />
+		<column name="priority" type="int" />
+		<column name="faviconFileEntryId" type="long" />
+		<column name="masterLayoutPlid" type="long" />
+		<column name="layoutPrototypeUuid" type="String" />
+		<column name="layoutPrototypeLinkEnabled" type="boolean" />
+		<column name="sourcePrototypeLayoutUuid" type="String" />
+		<column name="publishDate" type="Date" />
+		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="parentLayoutId" />
+			<order-column name="priority" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="ParentPlid" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="parentPlid" />
+		</finder>
+		<finder name="IconImageId" return-type="Layout">
+			<finder-column name="iconImageId" />
+		</finder>
+		<finder name="LayoutPrototypeUuid" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="layoutPrototypeUuid" />
+		</finder>
+		<finder name="SourcePrototypeLayoutUuid" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="sourcePrototypeLayoutUuid" />
+		</finder>
+		<finder name="G_P" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+		</finder>
+		<finder name="G_T" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="G_MLP" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="masterLayoutPlid" />
+		</finder>
+		<finder name="C_L" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="companyId" />
+			<finder-column name="layoutPrototypeUuid" />
+		</finder>
+		<finder name="P_I" return-type="Layout">
+			<finder-column name="privateLayout" />
+			<finder-column name="iconImageId" />
+		</finder>
+		<finder name="C_C" return-type="Layout">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_P_L" return-type="Layout" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="layoutId" />
+		</finder>
+		<finder name="G_P_P" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="parentLayoutId" />
+		</finder>
+		<finder name="G_P_T" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column arrayable-operator="OR" name="type" />
+		</finder>
+		<finder name="G_P_F" return-type="Layout" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="friendlyURL" />
+		</finder>
+		<finder name="G_P_SPLU" return-type="Layout">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="sourcePrototypeLayoutUuid" />
+		</finder>
+		<finder name="G_P_ST" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column arrayable-operator="OR" name="status" />
+		</finder>
+		<finder name="G_P_P_H" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="parentLayoutId" />
+			<finder-column name="hidden" />
+		</finder>
+		<finder name="G_P_P_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="parentLayoutId" />
+			<finder-column name="system" />
+		</finder>
+		<finder name="G_P_P_LteP" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="parentLayoutId" />
+			<finder-column comparator="&lt;=" name="priority" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="LayoutBranch" plural-name="LayoutBranchs" remote-service="true" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout">
+
+		<!-- PK fields -->
+
+		<column name="layoutBranchId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+
+		<!-- Other fields -->
+
+		<column name="layoutSetBranchId" type="long" />
+		<column name="plid" type="long" />
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="master" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="LayoutSetBranchId" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+		</finder>
+		<finder name="Plid" return-type="Collection">
+			<finder-column name="plid" />
+		</finder>
+		<finder name="L_P" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="L_P_N" return-type="LayoutBranch" unique="true">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="plid" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="L_P_M" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="plid" />
+			<finder-column name="master" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="LayoutFriendlyURL" remote-service="false" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="layoutFriendlyURLId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="plid" type="long" />
+		<column name="privateLayout" type="boolean" />
+		<column name="friendlyURL" type="String" />
+		<column name="languageId" type="String" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="Plid" return-type="Collection">
+			<finder-column name="plid" />
+		</finder>
+		<finder name="C_F" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="friendlyURL" />
+		</finder>
+		<finder name="P_F" return-type="Collection">
+			<finder-column name="plid" />
+			<finder-column name="friendlyURL" />
+		</finder>
+		<finder name="P_L" return-type="Collection" unique="true">
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="plid" />
+			<finder-column name="languageId" />
+		</finder>
+		<finder name="G_P_F" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="friendlyURL" />
+		</finder>
+		<finder name="G_P_F_L" return-type="LayoutFriendlyURL" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="friendlyURL" />
+			<finder-column name="languageId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="LayoutPrototype" remote-service="true" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="layoutPrototypeId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="settings" type="String" />
+		<column name="active" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_A" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="LayoutRevision" remote-service="true" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout">
+
+		<!-- PK fields -->
+
+		<column name="layoutRevisionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="layoutSetBranchId" type="long" />
+		<column name="layoutBranchId" type="long" />
+		<column name="parentLayoutRevisionId" type="long" />
+		<column name="head" type="boolean" />
+		<column name="major" type="boolean" />
+		<column name="plid" type="long" />
+		<column name="privateLayout" type="boolean" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="title" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column localized="true" name="keywords" type="String" />
+		<column localized="true" name="robots" type="String" />
+		<column name="typeSettings" type="String" />
+		<column name="iconImageId" type="long" />
+		<column name="themeId" type="String" />
+		<column name="colorSchemeId" type="String" />
+		<column name="css" type="String" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="modifiedDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="LayoutSetBranchId" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+		</finder>
+		<finder name="Plid" return-type="Collection">
+			<finder-column name="plid" />
+		</finder>
+		<finder name="Status" return-type="Collection">
+			<finder-column name="status" />
+		</finder>
+		<finder name="L_H" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="head" />
+		</finder>
+		<finder name="L_P" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="L_S" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="H_P" return-type="Collection">
+			<finder-column name="head" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="P_NotS" return-type="Collection">
+			<finder-column name="plid" />
+			<finder-column comparator="!=" name="status" />
+		</finder>
+		<finder name="L_L_P" return-type="Collection" where="status != 5">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="layoutBranchId" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="L_P_P" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="parentLayoutRevisionId" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="L_H_P" return-type="LayoutRevision">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="head" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="L_H_P_Collection" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="head" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="L_H_S" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="head" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="L_P_S" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="plid" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="L_L_H_P" return-type="LayoutRevision">
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="layoutBranchId" />
+			<finder-column name="head" />
+			<finder-column name="plid" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="LayoutSet" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="layoutSetId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="privateLayout" type="boolean" />
+		<column name="logoId" type="long" />
+		<column name="themeId" type="String" />
+		<column name="colorSchemeId" type="String" />
+		<column name="faviconFileEntryId" type="long" />
+		<column name="css" type="String" />
+		<column name="settings" type="String" />
+		<column name="layoutSetPrototypeUuid" type="String" />
+		<column name="layoutSetPrototypeLinkEnabled" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="LayoutSetPrototypeUuid" return-type="Collection">
+			<finder-column name="layoutSetPrototypeUuid" />
+		</finder>
+		<finder name="G_P" return-type="LayoutSet" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+		</finder>
+		<finder name="C_L" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="layoutSetPrototypeUuid" />
+		</finder>
+		<finder name="P_L" return-type="Layout">
+			<finder-column name="privateLayout" />
+			<finder-column name="logoId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="LayoutSetBranch" plural-name="LayoutSetBranchs" remote-service="true" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout">
+
+		<!-- PK fields -->
+
+		<column name="layoutSetBranchId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="privateLayout" type="boolean" />
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="master" type="boolean" />
+		<column name="logoId" type="long" />
+		<column name="themeId" type="String" />
+		<column name="colorSchemeId" type="String" />
+		<column name="css" type="String" />
+		<column name="settings" type="String" />
+		<column name="layoutSetPrototypeUuid" type="String" />
+		<column name="layoutSetPrototypeLinkEnabled" type="boolean" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_P" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+		</finder>
+		<finder name="G_P_N" return-type="LayoutSetBranch" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="G_P_M" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="privateLayout" />
+			<finder-column name="master" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="LayoutSetPrototype" remote-service="true" uad-application-name="Layout" uad-dir-path="../modules/apps/layout/layout-uad/src/main/java" uad-package-path="com.liferay.layout" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="layoutSetPrototypeId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="settings" type="String" />
+		<column name="active" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_A" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="active" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="LayoutTemplate" remote-service="false" tx-manager="none">
+	</entity>
+	<entity local-service="true" name="ListType" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="listTypeId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="type" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column case-sensitive="false" name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="C_N_T" return-type="ListType" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="type" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="MembershipRequest" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="membershipRequestId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="comments" type="String" />
+		<column name="replyComments" type="String" />
+		<column name="replyDate" type="Date" />
+		<column name="replierUserId" type="long" />
+		<column name="statusId" type="long" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="G_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="statusId" />
+		</finder>
+		<finder name="G_U_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="statusId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="Organization" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="organizationId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentOrganizationId" type="long" />
+		<column name="treePath" type="String" />
+		<column accessor="true" name="name" type="String" />
+		<column name="type" type="String" />
+		<column name="recursable" type="boolean" />
+		<column name="regionId" type="long" />
+		<column name="countryId" type="long" />
+		<column name="statusListTypeId" type="long" />
+		<column name="comments" type="String" />
+		<column name="logoId" type="long" />
+
+		<!-- Relationships -->
+
+		<column entity="Group" mapping-table="Groups_Orgs" name="groups" type="Collection" />
+		<column entity="User" mapping-table="Users_Orgs" name="users" type="Collection" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder db-index="false" name="CompanyIdLocations" return-type="Collection" where="parentOrganizationId != 0">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentOrganizationId" />
+		</finder>
+		<finder db-index="false" name="C_LikeT" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="LIKE" name="treePath" />
+		</finder>
+		<finder name="C_N" return-type="Organization" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="C_LikeN" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+		</finder>
+		<finder db-index="false" name="GtO_C_P" return-type="Collection">
+			<finder-column comparator="&gt;" name="organizationId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentOrganizationId" />
+		</finder>
+		<finder name="C_P_LikeN" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentOrganizationId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="OrgLabor" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="orgLaborId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="organizationId" type="long" />
+		<column name="listTypeId" type="long" />
+		<column name="sunOpen" type="int" />
+		<column name="sunClose" type="int" />
+		<column name="monOpen" type="int" />
+		<column name="monClose" type="int" />
+		<column name="tueOpen" type="int" />
+		<column name="tueClose" type="int" />
+		<column name="wedOpen" type="int" />
+		<column name="wedClose" type="int" />
+		<column name="thuOpen" type="int" />
+		<column name="thuClose" type="int" />
+		<column name="friOpen" type="int" />
+		<column name="friClose" type="int" />
+		<column name="satOpen" type="int" />
+		<column name="satClose" type="int" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="organizationId" />
+			<order-column name="listTypeId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="OrganizationId" return-type="Collection">
+			<finder-column name="organizationId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="PasswordPolicy" remote-service="true" uad-application-name="Password Policies Admin" uad-dir-path="../modules/apps/password-policies-admin/password-policies-admin-uad/src/main/java" uad-package-path="com.liferay.password.policies.admin" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="passwordPolicyId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="defaultPolicy" type="boolean" />
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="changeable" type="boolean" />
+		<column name="changeRequired" type="boolean" />
+		<column name="minAge" type="long" />
+		<column name="checkSyntax" type="boolean" />
+		<column name="allowDictionaryWords" type="boolean" />
+		<column name="minAlphanumeric" type="int" />
+		<column name="minLength" type="int" />
+		<column name="minLowerCase" type="int" />
+		<column name="minNumbers" type="int" />
+		<column name="minSymbols" type="int" />
+		<column name="minUpperCase" type="int" />
+		<column name="regex" type="String" />
+		<column name="history" type="boolean" />
+		<column name="historyCount" type="int" />
+		<column name="expireable" type="boolean" />
+		<column name="maxAge" type="long" />
+		<column name="warningTime" type="long" />
+		<column name="graceLimit" type="int" />
+		<column name="lockout" type="boolean" />
+		<column name="maxFailure" type="int" />
+		<column name="lockoutDuration" type="long" />
+		<column name="requireUnlock" type="boolean" />
+		<column name="resetFailureCount" type="long" />
+		<column name="resetTicketMaxAge" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_DP" return-type="PasswordPolicy">
+			<finder-column name="companyId" />
+			<finder-column name="defaultPolicy" />
+		</finder>
+		<finder name="C_N" return-type="PasswordPolicy" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="PasswordPolicyRel" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="passwordPolicyRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="passwordPolicyId" type="long" />
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="PasswordPolicyId" return-type="Collection">
+			<finder-column name="passwordPolicyId" />
+		</finder>
+		<finder name="C_C" return-type="PasswordPolicyRel" unique="true">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="PasswordTracker" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="passwordTrackerId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="password" type="String" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="userId" />
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="false" name="Permission" remote-service="true">
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="Phone" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="phoneId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="number" type="String" />
+		<column name="extension" type="String" />
+		<column name="listTypeId" type="long" />
+		<column name="primary" type="boolean" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="primary" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="PluginSetting" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="pluginSettingId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="pluginId" type="String" />
+		<column name="pluginType" type="String" />
+		<column name="roles" type="String" />
+		<column name="active" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_P_P" return-type="PluginSetting" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="pluginId" />
+			<finder-column name="pluginType" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Portal" remote-service="true">
+	</entity>
+	<entity local-service="true" name="PortalPreferences" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="portalPreferencesId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="ownerId" type="long" />
+		<column name="ownerType" type="int" />
+
+		<!-- Finder methods -->
+
+		<finder name="OwnerType" return-type="Collection">
+			<finder-column name="ownerType" />
+		</finder>
+		<finder name="O_O" return-type="PortalPreferences">
+			<finder-column name="ownerId" />
+			<finder-column name="ownerType" />
+		</finder>
+	</entity>
+	<entity cache-enabled="false" local-service="true" name="PortalPreferenceValue" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="portalPreferenceValueId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="portalPreferencesId" type="long" />
+		<column name="index" type="int" />
+		<column name="key" type="String" />
+		<column name="largeValue" type="String" />
+		<column name="namespace" type="String" />
+		<column name="smallValue" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="index" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="PortalPreferencesId" return-type="Collection">
+			<finder-column name="portalPreferencesId" />
+		</finder>
+		<finder name="P_N" return-type="Collection">
+			<finder-column name="portalPreferencesId" />
+			<finder-column name="namespace" />
+		</finder>
+		<finder name="P_K_N" return-type="Collection">
+			<finder-column name="portalPreferencesId" />
+			<finder-column name="key" />
+			<finder-column name="namespace" />
+		</finder>
+		<finder name="P_I_K_N" return-type="PortalPreferenceValue" unique="true">
+			<finder-column name="portalPreferencesId" />
+			<finder-column name="index" />
+			<finder-column name="key" />
+			<finder-column name="namespace" />
+		</finder>
+		<finder name="P_K_N_SV" return-type="Collection">
+			<finder-column name="portalPreferencesId" />
+			<finder-column name="key" />
+			<finder-column name="namespace" />
+			<finder-column name="smallValue" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Portlet" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="id" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column accessor="true" name="portletId" type="String" />
+		<column name="roles" type="String" />
+		<column name="active" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_P" return-type="Portlet" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="portletId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="PortletItem" remote-service="false" uad-dir-path="../modules/apps/portal/portal-uad/src/main/java" uad-package-path="com.liferay.portal">
+
+		<!-- PK fields -->
+
+		<column name="portletItemId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="portletId" type="String" />
+		<column name="classNameId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="G_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_P_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="portletId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_N_P_C" return-type="PortletItem">
+			<finder-column name="groupId" />
+			<finder-column case-sensitive="false" name="name" />
+			<finder-column name="portletId" />
+			<finder-column name="classNameId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="PortletPreferences" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="portletPreferencesId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="ownerId" type="long" />
+		<column name="ownerType" type="int" />
+		<column name="plid" type="long" />
+		<column name="portletId" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="OwnerId" return-type="Collection">
+			<finder-column name="ownerId" />
+		</finder>
+		<finder name="Plid" return-type="Collection">
+			<finder-column name="plid" />
+		</finder>
+		<finder name="PortletId" return-type="Collection">
+			<finder-column name="portletId" />
+		</finder>
+		<finder name="O_P" return-type="Collection">
+			<finder-column name="ownerType" />
+			<finder-column name="portletId" />
+		</finder>
+		<finder name="P_P" return-type="Collection">
+			<finder-column name="plid" />
+			<finder-column name="portletId" />
+		</finder>
+		<finder name="O_O_P" return-type="Collection">
+			<finder-column name="ownerId" />
+			<finder-column name="ownerType" />
+			<finder-column name="plid" />
+		</finder>
+		<finder name="O_O_PI" return-type="Collection">
+			<finder-column name="ownerId" />
+			<finder-column name="ownerType" />
+			<finder-column name="portletId" />
+		</finder>
+		<finder name="O_P_P" return-type="Collection">
+			<finder-column name="ownerType" />
+			<finder-column name="plid" />
+			<finder-column name="portletId" />
+		</finder>
+		<finder name="C_O_O_LikeP" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="ownerId" />
+			<finder-column name="ownerType" />
+			<finder-column comparator="LIKE" name="portletId" />
+		</finder>
+		<finder name="O_O_P_P" return-type="PortletPreferences" unique="true">
+			<finder-column name="ownerId" />
+			<finder-column name="ownerType" />
+			<finder-column name="plid" />
+			<finder-column name="portletId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="PortletPreferenceValue" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="portletPreferenceValueId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="portletPreferencesId" type="long" />
+		<column name="index" type="int" />
+		<column name="largeValue" type="String" />
+		<column name="name" type="String" />
+		<column name="readOnly" type="boolean" />
+		<column name="smallValue" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="index" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="PortletPreferencesId" return-type="Collection">
+			<finder-column name="portletPreferencesId" />
+		</finder>
+		<finder name="P_N" return-type="Collection">
+			<finder-column name="portletPreferencesId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="C_N_SV" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="smallValue" />
+		</finder>
+		<finder name="P_I_N" return-type="PortletPreferenceValue" unique="true">
+			<finder-column name="portletPreferencesId" />
+			<finder-column name="index" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="P_N_SV" return-type="Collection">
+			<finder-column name="portletPreferencesId" />
+			<finder-column name="name" />
+			<finder-column name="smallValue" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="RecentLayoutBranch" plural-name="RecentLayoutBranchs" remote-service="false" uuid="false">
+
+		<!-- PK fields -->
+
+		<column name="recentLayoutBranchId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="layoutBranchId" type="long" />
+		<column name="layoutSetBranchId" type="long" />
+		<column name="plid" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="LayoutBranchId" return-type="Collection">
+			<finder-column name="layoutBranchId" />
+		</finder>
+		<finder name="U_L_P" return-type="RecentLayout" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="plid" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="RecentLayoutRevision" remote-service="false" uuid="false">
+
+		<!-- PK fields -->
+
+		<column name="recentLayoutRevisionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="layoutRevisionId" type="long" />
+		<column name="layoutSetBranchId" type="long" />
+		<column name="plid" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="LayoutRevisionId" return-type="Collection">
+			<finder-column name="layoutRevisionId" />
+		</finder>
+		<finder name="U_L_P" return-type="RecentLayout" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="layoutSetBranchId" />
+			<finder-column name="plid" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="RecentLayoutSetBranch" plural-name="RecentLayoutSetBranchs" remote-service="false" uuid="false">
+
+		<!-- PK fields -->
+
+		<column name="recentLayoutSetBranchId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="layoutSetBranchId" type="long" />
+		<column name="layoutSetId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="LayoutSetBranchId" return-type="Collection">
+			<finder-column name="layoutSetBranchId" />
+		</finder>
+		<finder name="U_L" return-type="RecentLayoutSet" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="layoutSetId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="Region" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="regionId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="countryId" type="long" />
+		<column name="active" type="boolean" />
+		<column name="name" type="String" />
+		<column name="position" type="double" />
+		<column name="regionCode" type="String" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Localized entity -->
+
+		<localized-entity>
+			<localized-column name="title" />
+		</localized-entity>
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+			<order-column name="position" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CountryId" return-type="Collection">
+			<finder-column name="countryId" />
+		</finder>
+		<finder name="Active" return-type="Collection">
+			<finder-column name="active" />
+		</finder>
+		<finder name="C_A" return-type="Collection">
+			<finder-column name="countryId" />
+			<finder-column name="active" />
+		</finder>
+		<finder name="C_R" return-type="Region" unique="true">
+			<finder-column name="countryId" />
+			<finder-column name="regionCode" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Release" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="releaseId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="servletContextName" type="String" />
+		<column name="schemaVersion" type="String" />
+		<column name="buildNumber" type="int" />
+		<column name="buildDate" type="Date" />
+		<column name="verified" type="boolean" />
+		<column name="state" type="int" />
+		<column name="testString" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="ServletContextName" return-type="Release" unique="true">
+			<finder-column case-sensitive="false" name="servletContextName" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="RememberMeToken" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="rememberMeTokenId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="expirationDate" type="Date" />
+		<column name="value" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="LteExpirationDate" return-type="Collection">
+			<finder-column comparator="&lt;=" name="expirationDate" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="group" local-service="true" name="Repository" remote-service="true" uad-dir-path="../modules/apps/portal/portal-uad/src/main/java" uad-package-path="com.liferay.portal" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="repositoryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="portletId" type="String" />
+		<column name="typeSettings" type="String" />
+		<column name="dlFolderId" type="long" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_N_P" return-type="Repository" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="name" />
+			<finder-column name="portletId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="RepositoryEntry" remote-service="false" uad-dir-path="../modules/apps/portal/portal-uad/src/main/java" uad-package-path="com.liferay.portal" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="repositoryEntryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="repositoryId" type="long" />
+		<column name="mappedId" type="String" />
+		<column name="manualCheckInRequired" type="boolean" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="RepositoryId" return-type="Collection">
+			<finder-column name="repositoryId" />
+		</finder>
+		<finder name="R_M" return-type="RepositoryEntry" unique="true">
+			<finder-column name="repositoryId" />
+			<finder-column name="mappedId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Resource" remote-service="false">
+	</entity>
+	<entity local-service="true" name="ResourceAction" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="resourceActionId" primary="true" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="actionId" type="String" />
+		<column name="bitwiseValue" type="long" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+			<order-column name="bitwiseValue" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="Name" return-type="Collection">
+			<finder-column name="name" />
+		</finder>
+		<finder name="N_A" return-type="ResourceAction" unique="true">
+			<finder-column case-sensitive="true" name="name" />
+			<finder-column name="actionId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="ResourcePermission" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="resourcePermissionId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="scope" type="int" />
+		<column name="primKey" type="String" />
+		<column name="primKeyId" type="long" />
+		<column name="roleId" type="long" />
+		<column name="ownerId" type="long" />
+		<column name="actionIds" type="long" />
+		<column name="viewActionId" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="Name" return-type="Collection">
+			<finder-column name="name" />
+		</finder>
+		<finder name="Scope" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="scope" />
+		</finder>
+		<finder name="RoleId" return-type="Collection">
+			<finder-column name="roleId" />
+		</finder>
+		<finder name="C_LikeP" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="LIKE" name="primKey" />
+		</finder>
+		<finder name="C_N_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="scope" />
+		</finder>
+		<finder name="C_S_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="scope" />
+			<finder-column name="primKey" />
+		</finder>
+		<finder name="C_N_S_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="scope" />
+			<finder-column arrayable-operator="OR" name="primKey" />
+		</finder>
+		<finder name="C_N_S_R" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="scope" />
+			<finder-column name="roleId" />
+		</finder>
+		<finder name="C_N_S_P_R" return-type="Collection" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="scope" />
+			<finder-column name="primKey" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="roleId" />
+		</finder>
+		<finder name="C_N_S_R_V" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="scope" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="roleId" />
+			<finder-column name="viewActionId" />
+		</finder>
+		<finder name="C_N_S_P_R_V" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+			<finder-column name="scope" />
+			<finder-column name="primKeyId" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="roleId" />
+			<finder-column name="viewActionId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="Role" remote-service="true" uad-application-name="Roles" uad-dir-path="../modules/apps/roles/roles-uad/src/main/java" uad-package-path="com.liferay.roles" uuid="true">
+
+		<!-- PK fields -->
+
+		<column accessor="true" name="roleId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column accessor="true" name="name" type="String" />
+		<column accessor="true" localized="true" name="title" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="type" type="int" />
+		<column name="subtype" type="String" />
+
+		<!-- Relationships -->
+
+		<column entity="Group" mapping-table="Groups_Roles" name="groups" type="Collection" />
+		<column entity="User" mapping-table="Users_Roles" name="users" type="Collection" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="Name" return-type="Collection">
+			<finder-column name="name" />
+		</finder>
+		<finder name="Type" return-type="Collection">
+			<finder-column name="type" />
+		</finder>
+		<finder name="Subtype" return-type="Collection">
+			<finder-column name="subtype" />
+		</finder>
+		<finder name="C_N" return-type="Role" unique="true">
+			<finder-column name="companyId" />
+			<finder-column case-sensitive="false" name="name" />
+		</finder>
+		<finder name="C_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column arrayable-operator="OR" name="type" />
+		</finder>
+		<finder name="T_S" return-type="Collection">
+			<finder-column name="type" />
+			<finder-column name="subtype" />
+		</finder>
+		<finder name="C_C_C" return-type="Collection" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column arrayable-operator="OR" name="classPK" />
+		</finder>
+		<finder name="C_C_C_T" return-type="Collection" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column arrayable-operator="OR" name="classPK" />
+			<finder-column name="type" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="ServiceComponent" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="serviceComponentId" primary="true" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="buildNamespace" type="String" />
+		<column name="buildNumber" type="long" />
+		<column name="buildDate" type="long" />
+		<column name="data" type="String" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="buildNamespace" />
+			<order-column name="buildNumber" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="BuildNamespace" return-type="Collection">
+			<finder-column name="buildNamespace" />
+		</finder>
+		<finder name="BNS_BNU" return-type="ServiceComponent" unique="true">
+			<finder-column name="buildNamespace" />
+			<finder-column name="buildNumber" />
+		</finder>
+	</entity>
+	<entity deprecated="true" local-service="true" name="Subscription" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="subscriptionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="frequency" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="G_U" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="U_C" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_U_C_C" return-type="Collection" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column arrayable-operator="OR" name="classPK" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="SystemEvent" remote-service="false" uad-dir-path="../modules/apps/portal/portal-uad/src/main/java" uad-package-path="com.liferay.portal">
+
+		<!-- PK fields -->
+
+		<column accessor="true" name="systemEventId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="classUuid" type="String" />
+		<column name="referrerClassNameId" type="long" />
+		<column name="parentSystemEventId" type="long" />
+		<column name="systemEventSetKey" type="long" />
+		<column name="type" type="int" />
+		<column name="extraData" type="String" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="systemEventSetKey" />
+		</finder>
+		<finder name="G_C_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_C_C_T" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="Team" remote-service="true" uad-application-name="Site Teams" uad-dir-path="../modules/apps/site/site-teams-uad/src/main/java" uad-package-path="com.liferay.site.teams" uuid="true">
+
+		<!-- PK fields -->
+
+		<column accessor="true" name="teamId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="groupId" type="long" />
+		<column accessor="true" name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Relationships -->
+
+		<column entity="User" mapping-table="Users_Teams" name="users" type="Collection" />
+		<column entity="UserGroup" mapping-table="UserGroups_Teams" name="userGroups" type="Collection" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_N" return-type="Team" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="name" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Theme" remote-service="true" tx-manager="none">
+	</entity>
+	<entity local-service="true" name="Ticket" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="ticketId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="key" type="String" />
+		<column name="type" type="int" />
+		<column name="extraInfo" type="String" />
+		<column name="expirationDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="ticketId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="Key" return-type="Ticket">
+			<finder-column name="key" />
+		</finder>
+		<finder name="C_C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_T" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="C_C_C_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="User" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="userId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="contactId" type="long" />
+		<column json-enabled="false" name="password" type="String" />
+		<column json-enabled="false" name="passwordEncrypted" type="boolean" />
+		<column json-enabled="false" name="passwordReset" type="boolean" />
+		<column json-enabled="false" name="passwordModifiedDate" type="Date" />
+		<column json-enabled="false" name="digest" type="String" />
+		<column name="reminderQueryQuestion" type="String" />
+		<column name="reminderQueryAnswer" type="String" />
+		<column name="graceLoginCount" type="int" />
+		<column name="screenName" type="String" />
+		<column name="emailAddress" type="String" />
+		<column name="facebookId" type="long" />
+		<column name="googleUserId" type="String" />
+		<column name="ldapServerId" type="long" />
+		<column name="openId" type="String" />
+		<column name="portraitId" type="long" />
+		<column name="languageId" type="String" />
+		<column name="timeZoneId" type="String" />
+		<column name="greeting" type="String" />
+		<column name="comments" type="String" />
+		<column name="firstName" type="String" />
+		<column name="middleName" type="String" />
+		<column name="lastName" type="String" />
+		<column name="jobTitle" type="String" />
+		<column name="loginDate" type="Date" />
+		<column name="loginIP" type="String" />
+		<column name="lastLoginDate" type="Date" />
+		<column name="lastLoginIP" type="String" />
+		<column name="lastFailedLoginDate" type="Date" />
+		<column name="failedLoginAttempts" type="int" />
+		<column name="lockout" type="boolean" />
+		<column name="lockoutDate" type="Date" />
+		<column name="agreedToTermsOfUse" type="boolean" />
+		<column name="emailAddressVerified" type="boolean" />
+		<column name="type" type="int" />
+		<column name="status" type="int" />
+
+		<!-- Relationships -->
+
+		<column entity="Group" mapping-table="Users_Groups" name="groups" type="Collection" />
+		<column entity="Organization" mapping-table="Users_Orgs" name="orgs" type="Collection" />
+		<column entity="Role" mapping-table="Users_Roles" name="roles" type="Collection" />
+		<column entity="Team" mapping-table="Users_Teams" name="teams" type="Collection" />
+		<column entity="UserGroup" mapping-table="Users_UserGroups" name="userGroups" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection" where="type_ = 1">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="ContactId" return-type="User" unique="true">
+			<finder-column name="contactId" />
+		</finder>
+		<finder name="EmailAddress" return-type="Collection">
+			<finder-column name="emailAddress" />
+		</finder>
+		<finder name="PortraitId" return-type="User">
+			<finder-column name="portraitId" />
+		</finder>
+		<finder db-index="false" name="GtU_C" return-type="Collection" where="type_ = 1">
+			<finder-column comparator="&gt;" name="userId" />
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_U" return-type="User" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_CD" return-type="Collection" where="type_ = 1">
+			<finder-column name="companyId" />
+			<finder-column name="createDate" />
+		</finder>
+		<finder name="C_MD" return-type="Collection" where="type_ = 1">
+			<finder-column name="companyId" />
+			<finder-column name="modifiedDate" />
+		</finder>
+		<finder name="C_SN" return-type="User" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="screenName" />
+		</finder>
+		<finder name="C_EA" return-type="User" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="emailAddress" />
+		</finder>
+		<finder name="C_FID" return-type="User">
+			<finder-column name="companyId" />
+			<finder-column name="facebookId" />
+		</finder>
+		<finder name="C_GUID" return-type="User">
+			<finder-column name="companyId" />
+			<finder-column name="googleUserId" />
+		</finder>
+		<finder name="C_O" return-type="User">
+			<finder-column name="companyId" />
+			<finder-column name="openId" />
+		</finder>
+		<finder name="C_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="C_S" return-type="Collection" where="type_ = 1">
+			<finder-column name="companyId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="C_CD_MD" return-type="Collection" where="type_ = 1">
+			<finder-column name="companyId" />
+			<finder-column name="createDate" />
+			<finder-column name="modifiedDate" />
+		</finder>
+		<finder name="C_T_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="type" />
+			<finder-column name="status" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="UserGroup" remote-service="true" uad-application-name="User Groups Admin" uad-dir-path="../modules/apps/user-groups-admin/user-groups-admin-uad/src/main/java" uad-package-path="com.liferay.user.groups.admin" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="userGroupId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentUserGroupId" type="long" />
+		<column accessor="true" name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="addedByLDAPImport" type="boolean" />
+
+		<!-- Relationships -->
+
+		<column entity="Group" mapping-table="Groups_UserGroups" name="groups" type="Collection" />
+		<column entity="Team" mapping-table="UserGroups_Teams" name="teams" type="Collection" />
+		<column entity="User" mapping-table="Users_UserGroups" name="users" type="Collection" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="parentUserGroupId" />
+		</finder>
+		<finder name="C_N" return-type="UserGroup" unique="true">
+			<finder-column name="companyId" />
+			<finder-column case-sensitive="false" name="name" />
+		</finder>
+		<finder name="C_LikeN" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+		</finder>
+		<finder db-index="false" name="GtU_C_P" return-type="Collection">
+			<finder-column comparator="&gt;" name="userGroupId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentUserGroupId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="UserGroupGroupRole" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="userGroupGroupRoleId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="userGroupId" type="long" />
+		<column name="groupId" type="long" />
+		<column name="roleId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserGroupId" return-type="Collection">
+			<finder-column name="userGroupId" />
+		</finder>
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="RoleId" return-type="Collection">
+			<finder-column name="roleId" />
+		</finder>
+		<finder name="U_G" return-type="Collection">
+			<finder-column name="userGroupId" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_R" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="roleId" />
+		</finder>
+		<finder name="U_G_R" return-type="UserGroupGroupRole" unique="true">
+			<finder-column name="userGroupId" />
+			<finder-column name="groupId" />
+			<finder-column name="roleId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="UserGroupRole" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="userGroupRoleId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column accessor="true" name="userId" type="long" />
+		<column accessor="true" name="groupId" type="long" />
+		<column accessor="true" name="roleId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="RoleId" return-type="Collection">
+			<finder-column name="roleId" />
+		</finder>
+		<finder name="U_G" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_R" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="roleId" />
+		</finder>
+		<finder name="U_G_R" return-type="UserGroupRole" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="groupId" />
+			<finder-column name="roleId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="UserIdMapper" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="userIdMapperId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="type" type="String" />
+		<column name="description" type="String" />
+		<column name="externalUserId" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="U_T" return-type="UserIdMapper" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="T_E" return-type="UserIdMapper" unique="true">
+			<finder-column name="type" />
+			<finder-column name="externalUserId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="UserNotificationDelivery" remote-service="false" uad-application-name="Notifications" uad-auto-delete="true" uad-dir-path="../modules/apps/notifications/notifications-uad/src/main/java" uad-package-path="com.liferay.notifications">
+
+		<!-- PK fields -->
+
+		<column name="userNotificationDeliveryId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" uad-anonymize-field-name="userId" />
+
+		<!-- Other fields -->
+
+		<column name="portletId" type="String" />
+		<column name="classNameId" type="long" />
+		<column name="notificationType" type="int" />
+		<column name="deliveryType" type="int" />
+		<column name="deliver" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="U_P_C_N_D" return-type="UserNotificationDelivery" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="portletId" />
+			<finder-column name="classNameId" />
+			<finder-column name="notificationType" />
+			<finder-column name="deliveryType" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="UserNotificationEvent" remote-service="true" uad-application-name="Notifications" uad-auto-delete="true" uad-dir-path="../modules/apps/notifications/notifications-uad/src/main/java" uad-package-path="com.liferay.notifications" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="userNotificationEventId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" uad-anonymize-field-name="userId" />
+
+		<!-- Other fields -->
+
+		<column name="type" type="String" />
+		<column name="timestamp" type="long" />
+		<column name="deliveryType" type="int" />
+		<column name="deliverBy" type="long" />
+		<column name="delivered" type="boolean" />
+		<column name="payload" type="String" />
+		<column name="actionRequired" type="boolean" />
+		<column name="archived" type="boolean" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="timestamp" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="Type" return-type="Collection">
+			<finder-column name="type" />
+		</finder>
+		<finder name="U_DT" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="deliveryType" />
+		</finder>
+		<finder name="U_D" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="delivered" />
+		</finder>
+		<finder name="U_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_DT_D" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="deliveryType" />
+			<finder-column name="delivered" />
+		</finder>
+		<finder name="U_DT_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="deliveryType" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_D_AR" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="delivered" />
+			<finder-column name="actionRequired" />
+		</finder>
+		<finder name="U_D_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="delivered" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_AR_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="actionRequired" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_T_GteT_D" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="type" />
+			<finder-column comparator="&gt;=" name="timestamp" />
+			<finder-column name="delivered" />
+		</finder>
+		<finder name="U_T_DT_D" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="type" />
+			<finder-column name="deliveryType" />
+			<finder-column name="delivered" />
+		</finder>
+		<finder name="U_DT_D_AR" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="deliveryType" />
+			<finder-column name="delivered" />
+			<finder-column name="actionRequired" />
+		</finder>
+		<finder name="U_DT_D_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="deliveryType" />
+			<finder-column name="delivered" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_DT_AR_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="deliveryType" />
+			<finder-column name="actionRequired" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_D_AR_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="delivered" />
+			<finder-column name="actionRequired" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_T_DT_D_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="type" />
+			<finder-column name="deliveryType" />
+			<finder-column name="delivered" />
+			<finder-column name="archived" />
+		</finder>
+		<finder name="U_DT_D_AR_A" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="deliveryType" />
+			<finder-column name="delivered" />
+			<finder-column name="actionRequired" />
+			<finder-column name="archived" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="UserTracker" remote-service="false" uad-application-name="Users Admin" uad-auto-delete="true" uad-dir-path="../modules/apps/users-admin/users-admin-uad/src/main/java" uad-package-path="com.liferay.users.admin">
+
+		<!-- PK fields -->
+
+		<column name="userTrackerId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" uad-anonymize-field-name="userId" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="sessionId" type="String" />
+		<column name="remoteAddr" type="String" />
+		<column name="remoteHost" type="String" />
+		<column name="userAgent" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="SessionId" return-type="Collection">
+			<finder-column name="sessionId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="UserTrackerPath" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="userTrackerPathId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="userTrackerId" type="long" />
+		<column name="path" type="String" />
+		<column name="pathDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="UserTrackerId" return-type="Collection">
+			<finder-column name="userTrackerId" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="VirtualHost" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="virtualHostId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="layoutSetId" type="long" />
+		<column name="hostname" type="String" />
+		<column name="defaultVirtualHost" type="boolean" />
+		<column name="languageId" type="String" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="virtualHostId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="Hostname" return-type="VirtualHost" unique="true">
+			<finder-column name="hostname" />
+		</finder>
+		<finder name="C_L" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="layoutSetId" />
+		</finder>
+		<finder name="NotL_H" return-type="Collection">
+			<finder-column comparator="!=" name="layoutSetId" />
+			<finder-column arrayable-operator="OR" name="hostname" />
+		</finder>
+		<finder name="C_L_D" return-type="VirtualHost">
+			<finder-column name="companyId" />
+			<finder-column name="layoutSetId" />
+			<finder-column name="defaultVirtualHost" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="WebDAVProps" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="webDavPropsId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="props" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_C" return-type="WebDAVProps" unique="true">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+	</entity>
+	<entity external-reference-code="company" local-service="true" name="Website" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="websiteId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="url" type="String" />
+		<column name="listTypeId" type="long" />
+		<column name="primary" type="boolean" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_C_P" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="primary" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" external-reference-code="group" local-service="true" name="WorkflowDefinitionLink" remote-service="true" uad-application-name="Portal Workflow" uad-dir-path="../modules/apps/portal-workflow/portal-workflow-uad/src/main/java" uad-package-path="com.liferay.portal.workflow" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="workflowDefinitionLinkId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="typePK" type="long" />
+		<column name="workflowDefinitionName" type="String" />
+		<column name="workflowDefinitionVersion" type="int" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="workflowDefinitionName" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="G_C_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_C_CPK" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_W_W" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="workflowDefinitionName" />
+			<finder-column name="workflowDefinitionVersion" />
+		</finder>
+		<finder name="G_C_C_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_C_C_W" return-type="WorkflowDefinitionLink" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="workflowDefinitionName" />
+		</finder>
+		<finder name="G_C_C_C_T" return-type="WorkflowDefinitionLink">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="typePK" />
+		</finder>
+	</entity>
+	<entity change-tracking-enabled="true" local-service="true" name="WorkflowInstanceLink" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="workflowInstanceLinkId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="workflowInstanceId" type="long" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="G_C_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_C_C_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+	</entity>
+	<exceptions>
+		<exception>AddressCity</exception>
+		<exception>AddressStreet</exception>
+		<exception>AddressZip</exception>
+		<exception>AvailableLocale</exception>
+		<exception>CompanyMaxUsers</exception>
+		<exception>CompanyMx</exception>
+		<exception>CompanyName</exception>
+		<exception>CompanyVirtualHost</exception>
+		<exception>CompanyWebId</exception>
+		<exception>ContactBirthday</exception>
+		<exception>ContactClassName</exception>
+		<exception>ContactName</exception>
+		<exception>CountryA2</exception>
+		<exception>CountryA3</exception>
+		<exception>CountryIdd</exception>
+		<exception>CountryName</exception>
+		<exception>CountryNumber</exception>
+		<exception>CountryTitle</exception>
+		<exception>DuplicateCountry</exception>
+		<exception>DuplicateGoogleUserId</exception>
+		<exception>DuplicateGroup</exception>
+		<exception>DuplicateOpenId</exception>
+		<exception>DuplicateOrganization</exception>
+		<exception>DuplicatePasswordPolicy</exception>
+		<exception>DuplicateRegion</exception>
+		<exception>DuplicateRole</exception>
+		<exception>DuplicateTeam</exception>
+		<exception>DuplicateUserGroup</exception>
+		<exception>EmailAddress</exception>
+		<exception>GroupFriendlyURL</exception>
+		<exception>GroupInheritContent</exception>
+		<exception>GroupKey</exception>
+		<exception>GroupName</exception>
+		<exception>GroupParent</exception>
+		<exception>ImageResolution</exception>
+		<exception>ImageType</exception>
+		<exception>InvalidRepository</exception>
+		<exception>LayoutBranchName</exception>
+		<exception>LayoutFriendlyURL</exception>
+		<exception>LayoutFriendlyURLs</exception>
+		<exception>LayoutName</exception>
+		<exception>LayoutParentLayoutId</exception>
+		<exception>LayoutPermission</exception>
+		<exception>LayoutPrototype</exception>
+		<exception>LayoutRevisionMajor</exception>
+		<exception>LayoutSetBranchName</exception>
+		<exception>LayoutSetVirtualHost</exception>
+		<exception>LayoutType</exception>
+		<exception>LockedLayout</exception>
+		<exception>MasterLayout</exception>
+		<exception>MembershipRequestComments</exception>
+		<exception>OldServiceComponent</exception>
+		<exception>OrganizationId</exception>
+		<exception>OrganizationName</exception>
+		<exception>OrganizationParent</exception>
+		<exception>OrganizationType</exception>
+		<exception>PasswordExpired</exception>
+		<exception>PasswordPolicyName</exception>
+		<exception>PendingBackgroundTask</exception>
+		<exception>PhoneNumber</exception>
+		<exception>PhoneNumberExtension</exception>
+		<exception>PortletActive</exception>
+		<exception>PortletDefaultPreferences</exception>
+		<exception>PortletId</exception>
+		<exception>PortletItemName</exception>
+		<exception>PortletPreferences</exception>
+		<exception>PwdEncryptor</exception>
+		<exception>RegionCode</exception>
+		<exception>RegionName</exception>
+		<exception>RequiredCompany</exception>
+		<exception>RequiredGroup</exception>
+		<exception>RequiredLayout</exception>
+		<exception>RequiredLayoutPrototype</exception>
+		<exception>RequiredLayoutSetBranch</exception>
+		<exception>RequiredLayoutSetPrototype</exception>
+		<exception>RequiredOrganization</exception>
+		<exception>RequiredPasswordPolicy</exception>
+		<exception>RequiredReminderQuery</exception>
+		<exception>RequiredRole</exception>
+		<exception>RequiredUser</exception>
+		<exception>RequiredUserGroup</exception>
+		<exception>ResourcePrimKey</exception>
+		<exception>RoleAssignment</exception>
+		<exception>RoleName</exception>
+		<exception>RolePermissions</exception>
+		<exception>SendPassword</exception>
+		<exception>SitemapChangeFrequency</exception>
+		<exception>SitemapInclude</exception>
+		<exception>SitemapPagePriority</exception>
+		<exception>TeamName</exception>
+		<exception>UserActive</exception>
+		<exception>UserEmailAddress</exception>
+		<exception>UserField</exception>
+		<exception>UserGroupName</exception>
+		<exception>UserId</exception>
+		<exception>UserLockout</exception>
+		<exception>UserPassword</exception>
+		<exception>UserReminderQuery</exception>
+		<exception>UserScreenName</exception>
+		<exception>UserSms</exception>
+		<exception>WebsiteURL</exception>
+	</exceptions>
+</service-builder>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.counter.service.impl.CounterLocalServiceImpl" id="com.liferay.counter.kernel.service.CounterLocalService" />
+	<bean class="com.liferay.counter.service.persistence.impl.CounterFinderFactory" factory-method="createCounterFinder" id="com.liferay.counter.kernel.service.persistence.CounterFinder">
+		<constructor-arg ref="liferayDataSource" />
+		<constructor-arg>
+			<bean class="com.liferay.portal.dao.orm.hibernate.SessionFactoryImpl">
+				<property name="sessionFactoryImplementor" ref="counterHibernateSessionFactory" />
+			</bean>
+		</constructor-arg>
+	</bean>
+</beans>

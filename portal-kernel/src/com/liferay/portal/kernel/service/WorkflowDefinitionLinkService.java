@@ -49,6 +49,12 @@ public interface WorkflowDefinitionLinkService extends BaseService {
 			int workflowDefinitionVersion)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public WorkflowDefinitionLink
+			fetchWorkflowDefinitionLinkByExternalReferenceCode(
+				String externalReferenceCode, long groupId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -60,6 +66,12 @@ public interface WorkflowDefinitionLinkService extends BaseService {
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
 			long companyId, String workflowDefinitionName,
 			int workflowDefinitionVersion)
+		throws PortalException;
+
+	public WorkflowDefinitionLink updateWorkflowDefinitionLink(
+			String externalReferenceCode, long userId, long companyId,
+			long groupId, String className, long classPK, long typePK,
+			String workflowDefinitionName, int workflowDefinitionVersion)
 		throws PortalException;
 
 }

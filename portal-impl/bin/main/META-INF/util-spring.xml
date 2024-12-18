@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.portal.bean.BeanPropertiesImpl" id="com.liferay.portal.bean.BeanPropertiesImpl" />
+	<bean class="com.liferay.portal.dao.jdbc.CurrentConnectionImpl" id="com.liferay.portal.dao.jdbc.CurrentConnectionImpl" />
+	<bean factory-bean="com.liferay.portal.kernel.json.JSONFactory" factory-method="getLiferayJSONDeserializationWhitelist" id="com.liferay.portal.json.jabsorb.serializer.LiferayJSONDeserializationWhitelist" />
+	<bean class="com.liferay.portal.kernel.bean.BeanPropertiesUtil" id="com.liferay.portal.kernel.bean.BeanPropertiesUtil">
+		<property name="beanProperties" ref="com.liferay.portal.bean.BeanPropertiesImpl" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.cache.key.CacheKeyGeneratorUtil" id="com.liferay.portal.kernel.cache.key.CacheKeyGeneratorUtil">
+		<property name="cacheKeyGenerators">
+			<map>
+				<entry key="com.liferay.portal.kernel.dao.orm.FinderCache#BaseModel">
+					<bean class="com.liferay.portal.cache.key.HashCodeHexStringCacheKeyGenerator" />
+				</entry>
+				<entry key="com.liferay.portlet.PortletPreferencesFactoryImpl">
+					<bean class="com.liferay.portal.cache.key.MessageDigestCacheKeyGenerator">
+						<constructor-arg value="SHA-1" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+		<property name="defaultCacheKeyGenerator">
+			<bean class="com.liferay.portal.cache.key.SimpleCacheKeyGenerator" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.dao.jdbc.CurrentConnectionUtil">
+		<property name="currentConnection" ref="com.liferay.portal.dao.jdbc.CurrentConnectionImpl" />
+	</bean>
+	<bean class="com.liferay.portal.json.JSONFactoryImpl" id="com.liferay.portal.kernel.json.JSONFactory" />
+	<bean class="com.liferay.portal.kernel.json.JSONFactoryUtil" id="com.liferay.portal.kernel.json.JSONFactoryUtil">
+		<property name="JSONFactory" ref="com.liferay.portal.kernel.json.JSONFactory" />
+	</bean>
+	<bean class="com.liferay.portal.language.LanguageImpl" id="com.liferay.portal.kernel.language.Language" />
+	<bean class="com.liferay.portal.kernel.language.LanguageUtil" id="com.liferay.portal.kernel.language.LanguageUtil">
+		<property name="language" ref="com.liferay.portal.kernel.language.Language" />
+	</bean>
+	<bean class="com.liferay.portal.license.util.DefaultLicenseManagerImpl" id="com.liferay.portal.kernel.license.util.LicenseManager" />
+	<bean class="com.liferay.portal.kernel.license.util.LicenseManagerUtil" id="com.liferay.portal.kernel.license.util.LicenseManagerUtil">
+		<property name="licenseManager" ref="com.liferay.portal.kernel.license.util.LicenseManager" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.portlet.PortletContainerUtil" id="com.liferay.portal.kernel.portlet.PortletContainerUtil">
+		<property name="portletContainer" ref="com.liferay.portlet.RestrictPortletContainerWrapper" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil" id="com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil">
+		<property name="lastSessionRecorderHelper">
+			<bean class="com.liferay.portal.spring.hibernate.LastSessionRecorderHelperImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.util.CustomJspRegistryUtil" id="com.liferay.portal.kernel.util.CustomJspRegistryUtil">
+		<property name="customJspRegistry">
+			<bean class="com.liferay.portal.util.CustomJspRegistryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.util.DigesterUtil" id="com.liferay.portal.kernel.util.DigesterUtil">
+		<property name="digester">
+			<bean class="com.liferay.portal.util.DigesterImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.util.FastDateFormatFactoryImpl" id="com.liferay.portal.kernel.util.FastDateFormatFactory" />
+	<bean class="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" id="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil">
+		<property name="fastDateFormatFactory" ref="com.liferay.portal.kernel.util.FastDateFormatFactory" />
+	</bean>
+	<bean class="com.liferay.portal.util.FileImpl" id="com.liferay.portal.kernel.util.File" />
+	<bean class="com.liferay.portal.kernel.util.FileUtil" id="com.liferay.portal.kernel.util.FileUtil">
+		<property name="file" ref="com.liferay.portal.kernel.util.File" />
+	</bean>
+	<bean class="com.liferay.portal.util.LocalizationImpl" id="com.liferay.portal.kernel.util.Localization" />
+	<bean class="com.liferay.portal.kernel.util.LocalizationUtil" id="com.liferay.portal.kernel.util.LocalizationUtil">
+		<property name="localization" ref="com.liferay.portal.kernel.util.Localization" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.util.PortalUtil" id="com.liferay.portal.kernel.util.PortalUtil">
+		<property name="portal" ref="com.liferay.portal.util.Portal" />
+	</bean>
+	<bean class="com.liferay.portal.webserver.WebServerServletTokenImpl" id="com.liferay.portal.kernel.webserver.WebServerServletToken" />
+	<bean class="com.liferay.portal.kernel.webserver.WebServerServletTokenUtil" id="com.liferay.portal.kernel.webserver.WebServerServletTokenUtil">
+		<property name="webServerServletToken" ref="com.liferay.portal.kernel.webserver.WebServerServletToken" />
+	</bean>
+	<bean class="com.liferay.portal.language.LanguageResources" id="com.liferay.portal.language.LanguageResources" />
+	<bean class="com.liferay.portal.template.ClassLoaderResourceParser" id="com.liferay.portal.template.ClassLoaderResourceParser" />
+	<bean class="com.liferay.portal.template.ThemeResourceParser" id="com.liferay.portal.template.ThemeResourceParser" />
+	<bean class="com.liferay.portal.util.PortalImpl" id="com.liferay.portal.util.Portal" />
+	<bean class="com.liferay.portlet.RestrictPortletContainerWrapper" factory-method="createRestrictPortletContainerWrapper" id="com.liferay.portlet.RestrictPortletContainerWrapper">
+		<constructor-arg name="portletContainer" ref="com.liferay.portlet.SecurityPortletContainerWrapper" />
+	</bean>
+	<bean class="com.liferay.portlet.SecurityPortletContainerWrapper" id="com.liferay.portlet.SecurityPortletContainerWrapper">
+		<constructor-arg name="portletContainer" ref="com.liferay.portlet.internal.PortletContainerImpl" />
+	</bean>
+	<bean class="com.liferay.portlet.internal.PortletContainerImpl" id="com.liferay.portlet.internal.PortletContainerImpl" />
+	<bean class="com.liferay.portlet.social.util.SocialConfigurationImpl" id="com.liferay.social.kernel.util.SocialConfiguration" />
+	<bean class="com.liferay.social.kernel.util.SocialConfigurationUtil" id="com.liferay.social.kernel.util.SocialConfigurationUtil">
+		<property name="socialConfiguration" ref="com.liferay.social.kernel.util.SocialConfiguration" />
+	</bean>
+</beans>

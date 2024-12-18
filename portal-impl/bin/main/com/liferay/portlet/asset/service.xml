@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.asset.kernel" auto-import-default-references="false" change-tracking-enabled="true" mvcc-enabled="true" package-path="com.liferay.portlet.asset">
+	<namespace>Asset</namespace>
+	<entity external-reference-code="group" local-service="true" name="AssetCategory" remote-service="true" uuid="true" uuid-accessor="true">
+
+		<!-- PK fields -->
+
+		<column accessor="true" name="categoryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentCategoryId" type="long" />
+		<column name="treePath" type="String" />
+		<column accessor="true" name="name" type="String" />
+		<column localized="true" name="title" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="vocabularyId" type="long" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="ParentCategoryId" return-type="Collection">
+			<finder-column name="parentCategoryId" />
+		</finder>
+		<finder name="VocabularyId" return-type="Collection">
+			<finder-column name="vocabularyId" />
+		</finder>
+		<finder name="G_P" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="parentCategoryId" />
+		</finder>
+		<finder name="G_V" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column arrayable-operator="OR" name="vocabularyId" />
+		</finder>
+		<finder name="P_N" return-type="Collection">
+			<finder-column name="parentCategoryId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="P_V" return-type="Collection">
+			<finder-column name="parentCategoryId" />
+			<finder-column name="vocabularyId" />
+		</finder>
+		<finder name="N_V" return-type="Collection">
+			<finder-column name="name" />
+			<finder-column name="vocabularyId" />
+		</finder>
+		<finder name="G_P_V" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="parentCategoryId" />
+			<finder-column name="vocabularyId" />
+		</finder>
+		<finder db-index="false" name="G_LikeT_V" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column comparator="LIKE" name="treePath" />
+			<finder-column name="vocabularyId" />
+		</finder>
+		<finder name="G_LikeN_V" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+			<finder-column arrayable-operator="OR" name="vocabularyId" />
+		</finder>
+		<finder name="P_N_V" return-type="AssetCategory" unique="true">
+			<finder-column name="parentCategoryId" />
+			<finder-column name="name" />
+			<finder-column name="vocabularyId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="AssetEntry" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column accessor="true" name="entryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="classUuid" type="String" />
+		<column name="classTypeId" type="long" />
+		<column name="listable" type="boolean" />
+		<column name="visible" type="boolean" />
+		<column name="startDate" type="Date" />
+		<column name="endDate" type="Date" />
+		<column name="publishDate" type="Date" />
+		<column name="expirationDate" type="Date" />
+		<column name="mimeType" type="String" />
+		<column localized="true" name="title" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column localized="true" name="summary" type="String" />
+		<column name="url" type="String" />
+		<column name="layoutUuid" type="String" />
+		<column name="height" type="int" />
+		<column name="width" type="int" />
+		<column name="priority" type="double" />
+
+		<!-- Relationships -->
+
+		<column entity="AssetTag" mapping-table="AssetEntries_AssetTags" name="tags" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="Visible" return-type="Collection">
+			<finder-column name="visible" />
+		</finder>
+		<finder name="PublishDate" return-type="Collection">
+			<finder-column name="publishDate" />
+		</finder>
+		<finder name="ExpirationDate" return-type="Collection">
+			<finder-column name="expirationDate" />
+		</finder>
+		<finder name="LayoutUuid" return-type="Collection">
+			<finder-column name="layoutUuid" />
+		</finder>
+		<finder name="G_CU" return-type="AssetEntry">
+			<finder-column name="groupId" />
+			<finder-column name="classUuid" />
+		</finder>
+		<finder name="C_CN" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C" return-type="AssetEntry" unique="true">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_C_V" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="visible" />
+		</finder>
+		<finder name="G_C_P_E" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="publishDate" />
+			<finder-column name="expirationDate" />
+		</finder>
+	</entity>
+	<entity external-reference-code="group" local-service="true" name="AssetTag" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column accessor="true" name="tagId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column accessor="true" name="name" type="String" />
+		<column name="assetCount" type="int" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Relationships -->
+
+		<column entity="AssetEntry" mapping-table="AssetEntries_AssetTags" name="entries" type="Collection" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+		</finder>
+		<finder name="Name" return-type="Collection">
+			<finder-column arrayable-operator="OR" case-sensitive="false" name="name" />
+		</finder>
+		<finder name="G_LikeN" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+		</finder>
+	</entity>
+	<entity external-reference-code="group" local-service="true" name="AssetVocabulary" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="vocabularyId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column localized="true" name="title" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="settings" type="String" />
+		<column name="visibilityType" type="int" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="G_N" return-type="AssetVocabulary" unique="true">
+			<finder-column name="groupId" />
+			<finder-column case-sensitive="false" name="name" />
+		</finder>
+		<finder name="G_LikeN" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
+		</finder>
+		<finder name="G_V" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column arrayable-operator="OR" name="visibilityType" />
+		</finder>
+	</entity>
+	<exceptions>
+		<exception>AssetCategory</exception>
+		<exception>AssetCategoryLimit</exception>
+		<exception>AssetCategoryName</exception>
+		<exception>AssetTag</exception>
+		<exception>AssetTagName</exception>
+		<exception>CategoryName</exception>
+		<exception>CategoryPropertyKey</exception>
+		<exception>CategoryPropertyValue</exception>
+		<exception>DuplicateCategory</exception>
+		<exception>DuplicateCategoryExternalReferenceCode</exception>
+		<exception>DuplicateCategoryProperty</exception>
+		<exception>DuplicateQueryRule</exception>
+		<exception>DuplicateTag</exception>
+		<exception>DuplicateVocabulary</exception>
+		<exception>DuplicateVocabularyExternalReferenceCode</exception>
+		<exception>InvalidAssetCategory</exception>
+		<exception>VocabularyName</exception>
+	</exceptions>
+</service-builder>

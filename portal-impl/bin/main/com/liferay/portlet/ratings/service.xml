@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.ratings.kernel" auto-import-default-references="false" change-tracking-enabled="true" mvcc-enabled="true" package-path="com.liferay.portlet.ratings">
+	<namespace>Ratings</namespace>
+	<entity local-service="true" name="RatingsEntry" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="entryId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="score" type="double" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="U_C_C" return-type="Collection" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="classPK" />
+		</finder>
+		<finder name="C_C_S" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="score" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="RatingsStats" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="statsId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="totalEntries" type="int" />
+		<column name="totalScore" type="double" />
+		<column name="averageScore" type="double" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_C" return-type="Collection" unique="true">
+			<finder-column name="classNameId" />
+			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="classPK" />
+		</finder>
+	</entity>
+	<exceptions>
+		<exception>EntryScore</exception>
+	</exceptions>
+</service-builder>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.counter.kernel" auto-import-default-references="false" package-path="com.liferay.counter">
+	<namespace>Counter</namespace>
+	<entity cache-enabled="false" local-service="true" name="Counter" persistence="false" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="name" primary="true" type="String" />
+
+		<!-- Other fields -->
+
+		<column name="currentId" type="long" />
+	</entity>
+</service-builder>

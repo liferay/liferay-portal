@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.document.library.kernel.store.DLStoreUtil">
+		<property name="DLStore" ref="com.liferay.portlet.documentlibrary.store.DLStoreImpl" />
+	</bean>
+	<bean class="com.liferay.document.library.kernel.util.DLUtil">
+		<property name="DL">
+			<bean class="com.liferay.portlet.documentlibrary.util.DLImpl" destroy-method="destroy" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portlet.documentlibrary.store.DLStoreImpl" id="com.liferay.portlet.documentlibrary.store.DLStoreImpl" />
+</beans>

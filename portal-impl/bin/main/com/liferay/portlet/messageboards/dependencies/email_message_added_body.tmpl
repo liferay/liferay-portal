@@ -1,0 +1,205 @@
+<style type="text/css">
+	.mb-mail-message {
+		margin: auto;
+		width: 50%;
+		padding: 10px;
+	}
+
+	.mb-message-thread {
+		border-radius: 4px;
+		border: 1px solid #E7E7ED;
+		margin-bottom: 0.2rem;
+		font-size: 0.9rem;
+		padding: 1rem;
+	}
+
+	.mb-new-message {
+		color: #272833;
+		font-size: 0.875rem;
+		border-radius: 4px;
+		border: 1px solid #E7E7ED;
+		border-left: 4px solid #80ACFF;
+		padding-left: 0.75rem;
+	}
+
+	.mb-new-comment-lable {
+		margin-top: 1.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.mb-new-message-content {
+		color: #272833;
+		font-size: 0.9rem;
+		font-weight: 400;
+		margin-bottom: 0.1rem;
+	}
+
+	.mb-new-message-content p {
+		margin-top: 0;
+	}
+
+	.mb-new-message-label {
+		border-radius: 4px;
+		background-color: #2E5AAC;
+		color: #FFFFFF;
+		font-weight: 600;
+		font-size: 0.625rem;
+		padding: 3px 4px;
+	}
+
+	.mb-new-message-user-name {
+		color: #272833;
+		font-size: 0.875rem;
+		font-weight: 600;
+		margin-bottom: 0.1rem;
+	}
+
+	.mb-new-message-user-name p {
+		margin-bottom: 0.25rem;
+	}
+
+	.mb-parent-message {
+		border-radius: 4px;
+		border: 1px solid #E7E7ED;
+		margin-bottom: 0.2rem;
+		padding: 0.5rem 0 0.5rem 0.75rem;
+	}
+
+	.mb-parent-message-body {
+		color: #6B6C7E;
+	}
+
+	.mb-parent-message-thread {
+		margin-bottom: 0.6rem;
+	}
+
+	.mb-parent-message-thread ul {
+		list-style-type: none;
+		padding: 0.5rem 0 0 0.5rem;
+		margin-top: 0;
+		margin-bottom: 1.5rem;
+	}
+
+	.mb-parent-message-user {
+		font-weight: 600;
+		color: #6B6C7E;
+		margin-bottom: 0.25rem;
+	}
+
+	.mb-reply-btn {
+		border: solid #0B5FFF 1px;
+		border-radius: 4px;
+		cursor: pointer;
+		display: inline-block;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.5;
+		padding: 0.4375rem 0.9375rem;
+		user-select: none;
+		background-color: #0B5FFF;
+		margin-top: 1rem;
+	}
+
+	.mb-reply-btn a:link,
+	.mb-reply-btn a:visited {
+		color: white;
+		text-decoration: none;
+	}
+
+	.mb-root-message-body {
+		font-size: 0.9rem;
+		color: #272833;
+	}
+
+	.mb-root-message-link {
+		font-size: 1rem;
+		font-weight: 700;
+		color: #0B5FFF;
+	}
+
+	.mb-root-message-user {
+		margin-top: 0.25rem;
+		margin-bottom: 0.25rem;
+		font-weight: 600;
+	}
+
+	.mb-sibling-message {
+		margin-bottom: 0.5rem;
+	}
+
+	.mb-sibling-message-body {
+		color: #6B6C7E;
+		font-weight: 400;
+	}
+
+	.mb-sibling-message-thread {
+		border-radius: 4px;
+		border: 1px solid #E7E7ED;
+		margin-bottom: 0.5rem;
+		margin-top: 1.5rem;
+		padding-top: 0.5rem;
+		padding-left: 0.75rem;
+	}
+
+	.mb-sibling-message-user {
+		font-weight: 600;
+		color: #6B6C7E;
+		margin-bottom: 0.25rem;
+	}
+
+	.quote {
+		border-radius: 4px;
+		border: 1px solid #E7E7ED;
+		margin: 1rem 0.5rem 1rem 0
+	}
+
+	.quote-content {
+		padding: 8px 12px 8px;
+		color: #6B6C7E;
+		font-style: italic;
+	}
+
+	.quote-content::first-line {
+		font-style: normal;
+		font-weight: 600;
+	}
+
+	.quote-title {
+		font-weight: bold;
+		padding: 5px 0;
+	}
+</style>
+
+<div class="mb-mail-message">
+	<p>There is <strong>1 new message</strong>.</p>
+
+	<div class="mb-message-thread">
+		<div class="mb-root-message-link">
+			<a href="[$MESSAGE_URL$]">[$MESSAGE_SUBJECT$]</a>
+		</div>
+
+		<div class="mb-root-message">
+			[$ROOT_MESSAGE_BODY$]
+		</div>
+
+		<p><strong>1 New Comment</strong></p>
+
+		[$MESSAGE_PARENT$]
+
+		<p><strong>Replies To Last Message</strong></p>
+
+		[$MESSAGE_SIBLINGS$]
+
+		<div class="mb-new-message">
+			<div class="mb-new-message-user-name">
+				<p><span><b>[$MESSAGE_USER_NAME$]</b></span> <span class="mb-new-message-label">NEW</span></p>
+			</div>
+
+			<div class="mb-new-message-content">
+				<p>[$MESSAGE_BODY$]</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="mb-reply-btn"><a href="[$MESSAGE_URL$]">Reply </a></div>
+</div>

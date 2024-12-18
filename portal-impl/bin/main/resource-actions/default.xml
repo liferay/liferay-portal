@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE resource-action-mapping PUBLIC "-//Liferay//DTD Resource Action Mapping 7.4.0//EN" "http://www.liferay.com/dtd/liferay-resource-action-mapping_7_4_0.dtd">
+
+<resource-action-mapping>
+	<resource file="resource-actions/portal.xml" />
+	<resource file="resource-actions/announcements.xml" />
+	<resource file="resource-actions/asset.xml" />
+	<resource file="resource-actions/documentlibrary.xml" />
+	<resource file="resource-actions/expando.xml" />
+	<resource file="resource-actions/sites.xml" />
+</resource-action-mapping>

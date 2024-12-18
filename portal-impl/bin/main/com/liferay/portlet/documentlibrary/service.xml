@@ -1,0 +1,544 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.document.library.kernel" auto-import-default-references="false" change-tracking-enabled="true" mvcc-enabled="true" package-path="com.liferay.portlet.documentlibrary">
+	<namespace>DL</namespace>
+	<entity local-service="true" name="DLApp" remote-service="true">
+	</entity>
+	<entity local-service="true" name="DLAppHelper" remote-service="false">
+	</entity>
+	<entity external-reference-code="group" human-name="document library file entry" local-service="true" name="DLFileEntry" remote-service="true" trash-enabled="true" uad-dir-path="../modules/apps/document-library/document-library-uad/src/main/java" uad-package-path="com.liferay.document.library" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="fileEntryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="repositoryId" type="long" />
+		<column name="folderId" type="long" />
+		<column name="treePath" type="String" />
+		<column name="name" type="String" />
+		<column name="fileName" type="String" uad-nonanonymizable="true" />
+		<column name="extension" type="String" uad-nonanonymizable="true" />
+		<column name="mimeType" type="String" />
+		<column name="title" type="String" uad-nonanonymizable="true" />
+		<column name="description" type="String" uad-nonanonymizable="true" />
+		<column name="extraSettings" type="String" />
+		<column name="fileEntryTypeId" type="long" />
+		<column name="version" type="String" />
+		<column name="size" type="long" />
+		<column name="smallImageId" type="long" />
+		<column name="largeImageId" type="long" />
+		<column name="custom1ImageId" type="long" />
+		<column name="custom2ImageId" type="long" />
+		<column name="manualCheckInRequired" type="boolean" />
+		<column name="displayDate" type="Date" />
+		<column name="expirationDate" type="Date" />
+		<column name="reviewDate" type="Date" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="folderId" />
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="RepositoryId" return-type="Collection">
+			<finder-column name="repositoryId" />
+		</finder>
+		<finder name="MimeType" return-type="Collection">
+			<finder-column name="mimeType" />
+		</finder>
+		<finder name="FileEntryTypeId" return-type="Collection">
+			<finder-column name="fileEntryTypeId" />
+		</finder>
+		<finder name="SmallImageId" return-type="Collection">
+			<finder-column name="smallImageId" />
+		</finder>
+		<finder name="LargeImageId" return-type="Collection">
+			<finder-column name="largeImageId" />
+		</finder>
+		<finder name="Custom1ImageId" return-type="Collection">
+			<finder-column name="custom1ImageId" />
+		</finder>
+		<finder name="Custom2ImageId" return-type="Collection">
+			<finder-column name="custom2ImageId" />
+		</finder>
+		<finder name="G_U" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="G_F" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="folderId" />
+		</finder>
+		<finder name="R_F" return-type="Collection">
+			<finder-column name="repositoryId" />
+			<finder-column name="folderId" />
+		</finder>
+		<finder name="F_N" return-type="Collection">
+			<finder-column name="folderId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="G_U_F" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column arrayable-operator="OR" name="folderId" />
+		</finder>
+		<finder name="G_F_N" return-type="DLFileEntry" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="G_F_FN" return-type="DLFileEntry" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+			<finder-column name="fileName" />
+		</finder>
+		<finder name="G_F_T" return-type="DLFileEntry" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+			<finder-column name="title" />
+		</finder>
+		<finder name="G_F_F" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="folderId" />
+			<finder-column name="fileEntryTypeId" />
+		</finder>
+		<finder name="S_L_C1_C2" return-type="Collection">
+			<finder-column name="smallImageId" />
+			<finder-column name="largeImageId" />
+			<finder-column name="custom1ImageId" />
+			<finder-column name="custom2ImageId" />
+		</finder>
+	</entity>
+	<entity external-reference-code="company" human-name="document library file entry metadata" local-service="true" name="DLFileEntryMetadata" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="fileEntryMetadataId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="DDMStorageId" type="long" />
+		<column name="DDMStructureId" type="long" />
+		<column name="fileEntryId" type="long" />
+		<column name="fileVersionId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="FileEntryId" return-type="Collection">
+			<finder-column name="fileEntryId" />
+		</finder>
+		<finder name="FileVersionId" return-type="Collection">
+			<finder-column name="fileVersionId" />
+		</finder>
+		<finder name="D_F" return-type="DLFileEntryMetadata" unique="true">
+			<finder-column name="DDMStructureId" />
+			<finder-column name="fileVersionId" />
+		</finder>
+	</entity>
+	<entity external-reference-code="group" human-name="document library file entry type" local-service="true" name="DLFileEntryType" remote-service="true" uad-dir-path="../modules/apps/document-library/document-library-uad/src/main/java" uad-package-path="com.liferay.document.library" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="fileEntryTypeId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="dataDefinitionId" type="long" />
+		<column name="fileEntryTypeKey" type="String" />
+		<column localized="true" name="name" type="String" />
+		<column localized="true" name="description" type="String" />
+		<column name="scope" type="int" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Relationships -->
+
+		<column entity="DLFolder" mapping-table="DLFileEntryTypes_DLFolders" name="folders" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="G_DDI" return-type="DLFileEntryType" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="dataDefinitionId" />
+		</finder>
+		<finder name="G_F" return-type="DLFileEntryType" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="fileEntryTypeKey" />
+		</finder>
+	</entity>
+	<entity external-reference-code="group" human-name="document library file shortcut" local-service="true" name="DLFileShortcut" remote-service="true" trash-enabled="true" uad-dir-path="../modules/apps/document-library/document-library-uad/src/main/java" uad-package-path="com.liferay.document.library" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="fileShortcutId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="repositoryId" type="long" />
+		<column name="folderId" type="long" />
+		<column name="toFileEntryId" type="long" />
+		<column name="treePath" type="String" />
+		<column name="active" type="boolean" />
+		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="ToFileEntryId" return-type="Collection">
+			<finder-column name="toFileEntryId" />
+		</finder>
+		<finder name="G_F" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+		</finder>
+		<finder name="C_NotS" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="!=" name="status" />
+		</finder>
+		<finder name="G_F_A" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+			<finder-column name="active" />
+		</finder>
+		<finder name="G_F_A_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+			<finder-column name="active" />
+			<finder-column name="status" />
+		</finder>
+	</entity>
+	<entity human-name="document library file version" local-service="true" name="DLFileVersion" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="fileVersionId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="repositoryId" type="long" />
+		<column name="folderId" type="long" />
+		<column name="fileEntryId" type="long" />
+		<column name="treePath" type="String" />
+		<column name="fileName" type="String" />
+		<column name="extension" type="String" />
+		<column name="mimeType" type="String" />
+		<column name="title" type="String" />
+		<column name="description" type="String" />
+		<column name="changeLog" type="String" />
+		<column name="extraSettings" type="String" />
+		<column name="fileEntryTypeId" type="long" />
+		<column name="version" type="String" />
+		<column name="size" type="long" />
+		<column name="checksum" type="String" />
+		<column name="storeUUID" type="String" />
+		<column name="displayDate" type="Date" />
+		<column name="expirationDate" type="Date" />
+		<column name="reviewDate" type="Date" />
+		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="fileEntryId" />
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="FileEntryId" return-type="Collection">
+			<finder-column name="fileEntryId" />
+		</finder>
+		<finder name="MimeType" return-type="Collection">
+			<finder-column name="mimeType" />
+		</finder>
+		<finder name="C_SU" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="storeUUID" />
+		</finder>
+		<finder name="C_NotS" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="!=" name="status" />
+		</finder>
+		<finder name="F_V" return-type="DLFileVersion" unique="true">
+			<finder-column name="fileEntryId" />
+			<finder-column name="version" />
+		</finder>
+		<finder name="F_S" return-type="Collection">
+			<finder-column name="fileEntryId" />
+			<finder-column arrayable-operator="OR" name="status" />
+		</finder>
+		<finder name="LtD_S" return-type="Collection">
+			<finder-column comparator="&lt;" name="displayDate" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_F_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="C_E_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="expirationDate" />
+			<finder-column arrayable-operator="OR" name="status" />
+		</finder>
+		<finder name="G_F_T_V" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="folderId" />
+			<finder-column name="title" />
+			<finder-column name="version" />
+		</finder>
+	</entity>
+	<entity external-reference-code="group" human-name="document library folder" local-service="true" name="DLFolder" remote-service="true" trash-enabled="true" uad-dir-path="../modules/apps/document-library/document-library-uad/src/main/java" uad-package-path="com.liferay.document.library" uuid="true">
+
+		<!-- PK fields -->
+
+		<column container-model="true" name="folderId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="repositoryId" type="long" />
+		<column name="mountPoint" type="boolean" />
+		<column name="parentFolderId" parent-container-model="true" type="long" />
+		<column name="treePath" type="String" />
+		<column name="name" type="String" uad-nonanonymizable="true" />
+		<column name="description" type="String" uad-nonanonymizable="true" />
+		<column change-tracking-resolution-type="max" name="lastPostDate" type="Date" />
+		<column name="defaultFileEntryTypeId" type="long" />
+		<column name="hidden" type="boolean" />
+		<column name="restrictionType" type="int" />
+		<column name="lastPublishDate" type="Date" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" uad-anonymize-field-name="fullName" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Relationships -->
+
+		<column entity="DLFileEntryType" mapping-table="DLFileEntryTypes_DLFolders" name="fileEntryTypes" type="Collection" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="parentFolderId" />
+			<order-column case-sensitive="false" name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="RepositoryId" return-type="Collection">
+			<finder-column name="repositoryId" />
+		</finder>
+		<finder name="G_P" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="parentFolderId" />
+		</finder>
+		<finder name="C_NotS" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="!=" name="status" />
+		</finder>
+		<finder name="R_M" return-type="DLFolder">
+			<finder-column name="repositoryId" />
+			<finder-column name="mountPoint" />
+		</finder>
+		<finder name="R_P" return-type="Collection">
+			<finder-column name="repositoryId" />
+			<finder-column name="parentFolderId" />
+		</finder>
+		<finder name="P_N" return-type="Collection">
+			<finder-column name="parentFolderId" />
+			<finder-column name="name" />
+		</finder>
+		<finder db-index="false" name="GtF_C_P" return-type="Collection">
+			<finder-column comparator="&gt;" name="folderId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentFolderId" />
+		</finder>
+		<finder name="G_M_P" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="mountPoint" />
+			<finder-column name="parentFolderId" />
+		</finder>
+		<finder name="G_P_N" return-type="DLFolder" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="parentFolderId" />
+			<finder-column name="name" />
+		</finder>
+		<finder db-index="false" name="GtF_C_P_NotS" return-type="Collection">
+			<finder-column comparator="&gt;" name="folderId" />
+			<finder-column name="companyId" />
+			<finder-column name="parentFolderId" />
+			<finder-column comparator="!=" name="status" />
+		</finder>
+		<finder name="G_M_P_H" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="mountPoint" />
+			<finder-column name="parentFolderId" />
+			<finder-column name="hidden" />
+		</finder>
+		<finder db-index="false" name="G_M_LikeT_H" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="mountPoint" />
+			<finder-column comparator="LIKE" name="treePath" />
+			<finder-column name="hidden" />
+		</finder>
+		<finder name="G_P_H_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="parentFolderId" />
+			<finder-column name="hidden" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_M_P_H_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="mountPoint" />
+			<finder-column name="parentFolderId" />
+			<finder-column name="hidden" />
+			<finder-column name="status" />
+		</finder>
+		<finder db-index="false" name="G_M_LikeT_H_NotS" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="mountPoint" />
+			<finder-column comparator="LIKE" name="treePath" />
+			<finder-column name="hidden" />
+			<finder-column comparator="!=" name="status" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="DLTrash" remote-service="true">
+	</entity>
+	<exceptions>
+		<exception>DirectoryName</exception>
+		<exception>DuplicateFileEntry</exception>
+		<exception>DuplicateFileEntryExternalReferenceCode</exception>
+		<exception>DuplicateFileEntryType</exception>
+		<exception>DuplicateFolderExternalReferenceCode</exception>
+		<exception>DuplicateFolderName</exception>
+		<exception>DuplicateRepositoryName</exception>
+		<exception>FileEntryDisplayDate</exception>
+		<exception>FileEntryExpirationDate</exception>
+		<exception>FileEntryExpired</exception>
+		<exception>FileEntryLock</exception>
+		<exception>FileEntryReviewDate</exception>
+		<exception>FileExtension</exception>
+		<exception>FileMimeType</exception>
+		<exception>FileName</exception>
+		<exception>FileShortcutPermission</exception>
+		<exception>FileSize</exception>
+		<exception>FolderName</exception>
+		<exception>ImageSize</exception>
+		<exception>InvalidFile</exception>
+		<exception>InvalidFileEntryType</exception>
+		<exception>InvalidFileVersion</exception>
+		<exception>InvalidFolder</exception>
+		<exception>NoSuchFile</exception>
+		<exception>NoSuchMetadataSet</exception>
+		<exception>RepositoryName</exception>
+		<exception>RequiredFile</exception>
+		<exception>RequiredFileEntryType</exception>
+		<exception>SourceFileName</exception>
+	</exceptions>
+</service-builder>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.portal.spring.aop.DynamicProxyCreator" factory-method="getDynamicProxyCreator" />
+	<bean class="com.liferay.portal.transaction.TransactionLifecycleManagerInitializer">
+		<property name="transactionLifecycleListeners">
+			<list>
+				<util:constant static-field="com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager.TRANSACTION_LIFECYCLE_LISTENER" />
+				<util:constant static-field="com.liferay.portal.spring.hibernate.LastSessionRecorderUtil.TRANSACTION_LIFECYCLE_LISTENER" />
+				<util:constant static-field="com.liferay.portal.kernel.cache.transactional.TransactionalPortalCacheUtil.TRANSACTION_LIFECYCLE_LISTENER" />
+				<util:constant static-field="com.liferay.portal.kernel.internal.spring.transaction.ReadOnlyTransactionThreadLocal.TRANSACTION_LIFECYCLE_LISTENER" />
+				<util:constant static-field="com.liferay.portal.kernel.transaction.TransactionLifecycleNotifier.TRANSACTION_LIFECYCLE_LISTENER" />
+				<util:constant static-field="com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER" />
+			</list>
+		</property>
+	</bean>
+</beans>

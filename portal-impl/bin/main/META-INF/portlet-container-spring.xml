@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<beans
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.portlet.internal.InvokerPortletFactoryImpl" id="com.liferay.portal.kernel.portlet.InvokerPortletFactory" />
+	<bean class="com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil" id="com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil">
+		<property name="portletConfigFactory">
+			<bean class="com.liferay.portlet.internal.PortletConfigFactoryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portlet.internal.PortletInstanceFactoryImpl" id="com.liferay.portal.kernel.portlet.PortletInstanceFactory">
+		<property name="defaultInvokerPortletFactory" ref="com.liferay.portal.kernel.portlet.InvokerPortletFactory" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil" id="com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil">
+		<property name="portletInstanceFactory" ref="com.liferay.portal.kernel.portlet.PortletInstanceFactory" />
+	</bean>
+	<bean class="com.liferay.portlet.PortletPreferencesFactoryImpl" id="com.liferay.portal.kernel.portlet.PortletPreferencesFactory" />
+	<bean class="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil" id="com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil">
+		<property name="portletPreferencesFactory" ref="com.liferay.portal.kernel.portlet.PortletPreferencesFactory" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.portlet.PortletQNameUtil" id="com.liferay.portal.kernel.portlet.PortletQNameUtil">
+		<property name="portletQName">
+			<bean class="com.liferay.portlet.internal.PortletQNameImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.portlet.PortletURLFactoryUtil" id="com.liferay.portal.kernel.portlet.PortletURLFactoryUtil">
+		<property name="portletURLFactory" ref="com.liferay.portlet.PortletURLFactory" />
+	</bean>
+	<bean class="com.liferay.portlet.internal.PortletURLFactoryImpl" id="com.liferay.portlet.PortletURLFactory" />
+</beans>

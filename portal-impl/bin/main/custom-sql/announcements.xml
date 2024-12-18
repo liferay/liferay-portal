@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+
+<custom-sql>
+	<sql id="com.liferay.announcements.kernel.service.persistence.AnnouncementsEntryFinder.countByHidden">
+		<![CDATA[
+			SELECT
+				COUNT(DISTINCT AnnouncementsEntry.entryId) AS COUNT_VALUE
+			FROM
+				AnnouncementsEntry
+			LEFT JOIN
+				AnnouncementsFlag ON
+					AnnouncementsFlag.entryId = AnnouncementsEntry.entryId
+			WHERE
+				(AnnouncementsEntry.companyId = ?) AND
+				([$CLASS_PKS$]) AND
+				(AnnouncementsEntry.displayDate <= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.expirationDate >= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.alert = ?) AND
+				(AnnouncementsFlag.userId = ?) AND
+				(AnnouncementsFlag.value = ?)
+		]]>
+	</sql>
+	<sql id="com.liferay.announcements.kernel.service.persistence.AnnouncementsEntryFinder.countByNotHidden">
+		<![CDATA[
+			SELECT
+				COUNT(DISTINCT AnnouncementsEntry.entryId) AS COUNT_VALUE
+			FROM
+				AnnouncementsEntry
+			LEFT JOIN
+				AnnouncementsFlag ON
+					(AnnouncementsFlag.entryId = AnnouncementsEntry.entryId) AND
+					(AnnouncementsFlag.userId = ?) AND
+					(AnnouncementsFlag.value = ?)
+			WHERE
+				(AnnouncementsEntry.companyId = ?) AND
+				([$CLASS_PKS$]) AND
+				(AnnouncementsEntry.displayDate <= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.expirationDate >= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.alert = ?) AND
+				(AnnouncementsFlag.entryId IS NULL)
+		]]>
+	</sql>
+	<sql id="com.liferay.announcements.kernel.service.persistence.AnnouncementsEntryFinder.findByDisplayDate">
+		<![CDATA[
+			SELECT
+				{AnnouncementsEntry.*}
+			FROM
+				AnnouncementsEntry
+			WHERE
+				(displayDate >= ?) AND
+				(displayDate <= ?)
+		]]>
+	</sql>
+	<sql id="com.liferay.announcements.kernel.service.persistence.AnnouncementsEntryFinder.findByHidden">
+		<![CDATA[
+			SELECT
+				{AnnouncementsEntry.*}
+			FROM
+				AnnouncementsEntry
+			LEFT JOIN
+				AnnouncementsFlag ON
+					AnnouncementsFlag.entryId = AnnouncementsEntry.entryId
+			WHERE
+				(AnnouncementsEntry.companyId = ?) AND
+				([$CLASS_PKS$]) AND
+				(AnnouncementsEntry.displayDate <= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.expirationDate >= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.alert = ?) AND
+				(AnnouncementsFlag.userId = ?) AND
+				(AnnouncementsFlag.value = ?)
+			ORDER BY
+				AnnouncementsEntry.priority DESC,
+				AnnouncementsEntry.modifiedDate DESC
+		]]>
+	</sql>
+	<sql id="com.liferay.announcements.kernel.service.persistence.AnnouncementsEntryFinder.findByNotHidden">
+		<![CDATA[
+			SELECT
+				{AnnouncementsEntry.*}
+			FROM
+				AnnouncementsEntry
+			LEFT JOIN
+				AnnouncementsFlag ON
+					(AnnouncementsFlag.entryId = AnnouncementsEntry.entryId) AND
+					(AnnouncementsFlag.userId = ?) AND
+					(AnnouncementsFlag.value = ?)
+			WHERE
+				(AnnouncementsEntry.companyId = ?) AND
+				([$CLASS_PKS$]) AND
+				(AnnouncementsEntry.displayDate <= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.expirationDate >= ? [$AND_OR_NULL_CHECK$]) AND
+				(AnnouncementsEntry.alert = ?) AND
+				(AnnouncementsFlag.entryId IS NULL)
+			ORDER BY
+				AnnouncementsEntry.priority DESC,
+				AnnouncementsEntry.modifiedDate DESC
+		]]>
+	</sql>
+</custom-sql>

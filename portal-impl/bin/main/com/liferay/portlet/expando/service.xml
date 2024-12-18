@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.expando.kernel" auto-import-default-references="false" change-tracking-enabled="true" mvcc-enabled="true" package-path="com.liferay.portlet.expando">
+	<namespace>Expando</namespace>
+	<entity local-service="true" name="ExpandoColumn" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="columnId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column change-tracking-resolution-type="strict" name="tableId" type="long" />
+		<column change-tracking-resolution-type="strict" name="name" type="String" />
+		<column name="type" type="int" />
+		<column name="defaultData" type="String" />
+		<column name="typeSettings" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="TableId" return-type="Collection">
+			<finder-column name="tableId" />
+		</finder>
+		<finder name="T_N" return-type="Collection" unique="true">
+			<finder-column name="tableId" />
+			<finder-column arrayable-operator="OR" name="name" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="ExpandoRow" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="rowId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column change-tracking-resolution-type="strict" name="tableId" type="long" />
+		<column name="classPK" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="TableId" return-type="Collection">
+			<finder-column name="tableId" />
+		</finder>
+		<finder name="ClassPK" return-type="Collection">
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="T_C" return-type="ExpandoRow" unique="true">
+			<finder-column name="tableId" />
+			<finder-column name="classPK" />
+		</finder>
+	</entity>
+	<entity json-enabled="true" local-service="true" name="ExpandoTable" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="tableId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column change-tracking-resolution-type="strict" name="name" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C_N" return-type="ExpandoTable" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="name" />
+		</finder>
+	</entity>
+	<entity dynamic-update-enabled="true" local-service="true" name="ExpandoValue" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="valueId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column change-tracking-resolution-type="strict" name="tableId" type="long" />
+		<column change-tracking-resolution-type="strict" name="columnId" type="long" />
+		<column change-tracking-resolution-type="strict" name="rowId" type="long" />
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="data" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="tableId" />
+			<order-column name="rowId" />
+			<order-column name="columnId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="TableId" return-type="Collection">
+			<finder-column name="tableId" />
+		</finder>
+		<finder name="ColumnId" return-type="Collection">
+			<finder-column name="columnId" />
+		</finder>
+		<finder name="RowId" return-type="Collection">
+			<finder-column name="rowId" />
+		</finder>
+		<finder name="T_C" return-type="Collection">
+			<finder-column name="tableId" />
+			<finder-column name="columnId" />
+		</finder>
+		<finder name="T_R" return-type="Collection">
+			<finder-column name="tableId" />
+			<finder-column name="rowId" />
+		</finder>
+		<finder name="T_CPK" return-type="Collection">
+			<finder-column name="tableId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_R" return-type="ExpandoValue" unique="true">
+			<finder-column name="columnId" />
+			<finder-column name="rowId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="T_C_C" return-type="ExpandoValue" unique="true">
+			<finder-column name="tableId" />
+			<finder-column name="columnId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder db-index="false" name="T_C_D" return-type="Collection">
+			<finder-column name="tableId" />
+			<finder-column name="columnId" />
+			<finder-column name="data" />
+		</finder>
+	</entity>
+	<exceptions>
+		<exception>ColumnName</exception>
+		<exception>ColumnType</exception>
+		<exception>DuplicateColumnName</exception>
+		<exception>DuplicateTableName</exception>
+		<exception>TableName</exception>
+		<exception>ValueData</exception>
+	</exceptions>
+</service-builder>

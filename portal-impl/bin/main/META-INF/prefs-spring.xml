@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.portal.util.PrefsPropsImpl" id="com.liferay.portal.kernel.util.PrefsProps" />
+	<bean class="com.liferay.portal.kernel.util.PrefsPropsUtil" id="com.liferay.portal.kernel.util.PrefsPropsUtil">
+		<property name="prefsProps" ref="com.liferay.portal.kernel.util.PrefsProps" />
+	</bean>
+</beans>

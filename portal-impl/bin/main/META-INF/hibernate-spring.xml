@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+>
+	<bean class="com.liferay.portal.dao.orm.hibernate.jmx.HibernateStatisticsService" />
+	<bean class="com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil">
+		<property name="dynamicQueryFactory">
+			<bean class="com.liferay.portal.dao.orm.hibernate.DynamicQueryFactoryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.dao.orm.OrderFactoryUtil">
+		<property name="orderFactory">
+			<bean class="com.liferay.portal.dao.orm.hibernate.OrderFactoryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil">
+		<property name="projectionFactory">
+			<bean class="com.liferay.portal.dao.orm.hibernate.ProjectionFactoryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil">
+		<property name="propertyFactory">
+			<bean class="com.liferay.portal.dao.orm.hibernate.PropertyFactoryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil">
+		<property name="restrictionsFactory">
+			<bean class="com.liferay.portal.dao.orm.hibernate.RestrictionsFactoryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.util.InfrastructureUtil" factory-method="getSessionFactory" id="liferayHibernateSessionFactory" />
+	<bean class="com.liferay.portal.kernel.util.InfrastructureUtil" factory-method="getTransactionManager" id="liferayTransactionManager" />
+	<bean class="com.liferay.portal.spring.hibernate.PortalHibernateConfiguration" id="counterHibernateSessionFactory">
+		<property name="configurationResources">
+			<array>
+				<value>META-INF/counter-hbm.xml</value>
+			</array>
+		</property>
+		<property name="dataSource" ref="liferayDataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="javax.persistence.validation.mode">none</prop>
+			</props>
+		</property>
+		<property name="mvccEnabled" value="false" />
+	</bean>
+</beans>

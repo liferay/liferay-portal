@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<custom-sql>
+	<sql id="com.liferay.asset.kernel.service.persistence.AssetEntryFinder.findByAndCategoryIds">
+		<![CDATA[
+			EXISTS
+				(
+					SELECT
+						1
+					FROM
+						AssetEntryAssetCategoryRel
+					WHERE
+						(AssetEntryAssetCategoryRel.assetEntryId = AssetEntry.entryId) AND
+						(AssetEntryAssetCategoryRel.assetCategoryId IN ([$CATEGORY_ID$]))
+				)
+		]]>
+	</sql>
+	<sql id="com.liferay.asset.kernel.service.persistence.AssetEntryFinder.findByAndTagIds">
+		<![CDATA[
+			SELECT
+				DISTINCT AssetEntries_AssetTags.entryId
+			FROM
+				AssetEntries_AssetTags
+			WHERE
+				[$TAG_ID$]
+		]]>
+	</sql>
+</custom-sql>

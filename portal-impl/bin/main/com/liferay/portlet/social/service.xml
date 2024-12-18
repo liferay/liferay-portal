@@ -1,0 +1,493 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.social.kernel" auto-import-default-references="false" change-tracking-enabled="true" mvcc-enabled="true" package-path="com.liferay.portlet.social">
+	<namespace>Social</namespace>
+	<entity dynamic-update-enabled="true" local-service="true" name="SocialActivity" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="activityId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="activitySetId" type="long" />
+		<column name="mirrorActivityId" type="long" />
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="parentClassNameId" type="long" />
+		<column name="parentClassPK" type="long" />
+		<column name="type" type="int" />
+		<column name="extraData" type="String" />
+		<column name="receiverUserId" type="long" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="ActivitySetId" return-type="Collection">
+			<finder-column name="activitySetId" />
+		</finder>
+		<finder name="MirrorActivityId" return-type="SocialActivity">
+			<finder-column name="mirrorActivityId" />
+		</finder>
+		<finder name="ReceiverUserId" return-type="Collection">
+			<finder-column name="receiverUserId" />
+		</finder>
+		<finder name="C_CN" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="M_C_C" return-type="Collection">
+			<finder-column name="mirrorActivityId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="C_C_T" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="G_U_C_C_T_R" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+			<finder-column name="receiverUserId" />
+		</finder>
+		<finder name="G_U_CD_C_C_T_R" return-type="SocialActivity" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="createDate" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+			<finder-column name="receiverUserId" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialActivityAchievement" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="activityAchievementId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="firstInGroup" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_U" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="G_N" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="G_F" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="firstInGroup" />
+		</finder>
+		<finder name="G_U_N" return-type="SocialActivityAchievement" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="G_U_F" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="firstInGroup" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialActivityCounter" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="activityCounterId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="name" type="String" />
+		<column name="ownerType" type="int" />
+		<column name="currentValue" type="int" />
+		<column name="totalValue" type="int" />
+		<column name="graceValue" type="int" />
+		<column name="startPeriod" type="int" />
+		<column name="endPeriod" type="int" />
+		<column name="active" type="boolean" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_C_C_O" return-type="Collection" where="endPeriod = -1">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="ownerType" />
+		</finder>
+		<finder name="G_C_C_N_O_S" return-type="SocialActivityStatsEntry" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="name" />
+			<finder-column name="ownerType" />
+			<finder-column name="startPeriod" />
+		</finder>
+		<finder name="G_C_C_N_O_E" return-type="SocialActivityStatsEntry" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="name" />
+			<finder-column name="ownerType" />
+			<finder-column name="endPeriod" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialActivityInterpreter" remote-service="false" tx-manager="none">
+	</entity>
+	<entity local-service="true" name="SocialActivityLimit" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="activityLimitId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="activityType" type="int" />
+		<column name="activityCounterName" type="String" />
+		<column name="value" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="G_U_C_C_A_A" return-type="SocialActivityLimit" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="activityType" />
+			<finder-column name="activityCounterName" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialActivitySet" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="activitySetId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="long" />
+		<column name="modifiedDate" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="type" type="int" />
+		<column name="extraData" type="String" />
+		<column name="activityCount" type="int" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="modifiedDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="G_U_T" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="C_C_T" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="G_U_C_T" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="U_C_C_T" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialActivitySetting" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="activitySettingId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="activityType" type="int" />
+		<column name="name" type="String" />
+		<column name="value" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="G_C" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="G_A" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="activityType" />
+		</finder>
+		<finder name="G_C_A" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="activityType" />
+		</finder>
+		<finder name="G_C_A_N" return-type="SocialActivitySetting">
+			<finder-column name="groupId" />
+			<finder-column name="classNameId" />
+			<finder-column name="activityType" />
+			<finder-column name="name" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialRelation" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="relationId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="userId1" type="long" />
+		<column name="userId2" type="long" />
+		<column name="type" type="int" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId1" return-type="Collection">
+			<finder-column name="userId1" />
+		</finder>
+		<finder name="UserId2" return-type="Collection">
+			<finder-column name="userId2" />
+		</finder>
+		<finder name="Type" return-type="Collection">
+			<finder-column name="type" />
+		</finder>
+		<finder name="C_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="U1_U2" return-type="Collection">
+			<finder-column name="userId1" />
+			<finder-column name="userId2" />
+		</finder>
+		<finder name="U1_T" return-type="Collection">
+			<finder-column name="userId1" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="U2_T" return-type="Collection">
+			<finder-column name="userId2" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="U1_U2_T" return-type="SocialRelation" unique="true">
+			<finder-column name="userId1" />
+			<finder-column name="userId2" />
+			<finder-column name="type" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialRequest" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="requestId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="long" />
+		<column name="modifiedDate" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+		<column name="type" type="int" />
+		<column name="extraData" type="String" />
+		<column name="receiverUserId" type="long" />
+		<column name="status" type="int" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="requestId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="ReceiverUserId" return-type="Collection">
+			<finder-column name="receiverUserId" />
+		</finder>
+		<finder name="U_S" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="R_S" return-type="Collection">
+			<finder-column name="receiverUserId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="U_C_C_T_R" return-type="SocialRequest" unique="true">
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+			<finder-column name="receiverUserId" />
+		</finder>
+		<finder name="U_C_C_T_S" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="C_C_T_R_S" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+			<finder-column name="type" />
+			<finder-column name="receiverUserId" />
+			<finder-column name="status" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="SocialRequestInterpreter" remote-service="false" tx-manager="none" />
+	<exceptions>
+		<exception>RelationUserId</exception>
+		<exception>RequestUserId</exception>
+	</exceptions>
+</service-builder>

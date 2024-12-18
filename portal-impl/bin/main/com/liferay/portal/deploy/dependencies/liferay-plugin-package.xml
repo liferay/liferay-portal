@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE plugin-package PUBLIC "-//Liferay//DTD Plugin Package 7.4.0//EN" "http://www.liferay.com/dtd/liferay-plugin-package_7_4_0.dtd">
+
+<plugin-package>
+	<name>@plugin_name@ @plugin_type_name@</name>
+	<module-id>@module_group_id@/@module_artifact_id@/@module_version@/war</module-id>
+	<recommended-deployment-context>@recommended_deployment_context@</recommended-deployment-context>
+	<required-deployment-contexts>@required_deployment_contexts@</required-deployment-contexts>
+	<types>
+		<type>@plugin_type@</type>
+	</types>
+	<tags>@tags@</tags>
+	<short-description>@short_description@</short-description>
+	<long-description>@long_description@</long-description>
+	<change-log>@change_log@</change-log>
+	<page-url>@page_url@</page-url>
+	<author>@author@</author>
+	<licenses>@licenses@</licenses>
+	<liferay-versions>@liferay_versions@</liferay-versions>
+</plugin-package>

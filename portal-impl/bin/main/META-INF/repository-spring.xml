@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.portal.repository.RepositoryFactoryImpl" id="com.liferay.portal.kernel.repository.RepositoryFactory" />
+	<bean class="com.liferay.portal.kernel.repository.RepositoryFactoryUtil" id="com.liferay.portal.kernel.repository.RepositoryFactoryUtil">
+		<property name="repositoryFactory" ref="com.liferay.portal.kernel.repository.RepositoryFactory" />
+	</bean>
+	<bean class="com.liferay.portal.repository.registry.RepositoryClassDefinitionCatalogImpl" id="com.liferay.portal.repository.registry.RepositoryClassDefinitionCatalog" />
+	<bean class="com.liferay.portal.repository.registry.RepositoryClassDefinitionCatalogUtil" id="com.liferay.portal.repository.registry.RepositoryClassDefinitionCatalogUtil">
+		<property name="repositoryClassDefinitionCatalog" ref="com.liferay.portal.repository.registry.RepositoryClassDefinitionCatalog" />
+	</bean>
+	<bean class="com.liferay.portal.repository.registry.RepositoryDefinerRegister">
+		<property name="repositoryDefinerFactoryBiFunction">
+			<bean class="com.liferay.portal.repository.liferayrepository.LiferayRepositoryDefiner" factory-method="getFactoryBiFunction" />
+		</property>
+		<property name="repositoryFactory">
+			<bean class="com.liferay.portal.repository.liferayrepository.LiferayRepositoryFactory" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.repository.registry.RepositoryDefinerRegister">
+		<property name="repositoryDefinerFactoryBiFunction">
+			<bean class="com.liferay.portal.repository.temporaryrepository.TemporaryFileEntryRepositoryDefiner" factory-method="getFactoryBiFunction" />
+		</property>
+		<property name="repositoryFactory">
+			<bean class="com.liferay.portal.repository.liferayrepository.LiferayRepositoryFactory" />
+		</property>
+	</bean>
+</beans>

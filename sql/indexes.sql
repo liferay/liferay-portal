@@ -505,8 +505,12 @@ create unique index IX_36B86556 on Website (companyId, externalReferenceCode[$CO
 create index IX_F75690BB on Website (userId);
 create index IX_76F15D13 on Website (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_EB4D2E32 on WorkflowDefinitionLink (companyId, groupId, classNameId, classPK, typePK);
-create index IX_4AE45F6F on WorkflowDefinitionLink (companyId, groupId, classPK);
 create index IX_A4DB1F0F on WorkflowDefinitionLink (companyId, workflowDefinitionName[$COLUMN_LENGTH:75$], workflowDefinitionVersion);
+create index IX_705B40EE on WorkflowDefinitionLink (groupId, companyId, classNameId, classPK, typePK);
+create unique index IX_2FAB6B4D on WorkflowDefinitionLink (groupId, companyId, classNameId, ctCollectionId, workflowDefinitionName[$COLUMN_LENGTH:75$]);
+create index IX_407C8F33 on WorkflowDefinitionLink (groupId, companyId, classPK);
+create unique index IX_BF1277A7 on WorkflowDefinitionLink (groupId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
+create unique index IX_6D62D29A on WorkflowDefinitionLink (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_336A4F02 on WorkflowDefinitionLink (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_415A7007 on WorkflowInstanceLink (groupId, companyId, classNameId, classPK);

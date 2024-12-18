@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.model;
 
+import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.model.wrapper.BaseModelWrapper;
 
 import java.util.Date;
@@ -38,6 +39,8 @@ public class WorkflowDefinitionLinkWrapper
 
 		attributes.put("mvccVersion", getMvccVersion());
 		attributes.put("ctCollectionId", getCtCollectionId());
+		attributes.put("uuid", getUuid());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put(
 			"workflowDefinitionLinkId", getWorkflowDefinitionLinkId());
 		attributes.put("groupId", getGroupId());
@@ -68,6 +71,19 @@ public class WorkflowDefinitionLinkWrapper
 
 		if (ctCollectionId != null) {
 			setCtCollectionId(ctCollectionId);
+		}
+
+		String uuid = (String)attributes.get("uuid");
+
+		if (uuid != null) {
+			setUuid(uuid);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long workflowDefinitionLinkId = (Long)attributes.get(
@@ -212,6 +228,16 @@ public class WorkflowDefinitionLinkWrapper
 	}
 
 	/**
+	 * Returns the external reference code of this workflow definition link.
+	 *
+	 * @return the external reference code of this workflow definition link
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
+	}
+
+	/**
 	 * Returns the group ID of this workflow definition link.
 	 *
 	 * @return the group ID of this workflow definition link
@@ -289,6 +315,16 @@ public class WorkflowDefinitionLinkWrapper
 	@Override
 	public String getUserUuid() {
 		return model.getUserUuid();
+	}
+
+	/**
+	 * Returns the uuid of this workflow definition link.
+	 *
+	 * @return the uuid of this workflow definition link
+	 */
+	@Override
+	public String getUuid() {
+		return model.getUuid();
 	}
 
 	/**
@@ -382,6 +418,16 @@ public class WorkflowDefinitionLinkWrapper
 	}
 
 	/**
+	 * Sets the external reference code of this workflow definition link.
+	 *
+	 * @param externalReferenceCode the external reference code of this workflow definition link
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
 	 * Sets the group ID of this workflow definition link.
 	 *
 	 * @param groupId the group ID of this workflow definition link
@@ -462,6 +508,16 @@ public class WorkflowDefinitionLinkWrapper
 	}
 
 	/**
+	 * Sets the uuid of this workflow definition link.
+	 *
+	 * @param uuid the uuid of this workflow definition link
+	 */
+	@Override
+	public void setUuid(String uuid) {
+		model.setUuid(uuid);
+	}
+
+	/**
 	 * Sets the workflow definition link ID of this workflow definition link.
 	 *
 	 * @param workflowDefinitionLinkId the workflow definition link ID of this workflow definition link
@@ -508,6 +564,11 @@ public class WorkflowDefinitionLinkWrapper
 		getAttributeSetterBiConsumers() {
 
 		return model.getAttributeSetterBiConsumers();
+	}
+
+	@Override
+	public StagedModelType getStagedModelType() {
+		return model.getStagedModelType();
 	}
 
 	@Override

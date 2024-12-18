@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<custom-sql>
+	<sql file="custom-sql/portal.xml" />
+	<sql file="custom-sql/announcements.xml" />
+	<sql file="custom-sql/asset.xml" />
+	<sql file="custom-sql/documentlibrary.xml" />
+	<sql file="custom-sql/exportimport.xml" />
+	<sql file="custom-sql/messageboards.xml" />
+	<sql file="custom-sql/social.xml" />
+</custom-sql>

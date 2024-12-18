@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE routes PUBLIC "-//Liferay//DTD Friendly URL Routes 7.4.0//EN" "http://www.liferay.com/dtd/liferay-friendly-url-routes_7_4_0.dtd">
+
+<routes>
+	<route>
+		<pattern>/backgroundtask_attachment/{backgroundTaskId:\d+}/{attachment:[^/]+}</pattern>
+		<implicit-parameter name="p_p_lifecycle">2</implicit-parameter>
+		<implicit-parameter name="p_p_mode">view</implicit-parameter>
+		<implicit-parameter name="struts_action">/portlet_configuration/get_background_task_attachment</implicit-parameter>
+	</route>
+</routes>

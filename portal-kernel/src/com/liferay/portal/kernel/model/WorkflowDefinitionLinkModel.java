@@ -26,8 +26,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface WorkflowDefinitionLinkModel
 	extends AttachedModel, BaseModel<WorkflowDefinitionLink>,
-			CTModel<WorkflowDefinitionLink>, GroupedModel, MVCCModel,
-			ShardedModel {
+			CTModel<WorkflowDefinitionLink>, ExternalReferenceCodeModel,
+			GroupedModel, MVCCModel, ShardedModel, StagedAuditedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -82,6 +82,40 @@ public interface WorkflowDefinitionLinkModel
 	 */
 	@Override
 	public void setCtCollectionId(long ctCollectionId);
+
+	/**
+	 * Returns the uuid of this workflow definition link.
+	 *
+	 * @return the uuid of this workflow definition link
+	 */
+	@AutoEscape
+	@Override
+	public String getUuid();
+
+	/**
+	 * Sets the uuid of this workflow definition link.
+	 *
+	 * @param uuid the uuid of this workflow definition link
+	 */
+	@Override
+	public void setUuid(String uuid);
+
+	/**
+	 * Returns the external reference code of this workflow definition link.
+	 *
+	 * @return the external reference code of this workflow definition link
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this workflow definition link.
+	 *
+	 * @param externalReferenceCode the external reference code of this workflow definition link
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the workflow definition link ID of this workflow definition link.

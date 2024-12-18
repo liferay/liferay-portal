@@ -7,6 +7,7 @@ package com.liferay.portal.model.impl;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -66,6 +67,7 @@ public class WorkflowDefinitionLinkModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"ctCollectionId", Types.BIGINT},
+		{"uuid_", Types.VARCHAR}, {"externalReferenceCode", Types.VARCHAR},
 		{"workflowDefinitionLinkId", Types.BIGINT}, {"groupId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
@@ -81,6 +83,8 @@ public class WorkflowDefinitionLinkModelImpl
 	static {
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("ctCollectionId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("workflowDefinitionLinkId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
@@ -96,7 +100,7 @@ public class WorkflowDefinitionLinkModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table WorkflowDefinitionLink (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,workflowDefinitionLinkId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,typePK LONG,workflowDefinitionName VARCHAR(75) null,workflowDefinitionVersion INTEGER,primary key (workflowDefinitionLinkId, ctCollectionId))";
+		"create table WorkflowDefinitionLink (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,workflowDefinitionLinkId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,typePK LONG,workflowDefinitionName VARCHAR(75) null,workflowDefinitionVersion INTEGER,primary key (workflowDefinitionLinkId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table WorkflowDefinitionLink";
@@ -153,25 +157,37 @@ public class WorkflowDefinitionLinkModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPEPK_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long WORKFLOWDEFINITIONNAME_COLUMN_BITMASK = 32L;
+	public static final long TYPEPK_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long WORKFLOWDEFINITIONVERSION_COLUMN_BITMASK = 64L;
+	public static final long UUID_COLUMN_BITMASK = 64L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long WORKFLOWDEFINITIONNAME_COLUMN_BITMASK = 128L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long WORKFLOWDEFINITIONVERSION_COLUMN_BITMASK = 256L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.util.PropsUtil.get(
@@ -280,6 +296,11 @@ public class WorkflowDefinitionLinkModelImpl
 			attributeGetterFunctions.put(
 				"ctCollectionId", WorkflowDefinitionLink::getCtCollectionId);
 			attributeGetterFunctions.put(
+				"uuid", WorkflowDefinitionLink::getUuid);
+			attributeGetterFunctions.put(
+				"externalReferenceCode",
+				WorkflowDefinitionLink::getExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"workflowDefinitionLinkId",
 				WorkflowDefinitionLink::getWorkflowDefinitionLinkId);
 			attributeGetterFunctions.put(
@@ -333,6 +354,14 @@ public class WorkflowDefinitionLinkModelImpl
 				"ctCollectionId",
 				(BiConsumer<WorkflowDefinitionLink, Long>)
 					WorkflowDefinitionLink::setCtCollectionId);
+			attributeSetterBiConsumers.put(
+				"uuid",
+				(BiConsumer<WorkflowDefinitionLink, String>)
+					WorkflowDefinitionLink::setUuid);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<WorkflowDefinitionLink, String>)
+					WorkflowDefinitionLink::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"workflowDefinitionLinkId",
 				(BiConsumer<WorkflowDefinitionLink, Long>)
@@ -416,6 +445,64 @@ public class WorkflowDefinitionLinkModelImpl
 		}
 
 		_ctCollectionId = ctCollectionId;
+	}
+
+	@JSON
+	@Override
+	public String getUuid() {
+		if (_uuid == null) {
+			return "";
+		}
+		else {
+			return _uuid;
+		}
+	}
+
+	@Override
+	public void setUuid(String uuid) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_uuid = uuid;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalUuid() {
+		return getColumnOriginalValue("uuid_");
+	}
+
+	@JSON
+	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
 	}
 
 	@JSON
@@ -716,6 +803,13 @@ public class WorkflowDefinitionLinkModelImpl
 			this.<Integer>getColumnOriginalValue("workflowDefinitionVersion"));
 	}
 
+	@Override
+	public StagedModelType getStagedModelType() {
+		return new StagedModelType(
+			PortalUtil.getClassNameId(WorkflowDefinitionLink.class.getName()),
+			getClassNameId());
+	}
+
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -776,6 +870,9 @@ public class WorkflowDefinitionLinkModelImpl
 
 		workflowDefinitionLinkImpl.setMvccVersion(getMvccVersion());
 		workflowDefinitionLinkImpl.setCtCollectionId(getCtCollectionId());
+		workflowDefinitionLinkImpl.setUuid(getUuid());
+		workflowDefinitionLinkImpl.setExternalReferenceCode(
+			getExternalReferenceCode());
 		workflowDefinitionLinkImpl.setWorkflowDefinitionLinkId(
 			getWorkflowDefinitionLinkId());
 		workflowDefinitionLinkImpl.setGroupId(getGroupId());
@@ -806,6 +903,10 @@ public class WorkflowDefinitionLinkModelImpl
 			this.<Long>getColumnOriginalValue("mvccVersion"));
 		workflowDefinitionLinkImpl.setCtCollectionId(
 			this.<Long>getColumnOriginalValue("ctCollectionId"));
+		workflowDefinitionLinkImpl.setUuid(
+			this.<String>getColumnOriginalValue("uuid_"));
+		workflowDefinitionLinkImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		workflowDefinitionLinkImpl.setWorkflowDefinitionLinkId(
 			this.<Long>getColumnOriginalValue("workflowDefinitionLinkId"));
 		workflowDefinitionLinkImpl.setGroupId(
@@ -911,6 +1012,26 @@ public class WorkflowDefinitionLinkModelImpl
 		workflowDefinitionLinkCacheModel.mvccVersion = getMvccVersion();
 
 		workflowDefinitionLinkCacheModel.ctCollectionId = getCtCollectionId();
+
+		workflowDefinitionLinkCacheModel.uuid = getUuid();
+
+		String uuid = workflowDefinitionLinkCacheModel.uuid;
+
+		if ((uuid != null) && (uuid.length() == 0)) {
+			workflowDefinitionLinkCacheModel.uuid = null;
+		}
+
+		workflowDefinitionLinkCacheModel.externalReferenceCode =
+			getExternalReferenceCode();
+
+		String externalReferenceCode =
+			workflowDefinitionLinkCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			workflowDefinitionLinkCacheModel.externalReferenceCode = null;
+		}
 
 		workflowDefinitionLinkCacheModel.workflowDefinitionLinkId =
 			getWorkflowDefinitionLinkId();
@@ -1033,6 +1154,8 @@ public class WorkflowDefinitionLinkModelImpl
 
 	private long _mvccVersion;
 	private long _ctCollectionId;
+	private String _uuid;
+	private String _externalReferenceCode;
 	private long _workflowDefinitionLinkId;
 	private long _groupId;
 	private long _companyId;
@@ -1048,6 +1171,8 @@ public class WorkflowDefinitionLinkModelImpl
 	private int _workflowDefinitionVersion;
 
 	public <T> T getColumnValue(String columnName) {
+		columnName = _attributeNames.getOrDefault(columnName, columnName);
+
 		Function<WorkflowDefinitionLink, Object> function =
 			AttributeGetterFunctionsHolder._attributeGetterFunctions.get(
 				columnName);
@@ -1077,6 +1202,9 @@ public class WorkflowDefinitionLinkModelImpl
 
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put("ctCollectionId", _ctCollectionId);
+		_columnOriginalValues.put("uuid_", _uuid);
+		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
 		_columnOriginalValues.put(
 			"workflowDefinitionLinkId", _workflowDefinitionLinkId);
 		_columnOriginalValues.put("groupId", _groupId);
@@ -1094,6 +1222,16 @@ public class WorkflowDefinitionLinkModelImpl
 			"workflowDefinitionVersion", _workflowDefinitionVersion);
 	}
 
+	private static final Map<String, String> _attributeNames;
+
+	static {
+		Map<String, String> attributeNames = new HashMap<>();
+
+		attributeNames.put("uuid_", "uuid");
+
+		_attributeNames = Collections.unmodifiableMap(attributeNames);
+	}
+
 	private transient Map<String, Object> _columnOriginalValues;
 
 	public static long getColumnBitmask(String columnName) {
@@ -1109,29 +1247,33 @@ public class WorkflowDefinitionLinkModelImpl
 
 		columnBitmasks.put("ctCollectionId", 2L);
 
-		columnBitmasks.put("workflowDefinitionLinkId", 4L);
+		columnBitmasks.put("uuid_", 4L);
 
-		columnBitmasks.put("groupId", 8L);
+		columnBitmasks.put("externalReferenceCode", 8L);
 
-		columnBitmasks.put("companyId", 16L);
+		columnBitmasks.put("workflowDefinitionLinkId", 16L);
 
-		columnBitmasks.put("userId", 32L);
+		columnBitmasks.put("groupId", 32L);
 
-		columnBitmasks.put("userName", 64L);
+		columnBitmasks.put("companyId", 64L);
 
-		columnBitmasks.put("createDate", 128L);
+		columnBitmasks.put("userId", 128L);
 
-		columnBitmasks.put("modifiedDate", 256L);
+		columnBitmasks.put("userName", 256L);
 
-		columnBitmasks.put("classNameId", 512L);
+		columnBitmasks.put("createDate", 512L);
 
-		columnBitmasks.put("classPK", 1024L);
+		columnBitmasks.put("modifiedDate", 1024L);
 
-		columnBitmasks.put("typePK", 2048L);
+		columnBitmasks.put("classNameId", 2048L);
 
-		columnBitmasks.put("workflowDefinitionName", 4096L);
+		columnBitmasks.put("classPK", 4096L);
 
-		columnBitmasks.put("workflowDefinitionVersion", 8192L);
+		columnBitmasks.put("typePK", 8192L);
+
+		columnBitmasks.put("workflowDefinitionName", 16384L);
+
+		columnBitmasks.put("workflowDefinitionVersion", 32768L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

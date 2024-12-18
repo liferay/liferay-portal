@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder api-package-path="com.liferay.exportimport.kernel" auto-import-default-references="false" mvcc-enabled="true" package-path="com.liferay.portlet.exportimport">
+	<namespace>ExportImport</namespace>
+	<entity local-service="true" name="ExportImport" remote-service="true">
+	</entity>
+	<entity local-service="true" name="ExportImportConfiguration" remote-service="true" trash-enabled="true">
+
+		<!-- PK fields -->
+
+		<column name="exportImportConfigurationId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="type" type="int" />
+		<column name="settings" type="String" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="G_T" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="G_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_T_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="type" />
+			<finder-column name="status" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="Staging" remote-service="true">
+	</entity>
+	<exceptions>
+		<exception>LARFile</exception>
+		<exception>LARFileName</exception>
+		<exception>LARFileSize</exception>
+		<exception>LARType</exception>
+		<exception>LayoutImport</exception>
+		<exception>MissingReference</exception>
+		<exception>RemoteExport</exception>
+	</exceptions>
+</service-builder>

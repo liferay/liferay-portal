@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.portal.kernel.model.ModelHintsUtil" id="com.liferay.portal.kernel.model.ModelHintsUtil">
+		<property name="modelHints">
+			<bean class="com.liferay.portal.model.DefaultModelHintsImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.kernel.security.auth.AuthTokenUtil" id="com.liferay.portal.kernel.security.auth.AuthTokenUtil" />
+	<bean class="com.liferay.portal.security.auth.AuthTokenWhitelistImpl" id="com.liferay.portal.kernel.security.auth.AuthTokenWhitelist" />
+	<bean class="com.liferay.portal.kernel.security.auth.DefaultEmailAddressGenerator" id="com.liferay.portal.kernel.security.auth.DefaultEmailAddressGenerator" />
+	<bean class="com.liferay.portal.kernel.security.auth.DefaultEmailAddressValidator" id="com.liferay.portal.kernel.security.auth.DefaultEmailAddressValidator" />
+	<bean class="com.liferay.portal.kernel.security.auth.DefaultFullNameValidator" id="com.liferay.portal.kernel.security.auth.DefaultFullNameValidator" />
+	<bean class="com.liferay.portal.kernel.security.auth.DefaultScreenNameGenerator" id="com.liferay.portal.kernel.security.auth.DefaultScreenNameGenerator" />
+	<bean class="com.liferay.portal.kernel.security.auth.DefaultScreenNameValidator" id="com.liferay.portal.kernel.security.auth.DefaultScreenNameValidator" />
+	<bean class="com.liferay.portal.kernel.security.auth.tunnel.TunnelAuthenticationManagerUtil" id="com.liferay.portal.kernel.security.auth.tunnel.TunnelAuthenticationManagerUtil">
+		<property name="tunnelAuthenticationManager" ref="com.liferay.portal.security.auth.tunnel.TunnelAuthenticationManagerImpl" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.security.membershippolicy.DummyOrganizationMembershipPolicy" id="com.liferay.portal.kernel.security.membershippolicy.DummyOrganizationMembershipPolicy" />
+	<bean class="com.liferay.portal.kernel.security.membershippolicy.DummyRoleMembershipPolicy" id="com.liferay.portal.kernel.security.membershippolicy.DummyRoleMembershipPolicy" />
+	<bean class="com.liferay.portal.kernel.security.membershippolicy.DummyUserGroupMembershipPolicy" id="com.liferay.portal.kernel.security.membershippolicy.DummyUserGroupMembershipPolicy" />
+	<bean class="com.liferay.portal.security.membershippolicy.OrganizationMembershipPolicyFactoryImpl" id="com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyFactory" />
+	<bean class="com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyFactoryUtil" id="com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyFactoryUtil">
+		<property name="organizationMembershipPolicyFactory" ref="com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyFactory" />
+	</bean>
+	<bean class="com.liferay.portal.security.permission.PermissionCheckerFactoryImpl" id="com.liferay.portal.kernel.security.permission.PermissionCheckerFactory" />
+	<bean class="com.liferay.portal.security.permission.ResourceActionsImpl" id="com.liferay.portal.kernel.security.permission.ResourceActions" />
+	<bean class="com.liferay.portal.kernel.security.permission.ResourceActionsUtil" id="com.liferay.portal.kernel.security.permission.ResourceActionsUtil">
+		<property name="resourceActions" ref="com.liferay.portal.kernel.security.permission.ResourceActions" />
+	</bean>
+	<bean class="com.liferay.portal.security.xml.SecureXMLFactoryProviderImpl" id="com.liferay.portal.kernel.security.xml.SecureXMLFactoryProvider" />
+	<bean class="com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil" id="com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil">
+		<property name="secureXMLFactoryProvider" ref="com.liferay.portal.kernel.security.xml.SecureXMLFactoryProvider" />
+	</bean>
+	<bean class="com.liferay.portal.xml.SAXReaderImpl" id="com.liferay.portal.kernel.xml.SAXReader">
+		<property name="secure" value="true" />
+		<property name="secureXMLFactoryProvider" ref="com.liferay.portal.kernel.security.xml.SecureXMLFactoryProvider" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.xml.SAXReaderUtil" id="com.liferay.portal.kernel.xml.SAXReaderUtil">
+		<property name="SAXReader" ref="com.liferay.portal.kernel.xml.SAXReader" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil" id="com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil">
+		<property name="SAXReader">
+			<bean class="com.liferay.portal.xml.SAXReaderImpl">
+				<property name="secure" value="false" />
+				<property name="secureXMLFactoryProvider" ref="com.liferay.portal.kernel.security.xml.SecureXMLFactoryProvider" />
+			</bean>
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.security.access.control.AccessControlImpl" id="com.liferay.portal.security.access.control.AccessControl" />
+	<bean class="com.liferay.portal.security.access.control.AllowedHostsAccessControlPolicy" id="com.liferay.portal.security.access.control.AllowedHostsAccessControlPolicy" />
+	<bean class="com.liferay.portal.security.access.control.AuthenticatedAccessControlPolicy" id="com.liferay.portal.security.access.control.AuthenticatedAccessControlPolicy" />
+	<bean class="com.liferay.portal.security.auth.MVCPortletAuthTokenWhitelist" id="com.liferay.portal.security.auth.MVCPortletAuthTokenWhitelist" />
+	<bean class="com.liferay.portal.security.auth.SessionAuthToken" id="com.liferay.portal.security.auth.SessionAuthToken" />
+	<bean class="com.liferay.portal.security.auth.StrutsPortletAuthTokenWhitelist" id="com.liferay.portal.security.auth.StrutsPortletAuthTokenWhitelist" />
+	<bean class="com.liferay.portal.security.auth.registry.AuthVerifierRegistry" id="com.liferay.portal.security.auth.registry.AuthVerifierRegistry" />
+	<bean class="com.liferay.portal.security.auth.tunnel.TunnelAuthenticationManagerImpl" id="com.liferay.portal.security.auth.tunnel.TunnelAuthenticationManagerImpl" />
+	<bean class="com.liferay.portal.security.membershippolicy.DefaultSiteMembershipPolicy" id="com.liferay.portal.security.membershippolicy.DefaultSiteMembershipPolicy" />
+</beans>

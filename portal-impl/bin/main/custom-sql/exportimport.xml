@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<custom-sql>
+	<sql id="com.liferay.exportimport.kernel.service.persistence.ExportImportConfigurationFinder.countByC_G_N_D_T">
+		<![CDATA[
+			SELECT
+				COUNT(DISTINCT exportImportConfigurationId) AS COUNT_VALUE
+			FROM
+				ExportImportConfiguration
+			WHERE
+				(companyId = ?) AND
+				(groupId = ?) AND
+				(
+					(LOWER(name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+					(description LIKE ? [$AND_OR_NULL_CHECK$])
+				) AND
+				(type_ = ?)
+		]]>
+	</sql>
+	<sql id="com.liferay.exportimport.kernel.service.persistence.ExportImportConfigurationFinder.findByC_G_N_D_T">
+		<![CDATA[
+			SELECT
+				{ExportImportConfiguration.*}
+			FROM
+				ExportImportConfiguration
+			WHERE
+				(companyId = ?) AND
+				(groupId = ?) AND
+				(
+					(LOWER(name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+					(description LIKE ? [$AND_OR_NULL_CHECK$])
+				) AND
+				(type_ = ?)
+			ORDER BY
+				createDate DESC
+		]]>
+	</sql>
+</custom-sql>

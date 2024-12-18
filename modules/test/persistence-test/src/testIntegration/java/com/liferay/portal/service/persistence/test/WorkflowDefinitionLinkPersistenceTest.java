@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.exception.DuplicateWorkflowDefinitionLinkExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.NoSuchWorkflowDefinitionLinkException;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
@@ -122,6 +123,11 @@ public class WorkflowDefinitionLinkPersistenceTest {
 
 		newWorkflowDefinitionLink.setCtCollectionId(RandomTestUtil.nextLong());
 
+		newWorkflowDefinitionLink.setUuid(RandomTestUtil.randomString());
+
+		newWorkflowDefinitionLink.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newWorkflowDefinitionLink.setGroupId(RandomTestUtil.nextLong());
 
 		newWorkflowDefinitionLink.setCompanyId(RandomTestUtil.nextLong());
@@ -159,6 +165,12 @@ public class WorkflowDefinitionLinkPersistenceTest {
 		Assert.assertEquals(
 			existingWorkflowDefinitionLink.getCtCollectionId(),
 			newWorkflowDefinitionLink.getCtCollectionId());
+		Assert.assertEquals(
+			existingWorkflowDefinitionLink.getUuid(),
+			newWorkflowDefinitionLink.getUuid());
+		Assert.assertEquals(
+			existingWorkflowDefinitionLink.getExternalReferenceCode(),
+			newWorkflowDefinitionLink.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingWorkflowDefinitionLink.getWorkflowDefinitionLinkId(),
 			newWorkflowDefinitionLink.getWorkflowDefinitionLinkId());
@@ -198,6 +210,59 @@ public class WorkflowDefinitionLinkPersistenceTest {
 		Assert.assertEquals(
 			existingWorkflowDefinitionLink.getWorkflowDefinitionVersion(),
 			newWorkflowDefinitionLink.getWorkflowDefinitionVersion());
+	}
+
+	@Test(
+		expected = DuplicateWorkflowDefinitionLinkExternalReferenceCodeException.class
+	)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		WorkflowDefinitionLink workflowDefinitionLink =
+			addWorkflowDefinitionLink();
+
+		WorkflowDefinitionLink newWorkflowDefinitionLink =
+			addWorkflowDefinitionLink();
+
+		newWorkflowDefinitionLink.setGroupId(
+			workflowDefinitionLink.getGroupId());
+
+		newWorkflowDefinitionLink = _persistence.update(
+			newWorkflowDefinitionLink);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newWorkflowDefinitionLink);
+
+		newWorkflowDefinitionLink.setExternalReferenceCode(
+			workflowDefinitionLink.getExternalReferenceCode());
+
+		_persistence.update(newWorkflowDefinitionLink);
+	}
+
+	@Test
+	public void testCountByUuid() throws Exception {
+		_persistence.countByUuid("");
+
+		_persistence.countByUuid("null");
+
+		_persistence.countByUuid((String)null);
+	}
+
+	@Test
+	public void testCountByUUID_G() throws Exception {
+		_persistence.countByUUID_G("", RandomTestUtil.nextLong());
+
+		_persistence.countByUUID_G("null", 0L);
+
+		_persistence.countByUUID_G((String)null, 0L);
+	}
+
+	@Test
+	public void testCountByUuid_C() throws Exception {
+		_persistence.countByUuid_C("", RandomTestUtil.nextLong());
+
+		_persistence.countByUuid_C("null", 0L);
+
+		_persistence.countByUuid_C((String)null, 0L);
 	}
 
 	@Test
@@ -245,6 +310,17 @@ public class WorkflowDefinitionLinkPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_C_C_W() throws Exception {
+		_persistence.countByG_C_C_W(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextLong(), "");
+
+		_persistence.countByG_C_C_W(0L, 0L, 0L, "null");
+
+		_persistence.countByG_C_C_W(0L, 0L, 0L, (String)null);
+	}
+
+	@Test
 	public void testCountByG_C_C_C_T() throws Exception {
 		_persistence.countByG_C_C_C_T(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -252,6 +328,15 @@ public class WorkflowDefinitionLinkPersistenceTest {
 			RandomTestUtil.nextLong());
 
 		_persistence.countByG_C_C_C_T(0L, 0L, 0L, 0L, 0L);
+	}
+
+	@Test
+	public void testCountByERC_G() throws Exception {
+		_persistence.countByERC_G("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_G("null", 0L);
+
+		_persistence.countByERC_G((String)null, 0L);
 	}
 
 	@Test
@@ -283,9 +368,10 @@ public class WorkflowDefinitionLinkPersistenceTest {
 	protected OrderByComparator<WorkflowDefinitionLink> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"WorkflowDefinitionLink", "mvccVersion", true, "ctCollectionId",
-			true, "workflowDefinitionLinkId", true, "groupId", true,
-			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "classNameId", true, "classPK", true,
+			true, "uuid", true, "externalReferenceCode", true,
+			"workflowDefinitionLinkId", true, "groupId", true, "companyId",
+			true, "userId", true, "userName", true, "createDate", true,
+			"modifiedDate", true, "classNameId", true, "classPK", true,
 			"typePK", true, "workflowDefinitionName", true,
 			"workflowDefinitionVersion", true);
 	}
@@ -584,6 +670,38 @@ public class WorkflowDefinitionLinkPersistenceTest {
 		WorkflowDefinitionLink workflowDefinitionLink) {
 
 		Assert.assertEquals(
+			workflowDefinitionLink.getUuid(),
+			ReflectionTestUtil.invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "uuid_"));
+		Assert.assertEquals(
+			Long.valueOf(workflowDefinitionLink.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
+
+		Assert.assertEquals(
+			Long.valueOf(workflowDefinitionLink.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
+		Assert.assertEquals(
+			Long.valueOf(workflowDefinitionLink.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+		Assert.assertEquals(
+			Long.valueOf(workflowDefinitionLink.getClassNameId()),
+			ReflectionTestUtil.<Long>invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "classNameId"));
+		Assert.assertEquals(
+			workflowDefinitionLink.getWorkflowDefinitionName(),
+			ReflectionTestUtil.invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "workflowDefinitionName"));
+
+		Assert.assertEquals(
 			Long.valueOf(workflowDefinitionLink.getGroupId()),
 			ReflectionTestUtil.<Long>invoke(
 				workflowDefinitionLink, "getColumnOriginalValue",
@@ -608,6 +726,17 @@ public class WorkflowDefinitionLinkPersistenceTest {
 			ReflectionTestUtil.<Long>invoke(
 				workflowDefinitionLink, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "typePK"));
+
+		Assert.assertEquals(
+			workflowDefinitionLink.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(workflowDefinitionLink.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				workflowDefinitionLink, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
 	}
 
 	protected WorkflowDefinitionLink addWorkflowDefinitionLink()
@@ -620,6 +749,11 @@ public class WorkflowDefinitionLinkPersistenceTest {
 		workflowDefinitionLink.setMvccVersion(RandomTestUtil.nextLong());
 
 		workflowDefinitionLink.setCtCollectionId(RandomTestUtil.nextLong());
+
+		workflowDefinitionLink.setUuid(RandomTestUtil.randomString());
+
+		workflowDefinitionLink.setExternalReferenceCode(
+			RandomTestUtil.randomString());
 
 		workflowDefinitionLink.setGroupId(RandomTestUtil.nextLong());
 

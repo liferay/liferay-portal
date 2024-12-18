@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
+	<bean class="com.liferay.portal.service.permission.LayoutBranchPermissionImpl" id="com.liferay.portal.kernel.service.permission.LayoutBranchPermission" />
+	<bean class="com.liferay.portal.kernel.service.permission.LayoutBranchPermissionUtil" id="com.liferay.portal.kernel.service.permission.LayoutBranchPermissionUtil">
+		<property name="layoutBranchPermission" ref="com.liferay.portal.kernel.service.permission.LayoutBranchPermission" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.service.permission.LayoutPermissionUtil" id="com.liferay.portal.kernel.service.permission.LayoutPermissionUtil">
+		<property name="layoutPermission" ref="com.liferay.portal.service.permission.LayoutPermissionImpl" />
+	</bean>
+	<bean class="com.liferay.portal.service.permission.LayoutSetBranchPermissionImpl" id="com.liferay.portal.kernel.service.permission.LayoutSetBranchPermission" />
+	<bean class="com.liferay.portal.kernel.service.permission.LayoutSetBranchPermissionUtil" id="com.liferay.portal.kernel.service.permission.LayoutSetBranchPermissionUtil">
+		<property name="layoutSetBranchPermission" ref="com.liferay.portal.kernel.service.permission.LayoutSetBranchPermission" />
+	</bean>
+	<bean class="com.liferay.portal.service.permission.LayoutSetPrototypePermissionImpl" id="com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermission" />
+	<bean class="com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermissionUtil" id="com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermissionUtil">
+		<property name="layoutSetPrototypePermission" ref="com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermission" />
+	</bean>
+	<bean class="com.liferay.portal.kernel.util.LayoutTypePortletFactoryUtil" id="com.liferay.portal.kernel.util.LayoutTypePortletFactoryUtil">
+		<property name="layoutTypePortletFactory">
+			<bean class="com.liferay.portal.util.LayoutTypePortletFactoryImpl" />
+		</property>
+	</bean>
+	<bean class="com.liferay.portal.service.impl.LayoutLocalServiceHelper" id="com.liferay.portal.service.impl.LayoutLocalServiceHelper" />
+	<bean class="com.liferay.portal.service.permission.LayoutPermissionImpl" id="com.liferay.portal.service.permission.LayoutPermissionImpl" />
+</beans>

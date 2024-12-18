@@ -1684,6 +1684,8 @@ create table Website (
 create table WorkflowDefinitionLink (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
+	uuid_ VARCHAR(75) null,
+	externalReferenceCode VARCHAR(75) null,
 	workflowDefinitionLinkId LONG not null,
 	groupId LONG,
 	companyId LONG,

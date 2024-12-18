@@ -69,12 +69,16 @@ public class WorkflowDefinitionLinkCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
 		sb.append(", ctCollectionId=");
 		sb.append(ctCollectionId);
+		sb.append(", uuid=");
+		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", workflowDefinitionLinkId=");
 		sb.append(workflowDefinitionLinkId);
 		sb.append(", groupId=");
@@ -111,6 +115,22 @@ public class WorkflowDefinitionLinkCacheModel
 
 		workflowDefinitionLinkImpl.setMvccVersion(mvccVersion);
 		workflowDefinitionLinkImpl.setCtCollectionId(ctCollectionId);
+
+		if (uuid == null) {
+			workflowDefinitionLinkImpl.setUuid("");
+		}
+		else {
+			workflowDefinitionLinkImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			workflowDefinitionLinkImpl.setExternalReferenceCode("");
+		}
+		else {
+			workflowDefinitionLinkImpl.setExternalReferenceCode(
+				externalReferenceCode);
+		}
+
 		workflowDefinitionLinkImpl.setWorkflowDefinitionLinkId(
 			workflowDefinitionLinkId);
 		workflowDefinitionLinkImpl.setGroupId(groupId);
@@ -163,6 +183,8 @@ public class WorkflowDefinitionLinkCacheModel
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
+		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		workflowDefinitionLinkId = objectInput.readLong();
 
@@ -190,6 +212,20 @@ public class WorkflowDefinitionLinkCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		objectOutput.writeLong(ctCollectionId);
+
+		if (uuid == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
+		}
 
 		objectOutput.writeLong(workflowDefinitionLinkId);
 
@@ -227,6 +263,8 @@ public class WorkflowDefinitionLinkCacheModel
 
 	public long mvccVersion;
 	public long ctCollectionId;
+	public String uuid;
+	public String externalReferenceCode;
 	public long workflowDefinitionLinkId;
 	public long groupId;
 	public long companyId;
