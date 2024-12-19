@@ -8,8 +8,9 @@
 <%@ include file="/init.jsp" %>
 
 <liferay-frontend:logo-selector
-    label="First Logo"
+	label="First Logo"
 />
+
 <liferay-frontend:logo-selector
-    label="Second Logo"
+	label="Second Logo"
 />

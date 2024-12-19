@@ -52,8 +52,7 @@ public class SampleDisplayContext {
 			NavigationItemBuilder.setActive(
 				navigation.equals("logo-selector")
 			).setHref(
-				_renderResponse.createRenderURL(), "navigation",
-				"logo-selector"
+				_renderResponse.createRenderURL(), "navigation", "logo-selector"
 			).setLabel(
 				"Logo Selector"
 			).build(),

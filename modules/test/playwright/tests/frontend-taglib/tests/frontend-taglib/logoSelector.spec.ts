@@ -24,8 +24,7 @@ const linkName = 'Logo Selector';
 test(
 	'Logo selector changes do not affect to every selector in the page',
 	{tag: '@LPD-39308'},
-	async ({page, site, samplePage}) => {
-
+	async ({page, samplePage, site}) => {
 		await test.step('Create a content site and the taglib sample widget', async () => {
 			await samplePage.setupSampleWidget({
 				site,
@@ -37,23 +36,29 @@ test(
 		});
 
 		await test.step('Open modal to change first logo selector and fire change event', async () => {
-            await page.getByLabel('Change First Logo').click();
+			await page.getByLabel('Change First Logo').click();
 
-            await page.evaluate(() => {
-                Liferay.fire('changeLogo', {tempImageFileName: 'New Logo Name'})
-            });
+			await page.evaluate(() => {
+				Liferay.fire('changeLogo', {
+					tempImageFileName: 'New Logo Name',
+				});
+			});
 
-            await page.frameLocator('iframe[title="Upload First Logo"]').getByRole('button', { name: 'Done' }).click();
-               
+			await page
+				.frameLocator('iframe[title="Upload First Logo"]')
+				.getByRole('button', {name: 'Done'})
+				.click();
 		});
 
 		await test.step('Check second logo selector has not been changed', async () => {
-            const secondInput = page
-                .locator('div')
-                .filter({ hasText: /^Second Logo$/ })
-                .locator('[id^="_com_liferay_frontend_taglib_sample_web_portlet_SamplePortlet_INSTANCE_"]');
-            
-            await expect(secondInput).toHaveValue('Default');
+			const secondInput = page
+				.locator('div')
+				.filter({hasText: /^Second Logo$/})
+				.locator(
+					'[id^="_com_liferay_frontend_taglib_sample_web_portlet_SamplePortlet_INSTANCE_"]'
+				);
+
+			await expect(secondInput).toHaveValue('Default');
 		});
 	}
 );
