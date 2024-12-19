@@ -5,10 +5,10 @@
 
 import {Locator, expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../fixtures/loginTest';
-import {taglibSamplePageTest} from './fixtures/taglibSamplePageTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
+import {loginTest} from '../../../../fixtures/loginTest';
+import {samplePageTest} from '../../fixtures/samplePageTest';
 
 export const test = mergeTests(
 	featureFlagsTest({
@@ -16,7 +16,7 @@ export const test = mergeTests(
 	}),
 	isolatedSiteTest,
 	loginTest(),
-	taglibSamplePageTest
+	samplePageTest
 );
 
 const linkName = 'Logo Selector';
@@ -24,16 +24,16 @@ const linkName = 'Logo Selector';
 test(
 	'Logo selector changes do not affect to every selector in the page',
 	{tag: '@LPD-39308'},
-	async ({page, site, taglibSamplePage}) => {
+	async ({page, site, samplePage}) => {
 
 		await test.step('Create a content site and the taglib sample widget', async () => {
-			await taglibSamplePage.setupTaglibSampleWidget({
+			await samplePage.setupSampleWidget({
 				site,
 			});
 		});
 
 		await test.step('Select Panel link', async () => {
-			await taglibSamplePage.selectLink(linkName);
+			await samplePage.selectLink(linkName);
 		});
 
 		await test.step('Open modal to change first logo selector and fire change event', async () => {
@@ -51,14 +51,7 @@ test(
             const secondInput = page
                 .locator('div')
                 .filter({ hasText: /^Second Logo$/ })
-                .locator('[id^="_com_liferay_sample_web_portlet_TaglibSamplePortlet_INSTANCE_"]');
-
-            const secondLogoSection = page.
-                locator('div')
-                .filter({hasText: /^Second Logo$/ });
-
-            const secondLogoInput = secondLogoSection
-                .locator('[id^="_com_liferay_sample_web_portlet_TaglibSamplePortlet_INSTANCE_"]');
+                .locator('[id^="_com_liferay_frontend_taglib_sample_web_portlet_SamplePortlet_INSTANCE_"]');
             
             await expect(secondInput).toHaveValue('Default');
 		});
