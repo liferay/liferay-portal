@@ -8,6 +8,7 @@ package com.liferay.login.authentication.opensso.web.internal.servlet.taglib;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.ContactNameException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -48,6 +49,10 @@ public class OpenSSOBottomJSPDynamicInclude extends BaseJSPDynamicInclude {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-36719")) {
+			return;
+		}
 
 		try {
 			OpenSSOConfiguration openSSOConfiguration =

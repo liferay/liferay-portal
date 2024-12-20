@@ -23,7 +23,7 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Michael C. Han
  */
-@ExtendedObjectClassDefinition(category = "sso")
+@ExtendedObjectClassDefinition(category = "sso", featureFlagKey = "LPD-36719")
 @Meta.OCD(
 	id = "com.liferay.portal.security.sso.opensso.configuration.OpenSSOConfiguration",
 	localization = "content/Language", name = "opensso-configuration-name"
