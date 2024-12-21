@@ -11,9 +11,9 @@ import com.liferay.petra.json.web.service.client.JSONWebServiceTransportExceptio
 import com.liferay.portal.kernel.portlet.LiferayPortlet;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.List;
-
 import jakarta.portlet.Portlet;
+
+import java.util.List;
 
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
 

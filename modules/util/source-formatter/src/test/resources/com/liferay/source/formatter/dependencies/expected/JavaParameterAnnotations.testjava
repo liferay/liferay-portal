@@ -7,11 +7,11 @@ package com.liferay.source.formatter.dependencies;
 
 import io.swagger.annotations.ApiParam;
 
-import java.util.Collections;
-import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;

@@ -50,8 +50,6 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.store.s3.configuration.S3StoreConfiguration;
 
-import jakarta.annotation.Generated;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +59,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import jakarta.annotation.Generated;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

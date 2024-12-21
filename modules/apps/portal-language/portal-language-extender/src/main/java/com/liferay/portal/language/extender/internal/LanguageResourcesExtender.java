@@ -5,6 +5,7 @@
 
 package com.liferay.portal.language.extender.internal;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.resource.bundle.CacheResourceBundleLoader;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -91,8 +92,9 @@ public class LanguageResourcesExtender
 			() -> {
 				bundleContext.addServiceListener(
 					_serviceListener,
-					"(&(!(jakarta.portlet.name=*))(language.id=*)(objectClass=" +
-						ResourceBundle.class.getName() + "))");
+					StringBundler.concat(
+						"(&(!(jakarta.portlet.name=*))(language.id=*)",
+						"(objectClass=", ResourceBundle.class.getName(), "))"));
 
 				return null;
 			});

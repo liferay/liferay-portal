@@ -578,7 +578,8 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 		attributes.putValue(Constants.BUNDLE_VERSION, "1.0.0");
 		attributes.putValue(
 			Constants.IMPORT_PACKAGE,
-			"com.liferay.portal.kernel.util,jakarta.portlet,org.osgi.framework");
+			"com.liferay.portal.kernel.util,jakarta.portlet," +
+				"org.osgi.framework");
 
 		attributes.putValue("Manifest-Version", "2");
 

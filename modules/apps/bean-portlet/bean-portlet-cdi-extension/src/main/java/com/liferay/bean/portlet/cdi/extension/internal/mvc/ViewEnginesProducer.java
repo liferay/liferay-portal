@@ -46,9 +46,9 @@ public class ViewEnginesProducer {
 
 		private ViewEnginePriorityComparator() {
 
-			// The Javadoc for jakarta.mvc.engine.ViewEngine states "View engines
-			// can be decorated with jakarta.annotation.Priority to indicate their
-			// priority; otherwise the priority is assumed to be
+			// The Javadoc for jakarta.mvc.engine.ViewEngine states "View
+			// engines can be decorated with jakarta.annotation.Priority to
+			// indicate their priority; otherwise the priority is assumed to be
 			// ViewEngine.PRIORITY_APPLICATION."
 
 			super(ViewEngine.PRIORITY_APPLICATION);
