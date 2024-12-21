@@ -74,9 +74,7 @@ public class TransformerAgent {
 	}
 
 	private static final Set<String> _fixupSubpackageNames = new HashSet<>(
-		Arrays.asList(
-			"annotation.processing", "portlet.faces", "portlet.tck",
-			"transaction.xa"));
+		Arrays.asList("annotation.processing", "transaction.xa"));
 	private static final Set<String> _subpackageNames = new HashSet<>(
 		Arrays.asList(
 			"activation", "annotation", "batch", "decorator", "ejb", "el",

@@ -45,20 +45,18 @@ import java.util.regex.Pattern;
  */
 public class SourceTransformer {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		List<List<Module>> tieredModules = _tierModules();
 
 		System.out.println("Total tiers : " + tieredModules.size());
 
 		int tier = 0;
 
-		List<Module> modules = tieredModules.get(tier);
+		List<Module> modules = new ArrayList<>(tieredModules.get(tier));
 
-		System.out.println(
-			"Focus on tier " + tier + " with " + modules.size() + " Modules");
-
-		System.out.println("    build.jakarta.transformer.include.dirs=\\");
-		System.out.println("        # Tier " + tier + " \\");
+		for (int i = 1; i < tieredModules.size(); i++) {
+			modules.addAll(tieredModules.get(i));
+		}
 
 		List<String> dirs = new ArrayList<>();
 
@@ -72,23 +70,121 @@ public class SourceTransformer {
 			dirs.add(dir);
 		}
 
-		for (int i = 0; i < dirs.size(); i++) {
-			System.out.print("        " + dirs.get(i));
-
-			if (i < (dirs.size() - 1)) {
-				System.out.println(",\\");
-			}
-			else {
-				System.out.println();
-			}
-		}
-
 		for (String dir : dirs) {
 			_transformDir(dir);
 		}
 
-		if (false) {
-			_transformTopLevelProjects();
+		_transformTSFiles(Paths.get("modules/test/playwright"));
+
+		_transformTopLevelProjects();
+
+		_generateThirdPartyPathModules();
+
+		Set<String> keySet = new HashSet<>(_libMappings.keySet());
+
+		keySet.removeAll(_transformedLibIds);
+
+		if (keySet.isEmpty()) {
+			System.err.println("All lib mapping entries are used");
+		}
+		else {
+			System.err.println("Unused lib maping ids : " + keySet);
+		}
+	}
+
+	private static void _generateThirdPartyPathModules() throws Exception {
+		_installCache(
+			Paths.get(
+				"modules", "util", "portal-tools-jakarta-ee-transformer"));
+
+		for (Map.Entry<String, String> entry : _libMappings.entrySet()) {
+			String value = entry.getValue();
+
+			if (!value.startsWith("jakarta:")) {
+				continue;
+			}
+
+			String symbolicName = value.substring(8);
+
+			String key = entry.getKey();
+
+			String[] parts = key.split(":");
+
+			String patchedVersion = parts[2] + ".JAKARTA_LIFERAY-PATCHED-1";
+
+			Path path = Paths.get(
+				"modules", "third-party", symbolicName.replace('.', '-'));
+
+			Files.createDirectories(path);
+
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Bundle-SymbolicName: ");
+			sb.append(symbolicName);
+			sb.append("\nBundle-Version: ");
+			sb.append(patchedVersion);
+
+			String bndBndContent = sb.toString();
+
+			Files.write(
+				path.resolve("bnd.bnd"), bndBndContent.getBytes("UTF-8"),
+				StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING,
+				StandardOpenOption.WRITE);
+
+			sb = new StringBuilder();
+
+			sb.append("apply from: \"../../build-jakarta-transformer.gradle\"");
+			sb.append("\n\ndependencies {\n");
+			sb.append("	compileOnly group: \"");
+			sb.append(parts[0]);
+			sb.append("\", name: \"");
+			sb.append(parts[1]);
+			sb.append("\", transitive: false, version: \"");
+			sb.append(parts[2]);
+			sb.append("\"\n}");
+
+			if (Objects.equals(
+					symbolicName, "org.apache.aries.jax.rs.whiteboard")) {
+
+				sb.append("\n\njar {\n");
+				sb.append(
+					"\trename(\"javax.ws.rs.sse.SseEventSource.Builder\"");
+				sb.append(", \"jakarta.ws.rs.sse.SseEventSource.Builder\")\n");
+				sb.append("}");
+			}
+
+			String buildGradleContent = sb.toString();
+
+			Files.write(
+				path.resolve("build.gradle"),
+				buildGradleContent.getBytes("UTF-8"), StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+
+			_installCache(path);
+		}
+	}
+
+	private static void _installCache(Path modulePath) throws Exception {
+		System.err.println("Installing cache for " + modulePath);
+
+		Path gradlewPath = Paths.get("gradlew");
+
+		ProcessBuilder processBuilder = new ProcessBuilder(
+			String.valueOf(gradlewPath.toAbsolutePath()), "clean", "jar",
+			"installCache");
+
+		processBuilder.directory(modulePath.toFile());
+
+		processBuilder.inheritIO();
+
+		Process process = processBuilder.start();
+
+		int exitCode = process.waitFor();
+
+		if (exitCode != 0) {
+			throw new Exception(
+				"Unable to install cache for " + modulePath + ", exit code :" +
+					exitCode);
 		}
 	}
 
@@ -117,8 +213,23 @@ public class SourceTransformer {
 		return libMappings;
 	}
 
+	private static String _replaceTaglibURIs(String content) {
+		content = content.replace(
+			"http://java.sun.com/jsp/jstl/core", "jakarta.tags.core");
+		content = content.replace(
+			"http://java.sun.com/jsp/jstl/fmt", "jakarta.tags.fmt");
+		content = content.replace(
+			"http://java.sun.com/jsp/jstl/functions", "jakarta.tags.functions");
+		content = content.replace(
+			"http://java.sun.com/jsp/jstl/sql", "jakarta.tags.sql");
+		content = content.replace(
+			"http://java.sun.com/jsp/jstl/xml", "jakarta.tags.xml");
+
+		return content;
+	}
+
 	private static List<Module> _scanModules(Path modulesPath, Path subpath)
-		throws IOException {
+		throws Exception {
 
 		List<Module> modules = new ArrayList<>();
 
@@ -264,7 +375,7 @@ public class SourceTransformer {
 		}
 	}
 
-	private static List<List<Module>> _tierModules() throws IOException {
+	private static List<List<Module>> _tierModules() throws Exception {
 		List<List<Module>> tieredModules = new ArrayList<>();
 
 		Map<String, Module> moduleMap = new HashMap<>();
@@ -314,7 +425,10 @@ public class SourceTransformer {
 
 		if (Objects.equals(
 				String.valueOf(parentPath.getFileName()),
-				"oauth2-provider-rest")) {
+				"oauth2-provider-rest") ||
+			Objects.equals(
+				String.valueOf(parentPath.getFileName()),
+				"oauth2-provider-test")) {
 
 			newContent = newContent.replace(
 				"cxf-rt-rs-extension-providers*",
@@ -332,6 +446,24 @@ public class SourceTransformer {
 				"org.apache.cxf.rt.rs.security.oauth2*");
 			newContent = newContent.replace(
 				"cxf-rt-security*", "org.apache.cxf.rt.security*");
+
+			if (Objects.equals(
+					String.valueOf(parentPath.getFileName()),
+					"oauth2-provider-test")) {
+
+				newContent = newContent.replace(
+					"\t!org.bouncycastle.*,\\",
+					"\t!org.apache.abdera.*,\\\n\t!org.apache.cxf.aegis.*,\\" +
+						"\n\t\\\n\t!org.bouncycastle.*,\\\n\t\\\n\t" +
+							"!org.codehaus.jettison.*,\\\n\t\\");
+			}
+		}
+		else if (Objects.equals(
+					String.valueOf(parentPath.getFileName()),
+					"portal-jsp-engine")) {
+
+			newContent = newContent.replace(
+				"javax/servlet/jsp/resources", "jakarta/servlet/jsp/resources");
 		}
 		else if (Objects.equals(
 					String.valueOf(parentPath.getFileName()),
@@ -342,10 +474,45 @@ public class SourceTransformer {
 		}
 		else if (Objects.equals(
 					String.valueOf(parentPath.getFileName()),
-					"portal-template-freemarker")) {
+					"portal-reports-engine-console-service")) {
+
+			newContent = newContent.replace(
+				"!net.sf.cglib.proxy.*,\\",
+				"!net.sf.cglib.proxy.*,\\\n\t!javax.transaction.*\\");
+		}
+		else if (Objects.equals(
+					String.valueOf(parentPath.getFileName()),
+					"portal-template-freemarker") ||
+				 Objects.equals(
+					 String.valueOf(parentPath.getFileName()),
+					 "document-library-google-docs")) {
+
+			newContent = newContent.replace(
+				"jakarta.el;resolution:=optional,\\",
+				"jakarta.el,\\\n\t!javax.el,\\");
+			newContent = newContent.replace(
+				"jakarta.servlet;resolution:=optional,\\",
+				"jakarta.servlet.*,\\\n\t!javax.servlet.*,\\");
+			newContent = newContent.replace(
+				"jakarta.servlet.http;resolution:=optional,\\", "");
+			newContent = newContent.replace(
+				"jakarta.servlet.jsp;resolution:=optional,\\", "");
+			newContent = newContent.replace(
+				"jakarta.servlet.jsp.el;resolution:=optional,\\", "");
+			newContent = newContent.replace(
+				"jakarta.servlet.jsp.tagext;resolution:=optional,\\", "");
 
 			newContent = newContent.replace(
 				"javax.servlet.jsp.jstl", "jakarta.servlet.jsp.jstl");
+		}
+		else if (Objects.equals(
+					String.valueOf(parentPath.getFileName()),
+					"portal-tools-rest-builder")) {
+
+			newContent = newContent.replace(
+				"javax.ws.rs-api-[0-9.]*", "jakarta.ws.rs-*");
+			newContent = newContent.replace(
+				"javax/ws/rs/core/", "jakarta/ws/rs/core/");
 		}
 		else if (Objects.equals(
 					String.valueOf(parentPath.getFileName()),
@@ -355,6 +522,24 @@ public class SourceTransformer {
 				"opensaml-messaging-impl-*", "org.opensaml.messaging.impl-*");
 			newContent = newContent.replace(
 				"opensaml-saml-impl-*", "org.opensaml.impl-*");
+		}
+
+		newContent = _replaceTaglibURIs(newContent);
+
+		if (Objects.equals(
+				String.valueOf(parentPath.getFileName()),
+				"bean-portlet-cdi-extension") ||
+			Objects.equals(
+				String.valueOf(parentPath.getFileName()), "portal-bootstrap") ||
+			Objects.equals(
+				String.valueOf(parentPath.getFileName()),
+				"portal-remote-cxf-common") ||
+			Objects.equals(
+				String.valueOf(parentPath.getFileName()),
+				"portal-osgi-web-http-servlet-impl")) {
+
+			newContent = TextReplacerBiFunction.INSTANCE.apply(
+				"BndSource", newContent);
 		}
 
 		if (!Objects.equals(content, newContent)) {
@@ -377,15 +562,17 @@ public class SourceTransformer {
 		while (matcher.find()) {
 			String dependency = matcher.group();
 
-			String moduleGroup = matcher.group(1);
-			String moduleName = matcher.group(2);
-			String moduleVersion = matcher.group(3);
+			String groupId = matcher.group(1);
+			String artifactId = matcher.group(2);
+			String version = matcher.group(3);
 
-			String libId = moduleGroup + ":" + moduleName + ":" + moduleVersion;
+			String libId = groupId + ":" + artifactId + ":" + version;
 
 			String mappedLibIds = _libMappings.get(libId);
 
 			if (mappedLibIds != null) {
+				_transformedLibIds.add(libId);
+
 				String[] mappedLibIdArray = mappedLibIds.split("[|]");
 
 				StringBuilder dependencySB = new StringBuilder();
@@ -394,6 +581,13 @@ public class SourceTransformer {
 					String mappedLibId = mappedLibIdArray[i];
 
 					String[] parts = mappedLibId.split(":");
+
+					if (parts[0].equals("jakarta")) {
+						parts = new String[] {
+							"com.liferay", parts[1],
+							version + ".JAKARTA_LIFERAY-PATCHED-1"
+						};
+					}
 
 					dependencySB.append(
 						content.substring(matcher.start(0), matcher.start(1)));
@@ -434,9 +628,21 @@ public class SourceTransformer {
 		}
 		else if (Objects.equals(
 					String.valueOf(parentPath.getFileName()),
+					"portal-cache-ehcache-impl")) {
+
+			newContent = newContent.replace(
+				"version: \"3.10.8\"",
+				"version: \"3.10.8\", classifier: \"jakarta\"");
+		}
+		else if (Objects.equals(
+					String.valueOf(parentPath.getFileName()),
 					"portal-remote-jaxrs-whiteboard")) {
 
 			newContent = newContent.replace("cxf-*", "org.apache.cxf.*");
+			newContent = newContent.replace(
+				"jakarta.ws.rs-api-*", "jakarta.ws.rs-*");
+			newContent = newContent.replace(
+				"jaxb-osgi-*", "com.sun.xml.bind.jaxb.osgi-*");
 		}
 		else if (Objects.equals(
 					String.valueOf(parentPath.getFileName()),
@@ -463,7 +669,10 @@ public class SourceTransformer {
 		}
 		else if (Objects.equals(
 					String.valueOf(parentPath.getFileName()),
-					"portal-store-s3")) {
+					"portal-store-s3") ||
+				 Objects.equals(
+					 String.valueOf(parentPath.getFileName()),
+					 "portal-store-s3-test")) {
 
 			newContent = newContent.replace(
 				"javax.annotation.Generated;", "jakarta.annotation.Generated;");
@@ -476,7 +685,7 @@ public class SourceTransformer {
 		}
 	}
 
-	private static void _transformDir(String dir) throws IOException {
+	private static void _transformDir(String dir) throws Exception {
 		Path dirPath = Paths.get("modules", dir);
 
 		System.err.println("\nScanning dir " + dirPath + "\n");
@@ -492,7 +701,13 @@ public class SourceTransformer {
 
 					if (Objects.equals(
 							String.valueOf(dirPath.getFileName()),
-							"portal-tools-jakarta-ee-transformer")) {
+							"portal-tools-jakarta-ee-transformer") ||
+						Objects.equals(
+							String.valueOf(dirPath.getFileName()),
+							"client-extension-util-spring-boot2") ||
+						Objects.equals(
+							String.valueOf(dirPath.getFileName()),
+							"client-extension-util-spring-boot3")) {
 
 						return FileVisitResult.SKIP_SUBTREE;
 					}
@@ -503,11 +718,94 @@ public class SourceTransformer {
 					if (Files.exists(bndBndPath) &&
 						Files.exists(buildGradlePath)) {
 
+						Path systemPackagesExtraBnd = dirPath.resolve(
+							"system.packages.extra.bnd");
+
+						if (Files.exists(systemPackagesExtraBnd)) {
+							_transformBndBnd(systemPackagesExtraBnd);
+						}
+
 						_transformBndBnd(bndBndPath);
 						_transformBuildGradle(buildGradlePath);
 						_transformModule(dirPath);
 
 						return FileVisitResult.SKIP_SUBTREE;
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformFTLFiles(Path srcPath) throws IOException {
+		System.err.println("\t\u21AATransforming ftl");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.endsWith(".ftl")) {
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"FTLSource", content);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformHTMLFiles(Path srcPath) throws IOException {
+		System.err.println("\t\u21AATransforming html");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.endsWith(".html")) {
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"HTMLSource", content);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
 					}
 
 					return FileVisitResult.CONTINUE;
@@ -534,7 +832,13 @@ public class SourceTransformer {
 
 					String fileName = String.valueOf(fileNamePath);
 
-					if (fileName.endsWith(".java")) {
+					if (fileName.equals("WabProcessorTest.java")) {
+						return FileVisitResult.CONTINUE;
+					}
+
+					if (fileName.endsWith(".java") ||
+						fileName.endsWith(".testjava")) {
+
 						String content = new String(
 							Files.readAllBytes(filePath), "UTF-8");
 
@@ -551,6 +855,50 @@ public class SourceTransformer {
 								"freemarker.ext.servlet.",
 								"freemarker.ext.jakarta.servlet.");
 						}
+
+						newContent = newContent.replace(
+							"jakarta.portlet.version=3.0",
+							"jakarta.portlet.version=4.0");
+
+						newContent = _replaceTaglibURIs(newContent);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformJSFiles(Path srcPath) throws IOException {
+		System.err.println("\t\u21AATransforming js");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.endsWith(".js")) {
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"JSSource", content);
 
 						if (!Objects.equals(content, newContent)) {
 							Files.write(
@@ -592,6 +940,50 @@ public class SourceTransformer {
 							TextReplacerBiFunction.INSTANCE.apply(
 								"JspSource", content);
 
+						newContent = _replaceTaglibURIs(newContent);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformLanguageFiles(Path srcPath)
+		throws IOException {
+
+		System.err.println("\t\u21AATransforming language");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.startsWith("Language") &&
+						fileName.endsWith(".properties")) {
+
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"LanguageSource", content);
+
 						if (!Objects.equals(content, newContent)) {
 							Files.write(
 								filePath, newContent.getBytes("UTF-8"),
@@ -622,12 +1014,153 @@ public class SourceTransformer {
 				freeMarker = true;
 			}
 
+			_transformFTLFiles(srcPath);
+			_transformHTMLFiles(srcPath);
+			_transformLanguageFiles(srcPath);
 			_transformJavaFiles(srcPath, freeMarker);
+			_transformJSFiles(srcPath);
 			_transformJspFiles(srcPath);
+			_transformTestcaseFiles(srcPath);
+			_transformTLDFiles(srcPath);
+			_transformXMLFiles(srcPath);
+		}
+
+		if (Objects.equals(
+				String.valueOf(moduleDirPath.getFileName()),
+				"data-engine-taglib")) {
+
+			_transformXMLFiles(
+				moduleDirPath.resolve("liferay-data-engine.xml"));
+		}
+
+		Path testPath = moduleDirPath.resolve("test");
+
+		if (Files.exists(testPath)) {
+			_transformJSFiles(testPath);
 		}
 	}
 
-	private static void _transformTopLevelLibs(Path path) throws IOException {
+	private static void _transformPropertiesFiles(Path srcPath)
+		throws Exception {
+
+		System.err.println("\t\u21AATransforming properties");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.endsWith(".properties")) {
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"PropertiesSource", content);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformTestcaseFiles(Path srcPath)
+		throws IOException {
+
+		System.err.println("\t\u21AATransforming testcase");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.endsWith(".testcase") ||
+						fileName.endsWith(".macro")) {
+
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"TestcaseSource", content);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformTLDFiles(Path srcPath) throws IOException {
+		System.err.println("\t\u21AATransforming tld");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.endsWith(".tld")) {
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"TLDSource", content);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformTopLevelLibs(Path path) throws Exception {
 		Properties properties = new Properties();
 
 		try (BufferedReader bufferedReader = Files.newBufferedReader(
@@ -637,10 +1170,29 @@ public class SourceTransformer {
 		}
 
 		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-			String mappedLibId = _libMappings.get(
-				String.valueOf(entry.getValue()));
+			String libId = String.valueOf(entry.getValue());
+
+			String mappedLibId = _libMappings.get(libId);
 
 			if (mappedLibId != null) {
+				_transformedLibIds.add(libId);
+
+				String[] mappedParts = mappedLibId.split(":");
+
+				if (mappedParts[0].equals("jakarta")) {
+					String[] parts = libId.split(":");
+
+					StringBuilder sb = new StringBuilder();
+
+					sb.append("com.liferay:");
+					sb.append(mappedParts[1]);
+					sb.append(':');
+					sb.append(parts[2]);
+					sb.append(".JAKARTA_LIFERAY-PATCHED-1");
+
+					mappedLibId = sb.toString();
+				}
+
 				entry.setValue(mappedLibId);
 			}
 		}
@@ -662,17 +1214,112 @@ public class SourceTransformer {
 		}
 	}
 
-	private static void _transformTopLevelProjects() throws IOException {
+	private static void _transformTopLevelProjects() throws Exception {
 		for (String topLevelProjectFolder : _topLevelProjectFolders) {
 			Path path = Paths.get(topLevelProjectFolder);
 
+			Path bndBndPath = path.resolve("bnd.bnd");
+
+			if (Files.exists(bndBndPath)) {
+				_transformBndBnd(bndBndPath);
+			}
+
 			_transformJavaFiles(path, false);
 			_transformJspFiles(path);
+			_transformLanguageFiles(path);
+			_transformPropertiesFiles(path);
+			_transformTestcaseFiles(path);
+			_transformTLDFiles(path);
+			_transformXMLFiles(path);
 		}
 
 		_transformTopLevelLibs(
 			Paths.get("lib/development/dependencies.properties"));
 		_transformTopLevelLibs(Paths.get("lib/portal/dependencies.properties"));
+	}
+
+	private static void _transformTSFiles(Path srcPath) throws IOException {
+		System.err.println("\t\u21AATransforming ts");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.endsWith(".ts")) {
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"TSSource", content);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+	}
+
+	private static void _transformXMLFiles(Path srcPath) throws IOException {
+		System.err.println("\t\u21AATransforming xml");
+
+		Files.walkFileTree(
+			srcPath,
+			new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(
+						Path filePath, BasicFileAttributes basicFileAttributes)
+					throws IOException {
+
+					Path fileNamePath = filePath.getFileName();
+
+					String fileName = String.valueOf(fileNamePath);
+
+					if (fileName.equals("plugin.xml") ||
+						fileName.equals("sourcechecks.xml")) {
+
+						return FileVisitResult.CONTINUE;
+					}
+
+					if (fileName.endsWith(".xml")) {
+						String content = new String(
+							Files.readAllBytes(filePath), "UTF-8");
+
+						String newContent =
+							TextReplacerBiFunction.INSTANCE.apply(
+								"XMLSource", content);
+
+						newContent = _replaceTaglibURIs(newContent);
+
+						if (!Objects.equals(content, newContent)) {
+							Files.write(
+								filePath, newContent.getBytes("UTF-8"),
+								StandardOpenOption.TRUNCATE_EXISTING,
+								StandardOpenOption.WRITE);
+						}
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
 	}
 
 	private static final Pattern _jarDependencyPattern = Pattern.compile(
@@ -681,13 +1328,14 @@ public class SourceTransformer {
 				"version:\\s*['\"](.+)['\"]");
 	private static final Map<String, String> _libMappings;
 	private static final List<String> _moduleSubfolders = Arrays.asList(
-		"apps", "core", "dxp", "test", "util");
+		"apps", "core", "dxp", "sdk/ant-bnd", "test", "util");
 	private static final Pattern _projectDependencyPattern = Pattern.compile(
 		"project\\(\"(.*)\"\\)");
 	private static final List<String> _topLevelProjectFolders = Arrays.asList(
 		"portal-impl", "portal-kernel", "portal-test", "portal-web",
 		"support-tomcat", "util-bridges", "util-java", "util-slf4j",
 		"util-taglib");
+	private static final Set<String> _transformedLibIds = new HashSet<>();
 
 	static {
 		try {
