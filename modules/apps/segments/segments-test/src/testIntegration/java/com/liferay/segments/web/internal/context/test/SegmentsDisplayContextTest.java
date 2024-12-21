@@ -234,7 +234,8 @@ public class SegmentsDisplayContextTest {
 
 		Assert.assertTrue(
 			deleteURL.contains(
-				"param_jakarta.portlet.action=/segments/delete_segments_entry"));
+				"param_jakarta.portlet.action=/segments" +
+					"/delete_segments_entry"));
 		Assert.assertTrue(
 			deleteURL.contains(
 				"param_segmentsEntryId=" + segmentsEntry.getSegmentsEntryId()));
