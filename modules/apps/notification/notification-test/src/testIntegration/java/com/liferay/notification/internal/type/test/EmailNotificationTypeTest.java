@@ -1576,6 +1576,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 				"listTypeEntry1Value", "", "textObjectFieldValue",
 				LanguageUtil.getLanguageId(LocaleUtil.US),
 				_portal.getPortalURL(serviceContext.getRequest()),
+				StringPool.NEW_LINE, StringPool.NEW_LINE,
 				serviceContext.getCompanyId()),
 			StringPool.NEW_LINE);
 	}
