@@ -248,21 +248,41 @@ Import-Package: !*
 Liferay-Service: true
 Provide-Capability:\
 	osgi.contract;\
-		osgi.contract="JavaEL";\
-		uses:="javax.el";\
-		version:List<Version>="2.1.0,2.2.0,3.0.0",\
+		osgi.contract="JakartaAnnotations";\
+		uses:="jakarta.annotation,jakarta.annotation.sql,jakarta.annotation.security";\
+		version:Version="2.1.0",\
 	osgi.contract;\
-		osgi.contract="JavaJSP";\
-		uses:="javax.servlet.jsp,javax.servlet.jsp.el,javax.servlet.jsp.tagext";\
-		version:List<Version>="2.0.0,2.1.0,2.2.0,2.3.0",\
+		osgi.contract="JakartaCDI";\
+		uses:="jakarta.decorator,jakarta.enterprise.context,jakarta.enterprise.context.spi,jakarta.enterprise.context.control,jakarta.enterprise.util,jakarta.enterprise.inject,jakarta.enterprise.inject.se,jakarta.enterprise.inject.literal,jakarta.enterprise.inject.spi,jakarta.enterprise.inject.spi.configurator,jakarta.enterprise.event";\
+		version:Version="4.0.0",\
 	osgi.contract;\
-		osgi.contract=JavaPortlet;\
-		uses:="javax.portlet,javax.portlet.annotations,javax.portlet.filter";\
-		version:List<Version>="1,2,3",\
+		osgi.contract="JakartaExpressionLanguage";\
+		uses:="jakarta.el";\
+		version:List<Version>="5.0.0",\
 	osgi.contract;\
-		osgi.contract=JavaServlet;\
-		uses:="javax.servlet,javax.servlet.annotation,javax.servlet.descriptor,javax.servlet.http";\
-		version:List<Version>="2.5,3.0,3.1",\
+		osgi.contract="JakartaInject";\
+		uses:="jakarta.inject";\
+		version:Version="2.0.0",\
+	osgi.contract;\
+		osgi.contract="JakartaInterceptors";\
+		uses:="jakarta.interceptor";\
+		version:Version="2.1.0",\
+	osgi.contract;\
+		osgi.contract="JakartaJSONProcessing";\
+		uses:="jakarta.json,jakarta.json.stream,jakarta.json.spi";\
+		version:Version="2.1.0",\
+	osgi.contract;\
+		osgi.contract="JakartaServerPages";\
+		uses:="jakarta.servlet.jsp,jakarta.servlet.jsp.el,jakarta.servlet.jsp.tagext";\
+		version:List<Version>="3.1.0",\
+	osgi.contract;\
+		osgi.contract=JakartaPortlet;\
+		uses:="jakarta.portlet,jakarta.portlet.annotations,jakarta.portlet.filter";\
+		version:List<Version>="4.0.0",\
+	osgi.contract;\
+		osgi.contract=JakartaServlet;\
+		uses:="jakarta.servlet,jakarta.servlet.annotation,jakarta.servlet.descriptor,jakarta.servlet.http";\
+		version:List<Version>="5.0.0",\
 	osgi.extender;\
 		osgi.extender="jsp.taglib";\
 		uri="http://java.sun.com/JSP/Page";\
