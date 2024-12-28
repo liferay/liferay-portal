@@ -104,6 +104,7 @@
 /portal/istack-commons-runtime.jar
 /portal/jabsorb.jar
 /portal/jaxb-api.jar
+/portal/jaxb-core.jar
 /portal/jaxb-runtime.jar
 /portal/jaxen.jar
 /portal/jaxws-api.jar
@@ -130,5 +131,6 @@
 /portal/spring-web.jar
 /portal/stax-ex.jar
 /portal/transaction.jar
+/portal/txw2.jar
 /portal/xercesImpl.jar
 /portal/xml-apis.jar
