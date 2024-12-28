@@ -105,6 +105,7 @@
 /portal/istack-commons-runtime.jar
 /portal/jabsorb.jar
 /portal/jaxb-api.jar
+/portal/jaxb-core.jar
 /portal/jaxb-runtime.jar
 /portal/jaxen.jar
 /portal/jaxws-api.jar
