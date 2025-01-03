@@ -4475,6 +4475,10 @@ definition {
 			locale = "de-DE",
 			title = "Titel auf Deutsch");
 
+		Click(
+			key_text = "Done",
+			locator1 = "Modal#MODAL_FOOTER_BUTTON");
+
 		PortletEntry.save();
 
 		Blueprints.viewEntryTitle(title = "Title in English");
@@ -5816,6 +5820,8 @@ definition {
 			AssertNotChecked.assertNotCheckedNotVisible(
 				key_assetType = "Wiki Page",
 				locator1 = "Blueprints#BLUEPRINTS_SEARCHABLE_ASSET_TYPE_CHECKBOX");
+
+			Click(locator1 = "Modal#CLOSE_BUTTON");
 		}
 
 		task ("Save the blueprint, open it again, and navigate back to the 'Query Settings' tab") {
