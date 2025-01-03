@@ -35,7 +35,11 @@ export function TranslationOptionsContainer({
 			values.businessType === 'RichText' ||
 			values.businessType === 'Text' ||
 			(Liferay.FeatureFlags['LPD-32050'] &&
-				values.businessType === 'Boolean')) &&
+				(values.businessType === 'Boolean' ||
+					values.businessType === 'Decimal' ||
+					values.businessType === 'Integer' ||
+					values.businessType === 'LongInteger' ||
+					values.businessType === 'PrecisionDecimal'))) &&
 		!values.system;
 
 	return (
