@@ -564,7 +564,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			ServiceContextThreadLocal.getServiceContext());
 
 		_testSendNotification(
-			0, Collections.emptyList(), false, user.getEmailAddress());
+			0, Collections.emptyList(), true, user.getEmailAddress());
 
 		_userLocalService.deleteUser(user.getUserId());
 
