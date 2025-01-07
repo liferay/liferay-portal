@@ -52,11 +52,13 @@ public class JacksonJsonProviderRegistrator {
 			).put(
 				"jackson.jaxb.version",
 				String.valueOf(
-					com.fasterxml.jackson.module.jaxb.PackageVersion.VERSION)
+					com.fasterxml.jackson.module.jakarta.xmlbind.PackageVersion.
+						VERSION)
 			).put(
 				"jackson.jaxrs.json.version",
 				String.valueOf(
-					com.fasterxml.jackson.jaxrs.json.PackageVersion.VERSION)
+					com.fasterxml.jackson.jakarta.rs.json.PackageVersion.
+						VERSION)
 			).build());
 	}
 
