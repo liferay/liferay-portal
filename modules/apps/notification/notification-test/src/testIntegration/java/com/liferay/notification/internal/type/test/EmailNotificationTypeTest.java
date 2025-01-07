@@ -93,6 +93,7 @@ import com.liferay.portal.kernel.template.TemplateContextContributor;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -387,8 +388,10 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			CommerceCurrencyTestUtil.addCommerceCurrency(
 				TestPropsValues.getCompanyId());
 
+		Group group = GroupTestUtil.addGroup();
+
 		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
-			TestPropsValues.getGroupId(), commerceCurrency.getCode());
+			group.getGroupId(), commerceCurrency.getCode());
 
 		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
 			TestPropsValues.getUserId(), commerceChannel.getGroupId(),
@@ -422,6 +425,8 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 		_accountEntryLocalService.deleteAccountEntry(
 			_accountEntryLocalService.fetchPersonAccountEntry(
 				TestPropsValues.getUserId()));
+
+		_groupLocalService.deleteGroup(group);
 	}
 
 	@Test
