@@ -5,8 +5,8 @@
 
 package com.liferay.portal.remote.jaxrs.whiteboard.jaxb.json.internal;
 
-import com.fasterxml.jackson.jaxrs.cfg.Annotations;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.fasterxml.jackson.jakarta.rs.cfg.Annotations;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.PrototypeServiceFactory;
@@ -23,7 +23,8 @@ public class JacksonJsonProviderPrototypeServiceFactory
 		Bundle bundle,
 		ServiceRegistration<JacksonJsonProvider> serviceRegistration) {
 
-		return new JacksonJsonProvider(Annotations.JACKSON, Annotations.JAXB);
+		return new JacksonJsonProvider(
+			Annotations.JACKSON, Annotations.JAKARTA_XML_BIND);
 	}
 
 	@Override

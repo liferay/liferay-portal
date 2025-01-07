@@ -5,7 +5,7 @@
 
 package com.liferay.osb.faro.web.internal.application;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 
 import com.liferay.osb.faro.web.internal.exception.FaroEngineClientExceptionMapper;
 import com.liferay.osb.faro.web.internal.exception.NoSuchModelExceptionMapper;
