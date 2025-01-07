@@ -9,19 +9,19 @@ Import-Package:\
 	!org.eclipse.jdt.internal.compiler.impl,\
 	!org.eclipse.jdt.internal.compiler.problem,\
 	\
-	javax.el;version='[3.0.0,4.0)',\
+	jakarta.el;version='[5.0.0,6.0)',\
 	\
-	javax.servlet;version='[2.3.0,4.0.0)',\
-	javax.servlet.annotation;version='[2.6.0,4.0.0)',\
-	javax.servlet.descriptor;version='[2.6.0,4.0.0)',\
-	javax.servlet.http;version='[2.3.0,4.0.0)',\
-	javax.servlet.jsp;version='[2.3.2,3.0)',\
-	javax.servlet.jsp.el;version='[2.3.2,3.0)',\
-	javax.servlet.jsp.jstl.core;version='[1.2.1,2.0)',\
-	javax.servlet.jsp.jstl.fmt;version='[1.2.1,2.0)',\
-	javax.servlet.jsp.jstl.sql;version='[1.2.1,2.0)',\
-	javax.servlet.jsp.jstl.tlv;version='[1.2.1,2.0)',\
-	javax.servlet.jsp.tagext;version='[2.3.2,3.0)',\
+	jakarta.servlet;version='[6.0.0,7.0.0)',\
+	jakarta.servlet.annotation;version='[6.0.0,7.0.0)',\
+	jakarta.servlet.descriptor;version='[6.0.0,7.0.0)',\
+	jakarta.servlet.http;version='[6.0.0,7.0.0)',\
+	jakarta.servlet.jsp;version='[3.1,4.0)',\
+	jakarta.servlet.jsp.el;version='[3.1,4.0)',\
+	jakarta.servlet.jsp.jstl.core;version='[3.0.2,4.0)',\
+	jakarta.servlet.jsp.jstl.fmt;version='[3.0.2,4.0)',\
+	jakarta.servlet.jsp.jstl.sql;version='[3.0.2,4.0)',\
+	jakarta.servlet.jsp.jstl.tlv;version='[3.0.2,4.0)',\
+	jakarta.servlet.jsp.tagext;version='[3.1,4.0)',\
 	\
 	javax.tools,\
 	\
