@@ -24,7 +24,15 @@ jar {
 
 jarTransformed {
 	doLast {
-		JakartaTransformerCLI.runWith(new JakartaTransformerCLI(System.out, System.out, new String[] {configurations.compileOnly.singleFile, jar.archivePath}))
+		JakartaTransformerCLI jakartaTransformerCLI = new JakartaTransformerCLI(System.out, System.out, new String[] {configurations.compileOnly.singleFile, jar.archivePath})
+
+		Map<String, String> optionDefaults = jakartaTransformerCLI.getOptionDefaults()
+
+		File file = new File(rootDir, "liferay-jakarta-versions.properties")
+
+		optionDefaults.put("versions", String.valueOf(file.toURI()))
+
+		JakartaTransformerCLI.runWith(jakartaTransformerCLI)
 	}
 
 	mustRunAfter generatePomFileForMavenPublication
