@@ -12,7 +12,13 @@ ServiceContext#deriveDefaultPermissions(long, String).
 
 --%>
 
-<div class="permissions-table-container table-responsive" id="<%= uniqueNamespace %>inputPermissionsTable" style="margin-bottom: 60px;">
+<aui:style type="text/css">
+	.permissions-table-container {
+		margin-bottom: 60px;
+	}
+</aui:style>
+
+<div class="permissions-table-container table-responsive" id="<%= uniqueNamespace %>inputPermissionsTable">
 	<table class="table table-list">
 		<thead>
 			<tr>
