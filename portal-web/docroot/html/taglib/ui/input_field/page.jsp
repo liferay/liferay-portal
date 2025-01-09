@@ -513,7 +513,15 @@ if (hints != null) {
 							/>
 						</c:when>
 						<c:otherwise>
-							<input <%= Validator.isNotNull(autoComplete) ? "autocomplete=\"" + autoComplete + "\"" : StringPool.BLANK %> class="<%= cssClass %> lfr-input-text" <%= disabled ? "disabled=\"disabled\"" : StringPool.BLANK %> id="<%= namespace %><%= id %>" name="<%= namespace %><%= fieldParam %>" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> style="<%= upperCase ? "text-transform: uppercase;" : StringPool.BLANK %>" maxLength="<%= maxLength %>" type="<%= secret ? "password" : "text" %>" value="<%= autoEscape ? HtmlUtil.escape(value) : value %>" />
+							<c:if test="<%= upperCase %>">
+								<aui:style type="text/css">
+									#<%= namespace %><%= id %> {
+										text-transform: uppercase;
+									}
+								</aui:style>
+							</c:if>
+
+							<input <%= Validator.isNotNull(autoComplete) ? "autocomplete=\"" + autoComplete + "\"" : StringPool.BLANK %> class="<%= cssClass %> lfr-input-text" <%= disabled ? "disabled=\"disabled\"" : StringPool.BLANK %> id="<%= namespace %><%= id %>" name="<%= namespace %><%= fieldParam %>" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> maxLength="<%= maxLength %>" type="<%= secret ? "password" : "text" %>" value="<%= autoEscape ? HtmlUtil.escape(value) : value %>" />
 						</c:otherwise>
 					</c:choose>
 				</c:when>
@@ -545,8 +553,16 @@ if (hints != null) {
 							/>
 						</c:when>
 						<c:otherwise>
+							<c:if test="<%= !autoSize %>">
+								<aui:style type="text/css">
+									#<%= namespace %><%= id %> {
+										height: <%= displayHeight + (Validator.isDigit(displayHeight) ? "px" : StringPool.BLANK) + ";" %>
+									}
+								</aui:style>
+							</c:if>
+
 							<liferay-ui:csp>
-								<textarea maxLength="<%= maxLength %>" aria-labelledby="<%= namespace + id %> <%= namespace + id %>_maxCharacters" class="<%= cssClass %> lfr-textarea" <%= disabled ? "disabled=\"disabled\"" : StringPool.BLANK %> id="<%= namespace %><%= id %>" name="<%= namespace %><%= fieldParam %>" onKeyDown="Liferay.Util.disableEsc();" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> style="<%= !autoSize ? "height: " + displayHeight + (Validator.isDigit(displayHeight) ? "px" : StringPool.BLANK) + ";" : StringPool.BLANK %>" wrap="soft"><%= autoEscape ? HtmlUtil.escape(value) : value %></textarea>
+								<textarea maxLength="<%= maxLength %>" aria-labelledby="<%= namespace + id %> <%= namespace + id %>_maxCharacters" class="<%= cssClass %> lfr-textarea" <%= disabled ? "disabled=\"disabled\"" : StringPool.BLANK %> id="<%= namespace %><%= id %>" name="<%= namespace %><%= fieldParam %>" onKeyDown="Liferay.Util.disableEsc();" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> wrap="soft"><%= autoEscape ? HtmlUtil.escape(value) : value %></textarea>
 							</liferay-ui:csp>
 
 							<span class="sr-only" id="<%= namespace + id %>_maxCharacters">
