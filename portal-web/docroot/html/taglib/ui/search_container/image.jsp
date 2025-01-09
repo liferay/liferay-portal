@@ -18,6 +18,7 @@ boolean toggleRowChecker = GetterUtil.getBoolean(request.getAttribute("liferay-u
 			background-image: url("<%= src %>");
 		}
 	</aui:style>
+
 	<div class="aspect-ratio-bg-cover image-wrapper-bg <%= toggleRowChecker ? "click-selector" : StringPool.BLANK %> sticker sticker-static">
 		<img alt="thumbnail" class="sr-only" src="<%= src %>" />
 	</div>

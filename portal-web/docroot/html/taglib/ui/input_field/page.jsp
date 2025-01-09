@@ -556,7 +556,7 @@ if (hints != null) {
 							<c:if test="<%= !autoSize %>">
 								<aui:style type="text/css">
 									#<%= namespace %><%= id %> {
-										height: <%= displayHeight + (Validator.isDigit(displayHeight) ? "px" : StringPool.BLANK) + ";" %>
+										height: <%= displayHeight + (Validator.isDigit(displayHeight) ? "px" : StringPool.BLANK) %>;
 									}
 								</aui:style>
 							</c:if>
