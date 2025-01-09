@@ -5,6 +5,7 @@
 
 import {openToast, sub} from 'frontend-js-web';
 
+import {ACCOUNT_ENTRY_ID_DEFAULT} from '../../../utilities/constants';
 import {
 	DEFAULT_ORDER_DETAILS_PORTLET_ID,
 	MAXIMUM_ALLOWED_QUANTITY_NOT_VALID_ERROR,
@@ -18,16 +19,19 @@ import {
 } from './constants';
 
 export function canSubmit({
-	accountId,
+	accountId: rawAccountId,
 	cartItems = [],
 	id: orderId,
 	workflowStatusInfo: {code: workflowStatus = WORKFLOW_STATUS_APPROVED} = {},
 }) {
+	const accountId = parseInt(rawAccountId, 10);
+
+	const areAccountAndOrderSelected =
+		accountId !== ACCOUNT_ENTRY_ID_DEFAULT && !!orderId;
 	const areItemsPurchasable =
 		!hasErrors(cartItems) && workflowStatus === WORKFLOW_STATUS_APPROVED;
-	const isAccountAndOrderSelected = !!orderId && parseInt(accountId, 10) > 0;
 
-	return areItemsPurchasable && isAccountAndOrderSelected;
+	return areAccountAndOrderSelected && areItemsPurchasable;
 }
 
 export function getCorrectedQuantity(

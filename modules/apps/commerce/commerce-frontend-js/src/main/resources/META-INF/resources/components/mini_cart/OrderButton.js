@@ -91,12 +91,16 @@ function OrderButton({disabled = false}) {
 					block
 					disabled={disabled}
 					onClick={() => {
-						liferayNavigate(
-							canSubmit(cartState) ? checkoutURL : orderDetailURL
-						);
+						if (!disabled) {
+							liferayNavigate(
+								canSubmit(cartState)
+									? checkoutURL
+									: orderDetailURL
+							);
+						}
 					}}
 				>
-					{canSubmit(cartState)
+					{canSubmit(cartState) || disabled
 						? labels[SUBMIT_ORDER]
 						: labels[REVIEW_ORDER]}
 				</ClayButton>

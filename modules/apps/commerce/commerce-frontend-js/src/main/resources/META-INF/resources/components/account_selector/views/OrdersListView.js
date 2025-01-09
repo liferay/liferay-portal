@@ -20,6 +20,7 @@ function OrdersListView({
 	currencyCode,
 	currentAccount,
 	disabled,
+	hasAddCommerceOrderPermission,
 	hasCommerceOpenOrderContentPortlet,
 	orderTypes,
 	selectOrderURL,
@@ -81,16 +82,19 @@ function OrdersListView({
 
 			<ClayDropDown.Divider />
 
-			<li>
-				<div ref={ordersListRef} />
-			</li>
+			<ClayDropDown.ItemList className="orders-list">
+				<ClayDropDown.Section>
+					<div ref={ordersListRef} />
+				</ClayDropDown.Section>
+			</ClayDropDown.ItemList>
 
 			<ClayDropDown.Section>
 				<ClayButton
-					className="m-auto w-100"
-					displayType="primary"
+					block
+					disabled={!hasAddCommerceOrderPermission}
 					onClick={(event) => {
 						event.preventDefault();
+
 						createCommerceCart({
 							accountId: currentAccount.id,
 							commerceChannelId,

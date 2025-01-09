@@ -35,9 +35,11 @@
 				).put(
 					"currentCommerceOrder", currentCommerceOrder
 				).put(
+					"hasAddCommerceOrderPermission", hasAddCommerceOrderPermission
+				).put(
 					"hasCommerceOpenOrderContentPortlet", hasCommerceOpenOrderContentPortlet
 				).put(
-					"hasPermission", hasPermission
+					"hasManageAccountsPermission", hasManageAccountsPermission
 				).put(
 					"orderTypes", orderTypesJSONArray
 				).put(

@@ -61,7 +61,7 @@ export default function AccountsListView({
 					</span>
 				</span>
 
-				{currentAccount && (
+				{!!currentAccount.id && (
 					<ClayButtonWithIcon
 						displayType="unstyled"
 						onClick={() => setCurrentView(VIEWS.ORDERS_LIST)}

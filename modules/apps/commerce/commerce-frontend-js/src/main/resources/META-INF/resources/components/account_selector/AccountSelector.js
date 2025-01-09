@@ -33,8 +33,9 @@ function AccountSelector({
 	currencyCode,
 	currentCommerceAccount: account,
 	currentCommerceOrder: order,
+	hasAddCommerceOrderPermission,
 	hasCommerceOpenOrderContentPortlet,
-	hasPermission: hasManagePermission,
+	hasManageAccountsPermission,
 	orderTypes,
 	refreshPageOnAccountSelected: forceRefresh,
 	selectOrderURL,
@@ -121,6 +122,7 @@ function AccountSelector({
 				active={active}
 				alignmentPosition={alignmentPosition}
 				className="account-selector account-selector-dropdown"
+				data-permission={hasAddCommerceOrderPermission}
 				menuElementAttrs={{className: 'account-selector-dropdown-menu'}}
 				onActiveChange={setActive}
 				trigger={
@@ -150,6 +152,9 @@ function AccountSelector({
 						currencyCode={currencyCode}
 						currentAccount={currentAccount}
 						disabled={!active}
+						hasAddCommerceOrderPermission={
+							hasAddCommerceOrderPermission
+						}
 						hasCommerceOpenOrderContentPortlet={
 							hasCommerceOpenOrderContentPortlet
 						}
@@ -170,7 +175,7 @@ function AccountSelector({
 					checkoutURL={checkoutURL}
 					commerceChannelId={commerceChannelId}
 					hasCreatePermission={!!currentUser.actions?.create}
-					hasManagePermission={hasManagePermission}
+					hasManagePermission={hasManageAccountsPermission}
 				/>
 			) : null}
 		</>
@@ -197,7 +202,9 @@ AccountSelector.propTypes = {
 			label_i18n: PropTypes.string,
 		}),
 	}),
+	hasAddCommerceOrderPermission: PropTypes.bool,
 	hasCommerceOpenOrderContentPortlet: PropTypes.bool,
+	hasManageAccountsPermission: PropTypes.bool,
 	orderTypes: PropTypes.array,
 	refreshPageOnAccountSelected: PropTypes.bool,
 	selectOrderURL: PropTypes.string.isRequired,
@@ -213,6 +220,8 @@ AccountSelector.defaultProps = {
 	currentCommerceOrder: {
 		orderId: 0,
 	},
+	hasAddCommerceOrderPermission: false,
+	hasManageAccountsPermission: false,
 	refreshPageOnAccountSelected: false,
 };
 
