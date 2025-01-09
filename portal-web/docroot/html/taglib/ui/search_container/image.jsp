@@ -13,7 +13,12 @@ boolean toggleRowChecker = GetterUtil.getBoolean(request.getAttribute("liferay-u
 %>
 
 <c:if test="<%= Validator.isNotNull(src) %>">
-	<div class="aspect-ratio-bg-cover <%= toggleRowChecker ? "click-selector" : StringPool.BLANK %> sticker sticker-static" style="background-image: url('<%= src %>');">
+	<aui:style type="text/css">
+		.image-wrapper-bg {
+			background-image: url("<%= src %>");
+		}
+	</aui:style>
+	<div class="aspect-ratio-bg-cover image-wrapper-bg <%= toggleRowChecker ? "click-selector" : StringPool.BLANK %> sticker sticker-static">
 		<img alt="thumbnail" class="sr-only" src="<%= src %>" />
 	</div>
 </c:if>
