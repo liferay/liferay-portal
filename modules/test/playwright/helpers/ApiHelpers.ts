@@ -429,6 +429,11 @@ export class DataApiHelpers extends ApiHelpers {
 			else if (item.type === 'listTypeDefinition') {
 				await this.listTypeAdmin.deleteListTypeDefinition(item.id);
 			}
+			else if (item.type === 'layoutSetPrototype') {
+				await this.jsonWebServicesLayoutSetPrototype.deleteLayoutSetPrototypes(
+					item.id
+				);
+			}
 			else if (item.type === 'notificationQueueEntry') {
 				await this.notification.deleteNotificationQueueEntry(item.id);
 			}
@@ -556,6 +561,13 @@ export class DataApiHelpers extends ApiHelpers {
 			else if (item.type === 'warehouse') {
 				await this.headlessCommerceAdminInventoryApiHelper.deleteWarehouse(
 					item.id
+				);
+			}
+			else if (item.type === 'webContent') {
+				const [siteId, articleId] = item.id.split('_');
+				await this.jsonWebServicesJournal.moveArticleToTrash(
+					siteId,
+					articleId
 				);
 			}
 			else if (item.type === 'wishList') {
