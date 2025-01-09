@@ -1,49 +1,77 @@
-import { Page } from "@playwright/test";
-import { ApplicationsMenuPage } from "../../../pages/product-navigation-applications-menu/ApplicationsMenuPage";
-import { clickAndExpectToBeVisible } from "../../../utils/clickAndExpectToBeVisible";
-import { waitForAlert } from "../../../utils/waitForAlert";
-import { LayoutSetPrototypePage } from "../pages/LayoutSetPrototypePage";
-import { PagesAdminPage } from "../../../pages/layout-admin-web/PagesAdminPage";
-import { PageEditorPage } from "../../../pages/layout-content-page-editor-web/PageEditorPage";
-import { ProductMenuPage } from "../../../pages/product-navigation-control-menu-web/ProductMenuPage";
-import { UIElementsPage } from "../../../pages/uielements/UIElementsPage";
-import { LayoutSetPrototype } from "../../../helpers/json-web-services/JSONWebServicesLayoutSetPrototypeApiHelper";
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
 
-export default 
-async function createSiteTemplateWithContentPageAndAssetPublisher({
-    apiHelpers,
-    applicationsMenuPage,
-    layoutSetPrototypePage,
-    page,
-    pageEditorPage,
-    productMenuPage,
-    templateName,
+import {Page} from '@playwright/test';
+
+import {LayoutSetPrototype} from '../../../helpers/json-web-services/JSONWebServicesLayoutSetPrototypeApiHelper';
+import {PagesAdminPage} from '../../../pages/layout-admin-web/PagesAdminPage';
+import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
+import {ApplicationsMenuPage} from '../../../pages/product-navigation-applications-menu/ApplicationsMenuPage';
+import {ProductMenuPage} from '../../../pages/product-navigation-control-menu-web/ProductMenuPage';
+import {UIElementsPage} from '../../../pages/uielements/UIElementsPage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {waitForAlert} from '../../../utils/waitForAlert';
+import {LayoutSetPrototypePage} from '../pages/LayoutSetPrototypePage';
+
+export default async function createSiteTemplateWithContentPageAndAssetPublisher({
+	apiHelpers,
+	applicationsMenuPage,
+	layoutSetPrototypePage,
+	page,
+	pageEditorPage,
+	pagesAdminPage,
+	productMenuPage,
+	templateName,
 }: {
-    apiHelpers: any;
-    applicationsMenuPage: ApplicationsMenuPage;
-    layoutSetPrototypePage: LayoutSetPrototypePage;
-    page: Page;
-    pageEditorPage: PageEditorPage;
-    pagesAdminPage: PagesAdminPage;
-    productMenuPage: ProductMenuPage;
-    templateName: string;
-    uiElementsPage: UIElementsPage;
+	apiHelpers: any;
+	applicationsMenuPage: ApplicationsMenuPage;
+	layoutSetPrototypePage: LayoutSetPrototypePage;
+	page: Page;
+	pageEditorPage: PageEditorPage;
+	pagesAdminPage: PagesAdminPage;
+	productMenuPage: ProductMenuPage;
+	templateName: string;
+	uiElementsPage: UIElementsPage;
 }): Promise<LayoutSetPrototype> {
-    const layoutSetPrototype = await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(templateName);
-	
+	const layoutSetPrototype =
+		await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
+			templateName
+		);
+
 	await applicationsMenuPage.goToSiteTemplates();
 
-    const siteTemplateUrl =
-        await layoutSetPrototypePage.getSiteTemplateUrl(templateName);
+	const siteTemplateUrl =
+		await layoutSetPrototypePage.getSiteTemplateUrl(templateName);
 
 	await page.goto(siteTemplateUrl);
+
 	await productMenuPage.checkIfAdecuateProductMenu(templateName);
 	await productMenuPage.openProductMenuIfClosed();
 
-    await pageEditorPage.getFragmentId('Asset Publisher');
+	await productMenuPage.goToPages();
 
-    await page.locator('#wrapper').getByRole('button', { name: 'Options' }).click()
-    const configurationModal = page.frameLocator('iframe[title="Configuration"]')
+	await pagesAdminPage.newButton.click();
+	await layoutSetPrototypePage.addTemplatePageButton.waitFor({
+		state: 'visible',
+	});
+	await layoutSetPrototypePage.addTemplatePageButton.click();
+	await pagesAdminPage.addPage({
+		name: templateName,
+	});
+	await pageEditorPage.addWidget('Content Management', 'Asset Publisher');
+
+	await pageEditorPage.getFragmentId('Asset Publisher');
+
+	await page
+		.locator('#wrapper')
+		.getByRole('button', {name: 'Options'})
+		.click();
+
+	const configurationModal = page.frameLocator(
+		'iframe[title="Configuration"]'
+	);
 
 	await clickAndExpectToBeVisible({
 		autoClick: true,
@@ -154,7 +182,9 @@ async function createSiteTemplateWithContentPageAndAssetPublisher({
 		'Success:You have successfully updated the setup.'
 	);
 
-    await pageEditorPage.publishPage();
+	await configurationModal.getByRole('button', {name: 'Cancel'}).click();
 
-    return layoutSetPrototype;
+	await pageEditorPage.publishPage();
+
+	return layoutSetPrototype;
 }
