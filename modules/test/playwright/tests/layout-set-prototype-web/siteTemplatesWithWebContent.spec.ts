@@ -58,6 +58,7 @@ const testWithPrivatePages = mergeTests(
 	test,
 	featureFlagsTest({
 		'LPD-38869': {enabled: true},
+		'LPD-39304': {enabled: true},
 	})
 );
 
