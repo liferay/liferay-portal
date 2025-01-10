@@ -105,7 +105,7 @@ export class WebContentDisplayPage {
 			.waitFor({state: 'visible'});
 	}
 
-	async addWebContentWithWidget() {
+	async addWebContentWithWidget(webContentName: string) {
 		await this.webContentDisplayAddButton.click();
 		await this.uiElementsPage.pageCreatedAlert.waitFor({state: 'hidden'});
 		await this.uiElementsPage.pageUpdatedAlert.waitFor({state: 'hidden'});
@@ -134,11 +134,13 @@ export class WebContentDisplayPage {
 			.waitFor({state: 'hidden'});
 		await this.selectWebContentButton.waitFor({state: 'visible'});
 		await this.selectWebContentButton.click();
-		await this.webContentToSelect.waitFor({state: 'visible'});
-		await this.webContentToSelect.hover();
-		await this.webContentToSelect.click();
+		await this.webContentToSelect
+			.getByText(webContentName)
+			.waitFor({state: 'visible'});
+		await this.webContentToSelect.getByText(webContentName).hover();
+		await this.webContentToSelect.getByText(webContentName).click();
 		if (!this.saveButton.isVisible) {
-			await this.webContentToSelect.click();
+			await this.webContentToSelect.getByLabel(webContentName).click();
 		}
 		await this.saveButton.click();
 	}
