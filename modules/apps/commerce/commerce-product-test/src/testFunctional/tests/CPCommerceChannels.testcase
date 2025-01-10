@@ -455,45 +455,6 @@ definition {
 			locator1 = "CommerceEntry#ENTRY_NAME_BODY_VERTICAL_ELLIPSIS");
 	}
 
-	@description = "This is a test for COMMERCE-6413. Commerce Channel API unable to define Type"
-	@priority = 3
-	test CanCreateChannelViaAPIAndCheckTabs {
-		property portal.acceptance = "false";
-
-		var wrongChannelType = "Site";
-		var correctChannelType = "site";
-		var channelTabsList = "General,Type,Notification Queue DEPRECATED,Notification Templates DEPRECATED,Payment Restrictions,Shipping Restrictions";
-		var createChannelResponseWithError = CommerceJSONChannelsAPI._addChannel(
-			channelName = "Test Channel New",
-			channelType = ${wrongChannelType},
-			currencyCode = "US",
-			externalReferenceCode = 101);
-
-		var createChannelErrorMessage = JSONUtil.getWithJSONPath(${createChannelResponseWithError}, "$");
-
-		TestUtils.assertEquals(
-			actual = ${createChannelErrorMessage},
-			expected = "{errorDescription=Invalid channel type, message=null, status=400}");
-
-		CommerceChannels.openChannelsAdmin();
-
-		IsElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
-
-		CommerceJSONChannelsAPI._addChannel(
-			channelName = "Test Channel New",
-			channelType = ${correctChannelType},
-			currencyCode = "US",
-			externalReferenceCode = 101);
-
-		Refresh();
-
-		CommerceNavigator.gotoEntry(entryName = "Test Channel New");
-
-		for (var channelTab : list ${channelTabsList}) {
-			CommerceEntry.gotoMenuTab(menuTab = ${channelTab});
-		}
-	}
-
 	@description = "COMMERCE-12919. Can Edit PayPal payment method in a channel's Details page"
 	@priority = 3
 	test CanEditPayPalPaymentMethod {

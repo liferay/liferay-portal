@@ -299,7 +299,7 @@ definition {
 
 		Click(locator1 = "Portlet#SPECIFIC_ELLIPSIS_ICON");
 
-		MenuItem.clickNoError(menuItem = "Remove");
+		MenuItem.clickNoError(menuItem = "Delete");
 
 		AssertConfirm(value1 = "Are you sure you want to remove this component?");
 	}

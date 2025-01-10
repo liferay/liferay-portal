@@ -75,7 +75,7 @@ definition {
 				key_fieldName = "$ 0.00 - $ 59.99",
 				locator1 = "FormFields#CHECKBOX");
 
-			var productNames = "U-Joint,Transmission Cooler Line Assembly,Torque Converters,Wheel Seal - Front,Mount,Transmission Fluid,Wheel Bearing Grease,Tie Rod End Tool,Bushings,Lift Support,Muffler/Resonators,Exhaust Clamps,Valve Cover Grommets,Timing Chain,Timing Chain Tensioner,Seal,Piston,Master Cylinder,Brake Rotors";
+			var productNames = "U-Joint,Transmission Cooler Line Assembly,Torque Converters,Wheel Seal - Front,Mount,Transmission Fluid,Wheel Bearing Grease,Tie Rod End Tool,Bushings,Lift Support,Muffler/Resonators,Exhaust Clamps,Valve Cover Grommets,Timing Chain,Timing Chain Tensioner";
 
 			for (var productName : list ${productNames}) {
 				AssertElementPresent(
@@ -87,7 +87,7 @@ definition {
 				key_pageNumber = 2,
 				locator1 = "CommerceNavigation#PAGINATION_ANY_PAGE");
 
-			for (var productName : list "Premium Brake Pads,Brake Pads,ABS Sensor") {
+			for (var productName : list "Seal,Piston,Master Cylinder,Brake Rotors,Premium Brake Pads,Brake Pads,ABS Sensor") {
 				AssertElementPresent(
 					key_productName = ${productName},
 					locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");

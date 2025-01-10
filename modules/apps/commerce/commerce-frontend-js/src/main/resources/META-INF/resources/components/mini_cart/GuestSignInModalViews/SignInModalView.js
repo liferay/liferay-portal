@@ -42,20 +42,22 @@ function SignInModalView({setActiveView, setIsLoading, viewsMap}) {
 				}}
 			/>
 
-			<ClayButton
-				block
-				className="mt-2"
-				displayType="secondary"
-				onClick={(event) => {
-					event.preventDefault();
+			{viewsMap[SIGN_UP].url ? (
+				<ClayButton
+					block
+					className="mt-2"
+					displayType="secondary"
+					onClick={(event) => {
+						event.preventDefault();
 
-					setIsLoading(true);
-					setActiveView(SIGN_UP);
-				}}
-				type="button"
-			>
-				{Liferay.Language.get('sign-up')}
-			</ClayButton>
+						setIsLoading(true);
+						setActiveView(SIGN_UP);
+					}}
+					type="button"
+				>
+					{Liferay.Language.get('sign-up')}
+				</ClayButton>
+			) : null}
 		</ClayModal.Body>
 	);
 }

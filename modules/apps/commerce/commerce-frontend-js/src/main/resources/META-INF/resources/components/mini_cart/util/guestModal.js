@@ -104,7 +104,7 @@ function setupFromSignIn(signInViewHTML, signInURL) {
 	const navigationElement = signInContainer.querySelector('.navigation');
 
 	const anchorElements = Array.from(
-		navigationElement.querySelectorAll('.navigation li a')
+		navigationElement.querySelectorAll('.navigation a')
 	);
 
 	let forgotPasswordAnchor = null;

@@ -356,12 +356,6 @@ test('LPD-35678 Guest can checkout a new order on sign-up in B2B channel site', 
 
 		await signInButton.click();
 
-		await page.getByRole('button', {name: 'I Agree'}).click();
-
-		await page.locator('input#reminderQueryAnswer').fill('123');
-
-		await page.getByRole('button', {name: 'Save'}).click();
-
 		await expect(
 			page.locator('.btn-account-selector', {hasText: ACCOUNT_NAME})
 		).toBeVisible();
