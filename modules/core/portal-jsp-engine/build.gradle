@@ -18,15 +18,15 @@ dependencies {
 
 	if (jakartaAppServer) {
 		compileOnly group: "jakarta.servlet.jsp.jstl", name: "jakarta.servlet.jsp.jstl-api", version: "3.0.2"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-api", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-el-api", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-jasper-el", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-jsp-api", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-juli", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-servlet-api", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-util", version: "10.1.34"
-		compileOnly group: "org.apache.tomcat", name: "tomcat-util-scan", version: "10.1.34"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-api", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-el-api", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-jasper-el", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-jsp-api", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-juli", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-servlet-api", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-util", version: "10.1.39"
+		compileOnly group: "org.apache.tomcat", name: "tomcat-util-scan", version: "10.1.39"
 		compileOnly group: "org.glassfish.web", name: "jakarta.servlet.jsp.jstl", version: "3.0.1"
 	}
 	else {

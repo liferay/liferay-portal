@@ -7083,7 +7083,7 @@ log.sanitizer.enabled=false</echo>
 					</then>
 				</elseif>
 				<else>
-					<var name="app.server.tomcat.version" value="9.0.102" />
+					<var name="app.server.tomcat.version" value="10.1.39" />
 				</else>
 			</if>
 
