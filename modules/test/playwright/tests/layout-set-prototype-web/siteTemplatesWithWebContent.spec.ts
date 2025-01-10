@@ -256,6 +256,11 @@ testWithPrivatePages(
 			templateType: 'site-template',
 		});
 
+		apiHelpers.data.push({
+			id: site.id,
+			type: 'site',
+		});
+
 		await applicationsMenuPage.goToServerAdministration();
 
 		const script = `
@@ -272,15 +277,6 @@ testWithPrivatePages(
 			siteName,
 			widgetTemplateName2,
 			webContentText2
-		);
-
-		// tearDown
-
-		await deleteSiteAndLayoutSetPrototypes(
-			apiHelpers,
-			site.id,
-			layoutSetPrototype1.layoutSetPrototypeId.toString(),
-			layoutSetPrototype2.layoutSetPrototypeId.toString()
 		);
 	}
 );
