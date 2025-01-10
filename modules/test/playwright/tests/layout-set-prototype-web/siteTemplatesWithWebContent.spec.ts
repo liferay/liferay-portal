@@ -12,6 +12,7 @@ import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
+import {pageManagementSiteTest} from '../../fixtures/pageManagementSiteTest';
 import {pageViewModePagesTest} from '../../fixtures/pageViewModePagesTest';
 import {pagesAdminPagesTest} from '../../fixtures/pagesAdminPagesTest';
 import {productMenuPageTest} from '../../fixtures/productMenuPageTest';
@@ -39,6 +40,7 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	journalPagesTest,
 	isolatedSiteTest,
+	pageManagementSiteTest,
 	layoutSetPrototypePageTest,
 	productMenuPageTest,
 	uiElementsPageTest,
@@ -185,7 +187,6 @@ testWithPrivatePages(
 	async ({
 		apiHelpers,
 		applicationsMenuPage,
-		journalPage,
 		layoutSetPrototypePage,
 		page,
 		pagesAdminPage,
@@ -199,43 +200,54 @@ testWithPrivatePages(
 		const widgetTemplateName2: string = getRandomString();
 		const siteName: string = getRandomString();
 
+		const layoutSetPrototype1: LayoutSetPrototype =
+			await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
+				widgetTemplateName1
+			);
+
+		apiHelpers.data.push({
+			id: layoutSetPrototype1.layoutSetPrototypeId,
+			type: 'layoutSetPrototype',
+		});
+
 		await createSiteTemplateWithWebContentOnWidgetPage({
 			apiHelpers,
-			journalPage,
+			layoutSetPrototype: layoutSetPrototype1,
 			page,
 			pagesAdminPage,
 			productMenuPage,
 			templateName: widgetTemplateName1,
-			text: `${webContentText1} `,
+			text: webContentText1,
 			uiElementsPage,
 			webContentDisplayPage,
 			webContentName: webContentName1,
 			widgetPagePage,
 		});
 
+		const layoutSetPrototype2: LayoutSetPrototype =
+			await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
+				widgetTemplateName2
+			);
+
+		apiHelpers.data.push({
+			id: layoutSetPrototype2.layoutSetPrototypeId,
+			type: 'layoutSetPrototype',
+		});
+
 		await createSiteTemplateWithWebContentOnWidgetPage({
 			apiHelpers,
-			journalPage,
+			layoutSetPrototype: layoutSetPrototype2,
 			page,
 			pagesAdminPage,
 			productMenuPage,
 			templateName: widgetTemplateName2,
-			text: `${webContentText2} `,
+			text: webContentText2,
 			uiElementsPage,
 			webContentDisplayPage,
 			webContentName: webContentName2,
 			widgetPagePage,
 		});
-		const layoutSetPrototypes: LayoutSetPrototype[] =
-			await apiHelpers.jsonWebServicesLayoutSetPrototype.getLayoutSetPrototypes();
-		const layoutSetPrototype1 = await getLayoutTemplateByName(
-			layoutSetPrototypes,
-			widgetTemplateName1
-		);
-		const layoutSetPrototype2 = await getLayoutTemplateByName(
-			layoutSetPrototypes,
-			widgetTemplateName2
-		);
+
 		await applicationsMenuPage.goToSites();
 
 		const site = await apiHelpers.headlessSite.createSite({
