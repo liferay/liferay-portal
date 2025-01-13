@@ -276,7 +276,7 @@ testWithPrivatePages(
 		await layoutSetPrototypePage.checkIfWebContentAdded(
 			siteName,
 			widgetTemplateName2,
-			webContentText2
+			webContentName2
 		);
 	}
 );
