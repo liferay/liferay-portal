@@ -355,6 +355,11 @@ testWithPrivatePages(
 			templateType: 'site-template',
 		});
 
+		apiHelpers.data.push({
+			id: site.id,
+			type: 'site',
+		});
+
 		await layoutSetPrototypePage.checkIfWebContentAdded(
 			siteName,
 			contentTemplateName1,
