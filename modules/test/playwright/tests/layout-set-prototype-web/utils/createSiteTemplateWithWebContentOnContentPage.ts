@@ -12,8 +12,9 @@ import {PagesAdminPage} from '../../../pages/layout-admin-web/PagesAdminPage';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import {ProductMenuPage} from '../../../pages/product-navigation-control-menu-web/ProductMenuPage';
 import {UIElementsPage} from '../../../pages/uielements/UIElementsPage';
-import {JournalPage} from '../../journal-web/pages/JournalPage';
 import {LayoutSetPrototypePage} from '../pages/LayoutSetPrototypePage';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 
 export default async function createSiteTemplateWithWebContentOnContentPage({
 	apiHelpers,
@@ -49,12 +50,23 @@ export default async function createSiteTemplateWithWebContentOnContentPage({
 	await page.goto(
 		'group/template-' + layoutSetPrototype.layoutSetPrototypeId
 	);
+
+	const siteId = await page.evaluate(() => {
+		return String(Liferay.ThemeDisplay.getSiteGroupId());
+	});
+
+	const basicWebContentStructureId =
+		await getBasicWebContentStructureId(apiHelpers);
+
+	await apiHelpers.jsonWebServicesJournal.addWebContent({
+		content: text,
+		ddmStructureId: basicWebContentStructureId,
+		groupId: siteId,
+		titleMap: {en_US: webContentName},
+	});
+
 	await productMenuPage.checkIfAdecuateProductMenu(templateName);
 	await productMenuPage.openProductMenuIfClosed();
-	await productMenuPage.goToWebContent();
-	await journalPage.goToCreateArticle();
-	await journalPage.fillArticleDataSiteTemplate(webContentName, text);
-	await journalPage.publishArticle();
 
 	await productMenuPage.goToPages();
 	await pagesAdminPage.newButton.click();
@@ -66,7 +78,3 @@ export default async function createSiteTemplateWithWebContentOnContentPage({
 		name: templateName,
 	});
 
-	await pageEditorPage.addWidget('Content Management', 'Web Content Display');
-	await webContentDisplayPage.addWebContentWithDisplay();
-	await uiElementsPage.publishButton.click();
-}
