@@ -14,11 +14,10 @@ import {ProductMenuPage} from '../../../pages/product-navigation-control-menu-we
 import {UIElementsPage} from '../../../pages/uielements/UIElementsPage';
 import {LayoutSetPrototypePage} from '../pages/LayoutSetPrototypePage';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
-import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 
 export default async function createSiteTemplateWithWebContentOnContentPage({
 	apiHelpers,
-	journalPage,
+	layoutSetPrototype,
 	layoutSetPrototypePage,
 	page,
 	pageEditorPage,
@@ -31,7 +30,7 @@ export default async function createSiteTemplateWithWebContentOnContentPage({
 	webContentName,
 }: {
 	apiHelpers: ApiHelpers;
-	journalPage: JournalPage;
+	layoutSetPrototype: LayoutSetPrototype;
 	layoutSetPrototypePage: LayoutSetPrototypePage;
 	page: Page;
 	pageEditorPage: PageEditorPage;
@@ -43,10 +42,6 @@ export default async function createSiteTemplateWithWebContentOnContentPage({
 	webContentDisplayPage: WebContentDisplayPage;
 	webContentName: string;
 }): Promise<void> {
-	const layoutSetPrototype: LayoutSetPrototype =
-		await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
-			templateName
-		);
 	await page.goto(
 		'group/template-' + layoutSetPrototype.layoutSetPrototypeId
 	);
@@ -78,3 +73,7 @@ export default async function createSiteTemplateWithWebContentOnContentPage({
 		name: templateName,
 	});
 
+	await pageEditorPage.addWidget('Content Management', 'Web Content Display');
+	await webContentDisplayPage.addWebContentWithDisplay(webContentName);
+	await uiElementsPage.publishButton.click();
+}
