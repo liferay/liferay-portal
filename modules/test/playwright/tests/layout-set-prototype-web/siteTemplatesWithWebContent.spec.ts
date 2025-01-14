@@ -344,7 +344,7 @@ testWithPrivatePages(
 			pagesAdminPage,
 			productMenuPage,
 			templateName: contentTemplateName2,
-			text: `${webContentText2} `,
+			text: webContentText2,
 			uiElementsPage,
 			webContentDisplayPage,
 			webContentName: webContentName2,
