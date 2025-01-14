@@ -233,6 +233,8 @@ definition {
 
 	@summary = "Default summary"
 	macro gotoConfiguration(configurationScope = null, configurationName = null, configurationCategory = null) {
+		takeScreenshot();
+
 		Click(
 			key_itemName = ${configurationCategory},
 			locator1 = "ListGroupItem#ITEM_TEXT");
