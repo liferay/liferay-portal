@@ -828,9 +828,12 @@ definition {
 			echo("## Adding a composition of fragments");
 		}
 		else {
-			PageEditor.viewFragment(
-				fragmentName = ${fragmentName},
-				position = ${position});
+			takeScreenshot();
+
+			AssertElementPresent(
+				index = 1,
+				key_fragmentName = ${fragmentName},
+				locator1 = "Fragment#FRAGMENT_LABEL");
 		}
 
 		PageEditor.gotoTab(tabName = "Browser");
