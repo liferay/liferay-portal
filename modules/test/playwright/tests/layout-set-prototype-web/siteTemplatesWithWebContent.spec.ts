@@ -286,7 +286,6 @@ testWithPrivatePages(
 	async ({
 		apiHelpers,
 		applicationsMenuPage,
-		journalPage,
 		layoutSetPrototypePage,
 		page,
 		pageEditorPage,
