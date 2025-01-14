@@ -185,7 +185,9 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 
 		if (Objects.equals(
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) ||
+			Objects.equals(dbType, ObjectFieldConstants.DB_TYPE_BIG_DECIMAL) ||
 			Objects.equals(dbType, ObjectFieldConstants.DB_TYPE_CLOB) ||
+			Objects.equals(dbType, ObjectFieldConstants.DB_TYPE_DOUBLE) ||
 			Objects.equals(dbType, ObjectFieldConstants.DB_TYPE_STRING)) {
 
 			StringFDSTableSchemaField stringFDSTableSchemaField =
@@ -196,6 +198,17 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
 				stringFDSTableSchemaField.setContentRenderer("link");
+			}
+			else if (Objects.equals(
+						businessType,
+						ObjectFieldConstants.BUSINESS_TYPE_DECIMAL) ||
+					 Objects.equals(
+						 businessType,
+						 ObjectFieldConstants.
+							 BUSINESS_TYPE_PRECISION_DECIMAL)) {
+
+				stringFDSTableSchemaField.setContentRenderer(
+					"decimalDataRenderer");
 			}
 			else if (Objects.equals(
 						businessType,
