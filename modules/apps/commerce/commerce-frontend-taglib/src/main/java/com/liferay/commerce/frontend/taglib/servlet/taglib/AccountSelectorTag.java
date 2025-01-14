@@ -80,13 +80,13 @@ public class AccountSelectorTag extends IncludeTag {
 				(CommerceContext)httpServletRequest.getAttribute(
 					CommerceWebKeys.COMMERCE_CONTEXT);
 
-			_commerceChannelId = 0;
 			_commerceChannelGroupId = 0;
+			_commerceChannelId = 0;
 
 			if (commerceContext != null) {
-				_commerceChannelId = commerceContext.getCommerceChannelId();
 				_commerceChannelGroupId =
 					commerceContext.getCommerceChannelGroupId();
+				_commerceChannelId = commerceContext.getCommerceChannelId();
 			}
 
 			if (_commerceChannelId == 0) {
@@ -122,8 +122,8 @@ public class AccountSelectorTag extends IncludeTag {
 			_accountEntry = null;
 			_accountEntryAllowedTypes = new String[0];
 			_addCommerceOrderURL = StringPool.BLANK;
-			_commerceChannelId = 0;
 			_commerceChannelGroupId = 0;
+			_commerceChannelId = 0;
 			_commerceOrder = null;
 			_commerceOrderPortletResourcePermission = null;
 			_configurationProvider = null;
