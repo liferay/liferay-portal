@@ -98,7 +98,13 @@ export class JSONWebServicesJournalApiHelper {
 			'descriptionMap',
 			JSON.stringify(webContent.descriptionMap)
 		);
-		urlSearchParams.append('content', '<p>' + webContent.content + '</p>');
+		
+		urlSearchParams.append('content', `<root>
+				<dynamic-element field-reference="content" index-type="text" name="content" type="rich_text">
+				<dynamic-content><![CDATA[<p>${webContent.content}</p>]]></dynamic-content>
+				</dynamic-element>
+				</root>`);
+
 		urlSearchParams.append(
 			'ddmStructureId',
 			String(webContent.ddmStructureId)
