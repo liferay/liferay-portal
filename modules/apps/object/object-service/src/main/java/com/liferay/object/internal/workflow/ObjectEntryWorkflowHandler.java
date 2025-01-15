@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.BaseWorkflowHandler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -51,7 +53,16 @@ public class ObjectEntryWorkflowHandler
 			ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
 				classPK);
 
-			return objectEntry.getTitleValue();
+			String titleValue = objectEntry.getTitleValue();
+
+			if(Validator.isXml(titleValue)){
+				String localizedValue =
+					LocalizationUtil.getLocalization(titleValue, locale.getLanguage());
+				return localizedValue;
+			}
+			else{
+				return titleValue;
+			}
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
