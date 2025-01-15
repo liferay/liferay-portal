@@ -24,11 +24,12 @@ import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
 import {workflowPagesTest} from '../../fixtures/workflowPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {mockedObjectFields} from './dependencies/objectMockedFields';
 import {getFDSDateFormat, getPageEditorDateFormat} from './utils/dateFormat';
 import evaluateKeepCheckingAfterFound from './utils/keepCheckingAfterFound';
-import {mockObjectFields} from './utils/mockObjectFields';
+import {createObjectField, mockObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	accountSettingsPagesTest,
@@ -1125,6 +1126,179 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await catalanOption.click();
 
 		await expect(checkBox).not.toBeChecked();
+	});
+
+	test('can delete relation on relationship tab', async ({
+		apiHelpers,
+		editObjectDetailsPage,
+		objectLayoutsPage,
+		page,
+		viewObjectEntriesPage,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFields: [
+					createObjectField('text', {
+						label: 'Custom Field',
+						name: 'customField',
+					}),
+				],
+				objectFolderExternalReferenceCode: 'default',
+				panelCategoryKey: 'control_panel.object',
+				status: {code: 0},
+				titleObjectFieldName: 'customField',
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const objectRelationshipApiClient = await apiHelpers.buildRestClient(
+			ObjectRelationshipApi
+		);
+
+		await objectRelationshipApiClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+			objectDefinition.externalReferenceCode,
+			{
+				deletionType: ObjectRelationship.DeletionTypeEnum.Disassociate,
+				label: {
+					en_US: 'Relationship',
+				},
+				name: 'relationship',
+				objectDefinitionExternalReferenceCode1:
+					objectDefinition.externalReferenceCode,
+				objectDefinitionExternalReferenceCode2:
+					objectDefinition.externalReferenceCode,
+				objectDefinitionId1: objectDefinition.id,
+				objectDefinitionId2: objectDefinition.id,
+				type: ObjectRelationship.TypeEnum.OneToMany,
+			}
+		);
+
+		const applicationName =
+			'c/' + objectDefinition.name.toLowerCase() + 's';
+
+		const objectEntryA = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				customField: 'Entry A',
+			},
+			applicationName
+		);
+
+		const objectEntryB = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				customField: 'Entry B',
+			},
+			applicationName
+		);
+
+		const objectLayoutName = 'Layout Name';
+
+		await objectLayoutsPage.goto(objectDefinition.name);
+
+		await objectLayoutsPage.createObjectLayout(objectLayoutName);
+
+		await page.getByRole('link', {name: objectLayoutName}).click();
+
+		await objectLayoutsPage.markAsDefaultButton.check();
+
+		await objectLayoutsPage.createObjectLayoutContent(
+			'Block 1',
+			objectLayoutName,
+			'Field Tab'
+		);
+
+		await objectLayoutsPage.iframeLocator
+			.getByRole('option', {name: 'Custom Field Optional'})
+			.click();
+
+		await objectLayoutsPage.saveAddFieldButton.click();
+
+		await objectLayoutsPage.openObjectLayoutObjectField();
+
+		await objectLayoutsPage.iframeLocator
+			.getByRole('option', {name: 'Relationship Optional'})
+			.click();
+
+		await objectLayoutsPage.saveAddFieldButton.click();
+
+		await objectLayoutsPage.createObjectRelationshipTab(
+			objectLayoutName,
+			'Relationship Tab',
+			'Relationship'
+		);
+
+		await editObjectDetailsPage.goto(objectDefinition.name);
+
+		await editObjectDetailsPage.saveButton.click();
+
+		await waitForAlert(page, 'Success:The object was saved successfully.');
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await page
+			.getByRole('link', {name: objectEntryB.id.toString()})
+			.click();
+
+		await page.getByPlaceholder('Search').click();
+
+		await page.getByRole('menuitem', {name: 'Entry A'}).click();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await waitForAlert(page);
+
+		await page.getByRole('link', {name: 'Relationship Tab'}).click();
+
+		await page
+			.getByTestId('visualization-mode-table')
+			.getByText('New')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Select Existing One'}).click();
+
+		await expect(viewObjectEntriesPage.searchButton).toBeEnabled();
+
+		await viewObjectEntriesPage.frameSelect.getByText('Entry A').click();
+
+		await page.getByRole('link', {name: 'Field Tab'}).click();
+
+		await expect(viewObjectEntriesPage.saveObjectEntryButton).toBeEnabled();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await waitForAlert(page);
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await page
+			.getByRole('link', {name: objectEntryA.id.toString()})
+			.click();
+
+		await page.getByRole('link', {name: 'Relationship Tab'}).click();
+
+		await viewObjectEntriesPage.frontendDatasetActions.click();
+
+		await viewObjectEntriesPage.frontendDatasetDeleteAction.click();
+
+		await page.getByRole('link', {name: 'Field Tab'}).click();
+
+		await expect(viewObjectEntriesPage.saveObjectEntryButton).toBeEnabled();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await waitForAlert(page);
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await page
+			.getByRole('link', {name: objectEntryB.id.toString()})
+			.click();
+
+		await expect(page.getByPlaceholder('Search')).not.toContainText(
+			'Entry A'
+		);
 	});
 });
 
