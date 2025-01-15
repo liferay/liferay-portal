@@ -484,14 +484,5 @@ testWithPrivatePages(
 			siteName,
 			webContentText1
 		);
-
-		// tearDown
-
-		await deleteSiteAndLayoutSetPrototypes(
-			apiHelpers,
-			site.id,
-			layoutSetPrototype1.layoutSetPrototypeId.toString(),
-			layoutSetPrototype2.layoutSetPrototypeId.toString()
-		);
 	}
 );
