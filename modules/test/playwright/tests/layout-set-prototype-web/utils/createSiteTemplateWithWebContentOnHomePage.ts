@@ -14,6 +14,7 @@ import {ProductMenuPage} from '../../../pages/product-navigation-control-menu-we
 import {UIElementsPage} from '../../../pages/uielements/UIElementsPage';
 import {JournalPage} from '../../journal-web/pages/JournalPage';
 import {LayoutSetPrototypePage} from '../pages/LayoutSetPrototypePage';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 
 export default async function createSiteTemplateWithWebContentOnHomePage({
 	apiHelpers,
@@ -46,12 +47,23 @@ export default async function createSiteTemplateWithWebContentOnHomePage({
 	await page.goto(
 		'group/template-' + layoutSetPrototype.layoutSetPrototypeId
 	);
+	
+	const siteId = await page.evaluate(() => {
+		return String(Liferay.ThemeDisplay.getSiteGroupId());
+	});
+
+	const basicWebContentStructureId =
+		await getBasicWebContentStructureId(apiHelpers);
+
+	await apiHelpers.jsonWebServicesJournal.addWebContent({
+		content: text,
+		ddmStructureId: basicWebContentStructureId,
+		groupId: siteId,
+		titleMap: {en_US: webContentName},
+	});
+
 	await productMenuPage.checkIfAdecuateProductMenu(templateName);
 	await productMenuPage.openProductMenuIfClosed();
-	await productMenuPage.goToWebContent();
-	await journalPage.goToCreateArticle();
-	await journalPage.fillArticleDataSiteTemplate(webContentName, text);
-	await journalPage.publishArticle();
 
 	await productMenuPage.goToPages();
 	await layoutSetPrototypePage.homePageLink.click();
