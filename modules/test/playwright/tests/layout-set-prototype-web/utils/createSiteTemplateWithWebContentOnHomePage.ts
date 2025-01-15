@@ -18,6 +18,7 @@ import {LayoutSetPrototypePage} from '../pages/LayoutSetPrototypePage';
 export default async function createSiteTemplateWithWebContentOnHomePage({
 	apiHelpers,
 	journalPage,
+	layoutSetPrototype,
 	layoutSetPrototypePage,
 	page,
 	pageEditorPage,
@@ -31,6 +32,7 @@ export default async function createSiteTemplateWithWebContentOnHomePage({
 	apiHelpers: ApiHelpers;
 	applicationsMenuPage: ApplicationsMenuPage;
 	journalPage: JournalPage;
+	layoutSetPrototype: LayoutSetPrototype;
 	layoutSetPrototypePage: LayoutSetPrototypePage;
 	page: Page;
 	pageEditorPage: PageEditorPage;
@@ -41,10 +43,6 @@ export default async function createSiteTemplateWithWebContentOnHomePage({
 	webContentDisplayPage: WebContentDisplayPage;
 	webContentName: string;
 }): Promise<void> {
-	const layoutSetPrototype: LayoutSetPrototype =
-		await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
-			templateName
-		);
 	await page.goto(
 		'group/template-' + layoutSetPrototype.layoutSetPrototypeId
 	);

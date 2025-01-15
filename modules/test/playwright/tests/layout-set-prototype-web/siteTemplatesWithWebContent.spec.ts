@@ -402,10 +402,21 @@ testWithPrivatePages(
 		const contentTemplateName2: string = getRandomString();
 		const siteName: string = getRandomString();
 
+		const layoutSetPrototype1: LayoutSetPrototype =
+			await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
+				contentTemplateName1
+			);
+
+		apiHelpers.data.push({
+			id: layoutSetPrototype1.layoutSetPrototypeId,
+			type: 'layoutSetPrototype',
+		});
+
 		await createSiteTemplateWithWebContentOnHomePage({
 			apiHelpers,
 			applicationsMenuPage,
 			journalPage,
+			layoutSetPrototype: layoutSetPrototype1,
 			layoutSetPrototypePage,
 			page,
 			pageEditorPage,
@@ -417,10 +428,21 @@ testWithPrivatePages(
 			webContentName: webContentName1,
 		});
 
+		const layoutSetPrototype2: LayoutSetPrototype =
+		await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
+			contentTemplateName2
+		);
+
+		apiHelpers.data.push({
+			id: layoutSetPrototype2.layoutSetPrototypeId,
+			type: 'layoutSetPrototype',
+		});
+
 		await createSiteTemplateWithWebContentOnHomePage({
 			apiHelpers,
 			applicationsMenuPage,
 			journalPage,
+			layoutSetPrototype: layoutSetPrototype2,
 			layoutSetPrototypePage,
 			page,
 			pageEditorPage,
@@ -432,21 +454,15 @@ testWithPrivatePages(
 			webContentName: webContentName2,
 		});
 
-		const layoutSetPrototypes: LayoutSetPrototype[] =
-			await apiHelpers.jsonWebServicesLayoutSetPrototype.getLayoutSetPrototypes();
-		const layoutSetPrototype1 = await getLayoutTemplateByName(
-			layoutSetPrototypes,
-			contentTemplateName1
-		);
-		const layoutSetPrototype2 = await getLayoutTemplateByName(
-			layoutSetPrototypes,
-			contentTemplateName2
-		);
-
 		const site = await apiHelpers.headlessSite.createSite({
 			name: siteName,
 			templateKey: layoutSetPrototype1.layoutSetPrototypeId,
 			templateType: 'site-template',
+		});
+		
+		apiHelpers.data.push({
+			id: site.id,
+			type: 'site',
 		});
 
 		await layoutSetPrototypePage.checkIfWebContentAddedToHome(
