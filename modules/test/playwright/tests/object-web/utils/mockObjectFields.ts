@@ -124,7 +124,13 @@ const objectFieldbusinessTypeInfo: {
 };
 
 function isLocalizable(businessType: ObjectFieldBusinessTypes) {
-	const localizableBusinessTypes: ObjectFieldBusinessTypes[] = ['boolean'];
+	const localizableBusinessTypes: ObjectFieldBusinessTypes[] = [
+		'boolean',
+		'decimal',
+		'integer',
+		'longInteger',
+		'precisionDecimal',
+	];
 
 	return localizableBusinessTypes.includes(businessType);
 }
