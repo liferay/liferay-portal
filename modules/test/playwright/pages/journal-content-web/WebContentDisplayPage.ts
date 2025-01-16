@@ -125,18 +125,6 @@ export class WebContentDisplayPage {
 		await this.uiElementsPage.pageCreatedAlert.waitFor({state: 'hidden'});
 		await this.uiElementsPage.pageUpdatedAlert.waitFor({state: 'hidden'});
 		await this.page
-			.getByLabel('Asset PublisherDocuments and')
-			.locator('li')
-			.filter({hasText: 'Web Content Display'})
-			.getByLabel('Add Content')
-			.hover();
-		await this.page
-			.getByLabel('Asset PublisherDocuments and')
-			.locator('li')
-			.filter({hasText: 'Web Content Display'})
-			.getByLabel('Add Content')
-			.click();
-		await this.page
 			.getByText('Success:The application was added to the page.')
 			.waitFor({state: 'visible'});
 		await this.page
