@@ -65,9 +65,7 @@ test.describe('Localized object entries are saved correctly', () => {
 		const {objectFields, titleObjectFieldName} = await mockObjectFields({
 			apiHelpers,
 			localizeAllLocalizable: true,
-			objectEntryReturn: {format: 'API'},
-			objectFieldBusinessTypes: ['boolean'],
-			titleObjectFieldName: 'boolean',
+			objectFieldBusinessTypes: ['boolean', 'boolean'],
 		});
 
 		const objectDefinitionAPIClient =
@@ -102,53 +100,69 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.addObjectEntryButton.click();
 
-		const checkBox = page.getByRole('checkbox', {
+		const firstCheckBox = page.getByRole('checkbox', {
 			name: objectFields[0].label['en_US'],
 		});
 
-		await checkBox.check();
+		const secondCheckBox = page.getByRole('checkbox', {
+			name: objectFields[1].label['en_US'],
+		});
 
-		const translationsDropdownTriggerButton = page
+		const firstTranslationsDropdownTrigger = page
 			.getByTestId('triggerButton')
 			.first();
 
-		await translationsDropdownTriggerButton.click();
+		const secondTranslationsDropdownTrigger = page
+			.getByTestId('triggerButton')
+			.nth(1);
 
-		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
+		// with english locale, select both checkboxes
+		
+		await firstCheckBox.check();
 
-		await catalanOption.click();
+		await secondCheckBox.check();
 
-		await expect(checkBox).toBeChecked();
+		// use first dropdown locale to switch to catalan
 
-		await checkBox.uncheck();
+		await firstTranslationsDropdownTrigger.click();
 
-		await translationsDropdownTriggerButton.click();
+		const catalanOptions = page.getByTestId('availableLocalesDropdownca_ES');
 
-		await expect(catalanOption.locator('.label-item-expand')).toHaveText(
+		await catalanOptions.first().click();
+
+		// with catalan locale selected for the first time, all values should be copied from english 
+
+		await expect(firstCheckBox).toBeChecked();
+
+		await expect(secondCheckBox).toBeChecked();
+
+		// uncheck firt catalan checkbox, to differentiate from english
+
+		await firstCheckBox.uncheck();
+
+		secondTranslationsDropdownTrigger.click();
+
+		// check for labels in dropdown, catalan should show as translated
+
+		await expect(catalanOptions.first().locator('.label-item-expand')).toHaveText(
 			'translated',
 			{ignoreCase: true}
 		);
 
 		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
 
-		await expect(englishOption.locator('.label-item-expand')).toHaveText(
+		await expect(englishOption.first().locator('.label-item-expand')).toHaveText(
 			'default',
 			{ignoreCase: true}
 		);
 
-		await englishOption.click();
-
-		await expect(checkBox).toBeChecked();
-
-		await translationsDropdownTriggerButton.click();
-
-		await catalanOption.click();
-
-		await expect(checkBox).not.toBeChecked();
+		// save
 
 		const responsePromise = page.waitForResponse(
 			`**${objectDefinition.restContextPath}`
 		);
+		
+		await catalanOptions.nth(1).click();
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 
@@ -158,21 +172,31 @@ test.describe('Localized object entries are saved correctly', () => {
 			page.getByText('Success:Your request completed successfully.')
 		).toBeVisible();
 
+		// go back to list
+
 		await page.getByRole('link', {name: 'Back'}).click();
 
 		const responseBody = await response.json();
+
+		// navigate to the entry
 
 		const entryLink = page.getByRole('link', {name: responseBody.id});
 
 		await entryLink.click();
 
-		await expect(checkBox).toBeChecked();
+		// check if the saved entry is exactly as we set before
 
-		await translationsDropdownTriggerButton.click();
+		await expect(firstCheckBox).toBeChecked();
 
-		await catalanOption.click();
+		await expect(secondCheckBox).toBeChecked();
 
-		await expect(checkBox).not.toBeChecked();
+		await firstTranslationsDropdownTrigger.click();
+
+		await catalanOptions.first().click();
+
+		await expect(firstCheckBox).not.toBeChecked();
+
+		await expect(secondCheckBox).toBeChecked();
 	});
 
 	test('Numeric fields', async ({
@@ -250,11 +274,11 @@ test.describe('Localized object entries are saved correctly', () => {
 			}
 		}
 
-		const translationsDropdownTriggerButton = page
+		const translationsDropdownTrigger = page
 			.getByTestId('triggerButton')
 			.first();
 
-		await translationsDropdownTriggerButton.click();
+		await translationsDropdownTrigger.click();
 
 		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
 
@@ -280,7 +304,7 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await entryLink.click();
 
-		await translationsDropdownTriggerButton.click();
+		await translationsDropdownTrigger.click();
 
 		await catalanOption.first().click();
 
@@ -331,7 +355,7 @@ test.describe('Localized object entries are saved correctly', () => {
 			).toBeTruthy();
 		}
 
-		await translationsDropdownTriggerButton.click();
+		await translationsDropdownTrigger.click();
 
 		await catalanOption.first().click();
 
