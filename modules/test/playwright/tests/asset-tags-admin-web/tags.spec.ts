@@ -101,3 +101,50 @@ test('User can Merge tags', async ({
 
 	await expect(page.getByText('tag2')).not.toBeVisible();
 });
+
+test(
+	'Accessing via keyboard navigation the tooltip of the back button is Go to Tags when adding or merging Tags',
+	{
+		tag: '@LPS-177675',
+	},
+	async ({page, site, tagsAdminPage, tagsEditPage}) => {
+		await tagsAdminPage.goto(site.friendlyUrlPath);
+		await tagsAdminPage.gotoAdd();
+
+		test.step('Back button has tooltip Go to Tags when adding a new tag', async () => {
+			await page.getByRole('button', {name: 'Save'}).waitFor();
+			await page.keyboard.press('Tab');
+			await page.keyboard.press('Tab');
+			await page.keyboard.press('Tab');
+			await expect(
+				page.locator('.tooltip-inner').filter({hasText: 'Go to Tags'})
+			).toBeVisible();
+		});
+
+		await page.getByPlaceholder('Name').fill('tag1');
+
+		await page
+			.getByRole('button', {
+				name: 'Save',
+			})
+			.click();
+
+		await tagsAdminPage.newButton.waitFor();
+
+		await tagsEditPage.add('tag2', site.friendlyUrlPath);
+
+		await tagsAdminPage.newButton.waitFor();
+
+		await tagsAdminPage.mergeTags(['tag1', 'tag2']);
+
+		test.step('Back button has tooltip Go to Tags when merging Tags', async () => {
+			await page.getByText('Other Metadata').waitFor();
+			await page.keyboard.press('Tab');
+			await page.keyboard.press('Tab');
+			await page.keyboard.press('Tab');
+			await expect(
+				page.locator('.tooltip-inner').filter({hasText: 'Go to Tags'})
+			).toBeVisible();
+		});
+	}
+);
