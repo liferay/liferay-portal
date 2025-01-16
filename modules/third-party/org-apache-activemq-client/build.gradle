@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.apache.activemq", name: "activemq-client", transitive: false, version: "5.16.7"
+}

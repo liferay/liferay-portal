@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay", name: "org.opensaml.messaging", transitive: false, version: "3.3.0.LIFERAY-PATCHED-1"
+}

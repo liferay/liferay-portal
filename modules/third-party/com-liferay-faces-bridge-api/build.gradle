@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay.faces", name: "com.liferay.faces.bridge.api", transitive: false, version: "4.3.0"
+}

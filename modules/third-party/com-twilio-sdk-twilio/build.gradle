@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.twilio.sdk", name: "twilio", transitive: false, version: "8.3.0"
+}

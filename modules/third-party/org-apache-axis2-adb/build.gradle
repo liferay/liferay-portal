@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.apache.axis2", name: "axis2-adb", transitive: false, version: "1.8.0"
+}

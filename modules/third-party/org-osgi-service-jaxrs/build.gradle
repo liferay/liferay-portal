@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", transitive: false, version: "1.0.0"
+}

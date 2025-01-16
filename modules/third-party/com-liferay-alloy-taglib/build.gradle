@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay.alloy-taglibs", name: "alloy-taglib", transitive: false, version: "1.1.14"
+}

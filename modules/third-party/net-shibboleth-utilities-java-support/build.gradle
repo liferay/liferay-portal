@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "net.shibboleth.utilities", name: "java-support", transitive: false, version: "7.3.0"
+}

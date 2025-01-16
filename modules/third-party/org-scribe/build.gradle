@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.scribe", name: "scribe", transitive: false, version: "1.3.6"
+}

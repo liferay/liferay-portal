@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.jfree", name: "jfreechart", transitive: false, version: "1.0.19"
+}

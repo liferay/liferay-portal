@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.opensaml", name: "opensaml-messaging-impl", transitive: false, version: "3.3.0"
+}

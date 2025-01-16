@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay", name: "org.springframework.orm", transitive: false, version: "5.3.39.LIFERAY-PATCHED-1"
+}

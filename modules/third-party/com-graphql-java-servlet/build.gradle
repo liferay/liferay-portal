@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.graphql-java-kickstart", name: "graphql-java-servlet", transitive: false, version: "14.0.0"
+}

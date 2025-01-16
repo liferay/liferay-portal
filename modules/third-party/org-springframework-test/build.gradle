@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.springframework", name: "spring-test", transitive: false, version: "5.3.39"
+}

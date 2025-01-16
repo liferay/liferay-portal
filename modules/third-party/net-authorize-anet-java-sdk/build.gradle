@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "net.authorize", name: "anet-java-sdk", transitive: false, version: "2.0.6"
+}

@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay", name: "javax.faces", transitive: false, version: "2.2.20.LIFERAY-PATCHED-1"
+}

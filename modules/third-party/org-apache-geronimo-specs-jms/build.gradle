@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.apache.geronimo.specs", name: "geronimo-jms_1.1_spec", transitive: false, version: "1.1.1"
+}

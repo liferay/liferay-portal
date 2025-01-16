@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay", name: "org.hibernate.core", transitive: false, version: "5.6.7.LIFERAY-PATCHED-2"
+}

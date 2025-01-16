@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay", name: "org.apache.aries.cdi.extension.el.jsp", transitive: false, version: "1.1.5.LIFERAY-PATCHED-1"
+}

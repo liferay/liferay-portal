@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.hdrhistogram", name: "HdrHistogram", transitive: false, version: "2.1.9"
+}

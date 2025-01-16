@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.apache.chemistry.opencmis", name: "chemistry-opencmis-commons-impl", transitive: false, version: "0.14.0"
+}
