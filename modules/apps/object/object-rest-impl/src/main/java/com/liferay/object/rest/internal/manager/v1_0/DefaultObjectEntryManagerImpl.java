@@ -87,6 +87,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -128,6 +129,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -843,11 +846,33 @@ public class DefaultObjectEntryManagerImpl
 				String scopeKey)
 		throws Exception {
 
+		Map<String, Object> properties = objectEntry.getProperties();
+
 		if (objectRelationships.isEmpty()) {
+			for (ObjectRelationship objectRelationship :
+					_objectRelationshipLocalService.getAllObjectRelationships(
+						objectDefinition.getObjectDefinitionId())) {
+
+				ObjectDefinition relatedObjectDefinition =
+					_getRelatedObjectDefinition(
+						objectDefinition, objectRelationship);
+
+				String objectRelationshipObjectFieldName =
+					_getObjectRelationshipObjectFieldName(
+						properties, objectRelationship.getName());
+
+				if (objectRelationshipObjectFieldName != null) {
+					long relatedObjectEntryId = MapUtil.getLong(
+						properties, objectRelationshipObjectFieldName);
+
+					_objectEntryService.checkModelResourcePermission(
+						relatedObjectDefinition.getObjectDefinitionId(),
+						relatedObjectEntryId, ActionKeys.UPDATE);
+				}
+			}
+
 			return serviceBuilderObjectEntry;
 		}
-
-		Map<String, Object> properties = objectEntry.getProperties();
 
 		for (Map.Entry<String, ObjectRelationship> entry :
 				objectRelationships.entrySet()) {
@@ -1180,6 +1205,25 @@ public class DefaultObjectEntryManagerImpl
 
 		return _toObjectEntry(
 			dtoConverterContext, objectDefinition, serviceBuilderObjectEntry);
+	}
+
+	private String _getObjectRelationshipObjectFieldName(
+		Map<String, Object> properties, String relationshipName) {
+
+		for (Map.Entry<String, Object> entry : properties.entrySet()) {
+			Matcher matcher = _relationshipIdNamePattern.matcher(
+				entry.getKey());
+			String key = entry.getKey();
+
+			if (matcher.matches() && key.contains(relationshipName) &&
+				(entry.getValue() instanceof Integer ||
+				 entry.getValue() instanceof Long)) {
+
+				return key;
+			}
+		}
+
+		return null;
 	}
 
 	private Map<String, ObjectRelationship> _getObjectRelationships(
@@ -1849,6 +1893,9 @@ public class DefaultObjectEntryManagerImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultObjectEntryManagerImpl.class);
+
+	private static final Pattern _relationshipIdNamePattern = Pattern.compile(
+		"r_.+_c+_.+Id", Pattern.CASE_INSENSITIVE);
 
 	@Reference
 	private Aggregations _aggregations;
