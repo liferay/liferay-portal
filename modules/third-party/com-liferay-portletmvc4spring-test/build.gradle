@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay.portletmvc4spring", name: "com.liferay.portletmvc4spring.test", transitive: false, version: "5.2.1"
+}

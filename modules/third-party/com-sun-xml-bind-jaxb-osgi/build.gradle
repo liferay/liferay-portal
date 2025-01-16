@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.sun.xml.bind", name: "jaxb-osgi", transitive: false, version: "2.3.4"
+}

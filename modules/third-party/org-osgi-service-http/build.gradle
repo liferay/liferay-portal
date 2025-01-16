@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay", name: "org.osgi.service.http", transitive: false, version: "1.2.2.LIFERAY-PATCHED-1"
+}

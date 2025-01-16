@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "com.liferay", name: "org.eclipse.equinox.http.servlet", transitive: false, version: "1.2.2.v20211118-0920.LIFERAY-PATCHED-4"
+}

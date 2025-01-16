@@ -1,0 +1,5 @@
+apply from: "../../build-jakarta-transformer.gradle"
+
+dependencies {
+	compileOnly group: "org.hibernate.validator", name: "hibernate-validator", transitive: false, version: "6.2.5.Final"
+}
