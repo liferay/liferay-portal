@@ -61,18 +61,15 @@ export default async function createSiteTemplateWithWebContentOnWidgetPage({
 	await productMenuPage.openProductMenuIfClosed();
 
 	await productMenuPage.goToPages();
-
-	await page
-		.locator('.control-menu-level-1-heading')
-		.filter({hasText: 'Pages'})
-		.waitFor();
-
 	await pagesAdminPage.addWidgetPage({
 		addButtonLabel: 'Add Site Template Page',
 		name: templateName,
 	});
+	
+	await page.goto(
+		`group/template-${layoutSetPrototype.layoutSetPrototypeId}/${templateName}`
+	);
 
-	await productMenuPage.clickSpecificPage(templateName);
 	await widgetPagePage.addButton.click();
 	await webContentDisplayPage.addWebContentWithWidget(webContentName);
 	await uiElementsPage.setupUpdatedAlert.waitFor({state: 'hidden'});
