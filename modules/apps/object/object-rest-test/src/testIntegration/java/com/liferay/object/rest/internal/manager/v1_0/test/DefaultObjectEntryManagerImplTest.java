@@ -787,6 +787,37 @@ public class DefaultObjectEntryManagerImplTest
 	}
 
 	@Test
+	public void testAddObjectEntry() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			_objectDefinition1,
+			HashMapBuilder.<String, Object>put(
+				"textObjectFieldName", "Able"
+			).put(
+				"textObjectFieldNameExtension", "Baker"
+			).build());
+
+		_user = _addUser();
+
+		_addRoleUser(
+			new String[] {ObjectActionKeys.ADD_OBJECT_ENTRY},
+			_objectDefinition2, _user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have UPDATE permission for ",
+				_objectDefinition1.getClassName(), StringPool.SPACE,
+				objectEntry.getId()),
+			() -> _addObjectEntry(
+				_objectDefinition2,
+				HashMapBuilder.<String, Object>put(
+					"r_oneToManyRelationshipName_" +
+						_objectDefinition1.getName() + "Id",
+					objectEntry.getId()
+				).build()));
+	}
+
+	@Test
 	public void testAddObjectEntryWithAccountEntryRestricted1()
 		throws Exception {
 
@@ -4083,7 +4114,7 @@ public class DefaultObjectEntryManagerImplTest
 							parentObjectEntry2.getExternalReferenceCode()
 						).put(
 							_objectRelationshipFieldName,
-							RandomTestUtil.randomLong()
+							parentObjectEntry2.getId()
 						).build();
 					}
 				}),
