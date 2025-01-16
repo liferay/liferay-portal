@@ -30,7 +30,7 @@ import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {mockedObjectFields} from './dependencies/objectMockedFields';
 import {getFDSDateFormat, getPageEditorDateFormat} from './utils/dateFormat';
 import evaluateKeepCheckingAfterFound from './utils/keepCheckingAfterFound';
-import {createObjectField, mockObjectFields} from './utils/mockObjectFields';
+import {createObjectFields, mockObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	accountSettingsPagesTest,
@@ -1017,12 +1017,10 @@ test.describe('Manage object entries through View Object Entries', () => {
 	}) => {
 		const objectDefinition =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFields: [
-					createObjectField('text', {
+				objectFields: createObjectFields('text', [{
 						label: 'Custom Field',
 						name: 'customField',
-					}),
-				],
+					}]),
 				objectFolderExternalReferenceCode: 'default',
 				panelCategoryKey: 'control_panel.object',
 				status: {code: 0},

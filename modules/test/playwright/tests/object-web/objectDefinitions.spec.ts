@@ -23,7 +23,7 @@ import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import getFragmentDefinition from '../layout-content-page-editor-web/utils/getFragmentDefinition';
 import getPageDefinition from '../layout-content-page-editor-web/utils/getPageDefinition';
-import {createObjectField} from './utils/mockObjectFields';
+import {createObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	collectionsPagesTest,
@@ -463,12 +463,10 @@ test.describe('Manage object definitions through Model Builder', () => {
 					pt_BR: 'Departamento',
 				},
 				name: 'Department',
-				objectFields: [
-					createObjectField('text', {
+				objectFields: createObjectFields('text', [{
 						label: 'Name',
 						name: 'name',
-					}),
-				],
+					}]),
 				objectFolderExternalReferenceCode:
 					objectFolder.externalReferenceCode,
 				panelCategoryKey: 'control_panel.object',

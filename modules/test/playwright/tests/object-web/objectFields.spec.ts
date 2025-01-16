@@ -21,7 +21,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {objectPagesTest} from '../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../utils/getRandomInt';
 import {AsyncArray} from './utils/AsyncArray';
-import {createObjectField, mockObjectFields} from './utils/mockObjectFields';
+import {createObjectFields, mockObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -366,15 +366,15 @@ test.describe('Manage object fields through Model Builder', () => {
 
 		await objectFieldApiClient.postObjectDefinitionByExternalReferenceCodeObjectField(
 			objectDefinition.externalReferenceCode,
-			createObjectField(
+			createObjectFields(
 				'picklist',
-				{label: 'picklistField', name: 'picklistField'},
+				[{label: 'picklistField', name: 'picklistField'}],
 				{
 					listTypeDefinitionExternalReferenceCode:
 						listTypeDefinition.externalReferenceCode,
 					listTypeDefinitionId: listTypeDefinition.id,
 				}
-			)
+			)[0]
 		);
 
 		await modelBuilderDiagramPage.goto({objectFolderName: 'Default'});
