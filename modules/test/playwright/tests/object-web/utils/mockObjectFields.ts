@@ -360,7 +360,7 @@ export async function mockObjectFields({
 		objectEntry: objectEntryReturn ? objectEntry : undefined,
 		objectFields,
 		titleObjectFieldName: titleObjectFieldName
-			? objectFieldBusinessTypesLabelName[titleObjectFieldName].name
+			? objectFieldBusinessTypesLabelName[titleObjectFieldName][0].name
 			: undefined,
 	};
 }
