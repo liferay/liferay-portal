@@ -9,7 +9,11 @@ export default function DecimalDataRenderer({value}: {value: number}) {
 	if (value !== undefined) {
 		const formatedValue = new Intl.NumberFormat(
 			Liferay.ThemeDisplay.getBCP47LanguageId(),
-			{style: 'decimal', useGrouping: false}
+			{
+				maximumFractionDigits: 20,
+				style: 'decimal',
+				useGrouping: false,
+			}
 		).format(value);
 
 		return <span>{formatedValue}</span>;
