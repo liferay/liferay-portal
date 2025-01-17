@@ -159,7 +159,7 @@ export function createObjectFields(
 		label: {
 			en_US: label,
 		},
-		name: name,
+		name,
 		type: objectFieldbusinessTypeInfo[businessType].type,
 		...additionalSettings,
 		...baseObjectField,
@@ -250,10 +250,13 @@ export async function mockObjectFields({
 	let objectFieldBusinessTypesLabelName =
 		{} as ObjectFieldBusinessTypesLabelName;
 
-	function setLabelName(businessType: string, { label, name }) {
+	function setLabelName(businessType: string, {label, name}) {
 		objectFieldBusinessTypesLabelName = {
 			...objectFieldBusinessTypesLabelName,
-			[businessType]: [...(objectFieldBusinessTypesLabelName[businessType] || []), { label, name }],
+			[businessType]: [
+				...(objectFieldBusinessTypesLabelName[businessType] || []),
+				{label, name},
+			],
 		};
 	}
 
@@ -263,10 +266,6 @@ export async function mockObjectFields({
 			name: `${objectFieldBusinessType}${getRandomInt()}`,
 		});
 	}
-
-	let objectEntry = {} as ObjectEntry;
-
-	let objectFields: Partial<ObjectField>[] = [];
 
 	function setObjectFieldsAdditionalSettings(
 		objectFieldBusinessType: ObjectFieldBusinessTypes
@@ -323,30 +322,36 @@ export async function mockObjectFields({
 		}
 	}
 
+	const objectEntry = {} as ObjectEntry;
+
+	let objectFields: Partial<ObjectField>[] = [];
+
 	for (const objectFieldBusinessType in objectFieldBusinessTypesLabelName) {
-		objectFields= objectFields.concat(createObjectFields(
-			objectFieldBusinessType as ObjectFieldBusinessTypes,
-			objectFieldBusinessTypesLabelName[objectFieldBusinessType],
-			setObjectFieldsAdditionalSettings(
-				objectFieldBusinessType as ObjectFieldBusinessTypes
-			),
-			localizeAllLocalizable
-		));
+		objectFields = objectFields.concat(
+			createObjectFields(
+				objectFieldBusinessType as ObjectFieldBusinessTypes,
+				objectFieldBusinessTypesLabelName[objectFieldBusinessType],
+				setObjectFieldsAdditionalSettings(
+					objectFieldBusinessType as ObjectFieldBusinessTypes
+				),
+				localizeAllLocalizable
+			)
+		);
 
 		if (
 			objectFieldBusinessType !== 'attachment' &&
 			objectFieldBusinessType !== 'autoIncrement' &&
 			objectEntryReturn
 		) {
-			objectEntry = {
-				...objectEntry,
-				[objectFieldBusinessTypesLabelName[objectFieldBusinessType]
-					.name]: getRandomObjectFieldEntryValue(
+			for (const field of objectFieldBusinessTypesLabelName[
+				objectFieldBusinessType
+			]) {
+				objectEntry[field.name] = getRandomObjectFieldEntryValue(
 					objectEntryReturn.format,
 					listTypeDefinitionItems,
 					objectFieldBusinessType as ObjectFieldBusinessTypes
-				),
-			};
+				);
+			}
 		}
 	}
 
