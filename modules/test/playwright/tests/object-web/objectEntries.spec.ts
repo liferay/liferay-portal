@@ -1262,6 +1262,8 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await viewObjectEntriesPage.frameSelect.getByText('Entry A').click();
 
+		await page.waitForTimeout(2000);
+
 		await page.getByRole('link', {name: 'Field Tab'}).click();
 
 		await expect(viewObjectEntriesPage.saveObjectEntryButton).toBeEnabled();
@@ -1281,6 +1283,8 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await viewObjectEntriesPage.frontendDatasetActions.click();
 
 		await viewObjectEntriesPage.frontendDatasetDeleteAction.click();
+
+		await page.waitForTimeout(2000);
 
 		await page.getByRole('link', {name: 'Field Tab'}).click();
 
