@@ -612,25 +612,25 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 	}
 
 	async postProductConfigurationList(
-        productConfigurationList: TProductConfigurationList
+		productConfigurationList: TProductConfigurationList
 	): Promise<TProductConfigurationList> {
-        productConfigurationList = await this.apiHelpers.post(
-            `${this.apiHelpers.baseUrl}${this.basePath}/product-configuration-lists?nestedFields=productConfigurations`,
-            {
-                data: {
-                    catalogId: getRandomInt(),
-                    name: getRandomString(),
-                    ...productConfigurationList,
-                },
-            }
-        );
+		productConfigurationList = await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/product-configuration-lists?nestedFields=productConfigurations`,
+			{
+				data: {
+					catalogId: getRandomInt(),
+					name: getRandomString(),
+					...productConfigurationList,
+				},
+			}
+		);
 
-        if (this.apiHelpers instanceof DataApiHelpers) {
-            this.apiHelpers.data.push({
-                id: productConfigurationList.id,
-                type: 'productConfigurationList',
-            });
-        }
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: productConfigurationList.id,
+				type: 'productConfigurationList',
+			});
+		}
 
 		return productConfigurationList;
 	}
