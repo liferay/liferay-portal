@@ -87,6 +87,21 @@ public class DBUpgradeClient {
 						"y,suspend=y");
 			}
 
+			jvmOpts.add(
+				"-javaagent:" + _jarDir.getAbsolutePath() +
+					"/../portal-tools-jakarta-ee-transformer" +
+						"/com.liferay.portal.tools.jakarta.ee.transformer.jar");
+			jvmOpts.add(
+				"-Djakarta.ee.transformer.bundle.header.replacer.logging." +
+					"disabled=true");
+			jvmOpts.add(
+				"-Djakarta.ee.transformer.class.remapper.logging.disabled=" +
+					"true");
+			jvmOpts.add(
+				"-Djakarta.ee.transformer.reverse.text.replacer.disabled=true");
+			jvmOpts.add(
+				"-Djakarta.ee.transformer.text.replacer.logging.disabled=true");
+
 			File logDir = new File(_jarDir, "logs");
 
 			if ((logDir != null) && !logDir.exists()) {
