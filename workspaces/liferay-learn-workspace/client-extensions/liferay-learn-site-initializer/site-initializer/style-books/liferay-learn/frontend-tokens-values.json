@@ -125,7 +125,7 @@
 	},
 	"colorBrandPrimaryDarken3": {
 		"cssVariableMapping": "color-brand-primary-darken-3",
-		"value": "##003EB3"
+		"value": "#003EB3"
 	},
 	"colorBrandPrimaryDarken4": {
 		"cssVariableMapping": "color-brand-primary-darken-4",
