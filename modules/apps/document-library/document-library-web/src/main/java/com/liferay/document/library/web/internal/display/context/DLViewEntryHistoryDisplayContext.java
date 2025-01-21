@@ -55,7 +55,8 @@ public class DLViewEntryHistoryDisplayContext {
 			return _backURL;
 		}
 
-		_backURL = ParamUtil.getString(_renderRequest, "backURL");
+		_backURL = ParamUtil.getString(
+			_httpServletRequest, "backURL", _getRedirect());
 
 		return _backURL;
 	}
