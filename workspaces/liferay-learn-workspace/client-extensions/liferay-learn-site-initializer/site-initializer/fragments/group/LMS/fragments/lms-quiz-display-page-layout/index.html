@@ -1,0 +1,28 @@
+[#assign currentEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+
+<div class="container">
+	<div class="d-flex flex-row justify-content-between lesson-layout-container">
+		<div class="d-flex flex-column side-nav ">
+			<liferay-lms-navigation-menu asset-id="${currentEntry.classPK!}" asset-type="quiz" navigation-menu-type="course" module-label=""${languageUtil.get(locale, "module-label")}""></liferay-lms-navigation-menu>
+		</div>
+    
+		<div class="content d-flex flex-column flex-fill quiz-content">
+			<div class="title-duration">
+				<h2 id="quiz-title"></h2>
+				<div class="duration quiz-banner-tag">
+					<p class="quiz-tag-duration"></p>
+				</div>	
+			</div>	
+			<lfr-drop-zone></lfr-drop-zone>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+	Liferay.Util.fetch(`/o/c/quizes/${currentEntry.classPK!""}`)
+		.then((response) => response.json())
+		.then((response) => {
+			document.querySelector("#quiz-title").innerText = response.title;
+			document.querySelector(".quiz-tag-duration").innerText = response.durationMinutes +" minutes";
+		});
+</script>

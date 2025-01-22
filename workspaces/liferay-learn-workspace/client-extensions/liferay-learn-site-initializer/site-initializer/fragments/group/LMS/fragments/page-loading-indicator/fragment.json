@@ -1,0 +1,9 @@
+{
+  "configurationPath": "configuration.json",
+  "jsPath": "index.js",
+  "htmlPath": "index.html",
+  "cssPath": "index.css",
+  "icon": "code",
+  "name": "Page Loading Indicator",
+  "type": "component"
+}

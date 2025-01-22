@@ -1,0 +1,18 @@
+[#assign currentEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+
+<div class="container">
+	<div class="d-flex flex-row justify-content-between lesson-layout-container">
+	
+	<div class="side-nav d-flex flex-column	 ">
+		<liferay-lms-navigation-menu asset-id="${currentEntry.classPK!}" asset-type="lesson" navigation-menu-type="course" module-label=""${languageUtil.get(locale, "module-label")}""></liferay-lms-navigation-menu>
+	</div>
+	
+	<div class="content d-flex flex-column flex-fill">
+		<lfr-drop-zone></lfr-drop-zone>
+	</div>
+
+	<div class="flex-column side-nav">
+		<liferay-lms-article-navigation-menu selector="h2"></liferay-lms-article-navigation-menu>
+	</div>
+
+</div>

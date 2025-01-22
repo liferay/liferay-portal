@@ -1,0 +1,10 @@
+[#assign 
+	userId = themeDisplay.getUserId()
+	userResponse = restClient.get("/headless-admin-user/v1.0/user-accounts/${userId}")
+/]
+
+<div>
+	<h3 class="mb-3">User Information</h3>
+	<p><span class="font-weight-bold">Username: </span>${userResponse.name}</p>
+	<p><span class="font-weight-bold">Email: </span> ${userResponse.emailAddress}</p>
+</div>

@@ -1,0 +1,27 @@
+{
+  "fieldSets": [
+    {
+      "fields": [
+        {
+          "dataType": "string",
+          "defaultValue": "lesson",
+          "label": "Asset Type",
+          "name": "assetType",
+          "type": "select",
+          "typeOptions": {
+            "validValues": [
+              {
+                "label": "lesson",
+                "value": "lesson"
+              },
+              {
+                "label": "quiz",
+                "value": "quiz"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

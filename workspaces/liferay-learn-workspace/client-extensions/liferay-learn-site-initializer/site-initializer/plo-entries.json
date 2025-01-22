@@ -6,6 +6,12 @@
 		}
 	},
 	{
+		"key": "hello",
+		"value": {
+			"en-US": "Hello, "
+		}
+	},
+	{
 		"key": "introduction",
 		"value": {
 			"en-US": "Introduction"

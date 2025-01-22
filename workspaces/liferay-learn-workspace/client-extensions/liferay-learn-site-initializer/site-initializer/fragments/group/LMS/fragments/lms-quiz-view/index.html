@@ -1,0 +1,8 @@
+[#assign currentEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+
+<liferay-lms-exercise-view
+	exercise-id="${currentEntry.ClassPk!}"
+	education-page-url="${configuration.educationPageUrl}"
+	badge-page-url="${configuration.badgePageUrl}"
+>
+</liferay-lms-exercise-view>

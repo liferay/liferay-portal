@@ -1,0 +1,7 @@
+[#assign currentEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+
+<liferay-lms-course-banner
+	assetId="${currentEntry.classPK!}"
+	assetType="${configuration.assetType}"
+>
+</liferay-lms-course-banner>

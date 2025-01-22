@@ -1,0 +1,9 @@
+{
+  "configurationPath": "configuration.json",
+  "jsPath": "index.js",
+  "htmlPath": "index.html",
+  "cssPath": "index.css",
+  "icon": "code",
+  "name": "LMS Quiz Display Page Layout",
+  "type": "component"
+}

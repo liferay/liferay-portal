@@ -1,0 +1,27 @@
+[#if layoutMode == "view"]
+	<script>
+		function pageLoaded() {
+			const loadingElement = document.querySelector('#loadingIndicator');
+			loadingElement.classList.add('hide');
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			pageLoaded();
+		});
+	</script>
+
+	<div class="loading-overlay" id="loadingIndicator">
+		<div class="m-auto">
+			<div aria-hidden="true" class="loading-animation-lg loading-animation-primary loading-animation-squares"></div>
+
+			<div class="font-weight-bolder loading-message mt-3 text-5 text-secondary">
+				${languageUtil.get(locale, configuration.loadingTextLabel)}
+			</div>
+		</div>
+	</div>
+
+[#else]
+	<div class="alert alert-info">
+		${languageUtil.get(locale, 'page-loading-placeholder-label')}
+	</div>
+[/#if]

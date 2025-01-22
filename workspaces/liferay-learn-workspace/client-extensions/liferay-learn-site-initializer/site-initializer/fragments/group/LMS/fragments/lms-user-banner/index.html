@@ -1,0 +1,27 @@
+[#assign 
+	userId = themeDisplay.getUserId()
+
+	userResponse = restClient.get("/headless-admin-user/v1.0/user-accounts/${userId}") 
+	
+	userName = userResponse.name 
+/]
+
+<div class="align-items-center d-flex user-dashboard">
+	[#if userResponse.image?has_content]
+		<img src=${userResponse.image} class="profile-img">
+	[#else]
+			<span class="sticker sticker-circle sticker-lg user-icon-color-7">
+					<svg class="lexicon-icon lexicon-icon-user" role="presentation" viewBox="0 0 512 512">
+						<g>
+							<circle class="lexicon-icon-outline user-head" cx="256" cy="126.1" r="96"></circle>
+							<path class="lexicon-icon-outline user-body" d="M448,398.1c0,112-384,112-384,0C64,200.1,448,202.1,448,398.1z"></path>
+						</g>
+					</svg>
+			</span>
+	[/#if]
+
+	<h2 class="mb-0">
+		${languageUtil.get(locale, 'hello', 'Hello, ')}
+		${userName}
+	</h2>	
+</div>
