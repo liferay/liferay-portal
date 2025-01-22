@@ -74,18 +74,17 @@ public class TransformerAgent {
 	}
 
 	private static final Set<String> _fixupSubpackageNames = new HashSet<>(
-		Arrays.asList("annotation.processing", "portlet.faces", "portlet.tck"));
-
-	/**
-	 * Postpone these subpackages to avoid major lib upgrade at early stage.
-	 * "annotation", "batch", "decorator", "ejb", "enterprise", "faces",
-	 * "inject", interceptor", "jms", "json", "jws", "persistence", "resource",
-	 * "security.auth.message", "security.enterprise", "security.jacc",
-	 * "transaction", "validation", "ws.rs", "xml.bind", "xml.ws", "xml.soap"
-	 */
+		Arrays.asList(
+			"annotation.processing", "portlet.faces", "portlet.tck",
+			"transaction.xa"));
 	private static final Set<String> _subpackageNames = new HashSet<>(
 		Arrays.asList(
-			"activation", "el", "mail", "portlet", "servlet", "websocket"));
+			"activation", "annotation", "batch", "decorator", "ejb", "el",
+			"enterprise", "faces", "inject", "interceptor", "jms", "json",
+			"jws", "mail", "mvc", "persistence", "portlet", "resource",
+			"security.auth.message", "security.enterprise", "security.jacc",
+			"servlet", "transaction", "validation", "websocket", "ws.rs",
+			"xml.bind", "xml.soap", "xml.ws"));
 
 	static {
 		_subpackageNames.forEach(
