@@ -112,6 +112,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			_commerceCatalog.getGroupId(), user.getUserId(),
 			commerceCurrency.getCode(), "promotion",
 			RandomTestUtil.randomString(), serviceContext);
+
+		_cpOptionCategory = CPTestUtil.addCPOptionCategory(
+			testGroup.getGroupId());
+		_cpSpecificationOption = CPTestUtil.addCPSpecificationOption(
+			testGroup.getGroupId(), true);
 	}
 
 	@After

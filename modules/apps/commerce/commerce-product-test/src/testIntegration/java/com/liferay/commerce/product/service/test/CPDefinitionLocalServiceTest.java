@@ -529,7 +529,8 @@ public class CPDefinitionLocalServiceTest {
 			true);
 
 		CPSpecificationOption cpSpecificationOption =
-			CPTestUtil.addCPSpecificationOption(_commerceCatalog.getGroupId());
+			CPTestUtil.addCPSpecificationOption(
+				_commerceCatalog.getGroupId(), false);
 
 		CPDefinitionSpecificationOptionValue
 			cpDefinitionSpecificationOptionValue1 =

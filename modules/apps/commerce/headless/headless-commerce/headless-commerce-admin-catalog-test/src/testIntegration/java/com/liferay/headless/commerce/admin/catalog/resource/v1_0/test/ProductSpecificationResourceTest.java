@@ -44,7 +44,7 @@ public class ProductSpecificationResourceTest
 		_cpOptionCategory = CPTestUtil.addCPOptionCategory(
 			testGroup.getGroupId());
 		_cpSpecificationOption = CPTestUtil.addCPSpecificationOption(
-			testGroup.getGroupId());
+			testGroup.getGroupId(), false);
 	}
 
 	@Override
