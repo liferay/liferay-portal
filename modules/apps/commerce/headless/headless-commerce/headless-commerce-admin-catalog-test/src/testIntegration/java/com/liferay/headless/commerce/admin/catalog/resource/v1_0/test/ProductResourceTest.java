@@ -14,19 +14,25 @@ import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CPOptionCategory;
+import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductVirtualSettings;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductVirtualSettingsFileEntry;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Sku;
+import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
+import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.ProductResource;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
@@ -43,6 +49,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -171,11 +178,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	public void testGetProductByVersion() throws Exception {
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testGetProductsPage() throws Exception {
-		super.testGetProductsPage();
+		_testGetProductsPage();
+		_testGetProductsPageWithFilter();
 	}
 
 	@Ignore
@@ -436,6 +443,42 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		return productResource.postProduct(product);
 	}
 
+	private Product _randomProductWithProductSpecification() throws Exception {
+		return new Product() {
+			{
+				active = true;
+				catalogId = _commerceCatalog.getCommerceCatalogId();
+				description = LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap());
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				name = LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap());
+				productType = SimpleCPTypeConstants.NAME;
+				productSpecifications = new ProductSpecification[] {
+					new ProductSpecification() {
+						{
+							externalReferenceCode =
+								RandomTestUtil.randomString();
+							label = LanguageUtils.getLanguageIdMap(
+								RandomTestUtil.randomLocaleStringMap());
+							optionCategoryExternalReferenceCode =
+								_cpOptionCategory.getExternalReferenceCode();
+							priority = RandomTestUtil.randomDouble();
+							specificationKey = _cpSpecificationOption.getKey();
+							value = LanguageUtils.getLanguageIdMap(
+								HashMapBuilder.put(
+									LocaleUtil.getDefault(), "test"
+								).build());
+						}
+					}
+				};
+				shortDescription = LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap());
+			}
+		};
+	}
+
 	private Product _randomProductWithSku() throws Exception {
 		return new Product() {
 			{
@@ -462,8 +505,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 							expirationDate = RandomTestUtil.nextDate();
 							externalReferenceCode = StringUtil.toLowerCase(
 								RandomTestUtil.randomString());
-							gtin = StringUtil.toLowerCase(
-								RandomTestUtil.randomString());
+							gtin = "test";
 							height = RandomTestUtil.randomDouble();
 							inventoryLevel = RandomTestUtil.randomInt();
 							manufacturerPartNumber = StringUtil.toLowerCase(
@@ -486,6 +528,74 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				};
 			}
 		};
+	}
+
+	private void _testGetProductsPage() throws Exception {
+		Page<Product> page = productResource.getProductsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		Product product1 = testGetProductsPage_addProduct(randomProduct());
+
+		Product product2 = testGetProductsPage_addProduct(randomProduct());
+
+		page = productResource.getProductsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(product1, (List<Product>)page.getItems());
+		assertContains(product2, (List<Product>)page.getItems());
+		assertValid(page, testGetProductsPage_getExpectedActions());
+
+		productResource.deleteProduct(product1.getProductId());
+
+		productResource.deleteProduct(product2.getProductId());
+	}
+
+	private void _testGetProductsPageWithFilter() throws Exception {
+		Page<Product> page = productResource.getProductsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		Product product1 = testGetProductsPage_addProduct(
+			_randomProductWithSku());
+
+		Product product2 = testGetProductsPage_addProduct(
+			_randomProductWithProductSpecification());
+
+		page = productResource.getProductsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(product1, (List<Product>)page.getItems());
+		assertContains(product2, (List<Product>)page.getItems());
+		assertValid(page, testGetProductsPage_getExpectedActions());
+
+		page = productResource.getProductsPage(
+			null, "(gtins/any(x:contains(x, 'test')))", Pagination.of(1, 10),
+			null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+		assertContains(product1, (List<Product>)page.getItems());
+		assertValid(page, testGetProductsPage_getExpectedActions());
+
+		page = productResource.getProductsPage(
+			null, "(specificationValues/any(x:contains(x, 'test')))",
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+		assertContains(product2, (List<Product>)page.getItems());
+		assertValid(page, testGetProductsPage_getExpectedActions());
+
+		productResource.deleteProduct(product1.getProductId());
+
+		productResource.deleteProduct(product2.getProductId());
 	}
 
 	private Product _testPatchProduct_addProduct() throws Exception {
@@ -724,6 +834,12 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@DeleteAfterTestRun
+	private CPOptionCategory _cpOptionCategory;
+
+	@DeleteAfterTestRun
+	private CPSpecificationOption _cpSpecificationOption;
 
 	@Inject
 	private UserLocalService _userLocalService;
