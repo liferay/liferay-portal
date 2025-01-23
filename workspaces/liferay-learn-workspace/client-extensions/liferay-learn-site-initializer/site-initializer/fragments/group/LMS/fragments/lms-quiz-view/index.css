@@ -132,8 +132,8 @@
 		align-items: center;
 		display: flex;
 		flex-direction: row;
-		gap: 5px;
 		font-weight: var(--font-weight-bold, 700);
+		gap: 5px;
 	}
 }
 
@@ -215,8 +215,8 @@
 .lesson-navigation-sign-in-container {
 	background: #F7F7F8;
 	border-radius: 1rem;
-	padding: 2rem;
 	margin-top: var(--spacer-3, 1rem) !important;
+	padding: 2rem;
 	
 	.mt-3 {
 		margin-top: unset !important;
@@ -224,9 +224,9 @@
 }
 
 .menu-previous-lesson {
-	width: 100%;
-	padding: 0px 1rem !important;
 	margin-top: 2rem;
+	padding: 0px 1rem !important;
+	width: 100%;
 }
 
 .ponctuation {

@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap');
-
 .article-navigation.show {
 	width: 100%;
 }
@@ -104,9 +102,9 @@
 
 .show-quick-actions-on-hover .active {
 	background-color: transparent;
+	border-left: solid !important;
 	border-left-color: var(--color-action-primary-default, #0b5fff) !important;
 	border-left-width: 4.5px !important;
-	border-left: solid !important;
 	border-radius: 0px;
 }
 
