@@ -741,7 +741,8 @@ public class CPTestUtil {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	public static CPSpecificationOption addCPSpecificationOption(long groupId)
+	public static CPSpecificationOption addCPSpecificationOption(
+			long groupId, boolean facetable)
 		throws PortalException {
 
 		ServiceContext serviceContext =
@@ -750,7 +751,7 @@ public class CPTestUtil {
 		return CPSpecificationOptionLocalServiceUtil.addCPSpecificationOption(
 			RandomTestUtil.randomString(), serviceContext.getUserId(), 0, null,
 			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(), false,
+			RandomTestUtil.randomLocaleStringMap(), facetable,
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 			serviceContext);
 	}
