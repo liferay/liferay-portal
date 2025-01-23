@@ -44,6 +44,16 @@ public class ProductEntityModel implements EntityModel {
 				new StringEntityField(
 					"categoryNames", locale -> "assetCategoryNames")),
 			new CollectionEntityField(
+				new StringEntityField("gtins", locale -> CPField.GTINS)),
+			new CollectionEntityField(
+				new StringEntityField(
+					"specificationNames",
+					locale -> CPField.SPECIFICATION_NAMES)),
+			new CollectionEntityField(
+				new StringEntityField(
+					"specificationValues",
+					locale -> CPField.SPECIFICATION_VALUES_NAMES)),
+			new CollectionEntityField(
 				new StringEntityField("tags", locale -> "assetTagNames")),
 			new ComplexEntityField("customFields", entityFields),
 			new DateTimeEntityField(

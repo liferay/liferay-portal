@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.odata.entity.v1_0;
 
+import com.liferay.commerce.product.constants.CPField;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.odata.entity.CollectionEntityField;
 import com.liferay.portal.odata.entity.ComplexEntityField;
@@ -30,6 +31,16 @@ public class ProductEntityModel implements EntityModel {
 			new CollectionEntityField(
 				new StringEntityField(
 					"categoryNames", locale -> "assetCategoryNames")),
+			new CollectionEntityField(
+				new StringEntityField("gtins", locale -> CPField.GTINS)),
+			new CollectionEntityField(
+				new StringEntityField(
+					"specificationNames",
+					locale -> CPField.SPECIFICATION_NAMES)),
+			new CollectionEntityField(
+				new StringEntityField(
+					"specificationValues",
+					locale -> CPField.SPECIFICATION_VALUES_NAMES)),
 			new CollectionEntityField(
 				new StringEntityField("tags", locale -> "assetTagNames")),
 			new ComplexEntityField("customFields", entityFields),
