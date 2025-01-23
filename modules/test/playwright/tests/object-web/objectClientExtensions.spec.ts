@@ -51,10 +51,12 @@ test.afterEach(async ({apiHelpers}) => {
 });
 
 test.beforeEach(async ({apiHelpers}) => {
-	const objectFields = createObjectFields('text', [{
-		label: 'Name',
-		name: 'name',
-	}]);
+	const objectFields = createObjectFields('text', [
+		{
+			label: 'Name',
+			name: 'name',
+		},
+	]);
 
 	const objectDefinitionAPIClient =
 		await apiHelpers.buildRestClient(ObjectDefinitionApi);
@@ -67,7 +69,7 @@ test.beforeEach(async ({apiHelpers}) => {
 				en_US: 'Employee',
 			},
 			name: 'Employee',
-			objectFields: objectFields,
+			objectFields,
 			objectFolderExternalReferenceCode: 'default',
 			panelCategoryKey: 'control_panel.object',
 			pluralLabel: {

@@ -463,10 +463,12 @@ test.describe('Manage object definitions through Model Builder', () => {
 					pt_BR: 'Departamento',
 				},
 				name: 'Department',
-				objectFields: createObjectFields('text', [{
+				objectFields: createObjectFields('text', [
+					{
 						label: 'Name',
 						name: 'name',
-					}]),
+					},
+				]),
 				objectFolderExternalReferenceCode:
 					objectFolder.externalReferenceCode,
 				panelCategoryKey: 'control_panel.object',

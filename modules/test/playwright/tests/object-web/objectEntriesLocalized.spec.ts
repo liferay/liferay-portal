@@ -117,7 +117,7 @@ test.describe('Localized object entries are saved correctly', () => {
 			.nth(1);
 
 		// with english locale, select both checkboxes
-		
+
 		await firstCheckBox.check();
 
 		await secondCheckBox.check();
@@ -126,11 +126,13 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await firstTranslationsDropdownTrigger.click();
 
-		const catalanOptions = page.getByTestId('availableLocalesDropdownca_ES');
+		const catalanOptions = page.getByTestId(
+			'availableLocalesDropdownca_ES'
+		);
 
 		await catalanOptions.first().click();
 
-		// with catalan locale selected for the first time, all values should be copied from english 
+		// with catalan locale selected for the first time, all values should be copied from english
 
 		await expect(firstCheckBox).toBeChecked();
 
@@ -144,24 +146,22 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		// check for labels in dropdown, catalan should show as translated
 
-		await expect(catalanOptions.first().locator('.label-item-expand')).toHaveText(
-			'translated',
-			{ignoreCase: true}
-		);
+		await expect(
+			catalanOptions.first().locator('.label-item-expand')
+		).toHaveText('translated', {ignoreCase: true});
 
 		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
 
-		await expect(englishOption.first().locator('.label-item-expand')).toHaveText(
-			'default',
-			{ignoreCase: true}
-		);
+		await expect(
+			englishOption.first().locator('.label-item-expand')
+		).toHaveText('default', {ignoreCase: true});
 
 		// save
 
 		const responsePromise = page.waitForResponse(
 			`**${objectDefinition.restContextPath}`
 		);
-		
+
 		await catalanOptions.nth(1).click();
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();

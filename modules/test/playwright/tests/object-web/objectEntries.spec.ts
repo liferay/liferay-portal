@@ -1017,10 +1017,12 @@ test.describe('Manage object entries through View Object Entries', () => {
 	}) => {
 		const objectDefinition =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFields: createObjectFields('text', [{
+				objectFields: createObjectFields('text', [
+					{
 						label: 'Custom Field',
 						name: 'customField',
-					}]),
+					},
+				]),
 				objectFolderExternalReferenceCode: 'default',
 				panelCategoryKey: 'control_panel.object',
 				status: {code: 0},
