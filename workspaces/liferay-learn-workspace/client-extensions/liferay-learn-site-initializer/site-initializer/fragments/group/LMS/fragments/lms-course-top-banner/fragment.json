@@ -4,6 +4,6 @@
 	"htmlPath": "index.html",
 	"icon": "code",
 	"jsPath": "index.js",
-	"name": "Course Top Banner",
+	"name": "LMS Course Top Banner",
 	"type": "component"
 }
