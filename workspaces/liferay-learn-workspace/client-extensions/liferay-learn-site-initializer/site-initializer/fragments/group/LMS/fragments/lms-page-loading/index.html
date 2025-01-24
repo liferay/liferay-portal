@@ -1,12 +1,9 @@
 [#if layoutMode == "view"]
 	<script>
-		function pageLoaded() {
-			const loadingElement = document.querySelector('#loadingIndicator');
-			loadingElement.classList.add('hide');
-		}
-
 		document.addEventListener('DOMContentLoaded', function () {
-			pageLoaded();
+			const loadingIndicator = document.querySelector('#loadingIndicator');
+
+			loadingIndicator.classList.add('hide');
 		});
 	</script>
 
