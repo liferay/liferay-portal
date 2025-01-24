@@ -1,7 +1,5 @@
 [#assign
-	userId = themeDisplay.getUserId()
-
-	userResponse = restClient.get("/headless-admin-user/v1.0/user-accounts/${userId}")
+	userResponse = restClient.get("/headless-admin-user/v1.0/user-accounts/${themeDisplay.getUserId()}")
 
 	userName = userResponse.name
 /]
