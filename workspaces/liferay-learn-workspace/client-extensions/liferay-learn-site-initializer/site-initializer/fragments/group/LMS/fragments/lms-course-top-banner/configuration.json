@@ -11,11 +11,11 @@
 					"typeOptions": {
 						"validValues": [
 							{
-								"label": "lesson",
+								"label": "Lesson",
 								"value": "lesson"
 							},
 							{
-								"label": "quiz",
+								"label": "Quiz",
 								"value": "quiz"
 							}
 						]
