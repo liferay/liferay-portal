@@ -4,6 +4,6 @@
 	"htmlPath": "index.html",
 	"icon": "code",
 	"jsPath": "index.js",
-	"name": "init",
+	"name": "LMS Init",
 	"type": "component"
 }
