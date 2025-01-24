@@ -167,15 +167,15 @@ p {
 .side-nav .panel {
 	background-color: transparent;
 	fill: var(--color-action-primary-hover, #0053F0) !important;
-	
+
 	.panel-header.show {
 		background-color: var(--color-action-primary-active-20, #e6edfb);
 		border-radius: 6px;
-		
+
 		.module-title span {
 			color: var(--color-brand-primary-darken-3, #003EB3);
 		}
-		
+
 		.sticker-circle {
 			background-color: var(--color-brand-primary-lighten-4, #BBD2FF);
 			color: var(--color-brand-primary-darken-3, #003EB3);
@@ -187,15 +187,15 @@ p {
 	.lesson-link .module-title a {
 		color: var(--color-neutral-10, #282934) !important;
 	}
-	
+
 	.lesson-link.active .module-title a {
-		color: var(--color-action-primary-hover, #0053f0) !important; 
+		color: var(--color-action-primary-hover, #0053f0) !important;
 	}
 }
 
 .side-nav .panel .panel-body .lesson-link:hover {
 	background-color: var(--color-action-primary-hover-10, #edf3fe);
-	
+
 	.module-title {
 		a {
 			color: var(--color-action-primary-hover, #0053f0)!important;
@@ -217,7 +217,7 @@ p {
 	justify-content: center;
 }
 
-.side-nav .panel-header .module-title span { 
+.side-nav .panel-header .module-title span {
 	color: var(--color-neutral-10, #282934);
 }
 
@@ -236,7 +236,7 @@ p {
 			color: var(--color-action-primary-hover, #0053f0) !important;
 		}
 	}
-	
+
 	.sticker-circle {
 		background-color: var(--color-brand-primary-lighten-4, #BBD2FF);
 		
@@ -281,7 +281,7 @@ p {
 }
 
 span {
-	font-weight: var(--font-weight-bold, 700); 
+	font-weight: var(--font-weight-bold, 700);
 }
 
 .text-quiz-result {
