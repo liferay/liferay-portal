@@ -1,12 +1,10 @@
 [#assign
-	userResponse = restClient.get("/headless-admin-user/v1.0/user-accounts/${themeDisplay.getUserId()}")
-
-	userName = userResponse.name
+	user = restClient.get("/headless-admin-user/v1.0/user-accounts/${themeDisplay.getUserId()}")
 /]
 
 <div class="align-items-center d-flex user-dashboard">
-	[#if userResponse.image?has_content]
-		<img src=${userResponse.image} class="profile-img" />
+	[#if user.image?has_content]
+		<img src=${user.image} class="profile-img" />
 	[#else]
 			<span class="sticker sticker-circle sticker-lg user-icon-color-7">
 					<svg class="lexicon-icon lexicon-icon-user" role="presentation" viewBox="0 0 512 512">
@@ -21,6 +19,6 @@
 
 	<h2 class="mb-0">
 		${languageUtil.get(locale, 'hello', 'Hello, ')}
-		${userName}
+		${user.name}
 	</h2>
 </div>
