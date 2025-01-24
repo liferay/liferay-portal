@@ -25,6 +25,6 @@
 		.then((response) => response.json())
 		.then((response) => {
 			document.querySelector("#quiz-title").innerText = response.title;
-			document.querySelector(".quiz-tag-duration").innerText = response.durationMinutes +" minutes";
+			document.querySelector(".quiz-tag-duration").innerText = response.durationMinutes + languageUtil.get(locale, "minutes", "minutes");
 		});
 </script>
