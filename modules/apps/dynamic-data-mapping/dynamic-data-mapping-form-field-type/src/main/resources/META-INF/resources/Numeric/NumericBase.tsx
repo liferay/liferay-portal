@@ -169,12 +169,12 @@ const NumericBase = ({
 
 		if (formatedValue && formatedValue.masked !== inputValue.masked) {
 			if (localizedObjectField) {
-				const localazedValue = {
+				const localizedValue = {
 					...(value as LocalizedValue<string>),
 					[editingLocale]: formatedValue.raw,
 				};
 
-				onChange({target: {value: localazedValue}});
+				onChange({target: {value: localizedValue}});
 			}
 			else {
 				onChange({target: {value: formatedValue.raw}});
