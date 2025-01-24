@@ -255,14 +255,13 @@ p {
 }
 
 .side-nav .panel-header.panel-header-link.active {
-	background-color: var(--color-action-primary-active-20, #E6EDFB);
 	border-radius: 6px;
 	color: var(--color-brand-primary-darken-3, #003EB3);
 }
 
 .side-nav .panel-header.panel-header-link.active .sticker {
 	align-items: center;
-	background: var(--color-brand-primary-lighten-4, #BBD2FF);
+	background-color: var(--color-brand-primary-lighten-4, #BBD2FF);
 	color: var(--color-brand-primary-darken-3, #003EB3);
 	display: flex;
 	justify-content: center;

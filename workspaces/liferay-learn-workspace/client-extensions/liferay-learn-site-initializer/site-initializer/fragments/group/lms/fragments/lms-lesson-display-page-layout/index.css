@@ -83,11 +83,7 @@
 }
 
 .panel button .sticker .lexicon-icon-check {
-	fill: var(--color-action-primary-inverted, #ffffff);
-}
-
-.panel-header .lexicon-icon-check {
-	fill: var(--color-action-primary-active, #004AD7) !important;
+	fill: var(--color-neutral-8, #54555F) !important;
 }
 
 .panel-header.active {
@@ -209,14 +205,13 @@
 
 .side-nav .panel-header .sticker-circle {
 	align-items: center;
-	background: var(--color-neutral-2, #e2e2e4);
+	background-color: var(--color-neutral-2, #E2E2E4);
 	display: flex;
 	justify-content: center;
 	text-align: center;
 }
 
 .side-nav .panel-header.panel-header-link.active {
-	background-color: var(--color-brand-primary-darken-3, #e6edfb);
 	border-radius: 6px;
 	color: var(--color-brand-primary-darken-3, #003eb3);
 }

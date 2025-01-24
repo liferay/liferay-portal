@@ -142,7 +142,7 @@
 
 	.pass-tag {
 		align-items: center;
-		background-color: #E9F5E8;
+		background-color: var(--color-state-success-lighten-2, #E9F5E8);
 		border-radius: 8px;
 		color: var(--color-state-success, #4AAB3B);
 		display: flex;
@@ -182,7 +182,7 @@
 			rgba(55, 124, 255, 0) 100%
 		);
 	align-items: flex-end;
-	border: 0 !important;
+	border: 2px solid #FFFFFF;
 	display: flex;
 	padding: 1.25rem;
 	position: relative;
