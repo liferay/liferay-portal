@@ -17,18 +17,15 @@ copyToClipboardButtons.forEach((button) => {
 					.writeText(codeToolbar.querySelector('code.language-bash').innerText)
 					.then(() => {
 						button.setAttribute('data-copy-state', 'copy-success');
-
+					})
+					.catch(() => {
+						button.setAttribute('data-copy-state', 'copy-failure');
+					})
+					.finally(() => {
 						setTimeout(() => {
 							button.setAttribute('data-copy-state', 'copy');
 						}, 3000);
 					})
-					.catch(() => {
-						button.setAttribute('data-copy-state', 'copy-failure');
-
-						setTimeout(() => {
-							button.setAttribute('data-copy-state', 'copy');
-						}, 3000);
-					});
 			}
 		}
 	});
