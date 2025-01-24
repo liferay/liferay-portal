@@ -21,7 +21,7 @@
 </div>
 
 <script type="module">
-	Liferay.Util.fetch(`/o/c/quizes/${currentEntry.classPK!""}`)
+	Liferay.Util.fetch(`/o/c/quizes/${currentEntry.classPK!}`)
 		.then((response) => response.json())
 		.then((response) => {
 			document.querySelector("#quiz-title").innerText = response.title;
