@@ -3,8 +3,8 @@
 /]
 
 <div>
-	<h3 class="mb-3">User Information</h3>
+	<h3 class="mb-3">${languageUtil.get(locale, 'user-information', 'User Information')}</h3>
 
-	<p><span class="font-weight-bold">Username: </span>${user.name}</p>
-	<p><span class="font-weight-bold">Email: </span> ${user.emailAddress}</p>
+	<p><span class="font-weight-bold">${languageUtil.get(locale, 'user-name', 'User Name')}: </span>${user.name}</p>
+	<p><span class="font-weight-bold">${languageUtil.get(locale, 'email-address', 'Email Address')}: </span> ${user.emailAddress}</p>
 </div>
