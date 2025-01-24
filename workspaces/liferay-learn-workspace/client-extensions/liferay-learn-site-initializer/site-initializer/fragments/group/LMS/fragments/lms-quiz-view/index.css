@@ -101,6 +101,30 @@
 	}
 }
 
+.container-quiz-result {
+	align-items: center;
+	border: solid 1px;
+	border-color: var(--color-neutral-2, #E2E2E4) !important;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	padding: 25px;
+	width: 60vw;
+	
+	h3 {
+		color: var(--color-neutral-10, #282934) !important;
+	}
+	
+	.quiz-result-sheet {
+		.content-result {
+			h3 {
+				color: var(--color-neutral-10, #282934) !important;
+			}
+		}
+	}
+}
+
 .content-score {
 	.circle {
 		align-items: flex-end;
@@ -134,30 +158,6 @@
 		flex-direction: row;
 		font-weight: var(--font-weight-bold, 700);
 		gap: 5px;
-	}
-}
-
-.container-quiz-result {
-	align-items: center;
-	border: solid 1px;
-	border-color: var(--color-neutral-2, #E2E2E4) !important;
-	border-radius: 10px;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	padding: 25px;
-	width: 60vw;
-	
-	h3 {
-		color: var(--color-neutral-10, #282934) !important;
-	}
-	
-	.quiz-result-sheet {
-		.content-result {
-			h3 {
-				color: var(--color-neutral-10, #282934) !important;
-			}
-		}
 	}
 }
 
