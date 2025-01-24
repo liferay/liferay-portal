@@ -296,12 +296,6 @@ public class NotificationTemplateResourceTest
 			notificationTemplateResource.postNotificationTemplate(
 				com.liferay.notification.rest.dto.v1_0.NotificationTemplate.
 					toDTO(notificationTemplateJSONObject.toString())));
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			"headless-batch-engine/v1.0/export-task/com.liferay.notification." +
-				"rest.dto.v1_0.NotificationTemplate/json",
-			Http.Method.POST);
 	}
 
 	@Inject
