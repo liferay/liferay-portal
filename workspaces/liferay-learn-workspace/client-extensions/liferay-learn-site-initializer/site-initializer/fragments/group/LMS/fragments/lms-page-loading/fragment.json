@@ -4,6 +4,6 @@
 	"htmlPath": "index.html",
 	"icon": "code",
 	"jsPath": "index.js",
-	"name": "Page Loading Indicator",
+	"name": "LMS Page Loading",
 	"type": "component"
 }
