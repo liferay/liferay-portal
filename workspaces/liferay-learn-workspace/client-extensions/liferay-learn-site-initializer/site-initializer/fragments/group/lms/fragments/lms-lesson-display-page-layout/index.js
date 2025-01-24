@@ -14,7 +14,10 @@ copyToClipboardButtons.forEach((button) => {
 		if (codeToolbar) {
 			if (codeToolbar.querySelector('code.language-bash').innerText) {
 				navigator.clipboard
-					.writeText(codeToolbar.querySelector('code.language-bash').innerText)
+					.writeText(
+						codeToolbar.querySelector('code.language-bash')
+							.innerText
+					)
 					.then(() => {
 						button.setAttribute('data-copy-state', 'copy-success');
 					})
@@ -25,7 +28,7 @@ copyToClipboardButtons.forEach((button) => {
 						setTimeout(() => {
 							button.setAttribute('data-copy-state', 'copy');
 						}, 3000);
-					})
+					});
 			}
 		}
 	});
