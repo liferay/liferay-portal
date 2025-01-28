@@ -307,6 +307,16 @@ export class ChangeTrackingPage {
 			.waitFor();
 	}
 
+	async switchLanguage(language: string) {
+		await this.page.getByLabel('show-available-locales').click();
+
+		await this.page
+			.getByRole('menuitem', {
+				name: `${language} Translated`,
+			})
+			.click();
+	}
+
 	async workOnProduction() {
 		const apiHelpers = new ApiHelpers(this.page);
 
