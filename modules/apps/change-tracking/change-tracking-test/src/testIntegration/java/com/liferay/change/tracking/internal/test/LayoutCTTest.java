@@ -15,6 +15,7 @@ import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTCollectionService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.service.CTProcessLocalService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
@@ -24,6 +25,7 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.BulkLayoutConverter;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTRequiredModelException;
@@ -1042,6 +1044,33 @@ public class LayoutCTTest {
 	}
 
 	@Test
+	public void testPublishRemovedLayoutWithAssetTag() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			String tagName = "layoutcttesttag";
+
+			_layoutLocalService.updateAsset(
+				layout.getUserId(), layout, null, new String[] {tagName});
+
+			_layoutLocalService.deleteLayout(layout);
+		}
+
+		_ctProcessLocalService.addCTProcess(
+			_ctCollection.getUserId(), _ctCollection.getCtCollectionId());
+
+		Assert.assertNull(_layoutLocalService.fetchLayout(layout.getPlid()));
+
+		List<AssetTag> assetTags = _assetTagLocalService.getTags(
+			Layout.class.getName(), layout.getPlid());
+
+		Assert.assertEquals(assetTags.toString(), 0, assetTags.size());
+	}
+
+	@Test
 	public void testPublishRemovedLayoutWithTargetModifiedInOtherPublication()
 		throws Exception {
 
@@ -1146,6 +1175,31 @@ public class LayoutCTTest {
 	}
 
 	@Test
+	public void testResolvedLayoutConflicts() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			LayoutTestUtil.addPortletToLayout(layout, _TEST_PORTLET_NAME);
+		}
+
+		LayoutTestUtil.addPortletToLayout(layout, _TEST_PORTLET_NAME);
+
+		Map<Long, List<ConflictInfo>> conflictInfos =
+			_ctCollectionLocalService.checkConflicts(_ctCollection);
+
+		Assert.assertEquals(conflictInfos.toString(), 1, conflictInfos.size());
+
+		for (List<ConflictInfo> conflictInfoLists : conflictInfos.values()) {
+			for (ConflictInfo conflictInfo : conflictInfoLists) {
+				Assert.assertTrue(conflictInfo.isResolved());
+			}
+		}
+	}
+
+	@Test
 	public void testScratchedAddThenDelete() throws Exception {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -1247,6 +1301,79 @@ public class LayoutCTTest {
 	}
 
 	@Test
+	public void testUndoPublishedLayoutWithAssetTag() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			String tagName = "layoutcttesttag";
+
+			_layoutLocalService.updateAsset(
+				layout.getUserId(), layout, null, new String[] {tagName});
+		}
+
+		_ctCollectionService.publishCTCollection(
+			_ctCollection.getUserId(), _ctCollection.getCtCollectionId());
+
+		CTCollection undoCTCollection =
+			_ctCollectionLocalService.undoCTCollection(
+				_ctCollection.getCtCollectionId(), _ctCollection.getUserId(),
+				"(undo) " + _ctCollection.getName(), StringPool.BLANK);
+
+		_ctProcessLocalService.addCTProcess(
+			undoCTCollection.getUserId(), undoCTCollection.getCtCollectionId());
+
+		List<AssetTag> assetTags = _assetTagLocalService.getTags(
+			Layout.class.getName(), layout.getPlid());
+
+		Assert.assertEquals(assetTags.toString(), 0, assetTags.size());
+	}
+
+	@Test
+	public void testUndoPublishedLayoutWithFriendlyURLUpdate()
+		throws Exception {
+
+		String ctFriendlyURL = "/" + RandomTestUtil.randomString();
+		String friendlyURL = "/" + RandomTestUtil.randomString();
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			layout.setFriendlyURL(ctFriendlyURL);
+
+			layout = _layoutLocalService.updateLayout(layout);
+		}
+
+		layout.setFriendlyURL(friendlyURL);
+
+		layout = _layoutLocalService.updateLayout(layout);
+
+		_ctCollectionService.publishCTCollection(
+			_ctCollection.getUserId(), _ctCollection.getCtCollectionId());
+
+		layout = _layoutLocalService.fetchLayout(layout.getPlid());
+
+		Assert.assertEquals(layout.getFriendlyURL(), ctFriendlyURL);
+
+		CTCollection undoCTCollection =
+			_ctCollectionLocalService.undoCTCollection(
+				_ctCollection.getCtCollectionId(), _ctCollection.getUserId(),
+				"(undo) " + _ctCollection.getName(), StringPool.BLANK);
+
+		_ctProcessLocalService.addCTProcess(
+			undoCTCollection.getUserId(), undoCTCollection.getCtCollectionId());
+
+		layout = _layoutLocalService.fetchLayout(layout.getPlid());
+
+		Assert.assertEquals(layout.getFriendlyURL(), friendlyURL);
+	}
+
+	@Test
 	public void testUpdateLayoutWithMultiplyExpandoBridgeAttributes()
 		throws Exception {
 
@@ -1304,6 +1431,9 @@ public class LayoutCTTest {
 		}
 	}
 
+	private static final String _TEST_PORTLET_NAME =
+		"com_liferay_test_portlet_TestPortlet";
+
 	@Inject
 	private static AssetEntryLocalService _assetEntryLocalService;
 
@@ -1315,6 +1445,9 @@ public class LayoutCTTest {
 
 	@Inject
 	private static CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private static CTCollectionService _ctCollectionService;
 
 	@Inject
 	private static CTEntryLocalService _ctEntryLocalService;
