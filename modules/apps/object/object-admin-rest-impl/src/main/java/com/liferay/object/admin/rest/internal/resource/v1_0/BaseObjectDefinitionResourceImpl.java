@@ -35,6 +35,7 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
@@ -68,7 +69,8 @@ import javax.ws.rs.core.UriInfo;
 @javax.ws.rs.Path("/v1.0")
 public abstract class BaseObjectDefinitionResourceImpl
 	implements EntityModelResource, ObjectDefinitionResource,
-			   VulcanBatchEngineTaskItemDelegate<ObjectDefinition> {
+			   VulcanBatchEngineTaskItemDelegate<ObjectDefinition>,
+			   VulcanCRUDItemDelegate<ObjectDefinition> {
 
 	/**
 	 * Invoke this method with the command line:
@@ -418,6 +420,16 @@ public abstract class BaseObjectDefinitionResourceImpl
 			vulcanBatchEngineImportTaskResource.deleteImportTask(
 				ObjectDefinition.class.getName(), callbackURL, object)
 		).build();
+	}
+
+	@Override
+	public ObjectDefinition getItem(Long itemId) throws Exception {
+		return getObjectDefinition(itemId);
+	}
+
+	@Override
+	public String getResourcePath() {
+		return "/object-admin";
 	}
 
 	/**
