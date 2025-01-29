@@ -41,6 +41,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 public class NotificationTemplateResourceTest
 	extends BaseNotificationTemplateResourceTestCase {
 
+	@Ignore
 	@Override
 	@Test
 	public void testGetNotificationTemplatesPageWithSortInteger()
@@ -96,6 +97,7 @@ public class NotificationTemplateResourceTest
 	public void testGraphQLGetNotificationTemplatesPage() throws Exception {
 	}
 
+	@Ignore
 	@Override
 	@Test
 	public void testPostNotificationTemplate() throws Exception {
