@@ -234,38 +234,52 @@ export class ChangeTrackingPage {
 			.waitFor();
 	}
 
-	async viewChanges({
-		changed,
-		site,
-		title,
-		type,
-		user,
-	}) {
-
-		if(changed){
-
+	async viewChanges({changed, site, title, type, user}) {
+		if (changed) {
+			await this.page
+				.locator('.fds tbody tr')
+				.filter({
+					has: this.page.getByText(title),
+				})
+				.filter({
+					has: this.page.getByRole('cell', {name: changed}),
+				})
+				.isVisible();
 		}
 
 		if (site) {
-		}
-		if (title) {
 			await this.page
-				.locator('#fnsd___table-id div')
-				.filter({hasText: title})
-				.waitFor();
-
-		await this.page.getByRole('link', {exact: true, name: title}).isVisible();
-
-    	}
+				.locator('.fds tbody tr')
+				.filter({
+					has: this.page.getByText(title),
+				})
+				.filter({
+					has: this.page.getByRole('cell', {name: site}),
+				})
+				.isVisible();
+		}
 		if (type) {
-
-        }
+			await this.page
+				.locator('.fds tbody tr')
+				.filter({
+					has: this.page.getByText(title),
+				})
+				.filter({
+					has: this.page.getByRole('cell', {name: type}),
+				})
+				.isVisible();
+		}
 		if (user) {
-
-        }
-
-		return;
-
+			await this.page
+				.locator('.fds tbody tr')
+				.filter({
+					has: this.page.getByText(title),
+				})
+				.filter({
+					has: this.page.getByRole('cell', {name: user}),
+				})
+				.isVisible();
+		}
 	}
 
 	async goToReviewChangesHistory(title: string) {
