@@ -1,0 +1,107 @@
+components:
+    schemas:
+        AssetLibrary:
+            description:
+                Represents an Asset Library
+            properties:
+                dateCreated:
+                    description:
+                        The document's creation date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The last time a field of the asset library changed.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                description:
+                    description:
+                        The asset library's description.
+                    type: string
+                description_i18n:
+                    additionalProperties:
+                        type: string
+                    description:
+                        The localized asset library's description.
+                    type: object
+                externalReferenceCode:
+                    description:
+                        The asset library's external reference code.
+                    readOnly: true
+                    type: string
+                groupId:
+                    description:
+                        The asset library's groupId.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                id:
+                    description:
+                        The asset library's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                linkedSiteIds:
+                    description:
+                        The asset library linked site ids.
+                    items:
+                        format: int64
+                        type: integer
+                    readOnly: true
+                    type: array
+                linkedSitesExternalReferenceCodes:
+                    description:
+                        The asset library linked sites external reference codes.
+                    items:
+                        type: string
+                    readOnly: true
+                    type: array
+                name:
+                    description:
+                        The asset library's name.
+                    type: string
+                name_i18n:
+                    additionalProperties:
+                        type: string
+                    description:
+                        The localized asset library's name.
+                    type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
+        'com.liferay.headless.asset.library.client', and version '1.0.0'."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: Liferay Asset Library Headless API
+    version: v1.0
+openapi: 3.0.1
+paths:
+    /asset-libraries:
+        post:
+            description:
+                Adds a new asset library
+            operationId: postAssetLibrary
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AssetLibrary"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/AssetLibrary"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                    description:
+                        default response
+            # @review
+            tags: ["AssetLibrary"]

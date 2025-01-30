@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Headless Asset Library Implementation
+Bundle-SymbolicName: com.liferay.headless.asset.library.impl
+Bundle-Version: 1.0.0

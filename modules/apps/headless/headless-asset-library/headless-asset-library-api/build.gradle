@@ -1,0 +1,13 @@
+dependencies {
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.16.1"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "io.swagger.core.v3", name: "swagger-annotations", version: "2.0.5"
+	compileOnly group: "javax.validation", name: "validation-api", version: "2.0.1.Final"
+	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.1"
+	compileOnly group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
+	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
+	compileOnly project(":apps:portal-odata:portal-odata-api")
+	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
+	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-string")
+}
