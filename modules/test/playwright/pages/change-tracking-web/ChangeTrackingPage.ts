@@ -234,6 +234,40 @@ export class ChangeTrackingPage {
 			.waitFor();
 	}
 
+	async viewChanges({
+		changed,
+		site,
+		title,
+		type,
+		user,
+	}) {
+
+		if(changed){
+
+		}
+
+		if (site) {
+		}
+		if (title) {
+			await this.page
+				.locator('#fnsd___table-id div')
+				.filter({hasText: title})
+				.waitFor();
+
+		await this.page.getByRole('link', {exact: true, name: title}).isVisible();
+
+    	}
+		if (type) {
+
+        }
+		if (user) {
+
+        }
+
+		return;
+
+	}
+
 	async goToReviewChangesHistory(title: string) {
 		await this.goto();
 
