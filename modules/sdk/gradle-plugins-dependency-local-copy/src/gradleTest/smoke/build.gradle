@@ -57,6 +57,6 @@ project(":baz") {
 
 project(":foo") {
 	dependencies {
-		api group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2"
+		api group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2.JAKARTA_LIFERAY-PATCHED-1"
 	}
 }
