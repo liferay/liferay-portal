@@ -333,6 +333,30 @@ export class ChangeTrackingPage {
 		await commentsIcon.click();
 	}
 
+	async assertStatus(status: string, title: string) {
+		await this.goToPublicationHistory();
+
+		await this.page
+			.locator('.fds tbody tr')
+			.filter({
+				has: this.page.getByText(title),
+			})
+			.filter({
+				has: this.page.getByText(status, {exact: true}),
+			})
+			.waitFor();
+
+		await this.page
+			.locator('.fds tbody tr')
+			.filter({
+				has: this.page.getByText(title),
+			})
+			.filter({
+				has: this.page.getByText(status, {exact: true}),
+			})
+			.isVisible();
+	}
+
 	async toggleShowAllDataConfiguration(check: boolean) {
 		await this.instanceSettingsPage.goToInstanceSetting(
 			'Publications',
