@@ -13,7 +13,6 @@ import PublishModal from './modals/PublishModal';
 import removeAlert from './removeAlert';
 
 const ACTION_PUBLISH = 'publish';
-const ACTION_DRAFT = 'draft';
 const ACTION_SCHEDULE = 'schedule';
 
 export default function SaveButtons({
@@ -24,7 +23,6 @@ export default function SaveButtons({
 	permissionsURL,
 	portletNamespace,
 	publishButtonLabel,
-	saveButtonLabel,
 	selectedLanguageId,
 	showPublishModal,
 	timeZone,
@@ -167,39 +165,18 @@ export default function SaveButtons({
 	};
 
 	useEffect(() => {
-		if (Liferay.FeatureFlags['LPD-11228']) {
-			const updateArticleId = ({articleId}) => {
-				setArticleId(articleId);
-			};
-			Liferay.on('asyncFormSubmission', updateArticleId);
+		const updateArticleId = ({articleId}) => {
+			setArticleId(articleId);
+		};
+		Liferay.on('asyncFormSubmission', updateArticleId);
 
-			return () => {
-				Liferay.detach('asyncFormSubmission', updateArticleId);
-			};
-		}
+		return () => {
+			Liferay.detach('asyncFormSubmission', updateArticleId);
+		};
 	}, []);
 
 	return (
 		<div className="d-flex">
-			{!Liferay.FeatureFlags['LPD-11228'] && !editingDefaultValues ? (
-				<ClayButton
-					className="mr-3"
-					displayType="secondary"
-					form={formId}
-					onClick={() => onClick(ACTION_DRAFT)}
-					title={
-						articleId
-							? null
-							: Liferay.Language.get(
-									'save-as-draft-with-permissions'
-								)
-					}
-					type={articleId ? 'submit' : 'button'}
-				>
-					{saveButtonLabel}
-				</ClayButton>
-			) : null}
-
 			<ClayDropDown
 				hasLeftSymbols
 				trigger={

@@ -90,21 +90,19 @@ export default function fieldChange({
 
 		dispatch({payload: editedPages, type: EVENT_TYPES.PAGE.UPDATE});
 
-		if (Liferay.FeatureFlags['LPD-11228']) {
-			if (
-				(fieldInstance.type === 'color' ||
-					fieldInstance.type === 'image' ||
-					fieldInstance.type === 'numeric' ||
-					fieldInstance.type === 'rich_text' ||
-					fieldInstance.type === 'text') &&
-				document.activeElement.name !== 'journal_undo_redo' &&
-				document.body !== document.activeElement
-			) {
-				dispatch({type: EVENT_TYPES.HISTORY.MARK});
-			}
-			else {
-				dispatch({type: EVENT_TYPES.HISTORY.UNMARK});
-			}
+		if (
+			(fieldInstance.type === 'color' ||
+				fieldInstance.type === 'image' ||
+				fieldInstance.type === 'numeric' ||
+				fieldInstance.type === 'rich_text' ||
+				fieldInstance.type === 'text') &&
+			document.activeElement.name !== 'journal_undo_redo' &&
+			document.body !== document.activeElement
+		) {
+			dispatch({type: EVENT_TYPES.HISTORY.MARK});
+		}
+		else {
+			dispatch({type: EVENT_TYPES.HISTORY.UNMARK});
 		}
 
 		if (evaluable && (viewMode || needsPageEvaluation(fieldName))) {
@@ -187,25 +185,23 @@ export default function fieldChange({
 			});
 		}
 
-		if (Liferay.FeatureFlags['LPD-11228']) {
-			if (
-				fieldInstance.type !== 'color' &&
-				fieldInstance.type !== 'image' &&
-				fieldInstance.type !== 'numeric' &&
-				fieldInstance.type !== 'rich_text' &&
-				fieldInstance.type !== 'text'
-			) {
-				setTimeout(
-					() =>
-						Liferay.fire('journal:storeState', {
-							fieldName:
-								Liferay.Language.get('edit') +
-								' ' +
-								fieldInstance.label,
-						}),
-					0
-				);
-			}
+		if (
+			fieldInstance.type !== 'color' &&
+			fieldInstance.type !== 'image' &&
+			fieldInstance.type !== 'numeric' &&
+			fieldInstance.type !== 'rich_text' &&
+			fieldInstance.type !== 'text'
+		) {
+			setTimeout(
+				() =>
+					Liferay.fire('journal:storeState', {
+						fieldName:
+							Liferay.Language.get('edit') +
+							' ' +
+							fieldInstance.label,
+					}),
+				0
+			);
 		}
 	};
 }

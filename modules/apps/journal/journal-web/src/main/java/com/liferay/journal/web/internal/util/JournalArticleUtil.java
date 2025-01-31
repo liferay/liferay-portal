@@ -21,7 +21,6 @@ import com.liferay.journal.util.JournalConverter;
 import com.liferay.journal.util.JournalHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -328,7 +327,7 @@ public class JournalArticleUtil {
 			int count = journalArticleService.getArticlesCountByArticleId(
 				article.getGroupId(), article.getArticleId());
 
-			if (!FeatureFlagManagerUtil.isEnabled("LPD-11228") || (count > 1) ||
+			if ((count > 1) ||
 				!Objects.equals(
 					WorkflowConstants.STATUS_DRAFT, article.getStatus())) {
 

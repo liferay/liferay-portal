@@ -18,19 +18,17 @@ export default function fieldBlur({
 
 		dispatch({payload: properties, type: EVENT_TYPES.FIELD.BLUR});
 
-		if (Liferay.FeatureFlags['LPD-11228']) {
-			if (
-				fieldInstance.type === 'color' ||
-				fieldInstance.type === 'image' ||
-				fieldInstance.type === 'numeric' ||
-				fieldInstance.type === 'rich_text' ||
-				fieldInstance.type === 'text'
-			) {
-				dispatch({
-					payload: fieldInstance.label,
-					type: EVENT_TYPES.HISTORY.BLUR,
-				});
-			}
+		if (
+			fieldInstance.type === 'color' ||
+			fieldInstance.type === 'image' ||
+			fieldInstance.type === 'numeric' ||
+			fieldInstance.type === 'rich_text' ||
+			fieldInstance.type === 'text'
+		) {
+			dispatch({
+				payload: fieldInstance.label,
+				type: EVENT_TYPES.HISTORY.BLUR,
+			});
 		}
 
 		Liferay.fire('ddmFieldBlur', {

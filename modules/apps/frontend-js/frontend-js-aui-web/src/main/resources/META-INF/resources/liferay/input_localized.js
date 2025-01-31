@@ -367,9 +367,7 @@ AUI.add(
 						value = input.val();
 					}
 
-					if (Liferay.FeatureFlags['LPD-11228']) {
-						instance.set('edited', true);
-					}
+					instance.set('edited', true);
 
 					instance.updateInputLanguage(value);
 				},
@@ -831,14 +829,13 @@ AUI.add(
 					];
 
 					if (!instance.get('editor')) {
-						if (Liferay.FeatureFlags['LPD-11228']) {
-							eventHandles.push(
-								inputPlaceholder.on(
-									'blur',
-									A.bind('_storeState', instance)
-								)
-							);
-						}
+						eventHandles.push(
+							inputPlaceholder.on(
+								'blur',
+								A.bind('_storeState', instance)
+							)
+						);
+
 						eventHandles.push(
 							inputPlaceholder.on(
 								'input',

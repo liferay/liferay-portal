@@ -55,7 +55,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -480,9 +479,6 @@ public class JournalEditArticleDisplayContext {
 	public Map<String, Object> getComponentContext() throws PortalException {
 		return HashMapBuilder.<String, Object>put(
 			"articleId", getArticleId()
-		).put(
-			"autoSaveDraftEnabled",
-			FeatureFlagManagerUtil.isEnabled("LPD-11228")
 		).put(
 			"autoSaveDraftURL",
 			ResourceURLBuilder.createResourceURL(
@@ -1112,16 +1108,6 @@ public class JournalEditArticleDisplayContext {
 		return _referringPortletResource;
 	}
 
-	public String getSaveButtonLabel() {
-		if ((_article == null) || _article.isApproved() || _article.isDraft() ||
-			_article.isExpired() || _article.isScheduled()) {
-
-			return "save-as-draft";
-		}
-
-		return "save";
-	}
-
 	public Map<String, Object> getSaveButtonsContext() throws PortalException {
 		return HashMapBuilder.<String, Object>put(
 			"articleId", getArticleId()
@@ -1150,9 +1136,6 @@ public class JournalEditArticleDisplayContext {
 		).put(
 			"publishButtonLabel",
 			() -> LanguageUtil.get(_httpServletRequest, getPublishButtonLabel())
-		).put(
-			"saveButtonLabel",
-			() -> LanguageUtil.get(_httpServletRequest, getSaveButtonLabel())
 		).put(
 			"selectedLanguageId", getSelectedLanguageId()
 		).put(
@@ -1773,12 +1756,6 @@ public class JournalEditArticleDisplayContext {
 	private boolean _isShowPublishModal() throws PortalException {
 		if (_article == null) {
 			return true;
-		}
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-11228")) {
-
-			return Validator.isNull(_article.getArticleId());
 		}
 
 		JournalArticle oldestArticle =

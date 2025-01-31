@@ -122,7 +122,7 @@ journalEditArticleDisplayContext.setViewAttributes();
 				<li class="tbar-item">
 					<div class="c-gap-3 form-group-sm journal-article-button-row mb-0 tbar-section text-right">
 						<c:choose>
-							<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11228") && !JournalUtil.isEditDefaultValues(article) %>'>
+							<c:when test="<%= !JournalUtil.isEditDefaultValues(article) %>">
 								<div class="align-items-center d-none small" id="<portlet:namespace />lockErrorIndicator">
 									<react:component
 										module="{LockErrorIndicator} from journal-web"
@@ -189,17 +189,6 @@ journalEditArticleDisplayContext.setViewAttributes();
 
 						<c:if test="<%= journalEditArticleDisplayContext.hasSavePermission() %>">
 							<div>
-								<c:if test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11228") && (journalEditArticleDisplayContext.getClassNameId() == JournalArticleConstants.CLASS_NAME_ID_DEFAULT) %>'>
-									<clay:button
-										cssClass="mr-3"
-										data-actionname='<%= ((article == null) || Validator.isNull(article.getArticleId())) ? "/journal/add_article" : "/journal/update_article" %>'
-										displayType="secondary"
-										id='<%= liferayPortletResponse.getNamespace() + "saveButton" %>'
-										label="<%= journalEditArticleDisplayContext.getSaveButtonLabel() %>"
-										type="submit"
-									/>
-								</c:if>
-
 								<clay:button
 									data-actionname="<%= Constants.PUBLISH %>"
 									displayType="primary"

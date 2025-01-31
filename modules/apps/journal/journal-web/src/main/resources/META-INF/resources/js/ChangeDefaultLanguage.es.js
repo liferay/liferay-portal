@@ -38,13 +38,11 @@ function ChangeDefaultLanguage(props) {
 				{props.strings[selectedDefaultLanguage]}
 			</p>
 
-			{Liferay.FeatureFlags['LPD-11228'] && (
-				<ClayAlert className="border-0 mt-3 p-0" displayType="info">
-					{Liferay.Language.get(
-						"changing-the-default-language-will-reset-the-article's-history-making-previous-changes-untrackable"
-					)}
-				</ClayAlert>
-			)}
+			<ClayAlert className="border-0 mt-3 p-0" displayType="info">
+				{Liferay.Language.get(
+					"changing-the-default-language-will-reset-the-article's-history-making-previous-changes-untrackable"
+				)}
+			</ClayAlert>
 
 			<ClayDropDown
 				active={active}

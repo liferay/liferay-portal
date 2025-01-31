@@ -54,42 +54,25 @@ DDMStructure ddmStructure = journalEditArticleDisplayContext.getDDMStructure();
 	<b><liferay-ui:message key="structure" /></b>: <%= HtmlUtil.escape(ddmStructure.getName(locale)) %>
 </p>
 
-<c:choose>
-	<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11228") %>'>
-		<p class="article-version-status <%= (article != null) ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />articleVersionStatusWrapper">
-			<b><liferay-ui:message key="version" /></b>: <span id="<portlet:namespace />displayedVersion"><%= (article != null) ? article.getVersion() : "" %></span>
+<p class="article-version-status <%= (article != null) ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />articleVersionStatusWrapper">
+	<b><liferay-ui:message key="version" /></b>: <span id="<portlet:namespace />displayedVersion"><%= (article != null) ? article.getVersion() : "" %></span>
 
-			<c:if test="<%= article != null %>">
-				<clay:label
-					cssClass="ml-2 text-uppercase"
-					displayType="<%= WorkflowConstants.getStatusStyle(article.getStatus()) %>"
-					id='<%= liferayPortletResponse.getNamespace() + "statusLabel" %>'
-					label="<%= WorkflowConstants.getStatusLabel(article.getStatus()) %>"
-				/>
-			</c:if>
+	<c:if test="<%= article != null %>">
+		<clay:label
+			cssClass="ml-2 text-uppercase"
+			displayType="<%= WorkflowConstants.getStatusStyle(article.getStatus()) %>"
+			id='<%= liferayPortletResponse.getNamespace() + "statusLabel" %>'
+			label="<%= WorkflowConstants.getStatusLabel(article.getStatus()) %>"
+		/>
+	</c:if>
 
-			<clay:label
-				cssClass="hide ml-2 text-uppercase"
-				displayType="secondary"
-				id='<%= liferayPortletResponse.getNamespace() + "statusDraftLabel" %>'
-				label="<%= WorkflowConstants.LABEL_DRAFT %>"
-			/>
-		</p>
-	</c:when>
-	<c:otherwise>
-		<c:if test="<%= (article != null) && !article.isNew() && (journalEditArticleDisplayContext.getClassNameId() == JournalArticleConstants.CLASS_NAME_ID_DEFAULT) %>">
-			<p class="article-version-status">
-				<b><liferay-ui:message key="version" /></b>: <%= article.getVersion() %>
-
-				<clay:label
-					cssClass="ml-2 text-uppercase"
-					displayType="<%= WorkflowConstants.getStatusStyle(article.getStatus()) %>"
-					label="<%= WorkflowConstants.getStatusLabel(article.getStatus()) %>"
-				/>
-			</p>
-		</c:if>
-	</c:otherwise>
-</c:choose>
+	<clay:label
+		cssClass="hide ml-2 text-uppercase"
+		displayType="secondary"
+		id='<%= liferayPortletResponse.getNamespace() + "statusDraftLabel" %>'
+		label="<%= WorkflowConstants.LABEL_DRAFT %>"
+	/>
+</p>
 
 <c:choose>
 	<c:when test="<%= !journalWebConfiguration.journalArticleForceAutogenerateId() && (journalEditArticleDisplayContext.getClassNameId() == JournalArticleConstants.CLASS_NAME_ID_DEFAULT) %>">
@@ -126,19 +109,8 @@ DDMStructure ddmStructure = journalEditArticleDisplayContext.getDDMStructure();
 		<aui:input name="newArticleId" type="hidden" />
 		<aui:input name="autoArticleId" type="hidden" value="<%= true %>" />
 
-		<c:choose>
-			<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11228") %>'>
-				<p class="article-id <%= (article != null) ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />articleIdWrapper">
-					<b><liferay-ui:message key="id" /></b>: <span id="<portlet:namespace />displayedArticleId"><%= (article != null) ? article.getArticleId() : "" %></span>
-				</p>
-			</c:when>
-			<c:otherwise>
-				<c:if test="<%= (article != null) && !article.isNew() && (journalEditArticleDisplayContext.getClassNameId() == JournalArticleConstants.CLASS_NAME_ID_DEFAULT) %>">
-					<p class="article-id">
-						<b><liferay-ui:message key="id" /></b>: <%= article.getArticleId() %>
-					</p>
-				</c:if>
-			</c:otherwise>
-		</c:choose>
+		<p class="article-id <%= (article != null) ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />articleIdWrapper">
+			<b><liferay-ui:message key="id" /></b>: <span id="<portlet:namespace />displayedArticleId"><%= (article != null) ? article.getArticleId() : "" %></span>
+		</p>
 	</c:otherwise>
 </c:choose>
