@@ -143,16 +143,23 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		return new Sku() {
 			{
 				setAvailability(
-					() -> _getAvailability(
-						accountEntry.getAccountEntryId(),
-						cpInstance.getGroupId(),
-						commerceContext.getCommerceChannelGroupId(),
-						skuDTOConverterContext.getCompanyId(),
-						commerceContext.getCPConfigurationListId(
-							cpInstance.getGroupId()),
-						cpInstance, cpInstance.getSku(),
-						skuDTOConverterContext.getUnitOfMeasureKey(),
-						skuDTOConverterContext.getLocale()));
+					() -> {
+						long accountEntryId = 0;
+
+						if (accountEntry != null) {
+							accountEntryId = accountEntry.getAccountEntryId();
+						}
+
+						return _getAvailability(
+							accountEntryId, cpInstance.getGroupId(),
+							commerceContext.getCommerceChannelGroupId(),
+							skuDTOConverterContext.getCompanyId(),
+							commerceContext.getCPConfigurationListId(
+								cpInstance.getGroupId()),
+							cpInstance, cpInstance.getSku(),
+							skuDTOConverterContext.getUnitOfMeasureKey(),
+							skuDTOConverterContext.getLocale());
+					});
 				setBackOrderAllowed(
 					() -> {
 						CPDefinitionInventory cpDefinitionInventory =
