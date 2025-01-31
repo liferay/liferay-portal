@@ -36,31 +36,31 @@ public class TransformerAgent {
 	public static void premain(
 		String agentArguments, Instrumentation instrumentation) {
 
-		instrumentation.addTransformer(
-			new ClassFileTransformer() {
-
-				@Override
-				public byte[] transform(
-						ClassLoader classLoader, String className,
-						Class<?> classBeingRedefined,
-						ProtectionDomain protectionDomain,
-						byte[] classfileBuffer)
-					throws IllegalClassFormatException {
-
-					if (className.startsWith("org/glowroot/agent/")) {
-						return classfileBuffer;
-					}
-
-					CodeSource codeSource = protectionDomain.getCodeSource();
-
-					return ClassRemapperBiFunction.INSTANCE.apply(
-						"ClassFileTransformer#" +
-							String.valueOf(codeSource.getLocation()) + "^" +
-								className,
-						classfileBuffer);
-				}
-
-			});
+//		instrumentation.addTransformer(
+//			new ClassFileTransformer() {
+//
+//				@Override
+//				public byte[] transform(
+//						ClassLoader classLoader, String className,
+//						Class<?> classBeingRedefined,
+//						ProtectionDomain protectionDomain,
+//						byte[] classfileBuffer)
+//					throws IllegalClassFormatException {
+//
+//					if (className.startsWith("org/glowroot/agent/")) {
+//						return classfileBuffer;
+//					}
+//
+//					CodeSource codeSource = protectionDomain.getCodeSource();
+//
+//					return ClassRemapperBiFunction.INSTANCE.apply(
+//						"ClassFileTransformer#" +
+//							String.valueOf(codeSource.getLocation()) + "^" +
+//								className,
+//						classfileBuffer);
+//				}
+//
+//			});
 	}
 
 	public static String replace(
