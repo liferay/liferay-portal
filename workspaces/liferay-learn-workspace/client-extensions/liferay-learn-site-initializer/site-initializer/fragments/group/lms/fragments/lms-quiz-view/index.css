@@ -401,6 +401,13 @@
 	justify-content: space-between;
 	border-top: 1px solid #E2E2E4 !important;
 	margin-top: 2rem !important;
+
+  .sign-in-text {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
 }
 
 .custom-control-input:not(:disabled):hover ~ .custom-control-label::before {
