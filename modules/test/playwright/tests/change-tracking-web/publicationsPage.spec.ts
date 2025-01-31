@@ -10,11 +10,14 @@ import {changeTrackingPagesTest} from '../../fixtures/changeTrackingPagesTest';
 import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
 import {masterPagesPagesTest} from '../../fixtures/masterPagesPagesTest';
 import {pageEditorPagesTest} from '../../fixtures/pageEditorPagesTest';
+import {pageTemplatesPagesTest} from '../../fixtures/pageTemplatesPagesTest';
 import {pageViewModePagesTest} from '../../fixtures/pageViewModePagesTest';
+import {pagesAdminPagesTest} from '../../fixtures/pagesAdminPagesTest';
 import {styleBookPageTest} from '../../fixtures/styleBookPageTest';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {templatesPageTest} from '../template-web/fixtures/templatesPageTest';
 
 export const test = mergeTests(
@@ -22,7 +25,9 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	changeTrackingPagesTest,
 	masterPagesPagesTest,
+	pagesAdminPagesTest,
 	pageEditorPagesTest,
+	pageTemplatesPagesTest,
 	styleBookPageTest,
 	templatesPageTest,
 	pageViewModePagesTest
@@ -357,4 +362,84 @@ test('Can Add and Apply Widget Template in a Publication', async ({
 	await page.goto('/');
 	await page.getByRole('menuitem', {name: layoutTitle}).click();
 	await expect(page.getByText('en_US')).toBeVisible();
+});
+
+test('Can Add and Apply Content Template in a Publication', async ({
+	apiHelpers,
+	changeTrackingPage,
+	ctCollection,
+	page,
+	pageEditorPage,
+	pageTemplatesPage,
+	pagesAdminPage,
+}) => {
+	const site =
+		await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('guest');
+
+	// Go to page template administration
+
+	await pageTemplatesPage.goto(site.friendlyUrlPath);
+
+	// Create page template collection
+
+	const pageTemplateCollectionName = getRandomString();
+
+	await pageTemplatesPage.addPageTemplateCollection(
+		pageTemplateCollectionName
+	);
+
+	// Create content page template
+
+	const contentPageTemplateName = getRandomString();
+
+	await pageTemplatesPage.addContentPageTemplate(contentPageTemplateName);
+
+	// Add heading fragment and publish
+
+	await pageEditorPage.addFragment('Basic Components', 'Heading');
+
+	await pageEditorPage.publishButton.click();
+
+	await waitForAlert(
+		page,
+		'Success:The page template was published successfully.'
+	);
+
+	// Add a new content page base on content page template
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+
+	await pagesAdminPage.gotoSelectTemplates(pageTemplateCollectionName);
+
+	const layoutTitle = getRandomString();
+
+	await pagesAdminPage.addPage({
+		name: layoutTitle,
+		template: contentPageTemplateName,
+	});
+
+	// Review publication changes and publish
+
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+	await changeTrackingPage.reviewChange(contentPageTemplateName);
+
+	await changeTrackingPage.viewChanges({
+		changed: 'Added',
+		site: site.name,
+		title: contentPageTemplateName,
+		type: 'Layout Page Template Entry',
+	});
+
+	await apiHelpers.headlessChangeTracking.publishCTCollection(
+		ctCollection.body.id
+	);
+
+	await changeTrackingPage.assertStatus('Published', ctCollection.body.name);
+
+	// Verify that the fragment is present
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+	await pagesAdminPage.clickOnAction('Edit', layoutTitle);
+	await expect(page.getByText('Heading Example')).toBeVisible();
 });
