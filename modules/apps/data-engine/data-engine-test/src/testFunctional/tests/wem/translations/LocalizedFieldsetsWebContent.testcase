@@ -311,7 +311,6 @@ definition {
 	@description = "This test ensures add fields, translate, edit fieldset, check propagation, translate from different language."
 	@priority = 5
 	test CreateEditAndDeleteLocalizedFieldset {
-		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
 
 		var newStructureName = "WC Structure Name";

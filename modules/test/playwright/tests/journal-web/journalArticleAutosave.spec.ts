@@ -7,7 +7,6 @@ import {APIResponse, expect as baseExpect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest';
-import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {pagesAdminPagesTest} from '../../fixtures/pagesAdminPagesTest';
@@ -33,9 +32,6 @@ const expect = baseExpect.extend({
 const autoSaveTest = mergeTests(
 	apiHelpersTest,
 	applicationsMenuPageTest,
-	featureFlagsTest({
-		'LPD-11228': {enabled: true},
-	}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest(),
@@ -44,9 +40,6 @@ const autoSaveTest = mergeTests(
 );
 
 const autosaveWithoutPermissionsTest = mergeTests(
-	featureFlagsTest({
-		'LPD-11228': {enabled: true},
-	}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest()
@@ -685,7 +678,7 @@ autoSaveTest(
 );
 
 autosaveWithoutPermissionsTest(
-	'Web Content is published when Feature Flag LPD-11228 is enabled',
+	'Web Content is published when autosave is enabled',
 	{
 		tag: '@LPD-37606',
 	},

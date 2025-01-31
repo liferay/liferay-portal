@@ -44,8 +44,6 @@ describe('ChangeDefaultLanguage', () => {
 	});
 
 	it('render', () => {
-		Liferay.FeatureFlags['LPD-11228'] = true;
-
 		const {getByText} = _renderChangeDefaultLanguageComponent();
 
 		expect(
@@ -55,8 +53,6 @@ describe('ChangeDefaultLanguage', () => {
 		).toBeInTheDocument();
 
 		expect(getByText('change')).toBeTruthy();
-
-		Liferay.FeatureFlags['LPD-11228'] = false;
 	});
 
 	it('render the default language', () => {

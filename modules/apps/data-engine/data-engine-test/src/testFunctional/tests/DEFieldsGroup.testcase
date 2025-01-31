@@ -270,8 +270,6 @@ definition {
 	@description = "This is a test for LRQA-71711. This test verifies that the Web Content data persists upon editing the related Structure by creating a Fields Group"
 	@priority = 4
 	test CanDataBeEditedInNewFieldsGroup {
-		property custom.properties = "feature.flag.LPD-11228=true";
-
 		NavItem.gotoStructures();
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
@@ -344,8 +342,6 @@ definition {
 	@description = "Verify that the Web Content data persists upon editing the related Structure by creating a Fields Group	"
 	@priority = 4
 	test CanDataBeEditedInNewFieldsGroupTranslated {
-		property custom.properties = "feature.flag.LPD-11228=true";
-
 		NavItem.gotoStructures();
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
@@ -1110,8 +1106,6 @@ definition {
 	@description = "Verify that data inputted on a repeatable Fields Group duplicated persists on the Web Content"
 	@priority = 4
 	test CanInputDataOnDuplicatedFieldTranslated {
-		property custom.properties = "feature.flag.LPD-11228=true";
-
 		NavItem.gotoStructures();
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
@@ -1569,8 +1563,6 @@ definition {
 	@description = "Verify that is possible to remove duplicated repeatable Fields Group"
 	@priority = 4
 	test CanRemoveDuplicatedRepeatableFieldsGroupTranslated {
-		property custom.properties = "feature.flag.LPD-11228=true";
-
 		NavItem.gotoStructures();
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");

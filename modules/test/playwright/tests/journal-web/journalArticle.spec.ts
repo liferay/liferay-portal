@@ -78,13 +78,6 @@ const keepTitlesUntranslated = mergeTests(baseTest);
 
 const prefixUrlTest = mergeTests(baseTest);
 
-const translationAndAutosaveTest = mergeTests(
-	baseTest,
-	featureFlagsTest({
-		'LPD-11228': {enabled: true},
-	})
-);
-
 const privateContentIconTest = mergeTests(baseTest);
 
 baseTest(
@@ -273,7 +266,7 @@ baseTest(
 	}
 );
 
-translationAndAutosaveTest(
+baseTest(
 	'Article selector should only list approved content',
 	{
 		tag: '@LPD-39264',
@@ -1694,8 +1687,8 @@ assetPublisherDeprecationTest(
 	}
 );
 
-translationAndAutosaveTest(
-	'Web Content is published when Feature Flags LPD-11228 is are active',
+baseTest(
+	'Web Content is published when autosave is active',
 	{
 		tag: '@LPD-33570',
 	},
