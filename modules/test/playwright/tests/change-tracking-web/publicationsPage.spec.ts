@@ -442,6 +442,14 @@ test('Can Add and Apply Content Template in a Publication', async ({
 	await pagesAdminPage.goto(site.friendlyUrlPath);
 	await pagesAdminPage.clickOnAction('Edit', layoutTitle);
 	await expect(page.getByText('Heading Example')).toBeVisible();
+
+	// Delete page template collection
+
+	await pageTemplatesPage.goto(site.friendlyUrlPath);
+
+	await pageTemplatesPage.deletePageTemplateCollection(
+		pageTemplateCollectionName
+	);
 });
 
 test('Can Create Custom Fragments in a Publication', async ({
@@ -454,7 +462,7 @@ test('Can Create Custom Fragments in a Publication', async ({
 	const site =
 		await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('guest');
 
-	// Create a custom fragment with lfr-editable
+	// Create a custom fragment
 
 	const fragmentCollectionName = getRandomString();
 
@@ -518,4 +526,81 @@ test('Can Create Custom Fragments in a Publication', async ({
 	await page.goto('/');
 	await page.getByRole('menuitem', {name: layoutTitle}).click();
 	await expect(page.getByText('test html')).toBeVisible();
+});
+
+test('Can Create Page with Existing Page Template in a Publication', async ({
+	apiHelpers,
+	changeTrackingPage,
+	ctCollection,
+	page,
+	pageTemplatesPage,
+	pagesAdminPage,
+	widgetPagePage,
+}) => {
+	const site =
+		await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('guest');
+
+	await changeTrackingPage.workOnProduction();
+
+	// Create page template collection
+
+	await pageTemplatesPage.goto(site.friendlyUrlPath);
+
+	const pageTemplateCollectionName = getRandomString();
+
+	await pageTemplatesPage.addPageTemplateCollection(
+		pageTemplateCollectionName
+	);
+
+	// Create widget page template with web content display widget
+
+	const widgetPageTemplateName = getRandomString();
+
+	await pageTemplatesPage.addWidgetPageTemplate(widgetPageTemplateName);
+
+	await widgetPagePage.addPortlet('Web Content Display');
+
+	// Add a widget page based on template in Publication
+
+	await changeTrackingPage.workOnPublication(ctCollection);
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+
+	await pagesAdminPage.gotoSelectTemplates(pageTemplateCollectionName);
+
+	const layoutTitle = getRandomString();
+
+	await pagesAdminPage.addPage({
+		name: layoutTitle,
+		template: widgetPageTemplateName,
+	});
+
+	// Publish Publication
+
+	await apiHelpers.headlessChangeTracking.publishCTCollection(
+		ctCollection.body.id
+	);
+
+	await changeTrackingPage.assertStatus('Published', ctCollection.body.name);
+
+	// Assert widget page is created based on widget page template
+
+	await page.goto('/');
+	await page.getByRole('menuitem', {name: layoutTitle}).click();
+
+	await expect(
+		page.getByRole('heading', {name: 'Web Content Display'})
+	).toBeVisible();
+
+	await expect(
+		page.getByText('This application is not visible to users yet.')
+	).toBeVisible();
+
+	// Delete page template collection
+
+	await pageTemplatesPage.goto(site.friendlyUrlPath);
+
+	await pageTemplatesPage.deletePageTemplateCollection(
+		pageTemplateCollectionName
+	);
 });
