@@ -443,3 +443,79 @@ test('Can Add and Apply Content Template in a Publication', async ({
 	await pagesAdminPage.clickOnAction('Edit', layoutTitle);
 	await expect(page.getByText('Heading Example')).toBeVisible();
 });
+
+test('Can Create Custom Fragments in a Publication', async ({
+	apiHelpers,
+	changeTrackingPage,
+	ctCollection,
+	page,
+	pageEditorPage,
+}) => {
+	const site =
+		await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('guest');
+
+	// Create a custom fragment with lfr-editable
+
+	const fragmentCollectionName = getRandomString();
+
+	const {fragmentCollectionId} =
+		await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+			{
+				groupId: site.id,
+				name: fragmentCollectionName,
+			}
+		);
+
+	const fragmentEntryName = getRandomString();
+
+	await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+		fragmentCollectionId,
+		groupId: site.id,
+		html: `<lfr-editable id="element-html" type="html">
+               		<h1>test html</h1>
+               	</lfr-editable>`,
+		name: fragmentEntryName,
+		type: 'component',
+	});
+
+	// Add a layout and add custom fragment
+
+	const layoutTitle = getRandomString();
+
+	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+		groupId: site.id,
+		options: {type: 'content'},
+		title: layoutTitle,
+	});
+
+	await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+	await pageEditorPage.addFragment(fragmentCollectionName, fragmentEntryName);
+
+	await pageEditorPage.waitForChangesSaved();
+
+	await pageEditorPage.publishPage();
+
+	// Review publication changes and publish
+
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+	await changeTrackingPage.viewChanges({
+		changed: 'Added',
+		site: site.name,
+		title: fragmentEntryName,
+		type: 'Fragment Entry',
+	});
+
+	await apiHelpers.headlessChangeTracking.publishCTCollection(
+		ctCollection.body.id
+	);
+
+	await changeTrackingPage.assertStatus('Published', ctCollection.body.name);
+
+	// Assert changes are published and template is mapped in production
+
+	await page.goto('/');
+	await page.getByRole('menuitem', {name: layoutTitle}).click();
+	await expect(page.getByText('test html')).toBeVisible();
+});
