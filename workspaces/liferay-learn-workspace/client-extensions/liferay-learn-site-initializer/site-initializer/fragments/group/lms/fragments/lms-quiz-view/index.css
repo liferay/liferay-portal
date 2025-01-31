@@ -565,22 +565,3 @@ li {
 	height: 16px;
 	width: 16px;
 }
-
-@media (max-width: 768px) {
-	.banner-option-text-alignment {
-		align-items: start !important;
-		flex-direction: column !important;
-	}
-
-	.course-nav-bottom__banner-img_background {
-		transform: scale(0.75);
-		transform-origin: bottom right;
-	}
-
-	.course-nav-bottom__banner {
-		.banner-icon {
-			position: absolute !important;
-			right: 1% !important;
-		}
-	}
-}
