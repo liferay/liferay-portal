@@ -604,3 +604,70 @@ test('Can Create Page with Existing Page Template in a Publication', async ({
 		pageTemplateCollectionName
 	);
 });
+
+test(
+	'Can Preview Fragment Before Publishing',
+	{tag: '@LPS-176197'},
+	async ({
+		apiHelpers,
+		changeTrackingPage,
+		ctCollection,
+		page,
+		pageEditorPage,
+	}) => {
+		const site =
+			await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath(
+				'guest'
+			);
+
+		// Add a page with a fragment in production
+
+		await changeTrackingPage.workOnProduction();
+
+		const layoutTitle = getRandomString();
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {type: 'content'},
+			title: layoutTitle,
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.addFragment('Basic Components', 'Heading');
+
+		await pageEditorPage.publishPage();
+
+		// Edit fragment in Publication
+
+		await changeTrackingPage.workOnPublication(ctCollection);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		const headingId = await pageEditorPage.getFragmentId('Heading');
+
+		await pageEditorPage.editTextEditable(
+			headingId,
+			'element-text',
+			'Edited Text'
+		);
+
+		await pageEditorPage.publishPage();
+
+		// Review publication changes
+
+		await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+		await changeTrackingPage.viewChanges({
+			changed: 'Modified',
+			site: site.name,
+			title: layoutTitle,
+			type: 'Page',
+		});
+
+		await changeTrackingPage.reviewChange(layoutTitle);
+
+		await expect(page.getByText('Heading Example')).toBeVisible();
+		await expect(page.getByText('Edited Text')).toBeVisible();
+	}
+);
