@@ -115,8 +115,6 @@ test('Can Add and Apply Information Template in a Publication', async ({
 		type: 'Dynamic Data Mapping Template',
 	});
 
-	await changeTrackingPage.reviewChange(informationTemplateName);
-
 	await apiHelpers.headlessChangeTracking.publishCTCollection(
 		ctCollection.body.id
 	);
@@ -182,8 +180,6 @@ test('Can Add New Page With Master Template in a Publication', async ({
 	// Review publication changes and publish
 
 	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
-
-	await changeTrackingPage.reviewChange(masterPageTemplateEntryName);
 
 	await changeTrackingPage.viewChanges({
 		changed: 'Added',
@@ -342,8 +338,6 @@ test('Can Add and Apply Widget Template in a Publication', async ({
 
 	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
-	await changeTrackingPage.reviewChange(widgetTemplateName);
-
 	await changeTrackingPage.viewChanges({
 		changed: 'Added',
 		site: site.name,
@@ -421,8 +415,6 @@ test('Can Add and Apply Content Template in a Publication', async ({
 	// Review publication changes and publish
 
 	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
-
-	await changeTrackingPage.reviewChange(contentPageTemplateName);
 
 	await changeTrackingPage.viewChanges({
 		changed: 'Added',
