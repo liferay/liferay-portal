@@ -671,3 +671,112 @@ test(
 		await expect(page.getByText('Edited Text')).toBeVisible();
 	}
 );
+
+test(
+	'Can Publish Page With Content Display Fragment and Web Content Display',
+	{tag: '@LPS-185847'},
+	async ({
+		apiHelpers,
+		changeTrackingPage,
+		ctCollection,
+		page,
+		pageEditorPage,
+	}) => {
+		const site =
+			await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath(
+				'guest'
+			);
+
+		await changeTrackingPage.workOnProduction();
+
+		// Add 2 basic web contents
+
+		const journalName1 = getRandomString();
+		const journalName2 = getRandomString();
+
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			content: journalName1,
+			ddmStructureId: basicWebContentStructureId,
+			groupId: site.id,
+			titleMap: {en_US: journalName1},
+		});
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			content: journalName2,
+			ddmStructureId: basicWebContentStructureId,
+			groupId: site.id,
+			titleMap: {en_US: journalName2},
+		});
+
+		// Create a page in a Publication
+
+		await changeTrackingPage.workOnPublication(ctCollection);
+
+		const layoutTitle = getRandomString();
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {type: 'content'},
+			title: layoutTitle,
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Configure a web content display widget with a web content
+
+		await pageEditorPage.addWidget(
+			'Content Management',
+			'Web Content Display'
+		);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				exact: true,
+				name: 'Configuration',
+			}),
+			trigger: page
+				.locator('#wrapper')
+				.getByRole('button', {name: 'Options'}),
+		});
+
+		await page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByRole('button', {name: 'Select'})
+			.click();
+
+		await page
+			.frameLocator('iframe[title="Configuration"]')
+			.frameLocator('iframe[title="Select Web Content"]')
+			.getByText(journalName1)
+			.click();
+
+		await page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByRole('button', {name: 'Save'})
+			.click();
+
+		// Configure a content display fragment with a web content
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.addFragment('Content Display', 'Content Display');
+
+		await page.getByLabel('Select Item').click();
+
+		await page.getByRole('menuitem', {name: 'Select Item'}).click();
+
+		await page
+			.frameLocator('iframe[title="Select"]')
+			.getByText(journalName2)
+			.click();
+
+		await pageEditorPage.publishPage();
+
+		await expect(page.getByText(journalName1)).toBeVisible();
+		await expect(page.getByText(journalName1)).toBeVisible();
+	}
+);
