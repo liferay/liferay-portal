@@ -1,3 +1,6 @@
 Bundle-Name: Liferay Headless Asset Library API
 Bundle-SymbolicName: com.liferay.headless.asset.library.api
 Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.headless.asset.library.dto.v1_0,\
+	com.liferay.headless.asset.library.resource.v1_0
