@@ -9,3 +9,4 @@ clientDir: "../headless-asset-library-client/src/main/java"
 forcePredictableOperationId: true
 generateBatch: false
 generateGraphQL: false
+testDir: "../headless-asset-library-test/src/testIntegration/java"
