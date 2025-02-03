@@ -1,0 +1,14 @@
+Bundle-SymbolicName: jakarta.ws.rs
+Bundle-Version: 3.1.0.LIFERAY-PATCHED-1
+Export-Package: jakarta.ws.rs.*
+Require-Capability: \
+	osgi.serviceloader;\
+		filter:="(osgi.serviceloader=javax.ws.rs.client.ClientBuilder)";cardinality:=multiple,\
+	osgi.serviceloader;\
+		filter:="(osgi.serviceloader=javax.ws.rs.ext.RuntimeDelegate)";cardinality:=multiple,\
+	osgi.serviceloader;\
+		filter:="(osgi.serviceloader=javax.ws.rs.sse.SseEventSource.Builder)";cardinality:=multiple,\
+	osgi.extender;\
+		filter:="(osgi.extender=osgi.serviceloader.processor)",\
+	osgi.ee;\
+		filter:="(&(osgi.ee=JavaSE)(version=1.8))"
