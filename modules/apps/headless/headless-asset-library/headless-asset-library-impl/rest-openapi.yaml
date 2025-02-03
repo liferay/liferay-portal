@@ -6,7 +6,7 @@ components:
             properties:
                 dateCreated:
                     description:
-                        The document's creation date.
+                        The asset library's creation date.
                     format: date-time
                     readOnly: true
                     type: string
@@ -28,7 +28,7 @@ components:
                     type: object
                 externalReferenceCode:
                     description:
-                        The asset library's external reference code.
+                        The space's group external reference code.
                     readOnly: true
                     type: string
                 groupId:
