@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Style Book Service
 Bundle-SymbolicName: com.liferay.style.book.service
 Bundle-Version: 2.0.55
-Liferay-Require-SchemaVersion: 1.6.0
+Liferay-Require-SchemaVersion: 1.7.0
 Liferay-Service: true
 -dsannotations-options: inherit
