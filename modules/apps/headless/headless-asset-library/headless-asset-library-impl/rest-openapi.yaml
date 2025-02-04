@@ -186,3 +186,58 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/AssetLibrary"
             tags: ["AssetLibrary"]
+    /asset-libraries/{assetLibraryId}/links/{toSiteId}:
+        delete:
+            description:
+                Removes an asset library link with the received asset library and site ids. Returns the asset library.
+            operationId: deleteAssetLibraryLinkToSite
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: toSiteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+            tags: ["AssetLibrary"]
+        post:
+            description:
+                Adds an asset library link with the received asset library and site ids. Returns the asset library.
+            operationId: postAssetLibraryLinkToSite
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: toSiteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+            tags: ["AssetLibrary"]

@@ -7,7 +7,9 @@ package com.liferay.headless.asset.library.internal.resource.v1_0;
 
 import com.liferay.depot.model.DepotAppCustomization;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotAppCustomizationLocalService;
+import com.liferay.depot.service.DepotEntryGroupRelService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
@@ -45,6 +47,25 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			assetLibraryId);
 
 		_depotEntryService.deleteDepotEntry(depotEntry.getDepotEntryId());
+	}
+
+	@Override
+	public AssetLibrary deleteAssetLibraryLinkToSite(
+			Long assetLibraryId, Long toSiteId)
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
+			assetLibraryId);
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelService.
+				getDepotEntryGroupRelByDepotEntryIdToGroupId(
+					depotEntry.getDepotEntryId(), toSiteId);
+
+		_depotEntryGroupRelService.deleteDepotEntryGroupRel(
+			depotEntryGroupRel.getDepotEntryGroupRelId());
+
+		return getAssetLibrary(assetLibraryId);
 	}
 
 	@Override
@@ -107,6 +128,20 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				_getServiceContext()));
 	}
 
+	@Override
+	public AssetLibrary postAssetLibraryLinkToSite(
+			Long assetLibraryId, Long toSiteId)
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
+			assetLibraryId);
+
+		_depotEntryGroupRelService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), toSiteId);
+
+		return getAssetLibrary(assetLibraryId);
+	}
+
 	private ServiceContext _getServiceContext() throws Exception {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			DepotEntry.class.getName(), contextHttpServletRequest);
@@ -149,6 +184,9 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	@Reference
 	private DepotAppCustomizationLocalService
 		_depotAppCustomizationLocalService;
+
+	@Reference
+	private DepotEntryGroupRelService _depotEntryGroupRelService;
 
 	@Reference
 	private DepotEntryService _depotEntryService;
