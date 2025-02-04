@@ -3,6 +3,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:frontend-token:frontend-token-definition-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
+	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
+	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:style-book:style-book-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
