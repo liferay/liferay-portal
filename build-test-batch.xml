@@ -4437,23 +4437,23 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-jboss74-mysql">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-jboss74-mysql57">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-jboss74-mysql57-jdk21_zulu">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
 		<run-functional-test
 			app.server.type="jboss"
-			app.server.version="7.4.0"
+			app.server.version="8.0.0"
 			database.type="mysql"
 			database.version="5.7"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
@@ -4473,23 +4473,23 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-jboss74-postgresql">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-jboss74-postgresql155">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-jboss74-postgresql155-jdk21_zulu">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
 		<run-functional-test
 			app.server.type="jboss"
-			app.server.version="7.4.0"
+			app.server.version="8.0.0"
 			database.type="postgresql"
 			database.version="15.5"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
@@ -4845,57 +4845,57 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-smoke-jboss74-mysql">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-mysql-jdk21_zulu">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-mysql57">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-mysql57-jdk17_zulu">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-mysql57-jdk21_zulu">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-postgresql">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-postgresql-jdk21_zulu">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-postgresql155">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-jboss74-postgresql155-jdk21_zulu">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" database.version="15.5" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-startup-cold-tomcat90-hypersonic">
@@ -6169,27 +6169,27 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-upgrade-jboss74-mysql">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" />
 	</target>
 
 	<target name="functional-upgrade-jboss74-mysql57">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="mysql" database.version="5.7" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" database.version="5.7" />
 	</target>
 
 	<target name="functional-upgrade-jboss74-postgresql">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" />
 	</target>
 
 	<target name="functional-upgrade-jboss74-postgresql155">
-		<set-app-server-version-number app.server.type="jboss" app.server.version="7.4.0" />
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
-		<run-functional-test app.server.type="jboss" app.server.version="7.4.0" database.type="postgresql" database.version="15.5" />
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-upgrade-tomcat90-db2">
