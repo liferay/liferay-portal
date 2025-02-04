@@ -28,7 +28,7 @@ components:
                     type: object
                 externalReferenceCode:
                     description:
-                        The space's group external reference code.
+                        The asset library's group external reference code.
                     readOnly: true
                     type: string
                 groupId:
@@ -104,4 +104,85 @@ paths:
                     description:
                         default response
             # @review
+            tags: ["AssetLibrary"]
+    /asset-libraries/{assetLibraryId}:
+        delete:
+            description:
+                Deletes the asset library and returns a 204 if the operation succeeds.
+            operationId: deleteAssetLibrary
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["AssetLibrary"]
+        get:
+            description:
+                Retrieves the asset library.
+            operationId: getAssetLibrary
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+            tags: ["AssetLibrary"]
+        patch:
+            description:
+                Updates the asset library using only the fields received in the request body. Any other fields are left
+                untouched. Returns the updated asset library.
+            operationId: patchAssetLibrary
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AssetLibrary"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/AssetLibrary"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
             tags: ["AssetLibrary"]

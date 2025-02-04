@@ -34,7 +34,8 @@ import org.osgi.service.component.annotations.Reference;
 	property = "dto.class.name=com.liferay.depot.model.DepotEntry",
 	service = DTOConverter.class
 )
-public class AssetLibraryDTOConverter implements DTOConverter<DepotEntry, AssetLibrary> {
+public class AssetLibraryDTOConverter
+	implements DTOConverter<DepotEntry, AssetLibrary> {
 
 	@Override
 	public String getContentType() {
@@ -44,8 +45,8 @@ public class AssetLibraryDTOConverter implements DTOConverter<DepotEntry, AssetL
 	@Override
 	public String getJaxRsLink(long classPK, UriInfo uriInfo) {
 		return JaxRsLinkUtil.getJaxRsLink(
-			"headless-delivery", BaseAssetLibraryResourceImpl.class, "getAssetLibrary",
-			uriInfo, classPK);
+			"headless-delivery", BaseAssetLibraryResourceImpl.class,
+			"getAssetLibrary", uriInfo, classPK);
 	}
 
 	@Override
