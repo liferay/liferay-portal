@@ -1,0 +1,28 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Agnes Maciel
+ */
+public class LPD_47117 {
+
+	public void method(
+		long userId, String className, long classPK, String name,
+		Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
+		int type, String subtype, ServiceContext serviceContext) {
+
+		RoleLocalServiceUtil.addRole(123, className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
+		RoleLocalServiceUtil.addRole(null, userId, className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
+		_roleLocalService.addRole(null, userId, className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
+	}
+
+	@Reference
+	private RoleLocalService _roleLocalService;
+
+}
