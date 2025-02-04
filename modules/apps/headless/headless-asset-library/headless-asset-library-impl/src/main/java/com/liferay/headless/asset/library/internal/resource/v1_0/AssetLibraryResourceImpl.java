@@ -43,7 +43,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 	@Override
 	public void deleteAssetLibrary(Long assetLibraryId) throws Exception {
-		DepotEntry depotEntry = _depotEntryService.getDepotEntry(
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
 			assetLibraryId);
 
 		_depotEntryService.deleteDepotEntry(depotEntry.getDepotEntryId());
@@ -71,7 +71,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	@Override
 	public AssetLibrary getAssetLibrary(Long assetLibraryId) throws Exception {
 		return _toAssetLibrary(
-			_depotEntryService.getDepotEntry(assetLibraryId));
+			_depotEntryService.getGroupDepotEntry(assetLibraryId));
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			Long assetLibraryId, AssetLibrary assetLibrary)
 		throws Exception {
 
-		DepotEntry depotEntry = _depotEntryService.getDepotEntry(
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
 			assetLibraryId);
 
 		Group group = depotEntry.getGroup();
@@ -171,7 +171,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 					addAction(
 						ActionKeys.UPDATE, depotEntry, "patchAssetLibrary")
 				).build(),
-				_dtoConverterRegistry, depotEntry.getDepotEntryId(),
+				_dtoConverterRegistry, depotEntry.getGroupId(),
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 				contextUser));
 	}

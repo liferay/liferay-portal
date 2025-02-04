@@ -13,7 +13,6 @@ import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.internal.resource.v1_0.BaseAssetLibraryResourceImpl;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.util.JaxRsLinkUtil;
@@ -53,7 +52,7 @@ public class AssetLibraryDTOConverter
 	public AssetLibrary toDTO(DTOConverterContext dtoConverterContext)
 		throws Exception {
 
-		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+		DepotEntry depotEntry = _depotEntryLocalService.getGroupDepotEntry(
 			(Long)dtoConverterContext.getId());
 
 		Group group = depotEntry.getGroup();
@@ -70,24 +69,23 @@ public class AssetLibraryDTOConverter
 						dtoConverterContext.isAcceptAllLanguages(),
 						group.getDescriptionMap()));
 				setExternalReferenceCode(group::getExternalReferenceCode);
-				setGroupId(group::getGroupId);
-				setId(depotEntry::getDepotEntryId);
+				setId(group::getGroupId);
 				setLinkedSiteIds(
 					() -> {
 						List<DepotEntryGroupRel> depotEntryGroupRels =
 							_depotEntryGroupRelLocalService.
 								getDepotEntryGroupRels(depotEntry);
 
-						Long[] groupIds = new Long[depotEntryGroupRels.size()];
+						List<Long> toGroupIds = new ArrayList<>(
+							depotEntryGroupRels.size());
 
 						for (DepotEntryGroupRel depotEntryGroupRel :
 								depotEntryGroupRels) {
 
-							groupIds = ArrayUtil.append(
-								groupIds, depotEntryGroupRel.getGroupId());
+							toGroupIds.add(depotEntryGroupRel.getToGroupId());
 						}
 
-						return groupIds;
+						return toGroupIds.toArray(new Long[0]);
 					});
 				setLinkedSitesExternalReferenceCodes(
 					() -> {

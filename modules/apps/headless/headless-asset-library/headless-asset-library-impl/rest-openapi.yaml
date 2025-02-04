@@ -31,12 +31,6 @@ components:
                         The asset library's group external reference code.
                     readOnly: true
                     type: string
-                groupId:
-                    description:
-                        The asset library's groupId.
-                    format: int64
-                    readOnly: true
-                    type: integer
                 id:
                     description:
                         The asset library's ID.
