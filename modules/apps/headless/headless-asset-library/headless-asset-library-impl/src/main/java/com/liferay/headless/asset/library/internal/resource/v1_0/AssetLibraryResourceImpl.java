@@ -5,6 +5,7 @@
 
 package com.liferay.headless.asset.library.internal.resource.v1_0;
 
+import com.liferay.depot.constants.DepotActionKeys;
 import com.liferay.depot.model.DepotAppCustomization;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
@@ -181,7 +182,10 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			new DefaultDTOConverterContext(
 				contextAcceptLanguage.isAcceptAllLanguages(),
 				HashMapBuilder.put(
-					"create", addAction("add", depotEntry, "postAssetLibrary")
+					"create",
+					addAction(
+						DepotActionKeys.ADD_DEPOT_ENTRY, depotEntry,
+						"postAssetLibrary")
 				).put(
 					"delete",
 					addAction(
