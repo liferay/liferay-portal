@@ -5571,33 +5571,33 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-smoke-wildfly261-mariadb">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-wildfly261-mariadb-jdk21_zulu">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-wildfly261-mariadb104">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" database.version="10.4" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.4" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-wildfly261-mariadb106">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" database.version="10.6" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.6" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-wildfly261-mariadb106-jdk21_zulu">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" database.version="10.6" test.portal.log.assert="true" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.6" test.portal.log.assert="true" />
 	</target>
 
 	<target name="functional-smoke-wildfly261-mysql">
@@ -6345,21 +6345,21 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-upgrade-wildfly261-mariadb">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" />
 	</target>
 
 	<target name="functional-upgrade-wildfly261-mariadb104">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" database.version="10.4" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.4" />
 	</target>
 
 	<target name="functional-upgrade-wildfly261-mariadb106">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" database.version="10.6" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.6" />
 	</target>
 
 	<target name="functional-weblogic141-mysql">
@@ -6658,75 +6658,75 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="functional-wildfly261-mariadb">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" />
 	</target>
 
 	<target name="functional-wildfly261-mariadb104">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" database.version="10.4" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.4" />
 	</target>
 
 	<target name="functional-wildfly261-mariadb106">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mariadb" database.version="10.6" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mariadb" database.version="10.6" />
 	</target>
 
 	<target name="functional-wildfly261-mysql">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mysql" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" />
 	</target>
 
 	<target name="functional-wildfly261-mysql-jdk21_zulu">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mysql" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" />
 	</target>
 
 	<target name="functional-wildfly261-mysql57">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mysql" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" />
 	</target>
 
 	<target name="functional-wildfly261-mysql57-jdk17_zulu">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mysql" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" />
 	</target>
 
 	<target name="functional-wildfly261-mysql57-jdk21_zulu">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="mysql" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" />
 	</target>
 
 	<target name="functional-wildfly261-postgresql">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="postgresql" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="postgresql" />
 	</target>
 
 	<target name="functional-wildfly261-postgresql-jdk21_zulu">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="postgresql" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="postgresql" />
 	</target>
 
 	<target name="functional-wildfly261-postgresql155">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="postgresql" database.version="15.5" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-wildfly261-postgresql155-jdk21_zulu">
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="26.1.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
-		<run-functional-test app.server.type="wildfly" app.server.version="26.1.0" database.type="postgresql" database.version="15.5" />
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="postgresql" database.version="15.5" />
 	</target>
 
 	<target name="functional-workspaces-mysql">
