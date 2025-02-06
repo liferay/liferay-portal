@@ -6,7 +6,7 @@ dependencies {
 	compileInclude group: "com.microsoft.graph", name: "microsoft-graph-core", version: "1.0.9"
 	compileInclude group: "com.squareup.okhttp3", name: "okhttp", version: "4.12.0"
 	compileInclude group: "com.squareup.okio", name: "okio", version: "3.4.0"
-	compileInclude group: "org.apache.xmlbeans", name: "xmlbeans", version: "3.1.0"
+	compileInclude group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
 	compileInclude group: "org.jetbrains.kotlin", name: "kotlin-stdlib", version: "1.8.0"
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"

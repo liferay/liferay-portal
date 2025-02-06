@@ -27,7 +27,7 @@ dependencies {
 	compileOnly group: "org.apache.poi", name: "poi", version: "5.2.2"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml", version: "5.2.2"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.2.2"
-	compileOnly group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.0.3"
+	compileOnly group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
