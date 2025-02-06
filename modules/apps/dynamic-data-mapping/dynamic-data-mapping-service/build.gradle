@@ -5,7 +5,6 @@ buildService {
 
 dependencies {
 	compileInclude group: "com.jayway.jsonpath", name: "json-path", version: "2.9.0"
-	compileInclude group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.2"
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
@@ -23,6 +22,7 @@ dependencies {
 	compileOnly group: "org.apache.poi", name: "poi", version: "5.2.2"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml", version: "5.2.2"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.2.2"
+	compileOnly group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
 	compileOnly group: "org.jsoup", name: "jsoup", version: "1.15.3"
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
