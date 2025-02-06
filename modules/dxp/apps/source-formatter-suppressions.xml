@@ -4,4 +4,7 @@
 	<checkstyle>
 		<suppress checks="InnerExceptionClassCheck" files="document-library-opener/document-library-opener-onedrive-web/src/main/java/com/liferay/document/library/opener/onedrive/web/internal/exception/GraphServicePortalException\.java" />
 	</checkstyle>
+	<source-check>
+		<suppress checks="GradleDependencyArtifactsCheck" files="sharepoint-soap/sharepoint-soap-repository/build\.gradle" />
+	</source-check>
 </suppressions>
