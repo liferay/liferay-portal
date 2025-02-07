@@ -111,6 +111,10 @@ components:
                     items:
                         $ref: "#/components/schemas/ObjectAction"
                     type: array
+                objectDefinitionSettings:
+                    items:
+                        $ref: "#/components/schemas/ObjectDefinitionSetting"
+                    type: array
                 objectFields:
                     items:
                         $ref: "#/components/schemas/ObjectField"
@@ -162,6 +166,20 @@ components:
                     type: boolean
                 titleObjectFieldName:
                     type: string
+            type: object
+        ObjectDefinitionSetting:
+            properties:
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    type: string
+                objectDefinitionId:
+                    format: int64
+                    type: integer
+                value:
+                    type: object
             type: object
         ObjectField:
             properties:
