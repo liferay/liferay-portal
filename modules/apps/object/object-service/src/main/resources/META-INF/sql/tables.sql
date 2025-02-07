@@ -64,6 +64,20 @@ create table ObjectDefinition (
 	status INTEGER
 );
 
+create table ObjectDefinitionSetting (
+	mvccVersion LONG default 0 not null,
+	uuid_ VARCHAR(75) null,
+	objectDefinitionSettingId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	objectDefinitionId LONG,
+	name VARCHAR(75) null,
+	value VARCHAR(75) null
+);
+
 create table ObjectEntry (
 	mvccVersion LONG default 0 not null,
 	uuid_ VARCHAR(75) null,

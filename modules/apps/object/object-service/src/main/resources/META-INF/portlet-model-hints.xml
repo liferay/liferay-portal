@@ -81,6 +81,19 @@
 		<field name="version" type="int" />
 		<field name="status" type="int" />
 	</model>
+	<model name="com.liferay.object.model.ObjectDefinitionSetting">
+		<field name="mvccVersion" type="long" />
+		<field name="uuid" type="String" />
+		<field name="objectDefinitionSettingId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="objectDefinitionId" type="long" />
+		<field name="name" type="String" />
+		<field name="value" type="String" />
+	</model>
 	<model name="com.liferay.object.model.ObjectEntry">
 		<field name="mvccVersion" type="long" />
 		<field name="uuid" type="String" />
