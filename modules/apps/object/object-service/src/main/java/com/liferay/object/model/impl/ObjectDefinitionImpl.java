@@ -9,8 +9,10 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectDefinitionSettingLocalServiceUtil;
 import com.liferay.object.service.ObjectFolderLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -20,6 +22,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -81,6 +84,17 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 		}
 
 		return getDBTableName() + "_l";
+	}
+
+	@Override
+	public List<ObjectDefinitionSetting> getObjectDefinitionSettings() {
+		if (_objectDefinitionSettings == null) {
+			_objectDefinitionSettings =
+				ObjectDefinitionSettingLocalServiceUtil.
+					getObjectDefinitionSettings(getObjectDefinitionId());
+		}
+
+		return _objectDefinitionSettings;
 	}
 
 	@Override
@@ -272,10 +286,18 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 	}
 
 	@Override
+	public void setObjectDefinitionSettings(
+		List<ObjectDefinitionSetting> objectDefinitionSettings) {
+
+		_objectDefinitionSettings = objectDefinitionSettings;
+	}
+
+	@Override
 	public void setPreviousRESTContextPath(String previousRESTContextPath) {
 		_previousRESTContextPath = previousRESTContextPath;
 	}
 
+	private List<ObjectDefinitionSetting> _objectDefinitionSettings;
 	private String _previousRESTContextPath;
 
 }
