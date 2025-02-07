@@ -6521,7 +6521,7 @@ ${custom.upgrade.properties}</echo>
 					<var name="app.server.lib.global.dir" value="${app.server.dir}/modules/com/liferay/portal/main" />
 					<var name="app.server.lib.portal.dir" value="${app.server.dir}/standalone/deployments/ROOT.war/WEB-INF/lib/" />
 					<var name="app.server.shielded-container-lib.portal.dir" value="${app.server.dir}/standalone/deployments/ROOT.war/WEB-INF/shielded-container-lib/" />
-					<var name="app.server.zip.url" value="http://download.jboss.org/wildfly/@{app.server.version}.Final/${app.server.zip.name}" />
+					<var name="app.server.zip.url" value="https://github.com/wildfly/wildfly/releases/download/${app.server.wildfly.version}.Final/${app.server.wildfly.zip.name}" />
 				</then>
 			</if>
 
