@@ -56,6 +56,9 @@ public interface ObjectDefinition
 
 	public String getLocalizationDBTableName();
 
+	public java.util.List<ObjectDefinitionSetting>
+		getObjectDefinitionSettings();
+
 	public String getObjectFolderExternalReferenceCode();
 
 	public String getOSGiJaxRsName();
@@ -89,6 +92,9 @@ public interface ObjectDefinition
 	public boolean isRootNode();
 
 	public boolean isUnmodifiableSystemObject();
+
+	public void setObjectDefinitionSettings(
+		java.util.List<ObjectDefinitionSetting> objectDefinitionSettings);
 
 	public void setPreviousRESTContextPath(String previousRESTContextPath);
 

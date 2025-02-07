@@ -656,6 +656,13 @@ public class ObjectDefinitionWrapper
 	}
 
 	@Override
+	public java.util.List<ObjectDefinitionSetting>
+		getObjectDefinitionSettings() {
+
+		return model.getObjectDefinitionSettings();
+	}
+
+	@Override
 	public String getObjectFolderExternalReferenceCode() {
 		return model.getObjectFolderExternalReferenceCode();
 	}
@@ -1413,6 +1420,13 @@ public class ObjectDefinitionWrapper
 	@Override
 	public void setObjectDefinitionId(long objectDefinitionId) {
 		model.setObjectDefinitionId(objectDefinitionId);
+	}
+
+	@Override
+	public void setObjectDefinitionSettings(
+		java.util.List<ObjectDefinitionSetting> objectDefinitionSettings) {
+
+		model.setObjectDefinitionSettings(objectDefinitionSettings);
 	}
 
 	/**
