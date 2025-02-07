@@ -180,6 +180,36 @@
 			<finder-column name="status" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="ObjectDefinitionSetting" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="objectDefinitionSettingId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="objectDefinitionId" type="long" />
+		<column name="name" type="String" />
+		<column name="value" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="ObjectDefinitionId" return-type="Collection">
+			<finder-column name="objectDefinitionId" />
+		</finder>
+		<finder name="ODI_N" return-type="ObjectDefinitionSetting" unique="true">
+			<finder-column name="objectDefinitionId" />
+			<finder-column name="name" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="ObjectEntry" remote-service="true" uuid="true">
 
 		<!-- External reference code -->
