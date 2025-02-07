@@ -4,6 +4,7 @@ export * from './facet';
 export * from './facetValue';
 export * from './objectAction';
 export * from './objectDefinition';
+export * from './objectDefinitionSetting';
 export * from './objectField';
 export * from './objectFieldSetting';
 export * from './objectFolder';
@@ -50,6 +51,7 @@ import { Facet } from './facet';
 import { FacetValue } from './facetValue';
 import { ObjectAction } from './objectAction';
 import { ObjectDefinition } from './objectDefinition';
+import { ObjectDefinitionSetting } from './objectDefinitionSetting';
 import { ObjectField } from './objectField';
 import { ObjectFieldSetting } from './objectFieldSetting';
 import { ObjectFolder } from './objectFolder';
@@ -110,6 +112,7 @@ let typeMap: {[index: string]: any} = {
     "FacetValue": FacetValue,
     "ObjectAction": ObjectAction,
     "ObjectDefinition": ObjectDefinition,
+    "ObjectDefinitionSetting": ObjectDefinitionSetting,
     "ObjectField": ObjectField,
     "ObjectFieldSetting": ObjectFieldSetting,
     "ObjectFolder": ObjectFolder,

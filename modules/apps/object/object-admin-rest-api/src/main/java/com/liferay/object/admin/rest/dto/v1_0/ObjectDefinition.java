@@ -930,6 +930,52 @@ public class ObjectDefinition implements Serializable {
 
 	@Schema
 	@Valid
+	public ObjectDefinitionSetting[] getObjectDefinitionSettings() {
+		if (_objectDefinitionSettingsSupplier != null) {
+			objectDefinitionSettings = _objectDefinitionSettingsSupplier.get();
+
+			_objectDefinitionSettingsSupplier = null;
+		}
+
+		return objectDefinitionSettings;
+	}
+
+	public void setObjectDefinitionSettings(
+		ObjectDefinitionSetting[] objectDefinitionSettings) {
+
+		this.objectDefinitionSettings = objectDefinitionSettings;
+
+		_objectDefinitionSettingsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setObjectDefinitionSettings(
+		UnsafeSupplier<ObjectDefinitionSetting[], Exception>
+			objectDefinitionSettingsUnsafeSupplier) {
+
+		_objectDefinitionSettingsSupplier = () -> {
+			try {
+				return objectDefinitionSettingsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ObjectDefinitionSetting[] objectDefinitionSettings;
+
+	@JsonIgnore
+	private Supplier<ObjectDefinitionSetting[]>
+		_objectDefinitionSettingsSupplier;
+
+	@Schema
+	@Valid
 	public ObjectField[] getObjectFields() {
 		if (_objectFieldsSupplier != null) {
 			objectFields = _objectFieldsSupplier.get();
@@ -2006,6 +2052,29 @@ public class ObjectDefinition implements Serializable {
 				sb.append(String.valueOf(objectActions[i]));
 
 				if ((i + 1) < objectActions.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		ObjectDefinitionSetting[] objectDefinitionSettings =
+			getObjectDefinitionSettings();
+
+		if (objectDefinitionSettings != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"objectDefinitionSettings\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < objectDefinitionSettings.length; i++) {
+				sb.append(String.valueOf(objectDefinitionSettings[i]));
+
+				if ((i + 1) < objectDefinitionSettings.length) {
 					sb.append(", ");
 				}
 			}

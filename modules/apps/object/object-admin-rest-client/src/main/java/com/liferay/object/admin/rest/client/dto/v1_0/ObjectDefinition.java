@@ -478,6 +478,31 @@ public class ObjectDefinition implements Cloneable, Serializable {
 
 	protected ObjectAction[] objectActions;
 
+	public ObjectDefinitionSetting[] getObjectDefinitionSettings() {
+		return objectDefinitionSettings;
+	}
+
+	public void setObjectDefinitionSettings(
+		ObjectDefinitionSetting[] objectDefinitionSettings) {
+
+		this.objectDefinitionSettings = objectDefinitionSettings;
+	}
+
+	public void setObjectDefinitionSettings(
+		UnsafeSupplier<ObjectDefinitionSetting[], Exception>
+			objectDefinitionSettingsUnsafeSupplier) {
+
+		try {
+			objectDefinitionSettings =
+				objectDefinitionSettingsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ObjectDefinitionSetting[] objectDefinitionSettings;
+
 	public ObjectField[] getObjectFields() {
 		return objectFields;
 	}

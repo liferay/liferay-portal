@@ -12,6 +12,7 @@
 
 import { RequestFile } from './models';
 import { ObjectAction } from './objectAction';
+import { ObjectDefinitionSetting } from './objectDefinitionSetting';
 import { ObjectField } from './objectField';
 import { ObjectLayout } from './objectLayout';
 import { ObjectRelationship } from './objectRelationship';
@@ -41,6 +42,7 @@ export class ObjectDefinition {
     'modifiable'?: boolean;
     'name'?: string;
     'objectActions'?: Array<ObjectAction>;
+    'objectDefinitionSettings'?: Array<ObjectDefinitionSetting>;
     'objectFields'?: Array<ObjectField>;
     'objectFolderExternalReferenceCode'?: string;
     'objectLayouts'?: Array<ObjectLayout>;
@@ -167,6 +169,11 @@ export class ObjectDefinition {
             "name": "objectActions",
             "baseName": "objectActions",
             "type": "Array<ObjectAction>"
+        },
+        {
+            "name": "objectDefinitionSettings",
+            "baseName": "objectDefinitionSettings",
+            "type": "Array<ObjectDefinitionSetting>"
         },
         {
             "name": "objectFields",

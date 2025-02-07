@@ -7,6 +7,7 @@ package com.liferay.object.admin.rest.client.serdes.v1_0;
 
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectAction;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinition;
+import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinitionSetting;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectField;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectLayout;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectRelationship;
@@ -311,6 +312,33 @@ public class ObjectDefinitionSerDes {
 					String.valueOf(objectDefinition.getObjectActions()[i]));
 
 				if ((i + 1) < objectDefinition.getObjectActions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (objectDefinition.getObjectDefinitionSettings() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"objectDefinitionSettings\": ");
+
+			sb.append("[");
+
+			for (int i = 0;
+				 i < objectDefinition.getObjectDefinitionSettings().length;
+				 i++) {
+
+				sb.append(
+					String.valueOf(
+						objectDefinition.getObjectDefinitionSettings()[i]));
+
+				if ((i + 1) <
+						objectDefinition.getObjectDefinitionSettings().length) {
+
 					sb.append(", ");
 				}
 			}
@@ -811,6 +839,15 @@ public class ObjectDefinitionSerDes {
 				String.valueOf(objectDefinition.getObjectActions()));
 		}
 
+		if (objectDefinition.getObjectDefinitionSettings() == null) {
+			map.put("objectDefinitionSettings", null);
+		}
+		else {
+			map.put(
+				"objectDefinitionSettings",
+				String.valueOf(objectDefinition.getObjectDefinitionSettings()));
+		}
+
 		if (objectDefinition.getObjectFields() == null) {
 			map.put("objectFields", null);
 		}
@@ -1067,6 +1104,11 @@ public class ObjectDefinitionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "objectActions")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "objectDefinitionSettings")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "objectFields")) {
 				return false;
 			}
@@ -1289,6 +1331,29 @@ public class ObjectDefinitionSerDes {
 					}
 
 					objectDefinition.setObjectActions(objectActionsArray);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "objectDefinitionSettings")) {
+
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					ObjectDefinitionSetting[] objectDefinitionSettingsArray =
+						new ObjectDefinitionSetting
+							[jsonParserFieldValues.length];
+
+					for (int i = 0; i < objectDefinitionSettingsArray.length;
+						 i++) {
+
+						objectDefinitionSettingsArray[i] =
+							ObjectDefinitionSettingSerDes.toDTO(
+								(String)jsonParserFieldValues[i]);
+					}
+
+					objectDefinition.setObjectDefinitionSettings(
+						objectDefinitionSettingsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "objectFields")) {
