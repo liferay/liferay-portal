@@ -5,8 +5,11 @@
 
 package com.liferay.object.service.impl;
 
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.service.base.ObjectDefinitionSettingLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,4 +22,13 @@ import org.osgi.service.component.annotations.Component;
 )
 public class ObjectDefinitionSettingLocalServiceImpl
 	extends ObjectDefinitionSettingLocalServiceBaseImpl {
+
+	@Override
+	public List<ObjectDefinitionSetting> getObjectDefinitionSettings(
+		long objectDefinitionId) {
+
+		return objectDefinitionSettingPersistence.findByObjectDefinitionId(
+			objectDefinitionId);
+	}
+
 }
