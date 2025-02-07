@@ -299,6 +299,12 @@ public class ObjectDefinitionSettingLocalServiceUtil {
 		return getService().getObjectDefinitionSettings(start, end);
 	}
 
+	public static List<ObjectDefinitionSetting> getObjectDefinitionSettings(
+		long objectDefinitionId) {
+
+		return getService().getObjectDefinitionSettings(objectDefinitionId);
+	}
+
 	/**
 	 * Returns the number of object definition settings.
 	 *

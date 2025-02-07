@@ -260,6 +260,10 @@ public interface ObjectDefinitionSettingLocalService
 	public List<ObjectDefinitionSetting> getObjectDefinitionSettings(
 		int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectDefinitionSetting> getObjectDefinitionSettings(
+		long objectDefinitionId);
+
 	/**
 	 * Returns the number of object definition settings.
 	 *

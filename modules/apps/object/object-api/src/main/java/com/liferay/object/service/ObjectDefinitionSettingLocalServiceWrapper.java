@@ -335,6 +335,14 @@ public class ObjectDefinitionSettingLocalServiceWrapper
 			start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.object.model.ObjectDefinitionSetting>
+		getObjectDefinitionSettings(long objectDefinitionId) {
+
+		return _objectDefinitionSettingLocalService.getObjectDefinitionSettings(
+			objectDefinitionId);
+	}
+
 	/**
 	 * Returns the number of object definition settings.
 	 *
