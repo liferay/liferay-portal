@@ -83,6 +83,11 @@ public interface DBPartitionDB {
 			"drop view if exists ", partitionName, StringPool.PERIOD, viewName);
 	}
 
+	public String[] getRenamePartitionSQL(
+			Connection connection, String sourcePartitionName,
+			String targetPartitionName)
+		throws SQLException;
+
 	public default String getSafeAlterTable(String alterTableSQL) {
 		return alterTableSQL;
 	}
