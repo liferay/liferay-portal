@@ -51,6 +51,7 @@ import com.liferay.object.internal.deployer.ObjectDefinitionDeployerImpl;
 import com.liferay.object.internal.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
@@ -194,7 +195,9 @@ public class ObjectDefinitionLocalServiceImpl
 			boolean enableObjectEntryDraft, Map<Locale, String> labelMap,
 			String name, String panelAppOrder, String panelCategoryKey,
 			Map<Locale, String> pluralLabelMap, boolean portlet, String scope,
-			String storageType, List<ObjectField> objectFields)
+			String storageType,
+			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields)
 		throws PortalException {
 
 		return _addObjectDefinition(
@@ -385,7 +388,9 @@ public class ObjectDefinitionLocalServiceImpl
 			String panelCategoryKey, String pkObjectFieldDBColumnName,
 			String pkObjectFieldName, Map<Locale, String> pluralLabelMap,
 			boolean portlet, String scope, String titleObjectFieldName,
-			int version, int status, List<ObjectField> objectFields)
+			int version, int status,
+			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields)
 		throws PortalException {
 
 		return _addObjectDefinition(
@@ -1085,7 +1090,8 @@ public class ObjectDefinitionLocalServiceImpl
 			boolean enableObjectEntryDraft, boolean enableObjectEntryHistory,
 			Map<Locale, String> labelMap, String name, String panelAppOrder,
 			String panelCategoryKey, boolean portlet,
-			Map<Locale, String> pluralLabelMap, String scope, int status)
+			Map<Locale, String> pluralLabelMap, String scope, int status,
+			List<ObjectDefinitionSetting> objectDefinitionSettings)
 		throws PortalException {
 
 		ObjectDefinition objectDefinition =
@@ -1262,7 +1268,8 @@ public class ObjectDefinitionLocalServiceImpl
 	@Override
 	public ObjectDefinition updateSystemObjectDefinition(
 			String externalReferenceCode, long objectDefinitionId,
-			long objectFolderId, long titleObjectFieldId)
+			long objectFolderId, long titleObjectFieldId,
+			List<ObjectDefinitionSetting> objectDefinitionSettings)
 		throws PortalException {
 
 		ObjectDefinition objectDefinition =
