@@ -443,6 +443,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					() -> {
 						extractDBPartitionCompany(companyId);
 
+						DBPartitionUtil.removeDBPartition(companyId);
+
 						return null;
 					});
 			}
