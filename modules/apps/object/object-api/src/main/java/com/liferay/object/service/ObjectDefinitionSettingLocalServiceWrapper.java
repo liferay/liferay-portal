@@ -31,6 +31,16 @@ public class ObjectDefinitionSettingLocalServiceWrapper
 			objectDefinitionSettingLocalService;
 	}
 
+	@Override
+	public com.liferay.object.model.ObjectDefinitionSetting
+			addObjectDefinitionSetting(
+				long userId, long objectDefinitionId, String name, String value)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectDefinitionSettingLocalService.addObjectDefinitionSetting(
+			userId, objectDefinitionId, name, value);
+	}
+
 	/**
 	 * Adds the object definition setting to the database. Also notifies the appropriate model listeners.
 	 *

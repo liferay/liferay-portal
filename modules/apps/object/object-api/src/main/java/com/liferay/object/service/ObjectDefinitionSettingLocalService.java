@@ -54,6 +54,9 @@ public interface ObjectDefinitionSettingLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectDefinitionSettingLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the object definition setting local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ObjectDefinitionSettingLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public ObjectDefinitionSetting addObjectDefinitionSetting(
+			long userId, long objectDefinitionId, String name, String value)
+		throws PortalException;
 
 	/**
 	 * Adds the object definition setting to the database. Also notifies the appropriate model listeners.

@@ -36,6 +36,13 @@ public class ObjectDefinitionSettingLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectDefinitionSettingLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static ObjectDefinitionSetting addObjectDefinitionSetting(
+			long userId, long objectDefinitionId, String name, String value)
+		throws PortalException {
+
+		return getService().addObjectDefinitionSetting(
+			userId, objectDefinitionId, name, value);
+	}
 
 	/**
 	 * Adds the object definition setting to the database. Also notifies the appropriate model listeners.
