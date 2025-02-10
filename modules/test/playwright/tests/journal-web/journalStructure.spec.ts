@@ -95,3 +95,32 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Can not duplicate a repeatable field in the "Edit Default Values" form',
+	{
+		tag: '@LPD-29489',
+	},
+	async ({apiHelpers, journalStructuresPage, page, site}) => {
+		const structureName = 'Structure Test';
+		const fieldName = 'TextFieldTest';
+
+		await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{name: fieldName, repeatable: true}],
+				name: structureName,
+			})
+		);
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+		await journalStructuresPage.goToJournalStructureAction(
+			'Edit Default Values',
+			structureName
+		);
+
+		await expect(
+			page.getByLabel(`Add Duplicate Field ${fieldName}`)
+		).toBeDisabled();
+	}
+);
