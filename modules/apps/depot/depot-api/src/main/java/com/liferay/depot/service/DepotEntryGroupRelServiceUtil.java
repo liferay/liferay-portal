@@ -44,6 +44,15 @@ public class DepotEntryGroupRelServiceUtil {
 		return getService().deleteDepotEntryGroupRel(depotEntryGroupRelId);
 	}
 
+	public static DepotEntryGroupRel
+			getDepotEntryGroupRelByDepotEntryIdToGroupId(
+				long depotEntryId, long toGroupId)
+		throws PortalException {
+
+		return getService().getDepotEntryGroupRelByDepotEntryIdToGroupId(
+			depotEntryId, toGroupId);
+	}
+
 	public static List<DepotEntryGroupRel> getDepotEntryGroupRels(
 			long groupId, int start, int end)
 		throws PortalException {

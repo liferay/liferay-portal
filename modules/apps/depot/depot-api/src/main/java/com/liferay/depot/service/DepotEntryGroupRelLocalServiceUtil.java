@@ -276,6 +276,15 @@ public class DepotEntryGroupRelLocalServiceUtil {
 		return getService().getDepotEntryGroupRel(depotEntryGroupRelId);
 	}
 
+	public static DepotEntryGroupRel
+			getDepotEntryGroupRelByDepotEntryIdToGroupId(
+				long depotEntryId, long toGroupId)
+		throws PortalException {
+
+		return getService().getDepotEntryGroupRelByDepotEntryIdToGroupId(
+			depotEntryId, toGroupId);
+	}
+
 	/**
 	 * Returns the depot entry group rel matching the UUID and group.
 	 *
