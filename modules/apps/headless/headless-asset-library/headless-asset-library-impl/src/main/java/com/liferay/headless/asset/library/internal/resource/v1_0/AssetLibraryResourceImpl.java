@@ -45,12 +45,16 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 	@Override
 	public void deleteAssetLibrary(Long assetLibraryId) throws Exception {
+		deleteAssetLibraryBySite(assetLibraryId);
+	}
+
+	@Override
+	public void deleteAssetLibraryBySite(Long siteId) throws Exception {
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-32649")) {
 			throw new UnsupportedOperationException();
 		}
 
-		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
-			assetLibraryId);
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(siteId);
 
 		_depotEntryService.deleteDepotEntry(depotEntry.getDepotEntryId());
 	}
@@ -80,12 +84,16 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 	@Override
 	public AssetLibrary getAssetLibrary(Long assetLibraryId) throws Exception {
+		return getAssetLibraryBySite(assetLibraryId);
+	}
+
+	@Override
+	public AssetLibrary getAssetLibraryBySite(Long siteId) throws Exception {
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-32649")) {
 			throw new UnsupportedOperationException();
 		}
 
-		return _toAssetLibrary(
-			_depotEntryService.getGroupDepotEntry(assetLibraryId));
+		return _toAssetLibrary(_depotEntryService.getGroupDepotEntry(siteId));
 	}
 
 	@Override
@@ -93,12 +101,19 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			Long assetLibraryId, AssetLibrary assetLibrary)
 		throws Exception {
 
+		return patchAssetLibraryBySite(assetLibraryId, assetLibrary);
+	}
+
+	@Override
+	public AssetLibrary patchAssetLibraryBySite(
+			Long siteId, AssetLibrary assetLibrary)
+		throws Exception {
+
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-32649")) {
 			throw new UnsupportedOperationException();
 		}
 
-		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
-			assetLibraryId);
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(siteId);
 
 		Group group = depotEntry.getGroup();
 
@@ -116,16 +131,40 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				depotAppCustomization.isEnabled());
 		}
 
+		String name = assetLibrary.getName();
+
+		if (name == null) {
+			name = group.getName(contextAcceptLanguage.getPreferredLocale());
+		}
+
+		Map<String, String> nameMap = assetLibrary.getName_i18n();
+
+		if (nameMap == null) {
+			nameMap = LocalizedMapUtil.getI18nMap(group.getNameMap());
+		}
+
+		String description = assetLibrary.getDescription();
+
+		if (description == null) {
+			description = group.getDescription(
+				contextAcceptLanguage.getPreferredLocale());
+		}
+
+		Map<String, String> descriptionMap = assetLibrary.getDescription_i18n();
+
+		if (descriptionMap == null) {
+			descriptionMap = LocalizedMapUtil.getI18nMap(
+				group.getDescriptionMap());
+		}
+
 		return _toAssetLibrary(
 			_depotEntryService.updateDepotEntry(
 				depotEntry.getDepotEntryId(),
 				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(),
-					assetLibrary.getName(), assetLibrary.getName_i18n()),
+					contextAcceptLanguage.getPreferredLocale(), name, nameMap),
 				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(),
-					assetLibrary.getDescription(),
-					assetLibrary.getDescription_i18n()),
+					contextAcceptLanguage.getPreferredLocale(), description,
+					descriptionMap),
 				depotAppCustomizationMap, group.getTypeSettingsProperties(),
 				_getServiceContext()));
 	}
@@ -193,12 +232,26 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 					addAction(
 						ActionKeys.DELETE, depotEntry, "deleteAssetLibrary")
 				).put(
+					"delete-by-site",
+					addAction(
+						ActionKeys.DELETE, depotEntry,
+						"deleteAssetLibraryBySite")
+				).put(
 					"get",
 					addAction(ActionKeys.VIEW, depotEntry, "getAssetLibrary")
+				).put(
+					"get-by-site",
+					addAction(
+						ActionKeys.VIEW, depotEntry, "getAssetLibraryBySite")
 				).put(
 					"update",
 					addAction(
 						ActionKeys.UPDATE, depotEntry, "patchAssetLibrary")
+				).put(
+					"update-by-site",
+					addAction(
+						ActionKeys.UPDATE, depotEntry,
+						"patchAssetLibraryBySite")
 				).build(),
 				_dtoConverterRegistry, depotEntry.getGroupId(),
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
