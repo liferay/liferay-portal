@@ -105,6 +105,87 @@ paths:
                         default response
             # @review
             tags: ["AssetLibrary"]
+    /asset-libraries/by-site-id/{siteId}:
+        delete:
+            description:
+                Deletes the asset library by the site Id, and returns a 204 if the operation succeeds.
+            operationId: deleteAssetLibraryBySiteId
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["AssetLibrary"]
+        get:
+            description:
+                Retrieves the asset library by the site Id.
+            operationId: getAssetLibraryBySiteId
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: query
+                  name: fields
+                  schema:
+                      type: string
+                - in: query
+                  name: nestedFields
+                  schema:
+                      type: string
+                - in: query
+                  name: restrictFields
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+            tags: ["AssetLibrary"]
+        patch:
+            description:
+                Updates the asset library using only the fields received in the request body. Any other fields are left
+                untouched. Returns the updated asset library.
+            operationId: patchAssetLibraryBySiteId
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AssetLibrary"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/AssetLibrary"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetLibrary"
+            tags: ["AssetLibrary"]
     /asset-libraries/{assetLibraryId}:
         delete:
             description:
