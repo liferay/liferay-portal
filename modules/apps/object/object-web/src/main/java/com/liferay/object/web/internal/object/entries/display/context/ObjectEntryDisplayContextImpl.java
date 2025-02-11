@@ -1405,13 +1405,11 @@ public class ObjectEntryDisplayContextImpl
 			}
 		}
 		else if (value instanceof ArrayList) {
+			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
+				(List<String>)value);
+
 			ddmFormFieldValue.setValue(
-				new UnlocalizedValue(
-					StringBundler.concat(
-						StringPool.OPEN_BRACKET,
-						StringUtil.merge(
-							(List<String>)value, StringPool.COMMA_AND_SPACE),
-						StringPool.CLOSE_BRACKET)));
+				new UnlocalizedValue(jsonArray.toString()));
 		}
 		else if (value instanceof FileEntry) {
 			FileEntry fileEntry = (FileEntry)value;
