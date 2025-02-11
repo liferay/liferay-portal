@@ -8,6 +8,7 @@ package com.liferay.object.admin.rest.internal.dto.v1_0.util;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectAction;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
+import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinitionSetting;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectField;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectLayout;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship;
@@ -15,6 +16,7 @@ import com.liferay.object.admin.rest.dto.v1_0.ObjectValidationRule;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectView;
 import com.liferay.object.admin.rest.dto.v1_0.Status;
 import com.liferay.object.admin.rest.dto.v1_0.util.ObjectActionUtil;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -31,7 +33,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -46,7 +52,7 @@ import java.util.Locale;
 public class ObjectDefinitionUtil {
 
 	public static ObjectDefinition toObjectDefinition(
-		Locale locale,
+		GroupLocalService groupLocalService, Locale locale,
 		NotificationTemplateLocalService notificationTemplateLocalService,
 		ObjectActionLocalService objectActionLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
@@ -162,6 +168,13 @@ public class ObjectDefinitionUtil {
 							null, locale, notificationTemplateLocalService,
 							objectDefinitionLocalService, objectAction),
 						ObjectAction.class));
+				setObjectDefinitionSettings(
+					() -> TransformUtil.transformToArray(
+						serviceBuilderObjectDefinition.
+							getObjectDefinitionSettings(),
+						objectDefinitionSetting -> _toObjectDefinitionSetting(
+							groupLocalService, objectDefinitionSetting),
+						ObjectDefinitionSetting.class));
 				setObjectFields(
 					() -> TransformUtil.transformToArray(
 						objectFieldLocalService.getObjectFields(
@@ -283,6 +296,62 @@ public class ObjectDefinitionUtil {
 						}
 
 						return serviceBuilderObjectField.getName();
+					});
+			}
+		};
+	}
+
+	private static ObjectDefinitionSetting _toObjectDefinitionSetting(
+		GroupLocalService groupLocalService,
+		com.liferay.object.model.ObjectDefinitionSetting
+			serviceBuilderObjectDefinitionSetting) {
+
+		if (serviceBuilderObjectDefinitionSetting == null) {
+			return null;
+		}
+
+		return new ObjectDefinitionSetting() {
+			{
+				setName(
+					() -> {
+						if (StringUtil.equals(
+								ObjectDefinitionSettingConstants.
+									NAME_ACCEPTED_GROUP_IDS,
+								serviceBuilderObjectDefinitionSetting.
+									getName())) {
+
+							return ObjectDefinitionSettingConstants.
+								NAME_ACCEPTED_GROUP_ERCS;
+						}
+
+						return serviceBuilderObjectDefinitionSetting.getName();
+					});
+				setValue(
+					() -> {
+						if (StringUtil.equals(
+								ObjectDefinitionSettingConstants.
+									NAME_ACCEPTED_GROUP_IDS,
+								serviceBuilderObjectDefinitionSetting.
+									getName())) {
+
+							String groupIds = String.valueOf(
+								serviceBuilderObjectDefinitionSetting.
+									getValue());
+
+							return StringUtil.merge(
+								TransformUtil.transform(
+									groupIds.split("\\s*,\\s*"),
+									groupId -> {
+										Group group =
+											groupLocalService.getGroup(
+												GetterUtil.getLong(groupId));
+
+										return group.getExternalReferenceCode();
+									},
+									String.class));
+						}
+
+						return serviceBuilderObjectDefinitionSetting.getValue();
 					});
 			}
 		};

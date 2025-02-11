@@ -6,8 +6,12 @@
 package com.liferay.object.admin.rest.internal.dto.v1_0.util;
 
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinitionSetting;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
 
@@ -18,6 +22,7 @@ public class ObjectDefinitionSettingUtil {
 
 	public static List<com.liferay.object.model.ObjectDefinitionSetting>
 		toObjectDefinitionSettings(
+			long companyId, GroupLocalService groupLocalService,
 			ObjectDefinitionSetting[] objectDefinitionSettings,
 			ObjectDefinitionSettingLocalService
 				objectDefinitionSettingLocalService) {
@@ -30,10 +35,38 @@ public class ObjectDefinitionSettingUtil {
 						objectDefinitionSettingLocalService.
 							createObjectDefinitionSetting(0L);
 
+				if (!StringUtil.equals(
+						ObjectDefinitionSettingConstants.
+							NAME_ACCEPTED_GROUP_ERCS,
+						objectDefinitionSetting.getName())) {
+
+					serviceBuilderObjectDefinitionSetting.setName(
+						objectDefinitionSetting.getName());
+					serviceBuilderObjectDefinitionSetting.setValue(
+						String.valueOf(objectDefinitionSetting.getValue()));
+
+					return serviceBuilderObjectDefinitionSetting;
+				}
+
 				serviceBuilderObjectDefinitionSetting.setName(
-					objectDefinitionSetting.getName());
+					ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS);
+
+				String groupExternalReferenceCodes = String.valueOf(
+					objectDefinitionSetting.getValue());
+
 				serviceBuilderObjectDefinitionSetting.setValue(
-					String.valueOf(objectDefinitionSetting.getValue()));
+					StringUtil.merge(
+						TransformUtil.transform(
+							groupExternalReferenceCodes.split("\\s*,\\s*"),
+							groupERC -> {
+								Group group =
+									groupLocalService.
+										getGroupByExternalReferenceCode(
+											groupERC, companyId);
+
+								return String.valueOf(group.getGroupId());
+							},
+							String.class)));
 
 				return serviceBuilderObjectDefinitionSetting;
 			});

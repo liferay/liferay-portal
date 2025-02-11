@@ -21,6 +21,7 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
@@ -56,7 +57,7 @@ public class ObjectDefinitionDTOConverter
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionUtil.toObjectDefinition(
-				dtoConverterContext.getLocale(),
+				_groupLocalService, dtoConverterContext.getLocale(),
 				_notificationTemplateLocalService, _objectActionLocalService,
 				_objectDefinitionLocalService, _objectFieldDTOConverter,
 				_objectFieldLocalService, _objectLayoutLocalService,
@@ -71,6 +72,9 @@ public class ObjectDefinitionDTOConverter
 
 		return objectDefinition;
 	}
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private NotificationTemplateLocalService _notificationTemplateLocalService;

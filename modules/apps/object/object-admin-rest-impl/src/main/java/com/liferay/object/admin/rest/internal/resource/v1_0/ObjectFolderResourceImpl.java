@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -442,6 +443,7 @@ public class ObjectFolderResourceImpl extends BaseObjectFolderResourceImpl {
 						}
 
 						return ObjectDefinitionUtil.toObjectDefinition(
+							_groupLocalService,
 							contextAcceptLanguage.getPreferredLocale(),
 							_notificationTemplateLocalService,
 							_objectActionLocalService,
@@ -466,6 +468,9 @@ public class ObjectFolderResourceImpl extends BaseObjectFolderResourceImpl {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectFolderResourceImpl.class);
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private NotificationTemplateLocalService _notificationTemplateLocalService;
