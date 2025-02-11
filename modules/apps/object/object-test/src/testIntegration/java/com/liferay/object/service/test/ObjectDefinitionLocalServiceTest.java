@@ -6,12 +6,16 @@
 package com.liferay.object.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.exception.NoSuchObjectFieldException;
 import com.liferay.object.exception.NoSuchObjectFolderException;
 import com.liferay.object.exception.ObjectDefinitionAccountEntryRestrictedException;
@@ -28,6 +32,8 @@ import com.liferay.object.exception.ObjectDefinitionPanelCategoryKeyException;
 import com.liferay.object.exception.ObjectDefinitionPluralLabelException;
 import com.liferay.object.exception.ObjectDefinitionRootObjectDefinitionIdException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
+import com.liferay.object.exception.ObjectDefinitionSettingNameException;
+import com.liferay.object.exception.ObjectDefinitionSettingValueException;
 import com.liferay.object.exception.ObjectDefinitionStatusException;
 import com.liferay.object.exception.ObjectDefinitionSystemException;
 import com.liferay.object.exception.ObjectDefinitionVersionException;
@@ -40,6 +46,7 @@ import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFolder;
@@ -96,6 +103,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -651,6 +659,139 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 
 		_objectFolderLocalService.deleteObjectFolder(objectFolder);
+	}
+
+	@Test
+	public void testAddObjectDefinitionWithObjectDefinitionSettings()
+		throws Exception {
+
+		String randomName = ObjectDefinitionTestUtil.getRandomName();
+
+		AssertUtils.assertFailure(
+			ObjectDefinitionSettingNameException.NotAllowedNames.class,
+			StringBundler.concat(
+				"The settings ",
+				ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
+				" are not allowed for object definition ", randomName),
+			() -> _addCustomObjectDefinition(
+				randomName, ObjectDefinitionConstants.SCOPE_COMPANY,
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS
+					).value(
+						StringPool.TRUE
+					).build())));
+		AssertUtils.assertFailure(
+			ObjectDefinitionSettingNameException.NotAllowedNames.class,
+			StringBundler.concat(
+				"The settings ",
+				ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
+				" are not allowed for object definition ", randomName),
+			() -> _addCustomObjectDefinition(
+				randomName, ObjectDefinitionConstants.SCOPE_SITE,
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS
+					).value(
+						StringPool.TRUE
+					).build())));
+		AssertUtils.assertFailure(
+			ObjectDefinitionSettingNameException.NotAllowedNames.class,
+			StringBundler.concat(
+				"The settings ", randomName,
+				" are not allowed for object definition ", randomName),
+			() -> _addCustomObjectDefinition(
+				randomName, ObjectDefinitionConstants.SCOPE_DEPOT,
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						randomName
+					).value(
+						randomName
+					).build())));
+		AssertUtils.assertFailure(
+			ObjectDefinitionSettingNameException.NotAllowedNames.class,
+			StringBundler.concat(
+				"The settings ",
+				ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS,
+				" are not allowed for object definition ", randomName),
+			() -> _addCustomObjectDefinition(
+				randomName, ObjectDefinitionConstants.SCOPE_DEPOT,
+				List.of(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS
+					).value(
+						StringPool.TRUE
+					).build(),
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS
+					).value(
+						String.valueOf(TestPropsValues.getGroupId())
+					).build())));
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), ServiceContextTestUtil.getServiceContext());
+
+		long depotGroupId = depotEntry.getGroupId();
+
+		AssertUtils.assertFailure(
+			ObjectDefinitionSettingValueException.InvalidValue.class,
+			StringBundler.concat(
+				"The value ", TestPropsValues.getGroupId(), " of setting \"",
+				ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS,
+				"\" is invalid for object definition \"", randomName, "\""),
+			() -> _addCustomObjectDefinition(
+				randomName, ObjectDefinitionConstants.SCOPE_DEPOT,
+				List.of(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS
+					).value(
+						StringBundler.concat(
+							depotGroupId, StringPool.COMMA,
+							TestPropsValues.getGroupId())
+					).build())));
+
+		ObjectDefinition objectDefinition = _addCustomObjectDefinition(
+			ObjectDefinitionTestUtil.getRandomName(),
+			ObjectDefinitionConstants.SCOPE_DEPOT,
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS
+				).value(
+					StringPool.TRUE
+				).build()));
+
+		_assertObjectDefinitionSettingsValues(
+			objectDefinition.getObjectDefinitionSettings(),
+			Collections.singletonMap(
+				ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
+				StringPool.TRUE));
+
+		objectDefinition = _addCustomObjectDefinition(
+			ObjectDefinitionTestUtil.getRandomName(),
+			ObjectDefinitionConstants.SCOPE_DEPOT,
+			List.of(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS
+				).value(
+					String.valueOf(depotGroupId)
+				).build()));
+
+		_assertObjectDefinitionSettingsValues(
+			objectDefinition.getObjectDefinitionSettings(),
+			Collections.singletonMap(
+				ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS,
+				String.valueOf(depotGroupId)));
 	}
 
 	@Test
@@ -2977,6 +3118,24 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	private ObjectDefinition _addCustomObjectDefinition(
+			String name, String scope,
+			List<ObjectDefinitionSetting> objectDefinitionSettings)
+		throws Exception {
+
+		return _objectDefinitionLocalService.addCustomObjectDefinition(
+			TestPropsValues.getUserId(), 0, null, false, false, true, false,
+			false, LocalizedMapUtil.getLocalizedMap(name), name, null, null,
+			LocalizedMapUtil.getLocalizedMap(name), true, scope,
+			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+			objectDefinitionSettings,
+			Arrays.asList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING,
+					RandomTestUtil.randomString(), StringUtil.randomId())));
+	}
+
+	private ObjectDefinition _addCustomObjectDefinition(
 			String label, String name, String pluralLabel)
 		throws Exception {
 
@@ -3115,6 +3274,20 @@ public class ObjectDefinitionLocalServiceTest {
 			Assert.assertThat(
 				modelResourceNames,
 				CoreMatchers.hasItem(objectDefinition.getClassName()));
+		}
+	}
+
+	private void _assertObjectDefinitionSettingsValues(
+		List<ObjectDefinitionSetting> objectDefinitionSettings,
+		Map<String, String> objectDefinitionSettingsExpectedValues) {
+
+		for (ObjectDefinitionSetting objectDefinitionSetting :
+				objectDefinitionSettings) {
+
+			Assert.assertEquals(
+				objectDefinitionSettingsExpectedValues.get(
+					objectDefinitionSetting.getName()),
+				objectDefinitionSetting.getValue());
 		}
 	}
 
@@ -3660,6 +3833,9 @@ public class ObjectDefinitionLocalServiceTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private MessageBus _messageBus;

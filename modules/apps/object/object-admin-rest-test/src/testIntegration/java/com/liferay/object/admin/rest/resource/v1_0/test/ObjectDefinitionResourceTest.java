@@ -7,10 +7,13 @@ package com.liferay.object.admin.rest.resource.v1_0.test;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectAction;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinition;
+import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinitionSetting;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectField;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectLayout;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectLayoutBox;
@@ -29,6 +32,7 @@ import com.liferay.object.admin.rest.client.serdes.v1_0.ObjectDefinitionSerDes;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.constants.ObjectValidationRuleConstants;
@@ -48,10 +52,12 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -955,6 +961,112 @@ public class ObjectDefinitionResourceTest
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			randomModifiableSystemObjectDefinition.getId());
 
+		// Object definition settings
+
+		randomObjectDefinition = randomObjectDefinition();
+
+		randomObjectDefinition.setScope(ObjectDefinitionConstants.SCOPE_DEPOT);
+
+		DepotEntry depotEntry1 = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), ServiceContextTestUtil.getServiceContext());
+
+		Group group1 = depotEntry1.getGroup();
+
+		randomObjectDefinition.setObjectDefinitionSettings(
+			new ObjectDefinitionSetting[] {
+				new ObjectDefinitionSetting() {
+					{
+						setName(
+							ObjectDefinitionSettingConstants.
+								NAME_ACCEPTED_GROUP_IDS);
+						setValue(group1.getGroupId());
+					}
+				}
+			});
+
+		postObjectDefinition = objectDefinitionResource.postObjectDefinition(
+			randomObjectDefinition);
+
+		Assert.assertArrayEquals(
+			new ObjectDefinitionSetting[] {
+				new ObjectDefinitionSetting() {
+					{
+						setName(
+							ObjectDefinitionSettingConstants.
+								NAME_ACCEPTED_GROUP_ERCS);
+						setValue(group1.getExternalReferenceCode());
+					}
+				}
+			},
+			postObjectDefinition.getObjectDefinitionSettings());
+
+		DepotEntry depotEntry2 = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), ServiceContextTestUtil.getServiceContext());
+
+		Group group2 = depotEntry2.getGroup();
+
+		postObjectDefinition.setObjectDefinitionSettings(
+			new ObjectDefinitionSetting[] {
+				new ObjectDefinitionSetting() {
+					{
+						setName(
+							ObjectDefinitionSettingConstants.
+								NAME_ACCEPTED_GROUP_IDS);
+						setValue(
+							StringBundler.concat(
+								group1.getGroupId(), StringPool.COMMA,
+								group2.getGroupId()));
+					}
+				}
+			});
+
+		postObjectDefinition = objectDefinitionResource.putObjectDefinition(
+			postObjectDefinition.getId(), postObjectDefinition);
+
+		Assert.assertArrayEquals(
+			new ObjectDefinitionSetting[] {
+				new ObjectDefinitionSetting() {
+					{
+						setName(
+							ObjectDefinitionSettingConstants.
+								NAME_ACCEPTED_GROUP_ERCS);
+						setValue(
+							StringBundler.concat(
+								group1.getExternalReferenceCode(),
+								StringPool.COMMA,
+								group2.getExternalReferenceCode()));
+					}
+				}
+			},
+			postObjectDefinition.getObjectDefinitionSettings());
+
+		ObjectDefinitionSetting[] expectedObjectDefinitionSettings = {
+			new ObjectDefinitionSetting() {
+				{
+					setName(
+						ObjectDefinitionSettingConstants.
+							NAME_ACCEPTED_GROUP_EXTERNAL_REFERENCE_CODES);
+					setValue(String.valueOf(group2.getExternalReferenceCode()));
+				}
+			}
+		};
+
+		postObjectDefinition.setObjectDefinitionSettings(
+			expectedObjectDefinitionSettings);
+
+		postObjectDefinition = objectDefinitionResource.putObjectDefinition(
+			postObjectDefinition.getId(), postObjectDefinition);
+
+		Assert.assertArrayEquals(
+			expectedObjectDefinitionSettings,
+			postObjectDefinition.getObjectDefinitionSettings());
+
 		// Storage type
 
 		postObjectDefinition = testPutObjectDefinition_addObjectDefinition();
@@ -1557,6 +1669,9 @@ public class ObjectDefinitionResourceTest
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectDefinitionResourceTest.class);
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private Language _language;

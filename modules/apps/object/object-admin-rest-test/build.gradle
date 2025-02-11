@@ -5,6 +5,7 @@ dependencies {
 	testIntegrationImplementation group: "javax.annotation", name: "javax.annotation-api", version: "1.3.2"
 	testIntegrationImplementation group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.1"
 	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:object:object-admin-rest-api")
 	testIntegrationImplementation project(":apps:object:object-admin-rest-client")

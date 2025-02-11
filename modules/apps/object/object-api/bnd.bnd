@@ -11,6 +11,7 @@ Export-Package:\
 	com.liferay.object.definition.groovy.script.use,\
 	com.liferay.object.definition.notification.term.util,\
 	com.liferay.object.definition.security.permission.resource,\
+	com.liferay.object.definition.setting.builder,\
 	com.liferay.object.definition.util,\
 	com.liferay.object.deployer,\
 	com.liferay.object.display.context,\
