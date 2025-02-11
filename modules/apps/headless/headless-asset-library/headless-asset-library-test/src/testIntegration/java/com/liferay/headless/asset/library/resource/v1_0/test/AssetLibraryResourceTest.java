@@ -52,7 +52,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	@Override
 	@Test
 	public void testDeleteAssetLibraryLinkToSite() throws Exception {
-		AssetLibrary assetLibrary = testDeleteAssetLibraryLinkToSite_addAssetLibrary();
+		AssetLibrary assetLibrary =
+			testDeleteAssetLibraryLinkToSite_addAssetLibrary();
 
 		_assertLinkedSites(assetLibrary);
 
@@ -61,7 +62,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		Assert.assertTrue(ArrayUtil.isEmpty(assetLibrary.getLinkedSiteIds()));
 		Assert.assertTrue(
-			ArrayUtil.isEmpty(assetLibrary.getLinkedSitesExternalReferenceCodes()));
+			ArrayUtil.isEmpty(
+				assetLibrary.getLinkedSitesExternalReferenceCodes()));
 	}
 
 	@Override
@@ -73,7 +75,9 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	@Override
 	@Test
 	public void testPostAssetLibraryLinkToSite() throws Exception {
-		AssetLibrary assetLibrary = testPostAssetLibraryLinkToSite_addAssetLibrary(randomAssetLibrary());
+		AssetLibrary assetLibrary =
+			testPostAssetLibraryLinkToSite_addAssetLibrary(
+				randomAssetLibrary());
 
 		_assertLinkedSites(assetLibrary);
 	}
@@ -88,12 +92,16 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	@Override
-	protected AssetLibrary testDeleteAssetLibrary_addAssetLibrary() throws Exception {
+	protected AssetLibrary testDeleteAssetLibrary_addAssetLibrary()
+		throws Exception {
+
 		return _addRandomAssetLibrary();
 	}
 
 	@Override
-	protected AssetLibrary testDeleteAssetLibraryLinkToSite_addAssetLibrary() throws Exception {
+	protected AssetLibrary testDeleteAssetLibraryLinkToSite_addAssetLibrary()
+		throws Exception {
+
 		AssetLibrary assetLibrary = _addRandomAssetLibrary();
 
 		DepotEntry depotEntry = _depotEntryLocalService.getGroupDepotEntry(
@@ -106,22 +114,30 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	@Override
-	protected AssetLibrary testGetAssetLibrary_addAssetLibrary() throws Exception {
+	protected AssetLibrary testGetAssetLibrary_addAssetLibrary()
+		throws Exception {
+
 		return _addRandomAssetLibrary();
 	}
 
 	@Override
-	protected AssetLibrary testPatchAssetLibrary_addAssetLibrary() throws Exception {
+	protected AssetLibrary testPatchAssetLibrary_addAssetLibrary()
+		throws Exception {
+
 		return _addRandomAssetLibrary();
 	}
 
 	@Override
-	protected AssetLibrary testPostAssetLibrary_addAssetLibrary(AssetLibrary assetLibrary) throws Exception {
+	protected AssetLibrary testPostAssetLibrary_addAssetLibrary(
+			AssetLibrary assetLibrary)
+		throws Exception {
+
 		return assetLibraryResource.postAssetLibrary(assetLibrary);
 	}
 
 	@Override
-	protected AssetLibrary testPostAssetLibraryLinkToSite_addAssetLibrary(AssetLibrary assetLibrary)
+	protected AssetLibrary testPostAssetLibraryLinkToSite_addAssetLibrary(
+			AssetLibrary assetLibrary)
 		throws Exception {
 
 		assetLibrary = assetLibraryResource.postAssetLibrary(assetLibrary);
