@@ -56,6 +56,47 @@ public class AssetLibrary implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(AssetLibrary.class, json);
 	}
 
+	@Schema(description = "The key of the asset library.")
+	public String getAssetLibraryKey() {
+		if (_assetLibraryKeySupplier != null) {
+			assetLibraryKey = _assetLibraryKeySupplier.get();
+
+			_assetLibraryKeySupplier = null;
+		}
+
+		return assetLibraryKey;
+	}
+
+	public void setAssetLibraryKey(String assetLibraryKey) {
+		this.assetLibraryKey = assetLibraryKey;
+
+		_assetLibraryKeySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAssetLibraryKey(
+		UnsafeSupplier<String, Exception> assetLibraryKeyUnsafeSupplier) {
+
+		_assetLibraryKeySupplier = () -> {
+			try {
+				return assetLibraryKeyUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The key of the asset library.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String assetLibraryKey;
+
+	@JsonIgnore
+	private Supplier<String> _assetLibraryKeySupplier;
+
 	@Schema(description = "The asset library's creation date.")
 	public Date getDateCreated() {
 		if (_dateCreatedSupplier != null) {
@@ -224,7 +265,7 @@ public class AssetLibrary implements Serializable {
 	@JsonIgnore
 	private Supplier<Map<String, String>> _description_i18nSupplier;
 
-	@Schema(description = "The asset library's group external reference code.")
+	@Schema(description = "The asset library's site external reference code.")
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -259,7 +300,7 @@ public class AssetLibrary implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The asset library's group external reference code."
+		description = "The asset library's site external reference code."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
@@ -479,6 +520,47 @@ public class AssetLibrary implements Serializable {
 	@JsonIgnore
 	private Supplier<Map<String, String>> _name_i18nSupplier;
 
+	@Schema(description = "The asset library's site ID.")
+	public Long getSiteId() {
+		if (_siteIdSupplier != null) {
+			siteId = _siteIdSupplier.get();
+
+			_siteIdSupplier = null;
+		}
+
+		return siteId;
+	}
+
+	public void setSiteId(Long siteId) {
+		this.siteId = siteId;
+
+		_siteIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSiteId(
+		UnsafeSupplier<Long, Exception> siteIdUnsafeSupplier) {
+
+		_siteIdSupplier = () -> {
+			try {
+				return siteIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The asset library's site ID.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long siteId;
+
+	@JsonIgnore
+	private Supplier<Long> _siteIdSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -508,6 +590,22 @@ public class AssetLibrary implements Serializable {
 
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		String assetLibraryKey = getAssetLibraryKey();
+
+		if (assetLibraryKey != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"assetLibraryKey\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(assetLibraryKey));
+
+			sb.append("\"");
+		}
 
 		Date dateCreated = getDateCreated();
 
@@ -672,6 +770,18 @@ public class AssetLibrary implements Serializable {
 			sb.append("\"name_i18n\": ");
 
 			sb.append(_toJSON(name_i18n));
+		}
+
+		Long siteId = getSiteId();
+
+		if (siteId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteId\": ");
+
+			sb.append(siteId);
 		}
 
 		sb.append("}");

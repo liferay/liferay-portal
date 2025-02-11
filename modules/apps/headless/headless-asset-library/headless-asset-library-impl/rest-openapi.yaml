@@ -115,7 +115,7 @@ paths:
         delete:
             description:
                 Deletes the asset library by the site Id, and returns a 204 if the operation succeeds.
-            operationId: deleteAssetLibraryBySiteId
+            operationId: deleteAssetLibraryBySite
             parameters:
                 - in: path
                   name: siteId
@@ -132,7 +132,7 @@ paths:
         get:
             description:
                 Retrieves the asset library by the site Id.
-            operationId: getAssetLibraryBySiteId
+            operationId: getAssetLibraryBySite
             parameters:
                 - in: path
                   name: siteId
@@ -166,7 +166,7 @@ paths:
             description:
                 Updates the asset library using only the fields received in the request body. Any other fields are left
                 untouched. Returns the updated asset library.
-            operationId: patchAssetLibraryBySiteId
+            operationId: patchAssetLibraryBySite
             parameters:
                 - in: path
                   name: siteId

@@ -46,6 +46,14 @@ public interface AssetLibraryResource {
 	public AssetLibrary postAssetLibrary(AssetLibrary assetLibrary)
 		throws Exception;
 
+	public void deleteAssetLibraryBySite(Long siteId) throws Exception;
+
+	public AssetLibrary getAssetLibraryBySite(Long siteId) throws Exception;
+
+	public AssetLibrary patchAssetLibraryBySite(
+			Long siteId, AssetLibrary assetLibrary)
+		throws Exception;
+
 	public void deleteAssetLibrary(Long assetLibraryId) throws Exception;
 
 	public AssetLibrary getAssetLibrary(Long assetLibraryId) throws Exception;
