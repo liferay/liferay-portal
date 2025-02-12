@@ -127,9 +127,8 @@ definition {
 		ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
 	}
 
-	@ignore = "true"
 	@priority = 5
-	test ExtractAndAddDBPartitionCompaniesWithUpgradedDB {
+	test ExtractAndAddDBPartitionCompaniesToFreshPortalWithUpgradedDB {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
 		property data.archive.type = "data-archive-portal-partition";
@@ -196,6 +195,149 @@ definition {
 			SearchAdministration.executeReindex();
 
 			ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
+		}
+	}
+
+	@priority = 5
+	test ExtractAndAddDBPartitionCompaniesWithUpgradedDB {
+		property app.server.bundles.size = "1";
+		property cluster.enabled = "true";
+		property data.archive.type = "data-archive-portal-partition";
+		property portal.version = "7.4.13.u33";
+		property test.assert.warning.exceptions = "false";
+
+		task ("Validate www.able.com and www.baker.com partitions") {
+			User.loginPG(
+				nodePort = 8080,
+				password = PropsUtil.get("default.admin.password"),
+				userEmailAddress = "test@liferay.com");
+
+			SearchAdministration.executeReindex();
+
+			ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
+
+			SignOut.signOutOfSpecificURL(url = "http://www.able.com:8080");
+
+			SignOut.signOutOfSpecificURL(url = "http://www.baker.com:8080");
+		}
+
+		task ("Extract www.able.com and www.baker.com partitions") {
+			DBPartition.extractDBPartition(partitionCompanyId = 42638);
+
+			DBPartition.extractDBPartition(partitionCompanyId = 44913);
+		}
+
+		task ("Ensure that both www.able.com and www.baker.com are accessible") {
+			User.loginPG(
+				nodePort = 8080,
+				password = PropsUtil.get("default.admin.password"),
+				userEmailAddress = "test@liferay.com");
+
+			SearchAdministration.executeReindex();
+
+			ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
+		}
+
+		task ("Drop www.able.com and www.baker.com companies") {
+			HeadlessPortalInstanceAPI.deletePortalInstance(portalInstanceId = "www.able.com");
+
+			HeadlessPortalInstanceAPI.deletePortalInstance(portalInstanceId = "www.baker.com");
+		}
+
+		task ("Add previously extracted www.able.com and www.baker.com partitions into database") {
+			DBPartition.insertDBPartition(partitionCompanyId = 42638);
+
+			DBPartition.insertDBPartition(partitionCompanyId = 44913);
+		}
+
+		task ("Ensure that portal main functionalities work correctly") {
+			SignIn.signInTestSetup();
+
+			Smoke.runSmoke();
+
+			SignOut.signOut();
+		}
+
+		task ("Ensure that both www.able.com and www.baker.com are accessible") {
+			User.loginPG(
+				nodePort = 8080,
+				password = PropsUtil.get("default.admin.password"),
+				userEmailAddress = "test@liferay.com");
+
+			SearchAdministration.executeReindex();
+
+			ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
+		}
+	}
+
+	@priority = 5
+	test ExtractDBPartitionCompaniesWithUpgradedDB {
+		property app.server.bundles.size = "1";
+		property cluster.enabled = "true";
+		property data.archive.type = "data-archive-portal-partition";
+		property portal.version = "7.4.13.u33";
+		property test.assert.warning.exceptions = "false";
+
+		task ("Validate www.able.com and www.baker.com partitions") {
+			User.loginPG(
+				nodePort = 8080,
+				password = PropsUtil.get("default.admin.password"),
+				userEmailAddress = "test@liferay.com");
+
+			SearchAdministration.executeReindex();
+
+			ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
+
+			SignOut.signOutOfSpecificURL(url = "http://www.able.com:8080");
+
+			SignOut.signOutOfSpecificURL(url = "http://www.baker.com:8080");
+		}
+
+		task ("Extract www.able.com and www.baker.com partitions without deletion (default behavior)") {
+			DBPartition.extractDBPartition(partitionCompanyId = 42638);
+
+			DBPartition.extractDBPartition(partitionCompanyId = 44913);
+		}
+
+		task ("Ensure the lextracted_ schemas have been created") {
+			SQL.assertDatabaseCount(
+				databaseFilter = "lextracted_%",
+				databaseSubstring = "lextracted_",
+				expectedCount = 2);
+		}
+
+		task ("Ensure that portal main functionalities work correctly") {
+			SignIn.signInTestSetup();
+
+			Smoke.runSmoke();
+
+			SignOut.signOut();
+		}
+
+		task ("Ensure that both www.able.com and www.baker.com are accessible") {
+			User.loginPG(
+				nodePort = 8080,
+				password = PropsUtil.get("default.admin.password"),
+				userEmailAddress = "test@liferay.com");
+
+			SearchAdministration.executeReindex();
+
+			ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
+		}
+
+		task ("Clean up, removing the copied schemas") {
+			var databaseType = PropsUtil.get("database.type");
+
+			if (${databaseType} == "mysql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lextracted_42638;");
+
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lextracted_44913;");
+			}
+			else if (${databaseType} == "postgresql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lextracted_42638 cascade;");
+
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lextracted_44913 cascade;");
+			}
 		}
 	}
 
