@@ -7,6 +7,7 @@ package com.liferay.object.service.impl;
 
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
@@ -14,6 +15,7 @@ import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.exception.DuplicateObjectRelationshipException;
 import com.liferay.object.exception.DuplicateObjectRelationshipExternalReferenceCodeException;
 import com.liferay.object.exception.NoSuchObjectRelationshipException;
+import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectRelationshipDeletionTypeException;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.exception.ObjectRelationshipNameException;
@@ -1203,6 +1205,8 @@ public class ObjectRelationshipLocalServiceImpl
 			ObjectField objectField)
 		throws PortalException {
 
+		_validateScope(objectDefinition1, objectDefinition2);
+
 		ObjectRelationship objectRelationship =
 			objectRelationshipPersistence.create(
 				counterLocalService.increment());
@@ -2274,6 +2278,24 @@ public class ObjectRelationshipLocalServiceImpl
 					"Parameter object field ID " + parameterObjectFieldId +
 						" does not belong to a relationship object field");
 			}
+		}
+	}
+
+	private void _validateScope(
+			ObjectDefinition objectDefinition1,
+			ObjectDefinition objectDefinition2)
+		throws PortalException {
+
+		if (StringUtil.equals(
+				objectDefinition1.getScope(),
+				ObjectDefinitionConstants.SCOPE_DEPOT) ^
+			StringUtil.equals(
+				objectDefinition2.getScope(),
+				ObjectDefinitionConstants.SCOPE_DEPOT)) {
+
+			throw new ObjectDefinitionScopeException(
+				"An object definition scoped by depot can only be related to " +
+					"object definitions of the same scope");
 		}
 	}
 
