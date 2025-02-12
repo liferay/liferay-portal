@@ -13,6 +13,11 @@ Export-Package:\
 	javax.wsdl.extensions.soap12;version="1.2",\
 	javax.wsdl.factory;version="1.2",\
 	javax.wsdl.xml;version="1.2"
+Provide-Capability:\
+	osgi.contract;\
+		osgi.contract="JakartaRESTfulWebServices";\
+		uses:="jakarta.ws.rs,jakarta.ws.rs.client,jakarta.ws.rs.ext,jakarta.ws.rs.sse,jakarta.ws.rs.container,jakarta.ws.rs.core";\
+		version:Version="3.1.0"
 Require-Capability:\
 	osgi.extender;\
 		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
