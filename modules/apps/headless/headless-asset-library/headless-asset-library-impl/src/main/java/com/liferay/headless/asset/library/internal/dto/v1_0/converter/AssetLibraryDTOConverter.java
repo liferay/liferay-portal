@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.portal.vulcan.util.JaxRsLinkUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
@@ -59,6 +60,7 @@ public class AssetLibraryDTOConverter
 
 		return new AssetLibrary() {
 			{
+				setAssetLibraryKey(() -> GroupUtil.getAssetLibraryKey(group));
 				setDateCreated(depotEntry::getCreateDate);
 				setDateModified(depotEntry::getModifiedDate);
 				setDescription(

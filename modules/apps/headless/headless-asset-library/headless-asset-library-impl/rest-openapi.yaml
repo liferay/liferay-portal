@@ -4,6 +4,12 @@ components:
             description:
                 Represents an Asset Library
             properties:
+                assetLibraryKey:
+                    # @review
+                    description:
+                        The key of the asset library.
+                    readOnly: true
+                    type: string
                 dateCreated:
                     description:
                         The asset library's creation date.
