@@ -34,15 +34,9 @@ components:
                     type: object
                 externalReferenceCode:
                     description:
-                        The asset library's group external reference code.
+                        The asset library's site external reference code.
                     readOnly: true
                     type: string
-                id:
-                    description:
-                        The asset library's group ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
                 linkedSiteIds:
                     description:
                         The asset library linked site ids.
@@ -68,6 +62,12 @@ components:
                     description:
                         The localized asset library's name.
                     type: object
+                siteId:
+                    description:
+                        The asset library's site ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID

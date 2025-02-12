@@ -70,7 +70,6 @@ public class AssetLibraryDTOConverter
 						dtoConverterContext.isAcceptAllLanguages(),
 						group.getDescriptionMap()));
 				setExternalReferenceCode(group::getExternalReferenceCode);
-				setId(group::getGroupId);
 				setLinkedSiteIds(
 					() -> {
 						List<DepotEntryGroupRel> depotEntryGroupRels =
@@ -115,6 +114,7 @@ public class AssetLibraryDTOConverter
 					() -> LocalizedMapUtil.getI18nMap(
 						dtoConverterContext.isAcceptAllLanguages(),
 						group.getNameMap()));
+				setSiteId(group::getGroupId);
 			}
 		};
 	}

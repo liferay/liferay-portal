@@ -105,7 +105,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		AssetLibrary assetLibrary = _addRandomAssetLibrary();
 
 		DepotEntry depotEntry = _depotEntryLocalService.getGroupDepotEntry(
-			assetLibrary.getId());
+			assetLibrary.getSiteId());
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			depotEntry.getDepotEntryId(), testGroup.getGroupId());
@@ -143,7 +143,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		assetLibrary = assetLibraryResource.postAssetLibrary(assetLibrary);
 
 		DepotEntry depotEntry = _depotEntryLocalService.getGroupDepotEntry(
-			assetLibrary.getId());
+			assetLibrary.getSiteId());
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			depotEntry.getDepotEntryId(), testGroup.getGroupId());
