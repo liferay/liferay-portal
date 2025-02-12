@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.dao.db.BaseDBProcess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogContext;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.upgrade.BaseUpgradeCallable;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -86,8 +85,7 @@ public class UpgradeLogContext implements LogContext {
 	private static volatile String _component = "framework";
 
 	private final Class<?>[] _baseUpgradeClasses = new Class<?>[] {
-		BaseDB.class, BaseDBProcess.class, BaseUpgradeCallable.class,
-		UpgradeStep.class
+		BaseDB.class, BaseDBProcess.class, UpgradeStep.class
 	};
 	private final Set<String> _upgradeClassNames = SetUtil.fromArray(
 		DBUpgrader.class.getName(), LoggingTimer.class.getName(),
