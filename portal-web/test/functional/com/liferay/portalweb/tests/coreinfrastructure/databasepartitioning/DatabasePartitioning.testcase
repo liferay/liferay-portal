@@ -373,12 +373,11 @@ definition {
 		DBPartition.validateSchemas(schemaNamePrefix = "ltest_");
 	}
 
-	@ignore = "true"
 	@priority = 5
-	test ExtractAndAddDBPartitionCompanyWithInitialEmptyDB {
+	test ExtractAndAddDBPartitionCompanyToFreshPortalWithInitialEmptyDB {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
-		property custom.properties = "database.partition.schema.name.prefix=ltest_${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -419,6 +418,17 @@ definition {
 			Clustering.shutdownSpecificServer(nodePort = 8080);
 
 			Clustering.shutdownSpecificServer(nodePort = 9080);
+		}
+
+		task ("Removing the original schema") {
+			var databaseType = PropsUtil.get("database.type");
+
+			if (${databaseType} == "mysql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_${partitionCompanyId};");
+			}
+			else if (${databaseType} == "postgresql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_${partitionCompanyId} cascade;");
+			}
 		}
 
 		task ("Create an empty database") {
@@ -468,6 +478,184 @@ definition {
 			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
 
 			DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+		}
+	}
+
+	@priority = 5
+	test ExtractAndAddDBPartitionCompanyWithInitialEmptyDB {
+		property app.server.bundles.size = "1";
+		property cluster.enabled = "true";
+		property custom.properties = "database.partition.schema.name.prefix=ltest_${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property test.assert.warning.exceptions = "true";
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+
+		task ("Add www.able.com with an asset") {
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+
+			User.firstLoginUI(
+				password = PropsUtil.get("default.admin.password"),
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				panel = "Site Administration",
+				portlet = "Documents and Media");
+
+			DMDocument.addCP(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentFile = "Document_1.doc",
+				dmDocumentTitle = "DM Document Title");
+
+			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
+
+			DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+
+			var partitionCompanyId = JSONCompany.getCompanyId(portalInstanceName = "www.able.com");
+
+			SignOut.signOutOfSpecificURL(url = "http://www.able.com:8080");
+		}
+
+		task ("Extract www.able.com partition") {
+			DBPartition.extractDBPartition(partitionCompanyId = ${partitionCompanyId});
+		}
+
+		task ("Ensure that www.able.com is still accessible and its assets visible") {
+			User.firstLoginUI(
+				password = PropsUtil.get("default.admin.password"),
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				panel = "Site Administration",
+				portlet = "Documents and Media");
+
+			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
+
+			DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+		}
+
+		task ("Drop www.able.com company") {
+			HeadlessPortalInstanceAPI.deletePortalInstance(portalInstanceId = "www.able.com");
+		}
+
+		task ("Add previously extracted www.able.com partition into new database") {
+			DBPartition.insertDBPartition(partitionCompanyId = ${partitionCompanyId});
+		}
+
+		task ("Ensure that portal main functionalities work correctly") {
+			SignIn.signInTestSetup();
+
+			Smoke.runSmoke();
+
+			SignOut.signOut();
+		}
+
+		task ("Ensure that www.able.com is accessible and its assets visible") {
+			User.firstLoginUI(
+				password = PropsUtil.get("default.admin.password"),
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				panel = "Site Administration",
+				portlet = "Documents and Media");
+
+			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
+
+			DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+		}
+	}
+
+	@priority = 5
+	test ExtractDBPartitionCompanyWithInitialEmptyDB {
+		property app.server.bundles.size = "1";
+		property cluster.enabled = "true";
+		property custom.properties = "database.partition.schema.name.prefix=ltest_${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property test.assert.warning.exceptions = "true";
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+
+		task ("Add www.able.com with an asset") {
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+
+			User.firstLoginUI(
+				password = PropsUtil.get("default.admin.password"),
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				panel = "Site Administration",
+				portlet = "Documents and Media");
+
+			DMDocument.addCP(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentFile = "Document_1.doc",
+				dmDocumentTitle = "DM Document Title");
+
+			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
+
+			DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+
+			var partitionCompanyId = JSONCompany.getCompanyId(portalInstanceName = "www.able.com");
+
+			SignOut.signOutOfSpecificURL(url = "http://www.able.com:8080");
+		}
+
+		task ("Extract www.able.com partition") {
+			DBPartition.extractDBPartition(partitionCompanyId = ${partitionCompanyId});
+		}
+
+		task ("Ensure the lextracted_ schema has been created") {
+			SQL.assertDatabaseCount(
+				databaseFilter = "lextracted%",
+				databaseSubstring = "lextracted",
+				expectedCount = 1);
+		}
+
+		task ("Ensure that portal main functionalities work correctly") {
+			SignIn.signInTestSetup();
+
+			Smoke.runSmoke();
+
+			SignOut.signOut();
+		}
+
+		task ("Ensure that www.able.com is still accessible and its assets visible") {
+			User.firstLoginUI(
+				password = PropsUtil.get("default.admin.password"),
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				panel = "Site Administration",
+				portlet = "Documents and Media");
+
+			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
+
+			DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+		}
+
+		task ("Clean up, removing the copied schema") {
+			var databaseType = PropsUtil.get("database.type");
+
+			if (${databaseType} == "mysql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lextracted_${partitionCompanyId};");
+			}
+			else if (${databaseType} == "postgresql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lextracted_${partitionCompanyId} cascade;");
+			}
 		}
 	}
 
