@@ -4,12 +4,6 @@ components:
             description:
                 Represents an Asset Library
             properties:
-                assetLibraryId:
-                    description:
-                        The asset library's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
                 dateCreated:
                     description:
                         The asset library's creation date.
@@ -37,6 +31,12 @@ components:
                         The asset library's site external reference code.
                     readOnly: true
                     type: string
+                id:
+                    description:
+                        The asset library's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
                 linkedSiteIds:
                     description:
                         The asset library linked site ids.

@@ -59,7 +59,6 @@ public class AssetLibraryDTOConverter
 
 		return new AssetLibrary() {
 			{
-				setAssetLibraryId(depotEntry::getDepotEntryId);
 				setDateCreated(depotEntry::getCreateDate);
 				setDateModified(depotEntry::getModifiedDate);
 				setDescription(
@@ -70,6 +69,7 @@ public class AssetLibraryDTOConverter
 						dtoConverterContext.isAcceptAllLanguages(),
 						group.getDescriptionMap()));
 				setExternalReferenceCode(group::getExternalReferenceCode);
+				setId(depotEntry::getDepotEntryId);
 				setLinkedSiteIds(
 					() -> {
 						List<DepotEntryGroupRel> depotEntryGroupRels =
