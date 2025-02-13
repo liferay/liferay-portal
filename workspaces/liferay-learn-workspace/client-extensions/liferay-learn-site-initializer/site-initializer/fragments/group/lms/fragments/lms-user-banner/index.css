@@ -14,11 +14,6 @@ h2 {
 	width: 4.5rem;
 }
 
-.user-dashboard .lexicon-icon {
-	height: 3rem;
-	width: 3rem;
-}
-
 .user-dashboard .sticker-lg {
 	border-radius: 72px;
 	color: var(--color-neutral-4, #B1B2B9);
