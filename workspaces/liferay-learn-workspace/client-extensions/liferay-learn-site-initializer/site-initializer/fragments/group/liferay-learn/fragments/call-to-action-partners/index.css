@@ -16,3 +16,9 @@
 		text-decoration: underline;
 	}
 }
+
+@media (max-width: 575px) {
+	.cta-text {
+		justify-content: center;
+	}
+}
