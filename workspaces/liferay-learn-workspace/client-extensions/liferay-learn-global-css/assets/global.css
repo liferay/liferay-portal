@@ -229,73 +229,6 @@ pre[class*='language-'] {
 	max-width: var(--container-max-xl);
 }
 
-.course-bottom-nav:hover,
-.course-nav-bottom__banner:hover {
-	border: 2px solid var(--color-neutral-0, #ffffff);
-	cursor: pointer;
-	outline: 2px solid var(--color-brand-primary-lighten-2, #6399ff);
-}
-
-.course-nav-bottom__banner {
-	align-items: center;
-	background-color: var(--color-action-primary-default, #0b5fff);
-	border-radius: 10px;
-	color: var(--color-neutral-0, #fff);
-	justify-content: space-between;
-	padding: 12px;
-
-	.banner-icon {
-		display: flex;
-		padding: 0 24px;
-		svg {
-			height: 24px;
-			width: 24px;
-		}
-	}
-
-	.banner-options {
-		align-items: center;
-		gap: 1rem;
-
-		.banner-next-container {
-			background-color: #28293426;
-			border-radius: 10px;
-			font-size: 14px;
-			font-weight: 600;
-			padding: 12px;
-			text-align: center;
-		}
-
-		.banner-title {
-			font-size: 20px;
-			font-weight: 600;
-		}
-	}
-}
-
-.course-nav-bottom__menu {
-	align-items: center;
-	border-top: 1px solid var(--color-neutral-2, #e2e2e4);
-	color: #2b3a4b;
-	font-weight: 600;
-	height: 40px;
-	justify-content: space-between;
-	margin-top: 1rem;
-
-	.menu-previous-lesson {
-		gap: 0.5rem;
-		padding: 8px 16px;
-	}
-
-	.menu-sign-in a {
-		text-decoration: underline;
-	}
-
-	.previous-lesson-icon {
-		color: var(--color-action-neutral-default, #2b3a4b);
-	}
-}
-
 .custom-control-label .custom-control-label-text {
 	color: var(--color-neutral-10, #282934) !important;
 	line-height: 16px;
@@ -303,6 +236,51 @@ pre[class*='language-'] {
 
 .custom-control-label::before {
 	border-color: var(--color-neutral-10, #282934) !important;
+}
+
+.education-home__sections-container {
+	position: relative;
+
+	.education-home__cards-list {
+		@media(max-width: 988px) {
+			.course-layout-col {
+				margin-top: 20px;
+			}
+		}
+	}
+	
+	.learn-education-section .btn::after {
+		background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cmask id='mask0_2278_4993' style='mask-type:alpha' maskUnits='userSpaceOnUse' x='1' y='4' width='13' height='8'%3E%3Cpath d='M11.243 10.9895L13.4805 8.75201C13.818 8.38013 13.8305 7.72388 13.4805 7.32076L11.243 5.08326C10.193 4.15201 8.90234 5.57701 9.81172 6.51451L10.3336 7.03638H2.74609C1.41797 7.03638 1.41797 9.03638 2.74609 9.03638H10.3336L9.81172 9.55826C8.87734 10.552 10.2773 11.9176 11.243 10.9895Z' fill='%236B6C7E'/%3E%3C/mask%3E%3Cg mask='url(%23mask0_2278_4993)'%3E%3Crect width='16' height='16' fill='%230B5FFF'/%3E%3C/g%3E%3C/svg%3E");
+		background-size: cover;
+		content: '';
+		display: inline-block;
+		height: 14px;
+		margin-bottom: 2px;
+		margin-left: 4px; 
+		vertical-align: middle;  
+		width: 14px;
+	}
+
+	.education-home__section-header {
+		background: linear-gradient(
+				91.07deg,
+				#001742 0%,
+				#0011a8 24.6%,
+				#0b5fff 49%,
+				#0b5fff 74.5%,
+				#0b5fff 100%
+			),
+			radial-gradient(
+				26.56% 43.82% at 0% 0%,
+				#00256b 20.83%,
+				rgba(0, 37, 107, 0) 100%
+			),
+			radial-gradient(
+				14.55% 34.6% at 100% 34.6%,
+				rgba(55, 124, 255, 0.68) 0%,
+				rgba(55, 124, 255, 0) 100%
+			);
+	}
 }
 
 .input-group .search-bar-keywords-input::placeholder {

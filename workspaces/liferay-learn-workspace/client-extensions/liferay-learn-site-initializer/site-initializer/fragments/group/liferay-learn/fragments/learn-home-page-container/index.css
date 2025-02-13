@@ -1,0 +1,130 @@
+.learn-banner {
+	align-items: center;
+	display: flex;
+	justify-content: space-evenly;
+
+	h1 {
+		font-weight: 700;
+	}
+
+	.button-explore {
+		a::after {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='lexicon-icon lexicon-icon-order-arrow-right' role='presentation' viewBox='0 0 512 512' fill='%23FFFF'%3E%3Cpath class='lexicon-icon-outline' d='M367.9,350.3l71.6-71.6c10.8-11.9,11.2-32.9,0-45.8l-71.6-71.6c-33.6-29.8-74.9,15.8-45.8,45.8l16.7,16.7H96c-42.5,0-42.5,64,0,64h242.8l-16.7,16.7C292.2,336.3,337,380,367.9,350.3z'%3E%3C/path%3E%3C/svg%3E");
+			content: '';
+			display: inline-block;
+			height: 1rem;
+			width: 1rem;
+		}
+	}
+
+	.button-search {
+		a::after {
+			align-items: center;
+			border: 1px solid var(--color-neutral-2, #c9c9cf);
+			border-radius: 3px;
+			color: #6b6c7e;
+			content: '/';
+			display: inline-block;
+			display: flex;
+			font-weight: 700;
+			height: 1.5rem;
+			justify-content: center;
+			padding: 0.25rem;
+			width: 1.5rem;
+		}
+	}
+
+	@media (max-width: 1287px) {
+		display: flex !important;
+		flex-direction: column !important;
+	}
+
+	@media (max-width: 415px) {
+		font-size: 0.5rem;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+}
+
+.learn-home-cards-container {
+	.card-row {
+		gap: 2.5rem;
+	}
+
+	.learn-home-card {
+		cursor: pointer;
+
+		&:hover {
+			background-color: var(
+				--color-action-primary-hover-10,
+				#edf3fe
+			) !important;
+			border-color: var(
+				--color-brand-primary-darken-1,
+				#0053f0
+			) !important;
+			border-radius: 10px !important;
+			border-width: 1px !important;
+		}
+
+    @media (max-width: 1279px) {
+			width: 100% !important;
+		}
+
+    h2 {
+			font-weight: 700;
+		}
+
+		.home-card-icon {
+			align-items: center;
+			display: flex;
+			justify-content: center;
+			background:
+				linear-gradient(
+					91.07deg,
+					#001742 0%,
+					#0011a8 24.6%,
+					#0b5fff 49%,
+					#0b5fff 74.5%,
+					#0b5fff 100%
+				),
+				radial-gradient(
+						26.56% 43.82% at 0% 0%,
+						#00256b 20.83%,
+						rgba(0, 37, 107, 0) 100%
+					)
+				radial-gradient(
+					14.55% 34.6% at 100% 34.6%,
+					rgba(55, 124, 255, 0.68) 0%,
+					rgba(55, 124, 255, 0) 100%
+				);
+		}
+
+		.home-card-description {
+			font-size: 1.25rem;
+			font-weight: 400 !important;
+		}
+
+		.home-card-cta {
+			font-size: 1.25rem;
+
+			.component-text {
+				align-items: center;
+				display: flex;
+				gap: 0.5rem;
+			}
+
+			p::after {
+				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='lexicon-icon lexicon-icon-order-arrow-right' role='presentation' viewBox='0 0 512 512' fill='%230B5FFF'%3E%3Cpath class='lexicon-icon-outline' d='M367.9,350.3l71.6-71.6c10.8-11.9,11.2-32.9,0-45.8l-71.6-71.6c-33.6-29.8-74.9,15.8-45.8,45.8l16.7,16.7H96c-42.5,0-42.5,64,0,64h242.8l-16.7,16.7C292.2,336.3,337,380,367.9,350.3z'%3E%3C/path%3E%3C/svg%3E");
+				content: '';
+				display: inline-block;
+				height: 1rem;
+				width: 1rem;
+			}
+
+			p:hover {
+				font-size: 1.25rem;
+			}
+		}
+	}
+}
