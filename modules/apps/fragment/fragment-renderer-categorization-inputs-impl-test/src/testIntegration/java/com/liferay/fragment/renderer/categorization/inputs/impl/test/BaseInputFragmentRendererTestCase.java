@@ -223,7 +223,8 @@ public abstract class BaseInputFragmentRendererTestCase {
 			objectDefinition.getPanelAppOrder(),
 			objectDefinition.getPanelCategoryKey(),
 			objectDefinition.isPortlet(), objectDefinition.getPluralLabelMap(),
-			objectDefinition.getScope(), objectDefinition.getStatus());
+			objectDefinition.getScope(), objectDefinition.getStatus(),
+			Collections.emptyList());
 
 		FragmentRenderer fragmentRenderer = getFragmentRenderer();
 

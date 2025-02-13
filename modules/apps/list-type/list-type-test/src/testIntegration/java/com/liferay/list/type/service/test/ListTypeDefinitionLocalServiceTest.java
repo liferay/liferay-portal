@@ -111,6 +111,7 @@ public class ListTypeDefinitionLocalServiceTest {
 				null, LocalizedMapUtil.getLocalizedMap("Tests"), true,
 				ObjectDefinitionConstants.SCOPE_COMPANY,
 				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.emptyList(),
 				Collections.singletonList(objectField));
 
 		AssertUtils.assertFailure(

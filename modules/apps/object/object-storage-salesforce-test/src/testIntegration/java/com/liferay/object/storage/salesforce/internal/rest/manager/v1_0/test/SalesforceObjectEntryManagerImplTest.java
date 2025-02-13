@@ -166,6 +166,7 @@ public class SalesforceObjectEntryManagerImplTest
 				null, null, LocalizedMapUtil.getLocalizedMap("Tickets"), true,
 				ObjectDefinitionConstants.SCOPE_COMPANY,
 				ObjectDefinitionConstants.STORAGE_TYPE_SALESFORCE,
+				Collections.emptyList(),
 				ListUtil.fromArray(
 					new RichTextObjectFieldBuilder(
 					).externalReferenceCode(

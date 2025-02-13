@@ -65,7 +65,7 @@ public class ObjectDefinitionServiceImpl
 			enableFriendlyURLCustomization, enableIndexSearch,
 			enableLocalization, enableObjectEntryDraft, labelMap, name,
 			panelAppOrder, panelCategoryKey, pluralLabelMap, portlet, scope,
-			storageType, objectFields);
+			storageType, objectDefinitionSettings, objectFields);
 	}
 
 	@Override
@@ -112,7 +112,8 @@ public class ObjectDefinitionServiceImpl
 			enableComments, enableFriendlyURLCustomization, enableIndexSearch,
 			enableLocalization, labelMap, true, name, panelAppOrder,
 			panelCategoryKey, null, null, pluralLabelMap, portlet, scope, null,
-			1, WorkflowConstants.STATUS_DRAFT, objectFields);
+			1, WorkflowConstants.STATUS_DRAFT, objectDefinitionSettings,
+			objectFields);
 	}
 
 	@Override
@@ -254,7 +255,8 @@ public class ObjectDefinitionServiceImpl
 			enableFriendlyURLCustomization, enableIndexSearch,
 			enableLocalization, enableObjectEntryDraft,
 			enableObjectEntryHistory, labelMap, name, panelAppOrder,
-			panelCategoryKey, portlet, pluralLabelMap, scope, status);
+			panelCategoryKey, portlet, pluralLabelMap, scope, status,
+			objectDefinitionSettings);
 	}
 
 	@Override
@@ -297,7 +299,7 @@ public class ObjectDefinitionServiceImpl
 
 		return objectDefinitionLocalService.updateSystemObjectDefinition(
 			externalReferenceCode, objectDefinitionId, objectFolderId,
-			titleObjectFieldId);
+			titleObjectFieldId, objectDefinitionSettings);
 	}
 
 	@Override

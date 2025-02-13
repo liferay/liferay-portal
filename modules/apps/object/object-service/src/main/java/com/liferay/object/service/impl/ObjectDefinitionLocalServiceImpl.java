@@ -206,7 +206,8 @@ public class ObjectDefinitionLocalServiceImpl
 			enableLocalization, enableObjectEntryDraft, labelMap, true, name,
 			panelAppOrder, panelCategoryKey, null, null, pluralLabelMap,
 			portlet, scope, storageType, false, null, 0,
-			WorkflowConstants.STATUS_DRAFT, objectFields);
+			WorkflowConstants.STATUS_DRAFT, objectDefinitionSettings,
+			objectFields);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -296,7 +297,7 @@ public class ObjectDefinitionLocalServiceImpl
 				systemObjectDefinitionManager.getScope(),
 				systemObjectDefinitionManager.getTitleObjectFieldName(),
 				systemObjectDefinitionManager.getVersion(),
-				WorkflowConstants.STATUS_APPROVED,
+				WorkflowConstants.STATUS_APPROVED, Collections.emptyList(),
 				systemObjectDefinitionManager.getObjectFields());
 
 			_addOrUpdateObjectActions(
@@ -400,7 +401,8 @@ public class ObjectDefinitionLocalServiceImpl
 			name, panelAppOrder, panelCategoryKey, pkObjectFieldDBColumnName,
 			pkObjectFieldName, pluralLabelMap, portlet, scope,
 			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT, true,
-			titleObjectFieldName, version, status, objectFields);
+			titleObjectFieldName, version, status, objectDefinitionSettings,
+			objectFields);
 	}
 
 	@Override
@@ -1385,7 +1387,9 @@ public class ObjectDefinitionLocalServiceImpl
 			String pkObjectFieldDBColumnName, String pkObjectFieldName,
 			Map<Locale, String> pluralLabelMap, boolean portlet, String scope,
 			String storageType, boolean system, String titleObjectFieldName,
-			int version, int status, List<ObjectField> objectFields)
+			int version, int status,
+			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);

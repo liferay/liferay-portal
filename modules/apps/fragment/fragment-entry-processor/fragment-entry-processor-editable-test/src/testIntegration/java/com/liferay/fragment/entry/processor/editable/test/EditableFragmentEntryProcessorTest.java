@@ -111,6 +111,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -1538,7 +1539,8 @@ public class EditableFragmentEntryProcessorTest {
 				"control_panel.sites",
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				false, ObjectDefinitionConstants.SCOPE_SITE,
-				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT, null);
+				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.emptyList(), null);
 
 		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
 			new TextObjectFieldBuilder(

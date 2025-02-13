@@ -31,6 +31,7 @@ import java.io.Serializable;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -112,6 +113,7 @@ public class FDSSamplePortlet extends MVCPortlet {
 				LocalizedMapUtil.getLocalizedMap("Frontend Data Set Samples"),
 				true, ObjectDefinitionConstants.SCOPE_COMPANY,
 				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.emptyList(),
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,

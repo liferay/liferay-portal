@@ -254,7 +254,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			true, ObjectDefinitionConstants.SCOPE_SITE,
 			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-			Arrays.asList(objectFields));
+			Collections.emptyList(), Arrays.asList(objectFields));
 	}
 
 	private void _assertInfoFieldValue(
