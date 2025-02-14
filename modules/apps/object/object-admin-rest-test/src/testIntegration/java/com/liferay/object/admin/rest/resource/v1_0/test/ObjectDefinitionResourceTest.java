@@ -561,7 +561,7 @@ public class ObjectDefinitionResourceTest
 		assertValid(postObjectDefinition);
 	}
 
-	@FeatureFlags("LPD-32050")
+	@FeatureFlags({"LPD-31149", "LPD-32050"})
 	@Override
 	@Test
 	public void testPutObjectDefinition() throws Exception {

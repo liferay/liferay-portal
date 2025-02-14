@@ -661,6 +661,7 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectFolderLocalService.deleteObjectFolder(objectFolder);
 	}
 
+	@FeatureFlags("LPD-31149")
 	@Test
 	public void testAddObjectDefinitionWithObjectDefinitionSettings()
 		throws Exception {

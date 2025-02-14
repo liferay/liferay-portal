@@ -2867,6 +2867,12 @@ public class ObjectDefinitionLocalServiceImpl
 			throw new ObjectDefinitionScopeException("Scope is null");
 		}
 
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-31149") &&
+			StringUtil.equals(scope, ObjectDefinitionConstants.SCOPE_DEPOT)) {
+
+			throw new UnsupportedOperationException();
+		}
+
 		try {
 			_objectScopeProviderRegistry.getObjectScopeProvider(scope);
 		}
