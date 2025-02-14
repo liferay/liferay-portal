@@ -6,6 +6,7 @@ definition {
 	property database.types = "mysql";
 	property portal.release = "true";
 	property portal.upstream = "true";
+	property release.date.now = "true";
 	property test.liferay.virtual.instance = "false";
 	property test.run.type = "single";
 	property testray.main.component.name = "Database Upgrade Framework";
