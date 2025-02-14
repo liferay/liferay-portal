@@ -12807,7 +12807,7 @@ captcha.enforce.disabled=true</echo>
 				<replace
 					file="${app.server.dir}/conf/server.xml"
 					token="&lt;Service name=&quot;Catalina&quot;&gt;"
-					value="&lt;Service name= &quot;Catalina&quot;&gt;${line.separator}    &lt;Connector port=&quot;8443&quot; protocol=&quot;org.apache.coyote.http11.Http11NioProtocol&quot;${line.separator}           maxThreads=&quot;150&quot; SSLEnabled=&quot;true&quot; scheme=&quot;https&quot; secure=&quot;true&quot;${line.separator}           clientAuth=&quot;false&quot; sslProtocol=&quot;TLS&quot; keystoreFile=&quot;${app.server.parent.dir}/keystore.jks&quot; keystorePass=&quot;liferay&quot; /&gt;"
+					value="&lt;Service name=&quot;Catalina&quot;&gt;${line.separator}    &lt;Connector port=&quot;8443&quot; protocol=&quot;org.apache.coyote.http11.Http11NioProtocol&quot;${line.separator}               maxThreads=&quot;150&quot; SSLEnabled=&quot;true&quot; scheme=&quot;https&quot; secure=&quot;true&quot;${line.separator}               clientAuth=&quot;false&quot; sslProtocol=&quot;TLS&quot;&gt;${line.separator}        &lt;SSLHostConfig&gt;${line.separator}            &lt;Certificate certificateKeystoreFile=&quot;${app.server.parent.dir}/keystore.jks&quot;${line.separator}                          certificateKeystorePassword=&quot;liferay&quot;${line.separator}                          type=&quot;RSA&quot; /&gt;${line.separator}        &lt;/SSLHostConfig&gt;${line.separator}    &lt;/Connector&gt;"
 				/>
 			</then>
 			<else>
