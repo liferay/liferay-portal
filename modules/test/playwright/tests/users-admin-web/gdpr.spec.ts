@@ -628,3 +628,300 @@ testAdmin(
 		).toBeVisible();
 	}
 );
+
+testAdmin(
+	'LPD-48828 Can delete multiple entries from an application',
+	async ({
+		apiHelpers,
+		page,
+		personalDataErasurePage,
+		usersAndOrganizationsPage,
+	}) => {
+		page.on('dialog', (dialog) => {
+			dialog.accept().catch(() => {});
+		});
+
+		const userAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[userAccount.alternateName] = {
+			name: userAccount.givenName,
+			password: 'test',
+			surname: userAccount.familyName,
+		};
+
+		const role =
+			await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
+
+		await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+			role.externalReferenceCode,
+			userAccount.id
+		);
+
+		await performLogout(page);
+		await performLoginViaApi(page, userAccount.alternateName);
+
+		const site = await apiHelpers.headlessSite.createSite({
+			name: getRandomString(),
+		});
+
+		apiHelpers.data.push({id: site.id, type: 'site'});
+
+		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id
+		);
+
+		const attachment1 = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(__dirname, '/dependencies/attachment.docx')
+			)
+		);
+
+		const attachment2 = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(__dirname, '/dependencies/attachment.jpeg')
+			)
+		);
+
+		await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(__dirname, '/dependencies/attachment.txt')
+			)
+		);
+
+		await performLogout(page);
+		await performLoginViaApi(page, 'test');
+
+		await usersAndOrganizationsPage.goToUsers(false);
+		await (
+			await usersAndOrganizationsPage.usersTableRowActions(
+				userAccount.alternateName
+			)
+		).click();
+		await usersAndOrganizationsPage.deletePersonalDataMenuItem.click();
+
+		await expect(
+			personalDataErasurePage.selectAllItemsOnPageCheckbox
+		).toBeVisible();
+
+		await personalDataErasurePage.documentsAndMediaRadioButton.check();
+		await (
+			await personalDataErasurePage.userAssociatedDataTableRowCheckBox(
+				folder.name
+			)
+		).check();
+		await (
+			await personalDataErasurePage.userAssociatedDataTableRowCheckBox(
+				attachment1.fileName
+			)
+		).check();
+		await (
+			await personalDataErasurePage.userAssociatedDataTableRowCheckBox(
+				attachment2.fileName
+			)
+		).check();
+		await personalDataErasurePage.actionsButton.click();
+		await personalDataErasurePage.deleteMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			personalDataErasurePage.objectLink(folder.name)
+		).not.toBeVisible();
+		await expect(
+			personalDataErasurePage.objectLink(attachment1.fileName)
+		).not.toBeVisible();
+		await expect(
+			personalDataErasurePage.objectLink(attachment2.fileName)
+		).not.toBeVisible();
+
+		await page.goto(`/group/${site.name}${PORTLET_URLS.documentLibrary}`);
+
+		await expect(page.getByText(userAccount.name)).toHaveCount(1);
+	}
+);
+
+testAdmin(
+	'LPD-48828 Can anonymize multiple entries from an application',
+	async ({
+		apiHelpers,
+		page,
+		personalDataErasurePage,
+		userAssociatedDataDocumentLibraryPage,
+		usersAndOrganizationsPage,
+	}) => {
+		page.on('dialog', (dialog) => {
+			dialog.accept().catch(() => {});
+		});
+
+		const userAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[userAccount.alternateName] = {
+			name: userAccount.givenName,
+			password: 'test',
+			surname: userAccount.familyName,
+		};
+
+		const role =
+			await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
+
+		await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+			role.externalReferenceCode,
+			userAccount.id
+		);
+
+		await performLogout(page);
+		await performLoginViaApi(page, userAccount.alternateName);
+
+		const site = await apiHelpers.headlessSite.createSite({
+			name: getRandomString(),
+		});
+
+		apiHelpers.data.push({id: site.id, type: 'site'});
+
+		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id
+		);
+
+		const attachment1 = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(__dirname, '/dependencies/attachment.docx')
+			)
+		);
+
+		const attachment2 = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(__dirname, '/dependencies/attachment.jpeg')
+			)
+		);
+
+		await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(__dirname, '/dependencies/attachment.txt')
+			)
+		);
+
+		await performLogout(page);
+		await performLoginViaApi(page, 'test');
+
+		await usersAndOrganizationsPage.goToUsers(false);
+		await (
+			await usersAndOrganizationsPage.usersTableRowActions(
+				userAccount.alternateName
+			)
+		).click();
+		await usersAndOrganizationsPage.deletePersonalDataMenuItem.click();
+
+		await expect(
+			personalDataErasurePage.selectAllItemsOnPageCheckbox
+		).toBeVisible();
+
+		await personalDataErasurePage.documentsAndMediaRadioButton.check();
+		await (
+			await personalDataErasurePage.userAssociatedDataTableRowCheckBox(
+				folder.name
+			)
+		).check();
+		await (
+			await personalDataErasurePage.userAssociatedDataTableRowCheckBox(
+				attachment1.fileName
+			)
+		).check();
+		await (
+			await personalDataErasurePage.userAssociatedDataTableRowCheckBox(
+				attachment2.fileName
+			)
+		).check();
+		await personalDataErasurePage.actionsButton.click();
+		await personalDataErasurePage.anonymizeMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(page.getByText(folder.name)).not.toBeVisible();
+		await expect(page.getByText(attachment1.fileName)).not.toBeVisible();
+		await expect(page.getByText(attachment2.fileName)).not.toBeVisible();
+
+		await page.goto(`/group/${site.name}${PORTLET_URLS.documentLibrary}`);
+
+		const anonymousUser = 'Anonymous Anonymous';
+
+		await expect(page.getByText(anonymousUser)).toHaveCount(2);
+
+		await userAssociatedDataDocumentLibraryPage
+			.mediaLink(folder.name)
+			.click();
+
+		await expect(
+			userAssociatedDataDocumentLibraryPage.toogleInfoPanelButtonForFolder
+		).toBeVisible();
+
+		await userAssociatedDataDocumentLibraryPage.toogleInfoPanelButtonForFolder.click();
+
+		await expect(
+			userAssociatedDataDocumentLibraryPage.infoPanelSideBarCreatedByText
+		).toContainText(anonymousUser);
+
+		await page.goto(`/group/${site.name}${PORTLET_URLS.documentLibrary}`);
+
+		await userAssociatedDataDocumentLibraryPage
+			.mediaLink(attachment1.title)
+			.click();
+
+		await expect(
+			userAssociatedDataDocumentLibraryPage.toogleInfoPanelButtonForFiles
+		).toBeVisible();
+
+		await expect(async () => {
+			await userAssociatedDataDocumentLibraryPage.toogleInfoPanelButtonForFiles.click();
+
+			await expect(
+				userAssociatedDataDocumentLibraryPage.infoPanelSideBarOwnerText
+			).toBeVisible();
+		}).toPass();
+
+		await expect(
+			userAssociatedDataDocumentLibraryPage.infoPanelSideBarOwnerText
+		).toContainText(anonymousUser);
+		await expect(
+			userAssociatedDataDocumentLibraryPage.infoPanelSideBarCreatedByText
+		).toContainText(anonymousUser);
+		await expect(
+			userAssociatedDataDocumentLibraryPage.infoPanelSideBarModifiedByText
+		).toContainText(anonymousUser);
+
+		await page.goto(`/group/${site.name}${PORTLET_URLS.documentLibrary}`);
+
+		await userAssociatedDataDocumentLibraryPage
+			.mediaLink(attachment2.title)
+			.click();
+
+		await expect(
+			userAssociatedDataDocumentLibraryPage.toogleInfoPanelButtonForFiles
+		).toBeVisible();
+
+		await expect(async () => {
+			await userAssociatedDataDocumentLibraryPage.toogleInfoPanelButtonForFiles.click();
+
+			await expect(
+				userAssociatedDataDocumentLibraryPage.infoPanelSideBarOwnerText
+			).toBeVisible();
+		}).toPass();
+
+		await expect(
+			userAssociatedDataDocumentLibraryPage.infoPanelSideBarOwnerText
+		).toContainText(anonymousUser);
+		await expect(
+			userAssociatedDataDocumentLibraryPage.infoPanelSideBarCreatedByText
+		).toContainText(anonymousUser);
+		await expect(
+			userAssociatedDataDocumentLibraryPage.infoPanelSideBarModifiedByText
+		).toContainText(anonymousUser);
+	}
+);

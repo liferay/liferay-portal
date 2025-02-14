@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -19,6 +19,8 @@ export class PersonalDataErasurePage {
 		blogTitle: string,
 		match: boolean
 	) => Locator;
+	readonly deleteMenuItem: Locator;
+	readonly documentsAndMediaRadioButton: Locator;
 	readonly journalArticleCheckBox: (
 		articleId: string,
 		articleUrlTitle: string,
@@ -68,6 +70,10 @@ export class PersonalDataErasurePage {
 						.filter({hasNot: blogIdLocator})
 						.getByRole('checkbox');
 		};
+		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
+		this.documentsAndMediaRadioButton = page.locator(
+			'input[type="radio"][value="com.liferay.document.library.uad"]'
+		);
 		this.journalArticleCheckBox = (
 			articleId: string,
 			articleUrlTitle: string,
@@ -102,6 +108,11 @@ export class PersonalDataErasurePage {
 			.or(
 				page.locator(
 					'#_com_liferay_user_associated_data_web_portlet_UserAssociatedData_uadEntities_com_liferay_journal_uad'
+				)
+			)
+			.or(
+				page.locator(
+					'#_com_liferay_user_associated_data_web_portlet_UserAssociatedData_uadEntities_com_liferay_document_library_uad'
 				)
 			);
 		this.userAssociatedDataTableRow = async (
