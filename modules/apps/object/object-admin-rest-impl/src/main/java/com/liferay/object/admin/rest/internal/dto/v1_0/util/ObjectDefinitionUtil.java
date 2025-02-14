@@ -321,7 +321,7 @@ public class ObjectDefinitionUtil {
 									getName())) {
 
 							return ObjectDefinitionSettingConstants.
-								NAME_ACCEPTED_GROUP_ERCS;
+								NAME_ACCEPTED_GROUP_EXTERNAL_REFERENCE_CODES;
 						}
 
 						return serviceBuilderObjectDefinitionSetting.getName();

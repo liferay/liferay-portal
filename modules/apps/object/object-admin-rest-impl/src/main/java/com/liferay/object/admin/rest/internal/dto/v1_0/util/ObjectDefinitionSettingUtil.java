@@ -37,7 +37,7 @@ public class ObjectDefinitionSettingUtil {
 
 				if (!StringUtil.equals(
 						ObjectDefinitionSettingConstants.
-							NAME_ACCEPTED_GROUP_ERCS,
+							NAME_ACCEPTED_GROUP_EXTERNAL_REFERENCE_CODES,
 						objectDefinitionSetting.getName())) {
 
 					serviceBuilderObjectDefinitionSetting.setName(

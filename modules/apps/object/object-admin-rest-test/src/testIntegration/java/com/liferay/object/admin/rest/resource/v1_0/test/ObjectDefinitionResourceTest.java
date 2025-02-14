@@ -996,7 +996,7 @@ public class ObjectDefinitionResourceTest
 					{
 						setName(
 							ObjectDefinitionSettingConstants.
-								NAME_ACCEPTED_GROUP_ERCS);
+								NAME_ACCEPTED_GROUP_EXTERNAL_REFERENCE_CODES);
 						setValue(group1.getExternalReferenceCode());
 					}
 				}
@@ -1035,7 +1035,7 @@ public class ObjectDefinitionResourceTest
 					{
 						setName(
 							ObjectDefinitionSettingConstants.
-								NAME_ACCEPTED_GROUP_ERCS);
+								NAME_ACCEPTED_GROUP_EXTERNAL_REFERENCE_CODES);
 						setValue(
 							StringBundler.concat(
 								group1.getExternalReferenceCode(),
