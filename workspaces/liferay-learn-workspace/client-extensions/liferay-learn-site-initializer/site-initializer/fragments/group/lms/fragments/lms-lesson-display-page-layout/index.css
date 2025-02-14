@@ -67,35 +67,35 @@
 		rgba(55, 124, 255, 0.68) 0%,
 		rgba(55, 124, 255, 0) 100%
 	);
-	border-radius: 10px;
+	border-radius: 0.75rem;
   	color: var(--color-neutral-0, #fff);
 	display: flex;
 	justify-content: space-between;
-	padding: 20px;
+	padding: 1.25rem;
 	position: relative;
 	
 	.banner-icon {
 		align-items: center;
 		display: flex;
-		padding: 0 24px;
+		padding: 0 1.5rem;
 		
 		svg {
-			height: 24px;
-			width: 24px;
+			height: 1.5rem;
+			width: 1.5rem;
 		}
 	}
 	
 	.banner-options {
 		.banner-next-container {
 			background-color: #28293426;
-			border-radius: 10px;
+			border-radius: 0.75rem;
 			font-size: 14px;
 			font-weight: 600;
-			padding: 12px;
+			padding: 0.75rem;
 			text-align: center;
 		}
 		.banner-title {
-			font-size: 20px;
+			font-size: 1.25rem;
 			font-weight: 600;
 		}
 	}
@@ -103,12 +103,12 @@
 
 .course-nav-bottom__banner:hover {
 	cursor: pointer;
-	outline: 2px solid #6399ff !important;
+	outline: 2px solid var(--color-brand-primary-lighten-2, #6399FF) !important;
 	transform: none !important;
 }
 
 .course-nav-bottom_banner-line {
-	border-top: 1px solid #E2E2E4 !important;
+	border-top: 1px solid var(--color-neutral-2, #E2E2E4) !important;
 	justify-content: space-between;
 	margin-top: 2rem !important;
 }
@@ -160,10 +160,7 @@ iframe {
 	color: var(--color-neutral-10, #282934) !important;
 	font-family: 'Source Sans 3' !important;
 	margin-left: 15px !important;
-	padding-bottom: var(--spacer-2, 0.5rem) !important;
-	padding-left: var(--spacer-2, 0.5rem) !important;
-	padding-right: var(--spacer-2, 0.5rem) !important;
-	padding-top: var(--spacer-2, 0.5rem) !important;
+	padding: var(--spacer-2, 0.5rem) !important;
 	position: sticky !important;
 	top: 200px !important;
 }
@@ -176,10 +173,7 @@ iframe {
 	margin-right: var(--spacer-4, 1.5rem) !important;
 	max-width: 370px;
 	min-width: 370px;
-	padding-bottom: var(--spacer-2, 0.5rem) !important;
-	padding-left: var(--spacer-2, 0.5rem) !important;
-	padding-right: var(--spacer-2, 0.5rem) !important;
-	padding-top: var(--spacer-2, 0.5rem) !important;
+	padding: var(--spacer-2, 0.5rem) !important;
 }
 
 .lesson-link.active {
@@ -193,7 +187,7 @@ iframe {
 }
 
 .lesson-navigation-sign-in-container {
-	background: #f7f7f8;
+	background: var(--color-neutral-1, #f7f7f8);
 	border-radius: 1rem;
 	margin-top: var(--spacer-3, 1rem) !important;
 	padding: 2rem;
@@ -208,7 +202,7 @@ iframe {
 }
 
 .menu-previous-lesson {
-	color: #282934 !important;
+	color: var(--color-neutral-10, #282934) !important;
 	font-family: var(--font-family-sans-serif) !important;
 	font-weight: 600 !important;
 	gap: 0.5rem;
@@ -224,7 +218,7 @@ iframe {
 .menu-sign-in {
 	font-family: var(--font-family-sans-serif, 'Source Sans 3');
 	font-weight: 600;
-	padding-top: 15px;
+	padding-top: 1rem;
 
 	a {
 		text-decoration: underline;
@@ -257,15 +251,15 @@ iframe {
 	background-color: transparent;
 	border-left: solid !important;
 	border-left-color: var(--color-brand-primary, #0B5FFF)!important;
-	border-left-width: 4.5px !important;
-	border-radius: 0px;
+	border-left-width: 0.25rem !important;
+	border-radius: 0;
 }
 
 .side-nav .sticker-primary {
 	background-color: #6399FF;
 
 	.lexicon-icon-check {
-		fill: #FFFFFF;
+		fill: var(--color-neutral-0, #ffffff);
 	}
 }
 
@@ -297,12 +291,12 @@ iframe {
 		border-radius: 6px;
 
 		.module-title span {
-			color: #003EB3;
+			color: var(--color-brand-primary-darken-3 ,#003EB3);
 		}
 
 		.sticker-circle {
 			background-color: var(--color-brand-primary-lighten-4, #BBD2FF);
-			color: #003EB3;
+			color: var(--color-brand-primary-darken-3 ,#003EB3);
 		}
 	}
 }
@@ -374,9 +368,9 @@ iframe {
 	.sticker-circle {
 		background-color: var(--color-brand-primary-lighten-4, #BBD2FF);
 		.sticker-overlay {
-			color: #003EB3;
+			color: var(--color-brand-primary-darken-3 ,#003EB3);
 			.lexicon-icon-check {
-				fill: var(--white) !important;
+				fill: var(--color-neutral-0, #ffffff) !important;
 			}
 		}
 	}
@@ -386,11 +380,11 @@ iframe {
 	align-content: center;
 	background-color: transparent;
 	justify-content: center;
-	min-width: 32px;
+	min-width: 2rem;
 }
 
 .side-nav .panel-header > div:nth-child(1) > span:nth-child(1) {
-	width: 32px !important;
+	width: 2rem !important;
 }
 
 .side-nav .panel-header > div:nth-child(1) > span:nth-child(2) {
@@ -445,8 +439,8 @@ iframe {
 			width: auto !important;
 
 			p::before {
-				height: 12px;
-				width: 12px;
+				height: 0.75rem;
+				width: 0.75rem;
 			}
 		}	
 	}
@@ -474,7 +468,7 @@ iframe {
 			}
 
 			svg {
-				width: 20px;
+				width: 1.25rem;
 			}
 		}
 	}
@@ -489,8 +483,8 @@ iframe {
 			margin-bottom: 0;
 			
 			p::before {
-				height: 12px;
-				width: 12px;
+				height: 0.75rem;
+				width: 0.75rem;
 			}
 		}	
 	}
