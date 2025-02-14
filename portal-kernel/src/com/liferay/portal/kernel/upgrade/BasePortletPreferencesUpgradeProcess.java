@@ -722,7 +722,9 @@ public abstract class BasePortletPreferencesUpgradeProcess
 						String largeValue = null;
 						String smallValue = null;
 
-						if (value.length() > smallValueMaxLength) {
+						if ((value != null) &&
+							(value.length() > smallValueMaxLength)) {
+
 							largeValue = value;
 						}
 						else {
@@ -745,7 +747,9 @@ public abstract class BasePortletPreferencesUpgradeProcess
 					String largeValue = null;
 					String smallValue = null;
 
-					if (value.length() > smallValueMaxLength) {
+					if ((value != null) &&
+						(value.length() > smallValueMaxLength)) {
+
 						largeValue = value;
 					}
 					else {
