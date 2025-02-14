@@ -3,17 +3,13 @@
 	gap: 1rem;
 
 	.banner-tag {
-		background-color: var(--color-state-info-lighten-2, #E6EBF5) !important;
-		border-radius: var(--border-radius-sm) !important;
-		color: var(--color-state-info-darken-2, #1C3667) !important;
+		background-color: var(--color-state-info-lighten-2, #E6EBF5);
+		border-radius: var(--border-radius-sm);
+		color: var(--color-state-info-darken-2, #1C3667);
 		display: flex;
-		font-family: var(--font-family-sans-serif, 'Source Sans 3') !important;
-		font-weight: var(--font-weight-normal) !important;
+		font-weight: var(--font-weight-normal);
 		min-height: 2rem;
-		padding-bottom: var(--spacer-1, 0.25rem) !important;
-		padding-left: var(--spacer-1, 0.25rem) !important;
-		padding-right: var(--spacer-1, 0.25rem) !important;
-		padding-top: var(--spacer-1, 0.25rem) !important;
+		padding: var(--spacer-1, 0.25rem);
 		width: auto;
 		z-index: 1;
 
@@ -33,9 +29,9 @@
 
 	.banner-tag {
 		background-color: var(--color-neutral-1, #F7F7F8);
-		border-radius: 50rem !important;
-		height: 40px !important;
-		width: 116px !important;
+		border-radius: 2rem;
+		height: 2.5rem;
+		width: 7.25rem;
 		z-index: 1;
 
 		h5 {
@@ -80,8 +76,8 @@
 		/* stylelint-disable-next-line function-url-quotes */
 		content: url("data:image/svg+xml,%3Csvg fill='none' height='216' viewBox='0 0 311 216' width='430' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_2408_3617)'%3E%3Cpath d='M242.932 587.833C688.815 666.309 459.046 -261.71 139.868 41.1156C-155.208 321.021 29.2646 550.234 242.932 587.833Z' fill='url(%23paint0_linear_2408_3617)' /%3E%3Cpath d='M46.3263 303.977C-60.1153 535.865 470.717 737.563 578.025 317.942C624.199 145.737 420.686 -86.5019 217.25 -39.1692C37.699 2.60908 138.042 104.163 46.3263 303.977Z' fill='url(%23paint1_linear_2408_3617)' /%3E%3C/g%3E%3Cdefs%3E%3ClinearGradient gradientUnits='userSpaceOnUse' id='paint0_linear_2408_3617' x1='-145.756' x2='311.347' y1='-142.351' y2='366.211'%3E%3Cstop stop-color='white' stop-opacity='0.6' /%3E%3Cstop offset='0.85' stop-color='white' stop-opacity='0' /%3E%3C/linearGradient%3E%3ClinearGradient gradientUnits='userSpaceOnUse' id='paint1_linear_2408_3617' x1='-26.4726' x2='309.984' y1='-57.5591' y2='291.323'%3E%3Cstop stop-color='white' stop-opacity='0.25' /%3E%3Cstop offset='1' stop-color='white' stop-opacity='0' /%3E%3C/linearGradient%3E%3CclipPath id='clip0_2408_3617'%3E%3Crect fill='white' height='398' transform='translate(0 -122)' width='398' /%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
 		position: absolute;
-		right: 53px;
-		top: 100px;
+		right: 3.25rem;
+		top: 6.25rem;
 	}
 }
 
@@ -116,16 +112,16 @@
 		/* stylelint-disable-next-line function-url-quotes */
 		content: url("data:image/svg+xml,%3Csvg fill='none' height='216' viewBox='0 0 311 216' width='400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_2408_3617)'%3E%3Cpath d='M242.932 587.833C688.815 666.309 459.046 -261.71 139.868 41.1156C-155.208 321.021 29.2646 550.234 242.932 587.833Z' fill='url(%23paint0_linear_2408_3617)' /%3E%3Cpath d='M46.3263 303.977C-60.1153 535.865 470.717 737.563 578.025 317.942C624.199 145.737 420.686 -86.5019 217.25 -39.1692C37.699 2.60908 138.042 104.163 46.3263 303.977Z' fill='url(%23paint1_linear_2408_3617)' /%3E%3C/g%3E%3Cdefs%3E%3ClinearGradient gradientUnits='userSpaceOnUse' id='paint0_linear_2408_3617' x1='-145.756' x2='311.347' y1='-142.351' y2='366.211'%3E%3Cstop stop-color='white' stop-opacity='0.6' /%3E%3Cstop offset='0.85' stop-color='white' stop-opacity='0' /%3E%3C/linearGradient%3E%3ClinearGradient gradientUnits='userSpaceOnUse' id='paint1_linear_2408_3617' x1='-26.4726' x2='309.984' y1='-57.5591' y2='291.323'%3E%3Cstop stop-color='white' stop-opacity='0.25' /%3E%3Cstop offset='1' stop-color='white' stop-opacity='0' /%3E%3C/linearGradient%3E%3CclipPath id='clip0_2408_3617'%3E%3Crect fill='white' height='398' transform='translate(0 -122)' width='398' /%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
 		position: absolute;
-		right: 80px;
+		right: 5rem;
 	}
 }
 
 @media (max-width: 915px) {
 	.course-top-banner {
 		&::before {
+			right: 0.25rem;
+			top: 6.25rem;
 			overflow: hidden;
-			right: 5px !important;
-			top: 100px !important;
 		}
 	}
 }
