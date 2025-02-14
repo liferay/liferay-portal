@@ -95,10 +95,29 @@
 				token="@release.info.name@"
 				value="${release.info.name}"
 			/>
-			<replacefilter
-				token="@release.info.version@"
-				value="${release.info.version}"
-			/>
+
+			<if>
+				<isset property="release.date.now" />
+				<then>
+					<tstamp>
+						<format pattern="MMMM d, yyyy" property="current.date.release" />
+					</tstamp>
+
+					<echo>${current.date.release}</echo>
+
+					<replacefilter
+						token="@release.info.version@"
+						value="${current.date.release}"
+					/>
+				</then>
+				<else>
+					<replacefilter
+						token="@release.info.version@"
+						value="${release.info.version}"
+					/>
+				</else>
+			</if>
+
 			<replacefilter
 				token="@release.info.version.display.name@"
 				value="${release.info.version.display.name}"
