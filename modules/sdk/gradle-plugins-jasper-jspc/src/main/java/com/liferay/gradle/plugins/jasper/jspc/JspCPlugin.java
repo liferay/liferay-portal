@@ -78,14 +78,14 @@ public class JspCPlugin implements Plugin<Project> {
 
 	private void _addDependenciesJspC(Project project) {
 		GradleUtil.addDependency(
-			project, CONFIGURATION_NAME, "javax.servlet.jsp.jstl",
-			"javax.servlet.jsp.jstl-api", "1.2.1");
+			project, CONFIGURATION_NAME, "jakarta.servlet.jsp.jstl",
+			"jakarta.servlet.jsp.jstl-api", "3.0.2");
 		GradleUtil.addDependency(
 			project, CONFIGURATION_NAME, "org.apache.tomcat", "tomcat-jasper",
-			"9.0.102");
+			"10.1.39");
 		GradleUtil.addDependency(
 			project, CONFIGURATION_NAME, "org.glassfish.web",
-			"javax.servlet.jsp.jstl", "1.2.3", false);
+			"jakarta.servlet.jsp.jstl", "3.0.1", false);
 		GradleUtil.addDependency(
 			project, CONFIGURATION_NAME, "org.osgi", "osgi.core", "6.0.0");
 
