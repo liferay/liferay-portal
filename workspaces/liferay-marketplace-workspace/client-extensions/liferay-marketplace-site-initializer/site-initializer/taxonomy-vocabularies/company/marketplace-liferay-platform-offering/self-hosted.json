@@ -1,7 +1,7 @@
 {
-	"name": "Self-Hosted",
+	"name": "Liferay Self-Hosted",
 	"name_i18n": {
-		"en_US": "Self-Hosted"
+		"en_US": "Liferay Self-Hosted"
 	},
 	"viewableBy": "Anyone"
 }

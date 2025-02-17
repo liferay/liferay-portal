@@ -1,7 +1,7 @@
 {
-	"name": "Fully-Managed",
+	"name": "Liferay SaaS",
 	"name_i18n": {
-		"en_US": "Fully-Managed"
+		"en_US": "Liferay SaaS"
 	},
 	"viewableBy": "Anyone"
 }

@@ -1,7 +1,7 @@
 {
-	"name": "Self-Managed",
+	"name": "Liferay PaaS",
 	"name_i18n": {
-		"en_US": "Self-Managed"
+		"en_US": "Liferay PaaS"
 	},
 	"viewableBy": "Anyone"
 }
