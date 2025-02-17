@@ -45,7 +45,7 @@
 		align-items: center;
 		background-color: var(--color-neutral-0, #FFFFFF);
 		border: 1px solid var(--color-action-primary-default, #0B5FFF);
-		border-radius: 10px;
+		border-radius: 0.75rem;
 		color: var(--color-action-primary-default, #0B5FFF);
 		display: flex;
 		font-family: var(--font-family-sans-serif, 'Source Sans 3');
@@ -61,7 +61,7 @@
 	.button-linkedin-add {
 		align-items: center;
 		background-color: var(--color-action-primary-default, #0B5FFF);
-		border-radius: 75rem;
+		border-radius: 0.75rem;
 		color: var(--color-neutral-0, #FFFFFF);
 		display: flex;
 		font-family: var(--font-family-sans-serif, 'Source Sans 3');
@@ -77,7 +77,7 @@
 }
 
 .badges-content img {
-	border-radius: 75rem;
+	border-radius: 0.75rem;
 	max-height: 8.5rem;
 	max-width: 18rem;
 }
@@ -298,7 +298,7 @@
 	.pass-tag {
 		align-items: center;
 		background-color: var(--color-state-success-lighten-2, #E9F5E8);
-		border-radius: 8px;
+		border-radius: 0.5rem;
 		color: var(--color-state-success, #4AAB3B);
 		display: flex;
 		gap: 0.25rem;
@@ -450,7 +450,7 @@ div > .course-nav-bottom__banner {
 }
 
 .info-card-kc {
-	padding-top: 5px;
+	padding-top: 0.25rem;
 }
 
 .lesson-navigation-sign-in-container {
@@ -470,7 +470,7 @@ li {
 
 .menu-previous-lesson {
 	margin-top: 2rem;
-	padding: 0px 1rem !important;
+	padding: 0 1rem !important;
 	width: fit-content !important;
 }
 
@@ -554,7 +554,7 @@ li {
 .question .question-footer {
 	align-items: center;
 	background-color: var(--color-neutral-1, #f7f7f8);
-	border-radius: 10px;
+	border-radius: 0.75rem;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -600,7 +600,7 @@ li {
 
 .square-check {
 	border: 1px solid;
-	border-radius: 2px;
+	border-radius: 0.125rem;
 	height: 1rem;
 	width: 1rem;
 }
@@ -611,7 +611,7 @@ li {
 	background-position-x: center;
 	background-repeat: no-repeat;
 	background-size: 1rem;
-	border-radius: 2px;
+	border-radius: 0.125rem;
 	height: 1rem;
 	width: 1rem;
 }
@@ -622,7 +622,7 @@ li {
 	background-position-x: center;
 	background-repeat: no-repeat;
 	background-size: 1rem;
-	border-radius: 2px;
+	border-radius: 0.125rem;
 	height: 1rem;
 	width: 1rem;
 }
