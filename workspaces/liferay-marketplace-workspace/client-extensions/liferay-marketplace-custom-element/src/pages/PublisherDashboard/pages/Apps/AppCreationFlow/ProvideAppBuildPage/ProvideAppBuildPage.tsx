@@ -34,10 +34,10 @@ import {
 } from '../../../../../../utils/api';
 import {useAppContext} from '../AppContext/AppManageState';
 import {TYPES} from '../AppContext/actionTypes';
-import OfferingTypeCheckbox from './components/OfferingTypeCheckbox';
 import {offeringTypesDescription} from './constants/offeringTypesDescriptions';
 
 import './ProvideAppBuildPage.scss';
+import {CardView} from '../../../../../../components/Card/CardView';
 import {
 	PRODUCT_SPECIFICATION_KEY,
 	PRODUCT_WORKFLOW_STATUS_CODE,
@@ -77,9 +77,6 @@ export function ProvideAppBuildPage({
 		dispatch,
 	] = useAppContext();
 
-	const [selectedCheckboxValue, setSelectedCheckboxValue] = useState<
-		string[]
-	>([]);
 	const [visibleSelectVersionModal, setVisibleSelectVersionModal] =
 		useState(false);
 
@@ -98,13 +95,6 @@ export function ProvideAppBuildPage({
 		],
 		[appProductId, resourceRequirements.cpu, resourceRequirements.ram]
 	);
-
-	const handleSelectCheckbox = (offeringTypelabel: string) =>
-		setSelectedCheckboxValue((prevValue) =>
-			prevValue.includes(offeringTypelabel)
-				? prevValue.filter((value) => value !== offeringTypelabel)
-				: [...prevValue, offeringTypelabel]
-		);
 
 	const handleResetAppPackages = useCallback(
 		() =>
@@ -159,9 +149,17 @@ export function ProvideAppBuildPage({
 			vocabId: marketplaceLiferayPlatformOfferingId,
 		});
 
+		const platformOfferingLabels = (
+			offeringTypesDescription[
+				appType.value as ProductType
+			] as unknown as OfferingType[]
+		)
+			?.filter((type) => !type.disabled)
+			.map((type) => type.label);
+
 		const fullyManagedOption = platformOfferingList.filter(
 			(platformOffering) =>
-				selectedCheckboxValue.includes(platformOffering.name)
+				platformOfferingLabels.includes(platformOffering.name)
 		);
 
 		fullyManagedOption.forEach((managedOption) => {
@@ -387,7 +385,6 @@ export function ProvideAppBuildPage({
 			type: TYPES.UPDATE_APP_LXC_COMPATIBILITY,
 		});
 
-		setSelectedCheckboxValue([]);
 		handleResetAppPackages();
 	};
 
@@ -402,7 +399,6 @@ export function ProvideAppBuildPage({
 	const disableContinueButton =
 		isProcessing ||
 		!isResourceRequirementsValid ||
-		!selectedCheckboxValue.length ||
 		!buildAppPackageValues.length ||
 		buildAppPackageValues.some((versionEntry) => !versionEntry?.length);
 
@@ -502,25 +498,19 @@ export function ProvideAppBuildPage({
 
 			{appType.value && (
 				<>
-					<Section
-						label={i18n.translate('compatible-offering')}
-						required
-						tooltip={i18n.translate(
-							'select-the-offering-of-liferay-your-app-is-compatible-with-the-compatibility-selections-will-determine-on-what-platforms-your-app-is-tested'
-						)}
-						tooltipText={i18n.translate('more-info')}
-					>
-						<div className="provide-app-build-page-app-build-checkbox-container">
-							<OfferingTypeCheckbox
-								handleSelectCheckbox={handleSelectCheckbox}
-								offeringTypes={
-									offeringTypesDescription[
-										appType.value as ProductType
-									] as unknown as OfferingType[]
-								}
-								selectedValue={selectedCheckboxValue}
-							/>
-						</div>
+					<Section label={i18n.translate('compatible-offering')}>
+						{(
+							offeringTypesDescription[
+								appType.value as ProductType
+							] as unknown as OfferingType[]
+						).map((type) => {
+							return type.disabled ? null : (
+								<CardView
+									description={type.description}
+									title={type.label}
+								/>
+							);
+						})}
 					</Section>
 
 					{isCloud && (
