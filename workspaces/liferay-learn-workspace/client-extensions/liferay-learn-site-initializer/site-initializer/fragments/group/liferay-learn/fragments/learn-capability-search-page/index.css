@@ -1,47 +1,47 @@
 .search-capability {
 	.input-group .search-bar-keywords-input::placeholder {
-	   color: var(--color-state-neutral-darken-1,#6C6C75 ) !important;
-		 font-size: 1rem !important;
-		 font-weight: 400 !important;
-		 padding-left: 0.5rem !important;
-	 }
- }
- 
- .search-capability-filter {
-	 background-color: var(--color-neutral-1) !important;
-	 border-radius: var(--border-radius-lg) !important;
-	 
-	 .custom-control-label::before {
-		 border-color: var(--gray-600, #6B6C7E);
-	 }
- 
-	 .custom-control-label-text {
-		 font-size: 13px;
-		 font-weight: 400;
-	 }
-	 
-	 .search-facet-display-vocabulary .treeview-vocabulary-display .tree-item-category {
-		 padding-left: 0rem;
-	 }
-	 
-	 .panel-body {
-		 padding: 0rem;
-	 }
-	 
-	 .panel-header {
-		 padding: 0.75rem 1.25rem 0rem 0rem;
-	 }
-	 
-	 .portlet {
-		 margin-bottom: 0rem;
-	 }
-	 
-	 .treeview .custom-control {
-		 margin: 0rem;
-	 }
-	 
-	 .treeview .btn {
-		 padding: 0px;
-		 margin-right: 0.5rem;
-	 }
- }
+		color: var(--color-state-neutral-darken-1,#6C6C75 ) !important;
+		font-size: 1rem !important;
+		font-weight: 400 !important;
+		padding-left: 0.5rem !important;
+	}
+}
+
+.search-capability-filter {
+	background-color: var(--color-neutral-1) !important;
+	border-radius: var(--border-radius-lg) !important;
+
+	.custom-control-label::before {
+		border-color: var(--gray-600, #6B6C7E);
+	}
+
+	.custom-control-label-text {
+		font-size: 13px;
+		font-weight: 400;
+	}
+
+	.panel-body {
+		padding: 0rem;
+	}
+
+	.panel-header {
+		padding: 0.75rem 1.25rem 0rem 0rem;
+	}
+
+	.portlet {
+		margin-bottom: 0rem;
+	}
+
+	.search-facet-display-vocabulary .treeview-vocabulary-display .tree-item-category {
+		padding-left: 0rem;
+	}
+
+	.treeview .btn {
+		margin-right: 0.5rem;
+		padding: 0px;
+	}
+
+	.treeview .custom-control {
+		margin: 0rem;
+	}
+}
