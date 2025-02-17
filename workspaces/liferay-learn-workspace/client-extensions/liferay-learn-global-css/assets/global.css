@@ -248,18 +248,6 @@ pre[class*='language-'] {
 			}
 		}
 	}
-	
-	.learn-education-section .btn::after {
-		background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cmask id='mask0_2278_4993' style='mask-type:alpha' maskUnits='userSpaceOnUse' x='1' y='4' width='13' height='8'%3E%3Cpath d='M11.243 10.9895L13.4805 8.75201C13.818 8.38013 13.8305 7.72388 13.4805 7.32076L11.243 5.08326C10.193 4.15201 8.90234 5.57701 9.81172 6.51451L10.3336 7.03638H2.74609C1.41797 7.03638 1.41797 9.03638 2.74609 9.03638H10.3336L9.81172 9.55826C8.87734 10.552 10.2773 11.9176 11.243 10.9895Z' fill='%236B6C7E'/%3E%3C/mask%3E%3Cg mask='url(%23mask0_2278_4993)'%3E%3Crect width='16' height='16' fill='%230B5FFF'/%3E%3C/g%3E%3C/svg%3E");
-		background-size: cover;
-		content: '';
-		display: inline-block;
-		height: 14px;
-		margin-bottom: 2px;
-		margin-left: 4px; 
-		vertical-align: middle;  
-		width: 14px;
-	}
 
 	.education-home__section-header {
 		background: linear-gradient(
@@ -280,6 +268,18 @@ pre[class*='language-'] {
 				rgba(55, 124, 255, 0.68) 0%,
 				rgba(55, 124, 255, 0) 100%
 			);
+	}
+
+	.learn-education-section .btn::after {
+		background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cmask id='mask0_2278_4993' style='mask-type:alpha' maskUnits='userSpaceOnUse' x='1' y='4' width='13' height='8'%3E%3Cpath d='M11.243 10.9895L13.4805 8.75201C13.818 8.38013 13.8305 7.72388 13.4805 7.32076L11.243 5.08326C10.193 4.15201 8.90234 5.57701 9.81172 6.51451L10.3336 7.03638H2.74609C1.41797 7.03638 1.41797 9.03638 2.74609 9.03638H10.3336L9.81172 9.55826C8.87734 10.552 10.2773 11.9176 11.243 10.9895Z' fill='%236B6C7E'/%3E%3C/mask%3E%3Cg mask='url(%23mask0_2278_4993)'%3E%3Crect width='16' height='16' fill='%230B5FFF'/%3E%3C/g%3E%3C/svg%3E");
+		background-size: cover;
+		content: '';
+		display: inline-block;
+		height: 14px;
+		margin-bottom: 2px;
+		margin-left: 4px; 
+		vertical-align: middle;  
+		width: 14px;
 	}
 }
 
