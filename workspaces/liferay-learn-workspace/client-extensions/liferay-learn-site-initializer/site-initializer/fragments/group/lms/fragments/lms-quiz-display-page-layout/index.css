@@ -294,6 +294,13 @@ span {
 	.banner-tags {
 		margin-top: 0.5rem;
 	}
+
+	.container {
+		.lesson-layout-container > div:nth-child(1) {
+			margin-right: auto !important;
+			padding: inherit !important;
+		}
+	}
   
 	.course-top-banner {
 		height: 22vh !important;
@@ -312,7 +319,7 @@ span {
 			font-size: 1.3rem !important;
 		}
   
-		& .banner-tag {
+		.banner-tag {
 			align-items: center;
 			align-self: start !important;
 			font-size: 0.7rem;
@@ -328,12 +335,6 @@ span {
 		}	
 	}
 	
-	.container {
-		.lesson-layout-container > div:nth-child(1) {
-			margin-right: auto !important;
-			padding: inherit !important;
-		}
-	}
   
 	.lfr-layout-structure-item-lms-lesson-display-page-layout--copy- {
 		align-self: center;
@@ -344,7 +345,7 @@ span {
 @media (max-width: 1024px) {
   
 	.course-content-container {
-		& .banner-tag {
+		.banner-tag {
 		
 			h5 {
 				font-size: 1rem;
@@ -361,7 +362,7 @@ span {
 			font-size: 1.2rem !important;
 		}
 
-		& .banner-tag {
+		.banner-tag {
 			font-size: 0.6rem;
 			margin-bottom: 0;
 			
