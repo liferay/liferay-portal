@@ -119,9 +119,9 @@
 @media (max-width: 915px) {
 	.course-top-banner {
 		&::before {
+			overflow: hidden;
 			right: 0.25rem;
 			top: 6.25rem;
-			overflow: hidden;
 		}
 	}
 }
