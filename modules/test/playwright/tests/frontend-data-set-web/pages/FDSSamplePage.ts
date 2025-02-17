@@ -67,7 +67,7 @@ export class FDSSamplePage {
 		await expect(navLink).toHaveClass(/active/);
 	}
 
-	async setupFDSSampleWidget({site}) {
+	async setupFDSSampleWidget({locale = 'en', site}) {
 		const widgetDefinition = getWidgetDefinition({
 			id: getRandomString(),
 			widgetName:
@@ -80,7 +80,7 @@ export class FDSSamplePage {
 			title: getRandomString(),
 		});
 
-		const url = `${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+		const url = `${liferayConfig.environment.baseUrl}/${locale}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
 
 		await this.page.goto(url);
 
