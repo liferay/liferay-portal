@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.IndexMetadata;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
+import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -23,7 +24,6 @@ import com.liferay.portal.kernel.model.CountryLocalization;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.RegionLocalization;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
@@ -81,24 +81,22 @@ public class CountryUpgradeProcess extends UpgradeProcess {
 				_companyLocalService.forEachCompany(
 					company -> {
 						Future<Void> future = executorService.submit(
-							() -> {
-								CompanyThreadLocal.setCompanyId(
-									company.getCompanyId());
+							new CompanyThreadLocalCallable<>(
+								() -> {
+									try {
+										new CompanyUpgradeProcess(
+											company
+										).populateCompanyCountries();
+									}
+									catch (Exception exception) {
+										_log.error(
+											"Unable to populate company " +
+												company.getCompanyId(),
+											exception);
+									}
 
-								try {
-									new CompanyUpgradeProcess(
-										company
-									).populateCompanyCountries();
-								}
-								catch (Exception exception) {
-									_log.error(
-										"Unable to populate company " +
-											company.getCompanyId(),
-										exception);
-								}
-
-								return null;
-							});
+									return null;
+								}));
 
 						futures.add(future);
 					});

@@ -10,6 +10,7 @@ import com.liferay.petra.concurrent.NoticeableThreadPoolExecutor;
 import com.liferay.petra.concurrent.ThreadPoolHandlerAdapter;
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.db.partition.CompanyThreadLocalRunnable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseDestination;
@@ -248,7 +249,8 @@ public abstract class BaseAsyncDestination extends BaseDestination {
 		List<MessageListener> messageListeners, Message message);
 
 	protected void execute(Runnable runnable) {
-		_noticeableThreadPoolExecutor.execute(runnable);
+		_noticeableThreadPoolExecutor.execute(
+			new CompanyThreadLocalRunnable(runnable));
 	}
 
 	protected PermissionCheckerFactory permissionCheckerFactory;

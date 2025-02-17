@@ -7,9 +7,9 @@ package com.liferay.portal.search;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.aop.AopMethodInvocation;
 import com.liferay.portal.kernel.aop.ChainableMethodAdvice;
+import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.util.PortalInstances;
 
@@ -100,26 +99,20 @@ public class IndexableAdvice extends ChainableMethodAdvice {
 			return;
 		}
 
-		long companyId = CompanyThreadLocal.getCompanyId();
-
 		DependencyManagerSyncUtil.registerSyncCallable(
-			() -> {
-				Indexer<Object> curIndexer = IndexerRegistryUtil.getIndexer(
-					name);
+			new CompanyThreadLocalCallable<>(
+				() -> {
+					Indexer<Object> curIndexer = IndexerRegistryUtil.getIndexer(
+						name);
 
-				if (curIndexer == null) {
-					return null;
-				}
-
-				try (SafeCloseable safeCloseable =
-						CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-							companyId)) {
+					if (curIndexer == null) {
+						return null;
+					}
 
 					_reindex(curIndexer, indexableContext, arguments, result);
-				}
 
-				return null;
-			});
+					return null;
+				}));
 	}
 
 	private int _getServiceContextParameterIndex(Method method) {

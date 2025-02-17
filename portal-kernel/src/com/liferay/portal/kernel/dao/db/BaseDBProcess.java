@@ -9,16 +9,15 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeSupplier;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.framework.ThrowableCollector;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.recorder.UpgradeSQLRecorder;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -600,37 +599,36 @@ public abstract class BaseDBProcess implements DBProcess {
 			boolean notificationEnabled = NotificationThreadLocal.isEnabled();
 			boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
-			long companyId = CompanyThreadLocal.getCompanyId();
-
 			T next = null;
 
 			while ((next = unsafeSupplier.get()) != null) {
 				T current = next;
 
 				Future<Void> future = executorService.submit(
-					() -> {
-						NotificationThreadLocal.setEnabled(notificationEnabled);
-						WorkflowThreadLocal.setEnabled(workflowEnabled);
+					new CompanyThreadLocalCallable<>(
+						() -> {
+							NotificationThreadLocal.setEnabled(
+								notificationEnabled);
+							WorkflowThreadLocal.setEnabled(workflowEnabled);
 
-						try (SafeCloseable safeCloseable =
-								CompanyThreadLocal.lock(companyId)) {
-
-							if (Validator.isNull(updateSQL)) {
-								unsafeConsumer.accept(current);
+							try {
+								if (Validator.isNull(updateSQL)) {
+									unsafeConsumer.accept(current);
+								}
+								else {
+									unsafeBiConsumer.accept(
+										current,
+										_getConcurrentPreparedStatement(
+											updateSQL,
+											preparedStatementHashMap));
+								}
 							}
-							else {
-								unsafeBiConsumer.accept(
-									current,
-									_getConcurrentPreparedStatement(
-										updateSQL, preparedStatementHashMap));
+							catch (Exception exception) {
+								throwableCollector.collect(exception);
 							}
-						}
-						catch (Exception exception) {
-							throwableCollector.collect(exception);
-						}
 
-						return null;
-					});
+							return null;
+						}));
 
 				int futuresMaxSize = GetterUtil.getInteger(
 					PropsUtil.get(
