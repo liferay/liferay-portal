@@ -23,7 +23,7 @@ request.setAttribute("view.jsp-portletURL", commerceReturnListDisplayContext.get
 					"namespace", liferayPortletResponse.getNamespace()
 				).build()
 			%>'
-			apiURL="/o/commerce-returns?nestedFields=accountEntry"
+			apiURL="/o/commerce/returns?nestedFields=accountEntry"
 			fdsActionDropdownItems="<%= commerceReturnListDisplayContext.getFDSActionDropdownItems() %>"
 			fdsSortItemList="<%= commerceReturnListDisplayContext.getFDSSortItemList() %>"
 			formName="fm"

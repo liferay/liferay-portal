@@ -160,7 +160,7 @@ public class CommerceReturnContentDisplayContext {
 				accountEntryId, StringPool.APOSTROPHE),
 			true);
 
-		return "/o/commerce-returns?filter=" + encodedFilter;
+		return "/o/commerce/returns?filter=" + encodedFilter;
 	}
 
 	public long getCommerceAccountEntryId() {
@@ -650,7 +650,7 @@ public class CommerceReturnContentDisplayContext {
 				"eq '", commerceReturnId, StringPool.APOSTROPHE),
 			true);
 
-		return "/o/commerce-return-items" +
+		return "/o/commerce/return-items" +
 			"?nestedFields=commerceOrderItemToCommerceReturnItems&filter=" +
 				encodedFilter;
 	}

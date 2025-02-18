@@ -5,7 +5,7 @@
 
 import AJAX from '../../utilities/AJAX/index';
 
-const RETURNS_PATH = '/o/commerce-returns';
+const RETURNS_PATH = '/o/commerce/returns';
 
 function resolveReturnsPath(returnId) {
 	return `${RETURNS_PATH}/${returnId}`;
