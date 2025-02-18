@@ -1,0 +1,40 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Agnes Maciel
+ */
+public class LPD_48759 {
+
+	public void method(
+		String externalReferenceCode, long userId, long groupId,
+		long classNameId, long classPK, long cpAttachmentFileEntryId,
+		long fileEntryId, boolean cdnEnabled, String cdnURL,
+		int displayDateMonth, int displayDateDay, int displayDateYear,
+		int displayDateHour, int displayDateMinute, int expirationDateMonth,
+		int expirationDateDay, int expirationDateYear, int expirationDateHour,
+		int expirationDateMinute, boolean neverExpire,
+		Map<Locale, String> titleMap, String json, double priority, int type,
+		ServiceContext serviceContext) {
+
+		CPAttachmentFileEntryLocalServiceUtil.addOrUpdateCPAttachmentFileEntry("test123", userId, groupId, classNameId, classPK, cpAttachmentFileEntryId, fileEntryId, cdnEnabled, cdnURL, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, titleMap, json, priority, type, serviceContext);
+		CPAttachmentFileEntryLocalServiceUtil.addOrUpdateCPAttachmentFileEntry(externalReferenceCode, userId, groupId, classNameId, classPK, cpAttachmentFileEntryId, fileEntryId, cdnEnabled, cdnURL, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, null, titleMap, json, priority, type, serviceContext);
+		CPAttachmentFileEntryServiceUtil.addOrUpdateCPAttachmentFileEntry("test123", groupId, classNameId, classPK, cpAttachmentFileEntryId, fileEntryId, cdnEnabled, cdnURL, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, titleMap, json, priority, type, serviceContext);
+		CPAttachmentFileEntryServiceUtil.addOrUpdateCPAttachmentFileEntry(externalReferenceCode, groupId, classNameId, classPK, cpAttachmentFileEntryId, fileEntryId, cdnEnabled, cdnURL, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, null, titleMap, json, priority, type, serviceContext);
+		_cpAttachmentFileEntryLocalService.addOrUpdateCPAttachmentFileEntry(externalReferenceCode, userId, groupId, classNameId, classPK, cpAttachmentFileEntryId, fileEntryId, cdnEnabled, cdnURL, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, null, titleMap, json, priority, type, serviceContext);
+		_cpAttachmentFileEntryService.addOrUpdateCPAttachmentFileEntry(externalReferenceCode, groupId, classNameId, classPK, cpAttachmentFileEntryId, fileEntryId, cdnEnabled, cdnURL, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, null, titleMap, json, priority, type, serviceContext);
+
+		@Reference
+		private CPAttachmentFileEntryLocalService _cpAttachmentFileEntryLocalService;
+
+		@Reference
+		private CPAttachmentFileEntryService _cpAttachmentFileEntryService;
+	}
+
+}
