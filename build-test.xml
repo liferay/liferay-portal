@@ -8857,7 +8857,7 @@ war.path=${app.server.portal.dir}/</echo>
 		</sequential>
 	</macrodef>
 
-	<macrodef name="validate-mysql-schemas">
+	<macrodef name="validate-schemas">
 		<attribute default="upgraded" name="upgraded.db.schema" />
 		<attribute default="fresh" name="fresh.db.schema" />
 
@@ -16989,7 +16989,7 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.managemen
 	</target>
 
 	<target name="validate-db-upgrade-schemas">
-		<validate-mysql-schemas fresh.db.schema="${fresh.db.schema}" upgraded.db.schema="${upgraded.db.schema}" />
+		<validate-schemas fresh.db.schema="${fresh.db.schema}" upgraded.db.schema="${upgraded.db.schema}" />
 	</target>
 
 	<target name="wait-for-license-activation">
