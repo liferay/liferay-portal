@@ -3591,6 +3591,14 @@
 	},
 	{
 		"classNames": [
+			"CommerceOrderItem"
+		],
+		"from": "getBookedQuantityId",
+		"issueKey": "LPD-48396",
+		"to": "getCommerceInventoryBookedQuantityId"
+	},
+	{
+		"classNames": [
 			"CPAttachmentFileEntryService",
 			"CPAttachmentFileEntryServiceUtil"
 		],
