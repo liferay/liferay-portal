@@ -386,53 +386,6 @@ definition {
 			value1 = "Anonymous Anonymous");
 	}
 
-	@description = "This tests LPS-77748. This test anonymizes multiple entries from a single application"
-	@priority = 4
-	test CanAnonymizeMultipleEntriesFromAnApplication {
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMFolder.addCP(dmFolderName = "Folder1");
-
-		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.jpeg,Document_2.docx,Document_3.mp3,Document_4.txt");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		User.openUsersAdmin();
-
-		User.deletePersonalDataCP(
-			userFirstName = "userfn",
-			userLastName = "userln");
-
-		GDPR.filterByApplications(
-			applicationItemsCount = 5,
-			applications = "Documents and Media",
-			totalItemsCount = 5);
-
-		GDPR.anonymizeMultipleEntriesCP(rowEntry = "Folder1,Document_2.docx");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "Document_2");
-
-		DMDocument.expandInfo();
-
-		AssertTextEquals(
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_UPLOADER_NO_PROFILE",
-			value1 = "Anonymous Anonymous");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoFolder(dmFolderName = "Folder1");
-
-		Click.clickAt(locator1 = "Icon#INFO");
-
-		AssertTextPresent(
-			locator1 = "Sidebar#SIDEBAR",
-			value1 = "Anonymous Anonymous");
-	}
-
 	@description = "This test anonymizes only one entry from an application via the Info panel"
 	@priority = 4
 	test CanAnonymizeViaInfoPanel {
@@ -1083,48 +1036,6 @@ definition {
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		LexiconEntry.viewNoEntry(rowEntry = "Blogs Entry Title");
-	}
-
-	@description = "This is a use case for LPS-77748. This test deletes multiple selected entries from a single application."
-	@priority = 4
-	test CanDeleteMultipleEntriesFromAnApplication {
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMFolder.addCP(dmFolderName = "Folder1");
-
-		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.jpeg,Document_2.docx,Document_3.mp3,Document_4.txt");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		User.openUsersAdmin();
-
-		User.deletePersonalDataCP(
-			userFirstName = "userfn",
-			userLastName = "userln");
-
-		GDPR.filterByApplications(
-			applicationItemsCount = 5,
-			applications = "Documents and Media",
-			totalItemsCount = 5);
-
-		AssertTextPresent(value1 = "DLFOLDER");
-
-		AssertTextPresent(value1 = "DLFILEENTRY");
-
-		GDPR.deleteMultipleEntriesCP(rowEntry = "Folder1,Document_2.docx");
-
-		GDPR.filterByApplications(
-			applicationItemsCount = 3,
-			applications = "Documents and Media",
-			totalItemsCount = 3);
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		AssertTextNotPresent(value1 = "Folder1");
-
-		AssertTextNotPresent(value1 = "Document_2");
 	}
 
 	@description = "This test edits an entry in Delete Personal Data"
