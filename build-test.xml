@@ -662,6 +662,134 @@ module.framework.properties.osgi.console=11312</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="export-database-postgresql">
+		<attribute default="postgresql" name="database.file.prefix" />
+		<attribute default="lportal" name="database.schema.name" />
+
+		<sequential>
+			<if>
+				<not>
+					<available file="${selenium.output.dir.name}" type="dir" />
+				</not>
+				<then>
+					<mkdir dir="${selenium.output.dir.name}" />
+				</then>
+			</if>
+
+			<get-database-property property.name="database.password" />
+			<get-database-property property.name="database.schema" />
+			<get-database-property property.name="database.username" />
+
+			<if>
+				<or>
+					<equals arg1="${env.DOCKER_ENABLED}" arg2="true" />
+					<isset property="database.${database.type}.docker.image" />
+				</or>
+				<then>
+					<local name="export.dmp.file.path" />
+
+					<property location="export_database_postgresql_export.sh" name="export.database.postgresql.file.path" />
+					<property name="docker.src.file.path" value="/tmp/export.sql" />
+					<property name="export.dmp.file.path" value="${selenium.output.dir.name}/@{database.file.prefix}-@{database.schema.name}.sql" />
+
+					<echo file="${export.database.postgresql.file.path}">
+						<![CDATA[
+							#!/bin/bash
+
+							export PGPASSWORD=${database.password}
+
+							pg_dump \
+								--dbname=lportal \
+								--username=${database.postgresql.username} \
+								--encoding=UTF8 \
+								--exclude-table=^L_[0-9]+_* \
+								--exclude-table=^l_[0-9]+_* \
+								--no-comments \
+								--no-owner \
+								--no-privileges \
+								--no-publications \
+								--no-security-labels \
+								--no-subscriptions \
+								--no-unlogged-table-data \
+								--schema==${database.schema.name} \
+								--schema-only
+								> ${docker.src.file.path}
+						]]>
+					</echo>
+
+					<get-database-property property.name="database.host" />
+
+					<execute>
+						<![CDATA[
+							docker cp ${export.database.postgresql.file.path} ${database.host}:/tmp/export_database_postgresql_export.sh
+
+							docker exec ${database.host} /bin/bash /tmp/export_database_postgresql_export.sh
+						]]>
+					</execute>
+
+					<execute>
+						<![CDATA[
+							docker cp ${database.host}:${docker.src.file.path} ${export.dmp.file.path}
+						]]>
+					</execute>
+				</then>
+				<else>
+					<exec executable="pg_dump" output="${selenium.output.dir.name}/@{database.file.prefix}-@{database.schema.name}.sql">
+						<arg value="--dbname=lportal" />
+						<arg value="--encoding=UTF8" />
+						<arg value="--exclude-table=^L_[0-9]+_*" />
+						<arg value="--exclude-table=^l_[0-9]+_*" />
+						<arg value="--no-comments" />
+						<arg value="--no-owner" />
+						<arg value="--no-privileges" />
+						<arg value="--no-publications" />
+						<arg value="--no-security-labels" />
+						<arg value="--no-subscriptions" />
+						<arg value="--no-unlogged-table-data" />
+						<arg value="--password=${database.password}" />
+						<arg value="--schema=${database.schema.name}" />
+						<arg value="--schema-only" />
+						<arg value="--username=${database.postgresql.username}" />
+					</exec>
+				</else>
+			</if>
+
+			<echo file="export_database_postgresql_sort_sql.sh">
+				<![CDATA[
+					#!/bin/bash
+
+					gawk '/CREATE/ {f=1; delete a}
+						/^);/ {f=0; n=asort(a); print a[length(a)]; for (i=1;i<n;i++) print a[i]}
+						!f
+						f{a[$0]=$0}' ${1} |
+					sed '/^--/d' |
+					sed 's=/[^/]*$==;s/\,$//' |
+					sed 's/_x_.*//' |
+					sed 's/\/\*.*\*//' |
+					sed '/SELECT /d' |
+					sed '/SET /d' |
+					sed '/lpartition_/d' |
+					sed '/^$/d' |
+					sed 's/^[[:space:]]*//'
+				]]>
+			</echo>
+
+			<execute>
+				export_database_postgresql_sort_sql.sh ${selenium.output.dir.name}/@{database.file.prefix}-@{database.schema.name}.sql > ${selenium.output.dir.name}/@{database.file.prefix}-@{database.schema.name}-sorted.sql
+			</execute>
+
+			<delete file="${selenium.output.dir.name}/@{database.file.prefix}-@{database.schema.name}.sql" />
+			<delete file="export_database_postgresql_sort_sql.sh" />
+
+			<move
+				file="${selenium.output.dir.name}/@{database.file.prefix}-@{database.schema.name}-sorted.sql"
+				tofile="${selenium.output.dir.name}/@{database.file.prefix}-@{database.schema.name}.sql"
+			/>
+
+			<delete failonerror="false" file="${project.dir}/export_database_postgresql_export.sh" />
+		</sequential>
+	</macrodef>
+
 	<macrodef name="generate-gulp-user-config-json">
 		<attribute name="portlet.name" />
 
@@ -10802,7 +10930,19 @@ send_user $expect_out(buffer)]]></echo>
 	</target>
 
 	<target name="export-database-schema">
-		<export-database-mysql-compact database.file.prefix="${database.file.prefix}" database.schema.name="${database.schema.name}" />
+		<if>
+			<equals arg1="${database.type}" arg2="mysql" />
+			<then>
+				<export-database-mysql-compact database.file.prefix="${database.file.prefix}" database.schema.name="${database.schema.name}" />
+			</then>
+		</if>
+
+		<if>
+			<equals arg1="${database.type}" arg2="postgresql" />
+			<then>
+				<export-database-postgresql database.file.prefix="${database.file.prefix}" database.schema.name="${database.schema.name}" />
+			</then>
+		</if>
 	</target>
 
 	<target name="generate-changelog">
