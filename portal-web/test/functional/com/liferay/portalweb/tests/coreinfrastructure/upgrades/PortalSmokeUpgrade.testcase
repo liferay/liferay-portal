@@ -39,19 +39,25 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+		var databaseType = PropsUtil.get("database.type");
 
-		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		}
 
 		Portlet.startServer();
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
 
-		UpgradeSchema.validateSchemas(
-			freshDBSchemaName = "lportal",
-			upgradedDBSchemaName = "lportal");
+			UpgradeSchema.validateSchemas(
+				freshDBSchemaName = "lportal",
+				upgradedDBSchemaName = "lportal");
+		}
 	}
 
 	@priority = 5
@@ -65,19 +71,25 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+		var databaseType = PropsUtil.get("database.type");
 
-		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		}
 
 		Portlet.startServer();
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
 
-		UpgradeSchema.validateSchemas(
-			freshDBSchemaName = "lportal",
-			upgradedDBSchemaName = "lportal");
+			UpgradeSchema.validateSchemas(
+				freshDBSchemaName = "lportal",
+				upgradedDBSchemaName = "lportal");
+		}
 	}
 
 	@priority = 5
@@ -93,19 +105,25 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+		var databaseType = PropsUtil.get("database.type");
 
-		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		}
 
 		Portlet.startServer();
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
 
-		UpgradeSchema.validateSchemas(
-			freshDBSchemaName = "lportal",
-			upgradedDBSchemaName = "lportal");
+			UpgradeSchema.validateSchemas(
+				freshDBSchemaName = "lportal",
+				upgradedDBSchemaName = "lportal");
+		}
 	}
 
 	@priority = 5
@@ -120,19 +138,25 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+		var databaseType = PropsUtil.get("database.type");
 
-		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		}
 
 		Portlet.startServer();
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
 
-		UpgradeSchema.validateSchemas(
-			freshDBSchemaName = "lportal",
-			upgradedDBSchemaName = "lportal");
+			UpgradeSchema.validateSchemas(
+				freshDBSchemaName = "lportal",
+				upgradedDBSchemaName = "lportal");
+		}
 	}
 
 	@priority = 5
@@ -148,19 +172,25 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+		var databaseType = PropsUtil.get("database.type");
 
-		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		}
 
 		Portlet.startServer();
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
 
-		UpgradeSchema.validateSchemas(
-			freshDBSchemaName = "lportal",
-			upgradedDBSchemaName = "lportal");
+			UpgradeSchema.validateSchemas(
+				freshDBSchemaName = "lportal",
+				upgradedDBSchemaName = "lportal");
+		}
 	}
 
 	@priority = 5
@@ -176,19 +206,25 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+		var databaseType = PropsUtil.get("database.type");
 
-		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		}
 
 		Portlet.startServer();
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
 
-		UpgradeSchema.validateSchemas(
-			freshDBSchemaName = "lportal",
-			upgradedDBSchemaName = "lportal");
+			UpgradeSchema.validateSchemas(
+				freshDBSchemaName = "lportal",
+				upgradedDBSchemaName = "lportal");
+		}
 	}
 
 	@description = "This is a use case for LPS-105035."
@@ -203,19 +239,25 @@ definition {
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+		var databaseType = PropsUtil.get("database.type");
 
-		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=upgraded -Ddatabase.schema.name=lportal");
+
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
+		}
 
 		Portlet.startServer();
 
 		Portlet.shutdownServer();
 
-		AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
+		if ((${databaseType} == "mysql") || (${databaseType} == "postgresql")) {
+			AntCommands.runCommand("build-test.xml", "export-database-schema -Ddatabase.file.prefix=fresh -Ddatabase.schema.name=lportal");
 
-		UpgradeSchema.validateSchemas(
-			freshDBSchemaName = "lportal",
-			upgradedDBSchemaName = "lportal");
+			UpgradeSchema.validateSchemas(
+				freshDBSchemaName = "lportal",
+				upgradedDBSchemaName = "lportal");
+		}
 	}
 
 }

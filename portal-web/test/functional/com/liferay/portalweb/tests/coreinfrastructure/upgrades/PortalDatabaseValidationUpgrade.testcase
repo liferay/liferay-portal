@@ -14,6 +14,7 @@ definition {
 	test CompareLatest7413PartitionedUpgradedAndFreshDBSchemas {
 		property database.bare.enabled = "true";
 		property database.partition.enabled = "true";
+		property database.types = "mysql,postgresql";
 		property portal.acceptance = "true";
 		property portal.smoke.upgrades = "false";
 		property skip.start.app.server = "true";
@@ -54,13 +55,17 @@ definition {
 		}
 
 		task ("When the server is started again with a fresh database") {
-			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=mysql -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-mysql.sql");
+			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.bare.enabled=true");
 
 			TestCase.updatePortalProperties(
 				newProperty = "upgrade.database.auto.run=false",
 				oldProperty = "upgrade.database.auto.run=true");
 
-			SQL.executeSQLStatement(sqlStatement = "DROP DATABASE lpartition_${upgradedCompanyId};");
+			var databaseType = PropsUtil.get("database.type");
+
+			if (${databaseType} == "mysql") {
+				SQL.executeSQLStatement(sqlStatement = "DROP DATABASE lpartition_${upgradedCompanyId};");
+			}
 
 			Portlet.startServer();
 		}
