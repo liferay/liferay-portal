@@ -254,6 +254,10 @@ test(
 );
 
 test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
+	const asyncConnectionRefused = 'Async Connection Refused';
+	const asyncResourceNotFound = 'Async Resource Not Found';
+	const asyncSuccess = 'Async Success';
+	const sampleView = 'Sample View';
 	const sidePanelActionLabelWithActionTitle = 'Side Panel With Action Title';
 	const sidePanelActionLabelWithContentTitle =
 		'Side Panel With Content Title';
@@ -439,6 +443,98 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 		await page.keyboard.press('Escape');
 
 		await expect(fdsSamplePage.sidePanel).toHaveClass(/is-hidden/);
+	});
+
+	await test.step('Sample view action opens an alert message', async () => {
+		const dropdownId = await itemActionButton.getAttribute('aria-controls');
+
+		await itemActionButton.click();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.filter({has: page.getByRole('menu')})
+			.waitFor();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.getByRole('menuitem', {
+				exact: true,
+				name: sampleView,
+			})
+			.click();
+
+		page.on('dialog', async (dialog) => {
+			await expect(dialog.message).toBe('Hello Sample1!');
+		});
+	});
+
+	await test.step('Async connection refused action opens an unexpected error alert toast', async () => {
+		const dropdownId = await itemActionButton.getAttribute('aria-controls');
+
+		await itemActionButton.click();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.filter({has: page.getByRole('menu')})
+			.waitFor();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.getByRole('menuitem', {
+				exact: true,
+				name: asyncConnectionRefused,
+			})
+			.click();
+
+		await expect(
+			page.getByText('Error:An unexpected error occurred.')
+		).toBeVisible();
+	});
+
+	await test.step('Async resource not found action opens an unexpected error alert toast', async () => {
+		const dropdownId = await itemActionButton.getAttribute('aria-controls');
+
+		await itemActionButton.click();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.filter({has: page.getByRole('menu')})
+			.waitFor();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.getByRole('menuitem', {
+				exact: true,
+				name: asyncResourceNotFound,
+			})
+			.click();
+
+		await expect(
+			page.getByText('Error:An unexpected error occurred.').first()
+		).toBeVisible();
+	});
+
+	await test.step('Async success action opens a success alert toast', async () => {
+		const dropdownId = await itemActionButton.getAttribute('aria-controls');
+
+		await itemActionButton.click();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.filter({has: page.getByRole('menu')})
+			.waitFor();
+
+		await page
+			.locator(`#${dropdownId}`)
+			.getByRole('menuitem', {
+				exact: true,
+				name: asyncSuccess,
+			})
+			.click();
+
+		await expect(
+			page.getByText('Success:Your request completed successfully.')
+		).toBeVisible();
 	});
 });
 
