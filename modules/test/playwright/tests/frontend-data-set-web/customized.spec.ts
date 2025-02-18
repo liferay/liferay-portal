@@ -294,22 +294,9 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Side Panel action opens a side panel with content title', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: sidePanelActionLabelWithContentTitle,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(
+			sidePanelActionLabelWithContentTitle
+		);
 
 		await expect(fdsSamplePage.sidePanel).toBeInViewport();
 
@@ -329,21 +316,9 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Side Panel action opens a side panel with action title', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: sidePanelActionLabelWithActionTitle,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(
+			sidePanelActionLabelWithActionTitle
+		);
 
 		await expect(fdsSamplePage.sidePanel).toBeInViewport();
 
@@ -367,21 +342,9 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Side Panel action opens a side panel with duplicated title', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: sidePanelActionLabelWithActionTitleContentTitle,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(
+			sidePanelActionLabelWithActionTitleContentTitle
+		);
 
 		await expect(fdsSamplePage.sidePanel).toBeInViewport();
 
@@ -404,22 +367,7 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Side Panel action opens a side panel without title', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: sidePanelActionLabelWithoutTitle,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(sidePanelActionLabelWithoutTitle);
 
 		await expect(fdsSamplePage.sidePanel).toBeInViewport();
 
@@ -446,22 +394,7 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Sample view action opens an alert message', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: sampleView,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(sampleView);
 
 		page.on('dialog', async (dialog) => {
 			await expect(dialog.message).toBe('Hello Sample1!');
@@ -469,22 +402,7 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Async connection refused action opens an unexpected error alert toast', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: asyncConnectionRefused,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(asyncConnectionRefused);
 
 		await expect(
 			page.getByText('Error:An unexpected error occurred.')
@@ -492,22 +410,7 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Async resource not found action opens an unexpected error alert toast', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: asyncResourceNotFound,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(asyncResourceNotFound);
 
 		await expect(
 			page.getByText('Error:An unexpected error occurred.').first()
@@ -515,22 +418,7 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 	});
 
 	await test.step('Async success action opens a success alert toast', async () => {
-		const dropdownId = await itemActionButton.getAttribute('aria-controls');
-
-		await itemActionButton.click();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.filter({has: page.getByRole('menu')})
-			.waitFor();
-
-		await page
-			.locator(`#${dropdownId}`)
-			.getByRole('menuitem', {
-				exact: true,
-				name: asyncSuccess,
-			})
-			.click();
+		await fdsSamplePage.clickItemAction(asyncSuccess);
 
 		await expect(
 			page.getByText('Success:Your request completed successfully.')
