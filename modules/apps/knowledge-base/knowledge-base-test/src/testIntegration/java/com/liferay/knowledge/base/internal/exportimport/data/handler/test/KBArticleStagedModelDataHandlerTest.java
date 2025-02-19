@@ -15,16 +15,24 @@ import com.liferay.knowledge.base.service.KBArticleLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -48,6 +56,75 @@ public class KBArticleStagedModelDataHandlerTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testExportImportKBArticleWithAttachments() throws Exception {
+		initExport();
+
+		KBArticle kbArticle = _addKBArticle(
+			new Date(System.currentTimeMillis() + Time.DAY),
+			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			ClassNameLocalServiceUtil.getClassNameId(
+				KBFolderConstants.getClassName()),
+			_createServiceContext(stagingGroup));
+
+		InputStream inputStream = new ByteArrayInputStream(
+			TestDataConstants.TEST_BYTE_ARRAY);
+
+		FileEntry fileEntry1 = _kbArticleLocalService.addAttachment(
+			TestPropsValues.getUserId(), kbArticle.getResourcePrimKey(),
+			RandomTestUtil.randomString(), inputStream,
+			ContentTypes.TEXT_PLAIN);
+		FileEntry fileEntry2 = _kbArticleLocalService.addAttachment(
+			TestPropsValues.getUserId(), kbArticle.getResourcePrimKey(),
+			RandomTestUtil.randomString(), inputStream,
+			ContentTypes.TEXT_PLAIN);
+
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, kbArticle);
+
+		initImport();
+
+		KBArticle exportedKBArticle = (KBArticle)readExportedStagedModel(
+			kbArticle);
+
+		StagedModelDataHandlerUtil.importStagedModel(
+			portletDataContext, exportedKBArticle);
+
+		KBArticle importedKBArticle = (KBArticle)getStagedModel(
+			kbArticle.getUuid(), liveGroup);
+
+		_assertKBArticleAttachments(
+			new String[] {fileEntry1.getFileName(), fileEntry2.getFileName()},
+			importedKBArticle);
+
+		initExport();
+
+		kbArticle = _kbArticleLocalService.updateKBArticle(
+			kbArticle.getUserId(), kbArticle.getResourcePrimKey(),
+			kbArticle.getTitle(), kbArticle.getContent(),
+			kbArticle.getDescription(), null, kbArticle.getSourceURL(),
+			kbArticle.getDisplayDate(), kbArticle.getExpirationDate(),
+			kbArticle.getReviewDate(), null,
+			new long[] {fileEntry2.getFileEntryId()},
+			_createServiceContext(stagingGroup));
+
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, kbArticle);
+
+		initImport();
+
+		exportedKBArticle = (KBArticle)readExportedStagedModel(kbArticle);
+
+		StagedModelDataHandlerUtil.importStagedModel(
+			portletDataContext, exportedKBArticle);
+
+		importedKBArticle = (KBArticle)getStagedModel(
+			kbArticle.getUuid(), liveGroup);
+
+		_assertKBArticleAttachments(
+			new String[] {fileEntry1.getFileName()}, importedKBArticle);
+	}
 
 	@Test
 	public void testExportImportScheduledKBArticleCanBePublished()
@@ -208,11 +285,32 @@ public class KBArticleStagedModelDataHandlerTest
 			parentResourceClassNameId, serviceContext);
 	}
 
+	private void _assertKBArticleAttachments(
+			String[] expectedFileNames, KBArticle importedKBArticle)
+		throws Exception {
+
+		List<FileEntry> attachmentsFileEntries =
+			importedKBArticle.getAttachmentsFileEntries();
+
+		Assert.assertEquals(
+			attachmentsFileEntries.toString(), attachmentsFileEntries.size(),
+			expectedFileNames.length);
+
+		for (FileEntry attachmentFileEntry : attachmentsFileEntries) {
+			Assert.assertTrue(
+				ArrayUtil.contains(
+					expectedFileNames, attachmentFileEntry.getFileName()));
+		}
+	}
+
 	private ServiceContext _createServiceContext(Group group) throws Exception {
 		return ServiceContextTestUtil.getServiceContext(group.getGroupId());
 	}
 
 	@Inject
 	private KBArticleLocalService _kbArticleLocalService;
+
+	@Inject
+	private PortletFileRepository _portletFileRepository;
 
 }
