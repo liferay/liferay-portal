@@ -306,9 +306,9 @@ span {
 		p {
 			background-image: url("data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" class=\"lexicon-icon lexicon-icon-angle-right\" viewBox=\"0 0 512 512\" fill=\"%23004AD7\"%3E%3Cpath class=\"lexicon-icon-outline\" d=\"M375.2 239.2 173.3 37c-23.6-23-59.9 11.9-36 35.1l183 183.9-182.9 183.8c-24 23.5 12.5 58.2 36.1 35.2l201.7-202.1c10.2-10.1 9.3-24.4 0-33.7z\"/%3E%3C/svg%3E");
 			content: "";
+			font-weight: 600;
 			height: 16px;
 			width: 16px;
-			font-weight: 600;
 		}
 	}
 	
