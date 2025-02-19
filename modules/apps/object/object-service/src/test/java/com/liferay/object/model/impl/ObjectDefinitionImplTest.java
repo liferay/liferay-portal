@@ -96,7 +96,7 @@ public class ObjectDefinitionImplTest {
 			"/headless-builder/applications/endpoints", true, "APIEndpoint",
 			"APIApplication", true);
 		_testGetRESTContextPath(
-			"/commerce-returns/commerce-return-items", true,
+			"/commerce/returns/commerce/return-items", true,
 			"CommerceReturnItem", "CommerceReturn", true);
 	}
 

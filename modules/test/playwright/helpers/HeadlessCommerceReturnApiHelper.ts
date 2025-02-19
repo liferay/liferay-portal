@@ -49,7 +49,7 @@ export class HeadlessCommerceReturnApiHelper {
 
 	constructor(apiHelpers: ApiHelpers | DataApiHelpers) {
 		this.apiHelpers = apiHelpers;
-		this.basePath = 'commerce-returns/';
+		this.basePath = 'commerce/returns/';
 	}
 
 	async deleteCommerceReturn(returnId: number) {

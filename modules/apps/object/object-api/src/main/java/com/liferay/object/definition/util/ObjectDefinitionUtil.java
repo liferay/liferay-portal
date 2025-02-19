@@ -101,9 +101,9 @@ public class ObjectDefinitionUtil {
 		).put(
 			"Bookmark", "/bookmarks"
 		).put(
-			"CommerceReturn", "/commerce-returns"
+			"CommerceReturn", "/commerce/returns"
 		).put(
-			"CommerceReturnItem", "/commerce-return-items"
+			"CommerceReturnItem", "/commerce/return-items"
 		).put(
 			"DataSet", "/data-set-admin/data-sets"
 		).put(

@@ -179,7 +179,7 @@ CommerceOrder commerceOrder = commerceReturnEditDisplayContext.getCommerceReturn
 							"namespace", liferayPortletResponse.getNamespace()
 						).build()
 					%>'
-					apiURL='<%= "/o/commerce-return-items?filter=r_commerceReturnToCommerceReturnItems_l_commerceReturnId eq '" + commerceReturn.getId() + "'&nestedFields=commerceOrderItem" %>'
+					apiURL='<%= "/o/commerce/return-items?filter=r_commerceReturnToCommerceReturnItems_l_commerceReturnId eq '" + commerceReturn.getId() + "'&nestedFields=commerceOrderItem" %>'
 					fdsActionDropdownItems="<%= commerceReturnEditDisplayContext.getCommerceReturnItemFDSActionDropdownItems() %>"
 					id="<%= CommerceReturnFDSNames.RETURN_ITEMS %>"
 					propsTransformer="{commerceReturnItemsPropsTransformer} from commerce-order-web"

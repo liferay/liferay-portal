@@ -176,7 +176,7 @@ public class OrderReturnsDataSetFragmentRenderer implements FragmentRenderer {
 				commerceOrderId, StringPool.APOSTROPHE),
 			true);
 
-		return "/o/commerce-returns?filter=" + filterString;
+		return "/o/commerce/returns?filter=" + filterString;
 	}
 
 	private String _getConfigurationValue(
