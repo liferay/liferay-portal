@@ -3598,6 +3598,18 @@
 		"to": "getCommerceInventoryBookedQuantityId"
 	},
 	{
+		"from": "regex:CommerceOrderConstants\\.(?<methodName>getPaymentLabelStyle|getPaymentStatusLabel)",
+		"issueKey": "LPD-48412",
+		"newImports": [
+			"com.liferay.commerce.constants.CommercePaymentEntryConstants"
+		],
+		"to": "CommercePaymentEntryConstants.${methodName}",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
 		"classNames": [
 			"CPAttachmentFileEntryService",
 			"CPAttachmentFileEntryServiceUtil"
