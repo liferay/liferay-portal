@@ -22,10 +22,12 @@ export default function PreviewButton({
 			disabled={disabled}
 			displayType="secondary"
 			onClick={() => {
+				const futureDate = new Date(new Date().getTime() + 1000);
+
 				updateJournalInput({
 					name: 'formDate',
 					namespace,
-					value: Date.now().toString(),
+					value: futureDate.getTime(),
 				});
 
 				const form = document.getElementById(`${namespace}fm1`);
