@@ -135,6 +135,17 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 				redirect = _layoutLockManager.getLockedLayoutURL(
 					httpServletRequest);
 			}
+			else if (!layout.isLayoutUpdateable()) {
+				Layout redirectLayout = layout;
+
+				if (layout.isDraftLayout()) {
+					redirectLayout = _layoutLocalService.fetchLayout(
+						layout.getClassPK());
+				}
+
+				redirect = _portal.getLayoutFullURL(
+					redirectLayout, themeDisplay);
+			}
 			else {
 				redirect = _getDraftLayoutFullURL(
 					httpServletRequest, layout, themeDisplay);
