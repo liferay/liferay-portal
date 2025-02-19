@@ -290,24 +290,77 @@ span {
 }
 
 @media (max-width: 600px) {
-
 	.banner-tags {
 		margin-top: 0.5rem;
 	}
+	
+	.button-collapse {
+		align-items: center;
+		background-color: #eaecee;
+		border-radius: 6px;
+		display: flex;
+		height: 32px;
+		justify-content: center;
+		width: 32px;
 
+		p {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" class=\"lexicon-icon lexicon-icon-angle-right\" viewBox=\"0 0 512 512\" fill=\"%23004AD7\"%3E%3Cpath class=\"lexicon-icon-outline\" d=\"M375.2 239.2 173.3 37c-23.6-23-59.9 11.9-36 35.1l183 183.9-182.9 183.8c-24 23.5 12.5 58.2 36.1 35.2l201.7-202.1c10.2-10.1 9.3-24.4 0-33.7z\"/%3E%3C/svg%3E");
+			content: "";
+			height: 16px;
+			width: 16px;
+			font-weight: 600;
+		}
+	}
+	
+	.collapse-bar {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+		padding: 1rem;
+		width: 100%;
+				
+		p {
+			margin-bottom: 0;
+		}
+	}
+	
 	.container {
 		.lesson-layout-container > div:nth-child(1) {
 			margin-right: auto !important;
 			padding: inherit !important;
 		}
 	}
-  
+	
+	.container-badges {
+		margin-top: 2rem;
+	}
+	
+	.container-quiz-result {
+		display: flex;
+		flex-direction: column;
+	}
+	
+	.content {
+		min-width: 100%
+	}
+
 	.course-top-banner {
-		height: 22vh !important;
-  
+		height: 13.5rem;
+		
+		.container-view {
+			display: flex;
+			height: 100%;
+			padding: 1.5rem 0;
+		}
+		
+		&::before {
+			right: 0;
+			top: 8.25rem;
+		}
+		
 		.justify-content-between {
 			flex-direction: column;
-  
+
 			.course-content-container {
 				align-self: start;
 				flex-direction: column;
@@ -316,17 +369,16 @@ span {
 		}
 
 		h3 {
-			font-size: 1.3rem !important;
+			font-size: 1.3rem;
+			margin-top: 1rem;
 		}
-  
+
 		.banner-tag {
 			align-items: center;
 			align-self: start !important;
 			font-size: 0.7rem;
 			gap: 0.5rem;
 			height: auto !important;
-			padding-top: 0px;
-			width: auto !important;
 
 			p::before {
 				height: 12px;
@@ -335,15 +387,37 @@ span {
 		}	
 	}
 	
-  
+	.icon-arrow.rotate {
+		transform: rotate(90deg);
+		transition: transform .3s ease;
+	}
+
 	.lfr-layout-structure-item-lms-lesson-display-page-layout--copy- {
 		align-self: center;
 		width: 95%;
 	}
+	
+	.side-nav {
+		margin-bottom: 2rem;
+		width: 100% !important;
+	}
+	
+	.text-home-quiz {
+		max-width: 100%;
+		padding: 2.5rem 0;
+	}
+	
+	.text-quiz-result {
+		width: 100%;
+		
+		p {
+			margin-top: 2rem;
+			max-width: 100%;
+		}
+	}
 }
   
 @media (max-width: 1024px) {
-  
 	.course-content-container {
 		.banner-tag {
 		
@@ -359,7 +433,8 @@ span {
 
 	.course-top-banner {
 		h3 {
-			font-size: 1.2rem !important;
+			font-size: 1.2rem;
+			margin-top: 1rem;
 		}
 
 		.banner-tag {
@@ -376,11 +451,6 @@ span {
 	.lesson-layout-container {
 		display: flex !important;
 		flex-direction: column !important;
-
-		.side-nav {
-			margin-bottom: 1rem;
-			width: 100% !important;
-		}
 	}
 
 	.lesson-layout-container > div:nth-child(1) {

@@ -148,7 +148,7 @@ iframe {
 }
 
 .lesson-layout-container:has(.article-navigation.show) > div:nth-child(1) {
-	width: 25% !important;
+	width: 25%;
 }
 
 .lesson-layout-container:has(.article-navigation.show) > div:nth-child(3) {
@@ -407,17 +407,31 @@ iframe {
 }
 
 @media (max-width: 600px) {
+	.banner-tag {
+		font-size: 0.7rem !important;
+	}
 
 	.banner-tags {
 		margin-top: 0.5rem;
 	}
-  
+	
 	.course-top-banner {
-		height: 22vh !important;
-  
+		 height: 13rem;
+		
+		.container-view {
+			display: flex;
+			height: 100%;
+			padding: 1.5rem 0;
+		}
+		
+		&::before {
+			right: 0;
+			top: 8rem;
+		}
+
 		.justify-content-between {
 			flex-direction: column;
-  
+
 			.course-content-container {
 				align-self: start;
 				flex-direction: column;
@@ -426,23 +440,28 @@ iframe {
 		}
 
 		h3 {
-			font-size: 1.3rem !important;
+			font-size: 1.3rem;
+			margin-top: 1rem;
 		}
-  
-		& .banner-tag {
+
+		.banner-tag {
 			align-items: center;
 			align-self: start !important;
 			font-size: 0.7rem;
 			gap: 0.5rem;
 			height: auto !important;
-			padding-top: 0px;
-			width: auto !important;
 
 			p::before {
-				height: 0.75rem;
-				width: 0.75rem;
+				height: 12px;
+				width: 12px;
 			}
 		}	
+	}
+
+	.course-top-intro-banner {
+		&::before {
+			right: 0px;
+		}
 	}
 	
 	.container {
@@ -451,15 +470,19 @@ iframe {
 			padding: inherit !important;
 		}
 	}
-  
+
 	.lfr-layout-structure-item-lms-lesson-display-page-layout--copy- {
 		align-self: center;
 		width: 95%;
 	}
+	
+	.side-nav {
+		 min-width: 100% !important;
+	}
+
 }
-  
+
 @media (max-width: 1024px) {
-  
 	.course-content-container {
 		& .banner-tag {
 		
@@ -475,7 +498,7 @@ iframe {
 
 	.course-top-banner {
 		h3 {
-			font-size: 1.2rem !important;
+			font-size: 1.3rem;
 		}
 
 		& .banner-tag {
