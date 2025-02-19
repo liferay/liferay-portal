@@ -9186,12 +9186,12 @@ create database lportal${database.index} character set utf8;</echo>
 						</and>
 						<then>
 							<echo file="create.sql">
-drop database lportal;
+drop database if exists lportal;
 create database lportal encoding = 'UNICODE';</echo>
 
 							<echo append="true" file="create.sql">
 
-drop database lportal${databases.size};
+drop database if exists lportal${databases.size};
 create database lportal${databases.size} encoding = 'UNICODE';</echo>
 						</then>
 					</elseif>
