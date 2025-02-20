@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.db.partition;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 
 import java.util.concurrent.Callable;
@@ -23,10 +24,24 @@ public class CompanyThreadLocalCallable<T> implements Callable<T> {
 
 	@Override
 	public T call() throws Exception {
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(_companyId)) {
+		SafeCloseable safeCloseable = null;
+
+		try {
+			if (_companyId == CompanyConstants.SYSTEM) {
+				safeCloseable =
+					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+						_companyId);
+			}
+			else {
+				safeCloseable = CompanyThreadLocal.lock(_companyId);
+			}
 
 			return _callable.call();
+		}
+		finally {
+			if (safeCloseable != null) {
+				safeCloseable.close();
+			}
 		}
 	}
 
