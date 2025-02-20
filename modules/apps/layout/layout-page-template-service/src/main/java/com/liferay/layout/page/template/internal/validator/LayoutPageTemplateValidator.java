@@ -5,8 +5,6 @@
 
 package com.liferay.layout.page.template.internal.validator;
 
-import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryNameException;
-
 /**
  * @author Mariano Álvaro Sáiz
  */
@@ -32,16 +30,16 @@ public class LayoutPageTemplateValidator {
 		return false;
 	}
 
-	public static void validateNameCharacters(
-			String layoutPageTemplateEntryName)
-		throws LayoutPageTemplateEntryNameException {
+	public static Character getBlacklistCharacter(
+			String string)  {
 
 		for (char c : _BLACKLIST_CHAR) {
-			if (layoutPageTemplateEntryName.indexOf(c) >= 0) {
-				throw new LayoutPageTemplateEntryNameException.
-					MustNotContainInvalidCharacters(c);
+			if (string.indexOf(c) >= 0) {
+				return c;
 			}
 		}
+
+		return null;
 	}
 
 	private static final char[] _BLACKLIST_CHAR = {

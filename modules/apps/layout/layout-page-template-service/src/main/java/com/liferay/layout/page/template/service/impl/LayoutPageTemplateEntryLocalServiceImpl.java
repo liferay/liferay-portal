@@ -1187,7 +1187,12 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			throw new LayoutPageTemplateEntryNameException.MustNotBeNull();
 		}
 
-		LayoutPageTemplateValidator.validateNameCharacters(name);
+		Character character = LayoutValidator.getBlacklistCharacter(name);
+
+		if (character != null) {
+			throw new LayoutPageTemplateEntryNameException.
+				MustNotContainInvalidCharacters(character);
+		}
 
 		int nameMaxLength = ModelHintsUtil.getMaxLength(
 			LayoutPageTemplateEntry.class.getName(), "name");
