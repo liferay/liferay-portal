@@ -4,6 +4,7 @@
 		"@clayui/link": "3.111.0",
 		"@clayui/popover": "3.119.0",
 		"@liferay/frontend-js-react-web": "*",
+		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"
 	},
