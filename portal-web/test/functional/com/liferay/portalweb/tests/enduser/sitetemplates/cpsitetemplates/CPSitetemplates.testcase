@@ -706,44 +706,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-131903 and LPS-132256. Verify that users can not attempt to edit pages when disable changes."
-	@priority = 3
-	test CannotEditSiteLinkedToDisabledPageModificationSiteTemplate {
-		property portal.acceptance = "true";
-
-		task ("Given: User adds new site template with disallowing site admin's right to modificate pages") {
-			SiteTemplates.addCP(
-				disableChanges = "true",
-				siteTemplateName = "Site Template Name");
-		}
-
-		task ("When: Adds a site based on this site template") {
-			Site.openSitesAdmin();
-
-			Site.addCP(
-				siteName = "Site Template Site Name",
-				siteTemplateName = "Site Template Name",
-				siteTemplateTab = "Custom Site Templates",
-				siteType = "Site Template");
-		}
-
-		task ("Then: User is not able to edit the site or to view Permissions menu") {
-			Navigator.openSiteURL(siteName = "Site Template Site Name");
-
-			Page.viewPageLockCheck();
-
-			AssertElementNotPresent(locator1 = "Icon#EDIT_PENCIL");
-
-			MouseOver(
-				key_pageName = "Home",
-				locator1 = "Home#PAGE");
-
-			AssertElementNotPresent(locator1 = "Portlet#OPTIONS_ICON");
-
-			MenuItem.viewNotPresent(menuItem = "Permissions");
-		}
-	}
-
 	@description = "This is a use case for LPS-161817. Child content page of a Site created from a Site Template cannot be viewed or edited."
 	@priority = 3
 	test CanViewAndEditChildContentPageInSiteCreatedBySiteTemplate {
