@@ -17,7 +17,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
-import com.liferay.petra.string.CharPool;
+import com.liferay.layout.util.validator.LayoutValidator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LockedLayoutException;
@@ -34,12 +34,10 @@ import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import javax.portlet.ActionRequest;
@@ -208,8 +206,8 @@ public class CreateLayoutPageTemplateEntryMVCActionCommand
 	private String _getUniqueName(
 		Layout layout, long layoutPageTemplateCollectionId, Locale locale) {
 
-		String layoutName = StringUtil.replace(
-			layout.getName(locale), _BLACKLIST_CHARS, _REPLACEMENT_CHARS);
+		String layoutName = LayoutValidator.replaceBlacklistedChars(
+			layout.getName(locale));
 
 		String name = StringBundler.concat(
 			layoutName, " - ", _language.get(locale, "page-template"));
@@ -231,21 +229,6 @@ public class CreateLayoutPageTemplateEntryMVCActionCommand
 		}
 
 		return name;
-	}
-
-	private static final char[] _BLACKLIST_CHARS;
-
-	private static final char[] _REPLACEMENT_CHARS;
-
-	static {
-		_BLACKLIST_CHARS = new char[] {
-			';', '/', '?', ':', '@', '=', '&', '\"', '<', '>', '#', '%', '{',
-			'}', '|', '\\', '^', '~', '[', ']', '`'
-		};
-
-		_REPLACEMENT_CHARS = new char[_BLACKLIST_CHARS.length];
-
-		Arrays.fill(_REPLACEMENT_CHARS, CharPool.DASH);
 	}
 
 	@Reference
