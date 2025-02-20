@@ -23,9 +23,12 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -218,6 +221,41 @@ public class CreateLayoutPageTemplateEntryMVCActionCommandTest {
 			editableValuesJSONObject.getString("portletId"));
 	}
 
+	@Test
+	@TestInfo("LPD-49417")
+	public void testCreateLayoutPageTemplateEntryWithLayoutNameWithInvalidCharacters()
+		throws Exception {
+
+		StringBundler expectedSB = new StringBundler();
+		StringBundler sb = new StringBundler();
+		String string = RandomTestUtil.randomString(1);
+
+		for (char c : _BLACKLIST_CHARS) {
+			expectedSB.append(CharPool.DASH);
+			sb.append(c);
+
+			expectedSB.append(string);
+			sb.append(string);
+		}
+
+		_layoutLocalService.updateName(
+			_layout, sb.toString(),
+			LanguageUtil.getLanguageId(LocaleUtil.getSiteDefault()));
+
+		JSONObject jsonObject = ReflectionTestUtil.invoke(
+			_mvcActionCommand, "doTransactionalCommand",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			_getMockLiferayPortletActionRequest(),
+			new MockLiferayPortletActionResponse());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				jsonObject.getLong("layoutPageTemplateEntryId"));
+
+		Assert.assertEquals(
+			expectedSB + " - page-template", layoutPageTemplateEntry.getName());
+	}
+
 	private MockLiferayPortletActionRequest
 			_getMockLiferayPortletActionRequest()
 		throws Exception {
@@ -261,6 +299,11 @@ public class CreateLayoutPageTemplateEntryMVCActionCommandTest {
 
 		return themeDisplay;
 	}
+
+	private static final char[] _BLACKLIST_CHARS = {
+		';', '/', '?', ':', '@', '=', '&', '\"', '<', '>', '#', '%', '{', '}',
+		'|', '\\', '^', '~', '[', ']', '`'
+	};
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
