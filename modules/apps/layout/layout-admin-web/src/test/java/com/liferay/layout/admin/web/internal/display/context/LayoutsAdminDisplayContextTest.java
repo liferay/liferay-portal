@@ -82,7 +82,7 @@ public class LayoutsAdminDisplayContextTest {
 
 	@Test
 	public void testGetEditOrViewLayoutURLEditURL() throws Exception {
-		Layout layout = _getContentLayout();
+		Layout layout = _getContentLayout(true);
 
 		Mockito.when(
 			_layoutActionsHelper.isShowConfigureAction(layout)
@@ -95,7 +95,28 @@ public class LayoutsAdminDisplayContextTest {
 
 	@Test
 	public void testGetEditOrViewLayoutURLViewURL() throws Exception {
-		Layout layout = _getContentLayout();
+		Layout layout = _getContentLayout(true);
+
+		Mockito.when(
+			_layoutActionsHelper.isShowViewLayoutAction(layout)
+		).thenReturn(
+			true
+		);
+
+		_assertGetEditOrViewLayoutURL(layout, StringPool.BLANK);
+	}
+
+	@Test
+	public void testGetEditOrViewLayoutURLViewURLWithLayoutUpdateableFalse()
+		throws Exception {
+
+		Layout layout = _getContentLayout(false);
+
+		Mockito.when(
+			_layoutActionsHelper.isShowConfigureAction(layout)
+		).thenReturn(
+			true
+		);
 
 		Mockito.when(
 			_layoutActionsHelper.isShowViewLayoutAction(layout)
@@ -149,7 +170,7 @@ public class LayoutsAdminDisplayContextTest {
 			HttpComponentsUtil.getParameter(url, "p_l_back_url_title", false));
 	}
 
-	private Layout _getContentLayout() {
+	private Layout _getContentLayout(boolean layoutUpdateable) {
 		Layout layout = Mockito.mock(Layout.class);
 
 		Layout draftLayout = Mockito.mock(Layout.class);
@@ -164,6 +185,12 @@ public class LayoutsAdminDisplayContextTest {
 			layout.getPlid()
 		).thenReturn(
 			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			layout.isLayoutUpdateable()
+		).thenReturn(
+			layoutUpdateable
 		);
 
 		Mockito.when(
