@@ -1,9 +1,9 @@
-[#assign currentEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+[#assign assetEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
 
 <div class="container p-0">
 	<div class="d-flex flex-row justify-content-between lesson-layout-container">
 		<div class="d-flex flex-column side-nav">
-			<liferay-lms-navigation-menu asset-id="${currentEntry.classPK!}" asset-type="quiz" navigation-menu-type="course"></liferay-lms-navigation-menu>
+			<liferay-lms-navigation-menu asset-id="${assetEntry.classPK!}" asset-type="quiz" navigation-menu-type="course"></liferay-lms-navigation-menu>
 		</div>
 
 		<div class="content d-flex flex-column flex-fill quiz-content">
@@ -21,7 +21,7 @@
 </div>
 
 <script type="module">
-	Liferay.Util.fetch(`/o/c/quizes/${currentEntry.classPK!}`)
+	Liferay.Util.fetch(`/o/c/quizes/${assetEntry.classPK!}`)
 		.then((response) => response.json())
 		.then((response) => {
 			document.querySelector("#quiz-title").innerText = response.title;

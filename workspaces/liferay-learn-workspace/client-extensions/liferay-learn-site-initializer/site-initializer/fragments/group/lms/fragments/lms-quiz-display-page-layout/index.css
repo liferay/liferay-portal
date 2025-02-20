@@ -27,16 +27,14 @@
 	flex-direction: column;
 }
 
-.lesson-layout-container:has(.article-navigation.show) .content {
-	width: 55% !important;
-}
-
-.lesson-layout-container:has(.article-navigation.show) >div:nth-child(1) {
-	width: 25% !important;
-}
-
-.lesson-layout-container:has(.article-navigation.show) >div:nth-child(3) {
-	width: 20% !important;
+.lesson-layout-container > div:nth-child(1) {
+	background-color: var(--color-neutral-1) !important;
+	border-radius: var(--border-radius-lg) !important;
+	font-family: var(--font-family-sans-serif, 'Source Sans 3') !important;
+	height: 100% !important;
+	margin-right: var(--spacer-4, 1.5rem) !important;
+	padding: var(--spacer-2, 0.5rem) !important;
+	width: 20%;
 }
 
 .lesson-layout-container > div:nth-child(3) {
@@ -49,14 +47,16 @@
 	top: 12.5rem !important;
 }
 
-.lesson-layout-container > div:nth-child(1) {
-	background-color: var(--color-neutral-1) !important;
-	border-radius: var(--border-radius-lg) !important;
-	font-family: var(--font-family-sans-serif, 'Source Sans 3') !important;
-	height: 100% !important;
-	margin-right: var(--spacer-4, 1.5rem) !important;
-	padding: var(--spacer-2, 0.5rem) !important;
-	width: 20%;
+.lesson-layout-container:has(.article-navigation.show) .content {
+	width: 55% !important;
+}
+
+.lesson-layout-container:has(.article-navigation.show) >div:nth-child(1) {
+	width: 25% !important;
+}
+
+.lesson-layout-container:has(.article-navigation.show) >div:nth-child(3) {
+	width: 20% !important;
 }
 
 .lesson-link.active {
@@ -69,12 +69,6 @@
 	color: var(--color-action-primary-hover, #0053F0);
 }
 
-.sticker-overlay {
-	.lexicon-icon-check {
-		color: var(--white) !important;
-	}
-}
-
 .show-quick-actions-on-hover .active {
 	background-color: transparent;
 	border-left: 4.5px solid !important;
@@ -82,16 +76,18 @@
 	border-radius: 0px;
 }
 
-p {
-	font-weight: var(--font-weight-semi-bold, 600);
-}
-
-.panel button .sticker .lexicon-icon-check {
-	fill: var(--color-action-primary-inverted, #ffffff);
+.sticker-overlay {
+	.lexicon-icon-check {
+		color: var(--white) !important;
+	}
 }
 
 .panel .panel-body .sticker .lexicon-icon-check {
 	fill: var(--color-action-primary-hover, #0053F0);
+}
+
+.panel button .sticker .lexicon-icon-check {
+	fill: var(--color-action-primary-inverted, #ffffff);
 }
 
 .panel-header .lexicon-icon-check {
@@ -231,6 +227,7 @@ p {
 
 .side-nav .panel .panel-header:hover {
 	background-color: var(--color-action-primary-hover-10, #edf3fe);
+
 	.module-title {
 		span {
 			color: var(--color-action-primary-hover, #0053f0) !important;
@@ -277,10 +274,6 @@ p {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-
-span {
-	font-weight: var(--font-weight-bold, 700);
 }
 
 .text-quiz-result {
@@ -368,11 +361,6 @@ span {
 			}
 		}
 
-		h3 {
-			font-size: 1.3rem;
-			margin-top: 1rem;
-		}
-
 		.banner-tag {
 			align-items: center;
 			align-self: start !important;
@@ -384,7 +372,12 @@ span {
 				height: 12px;
 				width: 12px;
 			}
-		}	
+		}
+
+		h3 {
+			font-size: 1.3rem;
+			margin-top: 1rem;
+		}
 	}
 	
 	.icon-arrow.rotate {
@@ -457,4 +450,12 @@ span {
 		max-width: unset !important;
 		min-width: auto !important;
 	}
+}
+
+p {
+	font-weight: var(--font-weight-semi-bold, 600);
+}
+
+span {
+	font-weight: var(--font-weight-bold, 700);
 }
