@@ -107,13 +107,7 @@
 	transform: none !important;
 }
 
-.course-nav-bottom__banner-line {
-	border-top: 1px solid var(--color-neutral-2, #E2E2E4) !important;
-	justify-content: space-between;
-	margin-top: 2rem !important;
-}
-
-.course-nav-bottom__banner-img_background {
+.course-nav-bottom__banner-img {
 	height: 100%;
 	position: absolute;
 	right: 0px;
@@ -124,6 +118,12 @@
 		overflow: visible !important;
 		pointer-events: none;
 	}
+}
+
+.course-nav-bottom__banner-line {
+	border-top: 1px solid var(--color-neutral-2, #E2E2E4) !important;
+	justify-content: space-between;
+	margin-top: 2rem !important;
 }
 
 .lesson-layout-container {
