@@ -7,7 +7,7 @@ package com.liferay.headless.commerce.admin.shipment.internal.dto.v1_0.converter
 
 import com.liferay.commerce.constants.CommerceShipmentConstants;
 import com.liferay.commerce.model.CommerceShipment;
-import com.liferay.commerce.service.CommerceShipmentService;
+import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.headless.commerce.admin.shipment.dto.v1_0.Shipment;
 import com.liferay.headless.commerce.admin.shipment.dto.v1_0.Status;
 import com.liferay.headless.commerce.admin.shipment.internal.dto.v1_0.util.CustomFieldsUtil;
@@ -40,7 +40,7 @@ public class ShipmentDTOConverter
 		throws Exception {
 
 		CommerceShipment commerceShipment =
-			_commerceShipmentService.getCommerceShipment(
+			_commerceShipmentLocalService.getCommerceShipment(
 				(Long)dtoConverterContext.getId());
 
 		return new Shipment() {
@@ -92,7 +92,7 @@ public class ShipmentDTOConverter
 	}
 
 	@Reference
-	private CommerceShipmentService _commerceShipmentService;
+	private CommerceShipmentLocalService _commerceShipmentLocalService;
 
 	@Reference
 	private Language _language;
