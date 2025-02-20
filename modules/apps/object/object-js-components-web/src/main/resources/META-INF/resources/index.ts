@@ -60,5 +60,6 @@ export * as stringUtils from './utils/string';
 export * as arrayUtils from './utils/array';
 export * as constantsUtils from './utils/constants';
 export * as datetimeUtils from './utils/datetime';
+export * as fieldsUtils from './utils/fields'; 
 export * as errorsUtils from './utils/errors';
 export * as objectDefinitionUtils from './utils/objectDefinition';

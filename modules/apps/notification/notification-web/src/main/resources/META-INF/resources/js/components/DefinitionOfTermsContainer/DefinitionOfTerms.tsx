@@ -14,6 +14,8 @@ import RelationshipSection from './RelationshipSection';
 interface DefinitionOfTermsProps {
 	baseResourceURL: string;
 	objectDefinitions: ObjectDefinition[];
+	selectedEntityId: number;
+	setSelectedEntityId: Function;
 }
 export interface RelationshipSections {
 	objectRelationshipId: number;
@@ -34,8 +36,9 @@ export interface Item {
 export function DefinitionOfTerms({
 	baseResourceURL,
 	objectDefinitions,
+	selectedEntityId,
+	setSelectedEntityId,
 }: DefinitionOfTermsProps) {
-	const [selectedEntityId, setSelectedEntityId] = useState<number>();
 	const [entityFields, setObjectFieldTerms] = useState<Item[]>([]);
 	const [relationshipSections, setRelationshipSections] = useState<
 		RelationshipSections[]
