@@ -1,7 +1,3 @@
-h2 {
-	color: var(--white);
-}
-
 .image-default {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='lexicon-icon lexicon-icon-user' role='presentation' viewBox='0 0 512 512' fill='%23b1b2b9'%3E%3Ccircle class='lexicon-icon-outline user-head' cx='256' cy='126.1' r='96'%3E%3C/circle%3E%3Cpath class='lexicon-icon-outline user-body' d='M448,398.1c0,112-384,112-384,0C64,200.1,448,202.1,448,398.1z'%3E%3C/path%3E%3C/svg%3E");
 }
@@ -21,4 +17,8 @@ h2 {
 	margin-right: 1.5rem;
 	opacity: 0px;
 	width: 4.5rem;
+}
+
+h2 {
+	color: var(--white);
 }
