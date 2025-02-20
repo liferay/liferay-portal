@@ -6,7 +6,7 @@
 package com.liferay.portal.kernel.dao.orm;
 
 import com.liferay.petra.executor.PortalExecutorManager;
-import com.liferay.portal.kernel.db.partition.CompanyInheritableThreadLocalCallable;
+import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.BaseModel;
