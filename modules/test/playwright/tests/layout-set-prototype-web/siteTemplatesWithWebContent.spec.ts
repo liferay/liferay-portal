@@ -119,18 +119,20 @@ testWithPrivatePages(
 
 		await applicationsMenuPage.goToSites();
 
-		const site1Id = await sitesPage.createSiteFromTemplate(
-			siteTemplateName,
-			getRandomString()
-		);
+		const site1Id = await sitesPage.createSiteFromTemplate({
+			defaultPagesAsPrivate: true,
+			siteName: getRandomString(),
+			templateName: siteTemplateName,
+		});
 
 		apiHelpers.data.push({id: site1Id, type: 'site'});
 
 		await applicationsMenuPage.goToSites();
-		const site2Id = await sitesPage.createSiteFromTemplate(
-			siteTemplateName,
-			getRandomString()
-		);
+		const site2Id = await sitesPage.createSiteFromTemplate({
+			defaultPagesAsPrivate: true,
+			siteName: getRandomString(),
+			templateName: siteTemplateName,
+		});
 
 		apiHelpers.data.push({id: site2Id, type: 'site'});
 

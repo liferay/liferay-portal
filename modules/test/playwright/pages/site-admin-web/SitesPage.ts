@@ -41,17 +41,26 @@ export class SitesPage {
 		this.uiElementsPage = new UIElementsPage(page);
 	}
 
-	async createSiteFromTemplate(
-		templateName: string,
-		siteName: string
-	): Promise<string> {
+	async createSiteFromTemplate({
+		defaultPagesAsPrivate = false,
+		siteName,
+		templateName,
+	}: {
+		defaultPagesAsPrivate?: boolean;
+		siteName: string;
+		templateName: string;
+	}): Promise<string> {
 		await this.addSiteButton.click();
 		await this.customSiteTemplatesItem.click();
 		await this.page
 			.getByRole('button', {name: `Select Template: ${templateName}`})
 			.click();
 		await this.nameBox.fill(siteName);
-		await this.defaultPagesAsPrivateCheck.check();
+
+		if (defaultPagesAsPrivate) {
+			await this.defaultPagesAsPrivateCheck.check();
+		}
+
 		await this.addButton.click();
 		await this.page.waitForURL(/(.)settings(.)/);
 		await this.page.getByRole('link', {name: 'Site Configuration'}).click();
