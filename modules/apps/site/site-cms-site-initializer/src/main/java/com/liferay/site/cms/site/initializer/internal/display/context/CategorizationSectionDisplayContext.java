@@ -5,49 +5,26 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.site.cms.site.initializer.internal.configuration.CMSSiteInitializerConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Sam Ziemer
  */
-public class CategorizationSectionDisplayContext {
+public class CategorizationSectionDisplayContext
+	extends BaseSectionDisplayContext {
 
 	public CategorizationSectionDisplayContext(
-		CMSSiteInitializerConfiguration cmsSiteInitializerConfiguration) {
+		CMSSiteInitializerConfiguration cmsSiteInitializerConfiguration,
+		HttpServletRequest httpServletRequest) {
 
-		_cmsSiteInitializerConfiguration = cmsSiteInitializerConfiguration;
+		super(cmsSiteInitializerConfiguration, httpServletRequest);
 	}
 
-	public String getAPIURL() {
-		StringBundler sb = new StringBundler(3);
-
-		sb.append("/o/search/v1.0/search?emptySearch=true&entryClassNames=");
-		sb.append(
-			ArrayUtil.toString(
-				_cmsSiteInitializerConfiguration.categorizationClassNames(),
-				StringPool.BLANK));
-		sb.append("&nestedFields=embedded");
-
-		return sb.toString();
+	@Override
+	public String[] getEntryClassNames() {
+		return cmsSiteInitializerConfiguration.categorizationClassNames();
 	}
-
-	public List<DropdownItem> getBulkActionDropdownItems() {
-		return new ArrayList<>();
-	}
-
-	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
-		return new ArrayList<>();
-	}
-
-	private final CMSSiteInitializerConfiguration
-		_cmsSiteInitializerConfiguration;
 
 }
