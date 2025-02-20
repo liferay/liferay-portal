@@ -19,6 +19,8 @@ export class CollectionsPage {
 		await this.page.goto(
 			`/group${siteUrl || '/guest'}${PORTLET_URLS.collections}`
 		);
+
+		await this.page.waitForLoadState('networkidle');
 	}
 
 	/**
@@ -40,17 +42,80 @@ export class CollectionsPage {
 	}
 
 	/**
+	 * Adds a dynamic or manual collection with a given name.
+	 */
+	async addNewCollection(name: string, isDynamic: boolean) {
+		await this.page
+			.locator('.creation-menu')
+			.getByRole('button', {name: 'New'})
+			.first()
+			.click();
+
+		const collectionType = isDynamic
+			? 'Dynamic Collection'
+			: 'Manual Collection';
+
+		await this.page.getByRole('menuitem', {name: collectionType}).click();
+
+		await this.page.getByPlaceholder('Title').fill(name);
+
+		await this.page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(this.page);
+	}
+
+	/**
 	 * Add a dynamic collection with the given name.
 	 */
 
 	async addNewDynamicCollection(name) {
-		await this.page.getByRole('button', {name: 'New'}).first().click();
+		await this.addNewCollection(name, true);
+	}
+
+	/**
+	 * Add a manual collection with the given name.
+	 */
+	async addNewManualCollection(name: string) {
+		await this.addNewCollection(name, false);
+	}
+
+	async deleteCollection(name: string) {
+		const menuButton = this.page
+			.getByRole('row', {name})
+			.getByLabel('Show Actions')
+			.first();
+
+		await menuButton.scrollIntoViewIfNeeded();
+
+		await menuButton.click();
+
+		await this.page.getByRole('menuitem', {name: 'Delete'}).click();
 
 		await this.page
-			.getByRole('menuitem', {name: 'Dynamic Collection'})
+			.getByRole('button', {
+				exact: true,
+				name: 'Delete',
+			})
 			.click();
 
-		await this.page.getByPlaceholder('Title').fill(name);
+		await waitForAlert(this.page);
+
+		await this.page.waitForLoadState('networkidle');
+	}
+
+	async renameCollection(oldName: string, newName: string) {
+		const menuButton = this.page
+			.getByRole('row', {name: oldName})
+			.getByLabel('Show Actions')
+			.first();
+
+		await menuButton.scrollIntoViewIfNeeded();
+
+		await menuButton.click();
+
+		await this.page.getByRole('menuitem', {name: 'Rename'}).click();
+
+		await this.page.getByPlaceholder('Title').fill(newName);
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
 
