@@ -7,6 +7,7 @@ package com.liferay.layout.utility.page.service.impl;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
+import com.liferay.layout.util.validator.LayoutValidator;
 import com.liferay.layout.utility.page.exception.DefaultLayoutUtilityPageEntryException;
 import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryNameException;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
@@ -608,11 +609,11 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 				MustNotExceedMaximumSize(nameMaxLength);
 		}
 
-		for (char c : _BLACKLIST_CHAR) {
-			if (name.indexOf(c) >= 0) {
-				throw new LayoutUtilityPageEntryNameException.
-					MustNotContainInvalidCharacters(c);
-			}
+		Character character = LayoutValidator.getBlacklistCharacter(name);
+
+		if (character != null) {
+			throw new LayoutUtilityPageEntryNameException.
+				MustNotContainInvalidCharacters(character);
 		}
 
 		LayoutUtilityPageEntry duplicatedLayoutUtilityPageEntry =
@@ -626,11 +627,6 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 				groupId, name);
 		}
 	}
-
-	private static final char[] _BLACKLIST_CHAR = {
-		';', '/', '?', ':', '@', '=', '&', '\"', '<', '>', '#', '%', '{', '}',
-		'|', '\\', '^', '~', '[', ']', '`'
-	};
 
 	@Reference
 	private CustomSQL _customSQL;
