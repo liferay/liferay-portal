@@ -140,11 +140,6 @@ public class OpenSearchSearchEngine
 	}
 
 	@Override
-	public IndexSearcher getIndexSearcher() {
-		return _indexSearcher;
-	}
-
-	@Override
 	public IndexWriter getIndexWriter() {
 		return _indexWriter;
 	}
@@ -157,6 +152,11 @@ public class OpenSearchSearchEngine
 	@Override
 	public String getVendor() {
 		return "OpenSearch";
+	}
+
+	@Override
+	public IndexSearcher getIndexSearcher() {
+		return _indexSearcher;
 	}
 
 	@Override
