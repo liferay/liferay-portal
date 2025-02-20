@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.permission;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -38,14 +39,17 @@ public abstract class DoAsUserThread extends Thread {
 			try {
 				User user = UserLocalServiceUtil.getUserById(_userId);
 
-				CompanyThreadLocal.setCompanyId(user.getCompanyId());
+				try (SafeCloseable safeCloseable =
+						CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+							user.getCompanyId())) {
 
-				PrincipalThreadLocal.setName(_userId);
+					PrincipalThreadLocal.setName(_userId);
 
-				PermissionThreadLocal.setPermissionChecker(
-					PermissionCheckerFactoryUtil.create(user));
+					PermissionThreadLocal.setPermissionChecker(
+						PermissionCheckerFactoryUtil.create(user));
 
-				doRun();
+					doRun();
+				}
 
 				_success = true;
 
