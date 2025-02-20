@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Sam Ziemer
  */
-public class ContentSectionDisplayContext extends BaseSectionDisplayContext {
+public class ContentsSectionDisplayContext extends BaseSectionDisplayContext {
 
-	public ContentSectionDisplayContext(
+	public ContentsSectionDisplayContext(
 		CMSSiteInitializerConfiguration cmsSiteInitializerConfiguration,
 		HttpServletRequest httpServletRequest) {
 
@@ -72,7 +72,7 @@ public class ContentSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public String[] getEntryClassNames() {
-		return cmsSiteInitializerConfiguration.contentClassNames();
+		return cmsSiteInitializerConfiguration.contentsClassNames();
 	}
 
 }

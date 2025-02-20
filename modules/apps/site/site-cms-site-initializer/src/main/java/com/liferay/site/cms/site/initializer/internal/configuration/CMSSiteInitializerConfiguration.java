@@ -28,9 +28,9 @@ public interface CMSSiteInitializerConfiguration {
 
 	@Meta.AD(
 		deflt = "com.liferay.blogs.model.BlogsEntry|com.liferay.bookmarks.model.BookmarksEntry|com.liferay.bookmarks.model.BookmarksFolder|com.liferay.document.library.kernel.model.DLFileShortcut|com.liferay.document.library.kernel.model.DLFolder|com.liferay.dynamic.data.mapping.model.DDMFormInstance|com.liferay.journal.model.JournalArticle|com.liferay.journal.model.JournalFolder|com.liferay.knowledge.base.model.KBArticle|com.liferay.knowledge.base.model.KBFolder|com.liferay.message.boards.model.MBCategory|com.liferay.message.boards.model.MBThread",
-		name = "content-class-names", required = false
+		name = "contents-class-names", required = false
 	)
-	public String[] contentClassNames();
+	public String[] contentsClassNames();
 
 	@Meta.AD(
 		deflt = "com.liferay.document.library.kernel.model.DLFileEntry",

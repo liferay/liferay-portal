@@ -50,7 +50,7 @@ public class FilesSectionFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "files-section");
+		return _language.get(locale, "files");
 	}
 
 	@Override

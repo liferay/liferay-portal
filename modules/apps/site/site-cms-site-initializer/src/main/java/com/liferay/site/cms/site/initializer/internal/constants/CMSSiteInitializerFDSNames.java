@@ -17,8 +17,8 @@ public class CMSSiteInitializerFDSNames {
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
 			"-categorizationSection";
 
-	public static final String CONTENT_SECTION =
-		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-contentSection";
+	public static final String CONTENTS_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-contentsSection";
 
 	public static final String FILES_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-filesSection";

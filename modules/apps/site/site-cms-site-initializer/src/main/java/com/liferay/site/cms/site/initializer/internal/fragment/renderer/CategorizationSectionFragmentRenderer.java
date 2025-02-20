@@ -50,7 +50,7 @@ public class CategorizationSectionFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "categorization-section");
+		return _language.get(locale, "categorization");
 	}
 
 	@Override

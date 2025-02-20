@@ -50,7 +50,7 @@ public class StructuresSectionFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "structures-section");
+		return _language.get(locale, "structures");
 	}
 
 	@Override

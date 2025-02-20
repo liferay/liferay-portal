@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.configuration.CMSSiteInitializerConfiguration;
-import com.liferay.site.cms.site.initializer.internal.display.context.ContentSectionDisplayContext;
+import com.liferay.site.cms.site.initializer.internal.display.context.ContentsSectionDisplayContext;
 
 import java.io.IOException;
 
@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 	configurationPid = "com.liferay.site.cms.site.initializer.internal.configuration.CMSSiteInitializerConfiguration",
 	service = FragmentRenderer.class
 )
-public class ContentSectionFragmentRenderer implements FragmentRenderer {
+public class ContentsSectionFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public String getCollectionKey() {
@@ -50,7 +50,7 @@ public class ContentSectionFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "content-section");
+		return _language.get(locale, "contents");
 	}
 
 	@Override
@@ -86,11 +86,11 @@ public class ContentSectionFragmentRenderer implements FragmentRenderer {
 
 		try {
 			RequestDispatcher requestDispatcher =
-				_servletContext.getRequestDispatcher("/content_section.jsp");
+				_servletContext.getRequestDispatcher("/contents_section.jsp");
 
 			httpServletRequest.setAttribute(
-				ContentSectionDisplayContext.class.getName(),
-				new ContentSectionDisplayContext(
+				ContentsSectionDisplayContext.class.getName(),
+				new ContentsSectionDisplayContext(
 					_cmsSiteInitializerConfiguration, httpServletRequest));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
