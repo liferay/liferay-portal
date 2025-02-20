@@ -3598,6 +3598,18 @@
 		"to": "getCommerceInventoryBookedQuantityId"
 	},
 	{
+		"classNames": [
+			"AccountEntry"
+		],
+		"from": "getCommerceAccountId",
+		"issueKey": "LPD-48402",
+		"to": "getAccountEntryId",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
 		"from": "regex:CommerceOrderConstants\\.(?<methodName>getPaymentLabelStyle|getPaymentStatusLabel)",
 		"issueKey": "LPD-48412",
 		"newImports": [
