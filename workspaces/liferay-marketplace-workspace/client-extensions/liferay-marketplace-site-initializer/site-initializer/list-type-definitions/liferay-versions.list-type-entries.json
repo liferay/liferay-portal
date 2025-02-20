@@ -36,281 +36,92 @@
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q32",
-		"key": "742023Q32",
-		"name": "7.4 2023 Q3.2",
+		"externalReferenceCode": "2023Q3",
+		"key": "2023Q3",
+		"name": "2023 Q3",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.2"
+			"en-US": "2023 Q3"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q33",
-		"key": "742023Q33",
-		"name": "7.4 2023 Q3.3",
+		"externalReferenceCode": "2023Q4",
+		"key": "2023Q4",
+		"name": "2023 Q4",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.3"
+			"en-US": "2023 Q4"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q34",
-		"key": "742023Q34",
-		"name": "7.4 2023 Q3.4",
+		"externalReferenceCode": "2024Q1",
+		"key": "2024Q1",
+		"name": "2024 Q1",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.4"
+			"en-US": "2024 Q1"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q35",
-		"key": "742023Q35",
-		"name": "7.4 2023 Q3.5",
+		"externalReferenceCode": "2024Q2",
+		"key": "2024Q2",
+		"name": "2024 Q2",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.5"
+			"en-US": "2024 Q2"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q36",
-		"key": "742023Q36",
-		"name": "7.4 2023 Q3.6",
+		"externalReferenceCode": "2024Q3",
+		"key": "2024Q3",
+		"name": "2024 Q3",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.6"
+			"en-US": "2024 Q3"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q37",
-		"key": "742023Q37",
-		"name": "7.4 2023 Q3.7",
+		"externalReferenceCode": "2024Q4",
+		"key": "2024Q4",
+		"name": "2024 Q4",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.7"
+			"en-US": "2024 Q4"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q38",
-		"key": "742023Q38",
-		"name": "7.4 2023 Q3.8",
+		"externalReferenceCode": "2025Q1",
+		"key": "2025Q1",
+		"name": "2025 Q1",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.8"
+			"en-US": "2025 Q1"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q39",
-		"key": "742023Q39",
-		"name": "7.4 2023 Q3.9",
+		"externalReferenceCode": "2025Q2",
+		"key": "2025Q2",
+		"name": "2025 Q2",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q3.9"
+			"en-US": "2025 Q2"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q41",
-		"key": "742023Q41",
-		"name": "7.4 2023 Q4.1",
+		"externalReferenceCode": "2025Q3",
+		"key": "2025Q3",
+		"name": "2025 Q3",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q4.1"
+			"en-US": "2025 Q3"
 		},
 		"type": "string"
 	},
 	{
-		"externalReferenceCode": "742023Q42",
-		"key": "742023Q42",
-		"name": "7.4 2023 Q4.2",
+		"externalReferenceCode": "2025Q4",
+		"key": "2025Q4",
+		"name": "2025 Q4",
 		"name_i18n": {
-			"en-US": "7.4 2023 Q4.2"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742023Q43",
-		"key": "742023Q43",
-		"name": "7.4 2023 Q4.3",
-		"name_i18n": {
-			"en-US": "7.4 2023 Q4.3"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742023Q44",
-		"key": "742023Q44",
-		"name": "7.4 2023 Q4.4",
-		"name_i18n": {
-			"en-US": "7.4 2023 Q4.4"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742023Q45",
-		"key": "742023Q45",
-		"name": "7.4 2023 Q4.5",
-		"name_i18n": {
-			"en-US": "7.4 2023 Q4.5"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742023Q46",
-		"key": "742023Q46",
-		"name": "7.4 2023 Q4.6",
-		"name_i18n": {
-			"en-US": "7.4 2023 Q4.6"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742023Q47",
-		"key": "742023Q47",
-		"name": "7.4 2023 Q4.7",
-		"name_i18n": {
-			"en-US": "7.4 2023 Q4.7"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742023Q48",
-		"key": "742023Q48",
-		"name": "7.4 2023 Q4.8",
-		"name_i18n": {
-			"en-US": "7.4 2023 Q4.8"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742023Q49",
-		"key": "742023Q49",
-		"name": "7.4 2023 Q4.9",
-		"name_i18n": {
-			"en-US": "7.4 2023 Q4.9"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q11",
-		"key": "742024Q11",
-		"name": "7.4 2024 Q1.1",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.1"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q12",
-		"key": "742024Q12",
-		"name": "7.4 2024 Q1.2",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.2"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q13",
-		"key": "742024Q13",
-		"name": "7.4 2024 Q1.3",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.3"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q14",
-		"key": "742024Q14",
-		"name": "7.4 2024 Q1.4",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.4"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q15",
-		"key": "742024Q15",
-		"name": "7.4 2024 Q1.5",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.5"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q16",
-		"key": "742024Q16",
-		"name": "7.4 2024 Q1.6",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.6"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q17",
-		"key": "742024Q17",
-		"name": "7.4 2024 Q1.7",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.7"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q18",
-		"key": "742024Q18",
-		"name": "7.4 2024 Q1.8",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.8"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q19",
-		"key": "742024Q19",
-		"name": "7.4 2024 Q1.9",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.9"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q110",
-		"key": "742024Q110",
-		"name": "7.4 2024 Q1.10",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.10"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q111",
-		"key": "742024Q111",
-		"name": "7.4 2024 Q1.11",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.11"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q112",
-		"key": "742024Q112",
-		"name": "7.4 2024 Q1.12",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q1.12"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q21",
-		"key": "742024Q21",
-		"name": "7.4 2024 Q2.1",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q2.1"
-		},
-		"type": "string"
-	},
-	{
-		"externalReferenceCode": "742024Q22",
-		"key": "742024Q22",
-		"name": "7.4 2024 Q2.2",
-		"name_i18n": {
-			"en-US": "7.4 2024 Q2.2"
+			"en-US": "2025 Q4"
 		},
 		"type": "string"
 	}
