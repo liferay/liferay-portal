@@ -694,7 +694,7 @@ autosaveWithoutPermissionsTest(
 
 		const articleTitle = 'Web Content Title';
 
-		journalEditArticlePage.createWCWithBasicPublishButton(articleTitle);
+		journalEditArticlePage.createAndPublishBasicArticle(articleTitle);
 
 		await expect(page.getByTitle(articleTitle)).toBeVisible();
 	}

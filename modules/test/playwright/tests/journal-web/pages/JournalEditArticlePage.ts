@@ -228,15 +228,6 @@ export class JournalEditArticlePage {
 		await expect(this.page.getByTitle(title, {exact: true})).toBeVisible();
 	}
 
-	async createWCWithBasicPublishButton(articleTitle: string) {
-		await this.titleInput.fill(articleTitle);
-		this.publishArticle();
-
-		await waitForAlert(
-			this.page,
-			`Success:${articleTitle} was created successfully.`
-		);
-	}
 	async createArticleWithDuplicatedField(
 		structureName: string,
 		site?: Site,
