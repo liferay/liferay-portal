@@ -76,6 +76,7 @@ public class LayoutActionDropdownItemsProvider {
 					DropdownItemListBuilder.add(
 						() ->
 							_isEditable(layout) &&
+							layout.isLayoutUpdateable() &&
 							_layoutActionsHelper.isShowConfigureAction(layout),
 						_getEditLayoutActionUnsafeConsumer(layout)
 					).add(
