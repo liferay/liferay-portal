@@ -1,8 +1,8 @@
 {
-	"friendlyURL": "/content",
+	"friendlyURL": "/contents",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Content"
+		"en_US": "Contents"
 	},
 	"private": false,
 	"system": false,
