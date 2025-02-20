@@ -92,10 +92,6 @@
 	width: 100%;
 }
 
-.banner-next-container {
-	text-align: start !important;
-}
-
 .button-bottom-home {
 	background-color: var(--color-neutral-1, #f7f7f8);
 	border: none;
