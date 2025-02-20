@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.bean.BeanProperties;
 import com.liferay.portal.kernel.concurrent.SystemExecutorServiceUtil;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
-import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
+import com.liferay.portal.kernel.db.partition.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.ResourceActionsException;
@@ -178,7 +178,7 @@ public class PortletTracker
 
 		FutureTask<com.liferay.portal.kernel.model.Portlet> futureTask =
 			new FutureTask<>(
-				new CompanyThreadLocalCallable<>(
+				new CompanyInheritableThreadLocalCallable<>(
 					() -> {
 						com.liferay.portal.kernel.model.Portlet
 							addedPortletModel = _addingPortlet(

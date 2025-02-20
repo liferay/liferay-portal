@@ -14,7 +14,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
+import com.liferay.portal.kernel.db.partition.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.framework.ThrowableCollector;
@@ -605,7 +605,7 @@ public abstract class BaseDBProcess implements DBProcess {
 				T current = next;
 
 				Future<Void> future = executorService.submit(
-					new CompanyThreadLocalCallable<>(
+					new CompanyInheritableThreadLocalCallable<>(
 						() -> {
 							NotificationThreadLocal.setEnabled(
 								notificationEnabled);

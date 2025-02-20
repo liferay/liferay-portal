@@ -6,7 +6,7 @@
 package com.liferay.portal.db.partition.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
+import com.liferay.portal.kernel.db.partition.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
  * @author István András Dézsi
  */
 @RunWith(Arquillian.class)
-public class CompanyThreadLocalCallableTest {
+public class CompanyInheritableThreadLocalCallableTest {
 
 	@ClassRule
 	@Rule
@@ -39,7 +39,8 @@ public class CompanyThreadLocalCallableTest {
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 		Future<Long> future = executorService.submit(
-			new CompanyThreadLocalCallable<>(CompanyThreadLocal::getCompanyId));
+			new CompanyInheritableThreadLocalCallable<>(
+				CompanyThreadLocal::getCompanyId));
 
 		executorService.shutdown();
 

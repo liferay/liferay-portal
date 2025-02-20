@@ -6,7 +6,7 @@
 package com.liferay.portal.kernel.dao.orm;
 
 import com.liferay.petra.executor.PortalExecutorManager;
-import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
+import com.liferay.portal.kernel.db.partition.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -280,7 +280,7 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 				for (Object object : objects) {
 					futures.add(
 						executorService.submit(
-							new CompanyThreadLocalCallable<>(
+							new CompanyInheritableThreadLocalCallable<>(
 								() -> {
 									performAction(object);
 

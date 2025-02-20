@@ -14,9 +14,9 @@ import java.util.concurrent.Callable;
 /**
  * @author István András Dézsi
  */
-public class CompanyThreadLocalCallable<T> implements Callable<T> {
+public class CompanyInheritableThreadLocalCallable<T> implements Callable<T> {
 
-	public CompanyThreadLocalCallable(Callable<T> callable) {
+	public CompanyInheritableThreadLocalCallable(Callable<T> callable) {
 		_callable = callable;
 
 		_companyId = CompanyThreadLocal.getCompanyId();
