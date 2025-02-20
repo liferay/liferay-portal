@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.IndexMetadata;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
-import com.liferay.portal.kernel.db.partition.CompanyThreadLocalCallable;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -24,9 +24,11 @@ import com.liferay.portal.kernel.model.CountryLocalization;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.RegionLocalization;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
@@ -41,9 +43,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -70,44 +69,24 @@ public class CountryUpgradeProcess extends UpgradeProcess {
 		List<IndexMetadata> indexMetadatas = _dropIndexes();
 
 		try {
-			Runtime runtime = Runtime.getRuntime();
-
-			ExecutorService executorService = Executors.newFixedThreadPool(
-				runtime.availableProcessors());
-
-			List<Future<Void>> futures = new ArrayList<>();
-
-			try {
-				_companyLocalService.forEachCompany(
-					company -> {
-						Future<Void> future = executorService.submit(
-							new CompanyThreadLocalCallable<>(
-								() -> {
-									try {
-										new CompanyUpgradeProcess(
-											company
-										).populateCompanyCountries();
-									}
-									catch (Exception exception) {
-										_log.error(
-											"Unable to populate company " +
-												company.getCompanyId(),
-											exception);
-									}
-
-									return null;
-								}));
-
-						futures.add(future);
-					});
-			}
-			finally {
-				executorService.shutdown();
-
-				for (Future<Void> future : futures) {
-					future.get();
-				}
-			}
+			processConcurrently(
+				ArrayUtil.toArray(
+					CompanyThreadLocal.isLocked() ?
+						new long[] {CompanyThreadLocal.getCompanyId()} :
+							PortalInstancePool.getCompanyIds()),
+				companyId -> {
+					try {
+						new CompanyUpgradeProcess(
+							_companyLocalService.fetchCompany(companyId)
+						).populateCompanyCountries();
+					}
+					catch (Exception exception) {
+						_log.error(
+							"Unable to populate company " + companyId,
+							exception);
+					}
+				},
+				"Unable to populate countries");
 
 			_incrementCounters();
 		}
