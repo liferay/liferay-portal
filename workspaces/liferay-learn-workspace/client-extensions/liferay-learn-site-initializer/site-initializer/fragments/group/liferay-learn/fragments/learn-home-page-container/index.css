@@ -60,10 +60,6 @@
 			border-width: 1px !important;
 		}
 
-		@media (max-width: 1279px) {
-				width: 100% !important;
-		}
-
 		.home-card-cta {
 			font-size: 1.25rem;
 
@@ -114,6 +110,10 @@
 					rgba(55, 124, 255, 0.68) 0%,
 					rgba(55, 124, 255, 0) 100%
 				);
+		}
+
+		@media (max-width: 1279px) {
+			width: 100% !important;
 		}
 
 		h2 {

@@ -2,6 +2,10 @@
 	width: 100%;
 }
 
+.banner-next-container {
+	text-align: start !important;
+}
+
 .banner-options {
 	display: flex;
 	justify-content: space-between;
@@ -13,10 +17,6 @@
 	display: flex;
 	flex-direction: row;
 	gap: 1rem;
-}
-
-.banner-next-container {
-	text-align: start !important;
 }
 
 .banner-tag {
@@ -126,10 +126,6 @@
 	}
 }
 
-iframe {
-	width: 100%;
-}
-
 .lesson-layout-container {
 	display: flex;
 	flex-direction: row;
@@ -143,16 +139,15 @@ iframe {
 	flex-direction: column;
 }
 
-.lesson-layout-container:has(.article-navigation.show) .content {
-	width: 55% !important;
-}
-
-.lesson-layout-container:has(.article-navigation.show) > div:nth-child(1) {
-	width: 25%;
-}
-
-.lesson-layout-container:has(.article-navigation.show) > div:nth-child(3) {
-	width: 20% !important;
+.lesson-layout-container > div:nth-child(1) {
+	background-color: var(--color-neutral-1) !important;
+	border-radius: var(--border-radius-lg) !important;
+	font-family: 'Source Sans 3' !important;
+	height: 100% !important;
+	margin-right: var(--spacer-4, 1.5rem) !important;
+	max-width: 370px;
+	min-width: 370px;
+	padding: var(--spacer-2, 0.5rem) !important;
 }
 
 .lesson-layout-container > div:nth-child(3) {
@@ -165,15 +160,16 @@ iframe {
 	top: 200px !important;
 }
 
-.lesson-layout-container > div:nth-child(1) {
-	background-color: var(--color-neutral-1) !important;
-	border-radius: var(--border-radius-lg) !important;
-	font-family: 'Source Sans 3' !important;
-	height: 100% !important;
-	margin-right: var(--spacer-4, 1.5rem) !important;
-	max-width: 370px;
-	min-width: 370px;
-	padding: var(--spacer-2, 0.5rem) !important;
+.lesson-layout-container:has(.article-navigation.show) .content {
+	width: 55% !important;
+}
+
+.lesson-layout-container:has(.article-navigation.show) > div:nth-child(1) {
+	width: 25%;
+}
+
+.lesson-layout-container:has(.article-navigation.show) > div:nth-child(3) {
+	width: 20% !important;
 }
 
 .lesson-link.active {
@@ -526,4 +522,8 @@ iframe {
 		max-width: unset !important;
 		min-width: auto !important;
 	}
+}
+
+iframe {
+	width: 100%;
 }
