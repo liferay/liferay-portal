@@ -125,7 +125,10 @@ export class BlogsEditBlogEntryPage {
 	}
 
 	async selectCoverImage(coverImageTitle) {
-		await this.page.getByRole('button', {name: 'Select File'}).click();
+		await this.page
+			.getByRole('button', {name: 'Select File'})
+			.first()
+			.click();
 
 		const itemSelectorDialog = await this.page.frameLocator(
 			'iframe[title="Select File"]'
