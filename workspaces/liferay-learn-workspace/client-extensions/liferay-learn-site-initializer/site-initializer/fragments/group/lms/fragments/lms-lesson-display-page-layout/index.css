@@ -221,6 +221,10 @@
 	}
 }
 
+.panel .panel-body .sticker .lexicon-icon-check {
+	fill: var(--color-action-primary-hover, #0053F0) !important;
+}
+
 .panel button .sticker .lexicon-icon-check {
 	fill: var(--color-neutral-8, #54555F) !important;
 }
@@ -231,16 +235,8 @@
 	}
 }
 
-.panel .panel-body .sticker .lexicon-icon-check {
-	fill: var(--color-action-primary-hover, #0053F0) !important;
-}
-
 .panel-header .lexicon-icon-check {
 	fill: var(--color-neutral-8, #54555f) !important;
-}
-
-.panel button .sticker .lexicon-icon-check {
-	fill: var(--color-neutral-0, #ffffff);
 }
 
 .show-quick-actions-on-hover .active {
@@ -249,14 +245,6 @@
 	border-left-color: var(--color-brand-primary, #0B5FFF)!important;
 	border-left-width: 0.25rem !important;
 	border-radius: 0;
-}
-
-.side-nav .sticker-primary {
-	background-color: #6399FF;
-
-	.lexicon-icon-check {
-		fill: var(--color-neutral-0, #ffffff);
-	}
 }
 
 .side-nav .d-flex:hover {
@@ -269,19 +257,18 @@
 	}
 }
 
+.side-nav .lesson-link.active a {
+	color: var(--dark);
+}
+
 .side-nav .module-title .text-4 .lesson-link {
 	color: var(--color-neutral-10, #282934);
 }
 
-.side-nav .panel-header .sticker-circle {
-	align-items: center;
-	background: var(--color-neutral-2, #E2E2E4);
-	display: flex;
-	justify-content: center;
-	text-align: center;
-}
-
 .side-nav .panel {
+	background-color: transparent;
+	fill: var(--color-action-primary-hover, #0053F0) !important;
+
 	.panel-header.show {
 		background-color: var(--color-action-primary-active-20, #E6EDFB);
 		border-radius: 6px;
@@ -297,14 +284,6 @@
 	}
 }
 
-.side-nav .panel-header .module-title span {
-	color: var(--color-neutral-10, #282934);
-}
-
-.side-nav .panel-header.active .module-title span {
-	color: var(--color-action-primary-hover, #0053f0);
-}
-
 .side-nav .panel .panel-body {
 	.lesson-link .module-title a {
 		color: var(--color-neutral-10, #282934) !important;
@@ -312,36 +291,6 @@
 	.lesson-link.active .module-title a {
 		color: var(--color-action-primary-hover, #0053F0) !important;
 	}
-}
-
-.side-nav .panel-body .module-title a {
-	color: var(--color-action-primary-hover, #0053F0);
-}
-
-.side-nav .panel-body .lesson-link.not-completed.active .module-title a {
-	color: var(--color-action-primary-hover, #0053F0);
-}
-
-.side-nav .panel-header.panel-header-link.active {
-	background-color: var(--color-action-primary-active-20, #E6EDFB);
-	border-radius: 6px;
-	color: #003EB3;
-}
-
-.side-nav .panel-header.panel-header-link.active .sticker {
-	align-items: center;
-	background: var(--color-brand-primary-lighten-4, #BBD2FF);
-
-	color: #003EB3;
-	display: flex;
-
-	justify-content: center;
-	text-align: center;
-}
-
-.side-nav .panel {
-	background-color: transparent;
-	fill: var(--color-action-primary-hover, #0053F0) !important;
 }
 
 .side-nav .panel .panel-body .lesson-link:hover {
@@ -372,11 +321,52 @@
 	}
 }
 
+.side-nav .panel-body .lesson-link.not-completed.active .module-title a {
+	color: var(--color-action-primary-hover, #0053F0);
+}
+
+.side-nav .panel-body .module-title a {
+	color: var(--color-action-primary-hover, #0053F0);
+}
+
 .side-nav .panel-body .sticker-circle {
 	align-content: center;
 	background-color: transparent;
 	justify-content: center;
 	min-width: 2rem;
+}
+
+.side-nav .panel-header .sticker-circle {
+	align-items: center;
+	background: var(--color-neutral-2, #E2E2E4);
+	display: flex;
+	justify-content: center;
+	text-align: center;
+}
+
+.side-nav .panel-header .module-title span {
+	color: var(--color-neutral-10, #282934);
+}
+
+.side-nav .panel-header.active .module-title span {
+	color: var(--color-action-primary-hover, #0053f0);
+}
+
+.side-nav .panel-header.panel-header-link.active {
+	background-color: var(--color-action-primary-active-20, #E6EDFB);
+	border-radius: 6px;
+	color: #003EB3;
+}
+
+.side-nav .panel-header.panel-header-link.active .sticker {
+	align-items: center;
+	background: var(--color-brand-primary-lighten-4, #BBD2FF);
+
+	color: #003EB3;
+	display: flex;
+
+	justify-content: center;
+	text-align: center;
 }
 
 .side-nav .panel-header > div:nth-child(1) > span:nth-child(1) {
@@ -390,8 +380,12 @@
 	white-space: nowrap;
 }
 
-.side-nav .lesson-link.active a {
-	color: var(--dark);
+.side-nav .sticker-primary {
+	background-color: #6399FF;
+
+	.lexicon-icon-check {
+		fill: var(--color-neutral-0, #ffffff);
+	}
 }
 
 .sign-in-text {
