@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: 'db83cd744a1b2647152cd06089c667fcac37bd796adae202afb7fe59f294982d',
+	hash: '33e75a5045b1f9186bbb89db23ea65a742041c1ac65dbddde16e5698c556118c',
 	imports: {
 		'@liferay/accessibility-settings-state-web': [],
 		'@liferay/address-web': [],
@@ -92,6 +92,7 @@ module.exports = {
 		'@liferay/map-google-maps': [],
 		'@liferay/map-openstreetmap': [],
 		'@liferay/marketplace-js-components-web': [],
+		'@liferay/oauth2-provider-web': ['./client', './global'],
 		'@liferay/object-js-components-web': [],
 		'@liferay/portal-workflow-instance-tracker-web': [],
 		'@liferay/template-web': [],

@@ -32,7 +32,7 @@ interface IOAuth2ClientTokenResponse {
 	token_type: string;
 }
 
-class OAuth2Client {
+export class OAuth2Client {
 	private authorizeURL: string;
 	private clientId: string;
 	private debug: boolean;
@@ -302,22 +302,20 @@ class OAuth2Client {
 
 export function FromParameters(options: IOAuth2ClientFromParametersOptions) {
 	return new OAuth2Client({
-		authorizeURL: options.authorizeURL || Liferay.OAuth2.getAuthorizeURL(),
+		authorizeURL: options.authorizeURL || getAuthorizeURL(),
 		clientId: options.clientId,
 		debug: options.debug,
 		homePageURL: options.homePageURL,
-		redirectURIs: options.redirectURIs || [
-			Liferay.OAuth2.getBuiltInRedirectURL(),
-		],
-		tokenURL: options.tokenURL || Liferay.OAuth2.getTokenURL(),
+		redirectURIs: options.redirectURIs || [getBuiltInRedirectURL()],
+		tokenURL: options.tokenURL || getTokenURL(),
 	});
 }
 
-export function FromUserAgentApplication(
+export async function FromUserAgentApplication(
 	userAgentApplicationName: string,
 	debug?: boolean
 ) {
-	const userAgentApplication = Liferay.OAuth2.getUserAgentApplication(
+	const userAgentApplication = await getUserAgentApplication(
 		userAgentApplicationName
 	);
 
@@ -328,11 +326,43 @@ export function FromUserAgentApplication(
 	}
 
 	return new OAuth2Client({
-		authorizeURL: Liferay.OAuth2.getAuthorizeURL(),
+		authorizeURL: getAuthorizeURL(),
 		clientId: userAgentApplication.clientId,
 		debug,
 		homePageURL: userAgentApplication.homePageURL,
 		redirectURIs: userAgentApplication.redirectURIs,
-		tokenURL: Liferay.OAuth2.getTokenURL(),
+		tokenURL: getTokenURL(),
 	});
+}
+
+export function getAuthorizeURL() {
+	return Liferay.ThemeDisplay.getPathContext() + '/o/oauth2/authorize';
+}
+
+export function getBuiltInRedirectURL() {
+	return Liferay.ThemeDisplay.getPathContext() + '/o/oauth2/redirect';
+}
+
+export function getIntrospectURL() {
+	return Liferay.ThemeDisplay.getPathContext() + '/o/oauth2/introspect';
+}
+
+export function getTokenURL() {
+	return Liferay.ThemeDisplay.getPathContext() + '/o/oauth2/token';
+}
+
+export async function getUserAgentApplication(externalReferenceCode: string) {
+
+	// eslint-disable-next-line @liferay/portal/no-global-fetch
+	const res = await fetch(
+		`${Liferay.ThemeDisplay.getPathContext()}/o/oauth2/application?externalReferenceCode=${externalReferenceCode}`
+	);
+
+	const data = await res.json();
+
+	return {
+		clientId: data.client_id as string,
+		homePageURL: data.homePageURL as string,
+		redirectURIs: data.redirectURIs as Array<string>,
+	};
 }

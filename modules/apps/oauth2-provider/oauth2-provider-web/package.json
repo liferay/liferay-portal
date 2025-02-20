@@ -16,7 +16,7 @@
 	"name": "@liferay/oauth2-provider-web",
 	"private": true,
 	"scripts": {
-		"build": "node-scripts build && node-scripts build:custom",
+		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},

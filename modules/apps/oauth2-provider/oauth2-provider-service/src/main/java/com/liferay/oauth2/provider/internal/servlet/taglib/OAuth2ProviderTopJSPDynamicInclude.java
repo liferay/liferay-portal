@@ -11,6 +11,7 @@ import com.liferay.oauth2.provider.redirect.OAuth2RedirectURIInterpolator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
@@ -40,17 +41,16 @@ public class OAuth2ProviderTopJSPDynamicInclude implements DynamicInclude {
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException {
 
-		PrintWriter printWriter = httpServletResponse.getWriter();
-
-		String url =
-			_portal.getPortalURL(httpServletRequest) + _portal.getPathContext();
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject();
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-48862")) {
+			return;
+		}
 
 		List<OAuth2Application> oAuth2Applications =
 			_oAuth2ApplicationLocalService.getOAuth2Applications(
 				_portal.getCompanyId(httpServletRequest),
 				ClientProfile.USER_AGENT_APPLICATION.id());
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 		for (OAuth2Application oAuth2Application : oAuth2Applications) {
 			jsonObject.put(
@@ -71,6 +71,9 @@ public class OAuth2ProviderTopJSPDynamicInclude implements DynamicInclude {
 				));
 		}
 
+		String url =
+			_portal.getPortalURL(httpServletRequest) + _portal.getPathContext();
+
 		String string = StringBundler.concat(
 			"<script",
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
@@ -87,6 +90,8 @@ public class OAuth2ProviderTopJSPDynamicInclude implements DynamicInclude {
 			"function(externalReferenceCode) {return ",
 			"Liferay.OAuth2._userAgentApplications[externalReferenceCode];}, ",
 			"_userAgentApplications: ", jsonObject, "}</script>");
+
+		PrintWriter printWriter = httpServletResponse.getWriter();
 
 		printWriter.write(string);
 	}
