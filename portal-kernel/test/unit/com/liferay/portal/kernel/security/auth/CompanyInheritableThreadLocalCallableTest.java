@@ -5,36 +5,31 @@
 
 package com.liferay.portal.kernel.security.auth;
 
-import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.ProxyFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * @author István András Dézsi
  */
-@RunWith(Arquillian.class)
 public class CompanyInheritableThreadLocalCallableTest {
 
-	@ClassRule
-	@Rule
-	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+	@BeforeClass
+	public static void setUpClass() {
+		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
+	}
 
 	@Test
 	public void testInheritCompanyThreadLocal() throws Exception {
-		Long companyId = CompanyThreadLocal.getCompanyId();
+		CompanyThreadLocal.setCompanyId(1L);
 
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -44,7 +39,7 @@ public class CompanyInheritableThreadLocalCallableTest {
 
 		executorService.shutdown();
 
-		Assert.assertEquals(companyId, future.get());
+		Assert.assertEquals(Long.valueOf(1), future.get());
 	}
 
 }
