@@ -6,7 +6,7 @@
 import ClayBreadcrumb from '@clayui/breadcrumb';
 import ClayCard from '@clayui/card';
 import ClayTabs from '@clayui/tabs';
-import {openModal, openToast} from 'frontend-js-web';
+import {openModal, openToast} from 'frontend-js-components-web';
 import React, {
 	Dispatch,
 	SetStateAction,

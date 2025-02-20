@@ -9,7 +9,8 @@ import {Heading} from '@clayui/core';
 import ClayLayout from '@clayui/layout';
 import ClayModal from '@clayui/modal';
 import ClayNavigationBar from '@clayui/navigation-bar';
-import {localStorage, openModal, openToast} from 'frontend-js-web';
+import {openModal, openToast} from 'frontend-js-components-web';
+import {localStorage} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import EndpointsContent from '../components/EndpointsContent';

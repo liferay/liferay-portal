@@ -7,7 +7,8 @@ import ClayButton from '@clayui/button';
 import {TreeView} from '@clayui/core';
 import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import {openModal, openToast, sub} from 'frontend-js-web';
+import {openModal, openToast} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {Dispatch, SetStateAction} from 'react';
 
 import EditAPIPropertyModalContent from './modals/EditAPIPropertyModalContent';

@@ -4,7 +4,7 @@
  */
 
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
-import {openModal, openToast} from 'frontend-js-web';
+import {openModal, openToast} from 'frontend-js-components-web';
 import React from 'react';
 
 import {ConfirmUnpublishAPIApplicationModalContent} from '../modals/ConfirmUnpublishAPIApplicationModalContent';

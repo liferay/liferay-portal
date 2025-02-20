@@ -7,7 +7,8 @@ import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayModal from '@clayui/modal';
 import classNames from 'classnames';
-import {fetch, openToast, sub} from 'frontend-js-web';
+import {openToast} from 'frontend-js-components-web';
+import {fetch, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 interface DeleteAPIApplicationModal {

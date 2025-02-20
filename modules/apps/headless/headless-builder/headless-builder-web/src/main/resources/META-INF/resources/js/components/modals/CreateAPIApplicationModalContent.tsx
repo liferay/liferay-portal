@@ -5,7 +5,8 @@
 
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
-import {fetch, localStorage, openToast} from 'frontend-js-web';
+import {openToast} from 'frontend-js-components-web';
+import {fetch, localStorage} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import BaseAPIApplicationField from '../baseComponents/BaseAPIApplicationFields';
