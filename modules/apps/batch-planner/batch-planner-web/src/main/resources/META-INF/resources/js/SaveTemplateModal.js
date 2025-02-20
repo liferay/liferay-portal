@@ -8,7 +8,8 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal from '@clayui/modal';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
-import {fetch, openToast} from 'frontend-js-web';
+import {openToast} from 'frontend-js-components-web';
+import {fetch} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import {HEADERS, TEMPLATE_CREATED_EVENT} from './constants';

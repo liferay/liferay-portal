@@ -41,6 +41,10 @@ const mockPlanId = 106902;
 
 const getPlanInfoURL = `${HEADLESS_BATCH_PLANNER_URL}/plans/${mockPlanId}`;
 
+jest.mock('frontend-js-components-web', () => {
+	jest.fn();
+});
+
 describe('TemplateSelect', () => {
 	beforeEach(() => {
 		fetchMock.mock(getPlanInfoURL, mockGetPlan);

@@ -4,7 +4,8 @@
  */
 
 import {render} from '@liferay/frontend-js-react-web';
-import {fetch, openToast} from 'frontend-js-web';
+import {openToast} from 'frontend-js-components-web';
+import {fetch} from 'frontend-js-web';
 
 import TemplateSelect from './TemplateSelect';
 import {

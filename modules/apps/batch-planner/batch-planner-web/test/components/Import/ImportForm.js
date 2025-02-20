@@ -51,6 +51,10 @@ const fileContent = [
 	['EUR', 'truck', 'default'],
 ];
 
+jest.mock('frontend-js-components-web', () => {
+	jest.fn();
+});
+
 describe('ImportForm', () => {
 	beforeEach(() => {
 		const mockDiv = document.createElement('div');

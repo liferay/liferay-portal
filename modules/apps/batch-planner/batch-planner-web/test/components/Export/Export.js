@@ -26,12 +26,12 @@ import {
 } from '../../../src/main/resources/META-INF/resources/js/constants';
 import Export from '../../../src/main/resources/META-INF/resources/js/export/Export';
 
-const INPUT_VALUE_TEST = 'test';
 const BASE_PROPS = {
 	formExportDataQuerySelector: 'form',
 	formExportURL: 'https://formUrl.test',
 	portletNamespace: 'test',
 };
+const INPUT_VALUE_TEST = 'test';
 
 const externalReferenceCode = '1234';
 let mockApi;
@@ -41,6 +41,10 @@ window.URL.createObjectURL = mockCreateObjectUrl;
 window.URL.revokeObjectURL = jest.fn();
 
 configure({asyncUtilTimeout: 5000});
+
+jest.mock('frontend-js-components-web', () => {
+	jest.fn();
+});
 
 jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/BatchPlannerExport',

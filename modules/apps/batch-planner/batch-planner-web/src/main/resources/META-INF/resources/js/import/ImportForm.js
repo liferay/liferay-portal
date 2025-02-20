@@ -4,7 +4,7 @@
  */
 
 import ClayTable from '@clayui/table';
-import {openToast} from 'frontend-js-web';
+import {openToast} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 

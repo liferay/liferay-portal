@@ -11,6 +11,11 @@ import React from 'react';
 import SaveTemplate from '../../../src/main/resources/META-INF/resources/js/SaveTemplate';
 import {SCHEMA_SELECTED_EVENT} from '../../../src/main/resources/META-INF/resources/js/constants';
 
+jest.mock('frontend-js-components-web', () => ({
+	openModal: jest.fn(),
+	openToast: jest.fn(),
+}));
+
 const BASE_PROPS = {
 	evaluateForm: () => {},
 	formIsValid: true,

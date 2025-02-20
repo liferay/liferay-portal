@@ -5,7 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import {useModal} from '@clayui/modal';
-import {openToast} from 'frontend-js-web';
+import {openToast} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
