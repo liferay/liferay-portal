@@ -5,13 +5,10 @@
 
 package com.liferay.portal.kernel.security.auth;
 
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyFactory;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -19,6 +16,7 @@ import org.junit.Test;
 
 /**
  * @author István András Dézsi
+ * @author Alberto Chaparro
  */
 public class CompanyInheritableThreadLocalCallableTest {
 
@@ -29,17 +27,27 @@ public class CompanyInheritableThreadLocalCallableTest {
 
 	@Test
 	public void testInheritCompanyThreadLocal() throws Exception {
-		CompanyThreadLocal.setCompanyId(1L);
+		_assertInheritCompanyThreadLocal(CompanyConstants.SYSTEM, false);
+		_assertInheritCompanyThreadLocal(1L, true);
+	}
 
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private void _assertInheritCompanyThreadLocal(
+			Long companyId, boolean locked)
+		throws Exception {
 
-		Future<Long> future = executorService.submit(
+		CompanyThreadLocal.setCompanyId(companyId);
+
+		Assert.assertEquals(
+			companyId,
+			new CompanyInheritableThreadLocalCallable<Long>(
+				CompanyThreadLocal::getCompanyId
+			).call());
+
+		Assert.assertEquals(
+			locked,
 			new CompanyInheritableThreadLocalCallable<>(
-				CompanyThreadLocal::getCompanyId));
-
-		executorService.shutdown();
-
-		Assert.assertEquals(Long.valueOf(1), future.get());
+				CompanyThreadLocal::isLocked
+			).call());
 	}
 
 }
