@@ -92,7 +92,7 @@ public class CategorizationSectionFragmentRenderer implements FragmentRenderer {
 			httpServletRequest.setAttribute(
 				CategorizationSectionDisplayContext.class.getName(),
 				new CategorizationSectionDisplayContext(
-					_cmsSiteInitializerConfiguration));
+					_cmsSiteInitializerConfiguration, httpServletRequest));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}

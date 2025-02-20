@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-AllSectionDisplayContext allSectionDisplayContext = new AllSectionDisplayContext(request);
+AllSectionDisplayContext allSectionDisplayContext = (AllSectionDisplayContext)request.getAttribute(AllSectionDisplayContext.class.getName());
 %>
 
 <div class="cms-section">
