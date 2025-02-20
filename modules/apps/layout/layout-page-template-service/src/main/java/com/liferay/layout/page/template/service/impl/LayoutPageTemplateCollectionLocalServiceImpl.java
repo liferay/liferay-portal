@@ -9,11 +9,11 @@ import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCol
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionGroupIdException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionNameException;
-import com.liferay.layout.page.template.internal.validator.LayoutPageTemplateValidator;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.base.LayoutPageTemplateCollectionLocalServiceBaseImpl;
+import com.liferay.layout.util.validator.LayoutValidator;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -541,7 +541,7 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 			long groupId, String layoutPageTemplateCollectionKey, int type)
 		throws PortalException {
 
-		if (LayoutPageTemplateValidator.hasBlacklistedChar(
+		if (LayoutValidator.hasBlacklistedChar(
 				layoutPageTemplateCollectionKey)) {
 
 			throw new LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException.MustNotContainInvalidCharacters(
