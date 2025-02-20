@@ -11,8 +11,10 @@ import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.asset.library.client.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.client.problem.Problem;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 
@@ -34,10 +36,10 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		// Nonexistent assetLibrary ID
 
-		long siteId = RandomTestUtil.randomLong();
+		long assetLibraryId = RandomTestUtil.randomLong();
 
 		try {
-			assetLibraryResource.deleteAssetLibrary(siteId);
+			assetLibraryResource.deleteAssetLibrary(assetLibraryId);
 
 			Assert.fail();
 		}
@@ -68,8 +70,26 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 	@Override
 	@Test
-	public void testPatchAssetLibrary() throws Exception {
-		super.testPatchAssetLibrary();
+	public void testPatchAssetLibraryBySite() throws Exception {
+		AssetLibrary postAssetLibrary =
+			testPatchAssetLibraryBySite_addAssetLibrary();
+
+		AssetLibrary randomPatchAssetLibrary = randomPatchAssetLibrary();
+
+		assetLibraryResource.patchAssetLibraryBySite(
+			postAssetLibrary.getSiteId(), randomPatchAssetLibrary);
+
+		AssetLibrary expectedPatchAssetLibrary = postAssetLibrary.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchAssetLibrary, expectedPatchAssetLibrary);
+
+		AssetLibrary getAssetLibrary =
+			assetLibraryResource.getAssetLibraryBySite(
+				postAssetLibrary.getSiteId());
+
+		assertEquals(expectedPatchAssetLibrary, getAssetLibrary);
+		assertValid(getAssetLibrary);
 	}
 
 	@Override
@@ -83,6 +103,34 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	@Override
+	protected void assertValid(AssetLibrary assetLibrary) throws Exception {
+		DepotEntry originalTestDepotEntry = testDepotEntry;
+		Group originalTestGroup = testGroup;
+
+		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+			assetLibrary.getId());
+
+		testDepotEntry = depotEntry;
+		testGroup = depotEntry.getGroup();
+
+		super.assertValid(assetLibrary);
+
+		testDepotEntry = originalTestDepotEntry;
+		testGroup = originalTestGroup;
+	}
+
+	@Override
+	protected AssetLibrary randomAssetLibrary() throws Exception {
+		return new AssetLibrary() {
+			{
+				description = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+			}
+		};
+	}
+
+	@Override
 	protected AssetLibrary randomPatchAssetLibrary() throws Exception {
 		AssetLibrary assetLibrary = randomAssetLibrary();
 
@@ -93,6 +141,13 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 	@Override
 	protected AssetLibrary testDeleteAssetLibrary_addAssetLibrary()
+		throws Exception {
+
+		return _addRandomAssetLibrary();
+	}
+
+	@Override
+	protected AssetLibrary testDeleteAssetLibraryBySite_addAssetLibrary()
 		throws Exception {
 
 		return _addRandomAssetLibrary();
@@ -121,7 +176,21 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	@Override
+	protected AssetLibrary testGetAssetLibraryBySite_addAssetLibrary()
+		throws Exception {
+
+		return _addRandomAssetLibrary();
+	}
+
+	@Override
 	protected AssetLibrary testPatchAssetLibrary_addAssetLibrary()
+		throws Exception {
+
+		return _addRandomAssetLibrary();
+	}
+
+	@Override
+	protected AssetLibrary testPatchAssetLibraryBySite_addAssetLibrary()
 		throws Exception {
 
 		return _addRandomAssetLibrary();
