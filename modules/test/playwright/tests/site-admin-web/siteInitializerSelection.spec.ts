@@ -56,7 +56,9 @@ test(
 		for (let i = 0; i < 5; i++) {
 			const layoutSetPrototype: LayoutSetPrototype =
 				await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
-					getRandomString()
+					{
+						name: getRandomString(),
+					}
 				);
 
 			layoutSetPrototypes.push(layoutSetPrototype);

@@ -27,7 +27,9 @@ export default async function createSiteTemplate({
 }): Promise<LayoutSetPrototype> {
 	const layoutSetPrototype: LayoutSetPrototype =
 		await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
-			templateName
+			{
+				name: templateName,
+			}
 		);
 
 	await page.goto(
