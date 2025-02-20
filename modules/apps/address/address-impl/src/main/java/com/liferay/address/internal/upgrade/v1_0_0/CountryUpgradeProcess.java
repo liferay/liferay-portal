@@ -82,7 +82,8 @@ public class CountryUpgradeProcess extends UpgradeProcess {
 					}
 					catch (Exception exception) {
 						_log.error(
-							"Unable to populate company " + companyId,
+							"Unable to populate countries for company " +
+								companyId,
 							exception);
 					}
 				},
