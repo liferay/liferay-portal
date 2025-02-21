@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '33e75a5045b1f9186bbb89db23ea65a742041c1ac65dbddde16e5698c556118c',
+	hash: '3c6a6857aa1877f385424e720d0063b3cc106764518d4147d6dafa336f299846',
 	imports: {
 		'@liferay/accessibility-settings-state-web': [],
 		'@liferay/address-web': [],
@@ -82,8 +82,10 @@ module.exports = {
 			'react-dnd-html5-backend',
 			'react-dnd',
 			'react-dom',
+			'react-dom/client',
 			'react-dom-16',
 			'react-dom-18',
+			'react-dom-18/client',
 		],
 		'@liferay/frontend-js-state-web': [],
 		'@liferay/frontend-js-walkthrough-web': [],

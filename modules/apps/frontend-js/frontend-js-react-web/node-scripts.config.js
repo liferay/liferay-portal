@@ -14,8 +14,10 @@ module.exports = {
 		'react-dnd-html5-backend',
 		'react-dnd',
 		'react-dom',
+		'react-dom/client',
 		'react-dom-16',
 		'react-dom-18',
+		'react-dom-18/client',
 	],
 	main: './src/main/resources/META-INF/resources/js/index.ts',
 	symbols: {

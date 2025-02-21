@@ -6,9 +6,11 @@
 package com.liferay.frontend.js.react.web.internal.js.importmaps.extender;
 
 import com.liferay.frontend.js.importmaps.extender.JSImportMapsContributor;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import javax.servlet.ServletContext;
 
@@ -38,13 +40,16 @@ public class FrontendJSReactWebJSImportMapsContributor
 			_importMapsJSONObject.put(
 				moduleName,
 				StringBundler.concat(
-					contextPath, "/__liferay__/exports/", moduleName, ".js"));
+					contextPath, "/__liferay__/exports/",
+					StringUtil.replace(
+						moduleName, CharPool.FORWARD_SLASH, CharPool.DOLLAR),
+					".js"));
 		}
 	}
 
 	private static final String[] _MODULE_NAMES = {
-		"react", "react-16", "react-18", "react-dom", "react-dom-16",
-		"react-dom-18"
+		"react", "react-16", "react-18", "react-dom", "react-dom/client",
+		"react-dom-16", "react-dom-18", "react-dom-18/client"
 	};
 
 	private JSONObject _importMapsJSONObject;
