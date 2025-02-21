@@ -1,7 +1,7 @@
 import {toPromise} from 'shared/components/form';
 
 const VALIDATE_DOMAINS = /^([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9_])?\.){1,126}[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z]$/;
-const VALIDATE_EMAILS = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VALIDATE_EMAILS = /^(?![<>{}[\]()])[^@\s]+@[^\s@]+\.[^\s@]+(?<![<>{}[\]()])$/;
 
 export const validateEmailDomain = (emailDomain: string): boolean =>
 	VALIDATE_DOMAINS.test(emailDomain);
