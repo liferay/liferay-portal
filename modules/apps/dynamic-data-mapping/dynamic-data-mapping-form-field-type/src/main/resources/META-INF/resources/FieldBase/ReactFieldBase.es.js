@@ -14,6 +14,7 @@ import {
 	FieldFeedback,
 	Layout,
 	PagesVisitor,
+	useConfig,
 	useForm,
 	useFormState,
 } from 'data-engine-js-components-web';
@@ -200,6 +201,7 @@ export default function FieldBase({
 	visible,
 	warningMessage,
 }) {
+	const {disableFieldRepetition} = useConfig();
 	const {editingLanguageId, pages} = useFormState();
 	const [disabledRepeatableButton, setDisabledRepeatableButton] =
 		useState(false);
@@ -465,12 +467,20 @@ export default function FieldBase({
 	);
 
 	useEffect(() => {
-		Liferay.on('disableRepeatableButton', disableRepeatableButton);
+		if (disableFieldRepetition) {
+			setDisabledRepeatableButton(true);
+		}
+		else {
+			Liferay.on('disableRepeatableButton', disableRepeatableButton);
 
-		return () => {
-			Liferay.detach('disableRepeatableButton', disableRepeatableButton);
-		};
-	}, []);
+			return () => {
+				Liferay.detach(
+					'disableRepeatableButton',
+					disableRepeatableButton
+				);
+			};
+		}
+	}, [disableFieldRepetition]);
 
 	const markAsTranslated = useCallback(() => {
 		const pagesVisitor = new PagesVisitor(pages);
