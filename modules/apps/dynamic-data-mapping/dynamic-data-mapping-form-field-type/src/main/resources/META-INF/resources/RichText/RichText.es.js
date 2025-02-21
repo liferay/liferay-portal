@@ -5,7 +5,11 @@
 
 import {ClayInput} from '@clayui/form';
 import {useConfig} from 'data-engine-js-components-web';
-import {ClassicEditor} from 'frontend-editor-ckeditor-web';
+import {
+	CKEditor5ClassicEditor,
+	ClassicEditor,
+	advancedClassicEditorConfig,
+} from 'frontend-editor-ckeditor-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import FieldBase from '../FieldBase/ReactFieldBase.es';
@@ -263,36 +267,57 @@ const RichText = ({
 		>
 			<ClayInput.Group>
 				<ClayInput.GroupItem>
-					<ClassicEditor
-						ariaLabel={label}
-						ariaRequired={otherProps.required}
-						className="w-100"
-						contents={
-							currentValue
-								? currentValue[currentEditingLocale?.localeId]
-								: ''
-						}
-						editorConfig={editorConfig}
-						name={name}
-						onBlur={onBlur}
-						onChange={(content) => handleContentChange(content)}
-						onFocus={onFocus}
-						onSetData={(event) => {
-							const editor = event.editor;
-
-							if (editor.mode === 'source') {
-								const value = event.data.dataValue;
-
-								const sanitizedValue = sanitezeHTML(value);
-
-								handleContentChange(sanitizedValue);
-
-								event.data.dataValue = sanitizedValue;
+					{Liferay.FeatureFlags['LPD-11235'] ? (
+						<CKEditor5ClassicEditor
+							className="w-100"
+							config={{
+								...advancedClassicEditorConfig,
+							}}
+							data={
+								currentValue
+									? currentValue[
+											currentEditingLocale?.localeId
+										]
+									: ''
 							}
-						}}
-						readOnly={readOnly}
-						ref={editorRef}
-					/>
+							onChange={(event, editor) =>
+								handleContentChange(editor.getData())
+							}
+						/>
+					) : (
+						<ClassicEditor
+							ariaLabel={label}
+							ariaRequired={otherProps.required}
+							className="w-100"
+							contents={
+								currentValue
+									? currentValue[
+											currentEditingLocale?.localeId
+										]
+									: ''
+							}
+							editorConfig={editorConfig}
+							name={name}
+							onBlur={onBlur}
+							onChange={(content) => handleContentChange(content)}
+							onFocus={onFocus}
+							onSetData={(event) => {
+								const editor = event.editor;
+
+								if (editor.mode === 'source') {
+									const value = event.data.dataValue;
+
+									const sanitizedValue = sanitezeHTML(value);
+
+									handleContentChange(sanitizedValue);
+
+									event.data.dataValue = sanitizedValue;
+								}
+							}}
+							readOnly={readOnly}
+							ref={editorRef}
+						/>
+					)}
 				</ClayInput.GroupItem>
 
 				<input
