@@ -291,7 +291,7 @@ create index IX_D1846D13 on PortalPreferences (ownerType, ownerId);
 
 create unique index IX_12B5E51D on Portlet (companyId, portletId[$COLUMN_LENGTH:200$]);
 
-create index IX_C6246ECD on PortletItem (groupId, classNameId, portletId[$COLUMN_LENGTH:200$], name[$COLUMN_LENGTH:75$]);
+create unique index IX_C6246ECD on PortletItem (groupId, classNameId, portletId[$COLUMN_LENGTH:200$], name[$COLUMN_LENGTH:75$]);
 
 create index IX_EE8C5489 on PortletPreferenceValue (name[$COLUMN_LENGTH:255$], smallValue[$COLUMN_LENGTH:255$], companyId);
 create unique index IX_B517784D on PortletPreferenceValue (portletPreferencesId, name[$COLUMN_LENGTH:255$], index_, ctCollectionId);
