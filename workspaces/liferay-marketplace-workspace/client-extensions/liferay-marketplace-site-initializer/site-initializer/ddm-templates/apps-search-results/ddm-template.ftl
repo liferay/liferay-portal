@@ -125,10 +125,10 @@
 </style>
 
 <#assign appTypeClasses = {
-	"Client Extension": "app-type-label-cx"
+	"Client Extension": "app-type-label-cx",
 	"Cloud App": "app-type-label-cloud",
 	"DXP App": "app-type-label-dxp",
-	"Fragment": "app-type-label-fragment",
+	"Fragment": "app-type-label-fragment"
 } />
 
 <#if searchContainer?has_content>
