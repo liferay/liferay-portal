@@ -3590,6 +3590,15 @@
 		"to": "${variableName}.${prefixMethodName}Preferences"
 	},
 	{
+		"from": "regex:(?<utilName>CPAttachmentFileEntryServiceUtil|CPAttachmentFileEntryLocalServiceUtil)\\.fetchByExternalReferenceCode",
+		"issueKey": "LPD-48708",
+		"to": "${utilName}.fetchCPAttachmentFileEntryByExternalReferenceCode",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
 		"classNames": [
 			"CommerceOrderItem"
 		],
