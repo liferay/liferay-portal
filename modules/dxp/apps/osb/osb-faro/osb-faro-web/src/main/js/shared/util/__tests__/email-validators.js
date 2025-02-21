@@ -13,6 +13,11 @@ describe('email-validators', () => {
 			${'test@liferay.com'}  | ${false}
 			${'111.222.333.444'}   | ${false}
 			${'[123.123.123.123]'} | ${false}
+			${'<test@liferay.com>'} | ${false}
+			${'{test}@liferay.com'} | ${false}
+			${'{test@liferay.com}'} | ${false}
+			${'(test@liferay.com)'} | ${false}
+			${'[test@liferay.com]'} | ${false}
 		`('should return $domain as $isValid', ({domain, isValid}) => {
 			expect(validateEmailDomain(domain)).toEqual(isValid);
 		});
