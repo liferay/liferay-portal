@@ -50,5 +50,5 @@
 		"format": "node-scripts format",
 		"test": "USE_REACT_16=true node-scripts test"
 	},
-	"version": "4.0.16"
+	"version": "4.1.0"
 }

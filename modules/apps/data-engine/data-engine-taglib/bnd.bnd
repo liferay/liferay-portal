@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Data Engine Taglib
 Bundle-SymbolicName: com.liferay.data.engine.taglib
-Bundle-Version: 4.0.16
+Bundle-Version: 4.1.0
 Export-Package:\
 	com.liferay.data.engine.taglib.servlet.taglib,\
 	com.liferay.data.engine.taglib.servlet.taglib.definition
