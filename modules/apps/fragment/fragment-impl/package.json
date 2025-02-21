@@ -1,11 +1,11 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.116.0",
-		"@clayui/core": "3.127.0",
-		"@clayui/drop-down": "3.127.0",
-		"@clayui/icon": "3.111.0",
-		"@clayui/label": "3.111.0",
-		"@clayui/layout": "3.111.0",
+		"@clayui/button": "3.128.0",
+		"@clayui/core": "3.128.0",
+		"@clayui/drop-down": "3.128.0",
+		"@clayui/icon": "3.128.0",
+		"@clayui/label": "3.128.0",
+		"@clayui/layout": "3.128.0",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",

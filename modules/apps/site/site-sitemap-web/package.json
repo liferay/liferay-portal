@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.116.0",
+		"@clayui/button": "3.128.0",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"

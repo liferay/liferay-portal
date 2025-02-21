@@ -1,10 +1,10 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.116.0",
-		"@clayui/core": "3.127.0",
-		"@clayui/form": "3.125.0",
-		"@clayui/layout": "3.111.0",
-		"@clayui/popover": "3.119.0",
+		"@clayui/button": "3.128.0",
+		"@clayui/core": "3.128.0",
+		"@clayui/form": "3.128.0",
+		"@clayui/layout": "3.128.0",
+		"@clayui/popover": "3.128.0",
 		"@liferay/frontend-js-react-web": "*",
 		"dom-align": "1.12.2",
 		"frontend-js-web": "*",

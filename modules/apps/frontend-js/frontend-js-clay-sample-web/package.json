@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@clayui/alert": "3.111.0",
+		"@clayui/alert": "3.128.0",
 		"react": "18.2.0"
 	},
 	"main": "js/App.js",

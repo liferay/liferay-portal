@@ -1,9 +1,9 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.116.0",
-		"@clayui/form": "3.125.0",
-		"@clayui/icon": "3.111.0",
-		"@clayui/layout": "3.111.0",
+		"@clayui/button": "3.128.0",
+		"@clayui/form": "3.128.0",
+		"@clayui/icon": "3.128.0",
+		"@clayui/layout": "3.128.0",
 		"commerce-frontend-js": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",

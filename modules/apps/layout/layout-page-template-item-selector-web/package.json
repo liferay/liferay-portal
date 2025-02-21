@@ -1,10 +1,10 @@
 {
 	"dependencies": {
-		"@clayui/core": "3.127.0",
-		"@clayui/empty-state": "3.116.0",
-		"@clayui/form": "3.125.0",
-		"@clayui/icon": "3.111.0",
-		"@clayui/layout": "3.111.0",
+		"@clayui/core": "3.128.0",
+		"@clayui/empty-state": "3.128.0",
+		"@clayui/form": "3.128.0",
+		"@clayui/icon": "3.128.0",
+		"@clayui/layout": "3.128.0",
 		"@liferay/layout-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",

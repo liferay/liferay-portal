@@ -1,11 +1,11 @@
 {
 	"dependencies": {
-		"@clayui/alert": "3.111.0",
-		"@clayui/button": "3.116.0",
-		"@clayui/form": "3.125.0",
-		"@clayui/icon": "3.111.0",
-		"@clayui/layout": "3.111.0",
-		"@clayui/modal": "3.122.0",
+		"@clayui/alert": "3.128.0",
+		"@clayui/button": "3.128.0",
+		"@clayui/form": "3.128.0",
+		"@clayui/icon": "3.128.0",
+		"@clayui/layout": "3.128.0",
+		"@clayui/modal": "3.128.0",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
 		"react": "18.2.0",
