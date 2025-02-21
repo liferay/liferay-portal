@@ -51,6 +51,10 @@ public class DataLayoutRendererContext {
 		return _portletNamespace;
 	}
 
+	public boolean isDisableFieldRepetition() {
+		return _disableFieldRepetition;
+	}
+
 	public boolean isPersistDefaultValues() {
 		return _persistDefaultValues;
 	}
@@ -81,6 +85,10 @@ public class DataLayoutRendererContext {
 
 	public void setDefaultLanguageId(String defaultLanguageId) {
 		_defaultLanguageId = defaultLanguageId;
+	}
+
+	public void setDisableFieldRepetition(boolean disableFieldRepetition) {
+		_disableFieldRepetition = disableFieldRepetition;
 	}
 
 	public void setDisplayType(String displayType) {
@@ -125,6 +133,7 @@ public class DataLayoutRendererContext {
 	private String _contentType;
 	private Map<String, Object> _dataRecordValues;
 	private String _defaultLanguageId;
+	private boolean _disableFieldRepetition;
 	private String _displayType;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;

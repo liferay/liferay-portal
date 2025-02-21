@@ -92,6 +92,8 @@ public class DataLayoutRendererImpl implements DataLayoutRenderer {
 				dataLayoutRendererContext.getDataRecordValues(), ddmForm,
 				null));
 		ddmFormRenderingContext.setDDMStructureLayoutId(dataLayoutId);
+		ddmFormRenderingContext.setDisableFieldRepetition(
+			dataLayoutRendererContext.isDisableFieldRepetition());
 		ddmFormRenderingContext.setGroupId(groupId);
 		ddmFormRenderingContext.setEditOnlyInDefaultLanguage(true);
 		ddmFormRenderingContext.setHttpServletRequest(

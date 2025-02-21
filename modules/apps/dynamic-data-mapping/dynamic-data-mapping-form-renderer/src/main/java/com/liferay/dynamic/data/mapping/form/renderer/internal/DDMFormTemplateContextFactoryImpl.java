@@ -270,6 +270,9 @@ public class DDMFormTemplateContextFactoryImpl
 			"defaultSiteLanguageId",
 			_language.getLanguageId(LocaleUtil.getSiteDefault()));
 		templateContext.put(
+			"disableFieldRepetition",
+			ddmFormRenderingContext.isDisableFieldRepetition());
+		templateContext.put(
 			"editingLanguageId", _language.getLanguageId(locale));
 		templateContext.put(
 			"evaluatorURL", _getDDMFormContextProviderServletURL());

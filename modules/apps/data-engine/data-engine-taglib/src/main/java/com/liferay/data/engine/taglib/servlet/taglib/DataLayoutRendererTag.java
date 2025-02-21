@@ -74,6 +74,8 @@ public class DataLayoutRendererTag extends BaseDataLayoutRendererTag {
 					getDefaultLanguageId());
 			}
 
+			dataLayoutRendererContext.setDisableFieldRepetition(
+				getDisableFieldRepetition());
 			dataLayoutRendererContext.setDisplayType(getDisplayType());
 			dataLayoutRendererContext.setHttpServletRequest(httpServletRequest);
 			dataLayoutRendererContext.setHttpServletResponse(

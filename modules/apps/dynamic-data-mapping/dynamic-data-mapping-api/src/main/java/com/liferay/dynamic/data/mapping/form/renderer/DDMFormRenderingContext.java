@@ -83,6 +83,10 @@ public class DDMFormRenderingContext {
 		return _submitLabel;
 	}
 
+	public boolean isDisableFieldRepetition() {
+		return _disableFieldRepetition;
+	}
+
 	public boolean isEditOnlyInDefaultLanguage() {
 		return MapUtil.getBoolean(_properties, "editOnlyInDefaultLanguage");
 	}
@@ -137,6 +141,10 @@ public class DDMFormRenderingContext {
 
 	public void setDDMStructureLayoutId(long ddmStructureLayoutId) {
 		_ddmStructureLayoutId = ddmStructureLayoutId;
+	}
+
+	public void setDisableFieldRepetition(boolean disableFieldRepetition) {
+		_disableFieldRepetition = disableFieldRepetition;
 	}
 
 	public void setEditOnlyInDefaultLanguage(
@@ -218,6 +226,7 @@ public class DDMFormRenderingContext {
 	private long _ddmFormInstanceId;
 	private DDMFormValues _ddmFormValues;
 	private long _ddmStructureLayoutId;
+	private boolean _disableFieldRepetition;
 	private long _groupId;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
