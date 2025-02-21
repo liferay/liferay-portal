@@ -137,6 +137,12 @@
 				<required>false</required>
 			</attribute>
 			<attribute>
+				<name>disableFieldRepetition</name>
+				<inputType>boolean</inputType>
+				<outputType>boolean</outputType>
+				<required>false</required>
+			</attribute>
+			<attribute>
 				<name>displayType</name>
 				<inputType>java.lang.String</inputType>
 				<outputType>java.lang.String</outputType>
