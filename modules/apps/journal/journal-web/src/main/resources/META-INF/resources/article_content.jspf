@@ -13,6 +13,7 @@
 	dataDefinitionId="<%= ddmStructure.getStructureId() %>"
 	dataRecordValues="<%= journalEditArticleDisplayContext.getValues() %>"
 	defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>"
+	disableFieldRepetition="<%= JournalUtil.isEditDefaultValues(article) %>"
 	displayType="borderless"
 	languageId="<%= journalEditArticleDisplayContext.getSelectedLanguageId() %>"
 	namespace="<%= liferayPortletResponse.getNamespace() %>"
