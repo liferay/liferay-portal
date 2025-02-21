@@ -5780,11 +5780,13 @@ ${custom.upgrade.properties}</echo>
 								<elseif>
 									<equals arg1="${database.type}" arg2="sqlserver" />
 									<then>
+										<get-database-property property.name="database.executable" />
+
 										<echo file="${create.sh.file.path}">
 											<![CDATA[
 												#!/bin/bash
 
-												/opt/mssql-tools/bin/sqlcmd -P ${database.password} -U ${database.username} -i /tmp/create.sql
+												${database.executable} -P ${database.password} -U ${database.username} -i /tmp/create.sql
 											]]>
 										</echo>
 									</then>
@@ -7715,10 +7717,11 @@ ${docker.start.error}</fail>
 				<elseif>
 					<equals arg1="${database.type}" arg2="sqlserver" />
 					<then>
+						<get-database-property property.name="database.executable" />
 						<get-database-property property.name="database.password" />
 						<get-database-property property.name="database.username" />
 
-						<property name="docker.database.wait.condition">/opt/mssql-tools/bin/sqlcmd -P ${database.password} -U ${database.username} -Q "select name from sys.databases" 2>/dev/null</property>
+						<property name="docker.database.wait.condition">${database.executable} -P ${database.password} -U ${database.username} -Q "select name from sys.databases" 2>/dev/null</property>
 					</then>
 				</elseif>
 			</if>
@@ -14691,7 +14694,7 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 								<![CDATA[
 									#!/bin/bash
 
-									/opt/mssql-tools/bin/sqlcmd -P ${database.sqlserver.password} -Q "RESTORE DATABASE ${database.sqlserver.schema} FROM DISK='/tmp/${database.type}.bak'" -S localhost -U ${database.sqlserver.username}
+									${database.sqlserver.executable} -P ${database.sqlserver.password} -Q "RESTORE DATABASE ${database.sqlserver.schema} FROM DISK='/tmp/${database.type}.bak'" -S localhost -U ${database.sqlserver.username}
 								]]>
 							</echo>
 
