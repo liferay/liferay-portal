@@ -53,6 +53,10 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 		return _defaultLanguageId;
 	}
 
+	public boolean getDisableFieldRepetition() {
+		return _disableFieldRepetition;
+	}
+
 	public java.lang.String getDisplayType() {
 		return _displayType;
 	}
@@ -109,6 +113,10 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 		_defaultLanguageId = defaultLanguageId;
 	}
 
+	public void setDisableFieldRepetition(boolean disableFieldRepetition) {
+		_disableFieldRepetition = disableFieldRepetition;
+	}
+
 	public void setDisplayType(java.lang.String displayType) {
 		_displayType = displayType;
 	}
@@ -155,6 +163,7 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 		_dataRecordId = null;
 		_dataRecordValues = null;
 		_defaultLanguageId = null;
+		_disableFieldRepetition = false;
 		_displayType = null;
 		_languageId = null;
 		_namespace = null;
@@ -178,6 +187,7 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 		setNamespacedAttribute(request, "dataRecordId", _dataRecordId);
 		setNamespacedAttribute(request, "dataRecordValues", _dataRecordValues);
 		setNamespacedAttribute(request, "defaultLanguageId", _defaultLanguageId);
+		setNamespacedAttribute(request, "disableFieldRepetition", _disableFieldRepetition);
 		setNamespacedAttribute(request, "displayType", _displayType);
 		setNamespacedAttribute(request, "languageId", _languageId);
 		setNamespacedAttribute(request, "namespace", _namespace);
@@ -199,6 +209,7 @@ public abstract class BaseDataLayoutRendererTag extends com.liferay.taglib.util.
 	private java.lang.Long _dataRecordId = null;
 	private java.util.Map<java.lang.String, java.lang.Object> _dataRecordValues = null;
 	private java.lang.String _defaultLanguageId = null;
+	private boolean _disableFieldRepetition;
 	private java.lang.String _displayType = null;
 	private java.lang.String _languageId = null;
 	private java.lang.String _namespace = null;
