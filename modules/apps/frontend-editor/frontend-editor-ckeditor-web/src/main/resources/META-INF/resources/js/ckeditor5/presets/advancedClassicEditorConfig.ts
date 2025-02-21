@@ -6,7 +6,7 @@
 import {EditorConfig} from 'ckeditor5';
 import {sub} from 'frontend-js-web';
 
-const AdvancedPreset: EditorConfig = {
+const advancedClassicEditorConfig: EditorConfig = {
 	alignment: {
 		options: ['left', 'center', 'right'],
 	},
@@ -119,4 +119,4 @@ const AdvancedPreset: EditorConfig = {
 	],
 };
 
-export default AdvancedPreset;
+export default advancedClassicEditorConfig;
