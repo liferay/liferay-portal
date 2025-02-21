@@ -25,17 +25,16 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.ShippingMethod;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.math.BigDecimal;
 
@@ -46,6 +45,8 @@ import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 /**
@@ -56,15 +57,19 @@ import org.junit.runner.RunWith;
 public class ShippingMethodResourceTest
 	extends BaseShippingMethodResourceTestCase {
 
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
+
 	@Before
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 
 		_user = UserTestUtil.addUser(testCompany);
-
-		_setUpPermissionThreadLocal();
-		_setUpPrincipalThreadLocal();
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testCompany.getCompanyId(), testGroup.getGroupId(),
@@ -75,8 +80,6 @@ public class ShippingMethodResourceTest
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			testGroup.getGroupId(), _commerceCurrency.getCode());
-
-		_siteAdminUser = UserTestUtil.addGroupAdminUser(testGroup);
 	}
 
 	@After
@@ -88,9 +91,6 @@ public class ShippingMethodResourceTest
 			CommerceAddressLocalServiceUtil.deleteCommerceAddress(
 				commerceAddress);
 		}
-
-		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-		PrincipalThreadLocal.setName(_originalName);
 	}
 
 	@Override
@@ -230,20 +230,6 @@ public class ShippingMethodResourceTest
 		return _engineKeys.remove(random.nextInt(_engineKeys.size()));
 	}
 
-	private void _setUpPermissionThreadLocal() {
-		_originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_siteAdminUser));
-	}
-
-	private void _setUpPrincipalThreadLocal() {
-		_originalName = PrincipalThreadLocal.getName();
-
-		PrincipalThreadLocal.setName(_siteAdminUser.getUserId());
-	}
-
 	private final List<CommerceAddress> _commerceAddresses = new ArrayList<>();
 
 	@DeleteAfterTestRun
@@ -273,12 +259,7 @@ public class ShippingMethodResourceTest
 
 	private final List<String> _engineKeys = ListUtil.fromArray(
 		"fixed", "by-weight");
-	private String _originalName;
-	private PermissionChecker _originalPermissionChecker;
 	private ServiceContext _serviceContext;
-
-	@DeleteAfterTestRun
-	private User _siteAdminUser;
 
 	@DeleteAfterTestRun
 	private User _user;
