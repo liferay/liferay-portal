@@ -1,29 +1,12 @@
 {
-	"browserslist": {
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		],
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		]
-	},
 	"dependencies": {
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"react-scripts": "5.0.1",
-		"sass": "^1.66.1"
+		"react-dom": "^18.2.0"
 	},
 	"name": "@liferay/liferay-sample-custom-element-2",
 	"private": true,
 	"scripts": {
-		"build": "react-scripts build",
-		"eject": "react-scripts eject",
-		"start": "react-scripts start",
-		"test": "react-scripts test --passWithNoTests --watchAll=false"
+		"build": "esbuild src/index.js --outdir=build/static --bundle --entry-names=[name].[hash] --format=esm --external:react --external:react-dom --external:@liferay/oauth2-provider-web/client --loader:.js=jsx"
 	},
 	"version": "0.0.0"
 }

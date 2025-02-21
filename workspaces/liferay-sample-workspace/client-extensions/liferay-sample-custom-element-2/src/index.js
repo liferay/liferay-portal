@@ -14,8 +14,6 @@ import HelloBar from './routes/hello-bar/pages/HelloBar.js';
 import HelloFoo from './routes/hello-foo/pages/HelloFoo.js';
 import HelloWorld from './routes/hello-world/pages/HelloWorld.js';
 
-import './common/styles/index.scss';
-
 const App = ({route}) => {
 	if (route === 'hello-bar') {
 		return <HelloBar />;
@@ -70,18 +68,8 @@ class WebComponent extends HTMLElement {
 	}
 
 	disconnectedCallback() {
-
-		//
-		// Unmount React tree to prevent memory leaks.
-		//
-		// See React documentation at
-		//
-		//     https://react.dev/reference/react-dom/client/createRoot#root-unmount
-		//
-		// for more information.
-		//
-
 		this.root.unmount();
+
 		delete this.root;
 	}
 }
