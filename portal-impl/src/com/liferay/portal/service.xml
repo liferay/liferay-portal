@@ -1650,7 +1650,7 @@
 			<finder-column name="portletId" />
 			<finder-column name="classNameId" />
 		</finder>
-		<finder name="G_N_P_C" return-type="PortletItem">
+		<finder name="G_N_P_C" return-type="PortletItem" unique="true">
 			<finder-column name="groupId" />
 			<finder-column case-sensitive="false" name="name" />
 			<finder-column name="portletId" />
