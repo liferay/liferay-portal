@@ -538,6 +538,8 @@ definition {
 			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
 
 			DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
+
+			SignOut.signOutOfSpecificURL(url = "http://www.able.com:8080");
 		}
 
 		task ("Drop www.able.com company") {

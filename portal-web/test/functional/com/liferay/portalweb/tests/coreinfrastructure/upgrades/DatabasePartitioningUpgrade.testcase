@@ -236,6 +236,10 @@ definition {
 			SearchAdministration.executeReindex();
 
 			ValidateDatabasePartitioningUpgrade.viewUpgradeDBPartition();
+
+			SignOut.signOutOfSpecificURL(url = "http://www.able.com:8080");
+
+			SignOut.signOutOfSpecificURL(url = "http://www.baker.com:8080");
 		}
 
 		task ("Drop www.able.com and www.baker.com companies") {
