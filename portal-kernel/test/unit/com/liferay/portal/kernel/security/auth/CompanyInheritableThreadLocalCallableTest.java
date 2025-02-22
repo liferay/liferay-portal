@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.security.auth;
 
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -14,6 +15,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
 /**
  * @author István András Dézsi
  * @author Alberto Chaparro
@@ -22,13 +26,23 @@ public class CompanyInheritableThreadLocalCallableTest {
 
 	@BeforeClass
 	public static void setUpClass() {
+		MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
+			Mockito.mockStatic(PortalInstancePool.class);
+
+		portalInstancePoolMockedStatic.when(
+			PortalInstancePool::getDefaultCompanyId
+		).thenReturn(
+			1L
+		);
+
 		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
 	}
 
 	@Test
 	public void testInheritCompanyThreadLocal() throws Exception {
 		_assertInheritCompanyThreadLocal(CompanyConstants.SYSTEM, false);
-		_assertInheritCompanyThreadLocal(1L, true);
+		_assertInheritCompanyThreadLocal(1L, false);
+		_assertInheritCompanyThreadLocal(2L, true);
 	}
 
 	private void _assertInheritCompanyThreadLocal(
