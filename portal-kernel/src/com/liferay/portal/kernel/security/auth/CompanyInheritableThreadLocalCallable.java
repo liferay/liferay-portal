@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.security.auth;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.CompanyConstants;
 
 import java.util.concurrent.Callable;
@@ -26,7 +27,9 @@ public class CompanyInheritableThreadLocalCallable<T> implements Callable<T> {
 		SafeCloseable safeCloseable = null;
 
 		try {
-			if (_companyId == CompanyConstants.SYSTEM) {
+			if ((_companyId == CompanyConstants.SYSTEM) ||
+				(_companyId == PortalInstancePool.getDefaultCompanyId())) {
+
 				safeCloseable =
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						_companyId);
