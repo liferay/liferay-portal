@@ -38,7 +38,7 @@ public class AssetDisplayPageEntryServiceImpl
 
 	@Override
 	public AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId, int type,
 			ServiceContext serviceContext)
 		throws Exception {
@@ -47,13 +47,13 @@ public class AssetDisplayPageEntryServiceImpl
 			_portal.getClassName(classNameId), classPK, ActionKeys.UPDATE);
 
 		return assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
-			userId, groupId, classNameId, classPK, layoutPageTemplateEntryId,
-			type, serviceContext);
+			getUserId(), groupId, classNameId, classPK,
+			layoutPageTemplateEntryId, type, serviceContext);
 	}
 
 	@Override
 	public AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId, ServiceContext serviceContext)
 		throws Exception {
 
@@ -61,8 +61,8 @@ public class AssetDisplayPageEntryServiceImpl
 			_portal.getClassName(classNameId), classPK, ActionKeys.UPDATE);
 
 		return assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
-			userId, groupId, classNameId, classPK, layoutPageTemplateEntryId,
-			serviceContext);
+			getUserId(), groupId, classNameId, classPK,
+			layoutPageTemplateEntryId, serviceContext);
 	}
 
 	@Override
