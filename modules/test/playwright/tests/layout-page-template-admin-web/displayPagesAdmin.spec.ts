@@ -7,7 +7,7 @@ import {
 	ObjectDefinitionApi,
 	ObjectField,
 } from '@liferay/object-admin-rest-client-js';
-import {Page, expect, mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
@@ -26,9 +26,6 @@ import getRandomString from '../../utils/getRandomString';
 import {performLogout} from '../../utils/performLogin';
 import getBasicWebContentStructureId from '../../utils/structured-content/getBasicWebContentStructureId';
 import {blogsPagesTest} from '../blogs-web/fixtures/blogsPagesTest';
-import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
-import {JournalEditArticlePage} from '../journal-web/pages/JournalEditArticlePage';
-import {JournalPage} from '../journal-web/pages/JournalPage';
 
 const test = mergeTests(
 	blogsPagesTest,
@@ -39,7 +36,6 @@ const test = mergeTests(
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
-	journalPagesTest,
 	loginTest(),
 	pageEditorPagesTest,
 	pageManagementSiteTest
@@ -47,36 +43,40 @@ const test = mergeTests(
 
 async function addBasicJournalArticleWithSpecificDisplayPageTemplate(
 	apiHelpers: ApiHelpers,
-	displayPageTemplateName: string,
 	journalArticleTitle: string,
-	journalEditArticlePage: JournalEditArticlePage,
-	journalPage: JournalPage,
-	page: Page,
+	layoutPageTemplateEntryName: string,
 	site: Site
 ) {
+	const className = await apiHelpers.jsonWebServicesClassName.fetchClassName(
+		'com.liferay.journal.model.JournalArticle'
+	);
+
 	const contentStructureId = await getBasicWebContentStructureId(apiHelpers);
 
-	await apiHelpers.jsonWebServicesJournal.addWebContent({
+	const webContent = await apiHelpers.jsonWebServicesJournal.addWebContent({
 		ddmStructureId: contentStructureId,
 		groupId: site.id,
 		titleMap: {en_US: journalArticleTitle},
 	});
 
-	await journalPage.goto(site.friendlyUrlPath);
+	const layoutPageTemplateEntry =
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.fetchLayoutPageTemplateEntry(
+			{
+				groupId: site.id,
+				name: layoutPageTemplateEntryName,
+				type: 'display-page',
+			}
+		);
 
-	await journalEditArticlePage.editArticle(journalArticleTitle);
-
-	await page.getByLabel('Select a language').waitFor();
-
-	await page
-		.locator('.sheet-subtitle', {hasText: 'Basic Information'})
-		.waitFor();
-
-	await journalEditArticlePage.selectSpecificDisplayPage(
-		displayPageTemplateName
+	await apiHelpers.jsonWebServicesAssetDisplayPageEntry.addAssetDisplayPageEntry(
+		{
+			classNameId: className.classNameId,
+			classPK: String(webContent.resourcePrimKey),
+			groupId: site.id,
+			layoutPageTemplateEntryId:
+				layoutPageTemplateEntry.layoutPageTemplateEntryId,
+		}
 	);
-
-	await journalEditArticlePage.publishArticle(true);
 }
 
 async function addDefaultJournalArticleDisplayPageLayoutPageTemplateEntry(
@@ -878,14 +878,7 @@ test.describe('Usages', () => {
 		{
 			tag: '@LPS-121199',
 		},
-		async ({
-			apiHelpers,
-			displayPageTemplatesPage,
-			journalEditArticlePage,
-			journalPage,
-			page,
-			site,
-		}) => {
+		async ({apiHelpers, displayPageTemplatesPage, page, site}) => {
 
 			// Create a display page template for Basic Web Content
 
@@ -906,11 +899,8 @@ test.describe('Usages', () => {
 
 			await addBasicJournalArticleWithSpecificDisplayPageTemplate(
 				apiHelpers,
-				displayPageTemplateName,
 				journalArticleTitle,
-				journalEditArticlePage,
-				journalPage,
-				page,
+				displayPageTemplateName,
 				site
 			);
 
@@ -945,14 +935,7 @@ test.describe('Usages', () => {
 		{
 			tag: '@LPS-121199',
 		},
-		async ({
-			apiHelpers,
-			displayPageTemplatesPage,
-			journalEditArticlePage,
-			journalPage,
-			page,
-			site,
-		}) => {
+		async ({apiHelpers, displayPageTemplatesPage, page, site}) => {
 
 			// Create a display page template for Basic Web Content and mark as default
 
@@ -987,11 +970,8 @@ test.describe('Usages', () => {
 
 			await addBasicJournalArticleWithSpecificDisplayPageTemplate(
 				apiHelpers,
-				displayPageTemplateName,
 				journalArticleTitle,
-				journalEditArticlePage,
-				journalPage,
-				page,
+				displayPageTemplateName,
 				site
 			);
 
@@ -1026,14 +1006,7 @@ test.describe('Usages', () => {
 		{
 			tag: '@LPS-121199',
 		},
-		async ({
-			apiHelpers,
-			displayPageTemplatesPage,
-			journalEditArticlePage,
-			journalPage,
-			page,
-			site,
-		}) => {
+		async ({apiHelpers, displayPageTemplatesPage, page, site}) => {
 
 			// Create a display page template for Basic Web Content
 
@@ -1054,11 +1027,8 @@ test.describe('Usages', () => {
 
 				await addBasicJournalArticleWithSpecificDisplayPageTemplate(
 					apiHelpers,
-					displayPageTemplateName,
 					journalArticleTitle,
-					journalEditArticlePage,
-					journalPage,
-					page,
+					displayPageTemplateName,
 					site
 				);
 			}
