@@ -109,6 +109,8 @@ public class PortletLocalServiceTest {
 					MapUtil.singletonDictionary(
 						"javax.portlet.name", portletName)));
 
+			Thread.sleep(200);
+
 			List<CustomAttributesDisplay> customAttributesDisplays =
 				TransformUtil.transform(
 					_portletLocalService.getCustomAttributesDisplays(),
