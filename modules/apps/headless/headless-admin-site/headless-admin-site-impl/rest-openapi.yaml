@@ -1094,27 +1094,25 @@ components:
                     type: number
             type: object
         ItemExternalReference:
-            allOf:
-                - $ref: "#/components/schemas/CollectionReference"
-                - properties:
-                      className:
-                          type: string
-                      externalReferenceCode:
-                          type: string
-                      scope:
-                          properties:
-                              externalReferenceCode:
-                                  type: string
-                              type:
-                                  enum: [AssetLibrary, Site]
-                                  type: string
-                          required:
-                              - externalReferenceCode
-                              - type
-                          type: object
             # @review
             description:
                 A unique reference to an entity which remains constant across environments.
+            properties:
+                className:
+                    type: string
+                externalReferenceCode:
+                    type: string
+                scope:
+                    properties:
+                        externalReferenceCode:
+                            type: string
+                        type:
+                            enum: [AssetLibrary, Site]
+                            type: string
+                    required:
+                        - externalReferenceCode
+                        - type
+                    type: object
             required:
                 - externalReferenceCode
             type: object
