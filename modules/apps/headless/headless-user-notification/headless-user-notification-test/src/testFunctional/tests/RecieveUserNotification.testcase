@@ -23,7 +23,7 @@ definition {
 
 			UserAccountAPI.createUserRoleByUserAccountId(
 				roleName = "Administrator",
-				streetNumber = 1,
+				streetNumber = 0,
 				userAccountId = ${staticUserAccountId});
 
 			Site.openSiteMembershipsAdmin(siteURLKey = "site-name");
