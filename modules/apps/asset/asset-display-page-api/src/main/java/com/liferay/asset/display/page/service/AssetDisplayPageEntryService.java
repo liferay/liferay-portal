@@ -47,13 +47,13 @@ public interface AssetDisplayPageEntryService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.asset.display.page.service.impl.AssetDisplayPageEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the asset display page entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link AssetDisplayPageEntryServiceUtil} if injection and service tracking are not available.
 	 */
 	public AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId, int type,
 			ServiceContext serviceContext)
 		throws Exception;
 
 	public AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId, ServiceContext serviceContext)
 		throws Exception;
 

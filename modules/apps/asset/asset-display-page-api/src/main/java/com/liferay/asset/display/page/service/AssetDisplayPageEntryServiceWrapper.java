@@ -31,25 +31,25 @@ public class AssetDisplayPageEntryServiceWrapper
 
 	@Override
 	public AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 
 		return _assetDisplayPageEntryService.addAssetDisplayPageEntry(
-			userId, groupId, classNameId, classPK, layoutPageTemplateEntryId,
-			type, serviceContext);
+			groupId, classNameId, classPK, layoutPageTemplateEntryId, type,
+			serviceContext);
 	}
 
 	@Override
 	public AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 
 		return _assetDisplayPageEntryService.addAssetDisplayPageEntry(
-			userId, groupId, classNameId, classPK, layoutPageTemplateEntryId,
+			groupId, classNameId, classPK, layoutPageTemplateEntryId,
 			serviceContext);
 	}
 

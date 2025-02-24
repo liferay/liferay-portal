@@ -43,9 +43,8 @@ public class AssetDisplayPageEntryServiceHttp {
 
 	public static com.liferay.asset.display.page.model.AssetDisplayPageEntry
 			addAssetDisplayPageEntry(
-				HttpPrincipal httpPrincipal, long userId, long groupId,
-				long classNameId, long classPK, long layoutPageTemplateEntryId,
-				int type,
+				HttpPrincipal httpPrincipal, long groupId, long classNameId,
+				long classPK, long layoutPageTemplateEntryId, int type,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 
@@ -56,7 +55,7 @@ public class AssetDisplayPageEntryServiceHttp {
 				_addAssetDisplayPageEntryParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, userId, groupId, classNameId, classPK,
+				methodKey, groupId, classNameId, classPK,
 				layoutPageTemplateEntryId, type, serviceContext);
 
 			Object returnObj = null;
@@ -87,8 +86,8 @@ public class AssetDisplayPageEntryServiceHttp {
 
 	public static com.liferay.asset.display.page.model.AssetDisplayPageEntry
 			addAssetDisplayPageEntry(
-				HttpPrincipal httpPrincipal, long userId, long groupId,
-				long classNameId, long classPK, long layoutPageTemplateEntryId,
+				HttpPrincipal httpPrincipal, long groupId, long classNameId,
+				long classPK, long layoutPageTemplateEntryId,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 
@@ -99,7 +98,7 @@ public class AssetDisplayPageEntryServiceHttp {
 				_addAssetDisplayPageEntryParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, userId, groupId, classNameId, classPK,
+				methodKey, groupId, classNameId, classPK,
 				layoutPageTemplateEntryId, serviceContext);
 
 			Object returnObj = null;
@@ -442,12 +441,12 @@ public class AssetDisplayPageEntryServiceHttp {
 
 	private static final Class<?>[] _addAssetDisplayPageEntryParameterTypes0 =
 		new Class[] {
-			long.class, long.class, long.class, long.class, long.class,
-			int.class, com.liferay.portal.kernel.service.ServiceContext.class
+			long.class, long.class, long.class, long.class, int.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _addAssetDisplayPageEntryParameterTypes1 =
 		new Class[] {
-			long.class, long.class, long.class, long.class, long.class,
+			long.class, long.class, long.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]

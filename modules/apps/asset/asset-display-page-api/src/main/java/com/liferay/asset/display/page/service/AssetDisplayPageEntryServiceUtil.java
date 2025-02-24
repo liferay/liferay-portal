@@ -31,24 +31,24 @@ public class AssetDisplayPageEntryServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.asset.display.page.service.impl.AssetDisplayPageEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 
 		return getService().addAssetDisplayPageEntry(
-			userId, groupId, classNameId, classPK, layoutPageTemplateEntryId,
-			type, serviceContext);
+			groupId, classNameId, classPK, layoutPageTemplateEntryId, type,
+			serviceContext);
 	}
 
 	public static AssetDisplayPageEntry addAssetDisplayPageEntry(
-			long userId, long groupId, long classNameId, long classPK,
+			long groupId, long classNameId, long classPK,
 			long layoutPageTemplateEntryId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws Exception {
 
 		return getService().addAssetDisplayPageEntry(
-			userId, groupId, classNameId, classPK, layoutPageTemplateEntryId,
+			groupId, classNameId, classPK, layoutPageTemplateEntryId,
 			serviceContext);
 	}
 
