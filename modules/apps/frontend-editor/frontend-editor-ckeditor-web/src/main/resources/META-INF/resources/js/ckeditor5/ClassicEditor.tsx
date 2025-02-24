@@ -9,8 +9,10 @@ import {
 	BlockQuote,
 	Bold,
 	ClassicEditor as BaseClassicEditor,
+	Editor,
 	EditorConfig,
 	Essentials,
+	EventInfo,
 	Font,
 	GeneralHtmlSupport,
 	Heading,
@@ -35,7 +37,17 @@ import React from 'react';
 
 import '../../css/ckeditor5/editor.scss';
 
-const ClassicEditor = ({config}: {config?: EditorConfig}) => {
+const ClassicEditor = ({
+	className,
+	config,
+	data,
+	onChange,
+}: {
+	className?: string;
+	config?: EditorConfig;
+	data?: string;
+	onChange?: (event: EventInfo, editor: Editor) => void;
+}) => {
 	const defaultConfig: EditorConfig = {
 		plugins: [
 			Alignment,
@@ -75,22 +87,26 @@ const ClassicEditor = ({config}: {config?: EditorConfig}) => {
 	}
 
 	return (
-		<CKEditor
-			config={{
-				...defaultConfig,
-				...config,
-			}}
-			editor={BaseClassicEditor}
-			onReady={(editor: BaseClassicEditor) => {
-				editor.ui.view.toolbar.items.map((item: any) => {
-					if (item.buttonView) {
-						item.buttonView.tooltipPosition = 'n';
-					}
+		<div className={`lfr-ck ${className ? className : ''}`}>
+			<CKEditor
+				config={{
+					...defaultConfig,
+					...config,
+				}}
+				data={data}
+				editor={BaseClassicEditor}
+				onChange={onChange}
+				onReady={(editor: BaseClassicEditor) => {
+					editor.ui.view.toolbar.items.map((item: any) => {
+						if (item.buttonView) {
+							item.buttonView.tooltipPosition = 'n';
+						}
 
-					item.tooltipPosition = 'n';
-				});
-			}}
-		/>
+						item.tooltipPosition = 'n';
+					});
+				}}
+			/>
+		</div>
 	);
 };
 
