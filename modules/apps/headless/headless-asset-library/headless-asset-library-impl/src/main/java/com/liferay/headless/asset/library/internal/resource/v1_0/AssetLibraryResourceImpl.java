@@ -115,19 +115,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(siteId);
 
-		Group group = depotEntry.getGroup();
-
-		Map<String, Boolean> depotAppCustomizationMap = new HashMap<>();
-
-		for (DepotAppCustomization depotAppCustomization :
-				_depotAppCustomizationLocalService.getDepotAppCustomizations(
-					depotEntry.getDepotEntryId())) {
-
-			depotAppCustomizationMap.put(
-				depotAppCustomization.getPortletId(),
-				depotAppCustomization.isEnabled());
-		}
-
 		String name = assetLibrary.getName();
 
 		if (name == null) {
@@ -152,6 +139,20 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		if (descriptionMap == null) {
 			descriptionMap = LocalizedMapUtil.getI18nMap(
 				group.getDescriptionMap());
+		}
+
+
+		Group group = depotEntry.getGroup();
+
+		Map<String, Boolean> depotAppCustomizationMap = new HashMap<>();
+
+		for (DepotAppCustomization depotAppCustomization :
+				_depotAppCustomizationLocalService.getDepotAppCustomizations(
+					depotEntry.getDepotEntryId())) {
+
+			depotAppCustomizationMap.put(
+				depotAppCustomization.getPortletId(),
+				depotAppCustomization.isEnabled());
 		}
 
 		return _toAssetLibrary(
