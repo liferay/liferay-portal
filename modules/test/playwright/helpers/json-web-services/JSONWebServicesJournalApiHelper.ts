@@ -25,6 +25,7 @@ type TWebContent = {
 	externalReferenceCode?: string;
 	folderId?: number | string;
 	groupId: number | string;
+	resourcePrimKey?: number | string;
 	serviceContext?: any;
 	titleMap?: any;
 };
