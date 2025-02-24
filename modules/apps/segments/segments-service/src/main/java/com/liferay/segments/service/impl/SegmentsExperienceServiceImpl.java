@@ -150,11 +150,13 @@ public class SegmentsExperienceServiceImpl
 		throws PortalException {
 
 		SegmentsExperience segmentsExperience =
-			segmentsExperienceLocalService.getSegmentsExperience(
+			segmentsExperienceLocalService.fetchSegmentsExperience(
 				groupId, segmentsExperienceKey, plid);
 
-		_segmentsExperienceResourcePermission.check(
-			getPermissionChecker(), segmentsExperience, ActionKeys.VIEW);
+		if (segmentsExperience != null) {
+			_segmentsExperienceResourcePermission.check(
+				getPermissionChecker(), segmentsExperience, ActionKeys.VIEW);
+		}
 
 		return segmentsExperience;
 	}
