@@ -4,6 +4,7 @@
  */
 
 import {liferayConfig} from '../../liferay.config';
+import {ASSET_DISPLAY_PAGE_ENTRY_TYPES} from '../../utils/assetDisplayPageEntryTypes';
 import {ApiHelpers} from '../ApiHelpers';
 
 export class JSONWebServicesAssetDisplayPageEntryApiHelper {
@@ -20,11 +21,13 @@ export class JSONWebServicesAssetDisplayPageEntryApiHelper {
 		classPK,
 		groupId,
 		layoutPageTemplateEntryId,
+		type = 'default',
 	}: {
 		classNameId: string;
 		classPK: string;
 		groupId: string;
 		layoutPageTemplateEntryId: string;
+		type?: AssetDisplayPageEntryType;
 	}): Promise<AssetDisplayPageEntry> {
 		const urlSearchParams = new URLSearchParams();
 
@@ -35,6 +38,7 @@ export class JSONWebServicesAssetDisplayPageEntryApiHelper {
 			'layoutPageTemplateEntryId',
 			layoutPageTemplateEntryId
 		);
+		urlSearchParams.append('type', ASSET_DISPLAY_PAGE_ENTRY_TYPES[type]);
 		urlSearchParams.append('serviceContext', JSON.stringify({}));
 
 		return await this.apiHelpers.post(
