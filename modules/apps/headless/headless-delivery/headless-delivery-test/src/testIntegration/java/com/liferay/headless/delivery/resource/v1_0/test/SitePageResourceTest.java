@@ -216,15 +216,15 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
-		String friendlyURL = layout.getFriendlyURL();
-
 		Layout draftLayout = layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		String friendlyURL = layout.getFriendlyURL();
 
 		SegmentsExperience segmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
 				testGroup.getGroupId(), draftLayout.getPlid());
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 
 		Assert.assertNotNull(
 			sitePageResource.getSiteSitePageExperienceExperienceKeyRenderedPage(
