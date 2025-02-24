@@ -94,6 +94,7 @@
 			padding: 0.75rem;
 			text-align: center;
 		}
+
 		.banner-title {
 			font-size: 1.25rem;
 			font-weight: 600;
@@ -288,6 +289,7 @@
 	.lesson-link .module-title a {
 		color: var(--color-neutral-10, #282934) !important;
 	}
+
 	.lesson-link.active .module-title a {
 		color: var(--color-action-primary-hover, #0053F0) !important;
 	}
@@ -295,6 +297,7 @@
 
 .side-nav .panel .panel-body .lesson-link:hover {
 	background-color: var(--color-action-primary-hover-10, #EDF3FE);
+
 	.module-title {
 		a {
 			color: var(--color-brand-primary-darken-1, #0053F0) !important;
@@ -304,6 +307,7 @@
 
 .side-nav .panel .panel-header:hover {
 	background-color: var(--color-action-primary-hover-10, #EDF3FE);
+
 	.module-title {
 		span {
 			color: var(--color-action-primary-hover, #0053F0) !important;
@@ -312,8 +316,10 @@
 
 	.sticker-circle {
 		background-color: var(--color-brand-primary-lighten-4, #BBD2FF);
+
 		.sticker-overlay {
 			color: var(--color-brand-primary-darken-3 ,#003EB3);
+
 			.lexicon-icon-check {
 				fill: var(--color-neutral-0, #ffffff) !important;
 			}
@@ -361,10 +367,8 @@
 .side-nav .panel-header.panel-header-link.active .sticker {
 	align-items: center;
 	background: var(--color-brand-primary-lighten-4, #BBD2FF);
-
 	color: #003EB3;
 	display: flex;
-
 	justify-content: center;
 	text-align: center;
 }
@@ -406,33 +410,7 @@
 	}
 	
 	.course-top-banner {
-		 height: 13rem;
-		
-		.container-view {
-			display: flex;
-			height: 100%;
-			padding: 1.5rem 0;
-		}
-		
-		&::before {
-			right: 0;
-			top: 8rem;
-		}
-
-		.justify-content-between {
-			flex-direction: column;
-
-			.course-content-container {
-				align-self: start;
-				flex-direction: column;
-				gap: 0.3rem;
-			}
-		}
-
-		h3 {
-			font-size: 1.3rem;
-			margin-top: 1rem;
-		}
+		height: 13rem;
 
 		.banner-tag {
 			align-items: center;
@@ -445,7 +423,33 @@
 				height: 12px;
 				width: 12px;
 			}
-		}	
+		}
+
+		.container-view {
+			display: flex;
+			height: 100%;
+			padding: 1.5rem 0;
+		}
+
+		.justify-content-between {
+			flex-direction: column;
+
+			.course-content-container {
+				align-self: start;
+				flex-direction: column;
+				gap: 0.3rem;
+			}
+		}
+
+		&::before {
+			right: 0;
+			top: 8rem;
+		}
+
+		h3 {
+			font-size: 1.3rem;
+			margin-top: 1rem;
+		}
 	}
 
 	.course-top-intro-banner {
@@ -475,7 +479,7 @@
 @media (max-width: 1024px) {
 	.course-content-container {
 		& .banner-tag {
-		
+
 			h5 {
 				font-size: 1rem;
 			}
@@ -494,7 +498,7 @@
 		& .banner-tag {
 			font-size: 0.6rem;
 			margin-bottom: 0;
-			
+
 			p::before {
 				height: 0.75rem;
 				width: 0.75rem;

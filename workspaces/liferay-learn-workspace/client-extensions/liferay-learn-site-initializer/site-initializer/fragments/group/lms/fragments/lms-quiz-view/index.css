@@ -339,17 +339,17 @@
 		#0b5fff 49%,
 		#0b5fff 74.5%,
 		#0b5fff 100%
-	),
-	radial-gradient(
-		26.56% 43.82% at 0% 0%,
-		#00256b 20.83%,
-		rgba(0, 37, 107, 0) 100%
-	),
-	radial-gradient(
-		14.55% 34.6% at 100% 34.6%,
-		rgba(55, 124, 255, 0.68) 0%,
-		rgba(55, 124, 255, 0) 100%
-	);
+		),
+		radial-gradient(
+			26.56% 43.82% at 0% 0%,
+			#00256b 20.83%,
+			rgba(0, 37, 107, 0) 100%
+		),
+		radial-gradient(
+			14.55% 34.6% at 100% 34.6%,
+			rgba(55, 124, 255, 0.68) 0%,
+			rgba(55, 124, 255, 0) 100%
+		);
 	border-radius: 0.75rem;
 	color: var(--color-neutral-0, #fff);
 	display: flex;
@@ -361,13 +361,13 @@
 		align-items: center;
 		display: flex;
 		padding: 0 1.25rem;
-		
+
 		svg {
 			height: 1.5rem;
 			width: 1.5rem;
 		}
 	}
-	
+
 	.banner-options {
 		.banner-next-container {
 			background-color: #28293426;
@@ -377,11 +377,11 @@
 			padding: 0.75rem;
 			text-align: center;
 		}
-				
+
 		.banner-title {
 			font-size: 20px;
 			font-weight: 600;
-		}				
+		}
 	}
 }
 
@@ -410,10 +410,6 @@
 
 .custom-control-label {
 	font-size: 1rem;
-}
-
-div > .course-nav-bottom__banner {
-	border: 2px solid var(--color-neutral-0, #FFFFFF) !important;
 }
 
 .home-quiz {
@@ -652,6 +648,10 @@ div > .course-nav-bottom__banner {
 	display: inline-block;
 	height: 1rem;
 	width: 1rem;
+}
+
+div > .course-nav-bottom__banner {
+	border: 2px solid var(--color-neutral-0, #FFFFFF) !important;
 }
 
 li {

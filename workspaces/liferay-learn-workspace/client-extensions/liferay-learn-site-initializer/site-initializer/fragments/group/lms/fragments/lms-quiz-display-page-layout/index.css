@@ -69,19 +69,6 @@
 	color: var(--color-action-primary-hover, #0053F0);
 }
 
-.show-quick-actions-on-hover .active {
-	background-color: transparent;
-	border-left: 4.5px solid !important;
-	border-left-color: var(--color-action-primary-default, #0b5fff) !important;
-	border-radius: 0px;
-}
-
-.sticker-overlay {
-	.lexicon-icon-check {
-		color: var(--white) !important;
-	}
-}
-
 .panel .panel-body .sticker .lexicon-icon-check {
 	fill: var(--color-action-primary-hover, #0053F0);
 }
@@ -136,6 +123,13 @@
 
 .quiz-content {
 	gap: 2.5rem;
+}
+
+.show-quick-actions-on-hover .active {
+	background-color: transparent;
+	border-left: 4.5px solid !important;
+	border-left-color: var(--color-action-primary-default, #0b5fff) !important;
+	border-radius: 0px;
 }
 
 .side-nav .d-flex .sticker-primary {
@@ -276,6 +270,12 @@
 	white-space: nowrap;
 }
 
+.sticker-overlay {
+	.lexicon-icon-check {
+		color: var(--white) !important;
+	}
+}
+
 .text-quiz-result {
 	p {
 		max-width: 30vw;
@@ -286,7 +286,7 @@
 	.banner-tags {
 		margin-top: 0.5rem;
 	}
-	
+
 	.button-collapse {
 		align-items: center;
 		background-color: #eaecee;
@@ -304,7 +304,7 @@
 			width: 16px;
 		}
 	}
-	
+
 	.collapse-bar {
 		align-items: center;
 		display: flex;
@@ -316,23 +316,23 @@
 			margin-bottom: 0;
 		}
 	}
-	
+
 	.container {
 		.lesson-layout-container > div:nth-child(1) {
 			margin-right: auto !important;
 			padding: inherit !important;
 		}
 	}
-	
+
 	.container-badges {
 		margin-top: 2rem;
 	}
-	
+
 	.container-quiz-result {
 		display: flex;
 		flex-direction: column;
 	}
-	
+
 	.content {
 		min-width: 100%
 	}
@@ -345,12 +345,12 @@
 			height: 100%;
 			padding: 1.5rem 0;
 		}
-		
+
 		&::before {
 			right: 0;
 			top: 8.25rem;
 		}
-		
+
 		.justify-content-between {
 			flex-direction: column;
 
@@ -379,7 +379,7 @@
 			margin-top: 1rem;
 		}
 	}
-	
+
 	.icon-arrow.rotate {
 		transform: rotate(90deg);
 		transition: transform .3s ease;
@@ -389,31 +389,31 @@
 		align-self: center;
 		width: 95%;
 	}
-	
+
 	.side-nav {
 		margin-bottom: 2rem;
 		width: 100% !important;
 	}
-	
+
 	.text-home-quiz {
 		max-width: 100%;
 		padding: 2.5rem 0;
 	}
-	
+
 	.text-quiz-result {
 		width: 100%;
-		
+
 		p {
 			margin-top: 2rem;
 			max-width: 100%;
 		}
 	}
 }
-  
+
 @media (max-width: 1024px) {
 	.course-content-container {
 		.banner-tag {
-		
+
 			h5 {
 				font-size: 1rem;
 			}
@@ -433,7 +433,7 @@
 		.banner-tag {
 			font-size: 0.6rem;
 			margin-bottom: 0;
-			
+
 			p::before {
 				height: 12px;
 				width: 12px;

@@ -250,7 +250,8 @@ pre[class*='language-'] {
 	}
 
 	.education-home__section-header {
-		background: linear-gradient(
+		background:
+			linear-gradient(
 				91.07deg,
 				#001742 0%,
 				#0011a8 24.6%,
