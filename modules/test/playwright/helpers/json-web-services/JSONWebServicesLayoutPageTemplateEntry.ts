@@ -110,6 +110,32 @@ export class JSONWebServicesLayoutPageTemplateEntryApiHelper {
 		);
 	}
 
+	async fetchLayoutPageTemplateEntry({
+		groupId,
+		name,
+		type = 'basic',
+	}: {
+		groupId: string;
+		name: string;
+		type?: LayoutPageTemplateEntryType;
+	}): Promise<LayoutPageTemplateEntry> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('groupId', groupId);
+		urlSearchParams.append('layoutPageTemplateCollectionId', '0');
+		urlSearchParams.append('name', name);
+		urlSearchParams.append('type', LAYOUT_PAGE_TEMPLATE_ENTRY_TYPES[type]);
+
+		return await this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/fetch-layout-page-template-entry`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
 	async markAsDefaultDisplayPageLayoutPageTemplateEntry({
 		layoutPageTemplateEntryId,
 	}: {
