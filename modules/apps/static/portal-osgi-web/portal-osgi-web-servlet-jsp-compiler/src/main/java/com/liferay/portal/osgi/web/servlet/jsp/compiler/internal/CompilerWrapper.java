@@ -7,6 +7,7 @@ package com.liferay.portal.osgi.web.servlet.jsp.compiler.internal;
 
 import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
 import com.liferay.petra.concurrent.ConcurrentReferenceValueHashMap;
+import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
@@ -16,18 +17,21 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.osgi.web.servlet.jsp.compiler.internal.util.ClassPathUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.lang.reflect.Field;
 
 import java.net.URL;
+
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -41,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 
 import javax.servlet.ServletContext;
 
@@ -201,6 +206,30 @@ public class CompilerWrapper extends Compiler {
 		if (!options.isSmapSuppressed()) {
 			SmapUtil.installSmap(smaps);
 		}
+	}
+
+	@Override
+	protected Map<String, SmapStratum> generateJava() throws Exception {
+		Map<String, SmapStratum> smaps = super.generateJava();
+
+		if (_textReplacerBiFunction == null) {
+			return smaps;
+		}
+
+		File javaFile = new File(ctxt.getServletJavaFileName());
+
+		String content = StreamUtil.toString(new FileInputStream(javaFile));
+
+		String newContent = _textReplacerBiFunction.apply(
+			"ModuleJspCJava#" + javaFile, content);
+
+		if (!newContent.equals(content)) {
+			Files.write(
+				javaFile.toPath(), newContent.getBytes(StringPool.UTF8),
+				StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+		}
+
+		return smaps;
 	}
 
 	private static Set<String> _collectPackageNames(BundleWiring bundleWiring) {
@@ -708,8 +737,32 @@ public class CompilerWrapper extends Compiler {
 		_jspBundleWiringPackageNames = new HashMap<>();
 	private static final Map<String, String> _servletApiPublicIdsMap;
 	private static final Map<String, String> _servletApiSystemIdsMap;
+	private static final BiFunction<String, String, String>
+		_textReplacerBiFunction;
 
 	static {
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+		Object instance = null;
+
+		try {
+			Class<?> clazz = classLoader.loadClass(
+				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
+					"TextReplacerBiFunction");
+
+			instance = clazz.newInstance();
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			if (!(reflectiveOperationException instanceof
+					ClassNotFoundException)) {
+
+				throw new ExceptionInInitializerError(
+					reflectiveOperationException);
+			}
+		}
+
+		_textReplacerBiFunction = (BiFunction<String, String, String>)instance;
+
 		Bundle jspBundle = FrameworkUtil.getBundle(CompilerWrapper.class);
 
 		BundleWiring jspBundleWiring = jspBundle.adapt(BundleWiring.class);
