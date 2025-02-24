@@ -75,6 +75,7 @@ async function addBasicJournalArticleWithSpecificDisplayPageTemplate(
 			groupId: site.id,
 			layoutPageTemplateEntryId:
 				layoutPageTemplateEntry.layoutPageTemplateEntryId,
+			type: 'specific',
 		}
 	);
 }
