@@ -34,7 +34,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	public void testDeleteAssetLibrary() throws Exception {
 		super.testDeleteAssetLibrary();
 
-		// Nonexistent assetLibrary ID
+		// Nonexistent asset library ID
 
 		long assetLibraryId = RandomTestUtil.randomLong();
 
