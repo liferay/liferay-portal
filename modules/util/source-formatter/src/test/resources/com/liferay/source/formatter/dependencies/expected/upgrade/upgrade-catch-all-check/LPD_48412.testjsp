@@ -9,7 +9,7 @@
 page import="com.liferay.commerce.constants.CommercePaymentEntryConstants" %>
 
 <%
-	CommerceOrderConstants.COMMERCE_ORDER;
-	CommercePaymentEntryConstants.getPaymentLabelStyle(123);
-	CommercePaymentEntryConstants.getPaymentStatusLabel(123);
+CommerceOrderConstants.COMMERCE_ORDER;
+CommercePaymentEntryConstants.getPaymentLabelStyle(123);
+CommercePaymentEntryConstants.getPaymentStatusLabel(123);
 %>

@@ -11,6 +11,7 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPD_48396 {
 
 	public void method(CommerceOrderItem commerceOrderItem) {
-            commerceOrderItem.getCommerceInventoryBookedQuantityId();
-    }
+		commerceOrderItem.getCommerceInventoryBookedQuantityId();
+	}
+
 }
