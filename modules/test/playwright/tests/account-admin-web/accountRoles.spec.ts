@@ -11,7 +11,7 @@ import {loginTest} from '../../fixtures/loginTest';
 import {rolesPagesTest} from '../../fixtures/rolesPagesTest';
 import {usersAndOrganizationsPagesTest} from '../../fixtures/usersAndOrganizationsPagesTest';
 import {DataApiHelpers} from '../../helpers/ApiHelpers';
-import {TPermission, TRole} from '../../helpers/HeadlessAdminUserApiHelper';
+import {TRole} from '../../helpers/HeadlessAdminUserApiHelper';
 import getRandomString from '../../utils/getRandomString';
 import {
 	performLoginViaApi,
@@ -19,6 +19,7 @@ import {
 	userData,
 } from '../../utils/performLogin';
 import {waitForAlert} from '../../utils/waitForAlert';
+import {addAccountRole, initAccountManager} from './utils/roles';
 
 export const test = mergeTests(
 	accountsPagesTest,
@@ -27,69 +28,6 @@ export const test = mergeTests(
 	rolesPagesTest,
 	usersAndOrganizationsPagesTest
 );
-
-const addAccountRole = async (
-	apiHelpers: DataApiHelpers,
-	accountId: number = 0,
-	rolePermissions: Array<TPermission>
-) => {
-	const role = await apiHelpers.headlessAdminUser.postRole({
-		name: getRandomString(),
-		rolePermissions,
-		roleType: 'account',
-	});
-
-	const accountRole = await (
-		await apiHelpers.headlessAdminUser.getAccountRoles(accountId)
-	).items.find((item: TRole) => item.name === role.name);
-
-	return {accountRole, role};
-};
-
-const initAccountManager = async (apiHelpers: DataApiHelpers) => {
-	const organization = await apiHelpers.headlessAdminUser.postOrganization();
-
-	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
-	await apiHelpers.headlessAdminUser.assignAccountToOrganization(
-		account.id,
-		organization.id
-	);
-
-	const userAccountManager =
-		await apiHelpers.headlessAdminUser.postUserAccount();
-
-	userData[userAccountManager.alternateName] = {
-		name: userAccountManager.givenName,
-		password: 'test',
-		surname: userAccountManager.familyName,
-	};
-
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		[userAccountManager.emailAddress]
-	);
-
-	await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
-		organization.id,
-		userAccountManager.emailAddress
-	);
-
-	const role = await apiHelpers.headlessAdminUser.getRoleByName(
-		'Account Manager',
-		'rolePermissions'
-	);
-
-	await apiHelpers.headlessAdminUser.assignUserToOrganizationRole(
-		String(role.id),
-		userAccountManager.id,
-		organization.id
-	);
-
-	return {account, organization, role, userAccountManager};
-};
 
 const setupPermissionsTest = async (
 	apiHelpers: DataApiHelpers,

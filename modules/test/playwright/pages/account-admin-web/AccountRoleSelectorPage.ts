@@ -23,9 +23,15 @@ export class AccountRoleSelectorPage {
 		this.page = page;
 		this.rolesTable = new DataTablePage(
 			this.frame,
-			this.frame.locator(
-				'#p_p_id_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_'
-			)
+			this.frame
+				.locator(
+					'#p_p_id_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_'
+				)
+				.or(
+					this.frame.locator(
+						'#p_p_id_com_liferay_account_admin_web_internal_portlet_AccountEntriesManagementPortlet_'
+					)
+				)
 		);
 	}
 

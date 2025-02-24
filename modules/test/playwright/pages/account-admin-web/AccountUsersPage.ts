@@ -60,6 +60,11 @@ export class AccountUsersPage {
 				)
 				.or(
 					page.locator(
+						'#_com_liferay_account_admin_web_internal_portlet_AccountEntriesManagementPortlet_accountUsersSearchContainer'
+					)
+				)
+				.or(
+					page.locator(
 						'#p_p_id_com_liferay_account_admin_web_internal_portlet_AccountUsersAdminPortlet_'
 					)
 				)

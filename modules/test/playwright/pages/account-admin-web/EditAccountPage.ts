@@ -71,7 +71,9 @@ export class EditAccountPage {
 			name: 'Addresses',
 		});
 		this.assignUserMessage = page.getByText('Assign a user to this person');
-		this.backButton = page.getByRole('link', {exact: true, name: 'Back'});
+		this.backButton = page
+			.getByRole('link', {exact: true, name: 'Back'})
+			.or(page.getByRole('link', {name: 'Return to Full Page'}));
 		this.categoryClearAllButton = page.getByLabel('Clear All');
 		this.categoryLabel = (name) =>
 			page.getByLabel('Public Categories').getByText(name);
