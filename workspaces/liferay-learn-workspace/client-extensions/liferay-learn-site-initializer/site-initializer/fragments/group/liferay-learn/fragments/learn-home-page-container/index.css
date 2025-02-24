@@ -89,8 +89,6 @@
 
 		.home-card-icon {
 			align-items: center;
-			display: flex;
-			justify-content: center;
 			background:
 				linear-gradient(
 					91.07deg,
@@ -110,6 +108,8 @@
 					rgba(55, 124, 255, 0.68) 0%,
 					rgba(55, 124, 255, 0) 100%
 				);
+			display: flex;
+			justify-content: center;
 		}
 
 		@media (max-width: 1279px) {
