@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 import javax.annotation.Generated;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -39,24 +38,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Generated("")
 @GraphQLName(
-	description = "A unique reference to an entity which remains constant across environments.",
-	value = "ItemExternalReference"
+	description = "A unique reference to a collection which remains constant across environments.",
+	value = "CollectionItemExternalReference"
 )
 @JsonFilter("Liferay.Vulcan")
-@Schema(
-	description = "A unique reference to an entity which remains constant across environments.",
-	requiredProperties = {"externalReferenceCode"}
-)
-@XmlRootElement(name = "ItemExternalReference")
-public class ItemExternalReference implements Serializable {
+@XmlRootElement(name = "CollectionItemExternalReference")
+public class CollectionItemExternalReference
+	extends CollectionReference implements Serializable {
 
-	public static ItemExternalReference toDTO(String json) {
-		return ObjectMapperUtil.readValue(ItemExternalReference.class, json);
+	public static CollectionItemExternalReference toDTO(String json) {
+		return ObjectMapperUtil.readValue(
+			CollectionItemExternalReference.class, json);
 	}
 
-	public static ItemExternalReference unsafeToDTO(String json) {
+	public static CollectionItemExternalReference unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(
-			ItemExternalReference.class, json);
+			CollectionItemExternalReference.class, json);
 	}
 
 	@Schema
@@ -136,7 +133,6 @@ public class ItemExternalReference implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotEmpty
 	protected String externalReferenceCode;
 
 	@JsonIgnore
@@ -188,14 +184,15 @@ public class ItemExternalReference implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ItemExternalReference)) {
+		if (!(object instanceof CollectionItemExternalReference)) {
 			return false;
 		}
 
-		ItemExternalReference itemExternalReference =
-			(ItemExternalReference)object;
+		CollectionItemExternalReference collectionItemExternalReference =
+			(CollectionItemExternalReference)object;
 
-		return Objects.equals(toString(), itemExternalReference.toString());
+		return Objects.equals(
+			toString(), collectionItemExternalReference.toString());
 	}
 
 	@Override
@@ -254,6 +251,22 @@ public class ItemExternalReference implements Serializable {
 			sb.append(String.valueOf(scope));
 		}
 
+		CollectionType collectionType = getCollectionType();
+
+		if (collectionType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"collectionType\": ");
+
+			sb.append("\"");
+
+			sb.append(collectionType);
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -261,7 +274,7 @@ public class ItemExternalReference implements Serializable {
 
 	@Schema(
 		accessMode = Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference",
+		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.CollectionItemExternalReference",
 		name = "x-class-name"
 	)
 	public String xClassName;

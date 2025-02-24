@@ -1,12 +1,12 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.admin.site.client.dto.v1_0;
 
 import com.liferay.headless.admin.site.client.function.UnsafeSupplier;
-import com.liferay.headless.admin.site.client.serdes.v1_0.ItemExternalReferenceSerDes;
+import com.liferay.headless.admin.site.client.serdes.v1_0.CollectionItemExternalReferenceSerDes;
 
 import java.io.Serializable;
 
@@ -19,10 +19,11 @@ import javax.annotation.Generated;
  * @generated
  */
 @Generated("")
-public class ItemExternalReference implements Cloneable, Serializable {
+public class CollectionItemExternalReference
+	extends CollectionReference implements Cloneable, Serializable {
 
-	public static ItemExternalReference toDTO(String json) {
-		return ItemExternalReferenceSerDes.toDTO(json);
+	public static CollectionItemExternalReference toDTO(String json) {
+		return CollectionItemExternalReferenceSerDes.toDTO(json);
 	}
 
 	public String getClassName() {
@@ -87,8 +88,10 @@ public class ItemExternalReference implements Cloneable, Serializable {
 	protected Scope scope;
 
 	@Override
-	public ItemExternalReference clone() throws CloneNotSupportedException {
-		return (ItemExternalReference)super.clone();
+	public CollectionItemExternalReference clone()
+		throws CloneNotSupportedException {
+
+		return (CollectionItemExternalReference)super.clone();
 	}
 
 	@Override
@@ -97,14 +100,15 @@ public class ItemExternalReference implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ItemExternalReference)) {
+		if (!(object instanceof CollectionItemExternalReference)) {
 			return false;
 		}
 
-		ItemExternalReference itemExternalReference =
-			(ItemExternalReference)object;
+		CollectionItemExternalReference collectionItemExternalReference =
+			(CollectionItemExternalReference)object;
 
-		return Objects.equals(toString(), itemExternalReference.toString());
+		return Objects.equals(
+			toString(), collectionItemExternalReference.toString());
 	}
 
 	@Override
@@ -115,7 +119,7 @@ public class ItemExternalReference implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return ItemExternalReferenceSerDes.toJSON(this);
+		return CollectionItemExternalReferenceSerDes.toJSON(this);
 	}
 
 }

@@ -50,7 +50,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonSubTypes(
 	{
 		@JsonSubTypes.Type(
-			name = "Collection", value = ItemExternalReference.class
+			name = "Collection", value = CollectionItemExternalReference.class
 		),
 		@JsonSubTypes.Type(
 			name = "CollectionProvider", value = ClassNameReference.class

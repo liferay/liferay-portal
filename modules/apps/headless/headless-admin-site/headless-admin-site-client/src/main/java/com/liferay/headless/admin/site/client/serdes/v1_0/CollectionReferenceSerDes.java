@@ -6,8 +6,8 @@
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
 import com.liferay.headless.admin.site.client.dto.v1_0.ClassNameReference;
+import com.liferay.headless.admin.site.client.dto.v1_0.CollectionItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionReference;
-import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import java.util.Iterator;
@@ -51,8 +51,8 @@ public class CollectionReferenceSerDes {
 			String collectionTypeString = collectionType.toString();
 
 			if (collectionTypeString.equals("Collection")) {
-				return ItemExternalReferenceSerDes.toJSON(
-					(ItemExternalReference)collectionReference);
+				return CollectionItemExternalReferenceSerDes.toJSON(
+					(CollectionItemExternalReference)collectionReference);
 			}
 
 			if (collectionTypeString.equals("CollectionProvider")) {
@@ -129,7 +129,7 @@ public class CollectionReferenceSerDes {
 				String collectionTypeString = collectionType.toString();
 
 				if (collectionTypeString.equals("Collection")) {
-					return ItemExternalReference.toDTO(json);
+					return CollectionItemExternalReference.toDTO(json);
 				}
 
 				if (collectionTypeString.equals("CollectionProvider")) {
