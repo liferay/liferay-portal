@@ -143,21 +143,21 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	protected AssetLibrary testDeleteAssetLibrary_addAssetLibrary()
 		throws Exception {
 
-		return _addRandomAssetLibrary();
+		return _addAssetLibrary();
 	}
 
 	@Override
 	protected AssetLibrary testDeleteAssetLibraryBySite_addAssetLibrary()
 		throws Exception {
 
-		return _addRandomAssetLibrary();
+		return _addAssetLibrary();
 	}
 
 	@Override
 	protected AssetLibrary testDeleteAssetLibraryLinkToSite_addAssetLibrary()
 		throws Exception {
 
-		AssetLibrary assetLibrary = _addRandomAssetLibrary();
+		AssetLibrary assetLibrary = _addAssetLibrary();
 
 		DepotEntry depotEntry = _depotEntryLocalService.getGroupDepotEntry(
 			assetLibrary.getSiteId());
@@ -172,28 +172,28 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	protected AssetLibrary testGetAssetLibrary_addAssetLibrary()
 		throws Exception {
 
-		return _addRandomAssetLibrary();
+		return _addAssetLibrary();
 	}
 
 	@Override
 	protected AssetLibrary testGetAssetLibraryBySite_addAssetLibrary()
 		throws Exception {
 
-		return _addRandomAssetLibrary();
+		return _addAssetLibrary();
 	}
 
 	@Override
 	protected AssetLibrary testPatchAssetLibrary_addAssetLibrary()
 		throws Exception {
 
-		return _addRandomAssetLibrary();
+		return _addAssetLibrary();
 	}
 
 	@Override
 	protected AssetLibrary testPatchAssetLibraryBySite_addAssetLibrary()
 		throws Exception {
 
-		return _addRandomAssetLibrary();
+		return _addAssetLibrary();
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		return assetLibraryResource.getAssetLibrary(assetLibrary.getId());
 	}
 
-	private AssetLibrary _addRandomAssetLibrary() throws Exception {
+	private AssetLibrary _addAssetLibrary() throws Exception {
 		return assetLibraryResource.postAssetLibrary(randomAssetLibrary());
 	}
 
