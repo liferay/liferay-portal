@@ -41,7 +41,7 @@ public class VfsJavaFileObject extends BaseJavaFileObject {
 
 	@Override
 	public InputStream openInputStream() throws IOException {
-		return ZipFileUtil.openInputStream(_file, _entryName);
+		return jakartaTransform(ZipFileUtil.openInputStream(_file, _entryName));
 	}
 
 	@Override
