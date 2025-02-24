@@ -9,6 +9,7 @@ import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.base.AssetDisplayPageEntryServiceBaseImpl;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.portal.aop.AopService;
@@ -169,7 +170,8 @@ public class AssetDisplayPageEntryServiceImpl
 
 		if (infoItemPermissionProvider != null) {
 			if (!infoItemPermissionProvider.hasPermission(
-					getPermissionChecker(), classPK, actionId)) {
+					getPermissionChecker(),
+					new InfoItemReference(className, classPK), actionId)) {
 
 				throw new PrincipalException();
 			}
