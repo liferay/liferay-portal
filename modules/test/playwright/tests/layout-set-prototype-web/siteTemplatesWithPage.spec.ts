@@ -14,6 +14,7 @@ import {productMenuPageTest} from '../../fixtures/productMenuPageTest';
 import {sitesPageTest} from '../../fixtures/sitesPageTest';
 import {uiElementsPageTest} from '../../fixtures/uiElementsTest';
 import getRandomString from '../../utils/getRandomString';
+import {reloadUntilVisible} from '../../utils/reloadUntilVisible';
 import createSiteTemplate from './utils/createSiteTemplate';
 
 export const test = mergeTests(
@@ -87,13 +88,16 @@ test(
 
 		await productMenuPage.goToPages();
 
-		await page.reload();
-
 		const dropdown = page
 			.locator('.miller-columns-item', {
 				hasText: pageName,
 			})
 			.locator('button.dropdown-toggle');
+
+		await reloadUntilVisible({
+			myLocator: dropdown,
+			page,
+		});
 
 		await dropdown.click();
 
