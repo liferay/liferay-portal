@@ -3590,15 +3590,6 @@
 		"to": "${variableName}.${prefixMethodName}Preferences"
 	},
 	{
-		"from": "regex:(?<utilName>CPAttachmentFileEntryServiceUtil|CPAttachmentFileEntryLocalServiceUtil)\\.fetchByExternalReferenceCode",
-		"issueKey": "LPD-48708",
-		"to": "${utilName}.fetchCPAttachmentFileEntryByExternalReferenceCode",
-		"validExtensions": [
-			"java",
-			"jsp"
-		]
-	},
-	{
 		"classNames": [
 			"CommerceOrderItem"
 		],
@@ -3625,6 +3616,15 @@
 			"com.liferay.commerce.constants.CommercePaymentEntryConstants"
 		],
 		"to": "CommercePaymentEntryConstants.${methodName}",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:(?<utilName>CPAttachmentFileEntryServiceUtil|CPAttachmentFileEntryLocalServiceUtil)\\.fetchByExternalReferenceCode",
+		"issueKey": "LPD-48708",
+		"to": "${utilName}.fetchCPAttachmentFileEntryByExternalReferenceCode",
 		"validExtensions": [
 			"java",
 			"jsp"
