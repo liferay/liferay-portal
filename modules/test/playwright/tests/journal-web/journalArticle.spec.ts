@@ -74,6 +74,13 @@ const assetPublisherDeprecationTest = mergeTests(
 	})
 );
 
+const ckeditor5Test = mergeTests(
+	baseTest,
+	featureFlagsTest({
+		'LPD-11235': {enabled: true},
+	})
+);
+
 const keepTitlesUntranslated = mergeTests(baseTest);
 
 const prefixUrlTest = mergeTests(baseTest);
@@ -1691,6 +1698,34 @@ assetPublisherDeprecationTest(
 		await page.getByLabel('Go to page, 2').click();
 
 		await expect(page.getByText('page2')).toBeVisible();
+	}
+);
+
+ckeditor5Test(
+	'Web Content is published when CKEditor 5 is enabled',
+	{
+		tag: '@LPD-11235',
+	},
+	async ({journalEditArticlePage, page, site}) => {
+		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+		const articleTitle = getRandomString();
+
+		await journalEditArticlePage.fillTitle(articleTitle);
+
+		const articleContent = getRandomString();
+
+		const editable = journalEditArticlePage.page.locator(
+			'.edit-article-panel .ck-content'
+		);
+
+		await editable.fill(articleContent);
+
+		await journalEditArticlePage.publishArticle();
+
+		await page.getByTitle(articleTitle).click();
+
+		await expect(editable.getByText(articleContent)).toBeVisible();
 	}
 );
 
