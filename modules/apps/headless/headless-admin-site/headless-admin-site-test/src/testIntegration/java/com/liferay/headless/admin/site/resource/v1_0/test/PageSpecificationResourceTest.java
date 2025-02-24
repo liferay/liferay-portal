@@ -915,7 +915,6 @@ public class PageSpecificationResourceTest
 					setMasterPageItemExternalReference(
 						() -> new ItemExternalReference() {
 							{
-								setCollectionType(CollectionType.COLLECTION);
 								setExternalReferenceCode(
 									() -> StringPool.BLANK);
 							}
@@ -931,7 +930,6 @@ public class PageSpecificationResourceTest
 		ItemExternalReference itemExternalReference =
 			new ItemExternalReference() {
 				{
-					setCollectionType(CollectionType.COLLECTION);
 					setExternalReferenceCode(
 						layoutPageTemplateEntry::getExternalReferenceCode);
 				}
@@ -1041,7 +1039,6 @@ public class PageSpecificationResourceTest
 					setStyleBookItemExternalReference(
 						() -> new ItemExternalReference() {
 							{
-								setCollectionType(CollectionType.COLLECTION);
 								setExternalReferenceCode(
 									() -> StringPool.BLANK);
 							}
@@ -1055,7 +1052,6 @@ public class PageSpecificationResourceTest
 		ItemExternalReference itemExternalReference =
 			new ItemExternalReference() {
 				{
-					setCollectionType(CollectionType.COLLECTION);
 					setExternalReferenceCode(
 						styleBookEntry::getExternalReferenceCode);
 				}
@@ -1222,7 +1218,6 @@ public class PageSpecificationResourceTest
 			settings.setMasterPageItemExternalReference(
 				() -> new ItemExternalReference() {
 					{
-						setCollectionType(CollectionType.COLLECTION);
 						setExternalReferenceCode(
 							layoutPageTemplateEntry::getExternalReferenceCode);
 					}
@@ -1238,7 +1233,6 @@ public class PageSpecificationResourceTest
 			settings.setStyleBookItemExternalReference(
 				() -> new ItemExternalReference() {
 					{
-						setCollectionType(CollectionType.COLLECTION);
 						setExternalReferenceCode(
 							styleBookEntry::getExternalReferenceCode);
 					}
