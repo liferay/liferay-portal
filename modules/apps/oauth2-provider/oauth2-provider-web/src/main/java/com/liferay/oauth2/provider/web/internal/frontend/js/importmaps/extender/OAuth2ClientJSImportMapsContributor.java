@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.oauth2.provider.web.internal.js.importmaps.extender;
+package com.liferay.oauth2.provider.web.internal.frontend.js.importmaps.extender;
 
 import com.liferay.frontend.js.importmaps.extender.JSImportMapsContributor;
 import com.liferay.portal.kernel.json.JSONFactory;
