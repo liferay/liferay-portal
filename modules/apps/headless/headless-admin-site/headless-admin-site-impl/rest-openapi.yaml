@@ -62,13 +62,21 @@ components:
                         The client extension's external reference code.
                     type: string
             type: object
+        CollectionItemExternalReference:
+            allOf:
+                - $ref: "#/components/schemas/CollectionReference"
+                - $ref: "#/components/schemas/ItemExternalReference"
+            # @review
+            description:
+                A unique reference to a collection which remains constant across environments.
+            type: object
         CollectionReference:
             # @review
             description:
                 The page collection's reference.
             discriminator:
                 mapping:
-                    Collection: "#/components/schemas/ItemExternalReference"
+                    Collection: "#/components/schemas/CollectionItemExternalReference"
                     CollectionProvider: "#/components/schemas/ClassNameReference"
                 propertyName: collectionType
             properties:
