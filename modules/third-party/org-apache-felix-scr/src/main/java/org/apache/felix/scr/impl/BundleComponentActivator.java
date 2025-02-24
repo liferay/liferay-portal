@@ -19,6 +19,7 @@
 package org.apache.felix.scr.impl;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,11 +30,13 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import java.util.function.BiFunction;
 import org.apache.felix.scr.impl.logger.BundleLogger;
 import org.apache.felix.scr.impl.logger.ComponentLogger;
 import org.apache.felix.scr.impl.logger.ScrLogger;
@@ -428,6 +431,17 @@ public class BundleComponentActivator implements ComponentActivator
         {
             stream = descriptorURL.openStream();
 
+			if (_textReplacerBiFunction != null) {
+				String content = new String(stream.readAllBytes());
+
+				stream.close();
+
+				String newContent = _textReplacerBiFunction.apply(
+					"SCR#" + descriptorURL, content);
+
+				stream = new ByteArrayInputStream(newContent.getBytes());
+			}
+
             BufferedReader in = new BufferedReader( new InputStreamReader( stream, "UTF-8" ) );
             XmlHandler handler = new XmlHandler( m_bundle, this.logger, getConfiguration().isFactoryEnabled(),
                 getConfiguration().keepInstances() );
@@ -779,5 +793,33 @@ public class BundleComponentActivator implements ComponentActivator
     public void updateChangeCount() {
         this.m_componentRegistry.updateChangeCount();
     }
+
+	private static final BiFunction<String, String, String>
+		_textReplacerBiFunction;
+
+	static {
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+		Object instance = null;
+
+		try {
+			Class<?> clazz = classLoader.loadClass(
+				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
+					"TextReplacerBiFunction");
+
+			instance = clazz.newInstance();
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			if (!(reflectiveOperationException instanceof
+					ClassNotFoundException)) {
+
+				throw new ExceptionInInitializerError(
+					reflectiveOperationException);
+			}
+		}
+
+		_textReplacerBiFunction = (BiFunction<String, String, String>)instance;
+	}
+
 }
 /* @generated */
