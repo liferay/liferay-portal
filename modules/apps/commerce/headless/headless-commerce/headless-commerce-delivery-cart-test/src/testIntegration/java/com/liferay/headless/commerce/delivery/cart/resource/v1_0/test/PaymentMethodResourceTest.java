@@ -67,18 +67,13 @@ public class PaymentMethodResourceTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_user = UserTestUtil.addUser(testCompany);
-
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			testGroup.getCompanyId());
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			testGroup.getGroupId(), _commerceCurrency.getCode());
 
-		_engineKeys = new ArrayList(
-			Arrays.asList(
-				"authorize-net", "mercanet", "money-order", "paypal",
-				"test-payment-method"));
+		_user = UserTestUtil.addUser(testCompany);
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testCompany.getCompanyId(), testGroup.getGroupId(),
@@ -249,7 +244,10 @@ public class PaymentMethodResourceTest
 	@DeleteAfterTestRun
 	private CPInstance _cpInstance;
 
-	private List<String> _engineKeys;
+	private final List<String> _engineKeys = new ArrayList<>(
+		Arrays.asList(
+			"authorize-net", "mercanet", "money-order", "paypal",
+			"test-payment-method"));
 	private ServiceContext _serviceContext;
 
 	@DeleteAfterTestRun
