@@ -45,12 +45,14 @@ public class OAuth2ProviderTopJSPDynamicInclude implements DynamicInclude {
 			return;
 		}
 
+		PrintWriter printWriter = httpServletResponse.getWriter();
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
+
 		List<OAuth2Application> oAuth2Applications =
 			_oAuth2ApplicationLocalService.getOAuth2Applications(
 				_portal.getCompanyId(httpServletRequest),
 				ClientProfile.USER_AGENT_APPLICATION.id());
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 		for (OAuth2Application oAuth2Application : oAuth2Applications) {
 			jsonObject.put(
@@ -90,8 +92,6 @@ public class OAuth2ProviderTopJSPDynamicInclude implements DynamicInclude {
 			"function(externalReferenceCode) {return ",
 			"Liferay.OAuth2._userAgentApplications[externalReferenceCode];}, ",
 			"_userAgentApplications: ", jsonObject, "}</script>");
-
-		PrintWriter printWriter = httpServletResponse.getWriter();
 
 		printWriter.write(string);
 	}
