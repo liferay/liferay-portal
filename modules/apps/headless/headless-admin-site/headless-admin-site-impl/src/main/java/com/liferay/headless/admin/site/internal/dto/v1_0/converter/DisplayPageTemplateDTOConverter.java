@@ -108,7 +108,6 @@ public class DisplayPageTemplateDTOConverter
 						return new ItemExternalReference() {
 							{
 								setClassName(() -> FileEntry.class.getName());
-								setCollectionType(CollectionType.COLLECTION);
 								setExternalReferenceCode(
 									fileEntry::getExternalReferenceCode);
 							}
@@ -142,7 +141,6 @@ public class DisplayPageTemplateDTOConverter
 
 		return new ItemExternalReference() {
 			{
-				setCollectionType(CollectionType.COLLECTION);
 				setExternalReferenceCode(
 					infoItemFormVariation::getExternalReferenceCode);
 			}

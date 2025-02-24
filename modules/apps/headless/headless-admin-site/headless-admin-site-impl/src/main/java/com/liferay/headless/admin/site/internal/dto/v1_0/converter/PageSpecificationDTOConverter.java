@@ -230,7 +230,6 @@ public class PageSpecificationDTOConverter
 						return new ItemExternalReference() {
 							{
 								setClassName(() -> FileEntry.class.getName());
-								setCollectionType(CollectionType.COLLECTION);
 								setExternalReferenceCode(
 									fileEntry::getExternalReferenceCode);
 							}
@@ -263,7 +262,6 @@ public class PageSpecificationDTOConverter
 
 						return new ItemExternalReference() {
 							{
-								setCollectionType(CollectionType.COLLECTION);
 								setExternalReferenceCode(
 									layoutPageTemplateEntry::
 										getExternalReferenceCode);
@@ -282,7 +280,6 @@ public class PageSpecificationDTOConverter
 
 						return new ItemExternalReference() {
 							{
-								setCollectionType(CollectionType.COLLECTION);
 								setExternalReferenceCode(
 									styleBookEntry::getExternalReferenceCode);
 							}

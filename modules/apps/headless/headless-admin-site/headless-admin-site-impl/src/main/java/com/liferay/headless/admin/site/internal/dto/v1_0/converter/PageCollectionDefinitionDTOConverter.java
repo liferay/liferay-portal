@@ -8,9 +8,9 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.ClassNameReference;
+import com.liferay.headless.admin.site.dto.v1_0.CollectionItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.CollectionReference;
 import com.liferay.headless.admin.site.dto.v1_0.EmptyCollectionConfig;
-import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.PageCollectionDefinition;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
@@ -115,7 +115,7 @@ public class PageCollectionDefinitionDTOConverter
 				return null;
 			}
 
-			return new ItemExternalReference() {
+			return new CollectionItemExternalReference() {
 				{
 					setCollectionType(CollectionType.COLLECTION);
 					setExternalReferenceCode(
