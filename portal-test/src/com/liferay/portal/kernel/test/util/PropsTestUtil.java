@@ -19,12 +19,12 @@ import java.util.Map;
  */
 public class PropsTestUtil {
 
-	public static Props setProps(Map<String, Object> propertie) {
+	public static Props setProps(Map<String, Object> properties) {
 		Props props = (Props)ProxyUtil.newProxyInstance(
 			Props.class.getClassLoader(), new Class<?>[] {Props.class},
 			(Object proxy, Method method, Object[] args) -> {
 				if (args.length > 0) {
-					return propertie.get(args[0]);
+					return properties.get(args[0]);
 				}
 
 				return null;
