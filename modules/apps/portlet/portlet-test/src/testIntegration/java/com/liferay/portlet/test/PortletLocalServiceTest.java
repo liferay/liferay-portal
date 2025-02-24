@@ -50,8 +50,6 @@ public class PortletLocalServiceTest {
 
 	@Test
 	public void testGetCustomAttributesDisplaysWithCustomAttributesDisplayDisabled() {
-		List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<>();
-
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 
 		BundleContext bundleContext = bundle.getBundleContext();
@@ -61,74 +59,82 @@ public class PortletLocalServiceTest {
 
 		String portletName = RandomTestUtil.randomString();
 
-		serviceRegistrations.add(
-			bundleContext.registerService(
-				CustomAttributesDisplay.class,
-				disabledFFCustomAttributesDisplay,
-				MapUtil.singletonDictionary(
-					"javax.portlet.name", portletName)));
+		List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<>();
 
-		String enabledFFKey = RandomTestUtil.randomString();
+		try {
+			serviceRegistrations.add(
+				bundleContext.registerService(
+					CustomAttributesDisplay.class,
+					disabledFFCustomAttributesDisplay,
+					MapUtil.singletonDictionary(
+						"javax.portlet.name", portletName)));
 
-		PropsTestUtil.setProps(
-			"feature.flag." + enabledFFKey, Boolean.TRUE.toString());
+			String enabledFFKey = RandomTestUtil.randomString();
 
-		TestCustomAttributesDisplay enabledFFCustomAttributesDisplay =
-			new TestCustomAttributesDisplay(enabledFFKey);
+			PropsTestUtil.setProps(
+				"feature.flag." + enabledFFKey, Boolean.TRUE.toString());
 
-		serviceRegistrations.add(
-			bundleContext.registerService(
-				CustomAttributesDisplay.class, enabledFFCustomAttributesDisplay,
-				MapUtil.singletonDictionary(
-					"javax.portlet.name", portletName)));
+			TestCustomAttributesDisplay enabledFFCustomAttributesDisplay =
+				new TestCustomAttributesDisplay(enabledFFKey);
 
-		TestCustomAttributesDisplay nullFFCustomAttributesDisplay =
-			new TestCustomAttributesDisplay(null);
+			serviceRegistrations.add(
+				bundleContext.registerService(
+					CustomAttributesDisplay.class,
+					enabledFFCustomAttributesDisplay,
+					MapUtil.singletonDictionary(
+						"javax.portlet.name", portletName)));
 
-		serviceRegistrations.add(
-			bundleContext.registerService(
-				CustomAttributesDisplay.class, nullFFCustomAttributesDisplay,
-				MapUtil.singletonDictionary(
-					"javax.portlet.name", portletName)));
+			TestCustomAttributesDisplay nullFFCustomAttributesDisplay =
+				new TestCustomAttributesDisplay(null);
 
-		serviceRegistrations.add(
-			bundleContext.registerService(
-				Portlet.class, new TestPortlet(),
-				MapUtil.singletonDictionary(
-					"javax.portlet.name", portletName)));
+			serviceRegistrations.add(
+				bundleContext.registerService(
+					CustomAttributesDisplay.class,
+					nullFFCustomAttributesDisplay,
+					MapUtil.singletonDictionary(
+						"javax.portlet.name", portletName)));
 
-		List<CustomAttributesDisplay> customAttributesDisplays =
-			TransformUtil.transform(
-				_portletLocalService.getCustomAttributesDisplays(),
-				customAttributesDisplay -> {
-					if (Objects.equals(
-							TestCustomAttributesDisplay.class.getName(),
-							customAttributesDisplay.getClassName())) {
+			serviceRegistrations.add(
+				bundleContext.registerService(
+					Portlet.class, new TestPortlet(),
+					MapUtil.singletonDictionary(
+						"javax.portlet.name", portletName)));
 
-						return customAttributesDisplay;
-					}
+			List<CustomAttributesDisplay> customAttributesDisplays =
+				TransformUtil.transform(
+					_portletLocalService.getCustomAttributesDisplays(),
+					customAttributesDisplay -> {
+						if (Objects.equals(
+								TestCustomAttributesDisplay.class.getName(),
+								customAttributesDisplay.getClassName())) {
 
-					return null;
-				});
+							return customAttributesDisplay;
+						}
 
-		Assert.assertFalse(
-			customAttributesDisplays.contains(
-				disabledFFCustomAttributesDisplay));
-		Assert.assertTrue(
-			customAttributesDisplays.contains(
-				enabledFFCustomAttributesDisplay));
-		Assert.assertTrue(
-			customAttributesDisplays.contains(nullFFCustomAttributesDisplay));
-		Assert.assertEquals(
-			customAttributesDisplays.toString(), 2,
-			customAttributesDisplays.size());
+						return null;
+					});
 
-		PropsUtil.setProps(_props);
+			Assert.assertFalse(
+				customAttributesDisplays.contains(
+					disabledFFCustomAttributesDisplay));
+			Assert.assertTrue(
+				customAttributesDisplays.contains(
+					enabledFFCustomAttributesDisplay));
+			Assert.assertTrue(
+				customAttributesDisplays.contains(
+					nullFFCustomAttributesDisplay));
+			Assert.assertEquals(
+				customAttributesDisplays.toString(), 2,
+				customAttributesDisplays.size());
+		}
+		finally {
+			PropsUtil.setProps(_props);
 
-		for (ServiceRegistration<?> serviceRegistration :
-				serviceRegistrations) {
+			for (ServiceRegistration<?> serviceRegistration :
+					serviceRegistrations) {
 
-			serviceRegistration.unregister();
+				serviceRegistration.unregister();
+			}
 		}
 	}
 
