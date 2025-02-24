@@ -117,14 +117,11 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 		Group group = depotEntry.getGroup();
 
-		List<DepotAppCustomization> depotAppCustomizations =
-			_depotAppCustomizationLocalService.getDepotAppCustomizations(
-				depotEntry.getDepotEntryId());
-
 		Map<String, Boolean> depotAppCustomizationMap = new HashMap<>();
 
 		for (DepotAppCustomization depotAppCustomization :
-				depotAppCustomizations) {
+				_depotAppCustomizationLocalService.getDepotAppCustomizations(
+					depotEntry.getDepotEntryId())) {
 
 			depotAppCustomizationMap.put(
 				depotAppCustomization.getPortletId(),
