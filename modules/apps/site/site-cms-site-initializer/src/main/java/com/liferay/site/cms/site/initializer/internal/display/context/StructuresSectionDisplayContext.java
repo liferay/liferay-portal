@@ -35,33 +35,15 @@ public class StructuresSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public CreationMenu getCreationMenu() {
-		String href = StringPool.BLANK;
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		try {
-			Layout layout = LayoutLocalServiceUtil.getLayoutByFriendlyURL(
-				themeDisplay.getScopeGroupId(), false, "/structure-builder");
-
-			href = PortalUtil.getLayoutFullURL(layout, themeDisplay);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
-
-		String finalHREF = href;
-
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(finalHREF);
+				dropdownItem.setHref(_getHref());
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "content"));
 			}
 		).addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(finalHREF);
+				dropdownItem.setHref(_getHref());
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "file"));
 			}
@@ -71,6 +53,24 @@ public class StructuresSectionDisplayContext extends BaseSectionDisplayContext {
 	@Override
 	public String[] getEntryClassNames() {
 		return cmsSiteInitializerConfiguration.structuresClassNames();
+	}
+
+	private String _getHref() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		try {
+			Layout layout = LayoutLocalServiceUtil.getLayoutByFriendlyURL(
+				themeDisplay.getScopeGroupId(), false, "/structure-builder");
+
+			return PortalUtil.getLayoutFullURL(layout, themeDisplay);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
