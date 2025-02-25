@@ -161,7 +161,7 @@ public class CompilerWrapper extends Compiler {
 	}
 
 	@Override
-	protected void generateClass(Map<String, SmapStratum> smaps)
+	protected void generateClass(Map<String, SmapStratum> smapStratums)
 		throws Exception {
 
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = _compile(
@@ -204,16 +204,16 @@ public class CompilerWrapper extends Compiler {
 		}
 
 		if (!options.isSmapSuppressed()) {
-			SmapUtil.installSmap(smaps);
+			SmapUtil.installSmap(smapStratums);
 		}
 	}
 
 	@Override
 	protected Map<String, SmapStratum> generateJava() throws Exception {
-		Map<String, SmapStratum> smaps = super.generateJava();
+		Map<String, SmapStratum> smapStratums = super.generateJava();
 
 		if (_textReplacerBiFunction == null) {
-			return smaps;
+			return smapStratums;
 		}
 
 		File javaFile = new File(ctxt.getServletJavaFileName());
@@ -229,7 +229,7 @@ public class CompilerWrapper extends Compiler {
 				StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
 		}
 
-		return smaps;
+		return smapStratums;
 	}
 
 	private static Set<String> _collectPackageNames(BundleWiring bundleWiring) {
