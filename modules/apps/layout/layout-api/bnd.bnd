@@ -34,4 +34,4 @@ Export-Package:\
 	com.liferay.layout.util.structure.collection,\
 	com.liferay.layout.util.structure.exception,\
 	com.liferay.layout.util.template,\
-	com.liferay.layout.util.validator
+	com.liferay.layout.validator
