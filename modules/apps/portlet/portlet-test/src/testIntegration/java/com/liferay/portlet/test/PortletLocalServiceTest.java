@@ -60,9 +60,7 @@ public class PortletLocalServiceTest {
 
 		TestCustomAttributesDisplay disabledFFCustomAttributesDisplay =
 			new TestCustomAttributesDisplay(RandomTestUtil.randomString());
-
 		String portletName = RandomTestUtil.randomString();
-
 		List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<>();
 
 		try {

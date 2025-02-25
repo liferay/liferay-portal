@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyFactory;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mockito.MockedStatic;
@@ -24,8 +24,8 @@ import org.mockito.Mockito;
  */
 public class CompanyInheritableThreadLocalCallableTest {
 
-	@BeforeClass
-	public static void setUpClass() {
+	@Before
+	public void setUp() {
 		MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
 			Mockito.mockStatic(PortalInstancePool.class);
 
@@ -39,14 +39,13 @@ public class CompanyInheritableThreadLocalCallableTest {
 	}
 
 	@Test
-	public void testInheritCompanyThreadLocal() throws Exception {
-		_assertInheritCompanyThreadLocal(CompanyConstants.SYSTEM, false);
-		_assertInheritCompanyThreadLocal(1L, false);
-		_assertInheritCompanyThreadLocal(2L, true);
+	public void test() throws Exception {
+		_test(1L, false);
+		_test(2L, true);
+		_test(CompanyConstants.SYSTEM, false);
 	}
 
-	private void _assertInheritCompanyThreadLocal(
-			Long companyId, boolean locked)
+	private void _test(Long companyId, boolean locked)
 		throws Exception {
 
 		CompanyThreadLocal.setCompanyId(companyId);
