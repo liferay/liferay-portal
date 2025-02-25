@@ -7,11 +7,11 @@ package com.liferay.layout.utility.page.service.impl;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
-import com.liferay.layout.util.validator.LayoutValidator;
 import com.liferay.layout.utility.page.exception.DefaultLayoutUtilityPageEntryException;
 import com.liferay.layout.utility.page.exception.LayoutUtilityPageEntryNameException;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.base.LayoutUtilityPageEntryLocalServiceBaseImpl;
+import com.liferay.layout.validator.LayoutValidator;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;

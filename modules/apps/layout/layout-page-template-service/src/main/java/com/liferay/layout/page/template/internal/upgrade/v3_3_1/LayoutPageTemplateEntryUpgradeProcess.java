@@ -5,7 +5,7 @@
 
 package com.liferay.layout.page.template.internal.upgrade.v3_3_1;
 
-import com.liferay.layout.util.validator.LayoutValidator;
+import com.liferay.layout.validator.LayoutValidator;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
