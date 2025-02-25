@@ -160,6 +160,21 @@ definition {
 			Clustering.shutdownSpecificServer(nodePort = 9080);
 		}
 
+		task ("Removing the original schemas") {
+			var databaseType = PropsUtil.get("database.type");
+
+			if (${databaseType} == "mysql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_42638;");
+
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_44913;");
+			}
+			else if (${databaseType} == "postgresql") {
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_42638 cascade;");
+
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_44913 cascade;");
+			}
+		}
+
 		task ("Create an empty database") {
 			AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=mysql -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-mysql.sql");
 
