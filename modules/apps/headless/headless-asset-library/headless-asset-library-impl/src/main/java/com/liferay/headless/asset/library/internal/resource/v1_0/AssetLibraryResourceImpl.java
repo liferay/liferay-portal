@@ -27,7 +27,6 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -115,6 +114,8 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(siteId);
 
+		Group group = depotEntry.getGroup();
+
 		String name = assetLibrary.getName();
 
 		if (name == null) {
@@ -140,9 +141,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			descriptionMap = LocalizedMapUtil.getI18nMap(
 				group.getDescriptionMap());
 		}
-
-
-		Group group = depotEntry.getGroup();
 
 		Map<String, Boolean> depotAppCustomizationMap = new HashMap<>();
 
