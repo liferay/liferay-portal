@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.layout.util.validator;
+package com.liferay.layout.validator;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.util.StringUtil;
