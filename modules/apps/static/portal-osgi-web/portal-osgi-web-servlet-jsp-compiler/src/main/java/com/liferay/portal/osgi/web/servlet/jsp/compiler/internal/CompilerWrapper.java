@@ -741,28 +741,6 @@ public class CompilerWrapper extends Compiler {
 		_textReplacerBiFunction;
 
 	static {
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-		Object instance = null;
-
-		try {
-			Class<?> clazz = classLoader.loadClass(
-				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
-					"TextReplacerBiFunction");
-
-			instance = clazz.newInstance();
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			if (!(reflectiveOperationException instanceof
-					ClassNotFoundException)) {
-
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-		_textReplacerBiFunction = (BiFunction<String, String, String>)instance;
-
 		Bundle jspBundle = FrameworkUtil.getBundle(CompilerWrapper.class);
 
 		BundleWiring jspBundleWiring = jspBundle.adapt(BundleWiring.class);
@@ -814,6 +792,28 @@ public class CompilerWrapper extends Compiler {
 		_resolveId(systemIdsMap, "jsp_2_3.xsd", "jsp_2_3.xsd", true);
 
 		_servletApiSystemIdsMap = Collections.unmodifiableMap(systemIdsMap);
+
+		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+		Object instance = null;
+
+		try {
+			Class<?> clazz = classLoader.loadClass(
+				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
+					"TextReplacerBiFunction");
+
+			instance = clazz.newInstance();
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			if (!(reflectiveOperationException instanceof
+					ClassNotFoundException)) {
+
+				throw new ExceptionInInitializerError(
+					reflectiveOperationException);
+			}
+		}
+
+		_textReplacerBiFunction = (BiFunction<String, String, String>)instance;
 	}
 
 	private Bundle[] _allParticipatingBundles;
