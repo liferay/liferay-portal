@@ -51,15 +51,17 @@ public class StructuresSectionDisplayContext extends BaseSectionDisplayContext {
 			_log.error(portalException);
 		}
 
+		String finalHREF = href;
+
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(159176);
+				dropdownItem.setHref(finalHREF);
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "content"));
 			}
 		).addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(159176);
+				dropdownItem.setHref(finalHREF);
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "file"));
 			}
