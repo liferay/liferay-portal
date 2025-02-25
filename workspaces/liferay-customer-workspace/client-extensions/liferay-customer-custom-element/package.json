@@ -17,6 +17,7 @@
 		"@clayui/modal": "3.122.0",
 		"@clayui/multi-select": "3.127.0",
 		"@clayui/nav": "3.127.0",
+		"@clayui/navigation-bar": "^3.128.0",
 		"@clayui/pagination-bar": "3.127.0",
 		"@clayui/popover": "3.119.0",
 		"@clayui/tooltip": "3.119.0",

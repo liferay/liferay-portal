@@ -1,0 +1,24 @@
+.be-breadcrumbs a {
+    color: var(--color-action-neutral-default);
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.be-status {
+    background-color: var(--color-neutral-5);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-neutral-0);
+    font-size: var(--font-size-sm);
+}
+
+.be-status-canceled {
+    background-color: var(--color-state-error);
+}
+
+.be-status-open {
+    background-color: var(--color-state-success);
+}
+
+.be-status-overdue {
+    background-color: var(--color-state-warning);
+}

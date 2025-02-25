@@ -1,0 +1,10 @@
+.event-detail-container {
+    .event-detail-title {
+        font-size: 0.813rem;
+    }
+
+    .event-detail-value {
+        background-color: var(--color-neutral-1);
+        padding: 0.5rem 0.75rem;
+    }
+}
