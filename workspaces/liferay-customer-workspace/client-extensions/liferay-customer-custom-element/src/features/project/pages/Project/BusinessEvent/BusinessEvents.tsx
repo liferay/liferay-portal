@@ -8,12 +8,14 @@ import i18n from '~/utils/I18n';
 import './BusinessEvents.css';
 
 import {ButtonWithIcon} from '@clayui/core';
-import {useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {ButtonDropDown} from '~/components';
 import {IFilterOption} from '~/components/Filter/Filter';
 import Table, {IRow} from '~/components/Table';
 import TableHeader from '~/components/Table/TableHeader';
 import {hasAdminUserAccount} from '~/features/project/containers/ActivationKeysTable/utils/hasAdminUserAccount';
+import {useCustomerPortal} from '~/features/project/context';
 import {getFormattedDate} from '~/features/project/utils/getFormattedDate';
 import useCurrentKoroneikiAccount from '~/hooks/useCurrentKoroneikiAccount';
 import {getBusinessEvents} from '~/services/liferay/api';
@@ -23,12 +25,15 @@ import {IOrganizationBrief} from '~/utils/types';
 import useMyUserAccountByAccountExternalReferenceCode from '../TeamMembers/components/TeamMembersTable/hooks/useMyUserAccountByAccountExternalReferenceCode';
 import {INITIAL_FILTER} from './utils/constants/initialFilter';
 
-interface IBusinessEventTicket {
+export interface IBusinessEventTicket {
 	associatedTickets: string;
+	currentLiferayVersion: Record<string, string>;
 	description: string;
 	eventStatus: Record<string, string>;
 	eventType: Record<string, string>;
+	id: number;
 	name: string;
+	newLiferayVersion: Record<string, string>;
 	targetGoLiveDateTime: string;
 }
 
@@ -67,25 +72,26 @@ const columns = [
 ];
 
 const BusinessEvents = () => {
-	const [businessEventsTickets, setBusinessEventsTickets] = useState<
-		IBusinessEventTicket[]
-	>([]);
+	const [{project}] = useCustomerPortal();
 
 	const [filters, setFilters] = useState<IState>({
 		availableFilters: INITIAL_FILTER,
 		searchTerm: '',
 		selectedFilters: [],
 	});
-
 	const {data, loading} = useCurrentKoroneikiAccount();
 	const koroneikiAccount = data?.koroneikiAccountByExternalReferenceCode;
 
 	const {data: myUserAccountData} =
 		useMyUserAccountByAccountExternalReferenceCode(
-			loading,
-			koroneikiAccount?.accountKey
+			koroneikiAccount?.accountKey,
+			loading
 		);
 	const loggedUserAccount = myUserAccountData?.myUserAccount;
+
+	const [businessEventsTickets, setBusinessEventsTickets] = useState<
+		IBusinessEventTicket[]
+	>([]);
 
 	const isAdminUserAccount = hasAdminUserAccount(myUserAccountData);
 	const hasProjectAdminOrRequesterRole =
@@ -105,6 +111,19 @@ const BusinessEvents = () => {
 		hasProjectAdminOrRequesterRole ||
 		isLiferayStaff ||
 		hasFLSOrganizationAssociated;
+
+	const navigate = useNavigate();
+
+	const handleEditEvent = useCallback(
+		(eventTicketId: number) => {
+			if (eventTicketId) {
+				navigate(
+					`/${project?.accountKey}/business-events/${eventTicketId}`
+				);
+			}
+		},
+		[navigate, project?.accountKey]
+	);
 
 	const generateFilterQuery = (filters: IState) => {
 		const queryParams = Object.entries(filters)
@@ -182,108 +201,114 @@ const BusinessEvents = () => {
 	}, [filterQuery]);
 
 	const rows = useMemo(() => {
-		const userOptions = [
-			{
-				customOptionStyle: 'pr-5',
-				label: i18n.translate('view-details'),
-				onClick: () => {},
-			},
-		];
-
-		if (hasAllEventsPermissions) {
-			userOptions.push(
-				{
-					customOptionStyle: 'pr-5',
-					label: i18n.translate('edit-event'),
-					onClick: () => {},
-				},
-				{
-					customOptionStyle: 'pr-5',
-					label: i18n.translate('record-actual-go-live'),
-					onClick: () => {},
-				},
-				{
-					customOptionStyle: 'pr-5 be-cancel-event-option',
-					label: i18n.translate('cancel-event'),
-					onClick: () => {},
-				}
-			);
-		}
-
 		if (businessEventsTickets?.length > 0) {
-			return businessEventsTickets.map((eventTicket) => ({
-				actions: (
-					<div className="d-flex justify-content-center">
-						<ButtonDropDown
-							customDropDownButton={
-								<ButtonWithIcon
-									aria-label={i18n.translate(
-										'manage-user-options'
-									)}
-									borderless
-									className="text-neutral-5"
-									onPointerEnterCapture={undefined}
-									onPointerLeaveCapture={undefined}
-									placeholder={undefined}
-									symbol="ellipsis-v"
-								/>
-							}
-							items={userOptions}
-							label="Options"
-						/>
-					</div>
-				),
-				associatedTickets: (
-					<div className="text-neutral-10">
-						{eventTicket?.associatedTickets}
-					</div>
-				),
-				details: (
-					<div className="text-neutral-10">
-						{eventTicket?.description}
-					</div>
-				),
-				eventName: (
-					<div>
-						<div className="font-weight-semi-bold text-neutral-10">
-							{eventTicket?.name}
-						</div>
+			return businessEventsTickets.map((eventTicket) => {
+				const userOptions = [
+					{
+						customOptionStyle: 'pr-5',
+						label: i18n.translate('view-details'),
+						onClick: () => {
+							handleEditEvent(eventTicket?.id);
+						},
+					},
+				];
 
-						<div className="be-subtitle text-neutral-7">
-							{eventTicket?.eventType?.name}
+				if (hasAllEventsPermissions) {
+					userOptions.push(
+						{
+							customOptionStyle: 'pr-5',
+							label: i18n.translate('edit-event'),
+							onClick: () => {
+								handleEditEvent(eventTicket?.id);
+							},
+						},
+						{
+							customOptionStyle: 'pr-5',
+							label: i18n.translate('record-actual-go-live'),
+							onClick: () => {},
+						},
+						{
+							customOptionStyle: 'pr-5 be-cancel-event-option',
+							label: i18n.translate('cancel-event'),
+							onClick: () => {},
+						}
+					);
+				}
+
+				return {
+					actions: (
+						<div className="d-flex justify-content-center">
+							<ButtonDropDown
+								customDropDownButton={
+									<ButtonWithIcon
+										aria-label={i18n.translate(
+											'manage-user-options'
+										)}
+										borderless
+										className="text-neutral-5"
+										onPointerEnterCapture={undefined}
+										onPointerLeaveCapture={undefined}
+										placeholder={undefined}
+										symbol="ellipsis-v"
+									/>
+								}
+								items={userOptions}
+								label="Options"
+							/>
 						</div>
-					</div>
-				),
-				status: (
-					<div className="align-items-center d-flex">
-						<div
-							className={`align-items-center font-weight-semi-bold be-status be-status-${eventTicket?.eventStatus?.name.toLowerCase()} px-2 py-1`}
-						>
-							{eventTicket?.eventStatus?.name}
-						</div>
-					</div>
-				),
-				targetGoLiveDate: (
-					<div>
+					),
+					associatedTickets: (
 						<div className="text-neutral-10">
-							{getFormattedDate(
-								eventTicket?.targetGoLiveDateTime,
-								'day2DMonthSYearN'
-							)}
+							{eventTicket?.associatedTickets}
 						</div>
+					),
+					details: (
+						<div className="text-neutral-10">
+							{eventTicket?.description}
+						</div>
+					),
+					eventName: (
+						<div>
+							<div className="font-weight-semi-bold text-neutral-10">
+								{eventTicket?.name}
+							</div>
 
-						<div className="be-subtitle text-neutral-7">
-							{getFormattedTime(
-								eventTicket?.targetGoLiveDateTime
-							)}
+							<div className="be-subtitle text-neutral-7">
+								{eventTicket?.eventType?.name}
+							</div>
 						</div>
-					</div>
-				),
-			}));
+					),
+					status: (
+						<div className="align-items-center d-flex">
+							<div
+								className={`align-items-center font-weight-semi-bold be-status be-status-${eventTicket?.eventStatus?.name.toLowerCase()} px-2 py-1`}
+							>
+								{eventTicket?.eventStatus?.name}
+							</div>
+						</div>
+					),
+					targetGoLiveDate: (
+						<div>
+							<div className="text-neutral-10">
+								{getFormattedDate(
+									eventTicket?.targetGoLiveDateTime,
+									'day2DMonthSYearN'
+								)}
+							</div>
+
+							<div className="be-subtitle text-neutral-7">
+								{getFormattedTime(
+									eventTicket?.targetGoLiveDateTime
+								)}
+							</div>
+						</div>
+					),
+				};
+			});
 		}
 
 		return [];
-	}, [businessEventsTickets, hasAllEventsPermissions]);
+	}, [businessEventsTickets, hasAllEventsPermissions, handleEditEvent]);
 
 	return (
 		<div className="py-4">
