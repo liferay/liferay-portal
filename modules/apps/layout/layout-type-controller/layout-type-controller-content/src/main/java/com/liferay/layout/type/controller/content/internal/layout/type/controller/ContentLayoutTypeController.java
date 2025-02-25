@@ -131,10 +131,6 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 			if (!hasUpdatePermissions) {
 				layoutMode = Constants.VIEW;
 			}
-			else if (!layout.isUnlocked(layoutMode, themeDisplay.getUserId())) {
-				redirect = _layoutLockManager.getLockedLayoutURL(
-					httpServletRequest);
-			}
 			else if (!layout.isLayoutUpdateable()) {
 				Layout redirectLayout = layout;
 
@@ -145,6 +141,10 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 
 				redirect = _portal.getLayoutFullURL(
 					redirectLayout, themeDisplay);
+			}
+			else if (!layout.isUnlocked(layoutMode, themeDisplay.getUserId())) {
+				redirect = _layoutLockManager.getLockedLayoutURL(
+					httpServletRequest);
 			}
 			else {
 				redirect = _getDraftLayoutFullURL(
