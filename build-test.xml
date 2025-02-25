@@ -531,7 +531,7 @@ module.framework.properties.osgi.console=11312</echo>
 		</sequential>
 	</macrodef>
 
-	<macrodef name="export-database-mysql-compact">
+	<macrodef name="export-database-mysql">
 		<attribute default="mysql" name="database.file.prefix" />
 		<attribute default="lportal" name="database.schema.name" />
 
@@ -10933,7 +10933,7 @@ send_user $expect_out(buffer)]]></echo>
 		<if>
 			<equals arg1="${database.type}" arg2="mysql" />
 			<then>
-				<export-database-mysql-compact database.file.prefix="${database.file.prefix}" database.schema.name="${database.schema.name}" />
+				<export-database-mysql database.file.prefix="${database.file.prefix}" database.schema.name="${database.schema.name}" />
 			</then>
 		</if>
 
