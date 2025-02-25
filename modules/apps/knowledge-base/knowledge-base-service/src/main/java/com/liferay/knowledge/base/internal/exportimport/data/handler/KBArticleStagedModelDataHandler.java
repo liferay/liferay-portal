@@ -465,12 +465,12 @@ public class KBArticleStagedModelDataHandler
 		serviceContext.setCompanyId(portletDataContext.getCompanyId());
 		serviceContext.setScopeGroupId(portletDataContext.getScopeGroupId());
 
-		Map<String, FileEntry> attachments = new HashMap<>();
+		Map<String, FileEntry> fileEntries = new HashMap<>();
 
-		for (FileEntry attachment :
+		for (FileEntry fileEntry :
 				importedKBArticle.getAttachmentsFileEntries()) {
 
-			attachments.put(attachment.getUuid(), attachment);
+			fileEntries.put(fileEntry.getUuid(), fileEntry);
 		}
 
 		for (Element dlFileEntryElement : dlFileEntryElements) {
@@ -479,8 +479,8 @@ public class KBArticleStagedModelDataHandler
 			FileEntry fileEntry =
 				(FileEntry)portletDataContext.getZipEntryAsObject(path);
 
-			if (attachments.get(fileEntry.getUuid()) != null) {
-				attachments.remove(fileEntry.getUuid());
+			if (fileEntries.get(fileEntry.getUuid()) != null) {
+				fileEntries.remove(fileEntry.getUuid());
 
 				continue;
 			}
@@ -540,9 +540,9 @@ public class KBArticleStagedModelDataHandler
 			}
 		}
 
-		for (FileEntry unreferencedAttachment : attachments.values()) {
+		for (FileEntry unreferencedFileEntry : fileEntries.values()) {
 			_portletFileRepository.deletePortletFileEntry(
-				unreferencedAttachment.getFileEntryId());
+				unreferencedFileEntry.getFileEntryId());
 		}
 	}
 
