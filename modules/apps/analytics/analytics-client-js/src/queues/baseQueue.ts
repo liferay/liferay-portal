@@ -10,6 +10,7 @@ import {getRetryDelay} from '../utils/delay';
 import {getItem, setItem, verifyStorageLimitForKey} from '../utils/storage';
 
 class BaseQueue {
+	maxSize: number;
 	constructor({analyticsInstance, name}) {
 		this.maxSize = QUEUE_STORAGE_LIMIT;
 		this.name = name;

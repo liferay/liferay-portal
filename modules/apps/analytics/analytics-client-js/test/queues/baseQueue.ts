@@ -9,7 +9,13 @@ import {STORAGE_KEY_MESSAGES} from '../../src/utils/constants';
 import {setItem} from '../../src/utils/storage';
 import {INITIAL_ANALYTICS_CONFIG, getDummyEvent} from '../helpers';
 
-const getMockItem = (id = 0, data = {}) => {
+type MockItem = {
+	dataSourceId: string;
+	events: Event[];
+	id: string;
+};
+
+const getMockItem = (id: string | number, data: any = {}): MockItem => {
 	return {
 		dataSourceId: 'foo-datasource',
 		events: [getDummyEvent()],
@@ -21,7 +27,7 @@ const getMockItem = (id = 0, data = {}) => {
 const analyticsInstance = Analytics.create(INITIAL_ANALYTICS_CONFIG);
 
 describe('BaseQueue', () => {
-	let baseQueue;
+	let baseQueue: BaseQueue;
 
 	afterEach(() => {
 		baseQueue.reset();
