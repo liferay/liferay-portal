@@ -106,7 +106,7 @@ ${configList}''';
 
 			// We need to pause until the file gets deleted, meaning that it has been processed. See LPD-21245
 
-			Pause(value1 = 2000);
+			Pause(value1 = 8000);
 		}
 	}
 
