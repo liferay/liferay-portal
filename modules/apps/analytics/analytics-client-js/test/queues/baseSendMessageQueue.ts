@@ -13,7 +13,13 @@ import {INITIAL_ANALYTICS_CONFIG, getDummyEvent} from '../helpers';
 
 const analyticsInstance = Analytics.create(INITIAL_ANALYTICS_CONFIG);
 
-const getMockItem = (id = 0, data = {}) => {
+type MockItem = {
+	dataSourceId: string;
+	events: Event[];
+	id: string;
+};
+
+const getMockItem = (id: number, data: Partial<MockItem> = {}): MockItem => {
 	return {
 		dataSourceId: 'foo-datasource',
 		events: [getDummyEvent()],
@@ -23,7 +29,7 @@ const getMockItem = (id = 0, data = {}) => {
 };
 
 describe('BaseSendMessageQueue', () => {
-	let baseSendMessageQueue;
+	let baseSendMessageQueue: BaseSendMessageQueue;
 
 	afterEach(() => {
 		fetchMock.restore();
