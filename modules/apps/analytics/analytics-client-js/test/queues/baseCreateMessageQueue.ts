@@ -10,11 +10,23 @@ import {STORAGE_KEY_CONTEXTS} from '../../src/utils/constants';
 import {setItem} from '../../src/utils/storage';
 import {INITIAL_ANALYTICS_CONFIG, getDummyEvent} from '../helpers';
 
+type Context = {
+	channelId?: string;
+	page?: string;
+};
+
+type Message = {
+	channelId?: string;
+	context: Context;
+	dataSourceId: string;
+	userId: string;
+};
+
 const analyticsInstance = Analytics.create(INITIAL_ANALYTICS_CONFIG);
 const flushTo = 'TEST_STORAGE_MESSAGE';
 
 describe('BaseCreateMessageQueue', () => {
-	let baseCreateMessageQueue;
+	let baseCreateMessageQueue: BaseCreateMessageQueue;
 
 	afterEach(() => {
 		baseCreateMessageQueue.reset();
@@ -40,7 +52,7 @@ describe('BaseCreateMessageQueue', () => {
 			})
 		);
 
-		const message = baseCreateMessageQueue._createMessage({
+		const message: Message = baseCreateMessageQueue._createMessage({
 			context: {channelId: '4321', page: 'Test Page'},
 			events: [
 				getDummyEvent(1, {
@@ -69,7 +81,9 @@ describe('BaseCreateMessageQueue', () => {
 			})
 		);
 
-		const messages = await Promise.all(baseCreateMessageQueue.onFlush());
+		const messages: Message[] = await Promise.all(
+			baseCreateMessageQueue.onFlush()
+		);
 
 		expect(messages.length).toEqual(1);
 	});
@@ -94,7 +108,9 @@ describe('BaseCreateMessageQueue', () => {
 			})
 		);
 
-		const messages = await Promise.all(baseCreateMessageQueue.onFlush());
+		const messages: Message[] = await Promise.all(
+			baseCreateMessageQueue.onFlush()
+		);
 
 		expect(messages.length).toEqual(2);
 	});
