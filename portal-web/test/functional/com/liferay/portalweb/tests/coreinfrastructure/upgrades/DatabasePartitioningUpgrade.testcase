@@ -16,7 +16,7 @@ definition {
 
 	@priority = 5
 	test CanAutoUpgradeLargePartitionedDatabase7413 {
-		property custom.properties = "upgrade.report.enabled=true";
+		property custom.properties = "upgrade.report.enabled=true${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property custom.startup.timeout = "540";
 		property data.archive.type = "data-archive-portal-partition-large";
 		property database.auto.upgrade.enabled = "true";
@@ -67,6 +67,7 @@ definition {
 
 	@priority = 5
 	test CanUpgradeLargePartitionedDatabase7413 {
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property custom.startup.timeout = "600";
 		property data.archive.type = "data-archive-portal-partition-large";
 		property minimum.slave.ram = "24";
@@ -87,6 +88,7 @@ definition {
 
 	@priority = 5
 	test CanUpgradeLargePartitionedDatabase7413Benchmark {
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property data.archive.type = "data-archive-portal-partition-large";
 		property minimum.slave.ram = "24";
 		property portal.release = "false";
@@ -112,6 +114,7 @@ definition {
 
 	@priority = 5
 	test CanUpgradePartitionedDatabase7413U33 {
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
 		property data.archive.type = "data-archive-portal-partition";
 		property portal.smoke.upgrades = "true";
 		property portal.version = "7.4.13.u33";
@@ -131,6 +134,7 @@ definition {
 	test ExtractAndAddDBPartitionCompaniesToFreshPortalWithUpgradedDB {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
 		property data.archive.type = "data-archive-portal-partition";
 		property portal.version = "7.4.13.u33";
 		property test.assert.warning.exceptions = "false";
@@ -217,6 +221,7 @@ definition {
 	test ExtractAndAddDBPartitionCompaniesWithUpgradedDB {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
 		property data.archive.type = "data-archive-portal-partition";
 		property portal.version = "7.4.13.u33";
 		property test.assert.warning.exceptions = "false";
@@ -293,6 +298,7 @@ definition {
 	test ExtractDBPartitionCompaniesWithUpgradedDB {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
 		property data.archive.type = "data-archive-portal-partition";
 		property portal.version = "7.4.13.u33";
 		property test.assert.warning.exceptions = "false";
