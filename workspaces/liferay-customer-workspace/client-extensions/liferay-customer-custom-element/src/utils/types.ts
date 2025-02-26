@@ -23,6 +23,18 @@ export interface IAccountSubscriptionGroup {
 	name?: string;
 }
 
+export interface IBusinessEvent {
+	associatedTickets?: any;
+	currentLiferayVersion?: {name: string};
+	details?: string;
+	eventStatus?: {name: string};
+	eventType?: {name: string};
+	id?: number;
+	name?: string;
+	newLiferayVersion?: {name: string};
+	targetGoLiveDateTime?: Date | string;
+}
+
 export interface IKoroneikiAccount {
 	accountKey: string;
 	code: string;

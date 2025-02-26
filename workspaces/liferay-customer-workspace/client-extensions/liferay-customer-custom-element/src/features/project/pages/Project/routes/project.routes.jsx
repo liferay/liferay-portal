@@ -268,10 +268,10 @@ const ProjectRoutes = () => {
 					<Route element={<TeamMembers />} path="team-members" />
 					
 					{featureFlags.includes('LRSD-5119') && (
-						<>
-							<Route path="business-events" element={<BusinessEvents />} />
-							<Route path="business-events/:id" element={<BusinessEventsItem accountKey={project?.accountKey}/>} />
-						</>
+						<Route path="business-events">
+							<Route element={<BusinessEvents />} index />
+							<Route element={<BusinessEventsItem />} path=":id"/>
+						</Route>
 					)}
 
 					{((featureFlags.includes('LRSD-6322') && loggedUserAccount?.isLiferayStaff) ||
