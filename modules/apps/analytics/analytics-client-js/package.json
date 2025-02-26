@@ -39,8 +39,8 @@
 	},
 	"scripts": {
 		"build": "node-scripts build:custom",
-		"checkFormat": "node-scripts format --check",
-		"format": "node-scripts format",
+		"checkFormat": "node-scripts format --check && tsc",
+		"format": "node-scripts format && tsc",
 		"start": "node-scripts build:custom --serve",
 		"test": "USE_REACT_16=true node-scripts test"
 	},
