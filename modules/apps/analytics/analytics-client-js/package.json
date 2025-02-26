@@ -3,7 +3,7 @@
 		"extends browserslist-config-clay-components"
 	],
 	"bugs": {
-		"url": "https://github.com/liferay/com-liferay-analytics/issues"
+		"url": "https://github.com/liferay/liferay-portal/issues"
 	},
 	"dependencies": {
 		"browser-tabs-lock": "^1.2.7",
@@ -17,7 +17,7 @@
 		"fetch-mock": "^5.13.1",
 		"isomorphic-fetch": "^2.2.1"
 	},
-	"homepage": "https://github.com/liferay/com-liferay-analytics#readme",
+	"homepage": "https://github.com/liferay/liferay-portal#readme",
 	"jest": {
 		"setupFilesAfterEnv": [
 			"<rootDir>/test/setup.js"
@@ -35,7 +35,7 @@
 	"name": "analytics-client-js",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/liferay/com-liferay-analytics.git"
+		"url": "git+https://github.com/liferay/liferay-portal.git"
 	},
 	"scripts": {
 		"build": "node-scripts build:custom",
