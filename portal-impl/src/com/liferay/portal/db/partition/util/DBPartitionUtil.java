@@ -817,6 +817,19 @@ public class DBPartitionUtil {
 				while (resultSet.next()) {
 					String tableName = resultSet.getString("TABLE_NAME");
 
+					if (StringUtil.equalsIgnoreCase(
+							tableName, "Configuration_")) {
+
+						statement.executeUpdate(
+							_getCopyDataSQL(
+								getPartitionName(companyId),
+								extractedPartitionName, tableName, tableName,
+								_getColumnNames(connection, tableName),
+								StringPool.BLANK));
+
+						continue;
+					}
+
 					if (dbInspector.isControlTable(tableName)) {
 						_extractTable(
 							companyId, connection, tableName, statement,
