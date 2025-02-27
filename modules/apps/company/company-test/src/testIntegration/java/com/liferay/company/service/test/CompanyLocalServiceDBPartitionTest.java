@@ -666,7 +666,9 @@ public class CompanyLocalServiceDBPartitionTest
 				ArrayUtil.contains(
 					_getCompanyIdsBySQL(), company.getCompanyId()));
 			Assert.assertTrue(
-				exists(getExtractedPartitionName(company.getCompanyId())));
+				dbPartitionDB.existsPartition(
+					connection,
+					getExtractedPartitionName(company.getCompanyId())));
 
 			_checkStandaloneDBPartitionTables(
 				getExtractedPartitionName(company.getCompanyId()), "Company",
@@ -732,7 +734,9 @@ public class CompanyLocalServiceDBPartitionTest
 			Assert.assertEquals(
 				viewsCount, _getViewsCount(company.getCompanyId()));
 			Assert.assertFalse(
-				exists(getExtractedPartitionName(company.getCompanyId())));
+				dbPartitionDB.existsPartition(
+					connection,
+					getExtractedPartitionName(company.getCompanyId())));
 		}
 		finally {
 			db.runSQL(
