@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -59,23 +60,29 @@ public class MultiSelectPicklistDDMFormFieldTemplateContextContributor
 						continue;
 					}
 
+					LocalizedValue localizedValue =
+						ddmFormFieldOptions.getOptionLabels(optionValue);
+
 					options.add(
 						HashMapBuilder.<String, Object>put(
 							"label",
-							() -> {
-								LocalizedValue localizedValue =
-									ddmFormFieldOptions.getOptionLabels(
-										optionValue);
-
-								return localizedValue.getString(
-									localizedValue.getDefaultLocale());
-							}
+							localizedValue.getString(
+								localizedValue.getDefaultLocale())
 						).put(
 							"labelMap",
-							DDMFormFieldTemplateContextContributorUtil.
-								getListTypeEntryNameMap(
-									ddmFormField, optionValue,
-									_listTypeEntryLocalService)
+							() -> {
+								Map<Locale, String> labeMap =
+									DDMFormFieldTemplateContextContributorUtil.
+										getListTypeEntryNameMap(
+											ddmFormField, optionValue,
+											_listTypeEntryLocalService);
+
+								if (labeMap != null) {
+									return labeMap;
+								}
+
+								return localizedValue.getValues();
+							}
 						).put(
 							"reference",
 							ddmFormFieldOptions.getOptionReference(optionValue)
