@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal DB Partition Test Utilities
 Bundle-SymbolicName: com.liferay.portal.db.partition.test.util
-Bundle-Version: 4.3.1
+Bundle-Version: 5.0.0
 Export-Package: com.liferay.portal.db.partition.test.util
