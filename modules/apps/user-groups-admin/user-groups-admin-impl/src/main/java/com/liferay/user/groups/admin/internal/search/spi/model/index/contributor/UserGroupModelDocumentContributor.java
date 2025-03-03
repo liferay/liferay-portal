@@ -5,9 +5,11 @@
 
 package com.liferay.user.groups.admin.internal.search.spi.model.index.contributor;
 
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 
@@ -28,6 +30,12 @@ public class UserGroupModelDocumentContributor
 	public void contribute(Document document, UserGroup userGroup) {
 		document.addKeyword(Field.COMPANY_ID, userGroup.getCompanyId());
 		document.addText(Field.DESCRIPTION, userGroup.getDescription());
+		document.addKeyword(
+			"groupIds",
+			TransformUtil.transformToLongArray(
+				_groupLocalService.getUserGroupGroups(
+					userGroup.getUserGroupId()),
+				group -> group.getGroupId()));
 		document.addText(Field.NAME, userGroup.getName());
 		document.addKeyword(Field.USER_GROUP_ID, userGroup.getUserGroupId());
 		document.addKeyword(
@@ -35,6 +43,9 @@ public class UserGroupModelDocumentContributor
 			_userGroupLocalService.getUserPrimaryKeys(
 				userGroup.getUserGroupId()));
 	}
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private UserGroupLocalService _userGroupLocalService;
