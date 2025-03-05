@@ -32,7 +32,7 @@ function MarketplacePresentationModal({body, heading, onCloseModal}: Props) {
 			<ClayModal.Body className="c-p-0">
 				<div className="marketplace-modal__image-background">
 					<img
-						alt="image"
+						alt=""
 						src={`${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/layout-js-components-web/images/marketplace.svg`}
 					/>
 				</div>
