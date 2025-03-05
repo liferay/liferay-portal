@@ -310,6 +310,7 @@ export default function FragmentsSidebar() {
 					<SearchResultsPanel
 						filteredTabs={filteredTabs}
 						loading={loadingWidgets}
+						searchValue={searchValue}
 					/>
 				) : (
 					<TabsPanel
