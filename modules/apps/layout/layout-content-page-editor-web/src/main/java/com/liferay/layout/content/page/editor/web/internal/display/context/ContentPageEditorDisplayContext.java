@@ -85,6 +85,7 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -829,6 +830,14 @@ public class ContentPageEditorDisplayContext {
 							}
 
 							return false;
+						}
+					).put(
+						ContentPageEditorActionKeys.VIEW_MARKETPLACE,
+						() -> {
+							PermissionChecker permissionChecker =
+								themeDisplay.getPermissionChecker();
+
+							return permissionChecker.isOmniadmin();
 						}
 					).build();
 				}

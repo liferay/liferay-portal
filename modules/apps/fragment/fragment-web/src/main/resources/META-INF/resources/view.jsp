@@ -78,7 +78,7 @@ List<FragmentCollectionContributor> fragmentCollectionContributors = fragmentEnt
 									</c:if>
 								</li>
 
-								<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-34938") %>'>
+								<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-34938") && permissionChecker.isOmniadmin() %>'>
 									<li>
 										<div class="marketplace-button">
 											<react:component

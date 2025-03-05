@@ -19,6 +19,7 @@ export const INITIAL_STATE: PermissionsState = {
 	UPDATE_LAYOUT_BASIC: undefined,
 	UPDATE_LAYOUT_CONTENT: true,
 	UPDATE_LAYOUT_LIMITED: undefined,
+	VIEW_MARKETPLACE: false,
 };
 
 export default function permissionsReducer(

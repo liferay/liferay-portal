@@ -17,4 +17,6 @@ public class ContentPageEditorActionKeys extends ActionKeys {
 	public static final String LOCKED_SEGMENTS_EXPERIMENT =
 		"LOCKED_SEGMENTS_EXPERIMENT";
 
+	public static final String VIEW_MARKETPLACE = "VIEW_MARKETPLACE";
+
 }
