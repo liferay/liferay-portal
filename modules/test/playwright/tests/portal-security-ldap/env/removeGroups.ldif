@@ -1,0 +1,2 @@
+cn=ldapgroup1,dc=example,dc=com
+cn=ldapgroup2,dc=example,dc=com

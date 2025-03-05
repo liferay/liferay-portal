@@ -1,0 +1,17 @@
+cn: ldapuser1
+dn: cn=ldapuser1,dc=example,dc=com
+givenName: first
+mail: ldapuser1@liferay.com
+objectClass: inetOrgPerson
+objectClass: top
+sn: last
+userPassword: test
+
+cn: ldapuser2
+dn: cn=ldapuser2,dc=example,dc=com
+givenName: first
+mail: ldapuser2@liferay.com
+objectClass: inetOrgPerson
+objectClass: top
+sn: last
+userPassword: test

@@ -1,0 +1,12 @@
+cn: ldapgroup1
+dn: cn=ldapgroup1,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=ldapuser1,dc=example,dc=com
+
+cn: ldapgroup2
+dn: cn=ldapgroup2,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=ldapuser1,dc=example,dc=com
+uniqueMember: cn=ldapuser2,dc=example,dc=com
