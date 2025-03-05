@@ -4,6 +4,7 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
+import {useMarketplaceConfiguration} from '@liferay/marketplace-js-components-web';
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -37,6 +38,19 @@ jest.mock('frontend-js-web', () => ({
 	...jest.requireActual('frontend-js-web'),
 	sub: jest.fn((key, arg) => key.replace('x', arg)),
 }));
+
+jest.mock('@liferay/marketplace-js-components-web', () => {
+	const mockGetProducts = {
+		getProducts: jest.fn(),
+	};
+	const mockMarketplaceRest = jest.fn(() => mockGetProducts);
+	mockMarketplaceRest.getBaseResourceURL = jest.fn(() => 'mocked-base-url');
+
+	return {
+		MarketplaceRest: mockMarketplaceRest,
+		useMarketplaceConfiguration: jest.fn(),
+	};
+});
 
 const DEFAULT_WIDGETS = [
 	{
@@ -210,11 +224,13 @@ const renderComponent = (widgets = DEFAULT_WIDGETS) => {
 describe('FragmentsSidebar', () => {
 	afterEach(() => {
 		jest.useRealTimers();
+		jest.clearAllMocks();
 	});
 
 	beforeEach(() => {
 		TabsPanel.mockClear();
 		jest.useFakeTimers();
+		useMarketplaceConfiguration.mockReturnValue({authorized: false});
 	});
 
 	it('has a sidebar panel title', () => {
