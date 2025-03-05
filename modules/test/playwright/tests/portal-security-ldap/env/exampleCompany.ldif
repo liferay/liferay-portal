@@ -1,0 +1,5 @@
+dc: example
+dn: dc=example,dc=com
+o: Example Company
+objectclass: dcObject
+objectclass: organization
