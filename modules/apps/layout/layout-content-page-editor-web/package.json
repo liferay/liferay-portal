@@ -32,6 +32,7 @@
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/frontend-js-state-web": "*",
 		"@liferay/layout-js-components-web": "*",
+		"@liferay/marketplace-js-components-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
