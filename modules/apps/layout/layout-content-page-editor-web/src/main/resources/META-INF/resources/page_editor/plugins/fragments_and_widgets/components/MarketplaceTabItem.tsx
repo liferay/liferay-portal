@@ -32,10 +32,18 @@ export default function MarketplaceTabItem({item}: MarketplaceTabItemProps) {
 		onOpenChange(true);
 	};
 
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			openItem();
+		}
+	};
+
 	return (
 		<ClayCard
 			className="card-interactive card-interactive-primary card-type-template mb-2 template-card-horizontal"
 			onClick={openItem}
+			onKeyDown={handleKeyDown}
+			role="button"
 			tabIndex={0}
 			title={sub(Liferay.Language.get('x-details'), item.name)}
 		>
