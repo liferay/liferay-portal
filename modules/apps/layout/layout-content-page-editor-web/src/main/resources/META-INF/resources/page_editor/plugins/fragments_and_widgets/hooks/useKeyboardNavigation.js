@@ -102,7 +102,7 @@ function onHeaderKeyDown(element, keyCode, handleOpen) {
 		}
 		else {
 			const collapse = element.parentElement;
-			const nextCollapse = collapse.nextSibling;
+			const nextCollapse = collapse?.nextSibling;
 			const nextHeader = nextCollapse?.querySelector('button');
 
 			nextHeader?.focus();
@@ -113,7 +113,7 @@ function onHeaderKeyDown(element, keyCode, handleOpen) {
 		// Target last item of the previous list. If it's collapsed, target previous header
 
 		const collapse = element.parentElement;
-		const previousCollapse = collapse.previousSibling;
+		const previousCollapse = collapse?.previousSibling;
 
 		if (!previousCollapse) {
 			return;
@@ -156,9 +156,9 @@ function onListItemKeyDown(element, keyCode) {
 		}
 		else {
 			const collapse = element.closest('.page-editor__collapse');
-			const header = collapse.querySelector('button');
+			const header = collapse?.querySelector('button');
 
-			header.focus();
+			header?.focus();
 		}
 	}
 	else if (keyCode === ARROW_DOWN_KEY_CODE) {
@@ -170,7 +170,7 @@ function onListItemKeyDown(element, keyCode) {
 		}
 		else {
 			const collapse = element.closest('.page-editor__collapse');
-			const nextCollapse = collapse.nextSibling;
+			const nextCollapse = collapse?.nextSibling;
 			const nextHeader = nextCollapse?.querySelector('button');
 
 			nextHeader?.focus();

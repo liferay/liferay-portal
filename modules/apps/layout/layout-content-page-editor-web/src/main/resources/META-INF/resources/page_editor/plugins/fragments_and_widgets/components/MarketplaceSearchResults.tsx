@@ -18,6 +18,8 @@ import {
 } from '@liferay/marketplace-js-components-web';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
+import {LIST_ITEM_TYPES} from '../../../app/config/constants/listItemTypes';
+import {useKeyboardNavigation} from '../../../app/js-index';
 import MarketplaceTabItem from './MarketplaceTabItem';
 
 interface MarketplaceSearchResultsProps {
@@ -101,14 +103,15 @@ export default function MarketplaceSearchResults({
 			</p>
 
 			{results?.items.length ? (
-				<div className="px-3">
+				<ul
+					aria-label={Liferay.Language.get('marketplace-fragments')}
+					className="list-unstyled px-3"
+					role="menubar"
+				>
 					{results.items.map((item: Product, index) => (
-						<MarketplaceModal
-							key={index}
-							trigger={<MarketplaceTabItem item={item} />}
-						/>
+						<MarketplaceSearchResultsList item={item} key={index} />
 					))}
-				</div>
+				</ul>
 			) : (
 				!loading && (
 					<ClayEmptyState
@@ -138,5 +141,30 @@ export default function MarketplaceSearchResults({
 				</ClayButton>
 			)}
 		</>
+	);
+}
+
+interface MarketplaceSearchResultsListProps {
+	item: Product;
+}
+
+function MarketplaceSearchResultsList({
+	item,
+}: MarketplaceSearchResultsListProps) {
+	const {isTarget, setElement} = useKeyboardNavigation({
+		type: LIST_ITEM_TYPES.listItem,
+	});
+
+	return (
+		<li ref={setElement} role="none">
+			<MarketplaceModal
+				trigger={
+					<MarketplaceTabItem
+						item={item}
+						tabIndex={isTarget ? 0 : -1}
+					/>
+				}
+			/>
+		</li>
 	);
 }

@@ -5,6 +5,10 @@
 
 // @ts-ignore
 
+export {default as useKeyboardNavigation} from '../../page_editor/plugins/fragments_and_widgets/hooks/useKeyboardNavigation';
+
+// @ts-ignore
+
 export {useActivationOrigin} from './contexts/ControlsContext';
 
 // @ts-ignore
