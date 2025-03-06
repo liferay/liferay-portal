@@ -28,7 +28,11 @@ jarTransformed {
 
 		Map<String, String> optionDefaults = jakartaTransformerCLI.getOptionDefaults()
 
-		File file = new File(rootDir, "liferay-jakarta-versions.properties")
+		File file = new File(rootDir, "liferay-jakarta-renames.properties")
+
+		optionDefaults.put("renames", String.valueOf(file.toURI()))
+
+		file = new File(rootDir, "liferay-jakarta-versions.properties")
 
 		optionDefaults.put("versions", String.valueOf(file.toURI()))
 
