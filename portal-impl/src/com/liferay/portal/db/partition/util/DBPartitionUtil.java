@@ -1155,17 +1155,16 @@ public class DBPartitionUtil {
 
 				throw new IllegalArgumentException(
 					StringBundler.concat(
-						"Partition ", targetPartitionName,
-						" already exists. Delete it before inserting new ",
-						"partition."));
+						"Database partition ", targetPartitionName,
+						" already exists"));
 			}
 
 			if (!_dbPartitionDB.existsPartition(
 					connection, sourcePartitionName)) {
 
 				throw new IllegalArgumentException(
-					"Partition " + sourcePartitionName +
-						" does not exist. Partition can not be imported.");
+					"Unable to insert the database partition " +
+						sourcePartitionName + " because it does not exist");
 			}
 		}
 		catch (SQLException sqlException) {
