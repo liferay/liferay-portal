@@ -108,8 +108,11 @@ export default function MarketplaceSearchResults({
 					className="list-unstyled px-3"
 					role="menubar"
 				>
-					{results.items.map((item: Product, index) => (
-						<MarketplaceSearchResultsList item={item} key={index} />
+					{results.items.map((item: Product) => (
+						<MarketplaceSearchResultsList
+							item={item}
+							key={item.id}
+						/>
 					))}
 				</ul>
 			) : (
@@ -144,27 +147,19 @@ export default function MarketplaceSearchResults({
 	);
 }
 
-interface MarketplaceSearchResultsListProps {
-	item: Product;
-}
-
-function MarketplaceSearchResultsList({
-	item,
-}: MarketplaceSearchResultsListProps) {
+function MarketplaceSearchResultsList({item}: {item: Product}) {
 	const {isTarget, setElement} = useKeyboardNavigation({
 		type: LIST_ITEM_TYPES.listItem,
 	});
 
 	return (
-		<li ref={setElement} role="none">
-			<MarketplaceModal
-				trigger={
-					<MarketplaceTabItem
-						item={item}
-						tabIndex={isTarget ? 0 : -1}
-					/>
-				}
-			/>
+		<li
+			className="card-interactive rounded"
+			ref={setElement}
+			role="menuitem"
+			tabIndex={isTarget ? 0 : -1}
+		>
+			<MarketplaceModal trigger={<MarketplaceTabItem item={item} />} />
 		</li>
 	);
 }

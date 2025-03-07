@@ -17,13 +17,9 @@ import React from 'react';
 
 interface MarketplaceTabItemProps {
 	item: Product;
-	tabIndex: number;
 }
 
-export default function MarketplaceTabItem({
-	item,
-	tabIndex,
-}: MarketplaceTabItemProps) {
+export default function MarketplaceTabItem({item}: MarketplaceTabItemProps) {
 	const {
 		modal: {onOpenChange},
 		setProduct,
@@ -48,7 +44,6 @@ export default function MarketplaceTabItem({
 			onClick={openItem}
 			onKeyDown={handleKeyDown}
 			role="button"
-			tabIndex={tabIndex}
 			title={sub(Liferay.Language.get('x-details'), item.name)}
 		>
 			<ClayCard.Body className="p-2">
