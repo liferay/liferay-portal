@@ -222,6 +222,21 @@ public class CETConfigurationFactory {
 							CETConfiguration.class, properties),
 						companyId, externalReferenceCode);
 
+					if (!Objects.equals(
+							_cet.getType(),
+							ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
+
+						return;
+					}
+
+					ThemeCSSCET themeCSSCET = (ThemeCSSCET)_cet;
+
+					if (!Objects.equals(
+							themeCSSCET.getScope(), "controlPanel")) {
+
+						return;
+					}
+
 					if (_log.isInfoEnabled()) {
 						_log.info(
 							StringBundler.concat(
@@ -242,13 +257,7 @@ public class CETConfigurationFactory {
 								" and company ", companyId));
 					}
 
-					if (Objects.equals(
-							_cet.getType(),
-							ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
-
-						_addControlPanelThemeCSSClientExtensionEntryRel(
-							companyId);
-					}
+					_addControlPanelThemeCSSClientExtensionEntryRel(companyId);
 				}
 				catch (Exception exception) {
 					_log.error(
