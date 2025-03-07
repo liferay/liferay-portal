@@ -1175,11 +1175,11 @@ public class DBPartitionUtil {
 		List<String> copiedTableNames = new ArrayList<>();
 
 		try (Statement statement = connection.createStatement()) {
-			for (String query :
+			for (String renamePartitionSQL :
 					_dbPartitionDB.getRenamePartitionSQLs(
 						connection, sourcePartitionName, targetPartitionName)) {
 
-				statement.executeUpdate(query);
+				statement.executeUpdate(renamePartitionSQL);
 			}
 
 			autoCloseable = _disableAutoCommit(connection);
@@ -1244,12 +1244,12 @@ public class DBPartitionUtil {
 			try (Statement statement = connection.createStatement()) {
 				DBInspector dbInspector = new DBInspector(connection);
 
-				for (String query :
+				for (String renamePartitionSQL :
 						_dbPartitionDB.getRenamePartitionSQLs(
 							connection, targetPartitionName,
 							sourcePartitionName)) {
 
-					statement.executeUpdate(query);
+					statement.executeUpdate(renamePartitionSQL);
 				}
 
 				for (String copiedTableName : copiedTableNames) {
