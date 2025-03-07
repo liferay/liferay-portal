@@ -96,10 +96,7 @@ public class CETConfigurationFactory {
 								" and company ", companyId));
 					}
 
-					if (Objects.equals(
-							_cet.getType(),
-							ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
-
+					if (_isControlPanelScopedThemeCSSCET()) {
 						_addControlPanelThemeCSSClientExtensionEntryRel(
 							companyId);
 					}
@@ -253,10 +250,6 @@ public class CETConfigurationFactory {
 		throws PortalException {
 
 		ThemeCSSCET themeCSSCET = (ThemeCSSCET)_cet;
-
-		if (!Objects.equals(themeCSSCET.getScope(), "controlPanel")) {
-			return;
-		}
 
 		ClientExtensionEntryRel clientExtensionEntryRel =
 			_clientExtensionEntryRelLocalService.
