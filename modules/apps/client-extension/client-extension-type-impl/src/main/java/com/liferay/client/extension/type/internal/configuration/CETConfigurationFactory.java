@@ -138,18 +138,7 @@ public class CETConfigurationFactory {
 
 					_cetManager.deleteCET(_cet);
 
-					if (!Objects.equals(
-							_cet.getType(),
-							ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
-
-						return;
-					}
-
-					ThemeCSSCET themeCSSCET = (ThemeCSSCET)_cet;
-
-					if (!Objects.equals(
-							themeCSSCET.getScope(), "controlPanel")) {
-
+					if (!_isControlPanelScopedThemeCSSCET()) {
 						return;
 					}
 
@@ -222,18 +211,7 @@ public class CETConfigurationFactory {
 							CETConfiguration.class, properties),
 						companyId, externalReferenceCode);
 
-					if (!Objects.equals(
-							_cet.getType(),
-							ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
-
-						return;
-					}
-
-					ThemeCSSCET themeCSSCET = (ThemeCSSCET)_cet;
-
-					if (!Objects.equals(
-							themeCSSCET.getScope(), "controlPanel")) {
-
+					if (!_isControlPanelScopedThemeCSSCET()) {
 						return;
 					}
 
@@ -334,6 +312,18 @@ public class CETConfigurationFactory {
 	private String _getExternalReferenceCode(Map<String, Object> properties) {
 		return "LXC:" +
 			ConfigurationFactoryUtil.getExternalReferenceCode(properties);
+	}
+
+	private boolean _isControlPanelScopedThemeCSSCET() {
+		if (!Objects.equals(
+				_cet.getType(), ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
+
+			return false;
+		}
+
+		ThemeCSSCET themeCSSCET = (ThemeCSSCET)_cet;
+
+		return Objects.equals(themeCSSCET.getScope(), "controlPanel");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
