@@ -263,8 +263,6 @@ public class CompanyLocalServiceDBPartitionTest
 
 		companyLocalService.extractDBPartitionCompany(company.getCompanyId());
 
-		boolean companyExists = true;
-
 		try {
 			_assertConfiguration(pid, true);
 
@@ -290,12 +288,8 @@ public class CompanyLocalServiceDBPartitionTest
 
 			companyLocalService.deleteCompany(company);
 
-			companyExists = false;
-
 			company = companyLocalService.addDBPartitionCompany(
 				company.getCompanyId(), name, virtualHostName, webId);
-
-			companyExists = true;
 
 			Assert.assertTrue(
 				ArrayUtil.contains(
@@ -317,7 +311,9 @@ public class CompanyLocalServiceDBPartitionTest
 				dbPartitionDB.getDropPartitionSQL(
 					getExtractedPartitionName(company.getCompanyId())));
 
-			if (companyExists) {
+			if (ArrayUtil.contains(
+					_getCompanyIdsBySQL(), company.getCompanyId())) {
+
 				companyLocalService.deleteCompany(company);
 			}
 			else {
@@ -332,15 +328,11 @@ public class CompanyLocalServiceDBPartitionTest
 
 		Company company = CompanyTestUtil.addCompany();
 
-		boolean companyExists = true;
-
 		try {
 			companyLocalService.extractDBPartitionCompany(
 				company.getCompanyId());
 
 			_companyLocalService.deleteCompany(company);
-
-			companyExists = false;
 
 			Company defaultCompany = companyLocalService.getCompany(
 				_defaultCompanyId);
@@ -367,7 +359,9 @@ public class CompanyLocalServiceDBPartitionTest
 				dbPartitionDB.getDropPartitionSQL(
 					getExtractedPartitionName(company.getCompanyId())));
 
-			if (companyExists) {
+			if (ArrayUtil.contains(
+					_getCompanyIdsBySQL(), company.getCompanyId())) {
+
 				companyLocalService.deleteCompany(company);
 			}
 			else {
@@ -382,15 +376,11 @@ public class CompanyLocalServiceDBPartitionTest
 
 		Company company = CompanyTestUtil.addCompany();
 
-		boolean companyExists = true;
-
 		try {
 			companyLocalService.extractDBPartitionCompany(
 				company.getCompanyId());
 
 			_companyLocalService.deleteCompany(company);
-
-			companyExists = false;
 
 			try (AutoCloseable autoCloseable =
 					ReflectionTestUtil.setFieldValueWithAutoCloseable(
@@ -430,7 +420,9 @@ public class CompanyLocalServiceDBPartitionTest
 				dbPartitionDB.getDropPartitionSQL(
 					getExtractedPartitionName(company.getCompanyId())));
 
-			if (companyExists) {
+			if (ArrayUtil.contains(
+					_getCompanyIdsBySQL(), company.getCompanyId())) {
+
 				companyLocalService.deleteCompany(company);
 			}
 			else {
