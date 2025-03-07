@@ -119,11 +119,9 @@ public class CETConfigurationFactory {
 				try {
 					_deleteCET(companyId);
 
-					if (!_isControlPanelScopedThemeCSSCET()) {
-						return;
+					if (_isControlPanelScopedThemeCSSCET()) {
+						_deleteClientExtensionEntryRels(companyId);
 					}
-
-					_deleteClientExtensionEntryRels(companyId);
 				}
 				catch (Exception exception) {
 					_log.error(
@@ -174,13 +172,12 @@ public class CETConfigurationFactory {
 							CETConfiguration.class, properties),
 						companyId, externalReferenceCode);
 
-					if (!_isControlPanelScopedThemeCSSCET()) {
-						return;
+					if (_isControlPanelScopedThemeCSSCET()) {
+						_deleteClientExtensionEntryRels(companyId);
+
+						_addControlPanelThemeCSSClientExtensionEntryRel(
+							companyId);
 					}
-
-					_deleteClientExtensionEntryRels(companyId);
-
-					_addControlPanelThemeCSSClientExtensionEntryRel(companyId);
 				}
 				catch (Exception exception) {
 					_log.error(
