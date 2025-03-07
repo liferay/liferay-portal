@@ -1149,7 +1149,7 @@ public class DBPartitionUtil {
 		Connection connection = CurrentConnectionUtil.getConnection(
 			InfrastructureUtil.getDataSource());
 
-		try (Statement statement = connection.createStatement()) {
+		try {
 			if (_dbPartitionDB.existsPartition(
 					connection, targetPartitionName)) {
 
