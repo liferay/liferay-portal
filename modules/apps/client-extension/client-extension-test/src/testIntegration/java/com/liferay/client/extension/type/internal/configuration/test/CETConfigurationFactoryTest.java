@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -32,7 +33,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -112,6 +113,8 @@ public class CETConfigurationFactoryTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+
+		_user = UserTestUtil.getAdminUser(_virtualInstanceCompanyId);
 	}
 
 	@Test
@@ -132,14 +135,14 @@ public class CETConfigurationFactoryTest {
 
 		ClientExtensionEntryRel clientExtensionEntryRel =
 			_clientExtensionEntryRelLocalService.addClientExtensionEntryRel(
-				TestPropsValues.getUserId(), _group.getGroupId(),
+				_user.getUserId(), _group.getGroupId(),
 				_portal.getClassNameId(LayoutSet.class),
 				publicLayoutSet.getLayoutSetId(), externalReferenceCode,
 				ClientExtensionEntryConstants.TYPE_THEME_CSS, StringPool.BLANK,
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		clientExtensionEntryRel =
-			_clientExtensionEntryRelLocalService.getClientExtensionEntryRel(
+			_clientExtensionEntryRelLocalService.fetchClientExtensionEntryRel(
 				clientExtensionEntryRel.getClientExtensionEntryRelId());
 
 		Assert.assertNotNull(clientExtensionEntryRel);
@@ -148,7 +151,7 @@ public class CETConfigurationFactoryTest {
 			pid, themeCSSCETConfigurationProperties);
 
 		clientExtensionEntryRel =
-			_clientExtensionEntryRelLocalService.getClientExtensionEntryRel(
+			_clientExtensionEntryRelLocalService.fetchClientExtensionEntryRel(
 				clientExtensionEntryRel.getClientExtensionEntryRelId());
 
 		Assert.assertNotNull(clientExtensionEntryRel);
@@ -285,7 +288,7 @@ public class CETConfigurationFactoryTest {
 			Collections.singletonList(
 				"scope=" + (controlPanelScoped ? "controlPanel" : ""))
 		).put(
-			"userId", TestPropsValues.getUserId()
+			"userId", _user.getUserId()
 		).put(
 			"webContextPath", "/" + name
 		).build();
@@ -393,6 +396,7 @@ public class CETConfigurationFactoryTest {
 	private static final List<AutoCloseable> _autoCloseables =
 		new ArrayList<>();
 	private static Group _group;
+	private static User _user;
 	private static long _virtualInstanceCompanyId;
 
 	@Inject
