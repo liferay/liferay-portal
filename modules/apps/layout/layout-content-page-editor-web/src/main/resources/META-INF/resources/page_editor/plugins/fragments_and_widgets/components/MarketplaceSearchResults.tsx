@@ -148,11 +148,22 @@ export default function MarketplaceSearchResults({
 }
 
 function MarketplaceSearchResultsList({item}: {item: Product}) {
-	const {isTarget, setElement} = useKeyboardNavigation({
+	const {element, isTarget, setElement} = useKeyboardNavigation({
 		type: LIST_ITEM_TYPES.listItem,
 	});
 
 	const onClickRef = useRef<() => void | null>(null);
+
+	useEffect(() => {
+		const list = element?.closest('[role="menubar"]');
+		const listItem = element?.closest('li');
+
+		const isFirstChild = listItem === list?.firstChild;
+
+		if (element && isFirstChild) {
+			element.focus();
+		}
+	}, [element]);
 
 	return (
 		<li

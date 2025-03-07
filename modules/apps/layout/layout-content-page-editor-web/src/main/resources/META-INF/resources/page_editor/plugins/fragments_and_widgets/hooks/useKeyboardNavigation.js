@@ -86,7 +86,7 @@ export default function useKeyboardNavigation({handleOpen, type}) {
 		element
 	);
 
-	return {isTarget, setElement};
+	return {element, isTarget, setElement};
 }
 
 function onHeaderKeyDown(element, keyCode, handleOpen) {
