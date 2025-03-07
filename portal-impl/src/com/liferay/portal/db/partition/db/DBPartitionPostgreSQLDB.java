@@ -178,7 +178,7 @@ public class DBPartitionPostgreSQLDB implements DBPartitionDB {
 	}
 
 	@Override
-	public String[] getRenamePartitionSQL(
+	public String[] getRenamePartitionSQLs(
 		Connection connection, String sourcePartitionName,
 		String targetPartitionName) {
 

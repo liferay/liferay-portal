@@ -67,14 +67,15 @@ public class DBPartitionMySQLDB implements DBPartitionDB {
 	}
 
 	@Override
-	public String[] getRenamePartitionSQL(
+	public String[] getRenamePartitionSQLs(
 			Connection connection, String sourcePartitionName,
 			String targetPartitionName)
 		throws SQLException {
 
-		List<String> queries = new ArrayList<>();
+		List<String> renamePartitionSQLs = new ArrayList<>();
 
-		queries.add(getCreatePartitionSQL(connection, targetPartitionName));
+		renamePartitionSQLs.add(
+			getCreatePartitionSQL(connection, targetPartitionName));
 
 		DatabaseMetaData databaseMetaData = connection.getMetaData();
 
@@ -86,7 +87,7 @@ public class DBPartitionMySQLDB implements DBPartitionDB {
 			while (resultSet.next()) {
 				String tableName = resultSet.getString("TABLE_NAME");
 
-				queries.add(
+				renamePartitionSQLs.add(
 					StringBundler.concat(
 						"rename table ",
 						sourcePartitionName + StringPool.PERIOD, tableName,
@@ -95,9 +96,9 @@ public class DBPartitionMySQLDB implements DBPartitionDB {
 			}
 		}
 
-		queries.add(getDropPartitionSQL(sourcePartitionName));
+		renamePartitionSQLs.add(getDropPartitionSQL(sourcePartitionName));
 
-		return queries.toArray(new String[0]);
+		return renamePartitionSQLs.toArray(new String[0]);
 	}
 
 	@Override

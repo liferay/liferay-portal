@@ -1177,7 +1177,7 @@ public class DBPartitionUtil {
 
 		try (Statement statement = connection.createStatement()) {
 			for (String query :
-					_dbPartitionDB.getRenamePartitionSQL(
+					_dbPartitionDB.getRenamePartitionSQLs(
 						connection, sourcePartitionName, targetPartitionName)) {
 
 				statement.executeUpdate(query);
@@ -1246,7 +1246,7 @@ public class DBPartitionUtil {
 				DBInspector dbInspector = new DBInspector(connection);
 
 				for (String query :
-						_dbPartitionDB.getRenamePartitionSQL(
+						_dbPartitionDB.getRenamePartitionSQLs(
 							connection, targetPartitionName,
 							sourcePartitionName)) {
 

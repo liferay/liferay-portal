@@ -101,7 +101,7 @@ public interface DBPartitionDB {
 			"drop view if exists ", partitionName, StringPool.PERIOD, viewName);
 	}
 
-	public String[] getRenamePartitionSQL(
+	public String[] getRenamePartitionSQLs(
 			Connection connection, String sourcePartitionName,
 			String targetPartitionName)
 		throws SQLException;
