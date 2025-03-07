@@ -152,14 +152,26 @@ function MarketplaceSearchResultsList({item}: {item: Product}) {
 		type: LIST_ITEM_TYPES.listItem,
 	});
 
+	const onClickRef = useRef<() => void | null>(null);
+
 	return (
 		<li
 			className="card-interactive rounded"
+			onClick={() => onClickRef.current?.()}
+			onKeyDown={(event) => {
+				if (event.key === 'Enter' || event.key === 'Space') {
+					onClickRef.current?.();
+				}
+			}}
 			ref={setElement}
 			role="menuitem"
 			tabIndex={isTarget ? 0 : -1}
 		>
-			<MarketplaceModal trigger={<MarketplaceTabItem item={item} />} />
+			<MarketplaceModal
+				trigger={
+					<MarketplaceTabItem item={item} onClickRef={onClickRef} />
+				}
+			/>
 		</li>
 	);
 }
