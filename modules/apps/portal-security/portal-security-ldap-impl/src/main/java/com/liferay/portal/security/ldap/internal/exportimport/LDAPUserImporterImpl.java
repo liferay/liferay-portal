@@ -947,8 +947,9 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 
 	private long _getExpandoTableId(long companyId) throws Exception {
 		if (_expandoTable == null) {
-			_expandoTable = _expandoTableLocalService.getTable(
-				companyId, UserGroup.class.getName(), "LDAP");
+			_expandoTable = _expandoTableLocalService.fetchTable(
+				companyId,
+				_classNameLocalService.getClassNameId(UserGroup.class), "LDAP");
 
 			if (_expandoTable == null) {
 				_expandoTable = _expandoTableLocalService.addTable(
