@@ -34,6 +34,6 @@ public class LDIFWhitespaceCheck extends WhitespaceCheck {
 	}
 
 	private static final Pattern _attributePattern = Pattern.compile(
-		"(?<=(\\A|\n)).+?:[^ ]");
+		"(?<=(\\A|\n)).+?(?<!file):[^ ]");
 
 }

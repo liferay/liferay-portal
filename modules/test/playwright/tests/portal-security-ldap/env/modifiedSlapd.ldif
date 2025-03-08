@@ -112,7 +112,7 @@ olcDatabase: monitor
 olcMonitoring: FALSE
 olcRootDN: cn=config
 
-include: file: ///usr/local/etc/openldap/schema/core.ldif
-include: file: ///usr/local/etc/openldap/schema/cosine.ldif
-include: file: ///usr/local/etc/openldap/schema/inetorgperson.ldif
-include: file: ///usr/local/etc/openldap/schema/nis.ldif
+include: file:///usr/local/etc/openldap/schema/core.ldif
+include: file:///usr/local/etc/openldap/schema/cosine.ldif
+include: file:///usr/local/etc/openldap/schema/inetorgperson.ldif
+include: file:///usr/local/etc/openldap/schema/nis.ldif
