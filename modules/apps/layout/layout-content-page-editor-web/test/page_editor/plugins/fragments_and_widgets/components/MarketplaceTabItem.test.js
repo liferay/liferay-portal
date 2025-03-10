@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {fireEvent, render, screen} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect';
@@ -35,8 +35,10 @@ const mockContext = {
 	setView: jest.fn(),
 };
 
-function renderMarketPlaceTabItem() {
-	return render(<MarketplaceTabItem item={mockItem} />);
+function renderMarketPlaceTabItem({onClickRef}) {
+	return render(
+		<MarketplaceTabItem item={mockItem} onClickRef={onClickRef} />
+	);
 }
 
 describe('MarketplaceTabItem', () => {
@@ -48,8 +50,8 @@ describe('MarketplaceTabItem', () => {
 		jest.clearAllMocks();
 	});
 
-	it('renders item details correctly', () => {
-		renderMarketPlaceTabItem();
+	it('renders item details with correct name, catalog, and image', () => {
+		renderMarketPlaceTabItem({});
 
 		expect(screen.getByTitle('x-details')).toBeInTheDocument();
 
@@ -59,10 +61,11 @@ describe('MarketplaceTabItem', () => {
 			'src',
 			'test-image.jpg'
 		);
+		expect(screen.getByRole('img')).toHaveAttribute('alt', '');
 	});
 
 	it('renders the card with correct classNames', () => {
-		const {container} = renderMarketPlaceTabItem();
+		const {container} = renderMarketPlaceTabItem({});
 		expect(
 			container.querySelector('.card-interactive')
 		).toBeInTheDocument();
@@ -83,8 +86,11 @@ describe('MarketplaceTabItem', () => {
 	});
 
 	it('calls context functions on card click', () => {
-		renderMarketPlaceTabItem();
-		fireEvent.click(screen.getByText('Test Item'));
+		const onClickRef = React.createRef();
+
+		renderMarketPlaceTabItem({onClickRef});
+
+		onClickRef?.current?.();
 
 		expect(mockContext.setProduct).toHaveBeenCalledWith(mockItem);
 		expect(mockContext.setView).toHaveBeenCalledWith(

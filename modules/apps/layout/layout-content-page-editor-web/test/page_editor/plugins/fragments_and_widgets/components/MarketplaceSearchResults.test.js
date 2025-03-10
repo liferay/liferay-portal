@@ -37,6 +37,8 @@ jest.mock('@liferay/marketplace-js-components-web', () => {
 	};
 });
 
+const mockOpenChange = jest.fn();
+
 jest.mock('@liferay/layout-js-components-web', () => {
 	const {MarketplaceContext} = jest.requireActual(
 		'@liferay/marketplace-js-components-web'
@@ -44,7 +46,7 @@ jest.mock('@liferay/layout-js-components-web', () => {
 
 	return {
 		...jest.requireActual('@liferay/layout-js-components-web'),
-		MarketplaceModal: ({onOpenChange, trigger}) => (
+		MarketplaceModal: ({onOpenChange = mockOpenChange, trigger}) => (
 			<MarketplaceContext.Provider
 				value={{
 					modal: {onOpenChange},
@@ -58,20 +60,16 @@ jest.mock('@liferay/layout-js-components-web', () => {
 	};
 });
 
+const getProduct = (id) => ({
+	catalogName: `Catalog ${id}`,
+	id,
+	name: `Product ${id}`,
+	urlImage: `urlImage${id}`,
+});
+
 const mockProducts = {
-	items: [
-		{
-			catalogName: 'Catalog 1',
-			name: 'Product 1',
-			urlImage: 'urlImage1',
-		},
-		{
-			catalogName: 'Catalog 2',
-			name: 'Product 2',
-			urlImage: 'urlImage2',
-		},
-	],
-	lastPage: 1,
+	items: [getProduct(1), getProduct(2)],
+	lastPage: 2,
 	page: 1,
 };
 
@@ -100,7 +98,7 @@ describe('MarketplaceSearchResults', () => {
 		jest.clearAllMocks();
 	});
 
-	it('fetches and displays marketplace results', async () => {
+	it('fetches and displays marketplace results when API returns data', async () => {
 		const {container} = renderMarketplaceSearchResults({});
 
 		await waitFor(() => {
@@ -108,6 +106,7 @@ describe('MarketplaceSearchResults', () => {
 			expect(
 				screen.getByText('showing-results-from-marketplace')
 			).toBeInTheDocument();
+			expect(screen.getByText('showing-x-x')).toBeInTheDocument();
 			expect(screen.getAllByTitle(`x-details`).length).toBe(2);
 
 			const expectProduct = (index) => {
@@ -158,17 +157,81 @@ describe('MarketplaceSearchResults', () => {
 	});
 
 	it('handles "load more results" functionality', async () => {
-		mockProducts.lastPage = 2;
+		renderMarketplaceSearchResults({});
+
+		await waitFor(() => {
+			const loadMoreResultsButton = screen.getByRole('button', {
+				name: 'load-more-results',
+			});
+			expect(loadMoreResultsButton).toBeInTheDocument();
+			mockMarketplaceInstance.getProducts.mockResolvedValue({
+				items: [getProduct(3), getProduct(4)],
+				lastPage: 2,
+				page: 2,
+			});
+			fireEvent.click(loadMoreResultsButton);
+		});
+
+		await waitFor(() => {
+			expect(
+				screen.queryByRole('button', {name: 'load-more-results'})
+			).toBeNull();
+			expect(mockMarketplaceInstance.getProducts).toHaveBeenCalledTimes(
+				2
+			);
+			expect(screen.getAllByRole('menuitem').length).toBe(4);
+		});
+	});
+
+	it('focuses the first item and handles keyboard navigation', async () => {
+		renderMarketplaceSearchResults({});
+
+		await waitFor(() => {
+			expect(screen.getAllByRole('menubar').length).toBe(1);
+			const menuItems = screen.getAllByRole('menuitem');
+			expect(menuItems.length).toBe(2);
+			expect(menuItems[0]).toHaveFocus();
+			fireEvent.keyDown(menuItems[0], {code: 'ArrowDown'});
+			expect(menuItems[1]).toHaveFocus();
+			fireEvent.keyDown(menuItems[1], {code: 'ArrowUp'});
+			expect(menuItems[0]).toHaveFocus();
+		});
+	});
+
+	it('triggers modal on enter key press', async () => {
+		renderMarketplaceSearchResults({});
+		await waitFor(() => {
+			const menuItems = screen.getAllByRole('menuitem');
+			fireEvent.keyDown(menuItems[0], {key: 'Enter'});
+			expect(mockOpenChange).toHaveBeenCalledWith(true);
+		});
+	});
+
+	it('triggers modal on space key press', async () => {
+		renderMarketplaceSearchResults({});
+		await waitFor(() => {
+			const menuItems = screen.getAllByRole('menuitem');
+			fireEvent.keyDown(menuItems[0], {key: 'Space'});
+			expect(mockOpenChange).toHaveBeenCalledWith(true);
+		});
+	});
+
+	it('displays error message in console when API call fails', async () => {
+		mockMarketplaceInstance.getProducts.mockRejectedValue(
+			new Error('API Error!')
+		);
+
+		console.error = jest.fn();
 
 		renderMarketplaceSearchResults({});
 
 		await waitFor(() => {
-			fireEvent.click(
-				screen.getByRole('button', {name: 'load-more-results'})
-			);
-			expect(mockMarketplaceInstance.getProducts).toHaveBeenCalledTimes(
-				2
+			expect(console.error).toHaveBeenCalledWith(
+				'Failed to fetch products:',
+				expect.any(Error)
 			);
 		});
+
+		console.error.mockRestore();
 	});
 });
