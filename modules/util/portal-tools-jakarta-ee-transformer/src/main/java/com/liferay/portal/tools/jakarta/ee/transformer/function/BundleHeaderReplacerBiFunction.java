@@ -16,6 +16,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,11 +31,15 @@ import java.util.regex.Pattern;
 public class BundleHeaderReplacerBiFunction
 	implements BiFunction<String, Map<Object, Object>, Map<Object, Object>> {
 
+	public static final BiFunction
+		<String, Map<Object, Object>, Map<Object, Object>> INSTANCE =
+			new BundleHeaderReplacerBiFunction();
+
 	@Override
 	public Map<Object, Object> apply(
 		String invoker, Map<Object, Object> headerMap) {
 
-		Map<Object, Object> modifiedHeaderMap = new HashMap<>();
+		Map<Object, Object> modifiedHeaderMap = new LinkedHashMap<>();
 
 		StringBuilder sb = new StringBuilder();
 
@@ -80,7 +85,9 @@ public class BundleHeaderReplacerBiFunction
 			sb.append(']');
 		}
 
-		if (!_JAKARTA_EE_TRANSFORMER_BUNDLE_HEADER_REPLACER_LOGGING_DISABLED) {
+		if (!_JAKARTA_EE_TRANSFORMER_BUNDLE_HEADER_REPLACER_LOGGING_DISABLED &&
+			!sb.isEmpty()) {
+
 			System.err.println(
 				"JakartaEETransformer#BundleHeaderReplacer#" + invoker + "[" +
 					sb.toString());
