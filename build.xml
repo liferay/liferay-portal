@@ -1130,6 +1130,8 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 			<arg value="${build.jakarta.transformer.include.dirs}" />
 		</java>
 
+		<gradle-execute dir="${project.dir}/modules" task=":util:source-formatter:deploy" />
+
 		<ant antfile="portal-impl/build.xml" inheritAll="false" target="format-source-local-changes" />
 	</target>
 
