@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -10,28 +10,24 @@ import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.option.CommerceOptionType;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
-import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOption;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.template.react.renderer.ComponentDescriptor;
-import com.liferay.portal.template.react.renderer.ReactRenderer;
-import com.liferay.portal.vulcan.dto.converter.DTOConverter;
-import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
-import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+
+import java.io.PrintWriter;
+
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.util.Locale;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
@@ -43,7 +39,8 @@ import java.util.Locale;
 	},
 	service = CommerceOptionType.class
 )
-public class DocumentLibraryCommerceOptionTypeImpl implements CommerceOptionType {
+public class DocumentLibraryCommerceOptionTypeImpl
+	implements CommerceOptionType {
 
 	@Override
 	public String getKey() {
@@ -84,7 +81,9 @@ public class DocumentLibraryCommerceOptionTypeImpl implements CommerceOptionType
 		DDMFormField ddmFormField = new DDMFormField(
 			cpDefinitionOptionRel.getKey(),
 			cpDefinitionOptionRel.getCommerceOptionTypeKey());
+
 		Locale locale = _portal.getLocale(httpServletRequest);
+
 		LocalizedValue ddmFormFieldLabelLocalizedValue = new LocalizedValue(
 			locale);
 
@@ -92,6 +91,7 @@ public class DocumentLibraryCommerceOptionTypeImpl implements CommerceOptionType
 			locale, cpDefinitionOptionRel.getName(locale));
 
 		ddmFormField.setLabel(ddmFormFieldLabelLocalizedValue);
+
 		ddmFormField.setRequired(cpDefinitionOptionRel.isRequired());
 		ddmForm.addDDMFormField(ddmFormField);
 		ddmForm.addAvailableLocale(locale);
@@ -101,7 +101,8 @@ public class DocumentLibraryCommerceOptionTypeImpl implements CommerceOptionType
 			new DDMFormRenderingContext();
 
 		ddmFormRenderingContext.setContainerId(
-			"ProductOptions" + cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+			"ProductOptions" +
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId());
 		ddmFormRenderingContext.setHttpServletRequest(httpServletRequest);
 		ddmFormRenderingContext.setHttpServletResponse(httpServletResponse);
 		ddmFormRenderingContext.setLocale(locale);
@@ -109,25 +110,17 @@ public class DocumentLibraryCommerceOptionTypeImpl implements CommerceOptionType
 			portletDisplay.getNamespace());
 		ddmFormRenderingContext.setShowRequiredFieldsWarning(false);
 
-		printWriter.write(_ddmFormRenderer.render(ddmForm, ddmFormRenderingContext));
+		printWriter.write(
+			_ddmFormRenderer.render(ddmForm, ddmFormRenderingContext));
 	}
 
 	@Reference
-	private DTOConverterRegistry _dtoConverterRegistry;
+	private DDMFormRenderer _ddmFormRenderer;
 
 	@Reference
 	private Language _language;
 
 	@Reference
 	private Portal _portal;
-
-	@Reference(
-		target = "(component.name=com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.ProductOptionDTOConverter)"
-	)
-	private DTOConverter<CPDefinitionOptionRel, ProductOption>
-		_productOptionDTOConverter;
-
-	@Reference
-	private DDMFormRenderer _ddmFormRenderer;
 
 }
