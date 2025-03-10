@@ -829,6 +829,7 @@ components:
                         -   checkbox
                         -   checkbox_multiple
                         -   date
+                        -   document_library
                         -   numeric
                         -   radio
                         -   select

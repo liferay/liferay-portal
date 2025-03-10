@@ -29,6 +29,7 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-taglib")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-delivery-catalog-api")
+	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:expando:expando-taglib")
 	compileOnly project(":apps:friendly-url:friendly-url-api")
