@@ -59,29 +59,32 @@ public class GradleMissingDependenciesForUpgradeJava21Check
 		for (String javaFileName : javaFileNames) {
 			String javaFileContent = FileUtil.read(new File(javaFileName));
 
-			if (javaFileContent.contains("import javax.annotation.")) {
+			if (javaFileContent.contains("import jakarta.annotation.")) {
 				if (shortDirName.endsWith("-test")) {
 					content = _fixMissingDependencies(
 						content, "testIntegrationImplementation",
-						"javax.annotation", "javax.annotation-api", "1.3.2");
+						"jakarta.annotation", "jakarta.annotation-api",
+						"2.1.1");
 				}
 				else {
 					content = _fixMissingDependencies(
-						content, "compileOnly", "javax.annotation",
-						"javax.annotation-api", "1.3.2");
+						content, "compileOnly", "jakarta.annotation",
+						"jakarta.annotation-api", "2.1.1");
 				}
 			}
 
-			if (javaFileContent.contains("import javax.xml.bind.annotation.")) {
+			if (javaFileContent.contains(
+					"import jakarta.xml.bind.annotation.")) {
+
 				if (shortDirName.endsWith("-test")) {
 					content = _fixMissingDependencies(
 						content, "testIntegrationImplementation",
-						"javax.xml.bind", "jaxb-api", "2.3.0");
+						"jakarta.xml.bind", "jakarta.xml.bind-api", "4.0.2");
 				}
 				else {
 					content = _fixMissingDependencies(
-						content, "compileOnly", "javax.xml.bind", "jaxb-api",
-						"2.3.0");
+						content, "compileOnly", "jakarta.xml.bind",
+						"jakarta.xml.bind-api", "4.0.2");
 				}
 			}
 		}
