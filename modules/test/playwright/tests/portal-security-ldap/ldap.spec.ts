@@ -84,18 +84,22 @@ test.afterEach(
 					LDAP_USER_1.emailAddress
 				);
 
-			await apiHelpers.headlessAdminUser.deleteUserAccount(
-				Number(user.id)
-			);
+			if (user.id !== undefined) {
+				await apiHelpers.headlessAdminUser.deleteUserAccount(
+					Number(user.id)
+				);
+			}
 
 			user =
 				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 					LDAP_USER_2.emailAddress
 				);
 
-			await apiHelpers.headlessAdminUser.deleteUserAccount(
-				Number(user.id)
-			);
+			if (user.id !== undefined) {
+				await apiHelpers.headlessAdminUser.deleteUserAccount(
+					Number(user.id)
+				);
+			}
 		});
 
 		await test.step('Delete LDAP groups from portal if present', async () => {
