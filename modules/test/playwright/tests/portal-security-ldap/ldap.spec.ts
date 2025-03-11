@@ -173,6 +173,155 @@ test.beforeAll(async ({browser}) => {
 	};
 });
 
+test('LPD-47223 AC1 TC1: Verify LDAP import via authentication imports user attributes and user groups, but only for the user being authenticated', async ({
+	browser,
+	editUserPage,
+	ldapConfigurationPage,
+	ldapServerPage,
+	userGroupsPage,
+	usersAndOrganizationsPage,
+}) => {
+	const ldapServer: TLdapServer = {
+		defaultValues: 'OpenLDAP',
+		principal: 'cn=admin,dc=example,dc=com',
+		serverName: getRandomString(),
+	};
+
+	await test.step('Add LDAP server', async () => {
+		await ldapServerPage.addLdapServer(ldapServer);
+	});
+
+	await test.step('Verify LDAP server connection tests display two users and two groups', async () => {
+		await ldapServerPage.viewLdapServer(ldapServer.serverName, false);
+
+		await ldapServerPage.testLdapUsers.click();
+
+		await expect(
+			await ldapServerPage.page.getByRole('cell', {
+				exact: true,
+				name: LDAP_USER_1.alternateName,
+			})
+		).toBeVisible();
+
+		await expect(
+			await ldapServerPage.page.getByRole('cell', {
+				exact: true,
+				name: LDAP_USER_2.alternateName,
+			})
+		).toBeVisible();
+
+		await ldapServerPage.closeButton.click();
+
+		await ldapServerPage.testLdapGroups.click();
+
+		await expect(
+			await ldapServerPage.page.getByRole('cell', {
+				exact: true,
+				name: LDAP_GROUP_1,
+			})
+		).toBeVisible();
+
+		await expect(
+			await ldapServerPage.page.getByRole('cell', {
+				exact: true,
+				name: LDAP_GROUP_2,
+			})
+		).toBeVisible();
+
+		await ldapServerPage.closeButton.click();
+
+		await ldapServerPage.cancelButton.click();
+	});
+
+	await test.step('Enable LDAP, but prevent bulk import', async () => {
+		const ldapConfiguration: TLdapConfiguration = {
+			enableImport: true,
+			enabled: true,
+			importInterval: 0,
+		};
+
+		await ldapConfigurationPage.updateLDAPConfiguration(ldapConfiguration);
+	});
+
+	await test.step(`Authenticate with ${LDAP_USER_2.alternateName}`, async () => {
+		const page = await browser.newPage();
+
+		await performLogin(page, LDAP_USER_2.alternateName);
+	});
+
+	await test.step(`Assert only ${LDAP_USER_2.alternateName} was imported`, async () => {
+		await usersAndOrganizationsPage.goToUsers(false);
+
+		await expect(
+			await usersAndOrganizationsPage.usersTableCell(
+				LDAP_USER_1.alternateName
+			)
+		).toBeHidden();
+
+		await expect(
+			await usersAndOrganizationsPage.usersTableCell(
+				LDAP_USER_2.alternateName
+			)
+		).toBeVisible();
+	});
+
+	await test.step('Assert user data was imported correctly', async () => {
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				LDAP_USER_2.alternateName
+			)
+		).click();
+
+		await expect(editUserPage.emailAddressInput).toHaveValue(
+			LDAP_USER_2.emailAddress
+		);
+
+		await expect(editUserPage.firstNameInput).toHaveValue(
+			LDAP_USER_2.givenName
+		);
+
+		await expect(editUserPage.lastNameInput).toHaveValue(
+			LDAP_USER_2.familyName
+		);
+
+		await expect(editUserPage.screenNameInput).toHaveValue(
+			LDAP_USER_2.alternateName
+		);
+	});
+
+	await test.step('Assert user membership data was imported correctly', async () => {
+		await editUserPage.membershipsLink.click();
+
+		await expect(
+			(
+				await editUserPage.membershipsUserGroupsTableRow(
+					0,
+					LDAP_GROUP_2,
+					true
+				)
+			).row
+		).toBeVisible();
+	});
+
+	await test.step(`Assert only ${LDAP_GROUP_2} was imported`, async () => {
+		await userGroupsPage.goto();
+
+		await expect(
+			await userGroupsPage.page.getByRole('cell', {
+				exact: true,
+				name: LDAP_GROUP_1,
+			})
+		).toBeHidden();
+
+		await expect(
+			await userGroupsPage.page.getByRole('cell', {
+				exact: true,
+				name: LDAP_GROUP_2,
+			})
+		).toBeVisible();
+	});
+});
+
 test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups imported from LDAP', async ({
 	browser,
 	editUserPage,
