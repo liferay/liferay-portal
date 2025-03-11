@@ -19,7 +19,7 @@ import {
 import {SystemSettingsPage} from '../../pages/configuration-admin-web/SystemSettingsPage';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import performLogin from '../../utils/performLogin';
+import performLogin, {userData} from '../../utils/performLogin';
 import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
@@ -34,8 +34,22 @@ export const test = mergeTests(
 
 const LDAP_GROUP_1 = 'ldapgroup1';
 const LDAP_GROUP_2 = 'ldapgroup2';
-const LDAP_USER_1 = 'ldapuser1';
-const LDAP_USER_2 = 'ldapuser2';
+
+const LDAP_USER_1: TUserAccount = {
+	alternateName: 'ldapuser1',
+	emailAddress: 'ldapuser1@liferay.com',
+	familyName: 'last',
+	givenName: 'first',
+	password: 'test',
+};
+
+const LDAP_USER_2: TUserAccount = {
+	alternateName: 'ldapuser2',
+	emailAddress: 'ldapuser2@liferay.com',
+	familyName: 'last',
+	givenName: 'first',
+	password: 'test',
+};
 
 test.afterAll(async ({browser}) => {
 	const page = await browser.newPage();
@@ -67,7 +81,7 @@ test.afterEach(
 		await test.step('Delete LDAP users from portal if present', async () => {
 			let user =
 				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					`${LDAP_USER_1}@liferay.com`
+					LDAP_USER_1.emailAddress
 				);
 
 			await apiHelpers.headlessAdminUser.deleteUserAccount(
@@ -76,7 +90,7 @@ test.afterEach(
 
 			user =
 				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					`${LDAP_USER_2}@liferay.com`
+					LDAP_USER_2.emailAddress
 				);
 
 			await apiHelpers.headlessAdminUser.deleteUserAccount(
@@ -139,6 +153,20 @@ test.beforeAll(async ({browser}) => {
 			`Success:Your request completed successfully.`
 		);
 	});
+
+	// Add LDAP user info to userData so we can authenticate via performLogin
+
+	userData[LDAP_USER_1.alternateName] = {
+		name: LDAP_USER_1.givenName,
+		password: 'test',
+		surname: LDAP_USER_1.familyName,
+	};
+
+	userData[LDAP_USER_2.alternateName] = {
+		name: LDAP_USER_2.givenName,
+		password: 'test',
+		surname: LDAP_USER_2.familyName,
+	};
 });
 
 test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups imported from LDAP', async ({
@@ -233,7 +261,9 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 		await usersAndOrganizationsPage.goToUsers(false);
 
 		await (
-			await usersAndOrganizationsPage.usersTableRowLink(LDAP_USER_1)
+			await usersAndOrganizationsPage.usersTableRowLink(
+				LDAP_USER_1.alternateName
+			)
 		).click();
 
 		await editUserPage.membershipsLink.click();
@@ -266,9 +296,7 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 
 		await page.getByRole('button', {name: 'Sign In'}).last().click();
 
-		await page
-			.getByLabel('Email Address')
-			.fill(`${LDAP_USER_1}@liferay.com`);
+		await page.getByLabel('Email Address').fill(LDAP_USER_1.emailAddress);
 		await page.getByLabel('Password').fill('badPassword');
 
 		await page.getByRole('button', {name: 'Sign In'}).last().click();
