@@ -1,0 +1,29 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Micaelle Silva
+ */
+public class LPD_51241 {
+
+	public void method(
+		long userId, long commerceOrderId, long cpInstanceId, String json,
+		BigDecimal quantity, long replacedCPInstanceId,
+		int shippedQuantity, String unitOfMeasureKey,
+		CommerceContext commerceContext, ServiceContext serviceContext) {
+
+		_commerceOrderItemLocalService.addOrUpdateCommerceOrderItem(123, commerceOrderId, cpInstanceId, json, quantity, replacedCPInstanceId, shippedQuantity, unitOfMeasureKey, commerceContext, serviceContext);
+		_commerceOrderItemLocalService.addOrUpdateCommerceOrderItem(userId, commerceOrderId, cpInstanceId, json, quantity, replacedCPInstanceId, BigDecimal.valueOf(shippedQuantity), unitOfMeasureKey, commerceContext, serviceContext);
+		CommerceOrderItemLocalServiceUtil.addOrUpdateCommerceOrderItem(userId, commerceOrderId, cpInstanceId, json, quantity, replacedCPInstanceId, BigDecimal.valueOf(shippedQuantity), unitOfMeasureKey, commerceContext, serviceContext);
+	}
+
+	@Reference
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+
+}
