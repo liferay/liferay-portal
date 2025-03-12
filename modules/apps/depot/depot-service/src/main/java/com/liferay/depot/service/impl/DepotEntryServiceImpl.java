@@ -12,10 +12,12 @@ import com.liferay.depot.service.base.DepotEntryServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -55,6 +57,40 @@ public class DepotEntryServiceImpl extends DepotEntryServiceBaseImpl {
 
 		return depotEntryLocalService.addDepotEntry(
 			nameMap, descriptionMap, serviceContext);
+	}
+
+	@Override
+	public DepotEntry addOrUpdateDepotEntry(
+			String externalReferenceCode, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap,
+			Map<String, Boolean> depotAppCustomizationMap,
+			UnicodeProperties typeSettingsUnicodeProperties,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = getUser();
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, user.getCompanyId());
+
+		if (group != null) {
+			DepotEntry depotEntry = depotEntryLocalService.getGroupDepotEntry(
+				group.getGroupId());
+
+			_depotEntryModelResourcePermission.check(
+				getPermissionChecker(), depotEntry.getDepotEntryId(),
+				ActionKeys.UPDATE);
+		}
+		else {
+			_portletResourcePermission.check(
+				getPermissionChecker(), serviceContext.getScopeGroupId(),
+				DepotActionKeys.ADD_DEPOT_ENTRY);
+		}
+
+		return depotEntryLocalService.addOrUpdateDepotEntry(
+			externalReferenceCode, nameMap, descriptionMap,
+			depotAppCustomizationMap, typeSettingsUnicodeProperties,
+			serviceContext);
 	}
 
 	@Override
@@ -197,6 +233,9 @@ public class DepotEntryServiceImpl extends DepotEntryServiceBaseImpl {
 	)
 	private volatile ModelResourcePermission<DepotEntry>
 		_depotEntryModelResourcePermission;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,
