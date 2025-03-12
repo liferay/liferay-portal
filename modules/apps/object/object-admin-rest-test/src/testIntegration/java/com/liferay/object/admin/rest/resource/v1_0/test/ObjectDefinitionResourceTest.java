@@ -46,6 +46,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -53,7 +54,9 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -73,6 +76,7 @@ import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.ArrayList;
@@ -354,6 +358,7 @@ public class ObjectDefinitionResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-49994")
 	public void testPostObjectDefinition() throws Exception {
 		super.testPostObjectDefinition();
 
@@ -559,6 +564,8 @@ public class ObjectDefinitionResourceTest
 
 		assertEquals(postObjectDefinition, randomObjectDefinition);
 		assertValid(postObjectDefinition);
+
+		_testPostObjectDefinitionBatch();
 	}
 
 	@FeatureFlags({"LPD-31149", "LPD-32050"})
@@ -1665,6 +1672,116 @@ public class ObjectDefinitionResourceTest
 		objectDefinition.setSystem(true);
 
 		return objectDefinition;
+	}
+
+	private void _testPostObjectDefinitionBatch() throws Exception {
+		String externalReferenceCode1 = RandomTestUtil.randomString();
+		String externalReferenceCode2 = RandomTestUtil.randomString();
+
+		ObjectDefinition objectDefinition1 = randomObjectDefinition();
+
+		objectDefinition1.setExternalReferenceCode(externalReferenceCode1);
+		objectDefinition1.setObjectFolderExternalReferenceCode(
+			_objectFolder1.getExternalReferenceCode());
+		objectDefinition1.setObjectRelationships(
+			new ObjectRelationship[] {
+				new ObjectRelationship() {
+					{
+						deletionType = ObjectRelationship.DeletionType.CASCADE;
+						externalReferenceCode = RandomTestUtil.randomString();
+						name = "a" + RandomTestUtil.randomString();
+						objectDefinitionExternalReferenceCode1 =
+							externalReferenceCode1;
+						objectDefinitionExternalReferenceCode2 =
+							externalReferenceCode2;
+						type = ObjectRelationship.Type.ONE_TO_MANY;
+					}
+				}
+			});
+		objectDefinition1.setStatus(
+			new Status() {
+				{
+					code = WorkflowConstants.STATUS_APPROVED;
+				}
+			});
+
+		ObjectDefinition objectDefinition2 = randomObjectDefinition();
+
+		objectDefinition2.setExternalReferenceCode(externalReferenceCode2);
+		objectDefinition2.setObjectFolderExternalReferenceCode(
+			_objectFolder1.getExternalReferenceCode());
+		objectDefinition2.setStatus(
+			new Status() {
+				{
+					code = WorkflowConstants.STATUS_APPROVED;
+				}
+			});
+
+		User user = TestPropsValues.getUser();
+
+		ObjectDefinitionResource batchObjectDefinitionResource =
+			ObjectDefinitionResource.builder(
+			).authentication(
+				user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(), 8080, "http"
+			).parameter(
+				"createStrategy", "UPSERT"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		JSONObject jsonObject = _waitForFinish(
+			"COMPLETED", true,
+			JSONFactoryUtil.createJSONObject(
+				batchObjectDefinitionResource.
+					postObjectDefinitionBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								String.valueOf(objectDefinition1)),
+							JSONFactoryUtil.createJSONObject(
+								String.valueOf(objectDefinition2)))
+					).getContent()));
+
+		Assert.assertEquals(2, jsonObject.getLong("processedItemsCount"));
+		Assert.assertEquals(2, jsonObject.getLong("totalItemsCount"));
+
+		Page<ObjectDefinition> page =
+			objectDefinitionResource.getObjectDefinitionsPage(
+				null, null,
+				"objectFolderExternalReferenceCode eq '" +
+					_objectFolder1.getExternalReferenceCode() + "'",
+				null, null);
+
+		Assert.assertEquals(2, page.getTotalCount());
+	}
+
+	private JSONObject _waitForFinish(
+			String expectedExecuteStatus, boolean importTask,
+			JSONObject jsonObject)
+		throws Exception {
+
+		String endpoint = StringBundler.concat(
+			"headless-batch-engine/v1.0/",
+			importTask ? "import-task" : "export-task",
+			"/by-external-reference-code/");
+
+		while (true) {
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null, endpoint + jsonObject.getString("externalReferenceCode"),
+				Http.Method.GET);
+
+			String executeStatus = jsonObject.getString("executeStatus");
+
+			if (StringUtil.equals(executeStatus, "COMPLETED") ||
+				StringUtil.equals(executeStatus, "FAILED")) {
+
+				Assert.assertEquals(expectedExecuteStatus, executeStatus);
+
+				return jsonObject;
+			}
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
