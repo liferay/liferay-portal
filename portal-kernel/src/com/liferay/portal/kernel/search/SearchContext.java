@@ -10,7 +10,9 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.facet.Facet;
+import com.liferay.portal.kernel.transaction.TransactionLifecycleListener;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -59,10 +61,28 @@ public class SearchContext implements Serializable {
 					Collections.newSetFromMap(new ConcurrentHashMap<>()),
 					new ArrayList<>()));
 
+		TransactionLifecycleListener transactionLifecycleListener;
+
+		if (commit) {
+			transactionLifecycleListener =
+				_transactionLifecycleListenerSnapshot.get();
+		}
+		else {
+			transactionLifecycleListener = null;
+		}
+
+		if (transactionLifecycleListener != null) {
+			transactionLifecycleListener.created(null, null);
+		}
+
 		return () -> {
 			Exception exception1 = null;
 
 			try {
+				if (transactionLifecycleListener != null) {
+					transactionLifecycleListener.committed(null, null);
+				}
+
 				Map.Entry<Set<Future<?>>, List<Callable<Void>>> entry =
 					_batchModeSyncFuturesAndCallablesThreadLocal.get();
 
@@ -542,6 +562,11 @@ public class SearchContext implements Serializable {
 				new CentralizedThreadLocal<>(
 					SearchContext.class.getName() +
 						"._batchModeSyncFuturesThreadLocal");
+	private static final Snapshot<TransactionLifecycleListener>
+		_transactionLifecycleListenerSnapshot = new Snapshot<>(
+			SearchContext.class, TransactionLifecycleListener.class,
+			"(component.name=com.liferay.portal.search.internal.buffer." +
+				"IndexerRequestBufferTransactionLifecycleListener)");
 
 	private boolean _andSearch;
 	private long[] _assetCategoryIds;
