@@ -299,14 +299,12 @@ $productMenuWidth: 320px;
 }
 
 #portlet_com_liferay_journal_web_portlet_JournalPortlet {
-	.portlet-content-container .portlet-body {
-		.component-tbar,
-		.management-bar,
-		.lfr-data-engine__navigation-bar {
-			.container-fluid,
-			.container-fluid.container-fluid-max-xl {
-				max-width: 1920px;
-			}
+	.component-tbar,
+	.management-bar,
+	.lfr-data-engine__navigation-bar {
+		.container-fluid,
+		.container-fluid.container-fluid-max-xl {
+			max-width: 1920px;
 		}
 	}
 }
