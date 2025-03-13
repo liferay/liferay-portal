@@ -1,0 +1,9 @@
+dn: cn=ldapgroup4a,dc=example,dc=com
+changetype: modify
+delete: uniqueMember
+uniqueMember: cn=ldapuser4,dc=example,dc=com
+
+dn: cn=ldapgroup4b,dc=example,dc=com
+changetype: modify
+delete: uniqueMember
+uniqueMember: cn=ldapuser4,dc=example,dc=com

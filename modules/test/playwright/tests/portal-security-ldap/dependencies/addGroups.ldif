@@ -22,3 +22,17 @@ dn: cn=ldapgroup3modified,dc=example,dc=com
 objectClass: groupOfUniqueNames
 objectClass: top
 uniqueMember: cn=ldapuser3modified,dc=example,dc=com
+
+cn: ldapgroup4a
+dn: cn=ldapgroup4a,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=fakeuser,dc=example,dc=com
+uniqueMember: cn=ldapuser4,dc=example,dc=com
+
+cn: ldapgroup4b
+dn: cn=ldapgroup4b,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=fakeuser,dc=example,dc=com
+uniqueMember: cn=ldapuser4,dc=example,dc=com
