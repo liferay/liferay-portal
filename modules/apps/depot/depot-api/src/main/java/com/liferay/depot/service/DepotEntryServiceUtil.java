@@ -41,6 +41,21 @@ public class DepotEntryServiceUtil {
 			nameMap, descriptionMap, serviceContext);
 	}
 
+	public static DepotEntry addOrUpdateDepotEntry(
+			String externalReferenceCode, Map<java.util.Locale, String> nameMap,
+			Map<java.util.Locale, String> descriptionMap,
+			Map<String, Boolean> depotAppCustomizationMap,
+			com.liferay.portal.kernel.util.UnicodeProperties
+				typeSettingsUnicodeProperties,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addOrUpdateDepotEntry(
+			externalReferenceCode, nameMap, descriptionMap,
+			depotAppCustomizationMap, typeSettingsUnicodeProperties,
+			serviceContext);
+	}
+
 	public static DepotEntry deleteDepotEntry(long depotEntryId)
 		throws PortalException {
 

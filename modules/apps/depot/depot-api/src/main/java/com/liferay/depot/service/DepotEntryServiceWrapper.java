@@ -38,6 +38,23 @@ public class DepotEntryServiceWrapper
 	}
 
 	@Override
+	public DepotEntry addOrUpdateDepotEntry(
+			String externalReferenceCode,
+			java.util.Map<java.util.Locale, String> nameMap,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			java.util.Map<String, Boolean> depotAppCustomizationMap,
+			com.liferay.portal.kernel.util.UnicodeProperties
+				typeSettingsUnicodeProperties,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _depotEntryService.addOrUpdateDepotEntry(
+			externalReferenceCode, nameMap, descriptionMap,
+			depotAppCustomizationMap, typeSettingsUnicodeProperties,
+			serviceContext);
+	}
+
+	@Override
 	public DepotEntry deleteDepotEntry(long depotEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

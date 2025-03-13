@@ -53,6 +53,14 @@ public interface DepotEntryService extends BaseService {
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public DepotEntry addOrUpdateDepotEntry(
+			String externalReferenceCode, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap,
+			Map<String, Boolean> depotAppCustomizationMap,
+			UnicodeProperties typeSettingsUnicodeProperties,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	public DepotEntry deleteDepotEntry(long depotEntryId)
 		throws PortalException;
 

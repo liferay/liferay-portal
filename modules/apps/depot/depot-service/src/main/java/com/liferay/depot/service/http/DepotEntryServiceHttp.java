@@ -84,6 +84,54 @@ public class DepotEntryServiceHttp {
 		}
 	}
 
+	public static com.liferay.depot.model.DepotEntry addOrUpdateDepotEntry(
+			HttpPrincipal httpPrincipal, String externalReferenceCode,
+			java.util.Map<java.util.Locale, String> nameMap,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			java.util.Map<String, Boolean> depotAppCustomizationMap,
+			com.liferay.portal.kernel.util.UnicodeProperties
+				typeSettingsUnicodeProperties,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				DepotEntryServiceUtil.class, "addOrUpdateDepotEntry",
+				_addOrUpdateDepotEntryParameterTypes1);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, nameMap, descriptionMap,
+				depotAppCustomizationMap, typeSettingsUnicodeProperties,
+				serviceContext);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.depot.model.DepotEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.depot.model.DepotEntry deleteDepotEntry(
 			HttpPrincipal httpPrincipal, long depotEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -91,7 +139,7 @@ public class DepotEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class, "deleteDepotEntry",
-				_deleteDepotEntryParameterTypes1);
+				_deleteDepotEntryParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, depotEntryId);
@@ -133,7 +181,7 @@ public class DepotEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class,
 				"getCurrentAndGroupConnectedDepotEntries",
-				_getCurrentAndGroupConnectedDepotEntriesParameterTypes2);
+				_getCurrentAndGroupConnectedDepotEntriesParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, start, end);
@@ -174,7 +222,7 @@ public class DepotEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class, "getDepotEntry",
-				_getDepotEntryParameterTypes3);
+				_getDepotEntryParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, depotEntryId);
@@ -216,7 +264,7 @@ public class DepotEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class, "getGroupConnectedDepotEntries",
-				_getGroupConnectedDepotEntriesParameterTypes4);
+				_getGroupConnectedDepotEntriesParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, ddmStructuresAvailable, start, end);
@@ -258,7 +306,7 @@ public class DepotEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class, "getGroupConnectedDepotEntries",
-				_getGroupConnectedDepotEntriesParameterTypes5);
+				_getGroupConnectedDepotEntriesParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, start, end);
@@ -300,7 +348,7 @@ public class DepotEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class,
 				"getGroupConnectedDepotEntriesCount",
-				_getGroupConnectedDepotEntriesCountParameterTypes6);
+				_getGroupConnectedDepotEntriesCountParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, groupId);
 
@@ -339,7 +387,7 @@ public class DepotEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class, "getGroupDepotEntry",
-				_getGroupDepotEntryParameterTypes7);
+				_getGroupDepotEntryParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, groupId);
 
@@ -384,7 +432,7 @@ public class DepotEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				DepotEntryServiceUtil.class, "updateDepotEntry",
-				_updateDepotEntryParameterTypes8);
+				_updateDepotEntryParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, depotEntryId, nameMap, descriptionMap,
@@ -427,29 +475,36 @@ public class DepotEntryServiceHttp {
 			java.util.Map.class, java.util.Map.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _deleteDepotEntryParameterTypes1 =
+	private static final Class<?>[] _addOrUpdateDepotEntryParameterTypes1 =
+		new Class[] {
+			String.class, java.util.Map.class, java.util.Map.class,
+			java.util.Map.class,
+			com.liferay.portal.kernel.util.UnicodeProperties.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
+		};
+	private static final Class<?>[] _deleteDepotEntryParameterTypes2 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getCurrentAndGroupConnectedDepotEntriesParameterTypes2 = new Class[] {
+		_getCurrentAndGroupConnectedDepotEntriesParameterTypes3 = new Class[] {
 			long.class, int.class, int.class
 		};
-	private static final Class<?>[] _getDepotEntryParameterTypes3 =
+	private static final Class<?>[] _getDepotEntryParameterTypes4 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getGroupConnectedDepotEntriesParameterTypes4 = new Class[] {
+		_getGroupConnectedDepotEntriesParameterTypes5 = new Class[] {
 			long.class, boolean.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_getGroupConnectedDepotEntriesParameterTypes5 = new Class[] {
+		_getGroupConnectedDepotEntriesParameterTypes6 = new Class[] {
 			long.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_getGroupConnectedDepotEntriesCountParameterTypes6 = new Class[] {
+		_getGroupConnectedDepotEntriesCountParameterTypes7 = new Class[] {
 			long.class
 		};
-	private static final Class<?>[] _getGroupDepotEntryParameterTypes7 =
+	private static final Class<?>[] _getGroupDepotEntryParameterTypes8 =
 		new Class[] {long.class};
-	private static final Class<?>[] _updateDepotEntryParameterTypes8 =
+	private static final Class<?>[] _updateDepotEntryParameterTypes9 =
 		new Class[] {
 			long.class, java.util.Map.class, java.util.Map.class,
 			java.util.Map.class,

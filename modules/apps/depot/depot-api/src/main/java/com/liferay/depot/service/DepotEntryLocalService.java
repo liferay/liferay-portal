@@ -87,6 +87,14 @@ public interface DepotEntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public DepotEntry addOrUpdateDepotEntry(
+			String externalReferenceCode, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap,
+			Map<String, Boolean> depotAppCustomizationMap,
+			UnicodeProperties typeSettingsUnicodeProperties,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Creates a new depot entry with the primary key. Does not add the depot entry to the database.
 	 *
