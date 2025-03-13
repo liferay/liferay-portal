@@ -79,26 +79,17 @@ test.afterEach(
 		});
 
 		await test.step('Delete LDAP users from portal if present', async () => {
-			let user =
-				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					LDAP_USER_1.emailAddress
-				);
+			for (const ldapUser of [LDAP_USER_1, LDAP_USER_2]) {
+				const user =
+					await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+						ldapUser.emailAddress
+					);
 
-			if (user.id !== undefined) {
-				await apiHelpers.headlessAdminUser.deleteUserAccount(
-					Number(user.id)
-				);
-			}
-
-			user =
-				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					LDAP_USER_2.emailAddress
-				);
-
-			if (user.id !== undefined) {
-				await apiHelpers.headlessAdminUser.deleteUserAccount(
-					Number(user.id)
-				);
+				if (user.id !== undefined) {
+					await apiHelpers.headlessAdminUser.deleteUserAccount(
+						Number(user.id)
+					);
+				}
 			}
 		});
 
@@ -160,17 +151,13 @@ test.beforeAll(async ({browser}) => {
 
 	// Add LDAP user info to userData so we can authenticate via performLogin
 
-	userData[LDAP_USER_1.alternateName] = {
-		name: LDAP_USER_1.givenName,
-		password: 'test',
-		surname: LDAP_USER_1.familyName,
-	};
-
-	userData[LDAP_USER_2.alternateName] = {
-		name: LDAP_USER_2.givenName,
-		password: 'test',
-		surname: LDAP_USER_2.familyName,
-	};
+	for (const ldapUser of [LDAP_USER_1, LDAP_USER_2]) {
+		userData[ldapUser.alternateName] = {
+			name: ldapUser.givenName,
+			password: 'test',
+			surname: ldapUser.familyName,
+		};
+	}
 });
 
 test('LPD-47223 AC1 TC1: Verify LDAP import via authentication imports user attributes and user groups, but only for the user being authenticated', async ({
