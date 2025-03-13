@@ -10,3 +10,15 @@ objectClass: groupOfUniqueNames
 objectClass: top
 uniqueMember: cn=ldapuser1,dc=example,dc=com
 uniqueMember: cn=ldapuser2,dc=example,dc=com
+
+cn: ldapgroup3
+dn: cn=ldapgroup3,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=ldapuser3,dc=example,dc=com
+
+cn: ldapgroup3modified
+dn: cn=ldapgroup3modified,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=ldapuser3modified,dc=example,dc=com

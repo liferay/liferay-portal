@@ -1,0 +1,8 @@
+cn: ldapuser3modified
+dn: cn=ldapuser3modified,dc=example,dc=com
+givenName: firstmodified
+mail: ldapuser3@liferay.com
+objectClass: inetOrgPerson
+objectClass: top
+sn: lastmodified
+userPassword: testmodified

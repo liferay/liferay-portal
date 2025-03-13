@@ -1,2 +1,4 @@
 cn=ldapuser1,dc=example,dc=com
-cn=ldapuser2,dc=example,dc=com,
+cn=ldapuser2,dc=example,dc=com
+cn=ldapuser3,dc=example,dc=com
+cn=ldapuser3modified,dc=example,dc=com,

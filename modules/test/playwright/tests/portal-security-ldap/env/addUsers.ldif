@@ -15,3 +15,12 @@ objectClass: inetOrgPerson
 objectClass: top
 sn: last
 userPassword: test
+
+cn: ldapuser3
+dn: cn=ldapuser3,dc=example,dc=com
+givenName: first
+mail: ldapuser3@liferay.com
+objectClass: inetOrgPerson
+objectClass: top
+sn: last
+userPassword: test
