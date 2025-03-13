@@ -1,10 +1,10 @@
 #!/bin/bash
 
-CURRENT_DIR_NAME=$(dirname ${BASH_SOURCE[0]})
+DEPENDENCIES_DIR_NAME=$(dirname "${BASH_SOURCE[0]}/../dependencies/")
 
-echo CURRENT_DIR_NAME=${CURRENT_DIR_NAME}
+echo DEPENDENCIES_DIR_NAME=${DEPENDENCIES_DIR_NAME}
 
-source ${CURRENT_DIR_NAME}/../../../env/common.sh
+source ${DEPENDENCIES_DIR_NAME}/../../../env/common.sh
 
 function main {
 	default_tear_down
@@ -13,11 +13,11 @@ function main {
 }
 
 function ldap_tear_down {
-	local removeGroupsLdif="${CURRENT_DIR_NAME}/removeGroups.ldif"
+	local removeGroupsLdif="${DEPENDENCIES_DIR_NAME}/removeGroups.ldif"
 
 	ldapdelete -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${removeGroupsLdif}
 
-	local removeUsersLdif="${CURRENT_DIR_NAME}/removeUsers.ldif"
+	local removeUsersLdif="${DEPENDENCIES_DIR_NAME}/removeUsers.ldif"
 
 	ldapdelete -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${removeUsersLdif}
 

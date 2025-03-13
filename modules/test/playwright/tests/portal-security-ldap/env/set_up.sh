@@ -1,10 +1,10 @@
 #!/bin/bash
 
-CURRENT_DIR_NAME=$(dirname ${BASH_SOURCE[0]})
+DEPENDENCIES_DIR_NAME=$(dirname "${BASH_SOURCE[0]}/../dependencies/")
 
-echo CURRENT_DIR_NAME=${CURRENT_DIR_NAME}
+echo DEPENDENCIES_DIR_NAME=${DEPENDENCIES_DIR_NAME}
 
-source ${CURRENT_DIR_NAME}/../../../env/common.sh
+source ${DEPENDENCIES_DIR_NAME}/../../../env/common.sh
 
 function ldap_set_up {
 	echo "Starting slapd:"
@@ -16,7 +16,7 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	local exampleCompanyLdif="${CURRENT_DIR_NAME}/exampleCompany.ldif"
+	local exampleCompanyLdif="${DEPENDENCIES_DIR_NAME}/exampleCompany.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${exampleCompanyLdif}
 
@@ -26,7 +26,7 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	local adminLdif="${CURRENT_DIR_NAME}/admin.ldif"
+	local adminLdif="${DEPENDENCIES_DIR_NAME}/admin.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${adminLdif}
 
@@ -36,7 +36,7 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	local addUsersLdif="${CURRENT_DIR_NAME}/addUsers.ldif"
+	local addUsersLdif="${DEPENDENCIES_DIR_NAME}/addUsers.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${addUsersLdif}
 
@@ -46,7 +46,7 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	local addGroupsLdif="${CURRENT_DIR_NAME}/addGroups.ldif"
+	local addGroupsLdif="${DEPENDENCIES_DIR_NAME}/addGroups.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${addGroupsLdif}
 

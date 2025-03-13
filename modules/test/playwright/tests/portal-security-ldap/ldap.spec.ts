@@ -42,7 +42,7 @@ const LDAP_GROUP_2 = 'ldapgroup2';
 const LDAP_GROUP_3 = 'ldapgroup3';
 const LDAP_GROUP_3_MODIFIED = 'ldapgroup3modified';
 
-const LDAP_LDIF_DIR = './tests/portal-security-ldap/env/';
+const LDAP_LDIF_DIR = './tests/portal-security-ldap/dependencies/';
 
 const LDAP_USER_1: TUserAccount = {
 	alternateName: 'ldapuser1',
