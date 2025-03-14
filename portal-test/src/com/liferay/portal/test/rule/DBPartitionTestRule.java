@@ -45,15 +45,21 @@ public class DBPartitionTestRule implements TestRule {
 						TestPropsValues.COMPANY_WEB_ID, 0, true, true, null,
 						null, null, null, null, null));
 
-				company = CompanyLocalServiceUtil.fetchCompanyByVirtualHost(TestPropsValues.COMPANY_WEB_ID);
+				if (GetterUtil.getBoolean(
+						TestPropsUtil.get("test.extract.and.insert"))) {
 
-				if (GetterUtil.getBoolean(TestPropsUtil.get("test.extract.and.insert"))) {
-					CompanyLocalServiceUtil.extractDBPartitionCompany(company.getCompanyId());
+					company = CompanyLocalServiceUtil.fetchCompanyByVirtualHost(
+						TestPropsValues.COMPANY_WEB_ID);
 
-					CompanyLocalServiceUtil.deleteCompany(company.getCompanyId());
+					CompanyLocalServiceUtil.extractDBPartitionCompany(
+						company.getCompanyId());
+
+					CompanyLocalServiceUtil.deleteCompany(
+						company.getCompanyId());
 
 					CompanyLocalServiceUtil.addDBPartitionCompany(
-						company.getCompanyId(), company.getName(), company.getVirtualHostname(), company.getWebId());
+						company.getCompanyId(), company.getName(),
+						company.getVirtualHostname(), company.getWebId());
 				}
 			}
 		}

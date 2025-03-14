@@ -11959,6 +11959,20 @@ ${update.properties}</echo>
 			</then>
 		</if>
 
+		<propertycopy from="test.extract.and.insert[${env.CI_TEST_SUITE}]" name="test.extract.and.insert" override="true" silent="true" />
+
+		<if>
+			<or>
+				<equals arg1="test.extract.and.insert" arg2="" />
+				<not>
+					<isset property="test.extract.and.insert" />
+				</not>
+			</or>
+			<then>
+				<property name="test.extract.and.insert" value="false" />
+			</then>
+		</if>
+
 		<get-testcase-property property.name="liferay.online.properties" />
 		<get-testcase-property property.name="portal.version" />
 

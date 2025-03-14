@@ -2378,6 +2378,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		<attribute default="true" name="setup.testable.tomcat" />
 		<attribute default="" name="subrepository.name" />
 		<attribute default="" name="test.build.fix.pack.zip.url" />
+		<attribute default="" name="test.extract.and.insert" />
 		<attribute default="" name="test.fix.pack.base.url" />
 		<attribute default="" name="test.license.xml.url" />
 		<attribute default="" name="test.portal.bundle.dependencies.zip.url" />
@@ -2406,6 +2407,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 								<param name="aws.store.enabled" value="@{aws.store.enabled}" />
 								<param name="database.partition.enabled" value="@{database.partition.enabled}" />
 								<param name="database.type" value="@{database.type}" />
+								<param name="test.extract.and.insert" value="@{test.extract.and.insert}" />
 							</antcall>
 
 							<antcall inheritAll="false" target="prepare-system-ext-properties" />
@@ -7264,6 +7266,49 @@ information. Make sure to commit in all format-javadoc results.
 				</ant>
 			</finally>
 		</trycatch>
+	</target>
+
+	<target name="modules-integration-db-partition-extract-and-insert-mysql">
+		<run-modules-integration-test
+			database.partition.enabled="true"
+			database.type="mysql"
+			test.extract.and.insert="true"
+		/>
+	</target>
+
+	<target name="modules-integration-db-partition-extract-and-insert-mysql57">
+		<run-modules-integration-test
+			database.partition.enabled="true"
+			database.type="mysql"
+			database.version="5.7"
+			test.extract.and.insert="true"
+		/>
+	</target>
+
+	<target name="modules-integration-db-partition-extract-and-insert-postgresql">
+		<run-modules-integration-test
+			database.partition.enabled="true"
+			database.type="postgresql"
+			test.extract.and.insert="true"
+		/>
+	</target>
+
+	<target name="modules-integration-db-partition-extract-and-insert-postgresql153">
+		<run-modules-integration-test
+			database.partition.enabled="true"
+			database.type="postgresql"
+			database.version="15.3"
+			test.extract.and.insert="true"
+		/>
+	</target>
+
+	<target name="modules-integration-db-partition-extract-and-insert-postgresql163">
+		<run-modules-integration-test
+			database.partition.enabled="true"
+			database.type="postgresql"
+			database.version="16.3"
+			test.extract.and.insert="true"
+		/>
 	</target>
 
 	<target name="modules-integration-db-partition-mysql">
