@@ -920,7 +920,20 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			role.getRoleId(), new long[] {group.getGroupId()});
 	}
 
-	private ExpandoColumn _getExpandoColumn(ExpandoTable expandoTable)
+	private LDAPImportContext _getLDAPImportContext(
+		long companyId, Properties contactExpandoMappings,
+		Properties contactMappings, Properties groupMappings,
+		SafeLdapContext safeLdapContext, long ldapServerId,
+		Set<String> ldapUserIgnoreAttributes, Properties userExpandoMappings,
+		Properties userMappings) {
+
+		return new LDAPImportContext(
+			companyId, contactExpandoMappings, contactMappings, groupMappings,
+			safeLdapContext, ldapServerId, ldapUserIgnoreAttributes,
+			userExpandoMappings, userMappings);
+	}
+
+	private ExpandoColumn _getOrCreateExpandoColumn(ExpandoTable expandoTable)
 		throws Exception {
 
 		ExpandoColumn expandoColumn = _expandoColumnLocalService.fetchColumn(
@@ -945,7 +958,9 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 		return expandoColumn;
 	}
 
-	private ExpandoTable _getExpandoTable(long companyId) throws Exception {
+	private ExpandoTable _getOrCreateExpandoTable(long companyId)
+		throws Exception {
+
 		ExpandoTable expandoTable = _expandoTableLocalService.fetchTable(
 			companyId, _classNameLocalService.getClassNameId(UserGroup.class),
 			"LDAP");
@@ -956,19 +971,6 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 		}
 
 		return expandoTable;
-	}
-
-	private LDAPImportContext _getLDAPImportContext(
-		long companyId, Properties contactExpandoMappings,
-		Properties contactMappings, Properties groupMappings,
-		SafeLdapContext safeLdapContext, long ldapServerId,
-		Set<String> ldapUserIgnoreAttributes, Properties userExpandoMappings,
-		Properties userMappings) {
-
-		return new LDAPImportContext(
-			companyId, contactExpandoMappings, contactMappings, groupMappings,
-			safeLdapContext, ldapServerId, ldapUserIgnoreAttributes,
-			userExpandoMappings, userMappings);
 	}
 
 	private Attribute _getUsers(
@@ -1218,10 +1220,10 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			}
 		}
 
-		ExpandoTable expandoTable = _getExpandoTable(
+		ExpandoTable expandoTable = _getOrCreateExpandoTable(
 			ldapImportContext.getCompanyId());
 
-		ExpandoColumn expandoColumn = _getExpandoColumn(expandoTable);
+		ExpandoColumn expandoColumn = _getOrCreateExpandoColumn(expandoTable);
 
 		_expandoValueLocalService.addValue(
 			_classNameLocalService.getClassNameId(UserGroup.class),
@@ -2044,10 +2046,10 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 					userGroupIds.remove(userGroupId);
 				}
 				else {
-					ExpandoTable expandoTable = _getExpandoTable(
+					ExpandoTable expandoTable = _getOrCreateExpandoTable(
 						userGroup.getCompanyId());
 
-					ExpandoColumn expandoColumn = _getExpandoColumn(
+					ExpandoColumn expandoColumn = _getOrCreateExpandoColumn(
 						expandoTable);
 
 					ExpandoValue expandoValue =
