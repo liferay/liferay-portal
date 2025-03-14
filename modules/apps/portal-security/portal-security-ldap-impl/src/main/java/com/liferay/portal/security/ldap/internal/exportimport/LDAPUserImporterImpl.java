@@ -953,6 +953,11 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			unicodeProperties.setProperty(
 				ExpandoColumnConstants.PROPERTY_HIDDEN,
 				Boolean.TRUE.toString());
+
+			expandoColumn.setTypeSettingsProperties(unicodeProperties);
+
+			expandoColumn = _expandoColumnLocalService.updateExpandoColumn(
+				expandoColumn);
 		}
 
 		return expandoColumn;
@@ -963,11 +968,12 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 
 		ExpandoTable expandoTable = _expandoTableLocalService.fetchTable(
 			companyId, _classNameLocalService.getClassNameId(UserGroup.class),
-			"LDAP");
+			ExpandoTableConstants.DEFAULT_TABLE_NAME);
 
 		if (expandoTable == null) {
 			expandoTable = _expandoTableLocalService.addTable(
-				companyId, UserGroup.class.getName(), "LDAP");
+				companyId, UserGroup.class.getName(),
+				ExpandoTableConstants.DEFAULT_TABLE_NAME);
 		}
 
 		return expandoTable;
