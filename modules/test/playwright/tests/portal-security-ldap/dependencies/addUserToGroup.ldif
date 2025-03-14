@@ -1,0 +1,4 @@
+dn: cn=ldapgroup4a,dc=example,dc=com
+add: uniqueMember
+changetype: modify
+uniqueMember: cn=ldapuser4,dc=example,dc=com
