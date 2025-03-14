@@ -920,44 +920,42 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			role.getRoleId(), new long[] {group.getGroupId()});
 	}
 
-	private long _getExpandoColumnId() throws Exception {
-		if (_expandoColumn == null) {
-			_expandoColumn = _expandoColumnLocalService.fetchColumn(
-				_expandoTable.getTableId(), "ldapServerId");
+	private ExpandoColumn _getExpandoColumn(ExpandoTable expandoTable)
+		throws Exception {
 
-			if (_expandoColumn == null) {
-				_expandoColumn = _expandoColumnLocalService.addColumn(
-					_expandoTable.getTableId(), "ldapServerId",
-					ExpandoColumnConstants.LONG);
+		ExpandoColumn expandoColumn = _expandoColumnLocalService.fetchColumn(
+			expandoTable.getTableId(), "ldapServerId");
 
-				UnicodeProperties unicodeProperties =
-					_expandoColumn.getTypeSettingsProperties();
+		if (expandoColumn == null) {
+			expandoColumn = _expandoColumnLocalService.addColumn(
+				expandoTable.getTableId(), "ldapServerId",
+				ExpandoColumnConstants.LONG);
 
-				unicodeProperties.setProperty(
-					ExpandoColumnConstants.INDEX_TYPE,
-					String.valueOf(ExpandoColumnConstants.INDEX_TYPE_KEYWORD));
-				unicodeProperties.setProperty(
-					ExpandoColumnConstants.PROPERTY_HIDDEN,
-					Boolean.TRUE.toString());
-			}
+			UnicodeProperties unicodeProperties =
+				expandoColumn.getTypeSettingsProperties();
+
+			unicodeProperties.setProperty(
+				ExpandoColumnConstants.INDEX_TYPE,
+				String.valueOf(ExpandoColumnConstants.INDEX_TYPE_KEYWORD));
+			unicodeProperties.setProperty(
+				ExpandoColumnConstants.PROPERTY_HIDDEN,
+				Boolean.TRUE.toString());
 		}
 
-		return _expandoColumn.getColumnId();
+		return expandoColumn;
 	}
 
-	private long _getExpandoTableId(long companyId) throws Exception {
-		if (_expandoTable == null) {
-			_expandoTable = _expandoTableLocalService.fetchTable(
-				companyId,
-				_classNameLocalService.getClassNameId(UserGroup.class), "LDAP");
+	private ExpandoTable _getExpandoTable(long companyId) throws Exception {
+		ExpandoTable expandoTable = _expandoTableLocalService.fetchTable(
+			companyId, _classNameLocalService.getClassNameId(UserGroup.class),
+			"LDAP");
 
-			if (_expandoTable == null) {
-				_expandoTable = _expandoTableLocalService.addTable(
-					companyId, UserGroup.class.getName(), "LDAP");
-			}
+		if (expandoTable == null) {
+			expandoTable = _expandoTableLocalService.addTable(
+				companyId, UserGroup.class.getName(), "LDAP");
 		}
 
-		return _expandoTable.getTableId();
+		return expandoTable;
 	}
 
 	private LDAPImportContext _getLDAPImportContext(
@@ -1220,10 +1218,14 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 			}
 		}
 
+		ExpandoTable expandoTable = _getExpandoTable(
+			ldapImportContext.getCompanyId());
+
+		ExpandoColumn expandoColumn = _getExpandoColumn(expandoTable);
+
 		_expandoValueLocalService.addValue(
 			_classNameLocalService.getClassNameId(UserGroup.class),
-			_getExpandoTableId(ldapImportContext.getCompanyId()),
-			_getExpandoColumnId(), userGroupId,
+			expandoTable.getTableId(), expandoColumn.getColumnId(), userGroupId,
 			String.valueOf(ldapImportContext.getLdapServerId()));
 
 		if (_log.isDebugEnabled()) {
@@ -2042,10 +2044,16 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 					userGroupIds.remove(userGroupId);
 				}
 				else {
+					ExpandoTable expandoTable = _getExpandoTable(
+						userGroup.getCompanyId());
+
+					ExpandoColumn expandoColumn = _getExpandoColumn(
+						expandoTable);
+
 					ExpandoValue expandoValue =
 						_expandoValueLocalService.getValue(
-							_getExpandoTableId(userGroup.getCompanyId()),
-							_getExpandoColumnId(), userGroupId);
+							expandoTable.getTableId(),
+							expandoColumn.getColumnId(), userGroupId);
 
 					if ((expandoValue != null) &&
 						(expandoValue.getLong() == ldapServerId)) {
@@ -2105,12 +2113,9 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 	private CompanyLocalService _companyLocalService;
 
 	private String _companySecurityAuthType;
-	private ExpandoColumn _expandoColumn;
 
 	@Reference
 	private ExpandoColumnLocalService _expandoColumnLocalService;
-
-	private ExpandoTable _expandoTable;
 
 	@Reference
 	private ExpandoTableLocalService _expandoTableLocalService;
