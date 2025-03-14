@@ -7,7 +7,6 @@ echo CURRENT_DIR_NAME=${CURRENT_DIR_NAME}
 source ${CURRENT_DIR_NAME}/../../../env/common.sh
 
 function ldap_set_up {
-	# Start SLAPD
 	echo "Starting slapd:"
 	/usr/local/libexec/slapd -F /usr/local/etc/slapd.d
 
@@ -17,7 +16,6 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	# Add Example Company via ldif file
 	local exampleCompanyLdif="${CURRENT_DIR_NAME}/exampleCompany.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${exampleCompanyLdif}
@@ -28,7 +26,6 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	# Add admin via ldif file
 	local adminLdif="${CURRENT_DIR_NAME}/admin.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${adminLdif}
@@ -39,7 +36,6 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	# Add users via ldif file
 	local addUsersLdif="${CURRENT_DIR_NAME}/addUsers.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${addUsersLdif}
@@ -50,7 +46,6 @@ function ldap_set_up {
 		echo "Command succeeded"
 	fi
 
-	# Add groups via ldif file
 	local addGroupsLdif="${CURRENT_DIR_NAME}/addGroups.ldif"
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -w "secret" -f ${addGroupsLdif}
