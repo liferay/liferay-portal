@@ -28,6 +28,7 @@ import com.liferay.portal.search.internal.buffer.IndexerRequestBufferOverflowHan
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -290,6 +291,14 @@ public class IndexerRegistryImpl implements IndexerRegistry {
 					() -> {
 						Indexer<?> indexer = getIndexer(_className);
 
+						if (_className.equals("com.liferay.object.model.ObjectDefinition")) {
+							if (indexer == null) {
+								System.out.println("===== Lazy loaded " + indexer + " for com.liferay.object.model.ObjectDefinition#" + Arrays.toString(args));
+							}
+							else {
+								System.out.println("===== Still missing indexer for for com.liferay.object.model.ObjectDefinition#" + Arrays.toString(args));
+							}
+						}
 						if (indexer == null) {
 							indexer = _dummyIndexer;
 						}
