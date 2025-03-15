@@ -44,11 +44,18 @@ public class IndexerRequestBuffer {
 		List<IndexerRequestBuffer> indexerRequestBuffers =
 			_indexerRequestBuffers.get();
 
-		if (indexerRequestBuffers.isEmpty()) {
-			return null;
+		IndexerRequestBuffer indexerRequestBuffer = null;
+
+		if (!indexerRequestBuffers.isEmpty()) {
+			indexerRequestBuffer = indexerRequestBuffers.remove(
+				indexerRequestBuffers.size() - 1);
 		}
 
-		return indexerRequestBuffers.remove(indexerRequestBuffers.size() - 1);
+		if (indexerRequestBuffers.isEmpty()) {
+			_indexerRequestBuffers.remove();
+		}
+
+		return indexerRequestBuffer;
 	}
 
 	public void add(
