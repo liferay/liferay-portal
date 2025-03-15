@@ -117,6 +117,10 @@ public class IndexableAdvice extends ChainableMethodAdvice {
 						return null;
 					}
 
+					if (name.equals("com.liferay.object.model.ObjectDefinition")) {
+						System.out.println("!!!!!! Found indexer for com.liferay.object.model.ObjectDefinition on 2nd try. " + curIndexer + " for " + result);
+					}
+
 					_reindex(curIndexer, indexableContext, arguments, result);
 
 					return null;
