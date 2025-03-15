@@ -43,6 +43,7 @@ import com.liferay.portal.search.spi.model.index.contributor.ModelIndexerWriterC
 import com.liferay.portal.search.spi.model.index.contributor.helper.IndexerWriterMode;
 import com.liferay.portal.search.spi.model.registrar.ModelSearchSettings;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -158,10 +159,17 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 			return;
 		}
 
+		if (_modelSearchSettings.getClassName().equals("com.liferay.object.model.ObjectDefinition") && classPK == Long.getLong("ObjectDefinition.APIApplication.id")) {
+			System.out.println("====== IndexerWriterImpl.reindex() before fetchBaseModel(): " + _modelSearchSettings.getClassName() + ", classPK: " + classPK);
+		}
+
 		BaseModel<?> baseModel = _baseModelRetriever.fetchBaseModel(
 			_modelSearchSettings.getClassName(), classPK);
 
 		if (baseModel == null) {
+			if (_modelSearchSettings.getClassName().equals("com.liferay.object.model.ObjectDefinition") && classPK == Long.getLong("ObjectDefinition.APIApplication.id")) {
+				System.out.println("====== IndexerWriterImpl.reindex() failed to fetch: " + _modelSearchSettings.getClassName() + ", classPK: " + classPK);
+			}
 			return;
 		}
 

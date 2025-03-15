@@ -195,11 +195,18 @@ public class BufferedIndexerInvocationHandler implements InvocationHandler {
 			IndexerRequestBuffer indexerRequestBuffer)
 		throws Exception {
 
+		if (className.equals("com.liferay.object.model.ObjectDefinition") && classPK.equals(Long.getLong("ObjectDefinition.APIApplication.id"))) {
+			System.out.println("====== bufferRequest for className: " + className + ", classPK: " + classPK);
+		}
 		if (_indexStatusManager.isIndexReadOnly(className)) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Skipping indexer request buffer because index for " +
 						className + " is read only");
+			}
+
+			if (className.equals("com.liferay.object.model.ObjectDefinition") && classPK.equals(Long.getLong("ObjectDefinition.APIApplication.id"))) {
+				System.out.println("====== skipped for read only setting: " + className + ", classPK: " + classPK);
 			}
 
 			return;

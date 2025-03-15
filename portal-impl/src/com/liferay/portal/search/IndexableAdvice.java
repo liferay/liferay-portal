@@ -98,7 +98,11 @@ public class IndexableAdvice extends ChainableMethodAdvice {
 
 			return;
 		}
-
+		else {
+			if (name.equals("com.liferay.object.model.ObjectDefinition")) {
+				System.out.println("!!!!!! No indexer for com.liferay.object.model.ObjectDefinition on first try. " + result);
+			}
+		}
 		DependencyManagerSyncUtil.registerSyncCallable(
 			new CompanyInheritableThreadLocalCallable<>(
 				() -> {
@@ -106,6 +110,10 @@ public class IndexableAdvice extends ChainableMethodAdvice {
 						name);
 
 					if (curIndexer == null) {
+						if (name.equals("com.liferay.object.model.ObjectDefinition")) {
+							System.out.println("!!!!!! No indexer for com.liferay.object.model.ObjectDefinition on 2nd try. " + result);
+						}
+
 						return null;
 					}
 

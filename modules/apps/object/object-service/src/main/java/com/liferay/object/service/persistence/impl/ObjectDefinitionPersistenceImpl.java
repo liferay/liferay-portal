@@ -15546,6 +15546,13 @@ public class ObjectDefinitionPersistenceImpl
 				objectDefinition.getCompanyId());
 
 			if (isNew) {
+				if (objectDefinition.getName().equals("APIApplication")) {
+					System.setProperty("ObjectDefinition.APIApplication.id", Long.toString(objectDefinition.getObjectDefinitionId()));
+
+					Exception exception = new Exception("######## ObjectDefinition APIApplication id : " + objectDefinition.getObjectDefinitionId() + " by Thread:" + Thread.currentThread().getName());
+
+					exception.printStackTrace(System.out);
+				}
 				if (ercObjectDefinition != null) {
 					throw new DuplicateObjectDefinitionExternalReferenceCodeException(
 						"Duplicate object definition with external reference code " +

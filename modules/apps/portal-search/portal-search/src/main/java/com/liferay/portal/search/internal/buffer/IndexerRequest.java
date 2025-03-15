@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.util.ClassUtil;
 
 import java.lang.reflect.Method;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -73,6 +74,10 @@ public class IndexerRequest {
 
 	public void execute() throws Exception {
 		Class<?>[] parameterTypes = _method.getParameterTypes();
+
+		if (_modelClassName.equals("com.liferay.object.model.ObjectDefinition") && _modelPrimaryKey.equals(Long.getLong("ObjectDefinition.APIApplication.id"))) {
+			System.out.println("====== execute IndexerRequest: " + _modelClassName + ", classPK: " + _modelPrimaryKey + ", parameterTypes:" + Arrays.toString(parameterTypes));
+		}
 
 		if (parameterTypes.length == 1) {
 			_method.invoke(_indexer, _classedModel);

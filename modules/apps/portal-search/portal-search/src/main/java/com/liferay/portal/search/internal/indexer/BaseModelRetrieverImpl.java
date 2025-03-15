@@ -58,6 +58,12 @@ public class BaseModelRetrieverImpl implements BaseModelRetriever {
 					portalException);
 			}
 
+			if (className.equals("com.liferay.object.model.ObjectDefinition") && classPK == Long.getLong("ObjectDefinition.APIApplication.id")) {
+				System.out.println("====== BaseModelRetrieverImpl._getPersistedModel() failed to fetch for : " + className + ", classPK: " + classPK);
+
+				portalException.printStackTrace(System.out);
+			}
+
 			return null;
 		}
 	}
@@ -69,6 +75,9 @@ public class BaseModelRetrieverImpl implements BaseModelRetriever {
 			PersistedModelLocalServiceRegistryUtil.
 				getPersistedModelLocalService(className);
 
+		if (className.equals("com.liferay.object.model.ObjectDefinition")) {
+			System.out.println("==== PersistedModelLocalService lookup for " + className + " --> " + persistedModelLocalService);
+		}
 		if (persistedModelLocalService == null) {
 			throw new SystemException(
 				"No persisted model local service found for class " +
