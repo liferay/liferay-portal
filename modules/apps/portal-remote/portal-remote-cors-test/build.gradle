@@ -4,6 +4,7 @@ dependencies {
 	testIntegrationImplementation group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.5.10"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-remote:portal-remote-cors-api")
 	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")

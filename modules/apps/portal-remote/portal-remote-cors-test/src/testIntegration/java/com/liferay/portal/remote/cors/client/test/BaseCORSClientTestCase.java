@@ -124,6 +124,18 @@ public abstract class BaseCORSClientTestCase {
 			String urlString, String method, boolean allowOrigin)
 		throws Exception {
 
+		assertJsonWSUrl(urlString, method, allowOrigin, null);
+	}
+
+	protected void assertJsonWSUrl(
+			String urlString, String method, boolean allowOrigin,
+			String allowedOrigin)
+		throws Exception {
+
+		if (allowedOrigin == null) {
+			allowedOrigin = _TEST_CORS_URI;
+		}
+
 		ProcessConfig.Builder builder = _generateTestBuilder();
 
 		ProcessExecutor processExecutor = new LocalProcessExecutor();
@@ -131,7 +143,7 @@ public abstract class BaseCORSClientTestCase {
 		ProcessChannel<String[]> processChannel = processExecutor.execute(
 			builder.build(),
 			new AllowRestrictedHeadersCallable(
-				"http://localhost:8080/api/jsonws" + urlString, _TEST_CORS_URI,
+				"http://localhost:8080/api/jsonws" + urlString, allowedOrigin,
 				method, true));
 
 		Future<String[]> future = processChannel.getProcessNoticeableFuture();
@@ -139,7 +151,7 @@ public abstract class BaseCORSClientTestCase {
 		String[] results = future.get();
 
 		if (allowOrigin) {
-			Assert.assertEquals(_TEST_CORS_URI, results[0]);
+			Assert.assertEquals(allowedOrigin, results[0]);
 		}
 		else {
 			Assert.assertNull(results[0]);
