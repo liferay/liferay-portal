@@ -40,12 +40,14 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
+import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.NumericDDMFormFieldUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -595,24 +597,31 @@ public class DDMFormEvaluatorHelper {
 			DDMFormFieldValue localizedObjectFieldDDMFormFieldValue =
 				new DDMFormFieldValue();
 
+			localizedObjectFieldDDMFormFieldValue.setDDMFormValues(
+				new DDMFormValues(ddmFormField.getDDMForm()));
 			localizedObjectFieldDDMFormFieldValue.setName(
 				ddmFormFieldValue.getName());
 
 			String defaultLanguageId = null;
+			String defaultLocale = String.valueOf(
+				ddmFormField.getProperty("defaultLocale"));
 
-			try {
-				JSONObject defaultLocaleJSONObject =
-					JSONFactoryUtil.createJSONObject(
-						String.valueOf(
-							ddmFormField.getProperty("defaultLocale")));
+			if (JSONUtil.isJSONObject(defaultLocale)) {
+				try {
+					JSONObject defaultLocaleJSONObject =
+						JSONFactoryUtil.createJSONObject(defaultLocale);
 
-				defaultLanguageId = defaultLocaleJSONObject.getString(
-					"localeId");
+					defaultLanguageId = defaultLocaleJSONObject.getString(
+						"localeId");
+				}
+				catch (JSONException jsonException) {
+					_log.error(jsonException);
+
+					return true;
+				}
 			}
-			catch (JSONException jsonException) {
-				_log.error(jsonException);
-
-				return true;
+			else {
+				defaultLanguageId = defaultLocale;
 			}
 
 			localizedObjectFieldDDMFormFieldValue.setValue(
