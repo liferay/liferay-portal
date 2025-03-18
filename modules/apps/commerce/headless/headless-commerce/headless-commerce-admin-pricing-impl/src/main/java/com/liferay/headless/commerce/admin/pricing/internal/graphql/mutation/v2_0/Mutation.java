@@ -1080,6 +1080,31 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public PriceEntry createPriceEntry(
+			@GraphQLName("priceEntry") PriceEntry priceEntry)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceEntryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceEntryResource -> priceEntryResource.postPriceEntry(
+				priceEntry));
+	}
+
+	@GraphQLField
+	public Response createPriceEntryBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceEntryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceEntryResource -> priceEntryResource.postPriceEntryBatch(
+				callbackURL, object));
+	}
+
+	@GraphQLField
 	public boolean deletePriceEntry(
 			@GraphQLName("priceEntryId") Long priceEntryId)
 		throws Exception {

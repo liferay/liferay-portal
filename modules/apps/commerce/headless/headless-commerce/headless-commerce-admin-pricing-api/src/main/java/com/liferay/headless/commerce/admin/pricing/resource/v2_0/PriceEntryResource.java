@@ -60,6 +60,11 @@ public interface PriceEntryResource {
 			String externalReferenceCode, PriceEntry priceEntry)
 		throws Exception;
 
+	public PriceEntry postPriceEntry(PriceEntry priceEntry) throws Exception;
+
+	public Response postPriceEntryBatch(String callbackURL, Object object)
+		throws Exception;
+
 	public void deletePriceEntry(Long priceEntryId) throws Exception;
 
 	public Response deletePriceEntryBatch(String callbackURL, Object object)

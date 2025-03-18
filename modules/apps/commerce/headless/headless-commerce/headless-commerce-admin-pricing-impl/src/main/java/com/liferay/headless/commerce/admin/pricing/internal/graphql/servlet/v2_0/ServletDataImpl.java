@@ -514,6 +514,15 @@ public class ServletDataImpl implements ServletData {
 							PriceEntryResourceImpl.class,
 							"patchPriceEntryByExternalReferenceCode"));
 					put(
+						"mutation#createPriceEntry",
+						new ObjectValuePair<>(
+							PriceEntryResourceImpl.class, "postPriceEntry"));
+					put(
+						"mutation#createPriceEntryBatch",
+						new ObjectValuePair<>(
+							PriceEntryResourceImpl.class,
+							"postPriceEntryBatch"));
+					put(
 						"mutation#deletePriceEntry",
 						new ObjectValuePair<>(
 							PriceEntryResourceImpl.class, "deletePriceEntry"));

@@ -6445,6 +6445,69 @@ paths:
                       - HeadlessCommerceAdminPricing.write
             summary: Creates or Updates a Tier Price.
             tags: ["TierPrice"]
+    /price-entries:
+        post:
+            operationId: postPriceEntry
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PriceEntry"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PriceEntry"
+                required: true
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PriceEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PriceEntry"
+                    description:
+                        Succesfully update the price entry
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            security:
+                - BasicAuth: []
+                - BearerAuth: []
+                - OAuth2:
+                      - HeadlessCommerceAdminPricing.write
+            summary: Updates a Price Entry by ID.
+            tags: ["PriceEntry"]
     /price-entries/{priceEntryId}:
         delete:
             operationId: deletePriceEntry

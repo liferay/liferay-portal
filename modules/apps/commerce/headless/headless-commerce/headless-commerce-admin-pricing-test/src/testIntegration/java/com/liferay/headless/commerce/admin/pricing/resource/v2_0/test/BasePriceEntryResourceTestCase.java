@@ -233,6 +233,24 @@ public abstract class BasePriceEntryResourceTestCase {
 	}
 
 	@Test
+	public void testPostPriceEntry() throws Exception {
+		PriceEntry randomPriceEntry = randomPriceEntry();
+
+		PriceEntry postPriceEntry = testPostPriceEntry_addPriceEntry(
+			randomPriceEntry);
+
+		assertEquals(randomPriceEntry, postPriceEntry);
+		assertValid(postPriceEntry);
+	}
+
+	protected PriceEntry testPostPriceEntry_addPriceEntry(PriceEntry priceEntry)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testDeletePriceEntry() throws Exception {
 		Assert.assertTrue(false);
 	}
