@@ -426,12 +426,12 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ObjectEntry"
             tags: ["ObjectEntry"]
-    "/by-external-reference-code/{objectEntryExternalReferenceCode}/object-actions/{objectActionName}":
+    "/by-external-reference-code/{externalReferenceCode}/object-actions/{objectActionName}":
         put:
             operationId: putByExternalReferenceCodeObjectEntryExternalReferenceCodeObjectActionObjectActionName
             parameters:
                 - in: path
-                  name: objectEntryExternalReferenceCode
+                  name: externalReferenceCode
                   required: true
                   schema:
                       type: string
