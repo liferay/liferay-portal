@@ -44,6 +44,7 @@ interface FilterConfiguration {
 interface FilterComponentArgs {
 	id: string;
 	moduleURL: string;
+	onClose: () => void;
 	type: 'clientExtension' | 'dateRange' | 'selection';
 }
 
@@ -53,7 +54,13 @@ const FILTER_IMPLEMENTATIONS = {
 	selection: selectionFilterImplementation,
 };
 
-const Filter = ({id, moduleURL, type, ...otherProps}: FilterComponentArgs) => {
+const Filter = ({
+	id,
+	moduleURL,
+	onClose,
+	type,
+	...otherProps
+}: FilterComponentArgs) => {
 	const [{filters}, viewsDispatch] = useContext(ViewsContext);
 
 	const filterImplementation = FILTER_IMPLEMENTATIONS[type];
@@ -106,7 +113,12 @@ const Filter = ({id, moduleURL, type, ...otherProps}: FilterComponentArgs) => {
 
 	return Component ? (
 		<div className="data-set-filter">
-			<Component id={id} setFilter={setFilter} {...otherProps} />
+			<Component
+				id={id}
+				onClose={onClose}
+				setFilter={setFilter}
+				{...otherProps}
+			/>
 		</div>
 	) : (
 		<ClayLoadingIndicator size="sm" />

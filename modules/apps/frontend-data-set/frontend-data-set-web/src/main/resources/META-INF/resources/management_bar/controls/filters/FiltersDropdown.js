@@ -82,7 +82,10 @@ const FiltersDropdown = () => {
 						{activeFilter.label}
 					</li>
 
-					<Filter {...activeFilter} />
+					<Filter
+						{...activeFilter}
+						onClose={() => setActive(false)}
+					/>
 				</>
 			) : (
 				<ClayDropDown.Group header={Liferay.Language.get('filters')}>

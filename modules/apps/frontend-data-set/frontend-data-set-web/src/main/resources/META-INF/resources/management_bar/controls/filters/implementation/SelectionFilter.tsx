@@ -38,6 +38,7 @@ export interface SelectionFilterImplementationArgs
 	itemLabel: string;
 	items: TItem[];
 	multiple: boolean;
+	onClose?: () => void;
 }
 
 interface SelectedData {
@@ -159,6 +160,7 @@ function SelectionFilter({
 	itemLabel,
 	items: initialItems,
 	multiple,
+	onClose,
 	selectedData,
 	setFilter,
 }: SelectionFilterImplementationArgs) {
@@ -489,6 +491,10 @@ function SelectionFilter({
 								active: true,
 								selectedData: newSelectedData,
 							});
+						}
+
+						if (onClose) {
+							onClose();
 						}
 					}}
 					size="sm"
