@@ -32,25 +32,31 @@ public class GroupUtil {
 		DepotEntryLocalService depotEntryLocalService,
 		GroupLocalService groupLocalService) {
 
-		Group group = groupLocalService.fetchGroup(companyId, assetLibraryKey);
+		Group group = groupLocalService.fetchGroup(
+			Long.valueOf(assetLibraryKey));
 
 		if (group == null) {
-			try {
-				DepotEntry depotEntry = depotEntryLocalService.fetchDepotEntry(
-					GetterUtil.getLong(assetLibraryKey));
+			group = groupLocalService.fetchGroup(companyId, assetLibraryKey);
 
-				if (depotEntry == null) {
+			if (group == null) {
+				try {
+					DepotEntry depotEntry =
+						depotEntryLocalService.fetchDepotEntry(
+							GetterUtil.getLong(assetLibraryKey));
+
+					if (depotEntry == null) {
+						return null;
+					}
+
+					group = depotEntry.getGroup();
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+
 					return null;
 				}
-
-				group = depotEntry.getGroup();
-			}
-			catch (PortalException portalException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(portalException);
-				}
-
-				return null;
 			}
 		}
 

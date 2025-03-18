@@ -112,6 +112,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		try {
 			reindexUsers(userGroupId);
+			reindexUserGroup(getUserGroup(userGroupId));
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -136,6 +137,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		try {
 			reindexUsers(userGroup);
+			reindexUserGroup(userGroup);
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -163,6 +165,10 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		try {
 			reindexUsers(userGroups);
+
+			for (UserGroup userGroup : userGroups) {
+				reindexUserGroup(userGroup);
+			}
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -188,6 +194,10 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		try {
 			reindexUsers(userGroupIds);
+
+			for (long userGroupId : userGroupIds) {
+				reindexUserGroup(getUserGroup(userGroupId));
+			}
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -968,6 +978,10 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 			User.class);
 
 		indexer.reindex(_userLocalService.fetchUser(userId));
+
+		for (long userGroupId : userGroupIds) {
+			reindexUserGroup(getUserGroup(userGroupId));
+		}
 	}
 
 	/**
@@ -991,6 +1005,10 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		try {
 			reindexUsers(userGroupIds);
+
+			for (long userGroupId : userGroupIds) {
+				reindexUserGroup(getUserGroup(userGroupId));
+			}
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);

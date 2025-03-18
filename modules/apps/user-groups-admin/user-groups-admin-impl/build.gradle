@@ -11,4 +11,5 @@ dependencies {
 	compileOnly project(":apps:portlet-display-template:portlet-display-template-api")
 	compileOnly project(":apps:user-groups-admin:user-groups-admin-api")
 	compileOnly project(":apps:xstream:xstream-configurator-api")
+	compileOnly project(":core:petra:petra-function")
 }

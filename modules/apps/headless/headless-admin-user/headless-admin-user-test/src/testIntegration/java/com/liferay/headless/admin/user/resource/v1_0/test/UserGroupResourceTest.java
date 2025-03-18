@@ -6,6 +6,8 @@
 package com.liferay.headless.admin.user.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.admin.user.client.dto.v1_0.Creator;
 import com.liferay.headless.admin.user.client.dto.v1_0.UserGroup;
 import com.liferay.headless.admin.user.client.pagination.Page;
@@ -217,6 +219,22 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 		throws Exception {
 
 		return _postUserGroup();
+	}
+
+	@Override
+	protected UserGroup testGetAssetLibraryUserGroupsPage_addUserGroup(
+			Long assetLibraryId, UserGroup userGroup)
+		throws Exception {
+
+		userGroup = _postUserGroup(userGroup);
+
+		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+			assetLibraryId);
+
+		_userGroupLocalService.addGroupUserGroups(
+			depotEntry.getGroupId(), new long[] {userGroup.getId()});
+
+		return userGroup;
 	}
 
 	@Override
@@ -441,6 +459,9 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 				userAccountBrief ->
 					userAccountBrief.getId() == user3.getUserId()));
 	}
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;

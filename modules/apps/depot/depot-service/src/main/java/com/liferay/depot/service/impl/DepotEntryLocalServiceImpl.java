@@ -143,6 +143,41 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public DepotEntry addOrUpdateDepotEntry(
+			String externalReferenceCode, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap,
+			Map<String, Boolean> depotAppCustomizationMap,
+			UnicodeProperties typeSettingsUnicodeProperties,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		DepotEntry depotEntry = null;
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, serviceContext.getCompanyId());
+
+		if (group != null) {
+			depotEntry = getGroupDepotEntry(group.getGroupId());
+
+			depotEntry = updateDepotEntry(
+				depotEntry.getDepotEntryId(), nameMap, descriptionMap,
+				depotAppCustomizationMap, typeSettingsUnicodeProperties,
+				serviceContext);
+		}
+		else {
+			depotEntry = addDepotEntry(nameMap, descriptionMap, serviceContext);
+		}
+
+		group = depotEntry.getGroup();
+
+		group.setExternalReferenceCode(externalReferenceCode);
+
+		_groupLocalService.updateGroup(group);
+
+		return getDepotEntry(depotEntry.getDepotEntryId());
+	}
+
+	@Override
 	public DepotEntry deleteDepotEntry(DepotEntry depotEntry)
 		throws PortalException {
 
