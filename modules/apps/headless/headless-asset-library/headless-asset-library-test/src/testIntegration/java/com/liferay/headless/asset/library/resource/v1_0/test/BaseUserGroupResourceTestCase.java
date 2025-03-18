@@ -279,8 +279,8 @@ public abstract class BaseUserGroupResourceTestCase {
 		Page<UserGroup> page =
 			userGroupResource.
 				getAssetLibraryByExternalReferenceCodeUserGroupsPage(
-					externalReferenceCode, RandomTestUtil.randomString(), null,
-					null, Pagination.of(1, 10), null);
+					externalReferenceCode, null, null, null,
+					Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -728,8 +728,7 @@ public abstract class BaseUserGroupResourceTestCase {
 			testGetAssetLibraryUserGroupsPage_getIrrelevantAssetLibraryId();
 
 		Page<UserGroup> page = userGroupResource.getAssetLibraryUserGroupsPage(
-			assetLibraryId, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

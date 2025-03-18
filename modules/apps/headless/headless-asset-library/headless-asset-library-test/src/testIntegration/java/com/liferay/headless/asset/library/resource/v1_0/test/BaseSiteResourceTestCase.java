@@ -280,8 +280,8 @@ public abstract class BaseSiteResourceTestCase {
 
 		Page<Site> page =
 			siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-				externalReferenceCode, RandomTestUtil.randomString(), null,
-				null, Pagination.of(1, 10), null);
+				externalReferenceCode, null, null, null, Pagination.of(1, 10),
+				null);
 
 		long totalCount = page.getTotalCount();
 
@@ -701,8 +701,7 @@ public abstract class BaseSiteResourceTestCase {
 			testGetAssetLibrarySitesPage_getIrrelevantAssetLibraryId();
 
 		Page<Site> page = siteResource.getAssetLibrarySitesPage(
-			assetLibraryId, RandomTestUtil.randomString(), null, null,
-			Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 

@@ -203,8 +203,7 @@ public abstract class BaseAssetLibraryResourceTestCase {
 	@Test
 	public void testGetAssetLibrariesPage() throws Exception {
 		Page<AssetLibrary> page = assetLibraryResource.getAssetLibrariesPage(
-			RandomTestUtil.randomString(), null, null, Pagination.of(1, 10),
-			null);
+			null, null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
