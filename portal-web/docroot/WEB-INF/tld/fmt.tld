@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
 
-<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
-    version="2.0">
+    Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2022-2022 Contributors to the Eclipse Foundation
     
-  <description>JSTL 1.1 i18n-capable formatting library</description>
-  <display-name>JSTL fmt</display-name>
-  <tlib-version>1.1</tlib-version>
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<taglib xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-jsptaglibrary_3_0.xsd"
+    version="3.0">
+    
+  <description>Tags 3.0 i18n-capable formatting library</description>
+  <display-name>Tags fmt</display-name>
+  <tlib-version>3.0</tlib-version>
   <short-name>fmt</short-name>
-  <uri>http://java.sun.com/jsp/jstl/fmt</uri>
+  <uri>jakarta.tags.fmt</uri>
 
   <validator>
     <description>
@@ -203,7 +221,7 @@ suffix.
         <description>
 Name of the exported scoped variable which stores
 the i18n localization context of type
-javax.servlet.jsp.jstl.fmt.LocalizationC
+jakarta.servlet.jsp.jstl.fmt.LocalizationC
 ontext.
         </description>
         <name>var</name>
