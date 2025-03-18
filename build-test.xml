@@ -11973,6 +11973,16 @@ ${update.properties}</echo>
 			</then>
 		</if>
 
+		<if>
+			<and>
+				<isset property="test.extract.and.insert" />
+				<equals arg1="${test.extract.and.insert}" arg2="true" />
+			</and>
+			<then>
+				<property name="database.partition.enabled" value="true" />
+			</then>
+		</if>
+
 		<get-testcase-property property.name="liferay.online.properties" />
 		<get-testcase-property property.name="portal.version" />
 
