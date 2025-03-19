@@ -10,6 +10,7 @@ import ClayLayout from '@clayui/layout';
 import {
 	PagesVisitor,
 	useConfig,
+	useForm,
 	useFormState,
 } from 'data-engine-js-components-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -39,11 +40,11 @@ const LocalesDropdown = ({
 	fieldName,
 	onLanguageClicked,
 }: LocalesDropdownProps) => {
+	const alignElementRef = useRef(null);
+	const dispatch = useForm();
+	const dropdownMenuRef = useRef(null);
 	const {pages} = useFormState();
 	const {portletNamespace} = useConfig();
-
-	const alignElementRef = useRef(null);
-	const dropdownMenuRef = useRef(null);
 
 	const [dropdownActive, setDropdownActive] = useState(false);
 
@@ -134,6 +135,13 @@ const LocalesDropdown = ({
 											true,
 											true
 										);
+
+										dispatch({
+											payload: {
+												editingLanguageId: localeId,
+											},
+											type: 'language_locales_dropdown_change',
+										});
 
 										const friendlyURLInputComponent =
 											Liferay.component(

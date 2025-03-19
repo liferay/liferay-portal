@@ -48,17 +48,6 @@ export default function CheckboxLocalizedObjectField(props: IProps) {
 	};
 
 	const handleTranslationChange = (localeId: Liferay.Language.Locale) => {
-		if (!Object.hasOwn(value, localeId)) {
-			const newValue = {
-				...value,
-				[localeId]: value[defaultLocale.localeId],
-			};
-
-			flushSync(() => {
-				onChange({target: {value: newValue}});
-			});
-		}
-
 		const currentLocale = getLocale(
 			editingLocales,
 			defaultLocale,

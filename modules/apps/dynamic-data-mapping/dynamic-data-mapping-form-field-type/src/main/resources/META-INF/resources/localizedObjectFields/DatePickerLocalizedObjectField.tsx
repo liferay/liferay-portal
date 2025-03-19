@@ -114,17 +114,6 @@ export default function DatePickerLocalizedObjectField(
 	};
 
 	const handleTranslationChange = (localeId: Liferay.Language.Locale) => {
-		if (typeof value === 'object' && !Object.hasOwn(value, localeId)) {
-			const newValue = {
-				...value,
-				[localeId]: value[defaultLocale.localeId],
-			};
-
-			flushSync(() => {
-				onChange({target: {value: newValue}});
-			});
-		}
-
 		const currentLocale = getLocale(
 			editingLocales,
 			defaultLocale,
