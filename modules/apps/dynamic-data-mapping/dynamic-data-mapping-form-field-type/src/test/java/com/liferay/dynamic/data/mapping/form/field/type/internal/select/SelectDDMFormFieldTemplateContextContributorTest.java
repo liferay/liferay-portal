@@ -273,13 +273,7 @@ public class SelectDDMFormFieldTemplateContextContributorTest
 
 		_mockListTypeEntry("value 2", listTypeDefinitionId, labelMap2);
 
-		Map<Locale, String> labelMap3 = HashMapBuilder.put(
-			LocaleUtil.SPAIN, RandomTestUtil.randomString()
-		).put(
-			LocaleUtil.US, RandomTestUtil.randomString()
-		).build();
-
-		_mockListTypeEntry("value 3", listTypeDefinitionId, labelMap3);
+		_mockListTypeEntry("value 3", listTypeDefinitionId, null);
 
 		List<Object> expectedOptions = new ArrayList<>();
 
@@ -291,7 +285,11 @@ public class SelectDDMFormFieldTemplateContextContributorTest
 				"Label 2", labelMap2, "Reference 2", "value 2"));
 		expectedOptions.add(
 			DDMFormFieldOptionsTestUtil.createOption(
-				"Label 3", labelMap3, "Reference 3", "value 3"));
+				"Label 3",
+				HashMapBuilder.put(
+					LocaleUtil.US, "Label 3"
+				).build(),
+				"Reference 3", "value 3"));
 
 		DDMFormField ddmFormField = new DDMFormField(
 			"field", DDMFormFieldTypeConstants.SELECT);
@@ -313,13 +311,25 @@ public class SelectDDMFormFieldTemplateContextContributorTest
 
 		expectedOptions.add(
 			DDMFormFieldOptionsTestUtil.createOption(
-				"Label 1", null, "Reference 1", "value 1"));
+				"Label 1",
+				HashMapBuilder.put(
+					LocaleUtil.US, "Label 1"
+				).build(),
+				"Reference 1", "value 1"));
 		expectedOptions.add(
 			DDMFormFieldOptionsTestUtil.createOption(
-				"Label 2", null, "Reference 2", "value 2"));
+				"Label 2",
+				HashMapBuilder.put(
+					LocaleUtil.US, "Label 2"
+				).build(),
+				"Reference 2", "value 2"));
 		expectedOptions.add(
 			DDMFormFieldOptionsTestUtil.createOption(
-				"Label 3", null, "Reference 3", "value 3"));
+				"Label 3",
+				HashMapBuilder.put(
+					LocaleUtil.US, "Label 3"
+				).build(),
+				"Reference 3", "value 3"));
 
 		DDMFormField ddmFormField = new DDMFormField("field", "select");
 

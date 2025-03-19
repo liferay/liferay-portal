@@ -66,13 +66,22 @@ public class MultiSelectPicklistDDMFormFieldTemplateContextContributorTest
 	}
 
 	@Test
-	public void testGetParametersOptions() throws Exception {
+	public void testGetParametersOptions() {
 		_ddmFormField.setDDMFormFieldOptions(
 			DDMFormFieldOptionsTestUtil.createDDMFormFieldOptions());
 
 		long listTypeDefinitionId = RandomTestUtil.randomLong();
 
 		_ddmFormField.setProperty("listTypeDefinitionId", listTypeDefinitionId);
+
+		_mockListTypeEntry(listTypeDefinitionId, null, "value 1");
+
+		_assertGetParametersOption(
+			"Label 1",
+			HashMapBuilder.put(
+				LocaleUtil.US, "Label 1"
+			).build(),
+			"value 1");
 
 		Map<Locale, String> labelMap = HashMapBuilder.put(
 			LocaleUtil.SPAIN, RandomTestUtil.randomString()
@@ -81,6 +90,13 @@ public class MultiSelectPicklistDDMFormFieldTemplateContextContributorTest
 		).build();
 
 		_mockListTypeEntry(listTypeDefinitionId, labelMap, "value 1");
+
+		_assertGetParametersOption("Label 1", labelMap, "value 1");
+	}
+
+	private void _assertGetParametersOption(
+		String expectedLabel, Map<Locale, String> expectedLabelMap,
+		String expectedValue) {
 
 		Map<String, Object> parameters =
 			_multiSelectPicklistDDMFormFieldTemplateContextContributor.
@@ -92,9 +108,9 @@ public class MultiSelectPicklistDDMFormFieldTemplateContextContributorTest
 
 		Map<String, Object> option = options.get(0);
 
-		Assert.assertEquals("Label 1", option.get("label"));
-		Assert.assertEquals(labelMap, option.get("labelMap"));
-		Assert.assertEquals("value 1", option.get("value"));
+		Assert.assertEquals(expectedLabel, option.get("label"));
+		Assert.assertEquals(expectedLabelMap, option.get("labelMap"));
+		Assert.assertEquals(expectedValue, option.get("value"));
 	}
 
 	private void _mockListTypeEntry(
