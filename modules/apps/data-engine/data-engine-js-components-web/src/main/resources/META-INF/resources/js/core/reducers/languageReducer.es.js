@@ -312,6 +312,43 @@ export default function languageReducer(state, action) {
 				availableLanguageIds: [...availableLanguageIds, languageId],
 			};
 		}
+		case EVENT_TYPES.LANGUAGE.LOCALES_DROPDOWN_CHANGE: {
+			const {defaultLanguageId: prevDefaultLanguageId, focusedField} =
+				state;
+
+			const {
+				defaultLanguageId = prevDefaultLanguageId,
+				editingLanguageId,
+				pages,
+			} = action.payload;
+
+			const visitor = new PagesVisitor(pages ?? state.pages);
+
+			const newPages = visitor.mapFields(
+				({localizable, value}) => {
+					if (localizable) {
+						return {
+							value: {
+								...value,
+								[editingLanguageId]:
+									value[editingLanguageId] ??
+									value[defaultLanguageId],
+							},
+						};
+					}
+				},
+				true,
+				true
+			);
+
+			return {
+				defaultLanguageId,
+				editingLanguageId,
+				focusedField:
+					getField(newPages, focusedField?.fieldName) ?? focusedField,
+				pages: newPages,
+			};
+		}
 		case EVENT_TYPES.LANGUAGE.UPDATE: {
 			const {availableLanguageIds, focusedField, pages} = state;
 

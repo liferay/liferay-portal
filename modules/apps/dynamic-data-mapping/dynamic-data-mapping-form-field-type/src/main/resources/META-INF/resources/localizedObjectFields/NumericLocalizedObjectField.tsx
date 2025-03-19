@@ -88,19 +88,6 @@ export default function NumericLocalizedObjectField({
 	};
 
 	const handleTranslationChange = (localeId: Liferay.Language.Locale) => {
-		if (typeof value === 'object' && !Object.hasOwn(value, localeId)) {
-			flushSync(() => {
-				onChange({
-					target: {
-						value: {
-							...value,
-							[localeId]: value[defaultLanguageId],
-						},
-					},
-				});
-			});
-		}
-
 		const currentLocale = getLocale(
 			editingLocales,
 			defaultLocale,

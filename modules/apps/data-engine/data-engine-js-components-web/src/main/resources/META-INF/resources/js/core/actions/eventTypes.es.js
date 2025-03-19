@@ -44,6 +44,7 @@ const LANGUAGE = {
 	ADD: 'language_add',
 	CHANGE: 'language_change',
 	DELETE: 'language_delete',
+	LOCALES_DROPDOWN_CHANGE: 'language_locales_dropdown_change',
 	UPDATE: 'language_update',
 };
 

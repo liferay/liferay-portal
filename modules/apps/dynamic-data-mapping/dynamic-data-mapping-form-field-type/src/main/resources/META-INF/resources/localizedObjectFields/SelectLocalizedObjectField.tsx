@@ -147,13 +147,6 @@ export default function SelectLocalizedObjectField({
 	};
 
 	const handleTranslationChange = (localeId: Liferay.Language.Locale) => {
-		if (!Object.hasOwn(localizedValues, localeId)) {
-			updateLocalizedValues(
-				localeId,
-				localizedValues[defaultLanguageId]!
-			);
-		}
-
 		const currentLocale = getLocale(
 			editingLocales,
 			defaultLocale,
