@@ -366,6 +366,8 @@ portletDisplay.setURLBack(backURL);
 					}
 				}
 				else {
+					current.updateLocalesDropdownToDefaultLanguage();
+
 					loadingElement.remove();
 				}
 			});
