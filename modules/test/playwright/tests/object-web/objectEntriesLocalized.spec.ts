@@ -1025,6 +1025,97 @@ test.describe('Localized object entries are saved correctly', () => {
 });
 
 test.describe('Required localized object fields', () => {
+	test('assert that when required error is thrown the locale dropdown switches back to the default language', async ({
+		apiHelpers,
+		page,
+		viewObjectEntriesPage,
+	}) => {
+		const objectDefinitionLabel = 'ObjectDefinitionLabel' + getRandomInt();
+		const objectDefinitionName = 'ObjectDefinitionName' + getRandomInt();
+
+		const objectFields = createObjectFields(
+			'boolean',
+			[
+				{
+					label: 'booleanField',
+					name: 'booleanField',
+				},
+			],
+			{required: true},
+			true
+		);
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+		const {body: objectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				active: true,
+				enableLocalization: true,
+				label: {
+					en_US: objectDefinitionLabel,
+				},
+				name: objectDefinitionName,
+				objectFields,
+				pluralLabel: {
+					en_US: objectDefinitionLabel,
+				},
+				portlet: true,
+				scope: 'company',
+				status: {
+					code: 0,
+				},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await viewObjectEntriesPage.addObjectEntryButton.click();
+
+		await expect(page.getByRole('button', {name: 'en-us'})).toBeVisible();
+
+		const translationsDropdownTrigger = page
+			.getByTestId('triggerButton')
+			.first();
+
+		await translationsDropdownTrigger.click();
+
+		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
+
+		await expect(englishOption.locator('.label-item-expand')).toHaveText(
+			'default',
+			{ignoreCase: true}
+		);
+
+		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
+
+		await catalanOption.locator('.label-item-expand').click();
+
+		await expect(page.getByRole('button', {name: 'ca-es'})).toBeVisible();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await expect(page.getByRole('button', {name: 'en-us'})).toBeVisible();
+
+		await expect(
+			page
+				.locator('.form-feedback-item')
+				.getByText('This field is required.')
+		).toBeVisible();
+
+		await page.getByRole('checkbox').check();
+
+		await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+		await expect(
+			page.getByText('Success:Your request completed successfully.')
+		).toBeVisible();
+	});
+
 	test('verify that default language id is required', async ({
 		apiHelpers,
 		page,
