@@ -130,6 +130,7 @@ export function mergePages(
 
 const doEvaluate = debounce((fieldName, evaluatorContext, callback) => {
 	const {
+		containerId,
 		defaultLanguageId,
 		editingLanguageId,
 		formId,
@@ -153,7 +154,10 @@ const doEvaluate = debounce((fieldName, evaluatorContext, callback) => {
 
 	makeFetch({
 		body: convertToFormData({
-			languageId: editingLanguageId,
+			languageId:
+				containerId === 'editObjectEntry'
+					? defaultLanguageId
+					: editingLanguageId,
 			p_auth: Liferay.authToken,
 			p_l_id: themeDisplay.getPlid(),
 			p_v_l_s_g_id: themeDisplay.getSiteGroupId(),
