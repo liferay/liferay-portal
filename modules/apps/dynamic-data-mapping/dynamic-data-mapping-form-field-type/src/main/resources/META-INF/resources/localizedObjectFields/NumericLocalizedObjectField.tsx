@@ -4,28 +4,24 @@
  */
 
 import {ClayInput} from '@clayui/form';
+import {useFormState} from 'data-engine-js-components-web';
 
 // @ts-ignore
 
-import React, {useState} from 'react';
-import {flushSync} from 'react-dom';
+import React from 'react';
 
 import {NumericProps} from '../Numeric/Numeric';
 import NumericBase, {IMaskedNumber} from '../Numeric/NumericBase';
 import {useNumericInputValueMemo} from '../Numeric/hooks';
 import {getLocalizedObjectFieldValue, getSymbols} from '../Numeric/numericUtil';
 import {LocalizedValue} from '../types';
-import LocalesDropdown, {
-	EditingLocale,
-} from '../util/localizable/LocalesDropdown';
-import {getEditingLocales, getLocale} from './util/locales';
+import LocalesDropdown from '../util/localizable/LocalesDropdown';
 
 export default function NumericLocalizedObjectField({
 	availableLocales,
 	dataType,
 	decimalPlaces,
 	defaultLanguageId,
-	defaultLocale,
 	fieldName,
 	focused,
 	inputMask,
@@ -40,22 +36,11 @@ export default function NumericLocalizedObjectField({
 	value,
 	...otherProps
 }: NumericProps) {
-	const initialEditingLocales = getEditingLocales(
-		availableLocales,
-		defaultLocale,
-		value ?? {['en_US']: ''}
-	);
-
-	const [editingLocales, setEditingLocales] = useState<EditingLocale[]>(
-		initialEditingLocales
-	);
-
-	const [currentEditingLocale, setCurrentEditingLocale] = useState({
-		...getLocale(editingLocales, defaultLocale, defaultLocale.localeId),
-	});
+	const {editingLanguageId}: {editingLanguageId: Liferay.Language.Locale} =
+		useFormState();
 
 	const symbols = getSymbols({
-		editingLocale: currentEditingLocale.localeId,
+		editingLocale: editingLanguageId,
 		inputMask,
 		localizedSymbols,
 		settingsContext,
@@ -70,39 +55,18 @@ export default function NumericLocalizedObjectField({
 		inputMaskFormat,
 		placeholder,
 		symbols,
-		value: getLocalizedObjectFieldValue(
-			currentEditingLocale.localeId,
-			value
-		),
+		value: getLocalizedObjectFieldValue(editingLanguageId, value),
 	});
 
 	const handleChange = (formattedValue: IMaskedNumber) => {
 		if (formattedValue && formattedValue.masked !== inputValue.masked) {
 			const localizedValue = {
 				...(value as LocalizedValue<string>),
-				[currentEditingLocale.localeId]: formattedValue.raw,
+				[editingLanguageId]: formattedValue.raw,
 			};
 
 			onChange({target: {value: localizedValue}});
 		}
-	};
-
-	const handleTranslationChange = (localeId: Liferay.Language.Locale) => {
-		const currentLocale = getLocale(
-			editingLocales,
-			defaultLocale,
-			localeId
-		);
-
-		const updatedLocale = {...currentLocale, isTranslated: true};
-
-		setEditingLocales((previous) =>
-			previous.map((locale) =>
-				locale.localeId === localeId ? updatedLocale : locale
-			)
-		);
-
-		setCurrentEditingLocale(updatedLocale);
 	};
 
 	return (
@@ -112,8 +76,7 @@ export default function NumericLocalizedObjectField({
 				dataType={dataType}
 				decimalPlaces={decimalPlaces}
 				defaultLanguageId={defaultLanguageId}
-				defaultLocale={defaultLocale}
-				editingLocale={currentEditingLocale.localeId}
+				editingLanguageId={editingLanguageId}
 				fieldName={fieldName}
 				focused={focused}
 				inputMask={inputMask}
@@ -130,10 +93,9 @@ export default function NumericLocalizedObjectField({
 
 			<ClayInput.GroupItem shrink>
 				<LocalesDropdown
-					availableLocales={editingLocales}
-					editingLocale={currentEditingLocale}
+					availableLocales={availableLocales}
 					fieldName={fieldName}
-					onLanguageClicked={handleTranslationChange}
+					value={value as LocalizedValue<string>}
 				/>
 			</ClayInput.GroupItem>
 		</>

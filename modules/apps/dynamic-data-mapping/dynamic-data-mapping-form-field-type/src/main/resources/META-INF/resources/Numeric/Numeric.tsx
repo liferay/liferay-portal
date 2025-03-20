@@ -10,7 +10,6 @@ import React, {FocusEventHandler} from 'react';
 import FieldBase from '../FieldBase/ReactFieldBase.es';
 import {ISymbols} from '../NumericInputMask/NumericInputMask';
 import NumericLocalizedObjectField from '../localizedObjectFields/NumericLocalizedObjectField';
-import {EditingLocale} from '../util/localizable/LocalesDropdown';
 
 // @ts-ignore
 
@@ -20,6 +19,7 @@ import {useNumericInputValueMemo} from './hooks';
 import {getSymbols, maxLengthExceeded} from './numericUtil';
 
 import './Numeric.scss';
+import {AvailableLocale} from '../util/localizable/LocalesDropdown';
 
 import type {FieldChangeEventHandler, Locale, LocalizedValue} from '../types';
 
@@ -122,11 +122,10 @@ export default withConfirmationField(Main);
 export type NumericProps = {
 	append: string;
 	appendType: 'prefix' | 'suffix';
-	availableLocales: EditingLocale[];
+	availableLocales: AvailableLocale[];
 	dataType: NumericDataType;
 	decimalPlaces: number;
 	defaultLanguageId: Locale;
-	defaultLocale: EditingLocale;
 	editingLanguageId: Locale;
 	editingLocale: Locale;
 	errorMessage?: string;
