@@ -114,7 +114,7 @@ const Main = ({
 	);
 };
 
-Main.displayName = 'Checkbox';
+Main.displayName = 'Numeric';
 
 export {Main};
 export default withConfirmationField(Main);
