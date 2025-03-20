@@ -21,5 +21,6 @@ dependencies {
 	testIntegrationImplementation group: "org.mockito", name: "mockito-core", version: "1.10.8"
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":apps:portal-remote:portal-remote-cors-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
