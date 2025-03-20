@@ -8,20 +8,19 @@ import {ClayInput} from '@clayui/form';
 // @ts-ignore
 
 import moment from 'moment/min/moment-with-locales';
-import React, {useMemo, useState} from 'react';
-import {flushSync} from 'react-dom';
+import React, {useMemo} from 'react';
 
 import DatePickerBase, {
 	DatePickerBaseProps,
 } from '../DatePicker/DatePickerBase';
 import LocalesDropdown, {
-	EditingLocale,
+	AvailableLocale,
 } from '../util/localizable/LocalesDropdown';
-import {getEditingLocales, getLocale} from './util/locales';
 
 import './DatePickerLocalizedObjectField.scss';
 
 import {datetimeUtils} from '@liferay/object-js-components-web';
+import {useFormState} from 'data-engine-js-components-web';
 
 import {Date, DateMaskParams} from '../DatePicker/DatePicker';
 
@@ -33,7 +32,6 @@ export default function DatePickerLocalizedObjectField(
 	const {
 		availableLocales,
 		defaultLanguageId,
-		defaultLocale,
 		fieldName,
 		localizable,
 		name,
@@ -43,35 +41,24 @@ export default function DatePickerLocalizedObjectField(
 		value,
 	} = props;
 
-	const initialEditingLocales = getEditingLocales(
-		availableLocales,
-		defaultLocale,
-		value
-	);
-
-	const [editingLocales, setEditingLocales] = useState<EditingLocale[]>(
-		initialEditingLocales
-	);
-
-	const [currentEditingLocale, setCurrentEditingLocale] = useState({
-		...getLocale(editingLocales, defaultLocale, defaultLocale.localeId),
-	});
+	const {editingLanguageId}: {editingLanguageId: Liferay.Language.Locale} =
+		useFormState();
 
 	const dateMaskParams: DateMaskParams = useMemo(() => {
 		let parameters: DateMaskParams = {};
 		parameters = datetimeUtils.generateDateConfigurations({
 			defaultLanguageId,
-			locale: currentEditingLocale.localeId,
+			locale: editingLanguageId,
 			type,
 		});
 
 		return parameters;
-	}, [defaultLanguageId, currentEditingLocale, type]);
+	}, [defaultLanguageId, editingLanguageId, type]);
 
 	const date: Date = useMemo(() => {
 		let formattedDate = '';
 		let year = moment().year();
-		const locale = currentEditingLocale.localeId;
+		const locale = editingLanguageId;
 
 		const rawDate =
 			value?.[locale] ??
@@ -98,7 +85,7 @@ export default function DatePickerLocalizedObjectField(
 	}, [
 		dateMaskParams,
 		defaultLanguageId,
-		currentEditingLocale.localeId,
+		editingLanguageId,
 		name,
 		predefinedValue,
 		value,
@@ -107,28 +94,10 @@ export default function DatePickerLocalizedObjectField(
 	const handleDateChange = (date: string) => {
 		const newValue = {
 			...(value as LocalizedValue<string>),
-			[currentEditingLocale.localeId]: date,
+			[editingLanguageId]: date,
 		};
 
 		onChange({target: {value: newValue}});
-	};
-
-	const handleTranslationChange = (localeId: Liferay.Language.Locale) => {
-		const currentLocale = getLocale(
-			editingLocales,
-			defaultLocale,
-			localeId
-		);
-
-		const updatedLocale = {...currentLocale, isTranslated: true};
-
-		setEditingLocales((previous) =>
-			previous.map((locale) =>
-				locale.localeId === localeId ? updatedLocale : locale
-			)
-		);
-
-		setCurrentEditingLocale(updatedLocale);
 	};
 
 	return (
@@ -139,7 +108,7 @@ export default function DatePickerLocalizedObjectField(
 					date={date}
 					dateMaskParams={dateMaskParams}
 					defaultLanguageId={defaultLanguageId}
-					locale={currentEditingLocale.localeId}
+					locale={editingLanguageId}
 					localizable={localizable}
 					name={name}
 					onChange={handleDateChange}
@@ -151,10 +120,9 @@ export default function DatePickerLocalizedObjectField(
 
 			<ClayInput.GroupItem shrink>
 				<LocalesDropdown
-					availableLocales={editingLocales}
-					editingLocale={currentEditingLocale}
+					availableLocales={availableLocales}
 					fieldName={fieldName}
-					onLanguageClicked={handleTranslationChange}
+					value={value}
 				/>
 			</ClayInput.GroupItem>
 		</ClayInput.Group>
@@ -162,8 +130,7 @@ export default function DatePickerLocalizedObjectField(
 }
 
 export interface DatePickerLocalizedProps extends DatePickerBaseProps {
-	availableLocales: EditingLocale[];
-	defaultLocale: EditingLocale;
+	availableLocales: AvailableLocale[];
 	fieldName: string;
 	onChange: any;
 	value: LocalizedValue<string>;
