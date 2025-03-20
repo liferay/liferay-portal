@@ -5,6 +5,7 @@
 
 import {Field, FieldType} from './utils/dataConverter';
 
+export {EVENT_TYPES} from './core/actions/eventTypes';
 export {FieldFeedback} from './core/components/FieldFeedback';
 export {EVENT_TYPES as FORM_EVENT_TYPES} from './custom/form/eventTypes';
 export {
