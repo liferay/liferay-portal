@@ -15,6 +15,7 @@ import {
 } from 'data-engine-js-components-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+import {LocalizedValue} from '../../types';
 import AvailableLocaleLabel from './AvailableLocaleLabel';
 
 export interface AvailableLocale {
@@ -23,30 +24,35 @@ export interface AvailableLocale {
 	localeId: Liferay.Language.Locale;
 }
 
-export interface EditingLocale extends AvailableLocale {
-	isDefault: boolean;
-	isTranslated: boolean;
-}
 interface LocalesDropdownProps {
-	availableLocales: EditingLocale[];
-	editingLocale: EditingLocale;
+	availableLocales: AvailableLocale[];
 	fieldName: string;
-	onLanguageClicked: (localeId: Liferay.Language.Locale) => void;
+	value: LocalizedValue<unknown>;
 }
 
 const LocalesDropdown = ({
 	availableLocales,
-	editingLocale,
 	fieldName,
-	onLanguageClicked,
+	value,
 }: LocalesDropdownProps) => {
 	const alignElementRef = useRef(null);
 	const dispatch = useForm();
 	const dropdownMenuRef = useRef(null);
-	const {pages} = useFormState();
+	const {
+		defaultLanguageId,
+		editingLanguageId,
+	}: {
+		editingLanguageId: Liferay.Language.Locale;
+		defaultLanguageId: Liferay.Language.Locale;
+	} = useFormState();
 	const {portletNamespace} = useConfig();
 
 	const [dropdownActive, setDropdownActive] = useState(false);
+	const [editingLocale, setEditingLocale] = useState<AvailableLocale>(
+		availableLocales.find(({localeId}) => {
+			return localeId === defaultLanguageId;
+		})!
+	);
 
 	const localeChangeHandler = useCallback(
 		(event: any) => {
@@ -55,6 +61,15 @@ const LocalesDropdown = ({
 		},
 		[fieldName]
 	);
+
+	useEffect(() => {
+		setEditingLocale(
+			availableLocales.find(({localeId}) => {
+				return localeId === editingLanguageId;
+			})!
+		);
+	}, [editingLanguageId]);
+
 	useEffect(() => {
 		Liferay.on('inputLocalized:localeChanged', localeChangeHandler);
 
@@ -93,101 +108,75 @@ const LocalesDropdown = ({
 				ref={dropdownMenuRef}
 			>
 				<ClayDropDown.ItemList>
-					{availableLocales.map(
-						({
-							displayName,
-							icon,
-							isDefault,
-							isTranslated,
-							localeId,
-						}) => (
-							<ClayDropDown.Item
-								className="custom-dropdown-item-row"
-								data-testid={`availableLocalesDropdown${localeId}`}
-								key={localeId}
+					{availableLocales.map(({displayName, icon, localeId}) => (
+						<ClayDropDown.Item
+							className="custom-dropdown-item-row"
+							data-testid={`availableLocalesDropdown${localeId}`}
+							key={localeId}
 
-								// @ts-ignore
+							// @ts-ignore
 
-								name={fieldName + localeId}
-								onClick={(event) => {
-									onLanguageClicked(localeId);
-									setDropdownActive(false);
+							name={fieldName + localeId}
+							onClick={(event) => {
+								setDropdownActive(false);
 
-									if (event.isTrusted) {
-										const visitor = new PagesVisitor(pages);
+								if (event.isTrusted) {
+									dispatch({
+										payload: {
+											editingLanguageId: localeId,
+										},
+										type: 'language_locales_dropdown_change',
+									});
 
-										visitor.mapFields(
-											(field) => {
-												if (
-													(field.localizedObjectField ||
-														field.localizable) &&
-													fieldName !==
-														field.fieldName
-												) {
-													document
-														.getElementsByName(
-															field.fieldName +
-																localeId
-														)[0]
-														.click();
-												}
-											},
-											true,
-											true
+									const friendlyURLInputComponent =
+										Liferay.component(
+											`${portletNamespace}friendlyURL`
 										);
 
-										dispatch({
-											payload: {
-												editingLanguageId: localeId,
-											},
-											type: 'language_locales_dropdown_change',
-										});
-
-										const friendlyURLInputComponent =
-											Liferay.component(
-												`${portletNamespace}friendlyURL`
-											);
-
-										if (friendlyURLInputComponent) {
-											Liferay.fire(
-												'inputLocalized:localeChanged',
-												{
-													item: document.querySelector(
-														`[data-languageid="${localeId}"][data-value="${localeId}"]`
-													),
-												}
-											);
-										}
-									}
-								}}
-							>
-								<ClayLayout.ContentRow containerElement="span">
-									<ClayLayout.ContentCol
-										containerElement="span"
-										expand
-									>
-										<ClayLayout.ContentSection containerElement="span">
-											<span className="inline-item inline-item-before">
-												<ClayIcon symbol={icon} />
-											</span>
-
-											{displayName}
-										</ClayLayout.ContentSection>
-									</ClayLayout.ContentCol>
-
-									<ClayLayout.ContentCol containerElement="span">
-										<AvailableLocaleLabel
-											isDefault={isDefault}
-											isSubmitLabel={
-												fieldName === 'submitLabel'
+									if (friendlyURLInputComponent) {
+										Liferay.fire(
+											'inputLocalized:localeChanged',
+											{
+												item: document.querySelector(
+													`[data-languageid="${localeId}"][data-value="${localeId}"]`
+												),
 											}
-											isTranslated={isTranslated}
-										/>
-									</ClayLayout.ContentCol>
-								</ClayLayout.ContentRow>
-							</ClayDropDown.Item>
-						)
-					)}
+										);
+									}
+								}
+							}}
+						>
+							<ClayLayout.ContentRow containerElement="span">
+								<ClayLayout.ContentCol
+									containerElement="span"
+									expand
+								>
+									<ClayLayout.ContentSection containerElement="span">
+										<span className="inline-item inline-item-before">
+											<ClayIcon symbol={icon} />
+										</span>
+
+										{displayName}
+									</ClayLayout.ContentSection>
+								</ClayLayout.ContentCol>
+
+								<ClayLayout.ContentCol containerElement="span">
+									<AvailableLocaleLabel
+										isDefault={
+											localeId === defaultLanguageId
+										}
+										isSubmitLabel={
+											fieldName === 'submitLabel'
+										}
+										isTranslated={Object.hasOwn(
+											value,
+											localeId
+										)}
+									/>
+								</ClayLayout.ContentCol>
+							</ClayLayout.ContentRow>
+						</ClayDropDown.Item>
+					))}
 				</ClayDropDown.ItemList>
 			</ClayDropDown.Menu>
 		</div>
