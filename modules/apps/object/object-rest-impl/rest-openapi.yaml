@@ -428,7 +428,7 @@ paths:
             tags: ["ObjectEntry"]
     "/by-external-reference-code/{externalReferenceCode}/object-actions/{objectActionName}":
         put:
-            operationId: putByExternalReferenceCodeObjectEntryExternalReferenceCodeObjectActionObjectActionName
+            operationId: putByExternalReferenceCodeObjectActionObjectActionName
             parameters:
                 - in: path
                   name: externalReferenceCode

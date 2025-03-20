@@ -500,7 +500,7 @@ public abstract class BaseObjectEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectEntryExternalReferenceCode"
+				name = "externalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
@@ -512,21 +512,20 @@ public abstract class BaseObjectEntryResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ObjectEntry")}
 	)
 	@javax.ws.rs.Path(
-		"/by-external-reference-code/{objectEntryExternalReferenceCode}/object-actions/{objectActionName}"
+		"/by-external-reference-code/{externalReferenceCode}/object-actions/{objectActionName}"
 	)
 	@javax.ws.rs.Produces({"application/json", "application/xml"})
 	@javax.ws.rs.PUT
 	@Override
-	public void
-			putByExternalReferenceCodeObjectEntryExternalReferenceCodeObjectActionObjectActionName(
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("objectEntryExternalReferenceCode")
-				String objectEntryExternalReferenceCode,
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("objectActionName")
-				String objectActionName)
+	public void putByExternalReferenceCodeObjectActionObjectActionName(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("objectActionName")
+			String objectActionName)
 		throws Exception {
 	}
 

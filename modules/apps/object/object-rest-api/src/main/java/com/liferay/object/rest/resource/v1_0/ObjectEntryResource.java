@@ -84,10 +84,8 @@ public interface ObjectEntryResource {
 			String externalReferenceCode, ObjectEntry objectEntry)
 		throws Exception;
 
-	public void
-			putByExternalReferenceCodeObjectEntryExternalReferenceCodeObjectActionObjectActionName(
-				String objectEntryExternalReferenceCode,
-				String objectActionName)
+	public void putByExternalReferenceCodeObjectActionObjectActionName(
+			String externalReferenceCode, String objectActionName)
 		throws Exception;
 
 	public void deleteScopeScopeKeyByExternalReferenceCode(
