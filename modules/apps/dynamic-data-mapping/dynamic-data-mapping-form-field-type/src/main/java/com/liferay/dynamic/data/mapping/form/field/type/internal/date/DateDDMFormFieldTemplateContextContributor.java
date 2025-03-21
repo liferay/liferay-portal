@@ -55,12 +55,20 @@ public class DateDDMFormFieldTemplateContextContributor
 			ddmFormField.getProperty("localizedObjectField"));
 
 		return HashMapBuilder.<String, Object>put(
+			"editOnlyInDefaultLanguage",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("editOnlyInDefaultLanguage"))
+		).put(
 			"firstDayOfWeek",
 			_getFirstDayOfWeek(ddmFormFieldRenderingContext.getLocale())
 		).put(
 			"htmlAutocompleteAttribute",
 			GetterUtil.getString(
 				ddmFormField.getProperty("htmlAutocompleteAttribute"))
+		).put(
+			"isLocalizationSupported",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("isLocalizationSupported"))
 		).put(
 			"localizedObjectField", localizedObjectField
 		).put(

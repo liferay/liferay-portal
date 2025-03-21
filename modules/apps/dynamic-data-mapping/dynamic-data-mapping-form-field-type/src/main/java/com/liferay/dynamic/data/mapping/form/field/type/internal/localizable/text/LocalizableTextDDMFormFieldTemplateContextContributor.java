@@ -54,6 +54,14 @@ public class LocalizableTextDDMFormFieldTemplateContextContributor
 		if (ddmFormFieldRenderingContext.isReturnFullContext()) {
 			parameters.put("displayStyle", _getDisplayStyle(ddmFormField));
 			parameters.put(
+				"editOnlyInDefaultLanguage",
+				GetterUtil.getBoolean(
+					ddmFormField.getProperty("editOnlyInDefaultLanguage")));
+			parameters.put(
+				"isLocalizationSupported",
+				GetterUtil.getBoolean(
+					ddmFormField.getProperty("isLocalizationSupported")));
+			parameters.put(
 				"placeholder",
 				_getPlaceholder(ddmFormField, ddmFormFieldRenderingContext));
 			parameters.put(

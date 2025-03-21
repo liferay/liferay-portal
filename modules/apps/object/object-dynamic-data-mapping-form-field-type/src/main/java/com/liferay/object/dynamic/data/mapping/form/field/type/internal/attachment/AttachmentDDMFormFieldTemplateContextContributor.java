@@ -97,7 +97,15 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 				).buildString();
 			}
 		).put(
+			"editOnlyInDefaultLanguage",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("editOnlyInDefaultLanguage"))
+		).put(
 			"fileSource", ddmFormField.getProperty("fileSource")
+		).put(
+			"isLocalizationSupported",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("isLocalizationSupported"))
 		).put(
 			"maximumFileSize", maximumFileSize
 		).put(

@@ -54,6 +54,14 @@ public class RichTextDDMFormFieldTemplateContextContributor
 			ddmFormField.getProperty("localizedObjectField"));
 
 		return HashMapBuilder.<String, Object>put(
+			"editOnlyInDefaultLanguage",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("editOnlyInDefaultLanguage"))
+		).put(
+			"isLocalizationSupported",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("isLocalizationSupported"))
+		).put(
 			"localizedObjectField", localizedObjectField
 		).put(
 			"predefinedValue",
