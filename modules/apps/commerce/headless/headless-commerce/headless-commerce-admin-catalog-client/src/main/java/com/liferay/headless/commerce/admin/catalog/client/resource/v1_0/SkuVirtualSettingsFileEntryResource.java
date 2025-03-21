@@ -12,6 +12,8 @@ import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.SkuVirtualSettingsFileEntrySerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.File;
 
 import java.net.URL;
@@ -22,8 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

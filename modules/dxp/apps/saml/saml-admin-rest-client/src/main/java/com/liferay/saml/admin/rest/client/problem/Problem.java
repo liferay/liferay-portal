@@ -7,9 +7,9 @@ package com.liferay.saml.admin.rest.client.problem;
 
 import com.liferay.saml.admin.rest.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Stian Sigvartsen

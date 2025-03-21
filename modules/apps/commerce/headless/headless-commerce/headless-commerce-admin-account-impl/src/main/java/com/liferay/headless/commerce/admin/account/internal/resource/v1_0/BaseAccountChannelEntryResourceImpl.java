@@ -38,15 +38,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,6 +46,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alessio Antonio Rendina
@@ -94,7 +94,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelBillingAddressId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -127,7 +128,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelBillingAddressId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -163,7 +165,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelBillingAddressId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -199,7 +202,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelCurrencyId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -232,7 +236,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelCurrencyId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -268,7 +273,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelCurrencyId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -304,7 +310,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelDeliveryTermId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -337,7 +344,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelDeliveryTermId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -373,7 +381,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelDeliveryTermId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -409,7 +418,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelDiscountId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -442,7 +452,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelDiscountId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -478,7 +489,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelDiscountId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -514,7 +526,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelPaymentMethodId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -547,7 +560,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelPaymentMethodId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -583,7 +597,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelPaymentMethodId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -619,7 +634,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelPaymentTermId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -652,7 +668,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelPaymentTermId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -688,7 +705,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelPaymentTermId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -724,7 +742,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelPriceListId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -757,7 +776,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelPriceListId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -793,7 +813,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelPriceListId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -829,7 +850,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelShippingAddressId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -862,7 +884,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelShippingAddressId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -898,7 +921,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelShippingAddressId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -934,7 +958,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public void deleteAccountChannelUserId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -967,7 +992,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry getAccountChannelUserId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -1003,7 +1029,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry patchAccountChannelUserId(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -1887,7 +1914,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelBillingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -1931,7 +1959,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public Page<AccountChannelEntry> getAccountIdAccountChannelCurrenciesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
@@ -1968,7 +1997,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelCurrency(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -2051,7 +2081,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelDeliveryTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -2095,7 +2126,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public Page<AccountChannelEntry> getAccountIdAccountChannelDiscountsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
@@ -2132,7 +2164,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelDiscount(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -2215,7 +2248,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelPaymentMethod(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -2259,7 +2293,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public Page<AccountChannelEntry> getAccountIdAccountChannelPaymentTermsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
@@ -2296,7 +2331,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelPaymentTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -2340,7 +2376,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public Page<AccountChannelEntry> getAccountIdAccountChannelPriceListsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
@@ -2377,7 +2414,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelPriceList(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -2460,7 +2498,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {
@@ -2504,7 +2543,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public Page<AccountChannelEntry> getAccountIdAccountChannelUsersPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
@@ -2541,7 +2581,8 @@ public abstract class BaseAccountChannelEntryResourceImpl
 	@Override
 	public AccountChannelEntry postAccountIdAccountChannelUser(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountChannelEntry accountChannelEntry)
 		throws Exception {

@@ -7,9 +7,9 @@ package com.liferay.headless.admin.content.client.problem;
 
 import com.liferay.headless.admin.content.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Javier Gamarra

@@ -21,8 +21,6 @@ import com.liferay.segments.asah.rest.resource.v1_0.ExperimentResource;
 import com.liferay.segments.asah.rest.resource.v1_0.ExperimentRunResource;
 import com.liferay.segments.asah.rest.resource.v1_0.StatusResource;
 
-import java.util.function.BiFunction;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +28,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.function.BiFunction;
 
 import org.osgi.service.component.ComponentServiceObjects;
 

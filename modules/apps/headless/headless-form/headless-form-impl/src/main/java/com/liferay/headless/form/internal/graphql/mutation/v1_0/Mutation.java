@@ -23,8 +23,6 @@ import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 
-import java.util.function.BiFunction;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +32,8 @@ import jakarta.validation.constraints.NotEmpty;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.function.BiFunction;
 
 import org.osgi.service.component.ComponentServiceObjects;
 

@@ -5,10 +5,10 @@
 
 package com.liferay.headless.object.client.aggregation;
 
+import jakarta.annotation.Generated;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alicia García

@@ -12,6 +12,8 @@ import com.liferay.portal.search.rest.client.pagination.Page;
 import com.liferay.portal.search.rest.client.problem.Problem;
 import com.liferay.portal.search.rest.client.serdes.v1_0.SuggestionsContributorResultsSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -22,8 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Petteri Karttunen

@@ -22,16 +22,16 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Andrea Sbarra
@@ -178,7 +178,8 @@ public abstract class BaseDefaultCategoryDisplayPageResourceImpl
 	@Override
 	public void deleteChannelIdDefaultCategoryDisplayPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -209,7 +210,8 @@ public abstract class BaseDefaultCategoryDisplayPageResourceImpl
 	@Override
 	public DefaultCategoryDisplayPage getChannelIdDefaultCategoryDisplayPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -243,7 +245,8 @@ public abstract class BaseDefaultCategoryDisplayPageResourceImpl
 	@Override
 	public DefaultCategoryDisplayPage postChannelIdDefaultCategoryDisplayPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			DefaultCategoryDisplayPage defaultCategoryDisplayPage)
 		throws Exception {

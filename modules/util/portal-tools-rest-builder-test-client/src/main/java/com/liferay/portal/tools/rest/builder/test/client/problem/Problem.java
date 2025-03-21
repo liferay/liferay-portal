@@ -7,9 +7,9 @@ package com.liferay.portal.tools.rest.builder.test.client.problem;
 
 import com.liferay.portal.tools.rest.builder.test.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Alejandro Tardín

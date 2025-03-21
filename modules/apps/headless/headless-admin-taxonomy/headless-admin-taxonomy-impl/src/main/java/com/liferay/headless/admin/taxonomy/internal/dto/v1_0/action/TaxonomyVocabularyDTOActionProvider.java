@@ -12,12 +12,12 @@ import com.liferay.portal.vulcan.dto.action.DTOActionProvider;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jakarta.annotation.Generated;
 
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

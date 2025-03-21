@@ -39,15 +39,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,6 +49,15 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Drew Brokke
@@ -284,7 +284,8 @@ public abstract class BaseCountryResourceImpl
 	@Override
 	public Country getCountryByA2(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("a2")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("a2")
 			String a2)
 		throws Exception {
 
@@ -313,7 +314,8 @@ public abstract class BaseCountryResourceImpl
 	@Override
 	public Country getCountryByA3(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("a3")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("a3")
 			String a3)
 		throws Exception {
 
@@ -342,7 +344,8 @@ public abstract class BaseCountryResourceImpl
 	@Override
 	public Country getCountryByName(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("name")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("name")
 			String name)
 		throws Exception {
 

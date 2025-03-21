@@ -7,9 +7,9 @@ package com.liferay.batch.planner.rest.client.problem;
 
 import com.liferay.batch.planner.rest.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Matija Petanjek

@@ -5,10 +5,10 @@
 
 package com.liferay.headless.commerce.machine.learning.client.aggregation;
 
+import jakarta.annotation.Generated;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Riccardo Ferrari

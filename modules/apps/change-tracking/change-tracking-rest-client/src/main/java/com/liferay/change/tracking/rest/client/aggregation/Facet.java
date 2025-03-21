@@ -5,10 +5,10 @@
 
 package com.liferay.change.tracking.rest.client.aggregation;
 
+import jakarta.annotation.Generated;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author David Truong

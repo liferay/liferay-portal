@@ -8,6 +8,8 @@ package com.liferay.headless.commerce.admin.payment.client.dto.v1_0;
 import com.liferay.headless.commerce.admin.payment.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.admin.payment.client.serdes.v1_0.PaymentSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.math.BigDecimal;
@@ -15,8 +17,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alessio Antonio Rendina

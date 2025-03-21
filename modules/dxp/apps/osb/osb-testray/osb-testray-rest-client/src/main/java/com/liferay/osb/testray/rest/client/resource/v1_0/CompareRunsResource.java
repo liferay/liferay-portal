@@ -10,6 +10,8 @@ import com.liferay.osb.testray.rest.client.http.HttpInvoker;
 import com.liferay.osb.testray.rest.client.problem.Problem;
 import com.liferay.osb.testray.rest.client.serdes.v1_0.CompareRunsSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.LinkedHashMap;
@@ -18,8 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author José Abelenda

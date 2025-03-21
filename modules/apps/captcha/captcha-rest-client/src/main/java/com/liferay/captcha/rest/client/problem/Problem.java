@@ -7,9 +7,9 @@ package com.liferay.captcha.rest.client.problem;
 
 import com.liferay.captcha.rest.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Loc Pham

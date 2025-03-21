@@ -28,6 +28,13 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.scim.rest.internal.security.permission.LiberalPermissionChecker;
 import com.liferay.scim.rest.resource.v1_0.SchemaResource;
 
+import jakarta.annotation.Generated;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import jakarta.ws.rs.core.UriInfo;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -37,13 +44,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
-
-import jakarta.annotation.Generated;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import jakarta.ws.rs.core.UriInfo;
 
 import org.osgi.service.component.ComponentServiceObjects;
 import org.osgi.service.component.annotations.Component;

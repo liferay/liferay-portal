@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow Metrics REST API
 Bundle-SymbolicName: com.liferay.portal.workflow.metrics.rest.api
-Bundle-Version: 17.3.12
+Bundle-Version: 18.0.0
 Export-Package:\
 	com.liferay.portal.workflow.metrics.rest.dto.v1_0,\
 	com.liferay.portal.workflow.metrics.rest.dto.v1_0.util,\

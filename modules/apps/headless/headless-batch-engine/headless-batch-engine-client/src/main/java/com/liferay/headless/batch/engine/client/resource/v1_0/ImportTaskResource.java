@@ -10,6 +10,8 @@ import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.batch.engine.client.problem.Problem;
 import com.liferay.headless.batch.engine.client.serdes.v1_0.ImportTaskSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.File;
 
 import java.net.URL;
@@ -20,8 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Ivica Cardic

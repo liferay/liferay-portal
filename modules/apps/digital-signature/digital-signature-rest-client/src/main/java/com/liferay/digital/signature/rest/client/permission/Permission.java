@@ -7,9 +7,9 @@ package com.liferay.digital.signature.rest.client.permission;
 
 import com.liferay.digital.signature.rest.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author José Abelenda

@@ -7,9 +7,9 @@ package com.liferay.portal.search.rest.client.permission;
 
 import com.liferay.portal.search.rest.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Petteri Karttunen

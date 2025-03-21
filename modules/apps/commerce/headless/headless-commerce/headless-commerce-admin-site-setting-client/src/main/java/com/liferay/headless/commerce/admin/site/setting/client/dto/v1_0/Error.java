@@ -8,11 +8,11 @@ package com.liferay.headless.commerce.admin.site.setting.client.dto.v1_0;
 import com.liferay.headless.commerce.admin.site.setting.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.admin.site.setting.client.serdes.v1_0.ErrorSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

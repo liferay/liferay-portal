@@ -7,9 +7,9 @@ package com.liferay.headless.user.notification.client.problem;
 
 import com.liferay.headless.user.notification.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Carlos Correa

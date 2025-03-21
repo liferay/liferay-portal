@@ -41,15 +41,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,6 +51,15 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Andrea Sbarra
@@ -89,7 +89,9 @@ public abstract class BaseCartResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Cart")}
 	)
 	@jakarta.ws.rs.DELETE
-	@jakarta.ws.rs.Path("/carts/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/carts/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Response deleteCartByExternalReferenceCode(
@@ -124,7 +126,9 @@ public abstract class BaseCartResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Cart")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/carts/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/carts/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Cart getCartByExternalReferenceCode(
@@ -155,7 +159,9 @@ public abstract class BaseCartResourceImpl
 	)
 	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
 	@jakarta.ws.rs.PATCH
-	@jakarta.ws.rs.Path("/carts/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/carts/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Cart patchCartByExternalReferenceCode(
@@ -289,7 +295,9 @@ public abstract class BaseCartResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Cart")}
 	)
 	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path("/carts/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/carts/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override

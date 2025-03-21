@@ -8,12 +8,12 @@ package com.liferay.headless.commerce.admin.channel.client.dto.v1_0;
 import com.liferay.headless.commerce.admin.channel.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.admin.channel.client.serdes.v1_0.OrderTypeSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Map;
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Andrea Sbarra

@@ -12,10 +12,10 @@ import com.liferay.saml.admin.rest.internal.graphql.query.v1_0.Query;
 import com.liferay.saml.admin.rest.internal.resource.v1_0.SamlProviderResourceImpl;
 import com.liferay.saml.admin.rest.resource.v1_0.SamlProviderResource;
 
+import jakarta.annotation.Generated;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import jakarta.annotation.Generated;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentServiceObjects;

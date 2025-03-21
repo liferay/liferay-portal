@@ -5,10 +5,10 @@
 
 package com.liferay.osb.testray.rest.client.aggregation;
 
+import jakarta.annotation.Generated;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author José Abelenda

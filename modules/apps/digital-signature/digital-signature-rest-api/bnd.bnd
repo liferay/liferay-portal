@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Digital Signature REST API
 Bundle-SymbolicName: com.liferay.digital.signature.rest.api
-Bundle-Version: 3.0.4
+Bundle-Version: 4.0.0
 Export-Package:\
 	com.liferay.digital.signature.rest.dto.v1_0,\
 	com.liferay.digital.signature.rest.resource.v1_0
