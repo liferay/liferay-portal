@@ -38,7 +38,7 @@ dependencies {
 	implementation group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "6.4.0"
 	implementation group: "com.bmuschko", name: "gradle-docker-plugin", version: "6.7.0"
 	implementation group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.1"
-	implementation group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.59"
+	implementation group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.60"
 	implementation group: "com.liferay", name: "com.liferay.gradle.plugins.poshi.runner", version: "4.0.22"
 	implementation group: "com.liferay", name: "com.liferay.gradle.plugins.target.platform", version: "4.0.1"
 	implementation group: "com.liferay", name: "com.liferay.gradle.plugins.theme.builder", version: "2.0.28"

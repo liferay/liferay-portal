@@ -18,7 +18,7 @@ dependencies {
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.alloy.taglib", version: "2.0.6"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.css.builder", version: "5.0.16"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.db.support", version: "1.1.2"
-	api group: "com.liferay", name: "com.liferay.gradle.plugins.jasper.jspc", version: "3.0.0"
+	api group: "com.liferay", name: "com.liferay.gradle.plugins.jasper.jspc", version: "3.0.1"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.javadoc.formatter", version: "2.0.1"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.lang.builder", version: "3.0.40"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.node", version: "8.1.2"

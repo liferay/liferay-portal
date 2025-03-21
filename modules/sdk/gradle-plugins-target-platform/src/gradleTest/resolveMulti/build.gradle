@@ -1,6 +1,6 @@
 buildscript {
 	dependencies {
-		classpath(group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.59") {
+		classpath(group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.60") {
 			exclude group: "com.liferay", module: "com.liferay.gradle.util"
 		}
 	}
