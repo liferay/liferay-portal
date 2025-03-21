@@ -4,6 +4,7 @@
  */
 
 import {ClayInput} from '@clayui/form';
+import {useFormState} from 'data-engine-js-components-web';
 import React, {useEffect, useState} from 'react';
 
 import FieldBase from '../FieldBase/ReactFieldBase.es';
@@ -113,6 +114,26 @@ const LocalizableText = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [defaultLocale, fieldName]);
 
+	useEffect(() => {
+		if (!Object.hasOwn(currentValue, editingLocale)) {
+			const newEditingLocale = currentAvailableLocales.find(
+				(availableLocale) =>
+					availableLocale.localeId === editingLocale.localeId
+			);
+
+			setCurrentValue(convertValueToJSON(value));
+
+			setCurrentEditingLocale({
+				...newEditingLocale,
+				icon: normalizeLocaleId(newEditingLocale.localeId),
+			});
+
+			setCurrentInternalValue(
+				convertValueToJSON(value)[editingLocale.localeId]
+			);
+		}
+	}, [currentAvailableLocales, currentValue, editingLocale, value]);
+
 	return (
 		<ClayInput.Group>
 			<InputComponent
@@ -166,28 +187,8 @@ const LocalizableText = ({
 			>
 				<LocalesDropdown
 					availableLocales={currentAvailableLocales}
-					editingLocale={currentEditingLocale}
 					fieldName={fieldName}
-					onLanguageClicked={(localeId) => {
-						const newEditingLocale = currentAvailableLocales.find(
-							(availableLocale) =>
-								availableLocale.localeId === localeId
-						);
-
-						setCurrentEditingLocale({
-							...newEditingLocale,
-							icon: normalizeLocaleId(newEditingLocale.localeId),
-						});
-
-						setCurrentInternalValue(
-							getEditingValue({
-								defaultLocale,
-								editingLocale: newEditingLocale,
-								fieldName,
-								value: currentValue,
-							})
-						);
-					}}
+					value={convertValueToJSON(value)}
 				/>
 			</ClayInput.GroupItem>
 		</ClayInput.Group>
@@ -202,6 +203,7 @@ const Main = ({
 	fieldName,
 	id,
 	label,
+	localizedObjectField,
 	name,
 	onBlur,
 	onChange,
@@ -212,37 +214,49 @@ const Main = ({
 	readOnly,
 	value = {},
 	...otherProps
-}) => (
-	<FieldBase
-		{...otherProps}
-		id={id}
-		label={label}
-		name={name}
-		readOnly={readOnly}
-	>
-		<LocalizableText
-			{...transformAvailableLocalesAndValue({
-				availableLocales,
-				defaultLocale,
-				value,
-			})}
-			defaultLocale={defaultLocale}
-			displayStyle={displayStyle}
-			editingLocale={editingLocale}
-			fieldName={fieldName}
+}) => {
+	const {defaultLanguageId, editingLanguageId} = useFormState();
+
+	return (
+		<FieldBase
+			{...otherProps}
 			id={id}
 			label={label}
 			name={name}
-			onFieldBlurred={onBlur}
-			onFieldChanged={({event, value}) => onChange(event, value)}
-			onFieldFocused={onFocus}
-			placeholder={placeholder}
-			placeholdersSubmitLabel={placeholdersSubmitLabel}
-			predefinedValue={predefinedValue}
 			readOnly={readOnly}
-		/>
-	</FieldBase>
-);
+		>
+			<LocalizableText
+				{...transformAvailableLocalesAndValue({
+					availableLocales,
+					defaultLocale,
+					value,
+				})}
+				defaultLocale={
+					localizedObjectField
+						? {localeId: defaultLanguageId}
+						: defaultLocale
+				}
+				displayStyle={displayStyle}
+				editingLocale={
+					localizedObjectField
+						? {localeId: editingLanguageId}
+						: editingLocale
+				}
+				fieldName={fieldName}
+				id={id}
+				label={label}
+				name={name}
+				onFieldBlurred={onBlur}
+				onFieldChanged={({event, value}) => onChange(event, value)}
+				onFieldFocused={onFocus}
+				placeholder={placeholder}
+				placeholdersSubmitLabel={placeholdersSubmitLabel}
+				predefinedValue={predefinedValue}
+				readOnly={readOnly}
+			/>
+		</FieldBase>
+	);
+};
 
 Main.displayName = 'LocalizableText';
 
