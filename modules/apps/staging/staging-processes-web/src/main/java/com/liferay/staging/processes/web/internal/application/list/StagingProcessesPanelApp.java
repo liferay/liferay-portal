@@ -100,7 +100,7 @@ public class StagingProcessesPanelApp extends BasePanelApp {
 	private volatile CTSettingsConfiguration _defaultCTSettingsConfiguration;
 
 	@Reference(
-		target = "(javax.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES + ")"
+		target = "(jakarta.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES + ")"
 	)
 	private Portlet _portlet;
 

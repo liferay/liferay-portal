@@ -113,7 +113,7 @@ public class ComponentAnnotationCheck extends BaseCheck {
 	private void _checkOSGiJaxrsName(
 		DetailAST annotationDetailAST, List<String> importNames) {
 
-		if (!importNames.contains("javax.ws.rs.ext.ExceptionMapper") ||
+		if (!importNames.contains("jakarta.ws.rs.ext.ExceptionMapper") ||
 			!_isExceptionMapperService(annotationDetailAST)) {
 
 			return;

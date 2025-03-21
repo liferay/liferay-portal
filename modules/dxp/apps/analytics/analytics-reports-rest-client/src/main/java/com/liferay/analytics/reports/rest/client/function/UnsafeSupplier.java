@@ -5,7 +5,7 @@
 
 package com.liferay.analytics.reports.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Marcos Martins

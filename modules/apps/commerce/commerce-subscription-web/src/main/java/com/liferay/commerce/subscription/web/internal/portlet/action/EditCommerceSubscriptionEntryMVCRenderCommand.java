@@ -8,9 +8,9 @@ package com.liferay.commerce.subscription.web.internal.portlet.action;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.COMMERCE_SUBSCRIPTION_ENTRY,
+		"jakarta.portlet.name=" + CPPortletKeys.COMMERCE_SUBSCRIPTION_ENTRY,
 		"mvc.command.name=/commerce_subscription_entry/edit_commerce_subscription_entry"
 	},
 	service = MVCRenderCommand.class

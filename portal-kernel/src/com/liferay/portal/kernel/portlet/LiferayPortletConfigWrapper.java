@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.model.Portlet;
 
-import javax.portlet.filter.PortletConfigWrapper;
+import jakarta.portlet.filter.PortletConfigWrapper;
 
 /**
  * @author Neil Griffin

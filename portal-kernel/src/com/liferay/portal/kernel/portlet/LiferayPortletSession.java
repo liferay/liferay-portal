@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.PortletSession;
+import jakarta.portlet.PortletSession;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author Brian Wing Shun Chan
@@ -16,7 +16,7 @@ public interface LiferayPortletSession extends PortletSession {
 
 	public static final String LAYOUT_SEPARATOR = "_LAYOUT_";
 
-	public static final String PORTLET_SCOPE_NAMESPACE = "javax.portlet.p.";
+	public static final String PORTLET_SCOPE_NAMESPACE = "jakarta.portlet.p.";
 
 	public void setHttpSession(HttpSession httpSession);
 

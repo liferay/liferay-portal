@@ -36,6 +36,8 @@ import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portlet.PortletPreferencesImpl;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -46,8 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -540,7 +540,7 @@ public abstract class BasePortletDataHandlerTestCase {
 				portletDataHandlerReferences =
 					bundleContext.getServiceReferences(
 						PortletDataHandler.class,
-						"(javax.portlet.name=" + portletId + ")");
+						"(jakarta.portlet.name=" + portletId + ")");
 
 			Iterator<ServiceReference<PortletDataHandler>> iterator =
 				portletDataHandlerReferences.iterator();

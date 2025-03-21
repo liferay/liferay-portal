@@ -54,23 +54,23 @@ public interface PortletPreferencesService extends BaseService {
 
 	public void restoreArchivedPreferences(
 			long groupId, Layout layout, String portletId, long portletItemId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException;
 
 	public void restoreArchivedPreferences(
 			long groupId, Layout layout, String portletId,
 			PortletItem portletItem,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException;
 
 	public void restoreArchivedPreferences(
 			long groupId, String name, Layout layout, String portletId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException;
 
 	public void updateArchivePreferences(
 			long userId, long groupId, String name, String portletId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException;
 
 }

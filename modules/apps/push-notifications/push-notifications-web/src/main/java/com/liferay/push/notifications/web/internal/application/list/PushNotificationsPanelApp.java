@@ -37,7 +37,7 @@ public class PushNotificationsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + PushNotificationsPortletKeys.PUSH_NOTIFICATIONS + ")"
+		target = "(jakarta.portlet.name=" + PushNotificationsPortletKeys.PUSH_NOTIFICATIONS + ")"
 	)
 	private Portlet _portlet;
 

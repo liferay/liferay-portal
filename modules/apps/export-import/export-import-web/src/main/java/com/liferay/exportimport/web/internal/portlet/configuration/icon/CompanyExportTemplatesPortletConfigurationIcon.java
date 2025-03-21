@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Carlos Correa
  */
 @Component(
-	property = "javax.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
+	property = "jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
 	service = PortletConfigurationIcon.class
 )
 public class CompanyExportTemplatesPortletConfigurationIcon

@@ -14,10 +14,10 @@ import com.liferay.portal.util.PropsUtil;
 import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
 import com.liferay.site.navigation.constants.SiteNavigationMenuPortletKeys;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Arrays;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Eduardo García

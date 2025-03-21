@@ -23,9 +23,9 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.Map;
+import jakarta.ws.rs.core.Context;
 
-import javax.ws.rs.core.Context;
+import java.util.Map;
 
 /**
  * @author Carlos Correa

@@ -8,7 +8,7 @@ package com.liferay.bean.portlet.spring.extension.internal.scope;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import javax.portlet.annotations.PortletRequestScoped;
+import jakarta.portlet.annotations.PortletRequestScoped;
 
 /**
  * @author Neil Griffin

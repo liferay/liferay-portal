@@ -7,15 +7,15 @@ package com.liferay.portal.vulcan.dto.converter;
 
 import com.liferay.portal.kernel.model.User;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import jakarta.ws.rs.core.UriInfo;
+
 import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.ws.rs.core.UriInfo;
 
 /**
  * @author Rubén Pulido

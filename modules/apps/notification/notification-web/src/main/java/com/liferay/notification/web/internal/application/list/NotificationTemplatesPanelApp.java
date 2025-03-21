@@ -47,7 +47,7 @@ public class NotificationTemplatesPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES + ")"
+		target = "(jakarta.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES + ")"
 	)
 	private Portlet _portlet;
 

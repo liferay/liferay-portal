@@ -22,13 +22,13 @@ import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRe
 import com.liferay.translation.web.internal.display.context.ExportTranslationDisplayContext;
 import com.liferay.translation.web.internal.helper.TranslationRequestHelper;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + TranslationPortletKeys.TRANSLATION,
+		"jakarta.portlet.name=" + TranslationPortletKeys.TRANSLATION,
 		"mvc.command.name=/translation/export_translation"
 	},
 	service = MVCRenderCommand.class

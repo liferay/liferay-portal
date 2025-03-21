@@ -12,8 +12,8 @@ import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuE
 import com.liferay.segments.experiment.web.internal.constants.ProductNavigationControlMenuEntryConstants;
 import com.liferay.segments.experiment.web.internal.util.SegmentsCookieManagerUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

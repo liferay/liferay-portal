@@ -44,13 +44,13 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.MutableResourceParameters;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import javax.portlet.MutableResourceParameters;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.hamcrest.CoreMatchers;
 
@@ -153,7 +153,7 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 		Assert.assertThat(
 			guestUploadURL,
 			CoreMatchers.containsString(
-				"param_javax.portlet.action=/dynamic_data_mapping_form" +
+				"param_jakarta.portlet.action=/dynamic_data_mapping_form" +
 					"/upload_file_entry"));
 		Assert.assertThat(
 			guestUploadURL,

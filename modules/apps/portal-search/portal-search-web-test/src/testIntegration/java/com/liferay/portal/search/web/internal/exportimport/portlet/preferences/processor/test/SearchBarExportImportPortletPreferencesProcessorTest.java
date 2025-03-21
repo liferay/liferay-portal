@@ -36,7 +36,7 @@ public class SearchBarExportImportPortletPreferencesProcessorTest
 		return _exportImportPortletPreferencesProcessor;
 	}
 
-	@Inject(filter = "javax.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR)
+	@Inject(filter = "jakarta.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;
 

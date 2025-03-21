@@ -10,7 +10,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.servlet.BrowserSnifferUtil;
 import com.liferay.portal.servlet.filters.util.CacheFileNameContributor;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 

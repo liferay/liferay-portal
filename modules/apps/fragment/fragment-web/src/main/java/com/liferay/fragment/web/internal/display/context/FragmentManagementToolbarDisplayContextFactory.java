@@ -9,9 +9,9 @@ import com.liferay.fragment.web.internal.constants.FragmentTypeConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 
-import java.util.Objects;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * @author Jürgen Kappler

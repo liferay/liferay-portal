@@ -8,7 +8,7 @@ package com.liferay.portal.search.web.internal.category.facet.portlet;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.web.internal.portlet.preferences.BasePortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Lino Alves

@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.portlet.LiferayActionResponse;
 import com.liferay.portlet.internal.ActionRequestImpl;
 import com.liferay.portlet.internal.ActionResponseImpl;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.PortletException;
-import javax.portlet.filter.ActionRequestWrapper;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.filter.ActionRequestWrapper;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

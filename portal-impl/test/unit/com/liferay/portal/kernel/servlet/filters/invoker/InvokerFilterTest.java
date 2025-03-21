@@ -15,10 +15,10 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.tools.ToolDependencies;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.List;
 import java.util.logging.Level;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Assert;
 import org.junit.Before;

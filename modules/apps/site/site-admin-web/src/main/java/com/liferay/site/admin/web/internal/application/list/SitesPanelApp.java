@@ -37,7 +37,7 @@ public class SitesPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + SiteAdminPortletKeys.SITE_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + SiteAdminPortletKeys.SITE_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

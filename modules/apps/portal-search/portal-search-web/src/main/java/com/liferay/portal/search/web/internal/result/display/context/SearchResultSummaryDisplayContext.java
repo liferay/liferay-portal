@@ -5,11 +5,11 @@
 
 package com.liferay.portal.search.web.internal.result.display.context;
 
+import jakarta.portlet.PortletURL;
+
 import java.io.Serializable;
 
 import java.util.List;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author André de Oliveira

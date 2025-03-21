@@ -8,7 +8,7 @@ package com.liferay.commerce.account.web.internal.portlet;
 import com.liferay.commerce.account.web.internal.constants.CommerceAccountPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -20,8 +20,8 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
-		"javax.portlet.name=" + CommerceAccountPortletKeys.COMMERCE_ACCOUNT,
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.name=" + CommerceAccountPortletKeys.COMMERCE_ACCOUNT,
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

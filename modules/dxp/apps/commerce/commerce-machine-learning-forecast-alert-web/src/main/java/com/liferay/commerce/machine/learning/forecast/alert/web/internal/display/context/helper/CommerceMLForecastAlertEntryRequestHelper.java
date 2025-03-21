@@ -8,7 +8,7 @@ package com.liferay.commerce.machine.learning.forecast.alert.web.internal.displa
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Riccardo Ferrari

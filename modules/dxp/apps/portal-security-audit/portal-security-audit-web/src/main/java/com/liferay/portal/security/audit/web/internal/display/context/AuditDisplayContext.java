@@ -25,14 +25,14 @@ import com.liferay.portal.security.audit.AuditEvent;
 import com.liferay.portal.security.audit.storage.comparator.AuditEventCreateDateComparator;
 import com.liferay.portal.security.audit.web.internal.AuditEventManagerUtil;
 
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.ServletRequestWrapper;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
-import javax.portlet.PortletURL;
-
-import javax.servlet.ServletRequestWrapper;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Mariano Álvaro Sáiz

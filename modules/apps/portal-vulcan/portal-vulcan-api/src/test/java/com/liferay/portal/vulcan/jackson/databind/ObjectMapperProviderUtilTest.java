@@ -14,11 +14,11 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.validation.Valid;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
-
-import javax.validation.Valid;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

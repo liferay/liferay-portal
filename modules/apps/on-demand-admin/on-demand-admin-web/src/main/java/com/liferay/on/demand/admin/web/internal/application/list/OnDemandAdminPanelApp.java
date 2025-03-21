@@ -37,7 +37,7 @@ public class OnDemandAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + OnDemandAdminPortletKeys.ON_DEMAND_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + OnDemandAdminPortletKeys.ON_DEMAND_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

@@ -47,10 +47,10 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.HashMap;
 import java.util.Locale;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.After;
 import org.junit.Assert;

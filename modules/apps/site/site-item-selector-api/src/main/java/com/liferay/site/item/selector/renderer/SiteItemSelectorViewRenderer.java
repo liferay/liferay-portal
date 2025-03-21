@@ -7,9 +7,9 @@ package com.liferay.site.item.selector.renderer;
 
 import com.liferay.site.item.selector.display.context.SitesItemSelectorViewDisplayContext;
 
-import java.io.IOException;
+import jakarta.servlet.ServletException;
 
-import javax.servlet.ServletException;
+import java.io.IOException;
 
 /**
  * @author Alejandro Tardín

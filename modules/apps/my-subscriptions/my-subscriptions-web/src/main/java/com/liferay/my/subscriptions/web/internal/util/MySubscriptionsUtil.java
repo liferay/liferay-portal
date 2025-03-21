@@ -211,7 +211,7 @@ public class MySubscriptionsUtil {
 				PortletPreferencesLocalServiceUtil.getPortletPreferences(
 					classPK);
 
-			javax.portlet.PortletPreferences jxPortletPreferences =
+			jakarta.portlet.PortletPreferences jxPortletPreferences =
 				PortletPreferencesFactoryUtil.getPortletSetup(
 					LayoutLocalServiceUtil.getLayout(
 						portletPreferences.getPlid()),

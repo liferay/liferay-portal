@@ -92,14 +92,14 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -1546,15 +1546,15 @@ public class LayoutSetPrototypePropagationTest
 		BundleContext bundleContext = bundle.getBundleContext();
 
 		bundleContext.registerService(
-			javax.portlet.Portlet.class, new MVCPortlet(),
+			jakarta.portlet.Portlet.class, new MVCPortlet(),
 			HashMapDictionaryBuilder.<String, Object>put(
 				"com.liferay.portlet.instanceable", "true"
 			).put(
 				"com.liferay.portlet.preferences-owned-by-group", "true"
 			).put(
-				"javax.portlet.init-param.view-template", "/view.jsp"
+				"jakarta.portlet.init-param.view-template", "/view.jsp"
 			).put(
-				"javax.portlet.name", portletName
+				"jakarta.portlet.name", portletName
 			).build());
 	}
 

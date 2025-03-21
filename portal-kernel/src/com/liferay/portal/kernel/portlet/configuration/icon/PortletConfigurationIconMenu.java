@@ -5,11 +5,11 @@
 
 package com.liferay.portal.kernel.portlet.configuration.icon;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
 import java.util.Comparator;
 import java.util.List;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
 
 /**
  * @author Eduardo García

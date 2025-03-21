@@ -7,7 +7,7 @@ package com.liferay.portal.security.content.security.policy.internal;
 
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProvider;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

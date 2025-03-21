@@ -30,12 +30,12 @@ import com.liferay.portal.tools.ToolDependencies;
 import com.liferay.portal.util.PortalImpl;
 import com.liferay.portal.util.PropsValues;
 
-import java.util.Objects;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

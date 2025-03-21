@@ -47,23 +47,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Alessio Antonio Rendina
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseOrderRuleChannelResourceImpl
 	implements EntityModelResource, OrderRuleChannelResource,
 			   VulcanBatchEngineTaskItemDelegate<OrderRuleChannel> {
@@ -86,14 +86,14 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderRuleChannel")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/order-rule-channels/{orderRuleChannelId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/order-rule-channels/{orderRuleChannelId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteOrderRuleChannel(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("orderRuleChannelId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("orderRuleChannelId")
 			Long orderRuleChannelId)
 		throws Exception {
 	}
@@ -116,14 +116,14 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderRuleChannel")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/order-rule-channels/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/order-rule-channels/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteOrderRuleChannelBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -170,19 +170,19 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderRuleChannel")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/order-rules/by-externalReferenceCode/{externalReferenceCode}/order-rule-channels"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<OrderRuleChannel>
 			getOrderRuleByExternalReferenceCodeOrderRuleChannelsPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode,
-				@javax.ws.rs.core.Context Pagination pagination)
+				@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -206,18 +206,18 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderRuleChannel")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
 		"/order-rules/by-externalReferenceCode/{externalReferenceCode}/order-rule-channels"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public OrderRuleChannel
 			postOrderRuleByExternalReferenceCodeOrderRuleChannel(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode,
 				OrderRuleChannel orderRuleChannel)
 		throws Exception {
@@ -263,21 +263,21 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderRuleChannel")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/order-rules/{id}/order-rule-channels")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/order-rules/{id}/order-rule-channels")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<OrderRuleChannel> getOrderRuleIdOrderRuleChannelsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("search")
+			@jakarta.ws.rs.QueryParam("search")
 			String search,
-			@javax.ws.rs.core.Context
+			@jakarta.ws.rs.core.Context
 				com.liferay.portal.kernel.search.filter.Filter filter,
-			@javax.ws.rs.core.Context Pagination pagination,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
 		throws Exception {
 
@@ -302,14 +302,14 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderRuleChannel")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/order-rules/{id}/order-rule-channels")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/order-rules/{id}/order-rule-channels")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public OrderRuleChannel postOrderRuleIdOrderRuleChannel(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			OrderRuleChannel orderRuleChannel)
 		throws Exception {
@@ -335,14 +335,14 @@ public abstract class BaseOrderRuleChannelResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderRuleChannel")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/order-rules/order-rule-channels/batch")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/order-rules/order-rule-channels/batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postOrderRuleIdOrderRuleChannelBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {

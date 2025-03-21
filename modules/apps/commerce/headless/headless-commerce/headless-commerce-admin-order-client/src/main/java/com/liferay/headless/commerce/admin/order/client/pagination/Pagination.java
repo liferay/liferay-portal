@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.admin.order.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Alessio Antonio Rendina

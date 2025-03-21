@@ -8,7 +8,7 @@ package com.liferay.search.experiences.web.internal.power.tools.portlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -22,12 +22,12 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"com.liferay.portlet.css-class-wrapper=portlet-sxp-power-toys",
 		"com.liferay.portlet.display-category=category.hidden",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/sxp_blueprint_admin/view.jsp",
-		"javax.portlet.name=" + SXPPortletKeys.SXP_POWER_TOOLS,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/sxp_blueprint_admin/view.jsp",
+		"jakarta.portlet.name=" + SXPPortletKeys.SXP_POWER_TOOLS,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

@@ -18,11 +18,11 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.internal.constants.LegacySamlPropsKeys;
 import com.liferay.saml.runtime.configuration.SamlProviderConfigurationHelper;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Stian Sigvartsen

@@ -8,19 +8,19 @@ package com.liferay.bean.portlet.extension;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.annotations.PortletSerializable;
+
 import java.io.Writer;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletRequest;
-import javax.portlet.WindowState;
-import javax.portlet.annotations.PortletSerializable;
 
 /**
  * @author Neil Griffin

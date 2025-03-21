@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.admin.site.setting.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

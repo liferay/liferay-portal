@@ -15,10 +15,10 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 

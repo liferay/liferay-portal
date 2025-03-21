@@ -5,9 +5,9 @@
 
 package com.liferay.portal.reports.engine;
 
-import java.util.Map;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.util.Map;
 
 /**
  * @author Michael C. Han

@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
+		"jakarta.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
 		"webdav.storage.token=application_display_template"
 	},
 	service = WebDAVStorage.class

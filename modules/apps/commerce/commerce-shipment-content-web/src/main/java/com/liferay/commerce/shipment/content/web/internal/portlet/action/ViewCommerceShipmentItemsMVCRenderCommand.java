@@ -15,9 +15,9 @@ import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_SHIPMENT_CONTENT,
+		"jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_SHIPMENT_CONTENT,
 		"mvc.command.name=/commerce_shipment_content/view_commerce_shipment_items"
 	},
 	service = MVCRenderCommand.class

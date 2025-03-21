@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.upload.UploadFileEntryHandler;
 
+import jakarta.portlet.PortletRequest;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,8 +34,6 @@ import java.net.URLConnection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Roberto Díaz

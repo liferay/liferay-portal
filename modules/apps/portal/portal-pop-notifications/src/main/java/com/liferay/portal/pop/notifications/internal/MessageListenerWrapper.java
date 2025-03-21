@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.pop.MessageListener;
 import com.liferay.portal.kernel.pop.MessageListenerException;
 import com.liferay.portal.kernel.util.ClassUtil;
 
+import jakarta.mail.Message;
+
 import java.util.List;
 import java.util.Objects;
-
-import javax.mail.Message;
 
 /**
  * @author Brian Wing Shun Chan

@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.document.library.configuration.DLConfiguration",
-	property = "javax.portlet.name=" + DLPortletKeys.MEDIA_GALLERY_DISPLAY,
+	property = "jakarta.portlet.name=" + DLPortletKeys.MEDIA_GALLERY_DISPLAY,
 	service = TemplateHandler.class
 )
 public class IGPortletDisplayTemplateHandler

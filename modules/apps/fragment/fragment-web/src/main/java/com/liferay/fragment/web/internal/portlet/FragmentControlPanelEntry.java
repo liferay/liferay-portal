@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "javax.portlet.name=" + FragmentPortletKeys.FRAGMENT,
+	property = "jakarta.portlet.name=" + FragmentPortletKeys.FRAGMENT,
 	service = ControlPanelEntry.class
 )
 public class FragmentControlPanelEntry extends BaseControlPanelEntry {

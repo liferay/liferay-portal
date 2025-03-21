@@ -142,7 +142,7 @@ public class JournalTransformerTest {
 
 		_serviceTrackerList = ServiceTrackerListFactory.open(
 			bundle.getBundleContext(), TransformerListener.class,
-			"(javax.portlet.name=" + JournalPortletKeys.JOURNAL + ")");
+			"(jakarta.portlet.name=" + JournalPortletKeys.JOURNAL + ")");
 	}
 
 	@AfterClass

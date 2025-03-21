@@ -5,12 +5,12 @@
 
 package com.liferay.oauth2.provider.internal.test.annotation;
 
+import jakarta.ws.rs.HttpMethod;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import javax.ws.rs.HttpMethod;
 
 /**
  * @author Carlos Sierra Andrés

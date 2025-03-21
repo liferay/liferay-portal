@@ -10,9 +10,9 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.segments.web.internal.display.context.SegmentsCompanyConfigurationDisplayContext;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Diego Hu

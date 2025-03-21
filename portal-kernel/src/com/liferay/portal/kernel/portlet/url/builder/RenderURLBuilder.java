@@ -11,17 +11,17 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.portlet.ActionResponse;
-import javax.portlet.MimeResponse;
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletParameters;
-import javax.portlet.PortletSecurityException;
-import javax.portlet.RenderURL;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
-import javax.portlet.annotations.PortletSerializable;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.PortletParameters;
+import jakarta.portlet.PortletSecurityException;
+import jakarta.portlet.RenderURL;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
+import jakarta.portlet.annotations.PortletSerializable;
 
 /**
  * @author Hugo Huijser

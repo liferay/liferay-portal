@@ -19,10 +19,10 @@ import com.liferay.sharing.configuration.SharingConfigurationFactory;
 import com.liferay.sharing.constants.SharingPortletKeys;
 import com.liferay.sharing.taglib.internal.util.CollaboratorsUtil;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SharingPortletKeys.SHARING,
+		"jakarta.portlet.name=" + SharingPortletKeys.SHARING,
 		"mvc.command.name=/sharing/collaborators"
 	},
 	service = MVCResourceCommand.class

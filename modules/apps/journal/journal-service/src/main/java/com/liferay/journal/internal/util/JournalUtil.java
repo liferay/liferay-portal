@@ -42,11 +42,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Brian Wing Shun Chan

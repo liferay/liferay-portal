@@ -11,12 +11,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.internal.PortletSessionImpl;
 
+import jakarta.portlet.PortletSession;
+
+import jakarta.servlet.http.HttpSession;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.PortletSession;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Neil Griffin

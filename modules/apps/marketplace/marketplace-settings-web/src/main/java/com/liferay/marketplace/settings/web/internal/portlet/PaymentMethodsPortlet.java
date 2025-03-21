@@ -8,7 +8,7 @@ package com.liferay.marketplace.settings.web.internal.portlet;
 import com.liferay.marketplace.constants.MarketplacePortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -17,12 +17,12 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.description=",
-		"javax.portlet.display-name=Payment Methods",
-		"javax.portlet.name=" + MarketplacePortletKeys.PAYMENT_METHODS,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.description=",
+		"jakarta.portlet.display-name=Payment Methods",
+		"jakarta.portlet.name=" + MarketplacePortletKeys.PAYMENT_METHODS,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

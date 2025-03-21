@@ -32,6 +32,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upload.test.util.UploadTestUtil;
 
+import jakarta.servlet.Servlet;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,9 +44,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.HashMap;
-
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
 import org.junit.ClassRule;

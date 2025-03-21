@@ -12,12 +12,12 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SessionClicks;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletPreferences;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Fabio Pezzutto
  */
 @Component(
-	property = "javax.portlet.name=" + CalendarPortletKeys.CALENDAR,
+	property = "jakarta.portlet.name=" + CalendarPortletKeys.CALENDAR,
 	service = ConfigurationAction.class
 )
 public class CalendarConfigurationAction extends DefaultConfigurationAction {

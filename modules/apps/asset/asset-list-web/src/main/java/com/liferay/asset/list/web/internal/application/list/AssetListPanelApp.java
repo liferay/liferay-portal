@@ -47,7 +47,7 @@ public class AssetListPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + AssetListPortletKeys.ASSET_LIST + ")"
+		target = "(jakarta.portlet.name=" + AssetListPortletKeys.ASSET_LIST + ")"
 	)
 	private Portlet _portlet;
 

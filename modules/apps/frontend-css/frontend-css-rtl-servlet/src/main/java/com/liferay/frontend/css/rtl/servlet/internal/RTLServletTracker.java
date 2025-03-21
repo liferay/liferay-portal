@@ -10,10 +10,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import jakarta.servlet.Servlet;
+
 import java.util.Dictionary;
 import java.util.Hashtable;
-
-import javax.servlet.Servlet;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

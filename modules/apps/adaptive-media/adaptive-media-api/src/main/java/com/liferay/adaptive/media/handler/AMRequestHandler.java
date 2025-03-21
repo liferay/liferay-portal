@@ -7,10 +7,10 @@ package com.liferay.adaptive.media.handler;
 
 import com.liferay.adaptive.media.AdaptiveMedia;
 
-import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * Handles upcoming requests for a particular kind of media (i.e., media

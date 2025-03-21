@@ -5,12 +5,12 @@
 
 package com.liferay.portal.osgi.web.servlet.context.helper.definition;
 
+import jakarta.servlet.Filter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.Filter;
 
 /**
  * @author Raymond Augé

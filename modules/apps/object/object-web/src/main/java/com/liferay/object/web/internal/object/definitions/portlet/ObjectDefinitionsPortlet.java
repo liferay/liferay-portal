@@ -8,7 +8,7 @@ package com.liferay.object.web.internal.object.definitions.portlet;
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -29,15 +29,15 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.scopeable=false",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Objects",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.portlet-title-based-navigation=true",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/object_definitions/view.jsp",
-		"javax.portlet.name=" + ObjectPortletKeys.OBJECT_DEFINITIONS,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Objects",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/object_definitions/view.jsp",
+		"jakarta.portlet.name=" + ObjectPortletKeys.OBJECT_DEFINITIONS,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

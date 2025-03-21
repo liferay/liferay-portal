@@ -38,13 +38,13 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.permission.PermissionCheckerUtil;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.List;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
 
 import org.apache.commons.lang.time.StopWatch;
 

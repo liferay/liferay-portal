@@ -5,10 +5,10 @@
 
 package com.liferay.frontend.taglib.dynamic.section;
 
-import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
+import java.io.IOException;
 
 /**
  * @author Matthew Tambara

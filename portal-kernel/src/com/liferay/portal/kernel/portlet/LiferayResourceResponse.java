@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.annotation.versioning.ProviderType;
 

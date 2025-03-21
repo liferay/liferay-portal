@@ -51,7 +51,7 @@ public class SegmentsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + SegmentsPortletKeys.SEGMENTS + ")"
+		target = "(jakarta.portlet.name=" + SegmentsPortletKeys.SEGMENTS + ")"
 	)
 	private Portlet _portlet;
 

@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Zoltán Takács
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v2.0")
+@jakarta.ws.rs.Path("/v2.0")
 public abstract class BaseChannelResourceImpl implements ChannelResource {
 
 	/**
@@ -57,14 +57,14 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Channel")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/discount-channels/{discountChannelId}/channel")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/discount-channels/{discountChannelId}/channel")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Channel getDiscountChannelChannel(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("discountChannelId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("discountChannelId")
 			Long discountChannelId)
 		throws Exception {
 
@@ -87,14 +87,14 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Channel")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/price-list-channels/{priceListChannelId}/channel")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/price-list-channels/{priceListChannelId}/channel")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Channel getPriceListChannelChannel(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("priceListChannelId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("priceListChannelId")
 			Long priceListChannelId)
 		throws Exception {
 

@@ -7,10 +7,10 @@ package com.liferay.change.tracking.spi.display.context;
 
 import com.liferay.portal.kernel.model.BaseModel;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 import org.osgi.annotation.versioning.ProviderType;
 

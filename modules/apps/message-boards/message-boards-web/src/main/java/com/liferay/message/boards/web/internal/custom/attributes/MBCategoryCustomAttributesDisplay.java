@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Jorge Ferrer
  */
 @Component(
-	property = "javax.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS,
+	property = "jakarta.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS,
 	service = CustomAttributesDisplay.class
 )
 public class MBCategoryCustomAttributesDisplay

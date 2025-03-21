@@ -29,11 +29,11 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.search.web.internal.category.facet.constants.CategoryFacetPortletKeys;
 import com.liferay.portal.search.web.internal.category.facet.portlet.CategoryFacetPortletPreferences;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Felipe Lorenz, Joshua Cords
  */
 @Component(
-	property = "javax.portlet.name=" + CategoryFacetPortletKeys.CATEGORY_FACET,
+	property = "jakarta.portlet.name=" + CategoryFacetPortletKeys.CATEGORY_FACET,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class CategoryFacetExportImportPortletPreferencesProcessor

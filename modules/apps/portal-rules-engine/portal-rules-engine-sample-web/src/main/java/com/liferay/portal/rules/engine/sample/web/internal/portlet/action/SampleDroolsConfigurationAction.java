@@ -24,12 +24,12 @@ import com.liferay.portal.rules.engine.RulesLanguage;
 import com.liferay.portal.rules.engine.RulesResourceRetriever;
 import com.liferay.portal.rules.engine.sample.web.internal.constants.SampleDroolsPortletKeys;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletPreferences;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Michael C. Han
  */
 @Component(
-	property = "javax.portlet.name=" + SampleDroolsPortletKeys.SAMPLE_DROOLS,
+	property = "jakarta.portlet.name=" + SampleDroolsPortletKeys.SAMPLE_DROOLS,
 	service = ConfigurationAction.class
 )
 public class SampleDroolsConfigurationAction

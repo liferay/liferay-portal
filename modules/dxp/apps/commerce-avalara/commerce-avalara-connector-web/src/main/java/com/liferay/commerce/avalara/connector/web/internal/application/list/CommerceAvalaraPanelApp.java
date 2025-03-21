@@ -37,7 +37,7 @@ public class CommerceAvalaraPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommerceAvalaraPortletKeys.COMMERCE_AVALARA + ")"
+		target = "(jakarta.portlet.name=" + CommerceAvalaraPortletKeys.COMMERCE_AVALARA + ")"
 	)
 	private Portlet _portlet;
 

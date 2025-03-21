@@ -9,6 +9,18 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import jakarta.portlet.MutablePortletParameters;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.PortletParameters;
+import jakarta.portlet.PortletSecurityException;
+import jakarta.portlet.RenderURL;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
+import jakarta.portlet.annotations.PortletSerializable;
+
 import java.io.IOException;
 import java.io.Writer;
 
@@ -17,18 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
-
-import javax.portlet.MutablePortletParameters;
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletParameters;
-import javax.portlet.PortletSecurityException;
-import javax.portlet.RenderURL;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
-import javax.portlet.annotations.PortletSerializable;
 
 /**
  * @author Cristina González

@@ -27,11 +27,11 @@ import com.liferay.portal.lock.exception.NoSuchLockException;
 import com.liferay.portal.lock.model.Lock;
 import com.liferay.portal.lock.service.base.LockLocalServiceBaseImpl;
 
+import jakarta.persistence.PersistenceException;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.LockAcquisitionException;

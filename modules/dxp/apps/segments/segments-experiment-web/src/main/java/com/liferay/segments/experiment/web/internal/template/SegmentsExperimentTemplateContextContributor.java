@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.segments.experiment.web.internal.constants.ProductNavigationControlMenuEntryConstants;
 
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

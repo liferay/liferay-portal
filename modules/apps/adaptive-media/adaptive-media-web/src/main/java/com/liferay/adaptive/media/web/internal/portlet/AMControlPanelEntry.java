@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alan Huang
  */
 @Component(
-	property = "javax.portlet.name=" + AMPortletKeys.ADAPTIVE_MEDIA,
+	property = "jakarta.portlet.name=" + AMPortletKeys.ADAPTIVE_MEDIA,
 	service = ControlPanelEntry.class
 )
 public class AMControlPanelEntry extends OmniadminControlPanelEntry {

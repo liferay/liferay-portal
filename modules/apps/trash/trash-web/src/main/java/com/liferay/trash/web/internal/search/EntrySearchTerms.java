@@ -7,7 +7,7 @@ package com.liferay.trash.web.internal.search;
 
 import com.liferay.portal.kernel.dao.search.DAOParamUtil;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * Defines search terms used by the <code>SearchContainer</code> (in

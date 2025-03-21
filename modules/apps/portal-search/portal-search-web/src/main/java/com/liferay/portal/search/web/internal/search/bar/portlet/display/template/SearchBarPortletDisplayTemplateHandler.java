@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Olivia Yu
  */
 @Component(
-	property = "javax.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR,
+	property = "jakarta.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR,
 	service = TemplateHandler.class
 )
 public class SearchBarPortletDisplayTemplateHandler

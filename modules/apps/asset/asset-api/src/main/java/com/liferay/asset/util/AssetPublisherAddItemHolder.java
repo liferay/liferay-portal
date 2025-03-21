@@ -10,12 +10,12 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.util.CollatorUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
+import jakarta.portlet.PortletURL;
+
 import java.text.Collator;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Preston Crary

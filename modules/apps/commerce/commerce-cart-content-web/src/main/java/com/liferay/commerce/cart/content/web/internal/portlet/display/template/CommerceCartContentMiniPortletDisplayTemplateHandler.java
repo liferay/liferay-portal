@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "javax.portlet.name=" + CommercePortletKeys.COMMERCE_CART_CONTENT_MINI,
+	property = "jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_CART_CONTENT_MINI,
 	service = TemplateHandler.class
 )
 public class CommerceCartContentMiniPortletDisplayTemplateHandler

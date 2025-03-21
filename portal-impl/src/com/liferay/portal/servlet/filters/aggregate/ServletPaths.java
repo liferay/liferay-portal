@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 
 import java.net.URL;
@@ -19,8 +21,6 @@ import java.net.URLConnection;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Shuyang Zhou

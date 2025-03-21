@@ -19,9 +19,9 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author David Gonzalez
  */
 @Component(
-	property = "javax.portlet.name=" + UsersAdminPortletKeys.USERS_ADMIN,
+	property = "jakarta.portlet.name=" + UsersAdminPortletKeys.USERS_ADMIN,
 	service = PortletDataHandler.class
 )
 public class UsersAdminPortletDataHandler extends BasePortletDataHandler {

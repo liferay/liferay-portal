@@ -13,29 +13,29 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.mvc.View;
+
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.BaseURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.RenderParameters;
+import jakarta.portlet.ResourceResponse;
+import jakarta.portlet.filter.RenderURLWrapper;
+import jakarta.portlet.filter.ResourceURLWrapper;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.lang.reflect.Method;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import javax.mvc.View;
-
-import javax.portlet.ActionResponse;
-import javax.portlet.BaseURL;
-import javax.portlet.MimeResponse;
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderParameters;
-import javax.portlet.ResourceResponse;
-import javax.portlet.filter.RenderURLWrapper;
-import javax.portlet.filter.ResourceURLWrapper;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.ApplicationEventPublisher;
 

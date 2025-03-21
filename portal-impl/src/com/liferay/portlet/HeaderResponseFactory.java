@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.portlet.LiferayHeaderResponse;
 import com.liferay.portlet.internal.HeaderRequestImpl;
 import com.liferay.portlet.internal.HeaderResponseImpl;
 
-import javax.portlet.HeaderRequest;
-import javax.portlet.filter.HeaderRequestWrapper;
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.filter.HeaderRequestWrapper;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Neil Griffin

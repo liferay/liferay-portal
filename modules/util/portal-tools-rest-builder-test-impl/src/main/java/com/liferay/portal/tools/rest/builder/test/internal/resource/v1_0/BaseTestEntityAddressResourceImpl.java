@@ -27,19 +27,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Alejandro Tardín
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseTestEntityAddressResourceImpl
 	implements TestEntityAddressResource {
 
@@ -61,14 +61,14 @@ public abstract class BaseTestEntityAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "TestEntityAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/test-entities/{testEntityId}/test-entity-address")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/test-entities/{testEntityId}/test-entity-address")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public TestEntityAddress getTestEntityTestEntityAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("testEntityId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("testEntityId")
 			Long testEntityId)
 		throws Exception {
 

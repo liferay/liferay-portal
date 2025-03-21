@@ -8,7 +8,7 @@ package com.liferay.commerce.payment.gateway;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Luca Pellizzon

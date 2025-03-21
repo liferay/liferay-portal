@@ -5,7 +5,7 @@
 
 package com.liferay.ip.geocoder;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Julio Camarero

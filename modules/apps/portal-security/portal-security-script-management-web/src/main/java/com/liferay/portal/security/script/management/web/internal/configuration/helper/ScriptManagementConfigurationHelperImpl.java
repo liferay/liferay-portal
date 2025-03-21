@@ -21,12 +21,12 @@ import com.liferay.portal.security.script.management.configuration.ScriptManagem
 import com.liferay.portal.security.script.management.configuration.helper.ScriptManagementConfigurationHelper;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
+
 import java.io.IOException;
 
 import java.util.Map;
-
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
 
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;

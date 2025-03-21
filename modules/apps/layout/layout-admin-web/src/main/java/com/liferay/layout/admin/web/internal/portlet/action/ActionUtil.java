@@ -29,14 +29,14 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.impl.ThemeSettingImpl;
 import com.liferay.portal.util.ThemeFactoryUtil;
 
+import jakarta.portlet.ActionRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.ActionRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

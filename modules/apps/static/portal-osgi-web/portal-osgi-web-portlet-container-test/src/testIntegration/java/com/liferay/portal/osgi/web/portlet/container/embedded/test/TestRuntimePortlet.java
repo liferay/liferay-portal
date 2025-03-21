@@ -7,11 +7,11 @@ package com.liferay.portal.osgi.web.portlet.container.embedded.test;
 
 import com.liferay.portal.osgi.web.portlet.container.test.TestPortlet;
 
-import java.io.IOException;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.io.IOException;
 
 /**
  * @author Manuel de la Peña

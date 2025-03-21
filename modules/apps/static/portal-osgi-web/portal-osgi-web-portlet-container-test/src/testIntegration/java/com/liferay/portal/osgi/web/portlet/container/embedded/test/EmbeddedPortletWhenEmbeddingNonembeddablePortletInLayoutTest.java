@@ -150,7 +150,7 @@ public class EmbeddedPortletWhenEmbeddingNonembeddablePortletInLayoutTest
 		PortletPreferences embeddedPortletPreferences = portletPreferences.get(
 			0);
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(
 				embeddedPortletPreferences);
 

@@ -13,10 +13,10 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
-import java.util.Locale;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.WindowState;
 
-import javax.portlet.PortletURL;
-import javax.portlet.WindowState;
+import java.util.Locale;
 
 import org.osgi.annotation.versioning.ProviderType;
 

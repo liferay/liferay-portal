@@ -17,6 +17,12 @@ import com.liferay.websocket.whiteboard.test.simple.client.BinaryWebSocketClient
 import com.liferay.websocket.whiteboard.test.simple.client.TextWebSocketClient;
 import com.liferay.websocket.whiteboard.test.simple.endpoint.SimpleWebSocketEndpoint;
 
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.Encoder;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.WebSocketContainer;
+
 import java.net.URI;
 
 import java.nio.ByteBuffer;
@@ -28,12 +34,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
-
-import javax.websocket.ContainerProvider;
-import javax.websocket.Decoder;
-import javax.websocket.Encoder;
-import javax.websocket.Endpoint;
-import javax.websocket.WebSocketContainer;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

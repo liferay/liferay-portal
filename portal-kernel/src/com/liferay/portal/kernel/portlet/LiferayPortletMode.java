@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.PortletMode;
+import jakarta.portlet.PortletMode;
 
 /**
  * @author Brian Wing Shun Chan

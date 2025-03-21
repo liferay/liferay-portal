@@ -7,7 +7,7 @@ package com.liferay.data.engine.taglib.internal.servlet;
 
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

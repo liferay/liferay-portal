@@ -21,9 +21,9 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.xml.Element;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Daniel Kocsis
  */
 @Component(
-	property = "javax.portlet.name=" + AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
+	property = "jakarta.portlet.name=" + AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
 	service = PortletDataHandler.class
 )
 public class AssetTagsPortletDataHandler extends BasePortletDataHandler {

@@ -5,7 +5,7 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.scope;
 
-import javax.mvc.RedirectScoped;
+import jakarta.mvc.RedirectScoped;
 
 /**
  * @author Neil Griffin

@@ -23,12 +23,12 @@ import com.liferay.portal.search.web.internal.facet.display.context.FolderTitleL
 import com.liferay.portal.search.web.internal.folder.facet.configuration.FolderFacetPortletInstanceConfiguration;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Lino Alves

@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"editor.config.key=sampleLegacyEditor",
-		"javax.portlet.name=" + CKEditorSamplePortletKeys.CKEDITOR_SAMPLE
+		"jakarta.portlet.name=" + CKEditorSamplePortletKeys.CKEDITOR_SAMPLE
 	},
 	service = EditorConfigContributor.class
 )

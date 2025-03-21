@@ -21,9 +21,9 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import java.util.Map;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletURL;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,8 +35,8 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"editor.name=ckeditor", "editor.name=ckeditor_bbcode",
 		"editor.name=ckeditor_classic",
-		"javax.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS,
-		"javax.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS_ADMIN
+		"jakarta.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS,
+		"jakarta.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS_ADMIN
 	},
 	service = EditorConfigContributor.class
 )

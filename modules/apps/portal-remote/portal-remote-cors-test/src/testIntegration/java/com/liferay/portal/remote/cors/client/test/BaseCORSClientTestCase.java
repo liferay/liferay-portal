@@ -18,6 +18,9 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.core.Application;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -36,9 +39,6 @@ import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.Application;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

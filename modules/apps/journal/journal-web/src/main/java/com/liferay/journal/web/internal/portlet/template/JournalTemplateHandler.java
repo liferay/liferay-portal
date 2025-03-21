@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jorge Ferrer
  */
 @Component(
-	property = "javax.portlet.name=" + JournalPortletKeys.JOURNAL,
+	property = "jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
 	service = TemplateHandler.class
 )
 public class JournalTemplateHandler extends BaseDDMTemplateHandler {

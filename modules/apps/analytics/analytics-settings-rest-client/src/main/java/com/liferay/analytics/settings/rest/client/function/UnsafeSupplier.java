@@ -5,7 +5,7 @@
 
 package com.liferay.analytics.settings.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Riccardo Ferrari

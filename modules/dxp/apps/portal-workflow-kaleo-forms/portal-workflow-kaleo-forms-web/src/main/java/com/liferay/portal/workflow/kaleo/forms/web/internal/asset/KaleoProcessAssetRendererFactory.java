@@ -19,9 +19,9 @@ import com.liferay.portal.workflow.kaleo.forms.service.KaleoProcessLinkLocalServ
 import com.liferay.portal.workflow.kaleo.forms.service.KaleoProcessLocalService;
 import com.liferay.portal.workflow.kaleo.forms.service.permission.KaleoProcessPermission;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Inácio Nery
  */
 @Component(
-	property = "javax.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN,
+	property = "jakarta.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN,
 	service = AssetRendererFactory.class
 )
 public class KaleoProcessAssetRendererFactory
@@ -114,7 +114,7 @@ public class KaleoProcessAssetRendererFactory
 	private KaleoProcessLocalService _kaleoProcessLocalService;
 
 	@Reference(
-		target = "(javax.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

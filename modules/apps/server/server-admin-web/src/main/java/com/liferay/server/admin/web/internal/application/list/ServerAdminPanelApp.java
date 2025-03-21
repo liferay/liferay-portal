@@ -36,7 +36,9 @@ public class ServerAdminPanelApp extends BasePanelApp {
 		return PortletKeys.SERVER_ADMIN;
 	}
 
-	@Reference(target = "(javax.portlet.name=" + PortletKeys.SERVER_ADMIN + ")")
+	@Reference(
+		target = "(jakarta.portlet.name=" + PortletKeys.SERVER_ADMIN + ")"
+	)
 	private Portlet _portlet;
 
 }

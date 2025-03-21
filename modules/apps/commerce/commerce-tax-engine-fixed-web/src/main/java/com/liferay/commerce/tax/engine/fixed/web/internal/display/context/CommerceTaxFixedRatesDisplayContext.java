@@ -24,8 +24,8 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Marco Leo

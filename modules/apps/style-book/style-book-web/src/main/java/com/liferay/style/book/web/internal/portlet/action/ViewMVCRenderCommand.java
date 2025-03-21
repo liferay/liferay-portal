@@ -15,10 +15,10 @@ import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.web.internal.display.context.StyleBookDisplayContext;
 import com.liferay.style.book.web.internal.display.context.StyleBookManagementToolbarDisplayContext;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK,
+		"jakarta.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK,
 		"mvc.command.name=/", "mvc.command.name=/style_book/view"
 	},
 	service = MVCRenderCommand.class

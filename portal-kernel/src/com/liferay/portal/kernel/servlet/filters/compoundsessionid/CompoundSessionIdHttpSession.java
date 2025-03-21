@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.servlet.filters.compoundsessionid;
 
 import com.liferay.portal.kernel.servlet.HttpSessionWrapper;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author Michael C. Han

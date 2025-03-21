@@ -8,8 +8,8 @@ package com.liferay.monitoring.web.internal.portlet.action;
 import com.liferay.monitoring.web.internal.constants.MonitoringPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + MonitoringPortletKeys.MONITORING,
+		"jakarta.portlet.name=" + MonitoringPortletKeys.MONITORING,
 		"mvc.command.name=/monitoring/edit_session"
 	},
 	service = MVCRenderCommand.class

@@ -60,22 +60,22 @@ import com.liferay.portal.search.tuning.rankings.index.name.RankingIndexNameBuil
 import com.liferay.portal.search.tuning.rankings.web.internal.helper.RankingHelperImpl;
 import com.liferay.portal.search.web.interpreter.SearchResultInterpreterProvider;
 
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import java.text.SimpleDateFormat;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.function.Consumer;
-
-import javax.portlet.ActionResponse;
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

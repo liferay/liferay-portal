@@ -7,7 +7,7 @@ package com.liferay.portlet.internal;
 
 import com.liferay.portal.kernel.portlet.LiferayHeaderRequest;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Neil Griffin

@@ -47,14 +47,14 @@ import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryLis
 import com.liferay.site.provider.GroupSearchProvider;
 import com.liferay.site.search.GroupSearch;
 
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Pavel Savinov

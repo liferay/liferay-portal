@@ -13,7 +13,7 @@ import com.liferay.knowledge.base.constants.KBPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Tamas Molnar
  */
 @Component(
-	property = "javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
+	property = "jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
 	service = PortletDataHandler.class
 )
 public class KBArticlePortletDataHandler extends BasePortletDataHandler {

@@ -37,7 +37,7 @@ public class COREntryPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + COREntryPortletKeys.COR_ENTRY + ")"
+		target = "(jakarta.portlet.name=" + COREntryPortletKeys.COR_ENTRY + ")"
 	)
 	private Portlet _portlet;
 

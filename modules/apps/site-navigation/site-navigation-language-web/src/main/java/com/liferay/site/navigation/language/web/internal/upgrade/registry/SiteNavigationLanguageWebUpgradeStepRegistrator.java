@@ -13,7 +13,7 @@ import com.liferay.site.navigation.language.web.internal.configuration.SiteNavig
 import com.liferay.site.navigation.language.web.internal.upgrade.v1_0_0.UpgradePortletId;
 import com.liferay.site.navigation.language.web.internal.upgrade.v1_0_0.UpgradePortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -9,7 +9,7 @@ import com.liferay.headless.commerce.machine.learning.client.json.BaseJSONParser
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Riccardo Ferrari

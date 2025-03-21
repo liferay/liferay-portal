@@ -7,7 +7,7 @@ package com.liferay.commerce.product.content.helper;
 
 import aQute.bnd.annotation.ProviderType;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Alessio Antonio Rendina

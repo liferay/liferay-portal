@@ -17,11 +17,11 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Alejandro Tardín

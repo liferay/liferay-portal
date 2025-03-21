@@ -15,9 +15,9 @@ import com.liferay.segments.constants.SegmentsActionKeys;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.web.internal.security.permission.resource.SegmentsResourcePermission;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 

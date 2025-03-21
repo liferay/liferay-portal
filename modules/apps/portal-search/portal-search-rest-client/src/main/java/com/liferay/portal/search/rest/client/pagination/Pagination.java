@@ -5,7 +5,7 @@
 
 package com.liferay.portal.search.rest.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Petteri Karttunen

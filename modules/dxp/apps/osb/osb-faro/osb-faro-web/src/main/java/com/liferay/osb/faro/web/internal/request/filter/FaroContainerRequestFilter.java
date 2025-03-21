@@ -8,10 +8,10 @@ package com.liferay.osb.faro.web.internal.request.filter;
 import com.liferay.osb.faro.util.FaroRequestAudit;
 import com.liferay.osb.faro.util.FaroThreadLocal;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
 
 /**
  * @author Shinn Lok

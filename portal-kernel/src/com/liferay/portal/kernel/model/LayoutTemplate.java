@@ -5,13 +5,13 @@
 
 package com.liferay.portal.kernel.model;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

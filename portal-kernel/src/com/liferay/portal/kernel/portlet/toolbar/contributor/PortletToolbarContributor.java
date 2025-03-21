@@ -7,10 +7,10 @@ package com.liferay.portal.kernel.portlet.toolbar.contributor;
 
 import com.liferay.portal.kernel.servlet.taglib.ui.Menu;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import java.util.List;
 
 /**
  * Provides an interface responsible for extending the portlet toolbar by adding

@@ -20,11 +20,11 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
+import jakarta.ws.rs.InternalServerErrorException;
+
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.ws.rs.InternalServerErrorException;
 
 /**
  * @author Carolina Barbosa

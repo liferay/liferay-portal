@@ -11,8 +11,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.saml.constants.SamlPortletKeys;
 import com.liferay.saml.persistence.service.SamlSpIdpConnectionLocalService;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SamlPortletKeys.SAML_ADMIN,
+		"jakarta.portlet.name=" + SamlPortletKeys.SAML_ADMIN,
 		"mvc.command.name=/admin/delete_saml_sp_idp_connection"
 	},
 	service = MVCActionCommand.class

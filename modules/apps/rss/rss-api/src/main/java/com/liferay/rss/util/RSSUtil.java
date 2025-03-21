@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.portlet.ResourceURL;
+import jakarta.portlet.ResourceURL;
 
 /**
  * @author Brian Wing Shun Chan

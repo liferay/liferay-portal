@@ -19,8 +19,8 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.CP_CONFIGURATION_LISTS,
+		"jakarta.portlet.name=" + CPPortletKeys.CP_CONFIGURATION_LISTS,
 		"mvc.command.name=/cp_configuration_lists/edit_cp_configuration_entry"
 	},
 	service = MVCActionCommand.class

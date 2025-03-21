@@ -12,10 +12,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.url.builder.ComboRequestAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.internal.util.URLUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Iván Zaera Avellón

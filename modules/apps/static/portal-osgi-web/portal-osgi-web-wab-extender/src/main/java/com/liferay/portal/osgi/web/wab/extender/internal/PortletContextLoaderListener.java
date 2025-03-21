@@ -20,15 +20,15 @@ import com.liferay.portal.kernel.util.ModuleFrameworkPropsValues;
 import com.liferay.portal.spring.aop.AopConfigurableApplicationContextConfigurator;
 import com.liferay.portal.spring.configurator.ConfigurableApplicationContextConfigurator;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

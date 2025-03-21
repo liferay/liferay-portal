@@ -8,10 +8,10 @@ package com.liferay.configuration.admin.internal.configuration.admin.display;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.petra.string.StringPool;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
  * @author Thiago Buarque

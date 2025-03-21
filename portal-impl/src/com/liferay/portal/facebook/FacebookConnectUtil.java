@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.facebook.FacebookConnect;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Wilson Man

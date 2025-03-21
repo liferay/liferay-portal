@@ -8,9 +8,9 @@ package com.liferay.bean.portlet.cdi.extension.internal;
 import com.liferay.bean.portlet.extension.BeanFilterMethod;
 import com.liferay.bean.portlet.extension.BeanFilterMethodFactory;
 
-import java.lang.reflect.Method;
+import jakarta.enterprise.inject.spi.BeanManager;
 
-import javax.enterprise.inject.spi.BeanManager;
+import java.lang.reflect.Method;
 
 /**
  * @author Neil Griffin

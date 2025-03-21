@@ -7,13 +7,13 @@ package com.liferay.portal.remote.json.web.service;
 
 import com.liferay.portal.remote.json.web.service.exception.NoSuchJSONWebServiceException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.lang.reflect.Method;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Igor Spasic

@@ -8,6 +8,8 @@ package com.liferay.portal.vulcan.extension;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.extension.validation.PropertyValidator;
 
+import jakarta.validation.ValidationException;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -17,8 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.validation.ValidationException;
 
 /**
  * @author Javier de Arcos

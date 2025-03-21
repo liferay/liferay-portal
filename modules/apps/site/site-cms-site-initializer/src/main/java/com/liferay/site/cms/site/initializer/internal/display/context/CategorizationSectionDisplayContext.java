@@ -8,7 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 import com.liferay.petra.string.StringPool;
 import com.liferay.site.cms.site.initializer.internal.configuration.CMSSiteInitializerConfiguration;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Sam Ziemer

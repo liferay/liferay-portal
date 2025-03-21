@@ -16,11 +16,11 @@ import com.liferay.portal.kernel.portlet.Router;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portlet.RouterImpl;
 
+import jakarta.portlet.WindowState;
+
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.WindowState;
 
 /**
  * @author Iván Zaera Avellón
@@ -63,7 +63,7 @@ public class CETPortletFriendlyURLMapper
 	@Override
 	public Dictionary<String, Object> getDictionary() {
 		return HashMapDictionaryBuilder.<String, Object>put(
-			"javax.portlet.name", _portletId
+			"jakarta.portlet.name", _portletId
 		).build();
 	}
 

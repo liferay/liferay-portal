@@ -5,7 +5,7 @@
 
 package com.liferay.data.engine.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Jeyvison Nascimento

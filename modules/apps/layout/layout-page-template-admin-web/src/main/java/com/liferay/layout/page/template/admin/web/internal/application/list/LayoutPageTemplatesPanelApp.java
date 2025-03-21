@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
+		"jakarta.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
 		"panel.app.order:Integer=400",
 		"panel.category.key=" + PanelCategoryKeys.SITE_ADMINISTRATION_DESIGN
 	},
@@ -86,7 +86,7 @@ public class LayoutPageTemplatesPanelApp extends BasePanelApp {
 	private Language _language;
 
 	@Reference(
-		target = "(javax.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES + ")"
+		target = "(jakarta.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES + ")"
 	)
 	private Portlet _portlet;
 

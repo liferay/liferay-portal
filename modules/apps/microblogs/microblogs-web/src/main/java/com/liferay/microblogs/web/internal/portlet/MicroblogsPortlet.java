@@ -19,12 +19,12 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.Portlet;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,16 +40,16 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.footer-portlet-javascript=/microblogs/js/main.js",
 		"com.liferay.portlet.header-portlet-css=/microblogs/css/main.css",
 		"com.liferay.portlet.icon=/microblogs/icons/microblogs.png",
-		"javax.portlet.display-name=Microblogs",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.view-template=/microblogs/view.jsp",
-		"javax.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS,
-		"javax.portlet.portlet-info.keywords=Microblogs",
-		"javax.portlet.portlet-info.short-title=Microblogs",
-		"javax.portlet.portlet-info.title=Microblogs",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,guest,power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Microblogs",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.view-template=/microblogs/view.jsp",
+		"jakarta.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS,
+		"jakarta.portlet.portlet-info.keywords=Microblogs",
+		"jakarta.portlet.portlet-info.short-title=Microblogs",
+		"jakarta.portlet.portlet-info.title=Microblogs",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,guest,power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

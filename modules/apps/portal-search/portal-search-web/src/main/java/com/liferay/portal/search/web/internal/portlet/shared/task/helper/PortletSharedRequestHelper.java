@@ -5,7 +5,7 @@
 
 package com.liferay.portal.search.web.internal.portlet.shared.task.helper;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author André de Oliveira

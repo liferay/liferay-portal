@@ -7,13 +7,13 @@ package com.liferay.portal.osgi.web.servlet.jsp.compiler.internal;
 
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.Tag;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
 
 import org.apache.jasper.Constants;
 import org.apache.jasper.runtime.TagHandlerPool;

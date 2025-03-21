@@ -10,9 +10,9 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.remote.rest.extender.configuration.RestExtenderConfiguration;
 
-import java.util.Map;
+import jakarta.ws.rs.core.Application;
 
-import javax.ws.rs.core.Application;
+import java.util.Map;
 
 import org.apache.cxf.Bus;
 import org.apache.felix.dm.DependencyManager;

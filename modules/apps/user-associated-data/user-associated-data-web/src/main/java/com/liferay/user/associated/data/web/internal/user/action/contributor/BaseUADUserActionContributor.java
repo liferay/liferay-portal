@@ -15,10 +15,10 @@ import com.liferay.user.associated.data.anonymizer.UADAnonymousUserProvider;
 import com.liferay.user.associated.data.constants.UserAssociatedDataPortletKeys;
 import com.liferay.users.admin.user.action.contributor.BaseUserActionContributor;
 
-import java.util.Objects;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Reference;
 

@@ -43,10 +43,10 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -234,7 +234,9 @@ public class BlogsAggregatorExportImportPortletPreferencesProcessorTest {
 			String.valueOf(value));
 	}
 
-	@Inject(filter = "javax.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR)
+	@Inject(
+		filter = "jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR
+	)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;
 

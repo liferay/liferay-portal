@@ -8,9 +8,9 @@ package com.liferay.change.tracking.spi.history.util;
 import com.liferay.change.tracking.spi.constants.CTTimelineKeys;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Cheryl Tang

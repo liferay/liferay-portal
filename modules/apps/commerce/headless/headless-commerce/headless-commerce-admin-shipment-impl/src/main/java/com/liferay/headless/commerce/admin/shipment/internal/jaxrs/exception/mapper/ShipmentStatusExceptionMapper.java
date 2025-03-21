@@ -8,8 +8,8 @@ package com.liferay.headless.commerce.admin.shipment.internal.jaxrs.exception.ma
 import com.liferay.commerce.exception.CommerceShipmentStatusException;
 import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.osgi.service.component.annotations.Component;
 

@@ -5,7 +5,7 @@
 
 package com.liferay.headless.user.notification.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Carlos Correa

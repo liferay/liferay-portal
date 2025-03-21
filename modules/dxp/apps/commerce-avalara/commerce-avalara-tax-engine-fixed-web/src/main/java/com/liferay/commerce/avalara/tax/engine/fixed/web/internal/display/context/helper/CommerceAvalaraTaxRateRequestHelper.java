@@ -8,7 +8,7 @@ package com.liferay.commerce.avalara.tax.engine.fixed.web.internal.display.conte
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Marco Leo

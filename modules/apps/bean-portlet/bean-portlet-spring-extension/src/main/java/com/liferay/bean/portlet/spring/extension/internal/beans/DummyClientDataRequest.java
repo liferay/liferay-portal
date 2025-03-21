@@ -5,14 +5,14 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.beans;
 
+import jakarta.portlet.ClientDataRequest;
+
+import jakarta.servlet.http.Part;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 
 import java.util.Collection;
-
-import javax.portlet.ClientDataRequest;
-
-import javax.servlet.http.Part;
 
 /**
  * @author Neil Griffin

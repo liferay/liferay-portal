@@ -9,7 +9,7 @@ import com.liferay.headless.admin.list.type.client.json.BaseJSONParser;
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Gabriel Albuquerque

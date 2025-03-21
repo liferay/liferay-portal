@@ -35,6 +35,8 @@ import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PropsImpl;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.lang.reflect.Field;
 
 import java.util.Arrays;
@@ -42,8 +44,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Julio Camarero
  */
 @Component(
-	property = "javax.portlet.name=" + RecentBloggersPortletKeys.RECENT_BLOGGERS,
+	property = "jakarta.portlet.name=" + RecentBloggersPortletKeys.RECENT_BLOGGERS,
 	service = PortletDataHandler.class
 )
 public class RecentBloggersPortletDataHandler

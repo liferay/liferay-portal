@@ -13,7 +13,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Arthur Chan
  */
 @Component(
-	property = "javax.portlet.name=" + CalendarPortletKeys.CALENDAR,
+	property = "jakarta.portlet.name=" + CalendarPortletKeys.CALENDAR,
 	service = PortletDataHandler.class
 )
 public class CalendarPortletDataHandler extends BasePortletDataHandler {

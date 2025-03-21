@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.service.configuration.servlet;
 
 import com.liferay.portal.kernel.service.configuration.ServiceComponentConfiguration;
 
-import java.io.InputStream;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.io.InputStream;
 
 /**
  * @author Miguel Pastor

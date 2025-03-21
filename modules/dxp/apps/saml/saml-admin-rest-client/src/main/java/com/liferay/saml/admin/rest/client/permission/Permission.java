@@ -9,7 +9,7 @@ import com.liferay.saml.admin.rest.client.json.BaseJSONParser;
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Stian Sigvartsen

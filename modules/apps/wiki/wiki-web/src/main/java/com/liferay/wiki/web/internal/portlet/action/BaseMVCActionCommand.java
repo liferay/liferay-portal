@@ -23,13 +23,13 @@ import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiPageService;
 
+import jakarta.portlet.ActionRequest;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.ActionRequest;
 
 import org.osgi.service.component.annotations.Reference;
 

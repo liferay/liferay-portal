@@ -24,15 +24,15 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.layoutconfiguration.util.velocity.ColumnProcessor;
 import com.liferay.taglib.aui.InputTag;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspFactory;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.Tag;
+
 import java.io.Writer;
 
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspFactory;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.Tag;
 
 /**
  * @author Raymond Augé

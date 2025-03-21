@@ -9,12 +9,12 @@ import com.liferay.info.item.renderer.InfoItemRenderer;
 import com.liferay.info.type.Keyed;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Jorge Ferrer

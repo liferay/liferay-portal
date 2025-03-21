@@ -22,14 +22,14 @@ import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,14 +46,14 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.private-request-attributes=false",
 		"com.liferay.portlet.system=true",
 		"com.liferay.portlet.use-default-template=false",
-		"javax.portlet.display-name=Product Menu",
-		"javax.portlet.init-param.view-template=/portlet/view.jsp",
-		"javax.portlet.name=" + ProductNavigationProductMenuPortletKeys.PRODUCT_NAVIGATION_PRODUCT_MENU,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.supported-public-render-parameter=layoutSetBranchId",
-		"javax.portlet.supported-public-render-parameter=privateLayout",
-		"javax.portlet.supported-public-render-parameter=selPlid",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Product Menu",
+		"jakarta.portlet.init-param.view-template=/portlet/view.jsp",
+		"jakarta.portlet.name=" + ProductNavigationProductMenuPortletKeys.PRODUCT_NAVIGATION_PRODUCT_MENU,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.supported-public-render-parameter=layoutSetBranchId",
+		"jakarta.portlet.supported-public-render-parameter=privateLayout",
+		"jakarta.portlet.supported-public-render-parameter=selPlid",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

@@ -37,16 +37,16 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.MutableRenderParameters;
+
 import java.nio.charset.Charset;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.MutableRenderParameters;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

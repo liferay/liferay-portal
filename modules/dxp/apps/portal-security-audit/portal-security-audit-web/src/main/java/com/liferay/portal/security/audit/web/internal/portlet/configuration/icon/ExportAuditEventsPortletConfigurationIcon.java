@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfiguration
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.audit.web.internal.constants.AuditPortletKeys;
 
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stian Sigvartsen
  */
 @Component(
-	property = "javax.portlet.name=" + AuditPortletKeys.AUDIT,
+	property = "jakarta.portlet.name=" + AuditPortletKeys.AUDIT,
 	service = PortletConfigurationIcon.class
 )
 public class ExportAuditEventsPortletConfigurationIcon

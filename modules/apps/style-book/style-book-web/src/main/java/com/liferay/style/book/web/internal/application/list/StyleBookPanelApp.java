@@ -51,7 +51,7 @@ public class StyleBookPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK + ")"
+		target = "(jakarta.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK + ")"
 	)
 	private Portlet _portlet;
 

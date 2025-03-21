@@ -24,9 +24,9 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchResponse;
 
-import java.math.BigDecimal;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.RenderRequest;
+import java.math.BigDecimal;
 
 /**
  * @author Alec Sloan

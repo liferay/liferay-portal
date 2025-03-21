@@ -9,9 +9,9 @@ import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSamplePort
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + FDSSamplePortletKeys.FDS_SAMPLE,
+		"jakarta.portlet.name=" + FDSSamplePortletKeys.FDS_SAMPLE,
 		"mvc.command.name=/side_panel/empty",
 		"mvc.command.name=/side_panel/full"
 	},

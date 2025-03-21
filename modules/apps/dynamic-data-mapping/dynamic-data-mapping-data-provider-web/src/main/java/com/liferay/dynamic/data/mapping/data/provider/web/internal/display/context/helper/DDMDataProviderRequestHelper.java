@@ -8,7 +8,7 @@ package com.liferay.dynamic.data.mapping.data.provider.web.internal.display.cont
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Leonardo Barros

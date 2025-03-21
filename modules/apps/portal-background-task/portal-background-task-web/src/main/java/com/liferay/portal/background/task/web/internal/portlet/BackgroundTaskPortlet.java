@@ -8,7 +8,7 @@ package com.liferay.portal.background.task.web.internal.portlet;
 import com.liferay.portal.background.task.constants.BackgroundTaskPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,12 +19,12 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
-		"javax.portlet.display-name=Background Task",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + BackgroundTaskPortletKeys.BACKGROUND_TASK,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Background Task",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + BackgroundTaskPortletKeys.BACKGROUND_TASK,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

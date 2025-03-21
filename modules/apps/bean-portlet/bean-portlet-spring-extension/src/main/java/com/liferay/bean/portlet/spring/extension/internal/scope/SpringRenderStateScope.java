@@ -5,7 +5,7 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.scope;
 
-import javax.portlet.annotations.RenderStateScoped;
+import jakarta.portlet.annotations.RenderStateScoped;
 
 /**
  * @author Neil Griffin

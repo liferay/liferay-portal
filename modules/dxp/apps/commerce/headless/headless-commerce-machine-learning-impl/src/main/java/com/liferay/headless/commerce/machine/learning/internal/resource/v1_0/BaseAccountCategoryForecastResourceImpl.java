@@ -47,21 +47,21 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Riccardo Ferrari
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseAccountCategoryForecastResourceImpl
 	implements AccountCategoryForecastResource, EntityModelResource,
 			   VulcanBatchEngineTaskItemDelegate<AccountCategoryForecast> {
@@ -113,28 +113,28 @@ public abstract class BaseAccountCategoryForecastResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/accountCategoryForecasts/by-monthlyRevenue")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/accountCategoryForecasts/by-monthlyRevenue")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<AccountCategoryForecast>
 			getAccountCategoryForecastsByMonthlyRevenuePage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("accountIds")
+				@jakarta.ws.rs.QueryParam("accountIds")
 				Long[] accountIds,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("categoryIds")
+				@jakarta.ws.rs.QueryParam("categoryIds")
 				Long[] categoryIds,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("forecastLength")
+				@jakarta.ws.rs.QueryParam("forecastLength")
 				Integer forecastLength,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("forecastStartDate")
+				@jakarta.ws.rs.QueryParam("forecastStartDate")
 				Date forecastStartDate,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("historyLength")
+				@jakarta.ws.rs.QueryParam("historyLength")
 				Integer historyLength,
-				@javax.ws.rs.core.Context Pagination pagination)
+				@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());

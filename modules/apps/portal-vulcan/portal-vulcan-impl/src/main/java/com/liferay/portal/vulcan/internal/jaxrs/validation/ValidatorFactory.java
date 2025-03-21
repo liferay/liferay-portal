@@ -5,13 +5,13 @@
 
 package com.liferay.portal.vulcan.internal.jaxrs.validation;
 
+import jakarta.validation.Validation;
+import jakarta.validation.ValidationProviderResolver;
+import jakarta.validation.Validator;
+import jakarta.validation.spi.ValidationProvider;
+
 import java.util.Collections;
 import java.util.List;
-
-import javax.validation.Validation;
-import javax.validation.ValidationProviderResolver;
-import javax.validation.Validator;
-import javax.validation.spi.ValidationProvider;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
@@ -39,7 +39,7 @@ public class ValidatorFactory {
 		hibernateValidatorConfiguration.messageInterpolator(
 			new ResourceBundleMessageInterpolator());
 
-		javax.validation.ValidatorFactory validatorFactory =
+		jakarta.validation.ValidatorFactory validatorFactory =
 			hibernateValidatorConfiguration.buildValidatorFactory();
 
 		_validator = validatorFactory.getValidator();

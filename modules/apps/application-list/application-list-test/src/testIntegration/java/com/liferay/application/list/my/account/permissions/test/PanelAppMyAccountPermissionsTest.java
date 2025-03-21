@@ -30,11 +30,11 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PortalInstances;
 
+import jakarta.portlet.GenericPortlet;
+import jakarta.portlet.Portlet;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.portlet.GenericPortlet;
-import javax.portlet.Portlet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -167,7 +167,7 @@ public class PanelAppMyAccountPermissionsTest {
 			_bundleContext.registerService(
 				Portlet.class, new TestPortlet(),
 				HashMapDictionaryBuilder.put(
-					"javax.portlet.name", _testPortletId
+					"jakarta.portlet.name", _testPortletId
 				).build()));
 	}
 

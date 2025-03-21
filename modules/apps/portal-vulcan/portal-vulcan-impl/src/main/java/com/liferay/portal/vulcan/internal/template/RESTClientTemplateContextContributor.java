@@ -23,13 +23,13 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.vulcan.internal.template.servlet.RESTClientHttpRequestDelegate;
 import com.liferay.portal.vulcan.internal.template.servlet.RESTClientHttpResponse;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Map;
 import java.util.Objects;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

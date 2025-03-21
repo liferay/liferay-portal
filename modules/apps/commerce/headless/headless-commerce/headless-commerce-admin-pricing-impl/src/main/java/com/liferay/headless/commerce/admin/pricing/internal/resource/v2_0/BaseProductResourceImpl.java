@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Zoltán Takács
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v2.0")
+@jakarta.ws.rs.Path("/v2.0")
 public abstract class BaseProductResourceImpl implements ProductResource {
 
 	/**
@@ -57,14 +57,14 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Product")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/discount-products/{discountProductId}/product")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/discount-products/{discountProductId}/product")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Product getDiscountProductProduct(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("discountProductId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("discountProductId")
 			Long discountProductId)
 		throws Exception {
 
@@ -87,14 +87,14 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Product")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/price-entries/{priceEntryId}/product")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/price-entries/{priceEntryId}/product")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Product getPriceEntryIdProduct(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("priceEntryId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("priceEntryId")
 			Long priceEntryId)
 		throws Exception {
 
@@ -117,16 +117,16 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Product")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/price-modifier-products/{priceModifierProductId}/product"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Product getPriceModifierProductProduct(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("priceModifierProductId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("priceModifierProductId")
 			Long priceModifierProductId)
 		throws Exception {
 

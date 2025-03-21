@@ -5,7 +5,7 @@
 
 package com.liferay.support.tomcat.util.scan;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.tomcat.JarScanFilter;
 import org.apache.tomcat.JarScanType;

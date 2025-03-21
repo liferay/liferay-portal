@@ -10,13 +10,13 @@ import com.liferay.petra.process.ProcessException;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.ws.rs.HttpMethod;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.HttpMethod;
 
 /**
  * @author Preston Crary

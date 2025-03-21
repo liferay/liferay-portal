@@ -5,9 +5,9 @@
 
 package com.liferay.portlet.internal;
 
-import java.io.Serializable;
+import jakarta.portlet.Event;
 
-import javax.portlet.Event;
+import java.io.Serializable;
 
 import javax.xml.namespace.QName;
 

@@ -9,7 +9,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.frontend.taglib.clay.servlet.taglib.HorizontalCard;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
 /**
  * @author Víctor Galán

@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Eudaldo Alonso

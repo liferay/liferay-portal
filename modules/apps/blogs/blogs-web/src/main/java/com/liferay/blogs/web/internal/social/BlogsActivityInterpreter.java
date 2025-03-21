@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Zsolt Berentey
  */
 @Component(
-	property = "javax.portlet.name=" + BlogsPortletKeys.BLOGS,
+	property = "jakarta.portlet.name=" + BlogsPortletKeys.BLOGS,
 	service = SocialActivityInterpreter.class
 )
 public class BlogsActivityInterpreter extends BaseSocialActivityInterpreter {

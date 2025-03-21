@@ -8,9 +8,9 @@ package com.liferay.commerce.product.tax.category.web.internal.portlet.action;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.CP_TAX_CATEGORY,
+		"jakarta.portlet.name=" + CPPortletKeys.CP_TAX_CATEGORY,
 		"mvc.command.name=/cp_tax_category/add_cp_tax_category"
 	},
 	service = MVCRenderCommand.class

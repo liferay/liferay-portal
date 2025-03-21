@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.web.constants.SearchPortletKeys;
 import com.liferay.portal.search.web.internal.display.context.SearchScopePreference;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Julio Camarero

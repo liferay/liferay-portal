@@ -8,9 +8,9 @@ package com.liferay.exportimport.portlet.preferences.processor;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 /**
  * @author Máté Thurzó

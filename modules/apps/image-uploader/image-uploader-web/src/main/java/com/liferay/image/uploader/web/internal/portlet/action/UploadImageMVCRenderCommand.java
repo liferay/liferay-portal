@@ -8,8 +8,8 @@ package com.liferay.image.uploader.web.internal.portlet.action;
 import com.liferay.image.uploader.web.internal.constants.ImageUploaderPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ImageUploaderPortletKeys.IMAGE_UPLOADER,
+		"jakarta.portlet.name=" + ImageUploaderPortletKeys.IMAGE_UPLOADER,
 		"mvc.command.name=/image_uploader/upload_image"
 	},
 	service = MVCRenderCommand.class

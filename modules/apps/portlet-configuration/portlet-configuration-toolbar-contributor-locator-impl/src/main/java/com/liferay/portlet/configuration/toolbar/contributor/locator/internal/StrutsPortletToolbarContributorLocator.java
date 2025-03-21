@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  *
  * <ul>
  * <li>
- * &quot;javax.portlet.name&quot; the ID of the portlet whose portlet toolbar to
+ * &quot;jakarta.portlet.name&quot; the ID of the portlet whose portlet toolbar to
  * extend.
  * </li>
  * <li>

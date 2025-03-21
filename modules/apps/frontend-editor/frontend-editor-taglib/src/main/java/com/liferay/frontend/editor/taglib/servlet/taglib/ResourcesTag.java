@@ -11,12 +11,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.taglib.util.IncludeTag;
 
-import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
+import java.io.IOException;
 
 /**
  * @author Iván Zaera Avellón

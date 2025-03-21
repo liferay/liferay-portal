@@ -16,7 +16,8 @@ public enum LangBuilderCategory {
 	LANGUAGE_SETTINGS("Language Settings", "lang.", 1),
 	LANGUAGES("Language", "language.", 9), MESSAGES("Messages", "", 6),
 	MODEL_RESOURCES("Model Resources", "model.resource.", 4),
-	PORLET_INFORMATION("Portlet Descriptions and Titles", "javax.portlet.", 2);
+	PORLET_INFORMATION(
+		"Portlet Descriptions and Titles", "jakarta.portlet.", 2);
 
 	public String getDescription() {
 		return _description;

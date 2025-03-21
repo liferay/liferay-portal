@@ -100,7 +100,7 @@ public class JavaModuleJavaxPortletInitParamTemplatePathCheck
 
 		return StringUtil.replaceFirst(
 			content, matcher.group(1),
-			"javax.portlet.init-param.template-path=" + newTemplatePath);
+			"jakarta.portlet.init-param.template-path=" + newTemplatePath);
 	}
 
 	@Override

@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.taglib.ui.IconTag;
 
-import javax.portlet.WindowState;
+import jakarta.portlet.WindowState;
 
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.jsp.PageContext;
 
 import org.osgi.annotation.versioning.ProviderType;
 

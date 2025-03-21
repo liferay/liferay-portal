@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author André de Oliveira
  */
 @Component(
-	property = "javax.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
+	property = "jakarta.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
 	service = PortletSharedSearchContributor.class
 )
 public class CustomFilterPortletSharedSearchContributor

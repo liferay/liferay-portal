@@ -5,21 +5,21 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
+import jakarta.annotation.ManagedBean;
+import jakarta.annotation.PostConstruct;
+
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.ManagedBean;
-import javax.annotation.PostConstruct;
-
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

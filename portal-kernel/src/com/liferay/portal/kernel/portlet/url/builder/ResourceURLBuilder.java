@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.PortletParameters;
-import javax.portlet.PortletSecurityException;
-import javax.portlet.ResourceURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.PortletParameters;
+import jakarta.portlet.PortletSecurityException;
+import jakarta.portlet.ResourceURL;
 
 /**
  * @author Hugo Huijser

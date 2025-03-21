@@ -5,14 +5,14 @@
 
 package com.liferay.mail.kernel.model;
 
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.InternetHeaders;
+
 import java.io.File;
 import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.InternetHeaders;
 
 /**
  * @author Brian Wing Shun Chan

@@ -37,7 +37,7 @@ public class SearchAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + SearchAdminPortletKeys.SEARCH_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + SearchAdminPortletKeys.SEARCH_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

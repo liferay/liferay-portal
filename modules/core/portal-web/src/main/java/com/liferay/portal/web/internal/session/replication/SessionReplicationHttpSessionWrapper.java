@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpSessionWrapper;
 import com.liferay.portal.kernel.util.TransientValue;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.io.Serializable;
 
 import java.nio.ByteBuffer;
@@ -23,8 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Dante Wang

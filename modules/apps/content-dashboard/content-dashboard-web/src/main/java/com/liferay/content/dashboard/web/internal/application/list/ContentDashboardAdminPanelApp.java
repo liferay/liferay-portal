@@ -37,7 +37,7 @@ public class ContentDashboardAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + ContentDashboardPortletKeys.CONTENT_DASHBOARD_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + ContentDashboardPortletKeys.CONTENT_DASHBOARD_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

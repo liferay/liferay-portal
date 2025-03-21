@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Brian Wing Shun Chan

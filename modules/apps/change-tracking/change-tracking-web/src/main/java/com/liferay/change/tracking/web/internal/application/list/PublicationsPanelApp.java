@@ -19,9 +19,9 @@ import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -90,7 +90,7 @@ public class PublicationsPanelApp extends BasePanelApp {
 	private CTSettingsConfigurationHelper _ctSettingsConfigurationHelper;
 
 	@Reference(
-		target = "(javax.portlet.name=" + CTPortletKeys.PUBLICATIONS + ")"
+		target = "(jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS + ")"
 	)
 	private Portlet _portlet;
 

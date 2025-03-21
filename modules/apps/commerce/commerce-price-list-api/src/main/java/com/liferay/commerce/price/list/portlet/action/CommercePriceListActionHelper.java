@@ -10,10 +10,10 @@ import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.model.CommerceTierPriceEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
+import java.util.List;
 
 /**
  * @author Alessio Antonio Rendina

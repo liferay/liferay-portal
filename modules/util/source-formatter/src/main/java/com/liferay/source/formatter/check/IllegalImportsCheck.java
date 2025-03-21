@@ -96,11 +96,11 @@ public class IllegalImportsCheck extends BaseFileCheck {
 		}
 
 		if (isPortalSource() && absolutePath.contains("/portal-kernel/") &&
-			content.contains("import javax.servlet.jsp.")) {
+			content.contains("import jakarta.servlet.jsp.")) {
 
 			addMessage(
 				fileName,
-				"Never import javax.servlet.jsp.* from portal-kernel, see " +
+				"Never import jakarta.servlet.jsp.* from portal-kernel, see " +
 					"LPS-47682");
 		}
 

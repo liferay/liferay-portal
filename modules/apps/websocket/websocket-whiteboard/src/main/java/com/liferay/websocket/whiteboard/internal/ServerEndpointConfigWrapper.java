@@ -5,21 +5,21 @@
 
 package com.liferay.websocket.whiteboard.internal;
 
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.Encoder;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.Extension;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.ServerEndpointConfig;
+
 import java.io.IOException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-
-import javax.websocket.CloseReason;
-import javax.websocket.Decoder;
-import javax.websocket.Encoder;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Extension;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpointConfig;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;

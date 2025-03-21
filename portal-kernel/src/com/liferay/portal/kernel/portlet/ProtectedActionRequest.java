@@ -7,10 +7,10 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.servlet.ProtectedPrincipal;
 
-import java.security.Principal;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.filter.ActionRequestWrapper;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.filter.ActionRequestWrapper;
+import java.security.Principal;
 
 /**
  * @author Brian Wing Shun Chan

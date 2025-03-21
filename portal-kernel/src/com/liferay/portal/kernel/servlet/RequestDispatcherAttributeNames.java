@@ -11,14 +11,14 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 
+import jakarta.portlet.MimeResponse;
+
 import java.lang.reflect.Method;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.portlet.MimeResponse;
 
 /**
  * @author Shuyang Zhou

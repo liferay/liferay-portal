@@ -37,7 +37,7 @@ public class CustomFieldsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + ExpandoPortletKeys.EXPANDO + ")"
+		target = "(jakarta.portlet.name=" + ExpandoPortletKeys.EXPANDO + ")"
 	)
 	private Portlet _portlet;
 

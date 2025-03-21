@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + NotificationsPortletKeys.NOTIFICATIONS,
+		"jakarta.portlet.name=" + NotificationsPortletKeys.NOTIFICATIONS,
 		"panel.app.order:Integer=400",
 		"panel.category.key=" + PanelCategoryKeys.USER_MY_ACCOUNT
 	},
@@ -53,7 +53,7 @@ public class NotificationsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + NotificationsPortletKeys.NOTIFICATIONS + ")"
+		target = "(jakarta.portlet.name=" + NotificationsPortletKeys.NOTIFICATIONS + ")"
 	)
 	private Portlet _portlet;
 

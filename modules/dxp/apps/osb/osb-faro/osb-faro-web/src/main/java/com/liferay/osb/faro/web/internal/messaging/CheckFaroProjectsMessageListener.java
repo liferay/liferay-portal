@@ -36,12 +36,12 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 
+import jakarta.mail.internet.InternetAddress;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.mail.internet.InternetAddress;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

@@ -5,8 +5,8 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.mvc.engine.ViewEngine;
-import javax.mvc.event.AfterProcessViewEvent;
+import jakarta.mvc.engine.ViewEngine;
+import jakarta.mvc.event.AfterProcessViewEvent;
 
 /**
  * @author Neil Griffin

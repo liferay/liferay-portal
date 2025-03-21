@@ -27,14 +27,14 @@ import com.liferay.portlet.PortalPreferenceKey;
 import com.liferay.portlet.PortalPreferencesImpl;
 import com.liferay.portlet.PortalPreferencesWrapper;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Alexander Chow

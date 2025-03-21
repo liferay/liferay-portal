@@ -37,7 +37,7 @@ public class MBAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

@@ -105,7 +105,7 @@ public class ContactsDemo {
 	@Reference
 	private NaniteDemoCreatorService _naniteDemoCreatorService;
 
-	@Reference(target = "(javax.portlet.name=faro_portlet)")
+	@Reference(target = "(jakarta.portlet.name=faro_portlet)")
 	private Portlet _portlet;
 
 	@Reference

@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_OPTIONS,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_OPTIONS,
 	service = CustomAttributesDisplay.class
 )
 public class CPOptionValueCustomAttributesDisplay

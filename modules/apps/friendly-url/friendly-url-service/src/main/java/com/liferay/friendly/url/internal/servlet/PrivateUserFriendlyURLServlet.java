@@ -5,7 +5,7 @@
 
 package com.liferay.friendly.url.internal.servlet;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
 import org.osgi.service.component.annotations.Component;
 

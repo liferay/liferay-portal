@@ -17,9 +17,9 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.product.navigation.simulation.constants.ProductNavigationSimulationConstants;
 import com.liferay.product.navigation.simulation.constants.ProductNavigationSimulationPortletKeys;
 
-import java.util.Locale;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -87,7 +87,7 @@ public class DevicePreviewPanelApp extends BaseJSPPanelApp {
 	private Language _language;
 
 	@Reference(
-		target = "(javax.portlet.name=" + ProductNavigationSimulationPortletKeys.PRODUCT_NAVIGATION_SIMULATION + ")"
+		target = "(jakarta.portlet.name=" + ProductNavigationSimulationPortletKeys.PRODUCT_NAVIGATION_SIMULATION + ")"
 	)
 	private Portlet _portlet;
 

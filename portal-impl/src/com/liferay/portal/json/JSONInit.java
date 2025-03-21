@@ -25,11 +25,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletDisplayModel;
 import com.liferay.portal.kernel.repository.model.RepositoryModel;
 
+import jakarta.portlet.PortletURL;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.portlet.PortletURL;
 
 import jodd.introspector.CachingIntrospector;
 import jodd.introspector.ClassIntrospector;

@@ -37,7 +37,7 @@ public class UserGroupsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + UserGroupsAdminPortletKeys.USER_GROUPS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + UserGroupsAdminPortletKeys.USER_GROUPS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

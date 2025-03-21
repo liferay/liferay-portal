@@ -5,10 +5,10 @@
 
 package com.liferay.portlet.internal;
 
-import java.util.Map;
+import jakarta.portlet.ActionParameters;
+import jakarta.portlet.MutableActionParameters;
 
-import javax.portlet.ActionParameters;
-import javax.portlet.MutableActionParameters;
+import java.util.Map;
 
 /**
  * @author Neil Griffin

@@ -45,14 +45,14 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 import com.liferay.site.initializer.SiteInitializerSerializer;
 import com.liferay.sites.kernel.util.Sites;
 
+import jakarta.ws.rs.core.Response;
+
 import java.io.File;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.ws.rs.core.Response;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

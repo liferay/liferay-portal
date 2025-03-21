@@ -57,7 +57,7 @@ public class ResultRankingsPanelApp extends BasePanelApp {
 	protected SearchEngineInformation searchEngineInformation;
 
 	@Reference(
-		target = "(javax.portlet.name=" + ResultRankingsPortletKeys.RESULT_RANKINGS + ")"
+		target = "(jakarta.portlet.name=" + ResultRankingsPortletKeys.RESULT_RANKINGS + ")"
 	)
 	private Portlet _portlet;
 

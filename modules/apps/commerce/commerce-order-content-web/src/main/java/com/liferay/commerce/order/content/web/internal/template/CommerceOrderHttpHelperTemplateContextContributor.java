@@ -8,9 +8,9 @@ package com.liferay.commerce.order.content.web.internal.template;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.portal.kernel.template.TemplateContextContributor;
 
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

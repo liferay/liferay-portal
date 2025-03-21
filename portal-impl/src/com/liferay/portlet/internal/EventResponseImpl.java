@@ -9,12 +9,12 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayEventResponse;
 
-import javax.portlet.EventRequest;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletRequest;
-import javax.portlet.WindowStateException;
+import jakarta.portlet.EventRequest;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.WindowStateException;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

@@ -13,7 +13,7 @@ import com.liferay.layout.theme.item.selector.web.internal.display.context.Layou
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Theme;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Stefan Tanasie

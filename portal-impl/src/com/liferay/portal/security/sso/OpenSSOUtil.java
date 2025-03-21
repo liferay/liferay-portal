@@ -8,11 +8,11 @@ package com.liferay.portal.security.sso;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.sso.OpenSSO;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>

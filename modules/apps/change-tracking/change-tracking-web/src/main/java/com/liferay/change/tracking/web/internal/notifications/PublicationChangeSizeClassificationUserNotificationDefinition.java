@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Gislayne Vitorino
  */
 @Component(
-	property = "javax.portlet.name=" + CTPortletKeys.PUBLICATIONS,
+	property = "jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS,
 	service = UserNotificationDefinition.class
 )
 public class PublicationChangeSizeClassificationUserNotificationDefinition

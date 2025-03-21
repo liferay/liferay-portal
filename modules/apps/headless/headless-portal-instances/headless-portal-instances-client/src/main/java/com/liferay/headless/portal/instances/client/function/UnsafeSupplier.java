@@ -5,7 +5,7 @@
 
 package com.liferay.headless.portal.instances.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Alberto Chaparro

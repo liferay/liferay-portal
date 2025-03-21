@@ -5,7 +5,7 @@
 
 package com.liferay.scim.rest.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Olivér Kecskeméty

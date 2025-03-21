@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -65,7 +65,7 @@ public class PortletPanelAppAdapterRegistry {
 	private ServiceTracker<Portlet, PanelApp> _serviceTracker;
 
 	@Reference(
-		target = "(&(original.bean=true)(bean.id=javax.servlet.ServletContext))"
+		target = "(&(original.bean=true)(bean.id=jakarta.servlet.ServletContext))"
 	)
 	private ServletContext _servletContext;
 

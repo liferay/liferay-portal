@@ -22,6 +22,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,11 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.PortletRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -191,7 +191,7 @@ public class MVCPortletAuthTokenWhitelist extends BaseAuthTokenWhitelist {
 			SystemBundleUtil.getBundleContext(),
 			SystemBundleUtil.createFilter(
 				StringBundler.concat(
-					"(&(&(", whitelistName, "=*)(javax.portlet.name=*))",
+					"(&(&(", whitelistName, "=*)(jakarta.portlet.name=*))",
 					"(objectClass=", serviceClass.getName(), "))")),
 			new TokenWhitelistTrackerCustomizer(whiteList));
 
@@ -254,7 +254,7 @@ public class MVCPortletAuthTokenWhitelist extends BaseAuthTokenWhitelist {
 				serviceReference.getProperty("mvc.command.name"));
 
 			List<String> portletNames = StringUtil.asList(
-				serviceReference.getProperty("javax.portlet.name"));
+				serviceReference.getProperty("jakarta.portlet.name"));
 
 			for (String portletName : portletNames) {
 				for (String whitelistAction : whitelistActions) {

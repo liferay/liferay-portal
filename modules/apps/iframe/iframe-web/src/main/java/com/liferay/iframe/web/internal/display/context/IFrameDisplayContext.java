@@ -21,12 +21,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.WindowState;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.WindowState;
 
 /**
  * @author Juergen Kappler

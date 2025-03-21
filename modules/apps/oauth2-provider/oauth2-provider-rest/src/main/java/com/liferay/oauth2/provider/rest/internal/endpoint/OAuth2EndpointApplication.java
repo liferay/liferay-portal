@@ -5,7 +5,7 @@
 
 package com.liferay.oauth2.provider.rest.internal.endpoint;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
 import org.osgi.service.component.annotations.Component;
 

@@ -5,8 +5,8 @@
 
 package com.liferay.analytics.settings.web.internal.display.context;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Riccardo Ferrari

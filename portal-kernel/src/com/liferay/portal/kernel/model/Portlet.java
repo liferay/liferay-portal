@@ -1304,7 +1304,7 @@ public interface Portlet extends PersistedModel, PortletModel {
 	 and portlet mode
 	 */
 	public boolean hasPortletMode(
-		String mimeType, javax.portlet.PortletMode portletMode);
+		String mimeType, jakarta.portlet.PortletMode portletMode);
 
 	/**
 	 * Returns <code>true</code> if the portlet has a role with the specified
@@ -1326,7 +1326,7 @@ public interface Portlet extends PersistedModel, PortletModel {
 	 and window state
 	 */
 	public boolean hasWindowState(
-		String mimeType, javax.portlet.WindowState windowState);
+		String mimeType, jakarta.portlet.WindowState windowState);
 
 	/**
 	 * Returns <code>true</code> if an action URL for this portlet should cause
@@ -1432,9 +1432,9 @@ public interface Portlet extends PersistedModel, PortletModel {
 
 	/**
 	 * Returns <code>true</code> if the CSS resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link javax.portlet.annotations.Dependency},
-	 * {@link javax.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link javax.portlet.HeaderResponse#addDependency(String,
+	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
+	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
+	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
 	 * String, String, String)} are to be referenced in the page's header.
 	 *
 	 * @return <code>true</code> if the specified CSS resource dependencies are
@@ -1445,9 +1445,9 @@ public interface Portlet extends PersistedModel, PortletModel {
 	/**
 	 * Returns <code>true</code> if the JavaScript resource dependencies
 	 * specified in <code>portlet.xml</code>, @{@link
-	 * javax.portlet.annotations.Dependency}, {@link
-	 * javax.portlet.HeaderResponse#addDependency(String, String, String)}, or
-	 * {@link javax.portlet.HeaderResponse#addDependency(String, String, String,
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * jakarta.portlet.HeaderResponse#addDependency(String, String, String)}, or
+	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String, String,
 	 * String)} are to be referenced in the page's header.
 	 *
 	 * @return <code>true</code> if the specified JavaScript resource
@@ -2084,9 +2084,9 @@ public interface Portlet extends PersistedModel, PortletModel {
 
 	/**
 	 * Sets whether the CSS resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link javax.portlet.annotations.Dependency},
-	 * {@link javax.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link javax.portlet.HeaderResponse#addDependency(String,
+	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
+	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
+	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
 	 * String, String, String)} are to be referenced in the page's header.
 	 *
 	 * @param portletDependencyCssEnabled whether the CSS resource dependencies
@@ -2097,17 +2097,17 @@ public interface Portlet extends PersistedModel, PortletModel {
 
 	/**
 	 * Sets whether the JavaScript resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link javax.portlet.annotations.Dependency},
-	 * {@link javax.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link javax.portlet.HeaderResponse#addDependency(String,
+	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
+	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
+	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
 	 * String, String, String)} are to be referenced in the page's header.
 	 *
 	 * @param portletDependencyJavaScriptEnabled whether the JavaScript resource
 	 dependencies specified in <code>portlet.xml</code>, @{@link
-	 javax.portlet.annotations.Dependency}, {@link
-	 javax.portlet.HeaderResponse#addDependency(String, String,
+	 jakarta.portlet.annotations.Dependency}, {@link
+	 jakarta.portlet.HeaderResponse#addDependency(String, String,
 	 String)}, or {@link
-	 javax.portlet.HeaderResponse#addDependency(String, String, String,
+	 jakarta.portlet.HeaderResponse#addDependency(String, String, String,
 	 String)} are to be referenced in the page's header
 	 */
 	public void setPortletDependencyJavaScriptEnabled(

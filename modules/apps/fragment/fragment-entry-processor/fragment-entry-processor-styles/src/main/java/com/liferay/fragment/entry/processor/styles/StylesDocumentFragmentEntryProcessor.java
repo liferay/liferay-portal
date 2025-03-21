@@ -16,7 +16,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

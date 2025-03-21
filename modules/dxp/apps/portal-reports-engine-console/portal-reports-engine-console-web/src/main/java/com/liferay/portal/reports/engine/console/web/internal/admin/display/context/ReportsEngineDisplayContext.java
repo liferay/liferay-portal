@@ -47,13 +47,13 @@ import com.liferay.portal.reports.engine.console.web.internal.admin.search.Entry
 import com.liferay.portal.reports.engine.console.web.internal.admin.search.SourceDisplayTerms;
 import com.liferay.portal.reports.engine.console.web.internal.admin.search.SourceSearch;
 
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Rafael Praxedes

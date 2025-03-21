@@ -29,10 +29,10 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 
-import java.util.Locale;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.WindowState;
 
-import javax.portlet.PortletURL;
-import javax.portlet.WindowState;
+import java.util.Locale;
 
 /**
  * @author Adolfo Pérez

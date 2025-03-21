@@ -9,9 +9,9 @@ import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectCon
 import com.liferay.portal.settings.authentication.openid.connect.web.internal.constants.PortalSettingsOpenIdConnectConstants;
 import com.liferay.portal.settings.portlet.action.PortalSettingsFormContributor;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
 

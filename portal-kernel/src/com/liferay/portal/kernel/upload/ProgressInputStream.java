@@ -10,12 +10,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ProgressTracker;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
 
 /**
  * @author Jorge Ferrer

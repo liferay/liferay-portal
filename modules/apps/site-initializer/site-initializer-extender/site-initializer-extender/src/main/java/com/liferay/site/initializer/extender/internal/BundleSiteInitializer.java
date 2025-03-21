@@ -233,6 +233,8 @@ import com.liferay.template.model.TemplateEntry;
 import com.liferay.template.service.TemplateEntryLocalService;
 import com.liferay.wiki.model.WikiPage;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -255,8 +257,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;

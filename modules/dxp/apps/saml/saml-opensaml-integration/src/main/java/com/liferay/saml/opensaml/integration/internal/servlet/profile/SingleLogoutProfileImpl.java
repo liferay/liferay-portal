@@ -42,6 +42,13 @@ import com.liferay.saml.runtime.exception.UnsupportedBindingException;
 import com.liferay.saml.runtime.servlet.profile.SingleLogoutProfile;
 import com.liferay.saml.util.JspUtil;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.Writer;
 
 import java.util.Collections;
@@ -49,13 +56,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 

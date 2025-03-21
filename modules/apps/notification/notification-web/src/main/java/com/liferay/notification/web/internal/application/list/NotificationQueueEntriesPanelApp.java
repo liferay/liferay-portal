@@ -47,7 +47,7 @@ public class NotificationQueueEntriesPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + NotificationPortletKeys.NOTIFICATION_QUEUE_ENTRIES + ")"
+		target = "(jakarta.portlet.name=" + NotificationPortletKeys.NOTIFICATION_QUEUE_ENTRIES + ")"
 	)
 	private Portlet _portlet;
 

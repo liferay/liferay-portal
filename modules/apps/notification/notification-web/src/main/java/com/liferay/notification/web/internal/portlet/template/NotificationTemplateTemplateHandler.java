@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Victor Kammerer
  */
 @Component(
-	property = "javax.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES,
+	property = "jakarta.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES,
 	service = TemplateHandler.class
 )
 public class NotificationTemplateTemplateHandler extends BaseTemplateHandler {

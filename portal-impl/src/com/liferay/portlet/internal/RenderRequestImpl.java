@@ -7,7 +7,7 @@ package com.liferay.portlet.internal;
 
 import com.liferay.portal.kernel.portlet.LiferayRenderRequest;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Brian Wing Shun Chan

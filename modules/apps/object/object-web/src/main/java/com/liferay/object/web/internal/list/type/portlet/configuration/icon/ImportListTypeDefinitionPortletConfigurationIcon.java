@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.portlet.configuration.icon.BaseJSPPortletConfig
 import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Murilo Stodolni
  */
 @Component(
-	property = "javax.portlet.name=" + ObjectPortletKeys.LIST_TYPE_DEFINITIONS,
+	property = "jakarta.portlet.name=" + ObjectPortletKeys.LIST_TYPE_DEFINITIONS,
 	service = PortletConfigurationIcon.class
 )
 public class ImportListTypeDefinitionPortletConfigurationIcon

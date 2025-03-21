@@ -10,7 +10,7 @@ import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Andrea Di Giorgi

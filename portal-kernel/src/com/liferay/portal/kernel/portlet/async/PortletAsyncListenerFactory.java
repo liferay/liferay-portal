@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.portlet.async;
 
-import javax.portlet.PortletAsyncListener;
-import javax.portlet.PortletException;
+import jakarta.portlet.PortletAsyncListener;
+import jakarta.portlet.PortletException;
 
 import org.osgi.annotation.versioning.ProviderType;
 

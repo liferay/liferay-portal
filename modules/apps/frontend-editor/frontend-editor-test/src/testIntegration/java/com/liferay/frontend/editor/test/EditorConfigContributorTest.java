@@ -100,7 +100,7 @@ public class EditorConfigContributorTest {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"editor.name", _EDITOR_NAME
 				).put(
-					"javax.portlet.name", _PORTLET_NAME
+					"jakarta.portlet.name", _PORTLET_NAME
 				).put(
 					"service.ranking", 1000
 				).build());
@@ -142,7 +142,7 @@ public class EditorConfigContributorTest {
 				EditorConfigContributor.class,
 				new TablesEditorConfigContributor(),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", _PORTLET_NAME
+					"jakarta.portlet.name", _PORTLET_NAME
 				).put(
 					"service.ranking", 1000
 				).build());
@@ -302,7 +302,7 @@ public class EditorConfigContributorTest {
 				).put(
 					"editor.name", _EDITOR_NAME
 				).put(
-					"javax.portlet.name", _PORTLET_NAME
+					"jakarta.portlet.name", _PORTLET_NAME
 				).put(
 					"service.ranking", 1000
 				).build());
@@ -314,7 +314,7 @@ public class EditorConfigContributorTest {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"editor.config.key", _CONFIG_KEY
 				).put(
-					"javax.portlet.name", _PORTLET_NAME
+					"jakarta.portlet.name", _PORTLET_NAME
 				).put(
 					"service.ranking", 1000
 				).build());
@@ -348,7 +348,7 @@ public class EditorConfigContributorTest {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"editor.config.key", _CONFIG_KEY
 				).put(
-					"javax.portlet.name", _PORTLET_NAME
+					"jakarta.portlet.name", _PORTLET_NAME
 				).put(
 					"service.ranking", 1000
 				).build());
@@ -394,7 +394,7 @@ public class EditorConfigContributorTest {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"editor.name", _EDITOR_NAME
 				).put(
-					"javax.portlet.name", _PORTLET_NAME
+					"jakarta.portlet.name", _PORTLET_NAME
 				).put(
 					"service.ranking", 1000
 				).build());
@@ -436,7 +436,7 @@ public class EditorConfigContributorTest {
 				EditorConfigContributor.class,
 				new TablesEditorConfigContributor(),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", _PORTLET_NAME
+					"jakarta.portlet.name", _PORTLET_NAME
 				).put(
 					"service.ranking", 1000
 				).build());

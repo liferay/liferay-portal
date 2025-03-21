@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.dao.search;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Raymond Augé

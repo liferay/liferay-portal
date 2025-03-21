@@ -53,6 +53,8 @@ import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
+import jakarta.mail.internet.InternetAddress;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -67,8 +69,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-
-import javax.mail.internet.InternetAddress;
 
 /**
  * @author Brian Wing Shun Chan

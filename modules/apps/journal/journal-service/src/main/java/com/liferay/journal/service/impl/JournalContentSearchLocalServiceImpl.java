@@ -103,7 +103,7 @@ public class JournalContentSearchLocalServiceImpl
 
 				String portletId = portletPreferences.getPortletId();
 
-				javax.portlet.PortletPreferences jxPortletPreferences =
+				jakarta.portlet.PortletPreferences jxPortletPreferences =
 					_portletPreferenceValueLocalService.getPreferences(
 						portletPreferences);
 
@@ -309,7 +309,7 @@ public class JournalContentSearchLocalServiceImpl
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, DisplayInformationProvider.class,
-			"javax.portlet.name");
+			"jakarta.portlet.name");
 	}
 
 	@Deactivate

@@ -8,9 +8,9 @@ package com.liferay.frontend.data.set.taglib.internal.jaxrs.context.provider;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;

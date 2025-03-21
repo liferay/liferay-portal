@@ -73,6 +73,8 @@ import com.paypal.payments.CapturesRefundRequest;
 import com.paypal.payments.Refund;
 import com.paypal.payments.RefundRequest;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 import java.math.BigDecimal;
@@ -84,8 +86,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 

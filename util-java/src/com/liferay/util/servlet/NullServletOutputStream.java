@@ -5,8 +5,8 @@
 
 package com.liferay.util.servlet;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 
 /**
  * @author Brian Wing Shun Chan

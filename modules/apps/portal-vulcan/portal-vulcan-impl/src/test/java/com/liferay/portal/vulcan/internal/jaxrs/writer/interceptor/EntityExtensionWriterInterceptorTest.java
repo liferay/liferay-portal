@@ -15,11 +15,11 @@ import com.liferay.portal.vulcan.extension.EntityExtensionThreadLocal;
 import com.liferay.portal.vulcan.internal.jaxrs.context.resolver.EntityExtensionHandlerContextResolver;
 import com.liferay.portal.vulcan.jaxrs.extension.ExtendedEntity;
 
-import java.util.Collections;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.Providers;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Providers;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.ClassRule;

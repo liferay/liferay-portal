@@ -37,7 +37,7 @@ public class OAuth2AdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + OAuth2ProviderPortletKeys.OAUTH2_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + OAuth2ProviderPortletKeys.OAUTH2_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

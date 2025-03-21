@@ -7,8 +7,6 @@ package jakarta.servlet.http;
 
 import java.util.Enumeration;
 
-import javax.servlet.http.HttpSession;
-
 /**
  * @author Shuyang Zhou
  */

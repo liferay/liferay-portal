@@ -7,10 +7,10 @@ package com.liferay.portal.upgrade.v6_2_0;
 
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Marcellus Tavares

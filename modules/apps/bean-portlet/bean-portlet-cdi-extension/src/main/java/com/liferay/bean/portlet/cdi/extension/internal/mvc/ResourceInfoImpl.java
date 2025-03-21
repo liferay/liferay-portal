@@ -5,9 +5,9 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import java.lang.reflect.Method;
+import jakarta.ws.rs.container.ResourceInfo;
 
-import javax.ws.rs.container.ResourceInfo;
+import java.lang.reflect.Method;
 
 /**
  * @author Neil Griffin

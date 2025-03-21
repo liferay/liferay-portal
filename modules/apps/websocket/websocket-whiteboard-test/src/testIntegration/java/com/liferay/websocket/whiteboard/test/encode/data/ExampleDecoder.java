@@ -8,8 +8,8 @@ package com.liferay.websocket.whiteboard.test.encode.data;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import javax.websocket.Decoder;
-import javax.websocket.EndpointConfig;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.EndpointConfig;
 
 /**
  * @author Cristina González

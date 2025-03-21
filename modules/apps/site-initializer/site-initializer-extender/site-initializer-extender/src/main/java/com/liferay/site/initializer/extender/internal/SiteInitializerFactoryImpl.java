@@ -95,9 +95,9 @@ import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 import com.liferay.template.service.TemplateEntryLocalService;
 
-import java.io.File;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.io.File;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

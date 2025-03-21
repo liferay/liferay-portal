@@ -37,7 +37,7 @@ public class RolesPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + RolesAdminPortletKeys.ROLES_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + RolesAdminPortletKeys.ROLES_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

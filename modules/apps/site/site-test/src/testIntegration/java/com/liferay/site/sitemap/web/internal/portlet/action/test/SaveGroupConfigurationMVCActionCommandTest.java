@@ -37,9 +37,9 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import java.util.Dictionary;
+import jakarta.portlet.PortletException;
 
-import javax.portlet.PortletException;
+import java.util.Dictionary;
 
 import org.junit.After;
 import org.junit.Assert;

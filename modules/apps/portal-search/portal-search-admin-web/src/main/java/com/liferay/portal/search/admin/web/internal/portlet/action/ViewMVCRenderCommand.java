@@ -8,8 +8,8 @@ package com.liferay.portal.search.admin.web.internal.portlet.action;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.search.admin.web.internal.constants.SearchAdminPortletKeys;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SearchAdminPortletKeys.SEARCH_ADMIN,
+		"jakarta.portlet.name=" + SearchAdminPortletKeys.SEARCH_ADMIN,
 		"mvc.command.name=/portal_search_admin/view"
 	},
 	service = MVCRenderCommand.class

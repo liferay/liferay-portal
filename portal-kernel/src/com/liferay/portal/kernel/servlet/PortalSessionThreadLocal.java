@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.servlet;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author Shuyang Zhou

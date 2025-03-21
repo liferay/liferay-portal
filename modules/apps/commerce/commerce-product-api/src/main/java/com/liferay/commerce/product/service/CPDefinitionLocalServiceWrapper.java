@@ -880,7 +880,7 @@ public class CPDefinitionLocalServiceWrapper
 	@Override
 	public boolean isVersionable(
 		long cpDefinitionId,
-		javax.servlet.http.HttpServletRequest httpServletRequest) {
+		jakarta.servlet.http.HttpServletRequest httpServletRequest) {
 
 		return _cpDefinitionLocalService.isVersionable(
 			cpDefinitionId, httpServletRequest);

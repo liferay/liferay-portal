@@ -24,15 +24,15 @@ import com.liferay.portal.reports.engine.console.service.DefinitionLocalService;
 import com.liferay.portal.reports.engine.console.service.SourceLocalService;
 import com.liferay.portal.reports.engine.console.web.internal.admin.constants.ReportsEngineWebKeys;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -53,20 +53,20 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.scopeable=true",
-		"javax.portlet.display-name=Report Admin",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.config-template=/admin/configuration.jsp",
-		"javax.portlet.init-param.copy-request-parameters=true",
-		"javax.portlet.init-param.mvc-action-command-package-prefix=com.liferay.portal.reports.engine.console.web.admin.portlet.action",
-		"javax.portlet.init-param.view-template=/admin/view.jsp",
-		"javax.portlet.name=" + ReportsEngineConsolePortletKeys.REPORTS_ADMIN,
-		"javax.portlet.portlet-info.keywords=Reports Admin",
-		"javax.portlet.portlet-info.short-title=Reports Admin",
-		"javax.portlet.portlet-info.title=Reports Admin",
-		"javax.portlet.portlet-mode=text/html;config",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,guest,power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Report Admin",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.config-template=/admin/configuration.jsp",
+		"jakarta.portlet.init-param.copy-request-parameters=true",
+		"jakarta.portlet.init-param.mvc-action-command-package-prefix=com.liferay.portal.reports.engine.console.web.admin.portlet.action",
+		"jakarta.portlet.init-param.view-template=/admin/view.jsp",
+		"jakarta.portlet.name=" + ReportsEngineConsolePortletKeys.REPORTS_ADMIN,
+		"jakarta.portlet.portlet-info.keywords=Reports Admin",
+		"jakarta.portlet.portlet-info.short-title=Reports Admin",
+		"jakarta.portlet.portlet-info.title=Reports Admin",
+		"jakarta.portlet.portlet-mode=text/html;config",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,guest,power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

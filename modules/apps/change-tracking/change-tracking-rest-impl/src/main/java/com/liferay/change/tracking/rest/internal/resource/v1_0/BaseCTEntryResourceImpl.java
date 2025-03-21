@@ -47,21 +47,21 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author David Truong
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseCTEntryResourceImpl
 	implements CTEntryResource, EntityModelResource,
 			   VulcanBatchEngineTaskItemDelegate<CTEntry>,
@@ -107,25 +107,25 @@ public abstract class BaseCTEntryResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "CTEntry")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/ct-collections/{ctCollectionId}/ct-entries")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/ct-collections/{ctCollectionId}/ct-entries")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<CTEntry> getCtCollectionCTEntriesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("ctCollectionId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("ctCollectionId")
 			Long ctCollectionId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("search")
+			@jakarta.ws.rs.QueryParam("search")
 			String search,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("showHideable")
+			@jakarta.ws.rs.QueryParam("showHideable")
 			Boolean showHideable,
-			@javax.ws.rs.core.Context
+			@jakarta.ws.rs.core.Context
 				com.liferay.portal.kernel.search.filter.Filter filter,
-			@javax.ws.rs.core.Context Pagination pagination,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
 		throws Exception {
 
@@ -156,25 +156,25 @@ public abstract class BaseCTEntryResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "CTEntry")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/ct-collections/{ctCollectionId}/ct-entries/by-model-class-name-id/{modelClassNameId}/by-model-class-pk/{modelClassPK}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public CTEntry
 			getCtCollectionCTEntryByModelClassNameByModelClassPkModelClassPK(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("ctCollectionId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("ctCollectionId")
 				Long ctCollectionId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("modelClassNameId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("modelClassNameId")
 				Long modelClassNameId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("modelClassPK")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("modelClassPK")
 				Long modelClassPK)
 		throws Exception {
 
@@ -225,28 +225,28 @@ public abstract class BaseCTEntryResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "CTEntry")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/ct-entries/history")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/ct-entries/history")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<CTEntry> getCTEntriesHistoryPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.QueryParam("classNameId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("classNameId")
 			Long classNameId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("classPK")
+			@jakarta.ws.rs.QueryParam("classPK")
 			Long classPK,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("search")
+			@jakarta.ws.rs.QueryParam("search")
 			String search,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("siteId")
+			@jakarta.ws.rs.QueryParam("siteId")
 			Long siteId,
-			@javax.ws.rs.core.Context
+			@jakarta.ws.rs.core.Context
 				com.liferay.portal.kernel.search.filter.Filter filter,
-			@javax.ws.rs.core.Context Pagination pagination,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
 		throws Exception {
 
@@ -269,14 +269,14 @@ public abstract class BaseCTEntryResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "CTEntry")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/ct-entries/{ctEntryId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/ct-entries/{ctEntryId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public CTEntry getCTEntry(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("ctEntryId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("ctEntryId")
 			Long ctEntryId)
 		throws Exception {
 

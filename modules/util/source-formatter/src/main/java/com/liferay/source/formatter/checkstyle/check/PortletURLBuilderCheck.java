@@ -98,7 +98,7 @@ public class PortletURLBuilderCheck extends BaseBuilderCheck {
 	private static final String[][] _RESERVED_KEYWORDS = {
 		{"ActionRequest.ACTION_NAME", "setActionName"},
 		{"Constants.CMD", "setCMD"}, {"backURL", "setBackURL"},
-		{"cmd", "setCMD"}, {"javax.portlet.action", "setActionName"},
+		{"cmd", "setCMD"}, {"jakarta.portlet.action", "setActionName"},
 		{"keywords", "setKeywords"}, {"mvcPath", "setMVCPath"},
 		{"mvcRenderCommandName", "setMVCRenderCommandName"},
 		{"navigation", "setNavigation"}, {"p_p_mode", "setPortletMode"},

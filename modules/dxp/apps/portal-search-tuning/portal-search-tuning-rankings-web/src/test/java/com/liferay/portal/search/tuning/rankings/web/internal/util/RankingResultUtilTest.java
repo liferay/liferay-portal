@@ -16,10 +16,10 @@ import com.liferay.portal.search.tuning.rankings.web.internal.BaseRankingsWebTes
 import com.liferay.portal.search.web.interpreter.SearchResultInterpreter;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

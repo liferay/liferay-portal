@@ -9,8 +9,8 @@ import com.liferay.exportimport.resources.importer.internal.constants.ResourcesI
 import com.liferay.exportimport.resources.importer.portlet.preferences.PortletPreferencesTranslator;
 import com.liferay.portal.kernel.json.JSONObject;
 
-import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 

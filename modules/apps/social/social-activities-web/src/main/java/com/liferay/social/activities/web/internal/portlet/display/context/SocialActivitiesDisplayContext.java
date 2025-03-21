@@ -8,9 +8,9 @@ package com.liferay.social.activities.web.internal.portlet.display.context;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.social.kernel.model.SocialActivitySet;
 
-import java.util.List;
+import jakarta.portlet.ResourceURL;
 
-import javax.portlet.ResourceURL;
+import java.util.List;
 
 /**
  * @author Adolfo Pérez

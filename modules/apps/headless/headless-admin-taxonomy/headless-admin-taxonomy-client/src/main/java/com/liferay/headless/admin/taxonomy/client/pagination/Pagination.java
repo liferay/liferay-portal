@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.taxonomy.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

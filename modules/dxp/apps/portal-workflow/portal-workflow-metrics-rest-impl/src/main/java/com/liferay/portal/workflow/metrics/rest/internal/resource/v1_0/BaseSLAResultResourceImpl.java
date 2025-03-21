@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Rafael Praxedes
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSLAResultResourceImpl implements SLAResultResource {
 
 	/**
@@ -57,14 +57,14 @@ public abstract class BaseSLAResultResourceImpl implements SLAResultResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "SLAResult")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/processes/{processId}/last-sla-result")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/processes/{processId}/last-sla-result")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public SLAResult getProcessLastSLAResult(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("processId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("processId")
 			Long processId)
 		throws Exception {
 

@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.COMMERCE_INVENTORY_WAREHOUSE,
+	property = "jakarta.portlet.name=" + CPPortletKeys.COMMERCE_INVENTORY_WAREHOUSE,
 	service = CustomAttributesDisplay.class
 )
 public class CommerceInventoryWarehouseCustomAttributesDisplay

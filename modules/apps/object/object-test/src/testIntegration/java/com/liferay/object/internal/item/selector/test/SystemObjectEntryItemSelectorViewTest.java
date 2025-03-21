@@ -38,10 +38,10 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.servlet.ServletRequest;
+
 import java.util.LinkedList;
 import java.util.Queue;
-
-import javax.servlet.ServletRequest;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

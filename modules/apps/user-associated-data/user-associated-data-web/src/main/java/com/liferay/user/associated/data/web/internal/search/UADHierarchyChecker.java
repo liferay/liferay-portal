@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.taglib.aui.AUIUtil;
 import com.liferay.user.associated.data.display.UADDisplay;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Samuel Trong Tran

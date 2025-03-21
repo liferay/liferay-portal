@@ -10,6 +10,13 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.portlet.ClientDataRequest;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderParameters;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,13 +26,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.ClientDataRequest;
-import javax.portlet.PortletException;
-import javax.portlet.RenderParameters;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 
 /**
  * @author Brian Wing Shun Chan

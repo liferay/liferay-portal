@@ -37,7 +37,7 @@ public class BookmarksPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

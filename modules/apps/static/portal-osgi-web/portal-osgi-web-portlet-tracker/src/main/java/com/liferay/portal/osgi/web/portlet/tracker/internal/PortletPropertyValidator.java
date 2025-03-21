@@ -20,7 +20,7 @@ public class PortletPropertyValidator {
 
 	public boolean validate(String key) {
 		if ((!StringUtil.startsWith(key, "com.liferay.portlet.") &&
-			 !StringUtil.startsWith(key, "javax.portlet.")) ||
+			 !StringUtil.startsWith(key, "jakarta.portlet.")) ||
 			_validKeys.contains(key)) {
 
 			return true;
@@ -86,15 +86,15 @@ public class PortletPropertyValidator {
 		"com.liferay.portlet.struts-path", "com.liferay.portlet.system",
 		"com.liferay.portlet.use-default-template",
 		"com.liferay.portlet.user-principal-strategy",
-		"com.liferay.portlet.virtual-path", "javax.portlet.description",
-		"javax.portlet.display-name", "javax.portlet.expiration-cache",
-		"javax.portlet.info.keywords", "javax.portlet.info.short-title",
-		"javax.portlet.info.title", "javax.portlet.portlet-mode",
-		"javax.portlet.portlet-name", "javax.portlet.preferences",
-		"javax.portlet.resource-bundle", "javax.portlet.security-role-ref",
-		"javax.portlet.supported-processing-event",
-		"javax.portlet.supported-public-render-parameter",
-		"javax.portlet.supported-publishing-event",
-		"javax.portlet.window-state");
+		"com.liferay.portlet.virtual-path", "jakarta.portlet.description",
+		"jakarta.portlet.display-name", "jakarta.portlet.expiration-cache",
+		"jakarta.portlet.info.keywords", "jakarta.portlet.info.short-title",
+		"jakarta.portlet.info.title", "jakarta.portlet.portlet-mode",
+		"jakarta.portlet.portlet-name", "jakarta.portlet.preferences",
+		"jakarta.portlet.resource-bundle", "jakarta.portlet.security-role-ref",
+		"jakarta.portlet.supported-processing-event",
+		"jakarta.portlet.supported-public-render-parameter",
+		"jakarta.portlet.supported-publishing-event",
+		"jakarta.portlet.window-state");
 
 }

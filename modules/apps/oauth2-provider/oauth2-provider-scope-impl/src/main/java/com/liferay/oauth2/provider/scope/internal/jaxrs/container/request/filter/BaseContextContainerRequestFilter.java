@@ -7,11 +7,11 @@ package com.liferay.oauth2.provider.scope.internal.jaxrs.container.request.filte
 
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;

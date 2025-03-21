@@ -7,12 +7,12 @@ package com.liferay.dynamic.data.mapping.form.builder.context;
 
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Rafael Praxedes

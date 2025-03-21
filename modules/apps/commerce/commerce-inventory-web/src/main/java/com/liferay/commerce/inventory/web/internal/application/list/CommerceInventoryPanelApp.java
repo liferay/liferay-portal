@@ -38,7 +38,7 @@ public class CommerceInventoryPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CPPortletKeys.COMMERCE_INVENTORY + ")"
+		target = "(jakarta.portlet.name=" + CPPortletKeys.COMMERCE_INVENTORY + ")"
 	)
 	private Portlet _portlet;
 

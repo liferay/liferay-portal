@@ -33,6 +33,18 @@ import com.liferay.portal.osgi.web.wab.extender.internal.registration.ListenerSe
 import com.liferay.portal.osgi.web.wab.extender.internal.registration.ServletRegistrationImpl;
 import com.liferay.portal.plugin.PluginPackageUtil;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextAttributeListener;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletRequestAttributeListener;
+import jakarta.servlet.ServletRequestListener;
+import jakarta.servlet.annotation.HandlesTypes;
+import jakarta.servlet.http.HttpSessionAttributeListener;
+import jakarta.servlet.http.HttpSessionListener;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,18 +72,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextAttributeListener;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestAttributeListener;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.annotation.HandlesTypes;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionListener;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -630,7 +630,7 @@ public class WabBundleProcessor {
 		throws IOException {
 
 		Enumeration<URL> enumeration = bundle.getResources(
-			"META-INF/services/javax.servlet.ServletContainerInitializer");
+			"META-INF/services/jakarta.servlet.ServletContainerInitializer");
 
 		if (enumeration == null) {
 			return;

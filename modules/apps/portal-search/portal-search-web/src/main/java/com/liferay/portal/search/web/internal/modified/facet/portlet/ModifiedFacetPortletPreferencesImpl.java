@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.web.internal.portlet.preferences.BasePortletPreferences;
 import com.liferay.portal.search.web.internal.user.facet.portlet.UserFacetPortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Lino Alves

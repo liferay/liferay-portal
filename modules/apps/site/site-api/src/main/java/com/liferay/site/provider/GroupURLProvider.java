@@ -7,7 +7,7 @@ package com.liferay.site.provider;
 
 import com.liferay.portal.kernel.model.Group;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Julio Camarero

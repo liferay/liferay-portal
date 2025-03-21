@@ -9,22 +9,22 @@ import com.liferay.bean.portlet.extension.ViewRenderer;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.mvc.Models;
+import jakarta.mvc.engine.ViewEngineContext;
+
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletRequest;
+
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
 import java.util.Locale;
-
-import javax.mvc.Models;
-import javax.mvc.engine.ViewEngineContext;
-
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletRequest;
-
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * @author Neil Griffin

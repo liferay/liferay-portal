@@ -37,7 +37,7 @@ public class JournalPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + JournalPortletKeys.JOURNAL + ")"
+		target = "(jakarta.portlet.name=" + JournalPortletKeys.JOURNAL + ")"
 	)
 	private Portlet _portlet;
 

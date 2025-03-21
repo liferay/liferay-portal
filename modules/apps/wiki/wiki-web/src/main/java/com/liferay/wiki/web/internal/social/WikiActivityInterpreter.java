@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Zsolt Berentey
  */
 @Component(
-	property = "javax.portlet.name=" + WikiPortletKeys.WIKI,
+	property = "jakarta.portlet.name=" + WikiPortletKeys.WIKI,
 	service = SocialActivityInterpreter.class
 )
 public class WikiActivityInterpreter extends BaseSocialActivityInterpreter {

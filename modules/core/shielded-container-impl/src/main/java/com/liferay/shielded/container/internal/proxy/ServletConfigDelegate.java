@@ -5,7 +5,7 @@
 
 package com.liferay.shielded.container.internal.proxy;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Shuyang Zhou

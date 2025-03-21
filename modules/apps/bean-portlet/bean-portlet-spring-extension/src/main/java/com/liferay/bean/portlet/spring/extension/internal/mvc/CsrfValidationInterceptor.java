@@ -14,14 +14,14 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.mvc.security.Csrf;
+import jakarta.mvc.security.CsrfProtected;
+
+import jakarta.portlet.ClientDataRequest;
+
+import jakarta.ws.rs.core.Configuration;
+
 import java.lang.reflect.Method;
-
-import javax.mvc.security.Csrf;
-import javax.mvc.security.CsrfProtected;
-
-import javax.portlet.ClientDataRequest;
-
-import javax.ws.rs.core.Configuration;
 
 /**
  * @author Neil Griffin

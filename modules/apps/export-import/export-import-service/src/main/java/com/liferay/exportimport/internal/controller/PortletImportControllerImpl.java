@@ -146,7 +146,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 				portletDataContext.getPlid(),
 				portletDataContext.getPortletId());
 
-		javax.portlet.PortletPreferences portletPreferences =
+		jakarta.portlet.PortletPreferences portletPreferences =
 			_portletPreferencesLocalService.fetchPreferences(
 				portletPreferencesIds);
 
@@ -328,7 +328,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 				portletDataContext.getPlid(),
 				portletDataContext.getPortletId());
 
-		javax.portlet.PortletPreferences portletPreferences =
+		jakarta.portlet.PortletPreferences portletPreferences =
 			_portletPreferencesLocalService.fetchPreferences(
 				portletPreferencesIds);
 
@@ -350,7 +350,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 
 	public String importPortletData(
 			PortletDataContext portletDataContext,
-			javax.portlet.PortletPreferences portletPreferences,
+			jakarta.portlet.PortletPreferences portletPreferences,
 			Element portletDataElement)
 		throws Exception {
 
@@ -433,7 +433,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 			plid = layout.getPlid();
 
 			if (preserveScopeLayoutId) {
-				javax.portlet.PortletPreferences jxPortletPreferences =
+				jakarta.portlet.PortletPreferences jxPortletPreferences =
 					PortletPreferencesFactoryUtil.getLayoutPortletSetup(
 						layout, portletDataContext.getPortletId());
 
@@ -565,7 +565,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 				ownerId = _userLocalService.getGuestUserId(companyId);
 			}
 
-			javax.portlet.PortletPreferences jxPortletPreferences =
+			jakarta.portlet.PortletPreferences jxPortletPreferences =
 				PortletPreferencesFactoryUtil.fromXML(
 					companyId, ownerId, ownerType, curPlid, curPortletId, xml);
 
@@ -616,7 +616,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 		}
 
 		if (preserveScopeLayoutId && (layout != null)) {
-			javax.portlet.PortletPreferences jxPortletPreferences =
+			jakarta.portlet.PortletPreferences jxPortletPreferences =
 				PortletPreferencesFactoryUtil.getLayoutPortletSetup(
 					layout, portletDataContext.getPortletId());
 
@@ -856,7 +856,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 
 	protected String deletePortletData(
 			PortletDataContext portletDataContext,
-			javax.portlet.PortletPreferences portletPreferences)
+			jakarta.portlet.PortletPreferences portletPreferences)
 		throws Exception {
 
 		Group group = _groupLocalService.getGroup(
@@ -1434,14 +1434,14 @@ public class PortletImportControllerImpl implements PortletImportController {
 
 		// Current portlet preferences
 
-		javax.portlet.PortletPreferences portletPreferences =
+		jakarta.portlet.PortletPreferences portletPreferences =
 			_portletPreferencesLocalService.getPreferences(
 				portletDataContext.getCompanyId(), ownerId, ownerType, plid,
 				portletId);
 
 		// New portlet preferences
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			PortletPreferencesFactoryUtil.fromXML(
 				portletDataContext.getCompanyId(), ownerId, ownerType, plid,
 				portletId, xml);

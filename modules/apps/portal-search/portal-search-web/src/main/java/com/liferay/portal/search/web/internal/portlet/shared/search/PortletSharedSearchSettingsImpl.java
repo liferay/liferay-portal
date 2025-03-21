@@ -19,8 +19,8 @@ import com.liferay.portal.search.web.internal.portlet.shared.task.helper.Portlet
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 import com.liferay.portal.search.web.search.request.SearchSettings;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author André de Oliveira

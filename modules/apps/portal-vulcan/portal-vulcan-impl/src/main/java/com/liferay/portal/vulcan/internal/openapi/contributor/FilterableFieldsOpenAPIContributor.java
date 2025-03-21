@@ -26,6 +26,8 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
 
+import jakarta.ws.rs.core.MultivaluedHashMap;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-
-import javax.ws.rs.core.MultivaluedHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

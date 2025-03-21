@@ -16,12 +16,12 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.zip.ZipWriter;
 
+import jakarta.portlet.PortletRequest;
+
 import java.io.File;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Zsolt Berentey

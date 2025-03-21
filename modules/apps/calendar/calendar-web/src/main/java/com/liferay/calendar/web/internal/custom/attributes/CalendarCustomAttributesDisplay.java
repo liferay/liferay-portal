@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Eduardo Lundgren
  */
 @Component(
-	property = "javax.portlet.name=" + CalendarPortletKeys.CALENDAR,
+	property = "jakarta.portlet.name=" + CalendarPortletKeys.CALENDAR,
 	service = CustomAttributesDisplay.class
 )
 public class CalendarCustomAttributesDisplay

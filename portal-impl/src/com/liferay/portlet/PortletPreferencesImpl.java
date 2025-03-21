@@ -16,6 +16,11 @@ import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.xml.simple.Element;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PreferencesValidator;
+import jakarta.portlet.ReadOnlyException;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -25,11 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PreferencesValidator;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
 
 /**
  * @author Brian Wing Shun Chan

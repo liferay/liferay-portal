@@ -34,13 +34,13 @@ import com.liferay.portal.search.web.internal.sort.portlet.SortPortletPreference
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Wade Cao
  */
 @Component(
-	property = "javax.portlet.name=" + SortPortletKeys.SORT,
+	property = "jakarta.portlet.name=" + SortPortletKeys.SORT,
 	service = PortletSharedSearchContributor.class
 )
 public class SortPortletSharedSearchContributor

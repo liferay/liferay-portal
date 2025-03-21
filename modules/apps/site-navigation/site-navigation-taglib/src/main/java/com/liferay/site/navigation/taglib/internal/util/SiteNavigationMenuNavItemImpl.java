@@ -16,14 +16,14 @@ import com.liferay.site.navigation.taglib.servlet.taglib.util.NavItemUtil;
 import com.liferay.site.navigation.theme.SiteNavigationMenuNavItem;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Pavel Savinov

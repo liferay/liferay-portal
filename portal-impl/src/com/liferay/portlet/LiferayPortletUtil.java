@@ -10,10 +10,10 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portlet.internal.PortletRequestImpl;
 import com.liferay.portlet.internal.PortletResponseImpl;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.filter.PortletRequestWrapper;
-import javax.portlet.filter.PortletResponseWrapper;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.filter.PortletRequestWrapper;
+import jakarta.portlet.filter.PortletResponseWrapper;
 
 /**
  * @author Neil Griffin

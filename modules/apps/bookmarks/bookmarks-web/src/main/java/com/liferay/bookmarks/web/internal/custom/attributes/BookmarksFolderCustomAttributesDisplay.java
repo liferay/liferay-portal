@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Jorge Ferrer
  */
 @Component(
-	property = "javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
+	property = "jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
 	service = CustomAttributesDisplay.class
 )
 public class BookmarksFolderCustomAttributesDisplay

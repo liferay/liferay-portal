@@ -5,17 +5,17 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.beans;
 
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.CacheControl;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderURL;
+import jakarta.portlet.ResourceURL;
+
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import java.util.Locale;
-
-import javax.portlet.ActionURL;
-import javax.portlet.CacheControl;
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderURL;
-import javax.portlet.ResourceURL;
 
 /**
  * @author Neil Griffin

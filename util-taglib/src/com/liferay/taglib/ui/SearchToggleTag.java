@@ -8,7 +8,7 @@ package com.liferay.taglib.ui;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.taglib.util.IncludeTag;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan

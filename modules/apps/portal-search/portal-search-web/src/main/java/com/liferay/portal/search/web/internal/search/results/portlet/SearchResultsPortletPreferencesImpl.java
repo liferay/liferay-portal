@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.search.web.internal.portlet.preferences.BasePortletPreferences;
 import com.liferay.portal.util.PropsUtil;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Lino Alves

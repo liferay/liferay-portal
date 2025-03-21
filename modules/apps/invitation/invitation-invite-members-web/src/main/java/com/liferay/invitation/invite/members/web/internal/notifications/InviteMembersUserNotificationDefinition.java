@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Adolfo Pérez
  */
 @Component(
-	property = "javax.portlet.name=" + InviteMembersPortletKeys.INVITE_MEMBERS,
+	property = "jakarta.portlet.name=" + InviteMembersPortletKeys.INVITE_MEMBERS,
 	service = UserNotificationDefinition.class
 )
 public class InviteMembersUserNotificationDefinition

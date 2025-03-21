@@ -35,7 +35,7 @@ public class ModerationPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + ModerationPortletKeys.MODERATION + ")"
+		target = "(jakarta.portlet.name=" + ModerationPortletKeys.MODERATION + ")"
 	)
 	private Portlet _portlet;
 

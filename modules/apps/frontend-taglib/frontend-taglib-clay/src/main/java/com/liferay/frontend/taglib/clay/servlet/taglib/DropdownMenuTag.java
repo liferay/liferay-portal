@@ -8,10 +8,10 @@ package com.liferay.frontend.taglib.clay.servlet.taglib;
 import com.liferay.frontend.taglib.clay.internal.servlet.taglib.util.DropdownItemListUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 
+import jakarta.servlet.jsp.JspException;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.jsp.JspException;
 
 /**
  * @author Chema Balsas

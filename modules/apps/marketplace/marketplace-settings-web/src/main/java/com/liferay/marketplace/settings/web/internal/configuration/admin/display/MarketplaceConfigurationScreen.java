@@ -8,7 +8,7 @@ package com.liferay.marketplace.settings.web.internal.configuration.admin.displa
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

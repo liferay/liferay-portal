@@ -5,9 +5,9 @@
 
 package com.liferay.bean.portlet.extension;
 
-import java.lang.reflect.Method;
+import jakarta.portlet.PortletMode;
 
-import javax.portlet.PortletMode;
+import java.lang.reflect.Method;
 
 import javax.xml.namespace.QName;
 

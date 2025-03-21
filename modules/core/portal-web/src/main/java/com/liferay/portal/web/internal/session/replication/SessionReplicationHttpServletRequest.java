@@ -7,9 +7,9 @@ package com.liferay.portal.web.internal.session.replication;
 
 import com.liferay.portal.kernel.servlet.PersistentHttpServletRequestWrapper;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author Dante Wang

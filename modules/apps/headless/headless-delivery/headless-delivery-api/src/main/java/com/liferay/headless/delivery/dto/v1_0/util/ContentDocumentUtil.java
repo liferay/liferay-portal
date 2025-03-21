@@ -9,7 +9,7 @@ import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.headless.delivery.dto.v1_0.ContentDocument;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra

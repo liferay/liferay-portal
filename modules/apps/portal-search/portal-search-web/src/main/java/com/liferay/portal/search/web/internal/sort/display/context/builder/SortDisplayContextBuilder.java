@@ -18,12 +18,12 @@ import com.liferay.portal.search.web.internal.sort.display.context.SortDisplayCo
 import com.liferay.portal.search.web.internal.sort.display.context.SortTermDisplayContext;
 import com.liferay.portal.search.web.internal.sort.portlet.SortPortletPreferences;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Wade Cao

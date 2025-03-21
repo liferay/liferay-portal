@@ -16,7 +16,7 @@ import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portlet.asset.model.impl.AssetEntryImpl;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Di Giorgi
  */
 @Component(
-	property = "javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
+	property = "jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
 	service = AssetRendererFactory.class
 )
 public class CommerceOrderAssetRendererFactory

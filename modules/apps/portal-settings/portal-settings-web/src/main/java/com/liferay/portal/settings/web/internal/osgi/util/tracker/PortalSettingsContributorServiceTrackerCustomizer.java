@@ -116,7 +116,7 @@ public class PortalSettingsContributorServiceTrackerCustomizer
 		return _bundleContext.registerService(
 			MVCActionCommand.class, mvcActionCommand,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.name",
+				"jakarta.portlet.name",
 				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
 			).put(
 				"mvc.command.name", mvcActionCommandName

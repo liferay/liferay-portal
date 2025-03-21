@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.servlet.PortalSessionContext;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Time;
 
-import java.util.Collection;
+import jakarta.servlet.http.HttpSession;
 
-import javax.servlet.http.HttpSession;
+import java.util.Collection;
 
 /**
  * @author Alexander Chow

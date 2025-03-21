@@ -16,7 +16,7 @@ import com.liferay.translation.model.TranslationEntry;
 import com.liferay.translation.service.TranslationEntryLocalService;
 import com.liferay.translation.snapshot.TranslationSnapshotProvider;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Adolfo Pérez
  */
 @Component(
-	property = "javax.portlet.name=" + TranslationPortletKeys.TRANSLATION,
+	property = "jakarta.portlet.name=" + TranslationPortletKeys.TRANSLATION,
 	service = AssetRendererFactory.class
 )
 public class TranslationEntryAssetRendererFactory

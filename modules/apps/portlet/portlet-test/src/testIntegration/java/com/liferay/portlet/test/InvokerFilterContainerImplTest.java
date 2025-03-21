@@ -20,16 +20,16 @@ import com.liferay.portal.model.impl.PortletImpl;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.filter.ActionFilter;
+import jakarta.portlet.filter.EventFilter;
+import jakarta.portlet.filter.PortletFilter;
+import jakarta.portlet.filter.RenderFilter;
+import jakarta.portlet.filter.ResourceFilter;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletException;
-import javax.portlet.filter.ActionFilter;
-import javax.portlet.filter.EventFilter;
-import javax.portlet.filter.PortletFilter;
-import javax.portlet.filter.RenderFilter;
-import javax.portlet.filter.ResourceFilter;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -205,7 +205,7 @@ public class InvokerFilterContainerImplTest {
 		_serviceRegistration = _bundleContext.registerService(
 			PortletFilter.class, portletFilter,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.name", "InvokerFilterContainerImplTest"
+				"jakarta.portlet.name", "InvokerFilterContainerImplTest"
 			).put(
 				"preinitialized.filter", Boolean.valueOf(preinitialized)
 			).put(

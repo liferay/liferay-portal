@@ -8,8 +8,8 @@ package com.liferay.headless.commerce.admin.inventory.internal.jaxrs.exception.m
 import com.liferay.commerce.product.exception.CPInstanceUnitOfMeasureKeyException;
 import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.osgi.service.component.annotations.Component;
 

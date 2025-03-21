@@ -9,6 +9,8 @@ import com.liferay.portal.ccpp.PortalProfileFactory;
 
 import com.sun.ccpp.ProfileFactoryImpl;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Set;
 
 import javax.ccpp.Attribute;
@@ -16,8 +18,6 @@ import javax.ccpp.Profile;
 import javax.ccpp.ProfileDescription;
 import javax.ccpp.ProfileFactory;
 import javax.ccpp.ValidationMode;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 

@@ -27,11 +27,11 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.scim.rest.internal.provider.ScimClientBearerTokenProvider;
 import com.liferay.scim.rest.util.ScimClientUtil;
 
+import jakarta.ws.rs.core.Application;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-
-import javax.ws.rs.core.Application;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

@@ -65,15 +65,15 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.ActionRequestFactory;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.Event;
+import jakarta.portlet.Portlet;
+
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.Event;
-import javax.portlet.Portlet;
 
 import org.junit.Assert;
 import org.junit.Before;

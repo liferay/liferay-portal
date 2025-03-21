@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Matthew Kong
  */
 @Component(
-	property = "javax.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS,
+	property = "jakarta.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS,
 	service = AssetRendererFactory.class
 )
 public class MicroblogsEntryAssetRendererFactory

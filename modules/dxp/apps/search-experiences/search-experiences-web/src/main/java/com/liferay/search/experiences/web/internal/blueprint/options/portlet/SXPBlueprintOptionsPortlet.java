@@ -16,12 +16,12 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
-import java.io.IOException;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -37,12 +37,12 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.display-category=category.search",
 		"com.liferay.portlet.header-portlet-css=/sxp_blueprint_options/css/main.css",
 		"com.liferay.portlet.instanceable=true",
-		"javax.portlet.init-param.template-path=/META-INF/resources/sxp_blueprint_options/",
-		"javax.portlet.init-param.view-template=/sxp_blueprint_options/view.jsp",
-		"javax.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_OPTIONS,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/sxp_blueprint_options/",
+		"jakarta.portlet.init-param.view-template=/sxp_blueprint_options/view.jsp",
+		"jakarta.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_OPTIONS,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

@@ -8,7 +8,7 @@ package com.liferay.commerce.dashboard.web.internal.portlet;
 import com.liferay.commerce.dashboard.web.internal.constants.CommerceDashboardPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -28,13 +28,13 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.private-request-attributes=false",
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
-		"javax.portlet.display-name=Commerce Dashboard History Chart",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.view-template=/history.jsp",
-		"javax.portlet.name=" + CommerceDashboardPortletKeys.COMMERCE_DASHBOARD_HISTORY_CHART,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Commerce Dashboard History Chart",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.view-template=/history.jsp",
+		"jakarta.portlet.name=" + CommerceDashboardPortletKeys.COMMERCE_DASHBOARD_HISTORY_CHART,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

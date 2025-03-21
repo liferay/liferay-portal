@@ -28,18 +28,18 @@ import com.liferay.translation.snapshot.TranslationSnapshotProvider;
 import com.liferay.translation.web.internal.display.context.ViewTranslationDisplayContext;
 import com.liferay.translation.web.internal.helper.InfoItemHelper;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.ByteArrayInputStream;
 
 import java.nio.charset.StandardCharsets;
 
 import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Adolfo Pérez

@@ -14,7 +14,7 @@ import com.liferay.object.web.internal.object.entries.display.context.ObjectEntr
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.junit.Assert;
 import org.junit.Before;

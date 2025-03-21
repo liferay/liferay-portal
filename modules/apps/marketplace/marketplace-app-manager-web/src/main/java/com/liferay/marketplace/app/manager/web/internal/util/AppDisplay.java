@@ -5,11 +5,11 @@
 
 package com.liferay.marketplace.app.manager.web.internal.util;
 
+import jakarta.portlet.MimeResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
-
-import javax.portlet.MimeResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.Bundle;
 

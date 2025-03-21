@@ -13,7 +13,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.portlet.PortletException;
+import jakarta.portlet.PortletException;
 
 /**
  * @author Eudaldo Alonso

@@ -188,7 +188,7 @@ public class AssetPublisherUserNotificationTest {
 	}
 
 	private void _updatePortletPreferences() throws Exception {
-		javax.portlet.PortletPreferences portletPreferences =
+		jakarta.portlet.PortletPreferences portletPreferences =
 			LayoutTestUtil.getPortletPreferences(_layout, _portletId);
 
 		portletPreferences.setValue(

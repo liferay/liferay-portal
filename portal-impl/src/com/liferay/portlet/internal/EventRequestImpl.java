@@ -7,8 +7,8 @@ package com.liferay.portlet.internal;
 
 import com.liferay.portal.kernel.portlet.LiferayEventRequest;
 
-import javax.portlet.Event;
-import javax.portlet.PortletRequest;
+import jakarta.portlet.Event;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Brian Wing Shun Chan

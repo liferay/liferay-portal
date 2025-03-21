@@ -72,7 +72,7 @@ public class FriendlyURLMapperTrackerImpl implements FriendlyURLMapperTracker {
 			_bundleContext.registerService(
 				FriendlyURLMapper.class, friendlyURLMapper,
 				MapUtil.singletonDictionary(
-					"javax.portlet.name", _portlet.getPortletId()));
+					"jakarta.portlet.name", _portlet.getPortletId()));
 
 		_serviceRegistrations.put(friendlyURLMapper, serviceRegistration);
 	}
@@ -134,14 +134,14 @@ public class FriendlyURLMapperTrackerImpl implements FriendlyURLMapperTracker {
 
 		if (portletId.equals(_portlet.getPortletName())) {
 			filterString = StringBundler.concat(
-				"(&(javax.portlet.name=", portletId, ")(objectClass=",
+				"(&(jakarta.portlet.name=", portletId, ")(objectClass=",
 				FriendlyURLMapper.class.getName(), "))");
 		}
 		else {
 			filterString = StringBundler.concat(
-				"(&(|(javax.portlet.name=", portletId, ")(javax.portlet.name=",
-				_portlet.getPortletName(), "))(objectClass=",
-				FriendlyURLMapper.class.getName(), "))");
+				"(&(|(jakarta.portlet.name=", portletId,
+				")(jakarta.portlet.name=", _portlet.getPortletName(),
+				"))(objectClass=", FriendlyURLMapper.class.getName(), "))");
 		}
 
 		ServiceTracker<FriendlyURLMapper, FriendlyURLMapper> serviceTracker =

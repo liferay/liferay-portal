@@ -19,9 +19,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.Locale;
+import jakarta.portlet.PortletRequest;
 
-import javax.portlet.PortletRequest;
+import java.util.Locale;
 
 import org.apache.http.client.utils.URIBuilder;
 
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marcos Martins
  */
 @Component(
-	property = "javax.portlet.name=" + PortletKeys.RECOMMENDATIONS,
+	property = "jakarta.portlet.name=" + PortletKeys.RECOMMENDATIONS,
 	service = UserNotificationHandler.class
 )
 public class RecommendationNotificationHandler

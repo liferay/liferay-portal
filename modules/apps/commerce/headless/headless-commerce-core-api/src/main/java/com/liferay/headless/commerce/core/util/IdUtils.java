@@ -8,11 +8,11 @@ package com.liferay.headless.commerce.core.util;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.core.Response;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
-
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.core.Response;
 
 /**
  * @author Zoltán Takács

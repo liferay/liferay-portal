@@ -5,7 +5,7 @@
 
 package com.liferay.portal.remote.soap.extender.test;
 
-import javax.jws.WebService;
+import jakarta.jws.WebService;
 
 /**
  * @author Carlos Sierra Andrés

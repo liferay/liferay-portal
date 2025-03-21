@@ -49,7 +49,7 @@ public class PortletPreferencesServiceWrapper
 	public void restoreArchivedPreferences(
 			long groupId, com.liferay.portal.kernel.model.Layout layout,
 			String portletId, long portletItemId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_portletPreferencesService.restoreArchivedPreferences(
@@ -61,7 +61,7 @@ public class PortletPreferencesServiceWrapper
 			long groupId, com.liferay.portal.kernel.model.Layout layout,
 			String portletId,
 			com.liferay.portal.kernel.model.PortletItem portletItem,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_portletPreferencesService.restoreArchivedPreferences(
@@ -72,7 +72,7 @@ public class PortletPreferencesServiceWrapper
 	public void restoreArchivedPreferences(
 			long groupId, String name,
 			com.liferay.portal.kernel.model.Layout layout, String portletId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_portletPreferencesService.restoreArchivedPreferences(
@@ -82,7 +82,7 @@ public class PortletPreferencesServiceWrapper
 	@Override
 	public void updateArchivePreferences(
 			long userId, long groupId, String name, String portletId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_portletPreferencesService.updateArchivePreferences(

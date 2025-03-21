@@ -168,7 +168,7 @@ public class JournalPortletDataHandlerTest
 		return JournalPortletKeys.JOURNAL;
 	}
 
-	@Inject(filter = "javax.portlet.name=" + JournalPortletKeys.JOURNAL)
+	@Inject(filter = "jakarta.portlet.name=" + JournalPortletKeys.JOURNAL)
 	private PortletDataHandler _journalPortletDataHandler;
 
 	private String _originalPortalPreferencesXML;

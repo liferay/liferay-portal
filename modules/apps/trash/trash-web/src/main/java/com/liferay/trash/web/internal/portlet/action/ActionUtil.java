@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.trash.model.TrashEntry;
 import com.liferay.trash.service.TrashEntryLocalServiceUtil;
 
+import jakarta.portlet.ResourceRequest;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.ResourceRequest;
 
 /**
  * Provides a utility method to get Recycle Bin entries by row IDs from the

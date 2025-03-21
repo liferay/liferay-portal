@@ -14,7 +14,7 @@ import com.liferay.rss.constants.RSSPortletKeys;
 import com.liferay.rss.web.internal.configuration.RSSPortletInstanceConfiguration;
 import com.liferay.rss.web.internal.configuration.RSSWebCacheConfiguration;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

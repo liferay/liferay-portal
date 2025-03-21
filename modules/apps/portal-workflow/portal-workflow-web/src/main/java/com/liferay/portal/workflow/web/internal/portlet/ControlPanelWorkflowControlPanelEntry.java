@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Adam Brandizzi
  */
 @Component(
-	property = "javax.portlet.name=" + WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW,
+	property = "jakarta.portlet.name=" + WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW,
 	service = ControlPanelEntry.class
 )
 public class ControlPanelWorkflowControlPanelEntry

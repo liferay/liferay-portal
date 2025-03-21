@@ -37,7 +37,7 @@ public class TranslationPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + TranslationPortletKeys.TRANSLATION + ")"
+		target = "(jakarta.portlet.name=" + TranslationPortletKeys.TRANSLATION + ")"
 	)
 	private Portlet _portlet;
 

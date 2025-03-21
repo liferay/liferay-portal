@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Daniel Sanz
  */
 @Component(
-	property = "javax.portlet.name=" + LicenseManagerPortletKeys.LICENSE_MANAGER,
+	property = "jakarta.portlet.name=" + LicenseManagerPortletKeys.LICENSE_MANAGER,
 	service = ControlPanelEntry.class
 )
 public class LicenseManagerControlPanelEntry

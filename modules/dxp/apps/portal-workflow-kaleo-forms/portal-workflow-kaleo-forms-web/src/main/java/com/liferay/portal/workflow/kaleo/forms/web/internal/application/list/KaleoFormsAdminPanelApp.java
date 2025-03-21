@@ -37,7 +37,7 @@ public class KaleoFormsAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.service.access.policy.constants.SAPActionKeys;
 import com.liferay.portal.security.service.access.policy.web.internal.security.permission.resource.SAPPermission;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

@@ -21,6 +21,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portlet.StrutsResourceBundle;
 
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -32,10 +36,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
 
 import javax.xml.namespace.QName;
 

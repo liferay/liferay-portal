@@ -41,9 +41,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 
-import java.util.Dictionary;
+import jakarta.portlet.PortletException;
 
-import javax.portlet.PortletException;
+import java.util.Dictionary;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

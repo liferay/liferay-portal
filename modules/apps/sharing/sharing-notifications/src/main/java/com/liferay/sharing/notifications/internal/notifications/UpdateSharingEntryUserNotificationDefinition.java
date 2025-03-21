@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alejandro Tardín
  */
 @Component(
-	property = "javax.portlet.name=" + SharingPortletKeys.SHARING,
+	property = "jakarta.portlet.name=" + SharingPortletKeys.SHARING,
 	service = UserNotificationDefinition.class
 )
 public class UpdateSharingEntryUserNotificationDefinition

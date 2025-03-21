@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.osgi.web.servlet.JSPServletFactory;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.servlet.Servlet;
+
 import java.io.File;
 
 import java.lang.reflect.Method;
@@ -28,8 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-
-import javax.servlet.Servlet;
 
 import org.apache.jasper.compiler.Compiler;
 

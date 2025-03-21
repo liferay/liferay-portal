@@ -21,12 +21,12 @@ import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.service.base.PortletPreferencesServiceBaseImpl;
 
+import jakarta.portlet.ReadOnlyException;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 
 import java.util.Map;
-
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
 
 /**
  * @author Jorge Ferrer
@@ -59,7 +59,7 @@ public class PortletPreferencesServiceImpl
 	@Override
 	public void restoreArchivedPreferences(
 			long groupId, Layout layout, String portletId, long portletItemId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException {
 
 		restoreArchivedPreferences(
@@ -72,7 +72,7 @@ public class PortletPreferencesServiceImpl
 	public void restoreArchivedPreferences(
 			long groupId, Layout layout, String portletId,
 			PortletItem portletItem,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException {
 
 		PortletPermissionUtil.check(
@@ -83,7 +83,7 @@ public class PortletPreferencesServiceImpl
 		int ownerType = PortletKeys.PREFS_OWNER_TYPE_ARCHIVED;
 		long plid = 0;
 
-		javax.portlet.PortletPreferences archivedJxPortletPreferences =
+		jakarta.portlet.PortletPreferences archivedJxPortletPreferences =
 			portletPreferencesLocalService.getPreferences(
 				portletItem.getCompanyId(), ownerId, ownerType, plid,
 				PortletIdCodec.decodePortletName(portletId));
@@ -94,7 +94,7 @@ public class PortletPreferencesServiceImpl
 	@Override
 	public void restoreArchivedPreferences(
 			long groupId, String name, Layout layout, String portletId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException {
 
 		PortletItem portletItem = _portletItemLocalService.getPortletItem(
@@ -107,7 +107,7 @@ public class PortletPreferencesServiceImpl
 	@Override
 	public void updateArchivePreferences(
 			long userId, long groupId, String name, String portletId,
-			javax.portlet.PortletPreferences jxPortletPreferences)
+			jakarta.portlet.PortletPreferences jxPortletPreferences)
 		throws PortalException {
 
 		PortletPermissionUtil.check(
@@ -123,7 +123,7 @@ public class PortletPreferencesServiceImpl
 		int ownerType = PortletKeys.PREFS_OWNER_TYPE_ARCHIVED;
 		long plid = 0;
 
-		javax.portlet.PortletPreferences archivedJxPortletPreferences =
+		jakarta.portlet.PortletPreferences archivedJxPortletPreferences =
 			portletPreferencesLocalService.getPreferences(
 				portletItem.getCompanyId(), ownerId, ownerType, plid,
 				portletId);
@@ -132,8 +132,8 @@ public class PortletPreferencesServiceImpl
 	}
 
 	protected void copyPreferences(
-		javax.portlet.PortletPreferences sourceJxPortletPreferences,
-		javax.portlet.PortletPreferences targetJxPortletPreferences) {
+		jakarta.portlet.PortletPreferences sourceJxPortletPreferences,
+		jakarta.portlet.PortletPreferences targetJxPortletPreferences) {
 
 		try {
 			Map<String, String[]> targetJxPortletPreferencesMap =

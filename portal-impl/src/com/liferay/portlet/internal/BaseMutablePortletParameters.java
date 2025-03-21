@@ -7,12 +7,12 @@ package com.liferay.portlet.internal;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import jakarta.portlet.MutablePortletParameters;
+import jakarta.portlet.PortletParameters;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-
-import javax.portlet.MutablePortletParameters;
-import javax.portlet.PortletParameters;
 
 /**
  * @author Neil Griffin

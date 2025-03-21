@@ -5,7 +5,7 @@
 
 package com.liferay.portal.servlet.filters.weblogic;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Shuyang Zhou

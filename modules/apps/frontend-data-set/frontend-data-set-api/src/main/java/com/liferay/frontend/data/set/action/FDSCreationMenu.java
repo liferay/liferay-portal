@@ -8,7 +8,7 @@ package com.liferay.frontend.data.set.action;
 import com.liferay.frontend.data.set.FDSEntryItemImportPolicy;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Daniel Sanz

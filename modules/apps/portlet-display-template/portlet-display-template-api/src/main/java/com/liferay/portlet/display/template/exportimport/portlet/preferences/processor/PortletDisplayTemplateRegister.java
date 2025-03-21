@@ -7,7 +7,7 @@ package com.liferay.portlet.display.template.exportimport.portlet.preferences.pr
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Lance Ji

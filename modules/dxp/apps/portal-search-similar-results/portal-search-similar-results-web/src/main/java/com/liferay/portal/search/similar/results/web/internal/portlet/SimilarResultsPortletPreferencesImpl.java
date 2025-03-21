@@ -8,7 +8,7 @@ package com.liferay.portal.search.similar.results.web.internal.portlet;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.search.similar.results.web.internal.helper.PortletPreferencesHelper;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Wade Cao

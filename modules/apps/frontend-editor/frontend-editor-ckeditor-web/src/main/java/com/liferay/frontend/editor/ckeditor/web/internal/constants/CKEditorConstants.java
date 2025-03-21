@@ -12,7 +12,7 @@ public class CKEditorConstants {
 
 	/**
 	 * The namespace prefix added to the taglib attributes when they are put in
-	 * the {@link javax.servlet.http.HttpServletRequest}.
+	 * the {@link jakarta.servlet.http.HttpServletRequest}.
 	 *
 	 * <p>
 	 * Do not change this value unless you stop implementing the legacy {@link

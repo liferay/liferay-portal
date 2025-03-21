@@ -51,7 +51,7 @@ public class DepotSettingsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + DepotPortletKeys.DEPOT_SETTINGS + ")"
+		target = "(jakarta.portlet.name=" + DepotPortletKeys.DEPOT_SETTINGS + ")"
 	)
 	private Portlet _portlet;
 

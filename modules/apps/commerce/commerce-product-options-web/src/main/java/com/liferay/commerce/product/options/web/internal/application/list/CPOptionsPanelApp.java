@@ -36,7 +36,9 @@ public class CPOptionsPanelApp extends BasePanelApp {
 		return CPPortletKeys.CP_OPTIONS;
 	}
 
-	@Reference(target = "(javax.portlet.name=" + CPPortletKeys.CP_OPTIONS + ")")
+	@Reference(
+		target = "(jakarta.portlet.name=" + CPPortletKeys.CP_OPTIONS + ")"
+	)
 	private Portlet _portlet;
 
 }

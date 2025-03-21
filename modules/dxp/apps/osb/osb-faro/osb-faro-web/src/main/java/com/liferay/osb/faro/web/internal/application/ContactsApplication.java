@@ -22,11 +22,11 @@ import com.liferay.osb.faro.web.internal.controller.contacts.InterestController;
 import com.liferay.osb.faro.web.internal.controller.contacts.PagesVisitedController;
 import com.liferay.osb.faro.web.internal.controller.contacts.SessionController;
 
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

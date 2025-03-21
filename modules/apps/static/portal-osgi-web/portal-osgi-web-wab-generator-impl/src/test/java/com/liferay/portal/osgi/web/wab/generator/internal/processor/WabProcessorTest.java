@@ -157,9 +157,9 @@ public class WabProcessorTest {
 
 			// Check basic servlet and jsp packages are imported
 
-			Assert.assertTrue(importedPackages.containsKey("javax.servlet"));
+			Assert.assertTrue(importedPackages.containsKey("jakarta.servlet"));
 			Assert.assertTrue(
-				importedPackages.containsKey("javax.servlet.http"));
+				importedPackages.containsKey("jakarta.servlet.http"));
 
 			// Check if packages declared in portal property
 			// module.framework.web.generator.default.servlet.packages are

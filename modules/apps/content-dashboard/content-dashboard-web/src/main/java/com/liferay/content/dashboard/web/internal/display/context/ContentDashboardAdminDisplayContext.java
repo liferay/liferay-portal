@@ -54,6 +54,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.users.admin.item.selector.UserItemSelectorCriterion;
 
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.ResourceURL;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -70,9 +73,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import javax.portlet.ActionURL;
-import javax.portlet.ResourceURL;
 
 /**
  * @author Cristina González

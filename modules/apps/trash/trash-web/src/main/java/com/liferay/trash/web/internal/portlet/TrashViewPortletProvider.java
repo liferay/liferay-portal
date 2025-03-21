@@ -18,10 +18,10 @@ import com.liferay.trash.TrashHelper;
 import com.liferay.trash.constants.TrashPortletKeys;
 import com.liferay.trash.model.TrashEntry;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  * Provides an implementation of <code>ViewPortletProvider</code> (in
  * <code>com.liferay.portal.kernel</code>) for the Recycle Bin portlet. This
  * implementation is aimed to generate instances of <code>PortletURL</code> (in
- * <code>javax.portlet</code> entities to provide URLs to view Recycle Bin
+ * <code>jakarta.portlet</code> entities to provide URLs to view Recycle Bin
  * entries.
  *
  * @author Eudaldo Alonso

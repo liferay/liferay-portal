@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PropsUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.File;
 
 import java.util.ArrayList;
@@ -27,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Future;
-
-import javax.portlet.PortletPreferences;
 
 import org.im4java.process.ArrayListOutputConsumer;
 import org.im4java.process.ProcessEvent;

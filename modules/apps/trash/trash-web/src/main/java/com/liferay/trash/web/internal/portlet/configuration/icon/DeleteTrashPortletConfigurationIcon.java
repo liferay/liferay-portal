@@ -18,8 +18,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.trash.constants.TrashPortletKeys;
 import com.liferay.trash.web.internal.display.context.TrashDisplayContext;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,7 +29,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + TrashPortletKeys.TRASH, "path=/view_content.jsp"
+		"jakarta.portlet.name=" + TrashPortletKeys.TRASH,
+		"path=/view_content.jsp"
 	},
 	service = PortletConfigurationIcon.class
 )

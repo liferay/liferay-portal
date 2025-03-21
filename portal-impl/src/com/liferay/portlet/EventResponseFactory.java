@@ -11,12 +11,12 @@ import com.liferay.portal.kernel.portlet.LiferayEventResponse;
 import com.liferay.portlet.internal.EventRequestImpl;
 import com.liferay.portlet.internal.EventResponseImpl;
 
-import javax.portlet.EventRequest;
-import javax.portlet.PortletModeException;
-import javax.portlet.WindowStateException;
-import javax.portlet.filter.EventRequestWrapper;
+import jakarta.portlet.EventRequest;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.WindowStateException;
+import jakarta.portlet.filter.EventRequestWrapper;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

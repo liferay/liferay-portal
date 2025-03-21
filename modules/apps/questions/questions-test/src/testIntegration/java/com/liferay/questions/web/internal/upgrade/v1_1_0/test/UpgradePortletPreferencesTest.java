@@ -34,10 +34,10 @@ import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.questions.web.internal.constants.QuestionsPortletKeys;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Collections;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;

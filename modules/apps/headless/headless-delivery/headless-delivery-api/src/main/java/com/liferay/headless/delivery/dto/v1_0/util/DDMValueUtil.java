@@ -40,6 +40,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.ws.rs.BadRequestException;
+
 import java.text.ParseException;
 
 import java.util.ArrayList;
@@ -49,8 +51,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
-
-import javax.ws.rs.BadRequestException;
 
 /**
  * @author Víctor Galán

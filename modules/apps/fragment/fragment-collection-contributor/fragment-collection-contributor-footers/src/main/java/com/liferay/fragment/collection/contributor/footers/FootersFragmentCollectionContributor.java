@@ -9,9 +9,9 @@ import com.liferay.fragment.contributor.BaseFragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.site.navigation.constants.SiteNavigationMenuPortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -37,7 +37,7 @@ public class FootersFragmentCollectionContributor
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + SiteNavigationMenuPortletKeys.SITE_NAVIGATION_MENU + ")"
+		target = "(jakarta.portlet.name=" + SiteNavigationMenuPortletKeys.SITE_NAVIGATION_MENU + ")"
 	)
 	private Portlet _portlet;
 

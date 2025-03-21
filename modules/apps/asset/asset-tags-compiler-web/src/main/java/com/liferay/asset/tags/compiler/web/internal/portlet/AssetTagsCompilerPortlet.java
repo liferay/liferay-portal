@@ -9,7 +9,7 @@ import com.liferay.asset.tags.compiler.web.internal.constants.AssetTagsCompilerP
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,14 +29,14 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.show-portlet-inactive=false",
 		"com.liferay.portlet.system=true",
 		"com.liferay.portlet.use-default-template=false",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.info.keywords=Tags Compiler",
-		"javax.portlet.info.short-title=Tags Compiler",
-		"javax.portlet.info.title=Tags Compiler",
-		"javax.portlet.name=" + AssetTagsCompilerPortletKeys.ASSET_TAGS_COMPILER,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.supported-public-render-parameter=tags",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.info.keywords=Tags Compiler",
+		"jakarta.portlet.info.short-title=Tags Compiler",
+		"jakarta.portlet.info.title=Tags Compiler",
+		"jakarta.portlet.name=" + AssetTagsCompilerPortletKeys.ASSET_TAGS_COMPILER,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.supported-public-render-parameter=tags",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

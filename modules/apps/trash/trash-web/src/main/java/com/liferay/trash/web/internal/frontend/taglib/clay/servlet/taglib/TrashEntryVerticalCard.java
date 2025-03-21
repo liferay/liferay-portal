@@ -20,10 +20,10 @@ import com.liferay.trash.model.TrashEntry;
 import com.liferay.trash.web.internal.servlet.taglib.util.TrashEntryActionDropdownItemsProvider;
 import com.liferay.trash.web.internal.servlet.taglib.util.TrashViewContentActionDropdownItemsProvider;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.Collections;
 import java.util.List;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Pavel Savinov

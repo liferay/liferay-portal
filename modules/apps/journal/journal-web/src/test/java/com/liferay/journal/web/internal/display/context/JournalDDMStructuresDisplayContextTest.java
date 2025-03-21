@@ -20,9 +20,9 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portlet.PortalPreferencesImpl;
 import com.liferay.portletmvc4spring.test.mock.web.portlet.MockRenderRequest;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;

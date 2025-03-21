@@ -76,12 +76,12 @@ public class JSR330InjectedFieldElement
 
 				String name = annotationType.getName();
 
-				if (name.equals("javax.ws.rs.CookieParam") ||
-					name.equals("javax.ws.rs.FormParam") ||
-					name.equals("javax.ws.rs.HeaderParam") ||
-					name.equals("javax.ws.rs.MatrixParam") ||
-					name.equals("javax.ws.rs.PathParam") ||
-					name.equals("javax.ws.rs.QueryParam")) {
+				if (name.equals("jakarta.ws.rs.CookieParam") ||
+					name.equals("jakarta.ws.rs.FormParam") ||
+					name.equals("jakarta.ws.rs.HeaderParam") ||
+					name.equals("jakarta.ws.rs.MatrixParam") ||
+					name.equals("jakarta.ws.rs.PathParam") ||
+					name.equals("jakarta.ws.rs.QueryParam")) {
 
 					nullInjectionPermitted = true;
 

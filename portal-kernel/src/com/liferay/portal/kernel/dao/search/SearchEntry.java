@@ -7,10 +7,10 @@ package com.liferay.portal.kernel.dao.search;
 
 import com.liferay.petra.string.StringPool;
 
-import java.io.Writer;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.Writer;
 
 /**
  * @author Raymond Augé

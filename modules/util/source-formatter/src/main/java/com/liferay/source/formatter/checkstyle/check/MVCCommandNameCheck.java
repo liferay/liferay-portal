@@ -293,7 +293,7 @@ public class MVCCommandNameCheck extends BaseCheck {
 		for (DetailAST stringLiteralDetailAST : stringLiteralDetailASTList) {
 			if (!Objects.equals(
 					stringLiteralDetailAST.getText(),
-					"\"javax.portlet.name=\"")) {
+					"\"jakarta.portlet.name=\"")) {
 
 				continue;
 			}

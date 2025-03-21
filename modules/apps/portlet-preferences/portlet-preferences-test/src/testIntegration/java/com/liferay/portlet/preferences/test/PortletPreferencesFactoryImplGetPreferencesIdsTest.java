@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -206,7 +206,7 @@ public class PortletPreferencesFactoryImplGetPreferencesIdsTest {
 			HashMapDictionaryBuilder.<String, Object>put(
 				"com.liferay.portlet.preferences-company-wide", "true"
 			).put(
-				"javax.portlet.name", _TEST_COMPANY_PORTLET_NAME
+				"jakarta.portlet.name", _TEST_COMPANY_PORTLET_NAME
 			).build());
 	}
 
@@ -224,7 +224,7 @@ public class PortletPreferencesFactoryImplGetPreferencesIdsTest {
 				"com.liferay.portlet.preferences-unique-per-layout",
 				Boolean.valueOf(uniquePerLayout)
 			).put(
-				"javax.portlet.name", portletName
+				"jakarta.portlet.name", portletName
 			).build());
 	}
 

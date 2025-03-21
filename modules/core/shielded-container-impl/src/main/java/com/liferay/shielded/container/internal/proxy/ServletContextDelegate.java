@@ -5,6 +5,13 @@
 
 package com.liferay.shielded.container.internal.proxy;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.http.HttpSessionListener;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 
@@ -15,13 +22,6 @@ import java.util.EventListener;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
-import javax.servlet.http.HttpSessionListener;
 
 /**
  * @author Shuyang Zhou

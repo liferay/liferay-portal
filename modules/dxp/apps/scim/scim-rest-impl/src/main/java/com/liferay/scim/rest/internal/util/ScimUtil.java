@@ -38,6 +38,8 @@ import com.liferay.scim.rest.dto.v1_0.PatchOp;
 import com.liferay.scim.rest.internal.configuration.ScimClientOAuth2ApplicationConfiguration;
 import com.liferay.scim.rest.internal.model.ScimUser;
 
+import jakarta.ws.rs.core.Response;
+
 import java.io.File;
 
 import java.text.DateFormat;
@@ -49,8 +51,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.ws.rs.core.Response;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;

@@ -14,98 +14,98 @@ public class ParamUtil_IW {
 	}
 
 	public boolean get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, boolean defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
 	public java.util.Date get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat,
 		java.util.Date defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, dateFormat, defaultValue);
 	}
 
 	public double get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, double defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
-	public float get(javax.servlet.http.HttpServletRequest httpServletRequest,
+	public float get(jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, float defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
-	public int get(javax.servlet.http.HttpServletRequest httpServletRequest,
+	public int get(jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, int defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
-	public long get(javax.servlet.http.HttpServletRequest httpServletRequest,
+	public long get(jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, long defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
 	public java.lang.Number get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.Number defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
-	public short get(javax.servlet.http.HttpServletRequest httpServletRequest,
+	public short get(jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, short defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
 	public java.lang.String get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.String defaultValue) {
 		return ParamUtil.get(httpServletRequest, param, defaultValue);
 	}
 
-	public boolean get(javax.portlet.PortletRequest portletRequest,
+	public boolean get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, boolean defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
 
-	public java.util.Date get(javax.portlet.PortletRequest portletRequest,
+	public java.util.Date get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat,
 		java.util.Date defaultValue) {
 		return ParamUtil.get(portletRequest, param, dateFormat, defaultValue);
 	}
 
-	public double get(javax.portlet.PortletRequest portletRequest,
+	public double get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, double defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
 
-	public float get(javax.portlet.PortletRequest portletRequest,
+	public float get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, float defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
 
-	public int get(javax.portlet.PortletRequest portletRequest,
+	public int get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, int defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
 
-	public long get(javax.portlet.PortletRequest portletRequest,
+	public long get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, long defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
 
-	public java.lang.Number get(javax.portlet.PortletRequest portletRequest,
+	public java.lang.Number get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, java.lang.Number defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
 
-	public short get(javax.portlet.PortletRequest portletRequest,
+	public short get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, short defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
 
-	public java.lang.String get(javax.portlet.PortletRequest portletRequest,
+	public java.lang.String get(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, java.lang.String defaultValue) {
 		return ParamUtil.get(portletRequest, param, defaultValue);
 	}
@@ -166,23 +166,23 @@ public class ParamUtil_IW {
 	}
 
 	public boolean getBoolean(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getBoolean(httpServletRequest, param);
 	}
 
 	public boolean getBoolean(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, boolean defaultValue) {
 		return ParamUtil.getBoolean(httpServletRequest, param, defaultValue);
 	}
 
-	public boolean getBoolean(javax.portlet.PortletRequest portletRequest,
+	public boolean getBoolean(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getBoolean(portletRequest, param);
 	}
 
-	public boolean getBoolean(javax.portlet.PortletRequest portletRequest,
+	public boolean getBoolean(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, boolean defaultValue) {
 		return ParamUtil.getBoolean(portletRequest, param, defaultValue);
 	}
@@ -200,25 +200,25 @@ public class ParamUtil_IW {
 	}
 
 	public boolean[] getBooleanValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getBooleanValues(httpServletRequest, param);
 	}
 
 	public boolean[] getBooleanValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, boolean[] defaultValue) {
 		return ParamUtil.getBooleanValues(httpServletRequest, param,
 			defaultValue);
 	}
 
 	public boolean[] getBooleanValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param) {
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param) {
 		return ParamUtil.getBooleanValues(portletRequest, param);
 	}
 
 	public boolean[] getBooleanValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		boolean[] defaultValue) {
 		return ParamUtil.getBooleanValues(portletRequest, param, defaultValue);
 	}
@@ -236,25 +236,25 @@ public class ParamUtil_IW {
 	}
 
 	public java.util.Date getDate(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat) {
 		return ParamUtil.getDate(httpServletRequest, param, dateFormat);
 	}
 
 	public java.util.Date getDate(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat,
 		java.util.Date defaultValue) {
 		return ParamUtil.getDate(httpServletRequest, param, dateFormat,
 			defaultValue);
 	}
 
-	public java.util.Date getDate(javax.portlet.PortletRequest portletRequest,
+	public java.util.Date getDate(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat) {
 		return ParamUtil.getDate(portletRequest, param, dateFormat);
 	}
 
-	public java.util.Date getDate(javax.portlet.PortletRequest portletRequest,
+	public java.util.Date getDate(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat,
 		java.util.Date defaultValue) {
 		return ParamUtil.getDate(portletRequest, param, dateFormat, defaultValue);
@@ -274,13 +274,13 @@ public class ParamUtil_IW {
 	}
 
 	public java.util.Date[] getDateValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat) {
 		return ParamUtil.getDateValues(httpServletRequest, param, dateFormat);
 	}
 
 	public java.util.Date[] getDateValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.text.DateFormat dateFormat,
 		java.util.Date[] defaultValue) {
 		return ParamUtil.getDateValues(httpServletRequest, param, dateFormat,
@@ -288,13 +288,13 @@ public class ParamUtil_IW {
 	}
 
 	public java.util.Date[] getDateValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.text.DateFormat dateFormat) {
 		return ParamUtil.getDateValues(portletRequest, param, dateFormat);
 	}
 
 	public java.util.Date[] getDateValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.text.DateFormat dateFormat, java.util.Date[] defaultValue) {
 		return ParamUtil.getDateValues(portletRequest, param, dateFormat,
 			defaultValue);
@@ -315,46 +315,46 @@ public class ParamUtil_IW {
 	}
 
 	public double getDouble(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getDouble(httpServletRequest, param);
 	}
 
 	public double getDouble(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, double defaultValue) {
 		return ParamUtil.getDouble(httpServletRequest, param, defaultValue);
 	}
 
 	public double getDouble(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, double defaultValue, java.util.Locale locale) {
 		return ParamUtil.getDouble(httpServletRequest, param, defaultValue,
 			locale);
 	}
 
 	public double getDouble(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.util.Locale locale) {
 		return ParamUtil.getDouble(httpServletRequest, param, locale);
 	}
 
-	public double getDouble(javax.portlet.PortletRequest portletRequest,
+	public double getDouble(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getDouble(portletRequest, param);
 	}
 
-	public double getDouble(javax.portlet.PortletRequest portletRequest,
+	public double getDouble(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, double defaultValue) {
 		return ParamUtil.getDouble(portletRequest, param, defaultValue);
 	}
 
-	public double getDouble(javax.portlet.PortletRequest portletRequest,
+	public double getDouble(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, double defaultValue, java.util.Locale locale) {
 		return ParamUtil.getDouble(portletRequest, param, defaultValue, locale);
 	}
 
-	public double getDouble(javax.portlet.PortletRequest portletRequest,
+	public double getDouble(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, java.util.Locale locale) {
 		return ParamUtil.getDouble(portletRequest, param, locale);
 	}
@@ -372,24 +372,24 @@ public class ParamUtil_IW {
 	}
 
 	public double[] getDoubleValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getDoubleValues(httpServletRequest, param);
 	}
 
 	public double[] getDoubleValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, double[] defaultValue) {
 		return ParamUtil.getDoubleValues(httpServletRequest, param, defaultValue);
 	}
 
 	public double[] getDoubleValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param) {
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param) {
 		return ParamUtil.getDoubleValues(portletRequest, param);
 	}
 
 	public double[] getDoubleValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		double[] defaultValue) {
 		return ParamUtil.getDoubleValues(portletRequest, param, defaultValue);
 	}
@@ -407,23 +407,23 @@ public class ParamUtil_IW {
 	}
 
 	public float getFloat(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getFloat(httpServletRequest, param);
 	}
 
 	public float getFloat(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, float defaultValue) {
 		return ParamUtil.getFloat(httpServletRequest, param, defaultValue);
 	}
 
-	public float getFloat(javax.portlet.PortletRequest portletRequest,
+	public float getFloat(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getFloat(portletRequest, param);
 	}
 
-	public float getFloat(javax.portlet.PortletRequest portletRequest,
+	public float getFloat(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, float defaultValue) {
 		return ParamUtil.getFloat(portletRequest, param, defaultValue);
 	}
@@ -441,23 +441,23 @@ public class ParamUtil_IW {
 	}
 
 	public float[] getFloatValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getFloatValues(httpServletRequest, param);
 	}
 
 	public float[] getFloatValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, float[] defaultValue) {
 		return ParamUtil.getFloatValues(httpServletRequest, param, defaultValue);
 	}
 
-	public float[] getFloatValues(javax.portlet.PortletRequest portletRequest,
+	public float[] getFloatValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getFloatValues(portletRequest, param);
 	}
 
-	public float[] getFloatValues(javax.portlet.PortletRequest portletRequest,
+	public float[] getFloatValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, float[] defaultValue) {
 		return ParamUtil.getFloatValues(portletRequest, param, defaultValue);
 	}
@@ -475,23 +475,23 @@ public class ParamUtil_IW {
 	}
 
 	public int getInteger(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getInteger(httpServletRequest, param);
 	}
 
 	public int getInteger(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, int defaultValue) {
 		return ParamUtil.getInteger(httpServletRequest, param, defaultValue);
 	}
 
-	public int getInteger(javax.portlet.PortletRequest portletRequest,
+	public int getInteger(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getInteger(portletRequest, param);
 	}
 
-	public int getInteger(javax.portlet.PortletRequest portletRequest,
+	public int getInteger(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, int defaultValue) {
 		return ParamUtil.getInteger(portletRequest, param, defaultValue);
 	}
@@ -509,24 +509,24 @@ public class ParamUtil_IW {
 	}
 
 	public int[] getIntegerValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getIntegerValues(httpServletRequest, param);
 	}
 
 	public int[] getIntegerValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, int[] defaultValue) {
 		return ParamUtil.getIntegerValues(httpServletRequest, param,
 			defaultValue);
 	}
 
-	public int[] getIntegerValues(javax.portlet.PortletRequest portletRequest,
+	public int[] getIntegerValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getIntegerValues(portletRequest, param);
 	}
 
-	public int[] getIntegerValues(javax.portlet.PortletRequest portletRequest,
+	public int[] getIntegerValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, int[] defaultValue) {
 		return ParamUtil.getIntegerValues(portletRequest, param, defaultValue);
 	}
@@ -544,23 +544,23 @@ public class ParamUtil_IW {
 	}
 
 	public long getLong(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getLong(httpServletRequest, param);
 	}
 
 	public long getLong(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, long defaultValue) {
 		return ParamUtil.getLong(httpServletRequest, param, defaultValue);
 	}
 
-	public long getLong(javax.portlet.PortletRequest portletRequest,
+	public long getLong(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getLong(portletRequest, param);
 	}
 
-	public long getLong(javax.portlet.PortletRequest portletRequest,
+	public long getLong(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, long defaultValue) {
 		return ParamUtil.getLong(portletRequest, param, defaultValue);
 	}
@@ -578,23 +578,23 @@ public class ParamUtil_IW {
 	}
 
 	public long[] getLongValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getLongValues(httpServletRequest, param);
 	}
 
 	public long[] getLongValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, long[] defaultValue) {
 		return ParamUtil.getLongValues(httpServletRequest, param, defaultValue);
 	}
 
-	public long[] getLongValues(javax.portlet.PortletRequest portletRequest,
+	public long[] getLongValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getLongValues(portletRequest, param);
 	}
 
-	public long[] getLongValues(javax.portlet.PortletRequest portletRequest,
+	public long[] getLongValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, long[] defaultValue) {
 		return ParamUtil.getLongValues(portletRequest, param, defaultValue);
 	}
@@ -612,24 +612,24 @@ public class ParamUtil_IW {
 	}
 
 	public java.lang.Number getNumber(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getNumber(httpServletRequest, param);
 	}
 
 	public java.lang.Number getNumber(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.Number defaultValue) {
 		return ParamUtil.getNumber(httpServletRequest, param, defaultValue);
 	}
 
 	public java.lang.Number getNumber(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param) {
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param) {
 		return ParamUtil.getNumber(portletRequest, param);
 	}
 
 	public java.lang.Number getNumber(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.lang.Number defaultValue) {
 		return ParamUtil.getNumber(portletRequest, param, defaultValue);
 	}
@@ -647,24 +647,24 @@ public class ParamUtil_IW {
 	}
 
 	public java.lang.Number[] getNumberValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getNumberValues(httpServletRequest, param);
 	}
 
 	public java.lang.Number[] getNumberValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.Number[] defaultValue) {
 		return ParamUtil.getNumberValues(httpServletRequest, param, defaultValue);
 	}
 
 	public java.lang.Number[] getNumberValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param) {
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param) {
 		return ParamUtil.getNumberValues(portletRequest, param);
 	}
 
 	public java.lang.Number[] getNumberValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.lang.Number[] defaultValue) {
 		return ParamUtil.getNumberValues(portletRequest, param, defaultValue);
 	}
@@ -682,61 +682,61 @@ public class ParamUtil_IW {
 	}
 
 	public java.lang.String[] getParameterValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getParameterValues(httpServletRequest, param);
 	}
 
 	public java.lang.String[] getParameterValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.String[] defaultValue) {
 		return ParamUtil.getParameterValues(httpServletRequest, param,
 			defaultValue);
 	}
 
 	public java.lang.String[] getParameterValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.String[] defaultValue, boolean split) {
 		return ParamUtil.getParameterValues(httpServletRequest, param,
 			defaultValue, split);
 	}
 
 	public java.lang.String[] getParameterValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param) {
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param) {
 		return ParamUtil.getParameterValues(portletRequest, param);
 	}
 
 	public java.lang.String[] getParameterValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.lang.String[] defaultValue) {
 		return ParamUtil.getParameterValues(portletRequest, param, defaultValue);
 	}
 
 	public java.lang.String[] getParameterValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.lang.String[] defaultValue, boolean split) {
 		return ParamUtil.getParameterValues(portletRequest, param,
 			defaultValue, split);
 	}
 
 	public short getShort(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getShort(httpServletRequest, param);
 	}
 
 	public short getShort(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, short defaultValue) {
 		return ParamUtil.getShort(httpServletRequest, param, defaultValue);
 	}
 
-	public short getShort(javax.portlet.PortletRequest portletRequest,
+	public short getShort(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getShort(portletRequest, param);
 	}
 
-	public short getShort(javax.portlet.PortletRequest portletRequest,
+	public short getShort(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, short defaultValue) {
 		return ParamUtil.getShort(portletRequest, param, defaultValue);
 	}
@@ -754,23 +754,23 @@ public class ParamUtil_IW {
 	}
 
 	public short[] getShortValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getShortValues(httpServletRequest, param);
 	}
 
 	public short[] getShortValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, short[] defaultValue) {
 		return ParamUtil.getShortValues(httpServletRequest, param, defaultValue);
 	}
 
-	public short[] getShortValues(javax.portlet.PortletRequest portletRequest,
+	public short[] getShortValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param) {
 		return ParamUtil.getShortValues(portletRequest, param);
 	}
 
-	public short[] getShortValues(javax.portlet.PortletRequest portletRequest,
+	public short[] getShortValues(jakarta.portlet.PortletRequest portletRequest,
 		java.lang.String param, short[] defaultValue) {
 		return ParamUtil.getShortValues(portletRequest, param, defaultValue);
 	}
@@ -788,24 +788,24 @@ public class ParamUtil_IW {
 	}
 
 	public java.lang.String getString(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getString(httpServletRequest, param);
 	}
 
 	public java.lang.String getString(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.String defaultValue) {
 		return ParamUtil.getString(httpServletRequest, param, defaultValue);
 	}
 
 	public java.lang.String getString(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param) {
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param) {
 		return ParamUtil.getString(portletRequest, param);
 	}
 
 	public java.lang.String getString(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.lang.String defaultValue) {
 		return ParamUtil.getString(portletRequest, param, defaultValue);
 	}
@@ -823,24 +823,24 @@ public class ParamUtil_IW {
 	}
 
 	public java.lang.String[] getStringValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param) {
 		return ParamUtil.getStringValues(httpServletRequest, param);
 	}
 
 	public java.lang.String[] getStringValues(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String param, java.lang.String[] defaultValue) {
 		return ParamUtil.getStringValues(httpServletRequest, param, defaultValue);
 	}
 
 	public java.lang.String[] getStringValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param) {
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param) {
 		return ParamUtil.getStringValues(portletRequest, param);
 	}
 
 	public java.lang.String[] getStringValues(
-		javax.portlet.PortletRequest portletRequest, java.lang.String param,
+		jakarta.portlet.PortletRequest portletRequest, java.lang.String param,
 		java.lang.String[] defaultValue) {
 		return ParamUtil.getStringValues(portletRequest, param, defaultValue);
 	}
@@ -857,11 +857,11 @@ public class ParamUtil_IW {
 		return ParamUtil.getStringValues(serviceContext, param, defaultValue);
 	}
 
-	public void print(javax.servlet.http.HttpServletRequest httpServletRequest) {
+	public void print(jakarta.servlet.http.HttpServletRequest httpServletRequest) {
 		ParamUtil.print(httpServletRequest);
 	}
 
-	public void print(javax.portlet.PortletRequest portletRequest) {
+	public void print(jakarta.portlet.PortletRequest portletRequest) {
 		ParamUtil.print(portletRequest);
 	}
 

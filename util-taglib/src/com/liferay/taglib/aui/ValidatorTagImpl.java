@@ -14,9 +14,9 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.BaseValidatorTagSupport;
 import com.liferay.taglib.aui.base.BaseValidatorTagImpl;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.tagext.BodyContent;
+import jakarta.servlet.jsp.tagext.BodyTag;
 
 /**
  * @author Julio Camarero

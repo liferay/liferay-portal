@@ -52,7 +52,7 @@ public class FDSAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + FDSAdminPortletKeys.FDS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + FDSAdminPortletKeys.FDS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

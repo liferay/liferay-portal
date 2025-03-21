@@ -7,8 +7,8 @@ package com.liferay.portal.kernel.webdav;
 
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

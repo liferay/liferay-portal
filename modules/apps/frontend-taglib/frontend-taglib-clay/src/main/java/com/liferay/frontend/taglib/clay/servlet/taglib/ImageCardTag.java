@@ -5,7 +5,7 @@
 
 package com.liferay.frontend.taglib.clay.servlet.taglib;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * @author Julien Castelain

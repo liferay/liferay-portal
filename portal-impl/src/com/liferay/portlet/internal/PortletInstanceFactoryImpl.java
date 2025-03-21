@@ -22,14 +22,14 @@ import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portlet.PortletContextFactoryUtil;
 import com.liferay.portlet.UndeployedPortlet;
 
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -157,7 +157,7 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 			PortletConfig portletConfig = PortletConfigFactoryUtil.create(
 				portlet, servletContext);
 
-			javax.portlet.Portlet portletInstance = null;
+			jakarta.portlet.Portlet portletInstance = null;
 
 			if (deployed) {
 				portletInstance = PortletBagUtil.getPortletInstance(
@@ -179,7 +179,7 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 			return rootInvokerPortletInstance;
 		}
 
-		javax.portlet.Portlet portletInstance =
+		jakarta.portlet.Portlet portletInstance =
 			rootInvokerPortletInstance.getPortletInstance();
 
 		PortletConfig portletConfig = PortletConfigFactoryUtil.create(
@@ -248,7 +248,7 @@ public class PortletInstanceFactoryImpl implements PortletInstanceFactory {
 
 	protected InvokerPortlet init(
 			Portlet portlet, PortletConfig portletConfig,
-			javax.portlet.Portlet portletInstance)
+			jakarta.portlet.Portlet portletInstance)
 		throws PortletException {
 
 		PortletContext portletContext = portletConfig.getPortletContext();

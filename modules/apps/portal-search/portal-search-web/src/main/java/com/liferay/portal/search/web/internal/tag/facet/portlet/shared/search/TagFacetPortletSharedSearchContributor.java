@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Lino Alves
  */
 @Component(
-	property = "javax.portlet.name=" + TagFacetPortletKeys.TAG_FACET,
+	property = "jakarta.portlet.name=" + TagFacetPortletKeys.TAG_FACET,
 	service = PortletSharedSearchContributor.class
 )
 public class TagFacetPortletSharedSearchContributor

@@ -37,7 +37,7 @@ public class DDMFormAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

@@ -335,7 +335,7 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
-	@Inject(filter = "javax.portlet.name=" + FragmentPortletKeys.FRAGMENT)
+	@Inject(filter = "jakarta.portlet.name=" + FragmentPortletKeys.FRAGMENT)
 	private PortletDataHandler _fragmentPortletDataHandler;
 
 	@Inject

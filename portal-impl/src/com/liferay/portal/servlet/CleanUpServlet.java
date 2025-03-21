@@ -7,7 +7,7 @@ package com.liferay.portal.servlet;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
 
-import javax.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServlet;
 
 /**
  * @author Brian Wing Shun Chan

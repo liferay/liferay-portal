@@ -5,12 +5,12 @@
 
 package com.liferay.bean.portlet.spring.extension.internal;
 
-import java.lang.annotation.Annotation;
+import jakarta.portlet.annotations.ContextPath;
+import jakarta.portlet.annotations.Namespace;
+import jakarta.portlet.annotations.PortletName;
+import jakarta.portlet.annotations.WindowId;
 
-import javax.portlet.annotations.ContextPath;
-import javax.portlet.annotations.Namespace;
-import javax.portlet.annotations.PortletName;
-import javax.portlet.annotations.WindowId;
+import java.lang.annotation.Annotation;
 
 import org.springframework.context.annotation.ContextAnnotationAutowireCandidateResolver;
 

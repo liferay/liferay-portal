@@ -30,20 +30,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Matija Petanjek
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BasePlanResourceImpl
 	implements PlanResource, VulcanCRUDItemDelegate<Plan> {
 
@@ -67,12 +67,12 @@ public abstract class BasePlanResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Plan")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/plans")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/plans")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Plan> getPlansPage(
-			@javax.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -86,10 +86,10 @@ public abstract class BasePlanResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Plan")}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/plans")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/plans")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Plan postPlan(Plan plan) throws Exception {
 		return new Plan();
@@ -111,14 +111,14 @@ public abstract class BasePlanResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Plan")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/plans/{internalClassNameKey}/template")
-	@javax.ws.rs.Produces("application/octet-stream")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/plans/{internalClassNameKey}/template")
+	@jakarta.ws.rs.Produces("application/octet-stream")
 	@Override
 	public Response getPlanTemplate(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("internalClassNameKey")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("internalClassNameKey")
 			String internalClassNameKey)
 		throws Exception {
 
@@ -143,14 +143,14 @@ public abstract class BasePlanResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Plan")}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/plans/{planId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/plans/{planId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deletePlan(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("planId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("planId")
 			Long planId)
 		throws Exception {
 	}
@@ -171,14 +171,14 @@ public abstract class BasePlanResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Plan")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/plans/{planId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/plans/{planId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Plan getPlan(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("planId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("planId")
 			Long planId)
 		throws Exception {
 
@@ -201,15 +201,15 @@ public abstract class BasePlanResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Plan")}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/plans/{planId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path("/plans/{planId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Plan patchPlan(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("planId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("planId")
 			Long planId,
 			Plan plan)
 		throws Exception {

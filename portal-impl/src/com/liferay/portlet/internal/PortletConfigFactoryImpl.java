@@ -11,13 +11,13 @@ import com.liferay.portal.kernel.portlet.PortletConfigFactory;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portlet.PortletContextFactoryUtil;
 
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

@@ -45,6 +45,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -59,11 +64,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -279,7 +279,7 @@ public class SaveFormInstanceMVCCommandHelper {
 				"field-of-the-x-configuration-in-x-to-allow-it",
 			new String[] {
 				value, fieldName, "redirect-url-configuration-name",
-				"javax.portlet.title." +
+				"jakarta.portlet.title." +
 					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
 			});
 	}

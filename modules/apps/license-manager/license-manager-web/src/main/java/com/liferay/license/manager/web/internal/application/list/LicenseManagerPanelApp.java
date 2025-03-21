@@ -37,7 +37,7 @@ public class LicenseManagerPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + LicenseManagerPortletKeys.LICENSE_MANAGER + ")"
+		target = "(jakarta.portlet.name=" + LicenseManagerPortletKeys.LICENSE_MANAGER + ")"
 	)
 	private Portlet _portlet;
 

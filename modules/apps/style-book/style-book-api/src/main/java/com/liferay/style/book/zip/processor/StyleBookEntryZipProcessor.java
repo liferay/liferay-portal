@@ -7,11 +7,11 @@ package com.liferay.style.book.zip.processor;
 
 import com.liferay.style.book.model.StyleBookEntry;
 
+import jakarta.portlet.PortletException;
+
 import java.io.File;
 
 import java.util.List;
-
-import javax.portlet.PortletException;
 
 /**
  * @author Jürgen Kappler

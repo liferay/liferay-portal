@@ -31,9 +31,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.ResourceBundle;
+import jakarta.portlet.WindowState;
 
-import javax.portlet.WindowState;
+import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jonathan Lee
  */
 @Component(
-	property = "javax.portlet.name=" + InviteMembersPortletKeys.INVITE_MEMBERS,
+	property = "jakarta.portlet.name=" + InviteMembersPortletKeys.INVITE_MEMBERS,
 	service = UserNotificationHandler.class
 )
 public class InviteMembersUserNotificationHandler

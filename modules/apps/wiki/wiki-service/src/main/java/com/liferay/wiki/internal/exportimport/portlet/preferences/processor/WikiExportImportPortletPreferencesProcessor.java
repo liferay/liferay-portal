@@ -29,9 +29,9 @@ import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiNodeLocalService;
 import com.liferay.wiki.service.WikiPageLocalService;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Máté Thurzó
  */
 @Component(
-	property = "javax.portlet.name=" + WikiPortletKeys.WIKI,
+	property = "jakarta.portlet.name=" + WikiPortletKeys.WIKI,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class WikiExportImportPortletPreferencesProcessor
@@ -248,7 +248,7 @@ public class WikiExportImportPortletPreferencesProcessor
 	@Reference
 	private WikiPageLocalService _wikiPageLocalService;
 
-	@Reference(target = "(javax.portlet.name=" + WikiPortletKeys.WIKI + ")")
+	@Reference(target = "(jakarta.portlet.name=" + WikiPortletKeys.WIKI + ")")
 	private PortletDataHandler _wikiPortletDataHandler;
 
 }

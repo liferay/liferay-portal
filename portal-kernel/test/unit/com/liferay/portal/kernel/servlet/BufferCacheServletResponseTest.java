@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.util.PropsTestUtil;
 
+import jakarta.servlet.ServletOutputStream;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -24,8 +26,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
 import java.util.Collections;
-
-import javax.servlet.ServletOutputStream;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.portlet.bridges.mvc;
 
 import com.liferay.petra.string.StringPool;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 /**
  * Provides an interface to handle the render phase of the portlet. This
@@ -35,7 +35,7 @@ import javax.portlet.RenderResponse;
  *
  * <ul>
  * <li>
- * <code>javax.portlet.name</code>: The portlet name associated to this render
+ * <code>jakarta.portlet.name</code>: The portlet name associated to this render
  * command.
  * </li>
  * <li>
@@ -48,7 +48,7 @@ import javax.portlet.RenderResponse;
  * <p>
  * The method {@link MVCPortlet#render(RenderRequest, RenderResponse)} searches
  * the OSGi Registry for the render command that matches both the portlet name
- * with the property <code>javax.portlet.name</code> and the parameter value
+ * with the property <code>jakarta.portlet.name</code> and the parameter value
  * <code>mvc.command.name</code> with the property
  * <code>mvc.command.name</code>.
  * </p>

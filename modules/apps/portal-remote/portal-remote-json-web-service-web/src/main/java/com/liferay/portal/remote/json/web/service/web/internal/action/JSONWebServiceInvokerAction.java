@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.remote.json.web.service.JSONWebServiceAction;
 import com.liferay.portal.remote.json.web.service.JSONWebServiceActionsManager;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 import java.lang.reflect.Array;
@@ -30,8 +32,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import jodd.bean.BeanUtil;
 

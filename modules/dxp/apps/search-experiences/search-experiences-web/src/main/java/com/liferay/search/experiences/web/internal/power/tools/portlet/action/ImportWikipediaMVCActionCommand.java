@@ -14,14 +14,14 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	enabled = false,
 	property = {
-		"javax.portlet.name=" + SXPPortletKeys.SXP_POWER_TOOLS,
+		"jakarta.portlet.name=" + SXPPortletKeys.SXP_POWER_TOOLS,
 		"mvc.command.name=/sxp_power_tools/import_wikipedia"
 	},
 	service = MVCActionCommand.class

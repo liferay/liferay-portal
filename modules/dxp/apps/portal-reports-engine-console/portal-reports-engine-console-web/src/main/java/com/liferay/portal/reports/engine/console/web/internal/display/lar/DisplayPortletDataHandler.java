@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Arthur Chan
  */
 @Component(
-	property = "javax.portlet.name=" + ReportsEngineConsolePortletKeys.DISPLAY_REPORTS,
+	property = "jakarta.portlet.name=" + ReportsEngineConsolePortletKeys.DISPLAY_REPORTS,
 	service = PortletDataHandler.class
 )
 public class DisplayPortletDataHandler extends AdminPortletDataHandler {

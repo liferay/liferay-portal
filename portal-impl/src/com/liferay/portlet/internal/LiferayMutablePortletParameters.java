@@ -5,7 +5,7 @@
 
 package com.liferay.portlet.internal;
 
-import javax.portlet.MutablePortletParameters;
+import jakarta.portlet.MutablePortletParameters;
 
 /**
  * @author Neil Griffin

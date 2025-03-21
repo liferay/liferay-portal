@@ -5,12 +5,12 @@
 
 package com.liferay.bean.portlet.extension;
 
-import java.util.List;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
 

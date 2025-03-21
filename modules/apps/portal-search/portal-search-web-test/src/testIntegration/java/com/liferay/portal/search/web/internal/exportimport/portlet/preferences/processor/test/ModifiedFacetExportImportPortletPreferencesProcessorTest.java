@@ -37,7 +37,7 @@ public class ModifiedFacetExportImportPortletPreferencesProcessorTest
 	}
 
 	@Inject(
-		filter = "javax.portlet.name=" + ModifiedFacetPortletKeys.MODIFIED_FACET
+		filter = "jakarta.portlet.name=" + ModifiedFacetPortletKeys.MODIFIED_FACET
 	)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;

@@ -46,21 +46,21 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSubscriptionResourceImpl
 	implements EntityModelResource, SubscriptionResource,
 			   VulcanBatchEngineTaskItemDelegate<Subscription> {
@@ -89,15 +89,15 @@ public abstract class BaseSubscriptionResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Subscription")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/my-user-account/subscriptions")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/my-user-account/subscriptions")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Subscription> getMyUserAccountSubscriptionsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("contentType")
+			@jakarta.ws.rs.QueryParam("contentType")
 			String contentType,
-			@javax.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -119,14 +119,14 @@ public abstract class BaseSubscriptionResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Subscription")}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/my-user-account/subscriptions/{subscriptionId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/my-user-account/subscriptions/{subscriptionId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteMyUserAccountSubscription(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("subscriptionId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("subscriptionId")
 			Long subscriptionId)
 		throws Exception {
 	}
@@ -147,14 +147,14 @@ public abstract class BaseSubscriptionResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Subscription")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/my-user-account/subscriptions/{subscriptionId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/my-user-account/subscriptions/{subscriptionId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Subscription getMyUserAccountSubscription(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("subscriptionId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("subscriptionId")
 			Long subscriptionId)
 		throws Exception {
 

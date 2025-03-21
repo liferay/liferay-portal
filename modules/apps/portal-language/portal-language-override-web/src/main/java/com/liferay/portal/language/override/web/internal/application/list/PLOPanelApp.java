@@ -37,7 +37,7 @@ public class PLOPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE + ")"
+		target = "(jakarta.portlet.name=" + PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE + ")"
 	)
 	private Portlet _portlet;
 

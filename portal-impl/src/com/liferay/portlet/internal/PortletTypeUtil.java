@@ -8,13 +8,13 @@ package com.liferay.portlet.internal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import java.lang.reflect.Method;
+import jakarta.portlet.GenericPortlet;
+import jakarta.portlet.HeaderPortlet;
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.HeaderResponse;
+import jakarta.portlet.Portlet;
 
-import javax.portlet.GenericPortlet;
-import javax.portlet.HeaderPortlet;
-import javax.portlet.HeaderRequest;
-import javax.portlet.HeaderResponse;
-import javax.portlet.Portlet;
+import java.lang.reflect.Method;
 
 /**
  * @author Brian Wing Shun Chan

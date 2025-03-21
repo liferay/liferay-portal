@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.servlet;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Peter Fellwock

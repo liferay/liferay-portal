@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
+import jakarta.validation.ValidationException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -19,8 +21,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
-import javax.validation.ValidationException;
 
 /**
  * @author Carlos Correa

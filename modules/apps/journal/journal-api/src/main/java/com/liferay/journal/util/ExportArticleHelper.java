@@ -5,10 +5,10 @@
 
 package com.liferay.journal.util;
 
-import java.io.IOException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import java.io.IOException;
 
 /**
  * @author Tom Wang

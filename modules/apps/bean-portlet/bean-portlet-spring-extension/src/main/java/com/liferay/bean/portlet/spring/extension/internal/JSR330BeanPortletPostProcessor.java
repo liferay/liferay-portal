@@ -51,7 +51,7 @@ public class JSR330BeanPortletPostProcessor
 			@SuppressWarnings("unchecked")
 			Class<? extends Annotation> injectAnnotation =
 				(Class<? extends Annotation>)ClassUtils.forName(
-					"javax.inject.Inject",
+					"jakarta.inject.Inject",
 					JSR330BeanPortletPostProcessor.class.getClassLoader());
 
 			_autowiredAnnotationTypes.add(injectAnnotation);

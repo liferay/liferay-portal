@@ -7,12 +7,12 @@ package com.liferay.portal.kernel.servlet;
 
 import com.liferay.portal.kernel.util.PortalUtil;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Julio Camarero

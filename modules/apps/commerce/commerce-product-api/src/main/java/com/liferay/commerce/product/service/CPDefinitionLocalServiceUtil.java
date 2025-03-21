@@ -780,7 +780,7 @@ public class CPDefinitionLocalServiceUtil {
 
 	public static boolean isVersionable(
 		long cpDefinitionId,
-		javax.servlet.http.HttpServletRequest httpServletRequest) {
+		jakarta.servlet.http.HttpServletRequest httpServletRequest) {
 
 		return getService().isVersionable(cpDefinitionId, httpServletRequest);
 	}

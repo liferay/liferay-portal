@@ -5,12 +5,12 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
+import jakarta.mvc.event.ControllerRedirectEvent;
+
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.net.URI;
-
-import javax.mvc.event.ControllerRedirectEvent;
-
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * @author Neil Griffin

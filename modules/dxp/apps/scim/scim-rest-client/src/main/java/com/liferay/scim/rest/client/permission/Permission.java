@@ -9,7 +9,7 @@ import com.liferay.scim.rest.client.json.BaseJSONParser;
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Olivér Kecskeméty

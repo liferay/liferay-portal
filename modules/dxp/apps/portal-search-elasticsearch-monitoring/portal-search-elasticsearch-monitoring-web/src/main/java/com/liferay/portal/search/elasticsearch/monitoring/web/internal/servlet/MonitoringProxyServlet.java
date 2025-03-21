@@ -25,17 +25,17 @@ import com.liferay.portal.search.elasticsearch.monitoring.web.internal.constants
 import com.liferay.portal.search.elasticsearch.monitoring.web.internal.constants.MonitoringWebConstants;
 import com.liferay.portal.search.elasticsearch.monitoring.web.internal.servlet.display.context.ErrorDisplayContext;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.net.ConnectException;
 
 import java.util.Map;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpRequest;
 

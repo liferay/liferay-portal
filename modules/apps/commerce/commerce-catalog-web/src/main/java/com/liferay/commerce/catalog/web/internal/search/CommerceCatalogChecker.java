@@ -8,7 +8,7 @@ package com.liferay.commerce.catalog.web.internal.search;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Alec Sloan

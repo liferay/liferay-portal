@@ -12,11 +12,11 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Iván Zaera
  */
 @Component(
-	property = "javax.portlet.name=" + BlogsPortletKeys.BLOGS_ADMIN,
+	property = "jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_ADMIN,
 	service = ConfigurationAction.class
 )
 public class BlogsAdminConfigurationAction

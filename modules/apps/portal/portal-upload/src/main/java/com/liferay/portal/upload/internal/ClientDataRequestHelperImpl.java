@@ -12,6 +12,11 @@ import com.liferay.portal.kernel.upload.UploadRequest;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletException;
+
+import jakarta.servlet.ServletRequestWrapper;
+import jakarta.servlet.http.Part;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,11 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletException;
-
-import javax.servlet.ServletRequestWrapper;
-import javax.servlet.http.Part;
 
 import org.osgi.service.component.annotations.Component;
 

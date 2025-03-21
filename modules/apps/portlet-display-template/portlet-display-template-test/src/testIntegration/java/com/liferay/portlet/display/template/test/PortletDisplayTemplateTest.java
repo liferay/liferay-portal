@@ -60,7 +60,8 @@ public class PortletDisplayTemplateTest {
 					TemplateHandler.class,
 					new TestPortletDisplayTemplateHandler(className1, false),
 					MapUtil.singletonDictionary(
-						"javax.portlet.name", RandomTestUtil.randomString())));
+						"jakarta.portlet.name",
+						RandomTestUtil.randomString())));
 
 			String className2 = RandomTestUtil.randomString();
 
@@ -69,7 +70,8 @@ public class PortletDisplayTemplateTest {
 					TemplateHandler.class,
 					new TestPortletDisplayTemplateHandler(className2, true),
 					MapUtil.singletonDictionary(
-						"javax.portlet.name", RandomTestUtil.randomString())));
+						"jakarta.portlet.name",
+						RandomTestUtil.randomString())));
 
 			String[] clasNames = TransformUtil.transformToArray(
 				_portletDisplayTemplate.getPortletDisplayTemplateHandlers(),

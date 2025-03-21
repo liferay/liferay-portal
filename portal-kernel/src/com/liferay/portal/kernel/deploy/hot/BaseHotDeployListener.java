@@ -8,10 +8,10 @@ package com.liferay.portal.kernel.deploy.hot;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.util.ProxyFactory;
 
+import jakarta.servlet.ServletContext;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

@@ -19,6 +19,9 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,9 +29,6 @@ import java.io.InputStream;
 import java.net.URI;
 
 import java.nio.file.Files;
-
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + BatchPlannerPortletKeys.BATCH_PLANNER,
+		"jakarta.portlet.name=" + BatchPlannerPortletKeys.BATCH_PLANNER,
 		"mvc.command.name=/batch_planner/submit_batch_planner_plan"
 	},
 	service = MVCResourceCommand.class

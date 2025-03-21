@@ -5,7 +5,7 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.mvc.engine.ViewEngine;
+import jakarta.mvc.engine.ViewEngine;
 
 /**
  * @author Neil Griffin

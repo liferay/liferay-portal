@@ -10,8 +10,8 @@ import com.liferay.asset.publisher.constants.AssetPublisherWebKeys;
 import com.liferay.asset.publisher.web.internal.helper.AssetPublisherWebHelper;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -21,11 +21,11 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AssetPublisherPortletKeys.ASSET_PUBLISHER,
-		"javax.portlet.name=" + AssetPublisherPortletKeys.HIGHEST_RATED_ASSETS,
-		"javax.portlet.name=" + AssetPublisherPortletKeys.MOST_VIEWED_ASSETS,
-		"javax.portlet.name=" + AssetPublisherPortletKeys.RECENT_CONTENT,
-		"javax.portlet.name=" + AssetPublisherPortletKeys.RELATED_ASSETS,
+		"jakarta.portlet.name=" + AssetPublisherPortletKeys.ASSET_PUBLISHER,
+		"jakarta.portlet.name=" + AssetPublisherPortletKeys.HIGHEST_RATED_ASSETS,
+		"jakarta.portlet.name=" + AssetPublisherPortletKeys.MOST_VIEWED_ASSETS,
+		"jakarta.portlet.name=" + AssetPublisherPortletKeys.RECENT_CONTENT,
+		"jakarta.portlet.name=" + AssetPublisherPortletKeys.RELATED_ASSETS,
 		"mvc.command.name=/asset_publisher/select_structure_field"
 	},
 	service = MVCRenderCommand.class

@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.model.Portlet;
 
-import javax.portlet.PortletConfig;
+import jakarta.portlet.PortletConfig;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

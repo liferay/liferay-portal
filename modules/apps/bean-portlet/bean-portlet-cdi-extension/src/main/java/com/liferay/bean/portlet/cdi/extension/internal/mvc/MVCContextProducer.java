@@ -5,27 +5,27 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
+import jakarta.annotation.PostConstruct;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.BeanManager;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
+import jakarta.mvc.MvcContext;
+import jakarta.mvc.locale.LocaleResolver;
+import jakarta.mvc.security.Encoders;
+
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.annotations.PortletRequestScoped;
+
+import jakarta.ws.rs.core.Configuration;
+
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.BeanManager;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import javax.mvc.MvcContext;
-import javax.mvc.locale.LocaleResolver;
-import javax.mvc.security.Encoders;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletRequest;
-import javax.portlet.annotations.PortletRequestScoped;
-
-import javax.ws.rs.core.Configuration;
 
 /**
  * @author Neil Griffin
@@ -66,7 +66,7 @@ public class MVCContextProducer {
 
 		private LocaleResolverPriorityComparator() {
 
-			// The Javadoc for javax.mvc.locale.LocaleResolver states "If no
+			// The Javadoc for jakarta.mvc.locale.LocaleResolver states "If no
 			// priority is explicitly defined, the priority is assumed to be
 			// 1000."
 

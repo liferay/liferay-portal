@@ -19,11 +19,11 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.template.TemplateResourceParser;
 import com.liferay.portal.template.URLResourceParser;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 
 import java.net.URL;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

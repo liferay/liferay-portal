@@ -7,8 +7,8 @@ package com.liferay.users.admin.user.action.contributor;
 
 import com.liferay.portal.kernel.model.User;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.annotation.versioning.ProviderType;
 

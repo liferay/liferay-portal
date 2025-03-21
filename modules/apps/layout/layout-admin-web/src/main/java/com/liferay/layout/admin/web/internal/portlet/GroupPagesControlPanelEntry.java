@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Tibor Lipusz
  */
 @Component(
-	property = "javax.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES,
+	property = "jakarta.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES,
 	service = ControlPanelEntry.class
 )
 public class GroupPagesControlPanelEntry extends BaseControlPanelEntry {

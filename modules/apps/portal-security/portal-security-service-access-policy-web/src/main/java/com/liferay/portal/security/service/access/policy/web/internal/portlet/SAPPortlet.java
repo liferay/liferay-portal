@@ -21,6 +21,15 @@ import com.liferay.portal.security.service.access.policy.service.SAPEntryService
 import com.liferay.portal.security.service.access.policy.web.internal.constants.SAPPortletKeys;
 import com.liferay.portal.security.service.access.policy.web.internal.constants.SAPWebKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -35,15 +44,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -55,18 +55,18 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.css-class-wrapper=portal-security-service-access-policy-portlet",
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.instanceable=false",
-		"javax.portlet.display-name=Service Access Policy",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.info.keywords=Service Access Policy",
-		"javax.portlet.info.short-title=Service Access Policy",
-		"javax.portlet.info.title=Service Access Policy",
-		"javax.portlet.init-param.clear-request-parameters=true",
-		"javax.portlet.init-param.copy-request-parameters=true",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + SAPPortletKeys.SERVICE_ACCESS_POLICY,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Service Access Policy",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.info.keywords=Service Access Policy",
+		"jakarta.portlet.info.short-title=Service Access Policy",
+		"jakarta.portlet.info.title=Service Access Policy",
+		"jakarta.portlet.init-param.clear-request-parameters=true",
+		"jakarta.portlet.init-param.copy-request-parameters=true",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + SAPPortletKeys.SERVICE_ACCESS_POLICY,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

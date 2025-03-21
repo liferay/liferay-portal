@@ -12,12 +12,12 @@ import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
+import jakarta.portlet.RenderRequest;
+
 import java.io.Serializable;
 
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Crescenzo Rega

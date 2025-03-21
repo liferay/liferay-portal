@@ -7,7 +7,7 @@ package com.liferay.message.boards.internal.util;
 
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import javax.mail.Message;
+import jakarta.mail.Message;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

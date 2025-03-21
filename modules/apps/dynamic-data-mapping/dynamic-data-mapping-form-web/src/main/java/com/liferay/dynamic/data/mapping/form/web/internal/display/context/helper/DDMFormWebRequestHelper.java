@@ -7,7 +7,7 @@ package com.liferay.dynamic.data.mapping.form.web.internal.display.context.helpe
 
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Lino Alves

@@ -8,7 +8,7 @@ package com.liferay.exportimport.kernel.lar;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Portlet;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * A <code>PortletDataHandler</code> is a special class capable of exporting and

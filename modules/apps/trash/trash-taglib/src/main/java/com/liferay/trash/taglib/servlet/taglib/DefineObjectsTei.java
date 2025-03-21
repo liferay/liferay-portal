@@ -7,9 +7,9 @@ package com.liferay.trash.taglib.servlet.taglib;
 
 import com.liferay.trash.TrashHelper;
 
-import javax.servlet.jsp.tagext.TagData;
-import javax.servlet.jsp.tagext.TagExtraInfo;
-import javax.servlet.jsp.tagext.VariableInfo;
+import jakarta.servlet.jsp.tagext.TagData;
+import jakarta.servlet.jsp.tagext.TagExtraInfo;
+import jakarta.servlet.jsp.tagext.VariableInfo;
 
 /**
  * @author Eudaldo Alonso

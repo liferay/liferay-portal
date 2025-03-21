@@ -15,10 +15,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Víctor Galán

@@ -7,12 +7,12 @@ package com.liferay.object.action.util;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Guilherme Camacho

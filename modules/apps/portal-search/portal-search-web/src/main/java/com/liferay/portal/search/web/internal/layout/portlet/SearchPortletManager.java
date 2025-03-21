@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Olivia Yu
  */
 @Component(
-	property = "javax.portlet.name=" + SearchPortletKeys.SEARCH,
+	property = "jakarta.portlet.name=" + SearchPortletKeys.SEARCH,
 	service = PortletManager.class
 )
 public class SearchPortletManager implements PortletManager {

@@ -110,7 +110,7 @@ public class BatchEnginePortletDataHandlerRegistry {
 			return _bundleContext.registerService(
 				PortletDataHandler.class, batchEnginePortletDataHandler,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name",
+					"jakarta.portlet.name",
 					(String)serviceReference.getProperty(
 						"batch.engine.task.item.delegate.portlet.id")
 				).build());

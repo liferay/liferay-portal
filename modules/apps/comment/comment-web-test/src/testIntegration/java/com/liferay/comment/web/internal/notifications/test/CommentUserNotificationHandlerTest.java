@@ -92,7 +92,7 @@ public class CommentUserNotificationHandlerTest {
 	private CommentManager _commentManager;
 
 	@Inject(
-		filter = "javax.portlet.name=com_liferay_comment_web_portlet_CommentPortlet"
+		filter = "jakarta.portlet.name=com_liferay_comment_web_portlet_CommentPortlet"
 	)
 	private UserNotificationHandler _userNotificationHandler;
 

@@ -37,10 +37,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.util.PropsValues;
 
-import java.time.Month;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import java.time.Month;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,7 +50,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_USERS_REGISTRATION,
+		"jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_USERS_REGISTRATION,
 		"mvc.command.name=/account_admin/create_account_user"
 	},
 	service = MVCActionCommand.class

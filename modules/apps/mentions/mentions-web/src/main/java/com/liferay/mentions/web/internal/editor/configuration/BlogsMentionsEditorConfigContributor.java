@@ -17,8 +17,8 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"editor.config.key=contentEditor", "editor.name=alloyeditor",
 		"editor.name=ckeditor", "editor.name=ckeditor_classic",
-		"javax.portlet.name=" + BlogsPortletKeys.BLOGS,
-		"javax.portlet.name=" + BlogsPortletKeys.BLOGS_ADMIN,
+		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS,
+		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_ADMIN,
 		"service.ranking:Integer=10"
 	},
 	service = EditorConfigContributor.class

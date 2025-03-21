@@ -38,7 +38,7 @@ public class CPDefinitionsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS + ")"
+		target = "(jakarta.portlet.name=" + CPPortletKeys.CP_DEFINITIONS + ")"
 	)
 	private Portlet _portlet;
 

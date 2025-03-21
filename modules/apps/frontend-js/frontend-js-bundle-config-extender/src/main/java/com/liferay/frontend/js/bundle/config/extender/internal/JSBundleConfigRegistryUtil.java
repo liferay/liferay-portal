@@ -9,12 +9,12 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.string.StringPool;
 
+import jakarta.servlet.ServletContext;
+
 import java.net.URL;
 
 import java.util.Collection;
 import java.util.Dictionary;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

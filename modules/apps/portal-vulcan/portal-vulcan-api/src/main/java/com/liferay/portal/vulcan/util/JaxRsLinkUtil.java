@@ -7,10 +7,10 @@ package com.liferay.portal.vulcan.util;
 
 import com.liferay.petra.string.StringPool;
 
-import java.net.URI;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 
 /**
  * @author Brian Wing Shun Chan

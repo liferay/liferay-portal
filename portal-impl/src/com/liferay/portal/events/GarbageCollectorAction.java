@@ -10,9 +10,9 @@ import com.liferay.portal.kernel.events.SessionAction;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import java.text.NumberFormat;
+import jakarta.servlet.http.HttpSession;
 
-import javax.servlet.http.HttpSession;
+import java.text.NumberFormat;
 
 /**
  * @author Brian Wing Shun Chan

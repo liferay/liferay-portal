@@ -5,7 +5,7 @@
 
 package com.liferay.product.navigation.control.menu.manager;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Mikel Lorza

@@ -7,15 +7,15 @@ package com.liferay.headless.batch.engine.internal.resource.v1_0.util;
 
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * @author Ivica Cardic

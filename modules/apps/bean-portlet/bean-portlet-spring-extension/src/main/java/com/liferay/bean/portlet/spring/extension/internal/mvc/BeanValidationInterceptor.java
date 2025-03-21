@@ -7,23 +7,23 @@ package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
 import com.liferay.bean.portlet.extension.BeanPortletMethod;
 
+import jakarta.mvc.MvcContext;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ElementKind;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Path;
+import jakarta.validation.Validator;
+
+import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.QueryParam;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import java.util.Set;
-
-import javax.mvc.MvcContext;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ElementKind;
-import javax.validation.MessageInterpolator;
-import javax.validation.Path;
-import javax.validation.Validator;
-
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.QueryParam;
 
 /**
  * @author Neil Griffin

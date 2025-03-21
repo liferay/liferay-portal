@@ -5,9 +5,9 @@
 
 package com.liferay.bean.portlet.extension;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.annotation.versioning.ProviderType;
 

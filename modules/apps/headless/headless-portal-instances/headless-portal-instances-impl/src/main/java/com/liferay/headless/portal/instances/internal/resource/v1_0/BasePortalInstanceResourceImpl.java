@@ -28,19 +28,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Alberto Chaparro
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BasePortalInstanceResourceImpl
 	implements PortalInstanceResource {
 
@@ -65,13 +65,13 @@ public abstract class BasePortalInstanceResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/portal-instances")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/portal-instances")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<PortalInstance> getPortalInstancesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("skipDefault")
+			@jakarta.ws.rs.QueryParam("skipDefault")
 			Boolean skipDefault)
 		throws Exception {
 
@@ -91,10 +91,10 @@ public abstract class BasePortalInstanceResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/portal-instances")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/portal-instances")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PortalInstance postPortalInstance(PortalInstance portalInstance)
 		throws Exception {
@@ -123,14 +123,14 @@ public abstract class BasePortalInstanceResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/portal-instances/{portalInstanceId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/portal-instances/{portalInstanceId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deletePortalInstance(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("portalInstanceId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("portalInstanceId")
 			String portalInstanceId)
 		throws Exception {
 	}
@@ -156,14 +156,14 @@ public abstract class BasePortalInstanceResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/portal-instances/{portalInstanceId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/portal-instances/{portalInstanceId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PortalInstance getPortalInstance(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("portalInstanceId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("portalInstanceId")
 			String portalInstanceId)
 		throws Exception {
 
@@ -191,15 +191,15 @@ public abstract class BasePortalInstanceResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/portal-instances/{portalInstanceId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path("/portal-instances/{portalInstanceId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PortalInstance patchPortalInstance(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("portalInstanceId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("portalInstanceId")
 			String portalInstanceId,
 			PortalInstance portalInstance)
 		throws Exception {
@@ -228,14 +228,14 @@ public abstract class BasePortalInstanceResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
 		}
 	)
-	@javax.ws.rs.Path("/portal-instances/{portalInstanceId}/activate")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Path("/portal-instances/{portalInstanceId}/activate")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public void putPortalInstanceActivate(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("portalInstanceId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("portalInstanceId")
 			String portalInstanceId)
 		throws Exception {
 	}
@@ -261,14 +261,14 @@ public abstract class BasePortalInstanceResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PortalInstance")
 		}
 	)
-	@javax.ws.rs.Path("/portal-instances/{portalInstanceId}/deactivate")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Path("/portal-instances/{portalInstanceId}/deactivate")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public void putPortalInstanceDeactivate(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("portalInstanceId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("portalInstanceId")
 			String portalInstanceId)
 		throws Exception {
 	}

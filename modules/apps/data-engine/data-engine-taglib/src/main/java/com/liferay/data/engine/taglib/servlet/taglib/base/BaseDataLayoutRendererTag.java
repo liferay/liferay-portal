@@ -7,9 +7,9 @@ package com.liferay.data.engine.taglib.servlet.taglib.base;
 
 import com.liferay.data.engine.taglib.internal.servlet.ServletContextUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author Jeyvison Nascimento

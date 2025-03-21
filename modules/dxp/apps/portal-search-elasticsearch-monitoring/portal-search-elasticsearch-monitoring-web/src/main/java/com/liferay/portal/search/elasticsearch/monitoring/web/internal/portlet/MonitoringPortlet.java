@@ -8,7 +8,7 @@ package com.liferay.portal.search.elasticsearch.monitoring.web.internal.portlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.search.elasticsearch.monitoring.web.internal.constants.MonitoringPortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -27,14 +27,14 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.show-portlet-access-denied=false",
 		"com.liferay.portlet.show-portlet-inactive=false",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Monitoring",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + MonitoringPortletKeys.MONITORING,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user",
-		"javax.portlet.version=3.0", "javax.portlet.window-state=maximized"
+		"jakarta.portlet.display-name=Monitoring",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + MonitoringPortletKeys.MONITORING,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=power-user,user",
+		"jakarta.portlet.version=4.0", "jakarta.portlet.window-state=maximized"
 	},
 	service = Portlet.class
 )

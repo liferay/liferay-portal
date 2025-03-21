@@ -37,7 +37,7 @@ public class SiteNavigationPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + SiteNavigationAdminPortletKeys.SITE_NAVIGATION_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + SiteNavigationAdminPortletKeys.SITE_NAVIGATION_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

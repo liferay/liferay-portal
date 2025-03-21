@@ -13,6 +13,11 @@ import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Application;
+
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -20,11 +25,6 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Set;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

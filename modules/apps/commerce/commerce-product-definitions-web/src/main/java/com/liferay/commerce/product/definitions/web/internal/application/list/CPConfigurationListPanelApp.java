@@ -52,7 +52,7 @@ public class CPConfigurationListPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CPPortletKeys.CP_CONFIGURATION_LISTS + ")"
+		target = "(jakarta.portlet.name=" + CPPortletKeys.CP_CONFIGURATION_LISTS + ")"
 	)
 	private Portlet _portlet;
 

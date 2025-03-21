@@ -31,12 +31,12 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.ActionRequest;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
-import javax.portlet.ActionRequest;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

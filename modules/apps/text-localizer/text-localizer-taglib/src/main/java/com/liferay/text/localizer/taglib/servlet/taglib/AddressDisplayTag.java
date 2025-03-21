@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.taglib.util.ParamAndPropertyAncestorTagImpl;
 import com.liferay.text.localizer.taglib.internal.address.util.AddressTextLocalizerUtil;
 
-import java.io.IOException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.tagext.BodyTag;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTag;
+import java.io.IOException;
 
 /**
  * @author Pei-Jung Lan

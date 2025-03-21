@@ -5,9 +5,9 @@
 
 package com.liferay.portal.osgi.web.http.servlet;
 
-import java.util.Dictionary;
+import jakarta.servlet.ServletConfig;
 
-import javax.servlet.ServletConfig;
+import java.util.Dictionary;
 
 /**
  * @author Dante Wang

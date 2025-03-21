@@ -15,11 +15,11 @@ import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.RenderResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + RecentBloggersPortletKeys.RECENT_BLOGGERS,
+	property = "jakarta.portlet.name=" + RecentBloggersPortletKeys.RECENT_BLOGGERS,
 	service = ConfigurationAction.class
 )
 public class RecentBloggersConfigurationAction

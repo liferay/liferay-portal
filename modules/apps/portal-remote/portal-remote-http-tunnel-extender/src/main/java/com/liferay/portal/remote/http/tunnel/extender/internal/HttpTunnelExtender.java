@@ -12,14 +12,14 @@ import com.liferay.portal.remote.http.tunnel.extender.configuration.HttpTunnelEx
 import com.liferay.portal.servlet.TunnelServlet;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.Servlet;
+
 import java.net.URL;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

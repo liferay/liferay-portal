@@ -40,12 +40,12 @@ import com.liferay.portal.search.test.util.DocumentsAssert;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.ActionRequest;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.ActionRequest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

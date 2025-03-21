@@ -18,9 +18,9 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.user.groups.admin.item.selector.web.internal.frontend.taglib.clay.servlet.taglib.UserGroupVerticalCard;
 
-import java.util.Locale;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.RenderRequest;
+import java.util.Locale;
 
 /**
  * @author Eudaldo Alonso

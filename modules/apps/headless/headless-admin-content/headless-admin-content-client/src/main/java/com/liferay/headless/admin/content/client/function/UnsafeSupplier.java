@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.content.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

@@ -32,6 +32,9 @@ import com.liferay.segments.context.RequestContextMapper;
 import com.liferay.segments.context.contributor.RequestContextContributor;
 import com.liferay.segments.internal.odata.entity.ContextEntityModel;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -43,9 +46,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

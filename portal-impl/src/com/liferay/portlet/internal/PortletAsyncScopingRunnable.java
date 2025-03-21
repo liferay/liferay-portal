@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.async.PortletAsyncScopeManager;
 
-import java.io.IOException;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
 
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
+import java.io.IOException;
 
 /**
  * @author Neil Griffin

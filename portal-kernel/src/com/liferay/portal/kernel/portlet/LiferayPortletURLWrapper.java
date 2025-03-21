@@ -5,11 +5,11 @@
 
 package com.liferay.portal.kernel.portlet;
 
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.filter.PortletURLWrapper;
+
 import java.util.Set;
 import java.util.function.BiConsumer;
-
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.filter.PortletURLWrapper;
 
 /**
  * @author Neil Griffin

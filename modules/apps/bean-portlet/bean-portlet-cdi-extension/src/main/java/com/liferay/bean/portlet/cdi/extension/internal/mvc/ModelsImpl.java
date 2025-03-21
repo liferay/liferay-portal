@@ -5,6 +5,8 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
+import jakarta.mvc.Models;
+
 import java.io.Serializable;
 
 import java.util.Collections;
@@ -12,8 +14,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.mvc.Models;
 
 /**
  * @author Neil Griffin

@@ -37,7 +37,7 @@ public class UserWorkflowPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + WorkflowPortletKeys.USER_WORKFLOW + ")"
+		target = "(jakarta.portlet.name=" + WorkflowPortletKeys.USER_WORKFLOW + ")"
 	)
 	private Portlet _portlet;
 

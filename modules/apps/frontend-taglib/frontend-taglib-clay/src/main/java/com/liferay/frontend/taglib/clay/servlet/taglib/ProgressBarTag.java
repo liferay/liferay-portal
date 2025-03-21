@@ -7,10 +7,10 @@ package com.liferay.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.frontend.taglib.clay.internal.servlet.taglib.BaseContainerTag;
 
-import java.util.Set;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
+import java.util.Set;
 
 /**
  * @author Chema Balsas

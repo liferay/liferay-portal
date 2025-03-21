@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.portlet.configuration.icon;
 
 import com.liferay.petra.string.StringPool;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

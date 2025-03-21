@@ -7,7 +7,7 @@ package com.liferay.portal.settings.portlet.action;
 
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.ActionRequest;
+import jakarta.portlet.ActionRequest;
 
 /**
  * @author Michael C. Han

@@ -41,7 +41,7 @@ public class SupportedPublicRenderParameterTest
 		setUpPortlet(
 			testPortlet,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.supported-public-render-parameter", prpName
+				"jakarta.portlet.supported-public-render-parameter", prpName
 			).build(),
 			TEST_PORTLET_ID);
 
@@ -75,7 +75,7 @@ public class SupportedPublicRenderParameterTest
 		setUpPortlet(
 			testPortlet,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.supported-public-render-parameter",
+				"jakarta.portlet.supported-public-render-parameter",
 				prpName + ";http://some.uri.tld/space"
 			).build(),
 			TEST_PORTLET_ID);

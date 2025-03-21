@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 import com.liferay.search.experiences.service.SXPBlueprintService;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	enabled = false,
 	property = {
-		"javax.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN,
+		"jakarta.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN,
 		"mvc.command.name=/sxp_blueprint_admin/edit_sxp_blueprint"
 	},
 	service = MVCActionCommand.class

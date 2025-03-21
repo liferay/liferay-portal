@@ -8,7 +8,7 @@ package com.liferay.headless.admin.content.internal.dto.v1_0.extension;
 import com.liferay.headless.admin.content.dto.v1_0.Version;
 import com.liferay.headless.delivery.dto.v1_0.StructuredContent;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * @author Luis Miguel Barcos

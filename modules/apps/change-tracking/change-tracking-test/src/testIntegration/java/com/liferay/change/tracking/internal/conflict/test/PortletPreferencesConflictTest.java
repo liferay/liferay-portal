@@ -69,7 +69,7 @@ public class PortletPreferencesConflictTest {
 
 	@Test
 	public void testResolvePortletPreferencesConflictTest() throws Exception {
-		javax.portlet.PortletPreferences jxPortletPreferences = null;
+		jakarta.portlet.PortletPreferences jxPortletPreferences = null;
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -126,7 +126,7 @@ public class PortletPreferencesConflictTest {
 		_ctProcessLocalService.addCTProcess(
 			_ctCollection2.getUserId(), _ctCollection2.getCtCollectionId());
 
-		javax.portlet.PortletPreferences publishedJavaxPortletPreferences =
+		jakarta.portlet.PortletPreferences publishedJavaxPortletPreferences =
 			_portletPreferencesLocalService.getPreferences(
 				TestPropsValues.getCompanyId(),
 				PortletKeys.PREFS_OWNER_ID_DEFAULT,
@@ -181,7 +181,7 @@ public class PortletPreferencesConflictTest {
 				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
 				_portlet.getPortletId(), _portlet, null);
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(
 				portletPreferences);
 
@@ -231,7 +231,7 @@ public class PortletPreferencesConflictTest {
 		_ctProcessLocalService.addCTProcess(
 			_ctCollection2.getUserId(), _ctCollection2.getCtCollectionId());
 
-		javax.portlet.PortletPreferences publishedJavaxPortletPreferences =
+		jakarta.portlet.PortletPreferences publishedJavaxPortletPreferences =
 			_portletPreferencesLocalService.getPreferences(
 				TestPropsValues.getCompanyId(),
 				PortletKeys.PREFS_OWNER_ID_DEFAULT,

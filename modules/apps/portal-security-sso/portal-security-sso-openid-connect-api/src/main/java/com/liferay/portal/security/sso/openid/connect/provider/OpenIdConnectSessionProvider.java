@@ -7,7 +7,7 @@ package com.liferay.portal.security.sso.openid.connect.provider;
 
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectSession;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author     Istvan Sajtos

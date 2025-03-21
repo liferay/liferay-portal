@@ -14,46 +14,46 @@ public class SessionClicks_IW {
 	}
 
 	public java.lang.String get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String key, java.lang.String defaultValue) {
 		return SessionClicks.get(httpServletRequest, key, defaultValue);
 	}
 
 	public java.lang.String get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String namespace, java.lang.String key,
 		java.lang.String defaultValue) {
 		return SessionClicks.get(httpServletRequest, namespace, key,
 			defaultValue);
 	}
 
-	public java.lang.String get(javax.servlet.http.HttpSession httpSession,
+	public java.lang.String get(jakarta.servlet.http.HttpSession httpSession,
 		java.lang.String key, java.lang.String defaultValue) {
 		return SessionClicks.get(httpSession, key, defaultValue);
 	}
 
-	public java.lang.String get(javax.servlet.http.HttpSession httpSession,
+	public java.lang.String get(jakarta.servlet.http.HttpSession httpSession,
 		java.lang.String namespace, java.lang.String key,
 		java.lang.String defaultValue) {
 		return SessionClicks.get(httpSession, namespace, key, defaultValue);
 	}
 
-	public void put(javax.servlet.http.HttpServletRequest httpServletRequest,
+	public void put(jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String key, java.lang.String value) {
 		SessionClicks.put(httpServletRequest, key, value);
 	}
 
-	public void put(javax.servlet.http.HttpServletRequest httpServletRequest,
+	public void put(jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String namespace, java.lang.String key, java.lang.String value) {
 		SessionClicks.put(httpServletRequest, namespace, key, value);
 	}
 
-	public void put(javax.servlet.http.HttpSession httpSession,
+	public void put(jakarta.servlet.http.HttpSession httpSession,
 		java.lang.String key, java.lang.String value) {
 		SessionClicks.put(httpSession, key, value);
 	}
 
-	public void put(javax.servlet.http.HttpSession httpSession,
+	public void put(jakarta.servlet.http.HttpSession httpSession,
 		java.lang.String namespace, java.lang.String key, java.lang.String value) {
 		SessionClicks.put(httpSession, namespace, key, value);
 	}

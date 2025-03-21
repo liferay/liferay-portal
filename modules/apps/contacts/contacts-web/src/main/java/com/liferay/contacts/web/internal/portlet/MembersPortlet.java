@@ -7,7 +7,7 @@ package com.liferay.contacts.web.internal.portlet;
 
 import com.liferay.contacts.web.internal.constants.ContactsPortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,17 +24,17 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.header-portlet-javascript=/js/legacy/main.js",
 		"com.liferay.portlet.icon=/icons/contacts_center.png",
-		"javax.portlet.display-name=Members",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.info.keywords=Members",
-		"javax.portlet.info.short-title=Members",
-		"javax.portlet.info.title=Members",
-		"javax.portlet.init-param.config-template=/configuration.jsp",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + ContactsPortletKeys.MEMBERS,
-		"javax.portlet.portlet-mode=text/html;config",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,guest,power-user,user"
+		"jakarta.portlet.display-name=Members",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.info.keywords=Members",
+		"jakarta.portlet.info.short-title=Members",
+		"jakarta.portlet.info.title=Members",
+		"jakarta.portlet.init-param.config-template=/configuration.jsp",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + ContactsPortletKeys.MEMBERS,
+		"jakarta.portlet.portlet-mode=text/html;config",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,guest,power-user,user"
 	},
 	service = Portlet.class
 )

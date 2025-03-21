@@ -13,10 +13,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.Collection;
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

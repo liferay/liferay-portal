@@ -7,6 +7,13 @@ package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.annotation.ManagedBean;
+
+import jakarta.portlet.PortletRequest;
+
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverterProvider;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
@@ -14,13 +21,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 import java.util.function.Function;
-
-import javax.annotation.ManagedBean;
-
-import javax.portlet.PortletRequest;
-
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

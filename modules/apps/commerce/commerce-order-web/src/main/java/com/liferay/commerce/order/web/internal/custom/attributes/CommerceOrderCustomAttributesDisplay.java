@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Ethan Bustad
  */
 @Component(
-	property = "javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
+	property = "jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
 	service = CustomAttributesDisplay.class
 )
 public class CommerceOrderCustomAttributesDisplay

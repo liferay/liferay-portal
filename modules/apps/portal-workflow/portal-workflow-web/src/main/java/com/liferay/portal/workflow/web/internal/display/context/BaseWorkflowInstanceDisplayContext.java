@@ -20,11 +20,11 @@ import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowNode;
 import com.liferay.portal.workflow.web.internal.display.context.helper.WorkflowInstanceRequestHelper;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.text.Format;
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Marcellus Tavares

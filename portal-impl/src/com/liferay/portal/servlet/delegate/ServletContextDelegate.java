@@ -7,7 +7,7 @@ package com.liferay.portal.servlet.delegate;
 
 import com.liferay.portal.kernel.util.ProxyUtil;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Shuyang Zhou

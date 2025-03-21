@@ -61,7 +61,7 @@ public class DispatchPanelApp extends BasePanelApp {
 	private Language _language;
 
 	@Reference(
-		target = "(javax.portlet.name=" + DispatchPortletKeys.DISPATCH + ")"
+		target = "(jakarta.portlet.name=" + DispatchPortletKeys.DISPATCH + ")"
 	)
 	private Portlet _portlet;
 

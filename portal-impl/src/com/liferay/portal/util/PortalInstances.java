@@ -37,6 +37,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.initializer.kernel.util.SiteInitializerThreadLocal;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.SQLException;
 
 import java.util.List;
@@ -44,8 +46,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan

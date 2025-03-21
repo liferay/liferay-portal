@@ -28,7 +28,7 @@ public class PortletConfigurationIconServiceReferenceMapper
 		ServiceReferenceMapper.Emitter<String> emitter) {
 
 		String portletId = (String)serviceReference.getProperty(
-			"javax.portlet.name");
+			"jakarta.portlet.name");
 
 		if (Validator.isNull(portletId)) {
 			portletId = StringPool.STAR;

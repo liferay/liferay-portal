@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Georgel Pop
  */
 @Component(
-	property = "javax.portlet.name=" + JournalPortletKeys.JOURNAL,
+	property = "jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
 	service = AssetRendererFactory.class
 )
 public class JournalFeedAssetRendererFactory

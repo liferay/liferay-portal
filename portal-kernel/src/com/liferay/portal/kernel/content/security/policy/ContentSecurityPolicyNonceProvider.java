@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.content.security.policy;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Iván Zaera Avellón

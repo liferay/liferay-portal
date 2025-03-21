@@ -39,6 +39,10 @@ import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.filter.PortletFilter;
+
 import java.net.URL;
 
 import java.util.AbstractMap;
@@ -51,10 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
-import javax.portlet.filter.PortletFilter;
 
 import javax.xml.namespace.QName;
 

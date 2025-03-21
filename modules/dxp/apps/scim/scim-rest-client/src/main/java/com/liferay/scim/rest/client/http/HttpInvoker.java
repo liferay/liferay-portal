@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Olivér Kecskeméty

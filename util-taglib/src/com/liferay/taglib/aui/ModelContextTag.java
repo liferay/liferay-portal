@@ -7,7 +7,7 @@ package com.liferay.taglib.aui;
 
 import com.liferay.taglib.aui.base.BaseModelContextTag;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Jorge Ferrer

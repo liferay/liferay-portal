@@ -5,14 +5,14 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
+import jakarta.annotation.PostConstruct;
+
+import jakarta.ws.rs.ext.ParamConverterProvider;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
-import javax.ws.rs.ext.ParamConverterProvider;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;

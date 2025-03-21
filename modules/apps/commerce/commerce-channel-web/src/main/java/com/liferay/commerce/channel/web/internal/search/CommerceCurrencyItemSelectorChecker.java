@@ -9,7 +9,7 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Fabio Monaco

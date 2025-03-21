@@ -9,7 +9,7 @@ import com.liferay.portal.language.rest.client.json.BaseJSONParser;
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Thiago Buarque

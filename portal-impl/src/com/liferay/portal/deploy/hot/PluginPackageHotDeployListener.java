@@ -22,11 +22,11 @@ import com.liferay.portal.log4j.Log4JUtil;
 import com.liferay.portal.plugin.PluginPackageUtil;
 import com.liferay.util.portlet.PortletProps;
 
+import jakarta.servlet.ServletContext;
+
 import java.lang.reflect.Method;
 
 import java.util.Properties;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Jorge Ferrer

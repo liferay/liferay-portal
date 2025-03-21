@@ -9,30 +9,30 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.EventRequest;
+import jakarta.portlet.EventResponse;
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.HeaderResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+import jakarta.portlet.annotations.ActionMethod;
+import jakarta.portlet.annotations.DestroyMethod;
+import jakarta.portlet.annotations.EventMethod;
+import jakarta.portlet.annotations.HeaderMethod;
+import jakarta.portlet.annotations.InitMethod;
+import jakarta.portlet.annotations.RenderMethod;
+import jakarta.portlet.annotations.ServeResourceMethod;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import java.util.function.Function;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.EventRequest;
-import javax.portlet.EventResponse;
-import javax.portlet.HeaderRequest;
-import javax.portlet.HeaderResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletMode;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import javax.portlet.annotations.ActionMethod;
-import javax.portlet.annotations.DestroyMethod;
-import javax.portlet.annotations.EventMethod;
-import javax.portlet.annotations.HeaderMethod;
-import javax.portlet.annotations.InitMethod;
-import javax.portlet.annotations.RenderMethod;
-import javax.portlet.annotations.ServeResourceMethod;
 
 /**
  * @author Neil Griffin

@@ -8,13 +8,13 @@ package com.liferay.portal.kernel.model;
 import com.liferay.portal.kernel.theme.ThemeCompanyLimit;
 import com.liferay.portal.kernel.theme.ThemeGroupLimit;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.Serializable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.annotation.versioning.ProviderType;
 

@@ -10,11 +10,11 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
+import jakarta.portlet.PortletException;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
-
-import javax.portlet.PortletException;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Carlos Montenegro

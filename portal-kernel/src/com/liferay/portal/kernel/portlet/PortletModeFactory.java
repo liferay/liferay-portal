@@ -7,13 +7,13 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletMode;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletMode;
 
 /**
  * @author Brian Wing Shun Chan

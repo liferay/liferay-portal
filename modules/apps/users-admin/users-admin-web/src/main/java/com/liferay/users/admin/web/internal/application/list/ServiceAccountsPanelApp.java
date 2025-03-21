@@ -37,7 +37,7 @@ public class ServiceAccountsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + UsersAdminPortletKeys.SERVICE_ACCOUNTS + ")"
+		target = "(jakarta.portlet.name=" + UsersAdminPortletKeys.SERVICE_ACCOUNTS + ")"
 	)
 	private Portlet _portlet;
 

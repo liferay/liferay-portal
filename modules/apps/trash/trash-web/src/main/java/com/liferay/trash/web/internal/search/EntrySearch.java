@@ -19,12 +19,12 @@ import com.liferay.trash.util.comparator.EntryCreateDateComparator;
 import com.liferay.trash.util.comparator.EntryTypeComparator;
 import com.liferay.trash.util.comparator.EntryUserNameComparator;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 
 /**
  * Provides a <code>SearchContainer</code> (in

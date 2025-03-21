@@ -16,6 +16,8 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,8 +28,6 @@ import java.net.URL;
 
 import java.util.List;
 import java.util.logging.Level;
-
-import javax.servlet.ServletContext;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

@@ -8,9 +8,9 @@ package com.liferay.portal.vulcan.internal.jaxrs.exception.mapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
-import java.sql.SQLIntegrityConstraintViolationException;
+import jakarta.ws.rs.core.Response;
 
-import javax.ws.rs.core.Response;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * @author Matija Petanjek

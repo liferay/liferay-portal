@@ -18,10 +18,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.reports.engine.console.configuration.ReportsGroupServiceEmailConfiguration;
 import com.liferay.portal.reports.engine.console.constants.ReportsEngineConsoleConstants;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Rafael Praxedes

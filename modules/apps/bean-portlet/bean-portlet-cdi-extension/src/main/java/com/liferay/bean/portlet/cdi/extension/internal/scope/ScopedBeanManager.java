@@ -7,26 +7,26 @@ package com.liferay.bean.portlet.cdi.extension.internal.scope;
 
 import com.liferay.bean.portlet.extension.ScopedBean;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+
+import jakarta.mvc.RedirectScoped;
+
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.RenderParameters;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.StateAwareResponse;
+import jakarta.portlet.annotations.PortletRequestScoped;
+import jakarta.portlet.annotations.PortletSerializable;
+import jakarta.portlet.annotations.PortletSessionScoped;
+import jakarta.portlet.annotations.RenderStateScoped;
+
 import java.util.Enumeration;
 import java.util.Objects;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-
-import javax.mvc.RedirectScoped;
-
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderParameters;
-import javax.portlet.RenderResponse;
-import javax.portlet.StateAwareResponse;
-import javax.portlet.annotations.PortletRequestScoped;
-import javax.portlet.annotations.PortletSerializable;
-import javax.portlet.annotations.PortletSessionScoped;
-import javax.portlet.annotations.RenderStateScoped;
 
 /**
  * @author Neil Griffin

@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Dante Wang
  */
 @Component(
-	property = "javax.portlet.name=" + BackgroundTaskPortletKeys.BACKGROUND_TASK,
+	property = "jakarta.portlet.name=" + BackgroundTaskPortletKeys.BACKGROUND_TASK,
 	service = UserNotificationDefinition.class
 )
 public class BackgroundTaskUserNotificationDefinition

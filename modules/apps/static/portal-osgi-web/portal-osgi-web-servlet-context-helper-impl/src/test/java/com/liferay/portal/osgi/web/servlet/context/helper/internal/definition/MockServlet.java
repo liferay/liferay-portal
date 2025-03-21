@@ -5,9 +5,9 @@
 
 package com.liferay.portal.osgi.web.servlet.context.helper.internal.definition;
 
-import javax.servlet.GenericServlet;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.GenericServlet;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 /**
  * @author Miguel Pastor

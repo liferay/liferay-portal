@@ -12,13 +12,13 @@ import com.liferay.osb.spring.boot.client.zendesk.search.SearchHits;
 import com.liferay.osb.spring.boot.client.zendesk.search.ZendeskTicketQuery;
 import com.liferay.petra.string.StringPool;
 
+import jakarta.annotation.PostConstruct;
+
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.PostConstruct;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

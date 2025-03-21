@@ -27,10 +27,10 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.Collections;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
+import java.util.Collections;
 
 /**
  * @author Alessio Antonio Rendina

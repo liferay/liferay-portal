@@ -69,6 +69,11 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.portlet.MutablePortletParameters;
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.PortletParameters;
+import jakarta.portlet.ResourceURL;
+
 import java.io.ByteArrayOutputStream;
 
 import java.util.Arrays;
@@ -77,11 +82,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import javax.portlet.MutablePortletParameters;
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.PortletParameters;
-import javax.portlet.ResourceURL;
 
 import org.junit.Assert;
 import org.junit.Before;

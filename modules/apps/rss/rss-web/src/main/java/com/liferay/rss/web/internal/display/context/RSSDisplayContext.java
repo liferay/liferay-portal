@@ -24,10 +24,10 @@ import com.liferay.rss.web.internal.configuration.RSSPortletInstanceConfiguratio
 import com.liferay.rss.web.internal.configuration.RSSWebCacheConfiguration;
 import com.liferay.rss.web.internal.util.RSSFeed;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

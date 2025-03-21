@@ -7,7 +7,7 @@ package com.liferay.comment.taglib.internal.context.helper;
 
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Adolfo Pérez

@@ -28,10 +28,10 @@ import com.liferay.portal.reports.engine.console.jasper.internal.fill.manager.Re
 import com.liferay.portal.reports.engine.console.jasper.internal.fill.manager.XlsReportFillManager;
 import com.liferay.portal.reports.engine.console.jasper.internal.fill.manager.XmlReportFillManager;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.EnumMap;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;

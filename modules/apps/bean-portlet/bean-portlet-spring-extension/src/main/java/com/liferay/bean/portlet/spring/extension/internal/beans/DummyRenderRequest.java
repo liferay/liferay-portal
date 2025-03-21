@@ -5,7 +5,7 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.beans;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Neil Griffin

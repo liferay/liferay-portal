@@ -59,6 +59,8 @@ import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.util.JS;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.text.DateFormat;
 import java.text.Format;
 
@@ -71,8 +73,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Brian Wing Shun Chan

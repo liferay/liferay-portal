@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Iván Zaera
  */
 @Component(
-	property = "javax.portlet.name=" + WikiPortletKeys.WIKI,
+	property = "jakarta.portlet.name=" + WikiPortletKeys.WIKI,
 	service = UserNotificationDefinition.class
 )
 public class WikiAddEntryUserNotificationDefinition

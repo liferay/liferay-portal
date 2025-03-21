@@ -15,14 +15,14 @@ import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.navigation.web.internal.util.constants.WikiNavigationConstants;
 import com.liferay.wiki.service.WikiPageServiceUtil;
 
+import jakarta.portlet.PortletURL;
+
 import java.io.Serializable;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Thiago Moreira

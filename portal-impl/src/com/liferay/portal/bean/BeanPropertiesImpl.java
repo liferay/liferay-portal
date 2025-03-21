@@ -20,14 +20,14 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
 
 import jodd.bean.BeanCopy;
 import jodd.bean.BeanUtil;

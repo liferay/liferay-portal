@@ -7,11 +7,11 @@ package com.liferay.portal.vulcan.util;
 
 import com.liferay.portal.kernel.util.LocaleUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
+
+import jakarta.ws.rs.core.HttpHeaders;
+
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletResponse;
-
-import javax.ws.rs.core.HttpHeaders;
 
 /**
  * @author Víctor Galán

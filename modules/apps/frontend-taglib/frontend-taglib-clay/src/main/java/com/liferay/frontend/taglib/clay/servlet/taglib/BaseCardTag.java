@@ -9,10 +9,10 @@ import com.liferay.frontend.taglib.clay.internal.servlet.taglib.BaseContainerTag
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringPool;
 
+import jakarta.servlet.jsp.JspException;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.jsp.JspException;
 
 /**
  * @author Carlos Lancha

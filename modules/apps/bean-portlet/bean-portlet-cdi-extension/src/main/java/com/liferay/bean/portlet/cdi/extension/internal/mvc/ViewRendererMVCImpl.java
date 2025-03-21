@@ -10,31 +10,31 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.util.TypeLiteral;
+
+import jakarta.mvc.Models;
+import jakarta.mvc.binding.ParamError;
+import jakarta.mvc.engine.ViewEngine;
+import jakarta.mvc.engine.ViewEngineException;
+
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+
+import jakarta.ws.rs.core.Configuration;
+
 import java.lang.annotation.Annotation;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.TypeLiteral;
-
-import javax.mvc.Models;
-import javax.mvc.binding.ParamError;
-import javax.mvc.engine.ViewEngine;
-import javax.mvc.engine.ViewEngineException;
-
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-
-import javax.ws.rs.core.Configuration;
 
 /**
  * @author Neil Griffin

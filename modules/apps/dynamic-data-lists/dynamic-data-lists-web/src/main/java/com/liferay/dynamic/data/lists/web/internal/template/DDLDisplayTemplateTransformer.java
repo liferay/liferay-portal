@@ -23,9 +23,9 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.templateparser.Transformer;
 
-import java.util.Map;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.RenderRequest;
+import java.util.Map;
 
 /**
  * @author Marcellus Tavares

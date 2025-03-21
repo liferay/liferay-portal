@@ -75,7 +75,7 @@ public class CommercePriceListPanelApp extends BasePanelApp {
 	private ConfigurationProvider _configurationProvider;
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PRICE_LIST + ")"
+		target = "(jakarta.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PRICE_LIST + ")"
 	)
 	private Portlet _portlet;
 

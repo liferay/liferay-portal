@@ -56,7 +56,7 @@ public class CETEditorConfigContributor
 				return null;
 			}
 		).put(
-			"javax.portlet.name",
+			"jakarta.portlet.name",
 			() -> {
 				if (Validator.isNotNull(_portletNames)) {
 					return _portletNames.split(StringPool.NEW_LINE);

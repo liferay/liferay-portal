@@ -7,7 +7,7 @@ package com.liferay.saml.runtime.servlet.profile;
 
 import com.liferay.saml.persistence.model.SamlSpIdpConnection;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Stian Sigvartsen

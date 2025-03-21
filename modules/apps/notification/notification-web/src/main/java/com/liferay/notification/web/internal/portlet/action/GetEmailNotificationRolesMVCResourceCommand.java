@@ -20,8 +20,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES,
+		"jakarta.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES,
 		"mvc.command.name=/notification_templates/get_email_notification_roles"
 	},
 	service = MVCResourceCommand.class

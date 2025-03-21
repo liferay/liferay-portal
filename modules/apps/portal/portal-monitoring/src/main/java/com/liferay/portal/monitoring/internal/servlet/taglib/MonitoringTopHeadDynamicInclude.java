@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.monitoring.internal.configuration.MonitoringConfiguration;
 import com.liferay.portal.monitoring.internal.constants.MonitoringWebKeys;
 
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

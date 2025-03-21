@@ -34,9 +34,9 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
-import java.util.HashMap;
+import jakarta.portlet.Portlet;
 
-import javax.portlet.Portlet;
+import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -91,7 +91,7 @@ public class ObjectDefinitionPortletIdUpgradeProcessTest {
 			).put(
 				"com.liferay.portlet.preferences-unique-per-layout", true
 			).put(
-				"javax.portlet.name", _oldPortletId
+				"jakarta.portlet.name", _oldPortletId
 			).build());
 	}
 

@@ -34,6 +34,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.security.service.access.policy.model.SAPEntry;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 
+import jakarta.ws.rs.core.Application;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -47,8 +49,6 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import javax.ws.rs.core.Application;
 
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 

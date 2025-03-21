@@ -5,7 +5,7 @@
 
 package com.liferay.frontend.data.set.provider.search;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

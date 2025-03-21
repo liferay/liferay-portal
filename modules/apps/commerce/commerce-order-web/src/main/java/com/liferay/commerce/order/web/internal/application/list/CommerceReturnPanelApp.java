@@ -52,7 +52,7 @@ public class CommerceReturnPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePortletKeys.COMMERCE_RETURN + ")"
+		target = "(jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_RETURN + ")"
 	)
 	private Portlet _portlet;
 

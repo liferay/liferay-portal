@@ -91,7 +91,7 @@ public interface Organization
 
 	public String getParentOrganizationName();
 
-	public javax.portlet.PortletPreferences getPreferences();
+	public jakarta.portlet.PortletPreferences getPreferences();
 
 	public int getPrivateLayoutsPageCount();
 

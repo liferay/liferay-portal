@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Leonardo Barros
  */
 @Component(
-	property = "javax.portlet.name=" + PortletKeys.MY_WORKFLOW_TASK,
+	property = "jakarta.portlet.name=" + PortletKeys.MY_WORKFLOW_TASK,
 	service = UserNotificationHandler.class
 )
 public class WorkflowTaskUserNotificationHandler

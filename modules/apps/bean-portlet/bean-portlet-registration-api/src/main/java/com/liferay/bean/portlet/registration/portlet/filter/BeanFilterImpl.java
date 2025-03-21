@@ -7,11 +7,11 @@ package com.liferay.bean.portlet.registration.portlet.filter;
 
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
+import jakarta.portlet.filter.PortletFilter;
+
 import java.util.Dictionary;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.filter.PortletFilter;
 
 /**
  * @author Neil Griffin
@@ -78,7 +78,8 @@ public class BeanFilterImpl implements BeanFilter {
 
 			if (value != null) {
 				dictionary.put(
-					"javax.portlet.init-param.".concat(entry.getKey()), value);
+					"jakarta.portlet.init-param.".concat(entry.getKey()),
+					value);
 			}
 		}
 

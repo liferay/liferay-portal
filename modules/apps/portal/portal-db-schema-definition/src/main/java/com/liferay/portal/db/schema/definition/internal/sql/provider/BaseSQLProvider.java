@@ -18,14 +18,14 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.plugin.PluginPackageUtil;
 import com.liferay.portal.upgrade.release.SchemaCreator;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

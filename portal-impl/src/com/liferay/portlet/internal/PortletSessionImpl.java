@@ -10,16 +10,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.LiferayPortletSession;
 import com.liferay.portlet.PortletSessionAttributeMap;
 
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletSession;
+
+import jakarta.servlet.http.HttpSession;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletSession;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Brian Wing Shun Chan

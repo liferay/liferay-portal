@@ -28,19 +28,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Olivér Kecskeméty
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSchemaResourceImpl implements SchemaResource {
 
 	/**
@@ -52,9 +52,9 @@ public abstract class BaseSchemaResourceImpl implements SchemaResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Schema")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/v2/Schemas")
-	@javax.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/v2/Schemas")
+	@jakarta.ws.rs.Produces("application/scim+json")
 	@Override
 	public Object getV2Schemas() throws Exception {
 		return null;
@@ -76,13 +76,13 @@ public abstract class BaseSchemaResourceImpl implements SchemaResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Schema")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/v2/Schemas/{id}")
-	@javax.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/v2/Schemas/{id}")
+	@jakarta.ws.rs.Produces("application/scim+json")
 	@Override
 	public Object getV2SchemaById(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			String id)
 		throws Exception {
 

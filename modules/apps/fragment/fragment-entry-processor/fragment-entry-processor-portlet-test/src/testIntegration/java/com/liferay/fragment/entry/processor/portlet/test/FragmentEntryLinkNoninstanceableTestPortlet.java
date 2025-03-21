@@ -9,7 +9,7 @@ import com.liferay.fragment.entry.processor.portlet.constants.FragmentEntryLinkP
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -24,10 +24,11 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.instanceable=false",
 		"com.liferay.portlet.preferences-owned-by-group=true",
-		"com.liferay.portlet.scopeable=true", "javax.portlet.display-name=Test",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.name=" + FragmentEntryLinkPortletKeys.FRAGMENT_ENTRY_LINK_NONINSTANCEABLE_TEST_PORTLET,
-		"javax.portlet.version=3.0"
+		"com.liferay.portlet.scopeable=true",
+		"jakarta.portlet.display-name=Test",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.name=" + FragmentEntryLinkPortletKeys.FRAGMENT_ENTRY_LINK_NONINSTANCEABLE_TEST_PORTLET,
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

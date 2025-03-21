@@ -7,7 +7,7 @@ package com.liferay.exportimport.web.internal.search;
 
 import com.liferay.portal.kernel.dao.search.DAOParamUtil;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Akos Thurzo

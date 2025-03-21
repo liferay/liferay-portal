@@ -52,7 +52,7 @@ public class BatchPlannerPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + BatchPlannerPortletKeys.BATCH_PLANNER + ")"
+		target = "(jakarta.portlet.name=" + BatchPlannerPortletKeys.BATCH_PLANNER + ")"
 	)
 	private Portlet _portlet;
 

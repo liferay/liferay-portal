@@ -38,7 +38,7 @@ public class MySubscriptionPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + MySubscriptionsPortletKeys.MY_SUBSCRIPTIONS + ")"
+		target = "(jakarta.portlet.name=" + MySubscriptionsPortletKeys.MY_SUBSCRIPTIONS + ")"
 	)
 	private Portlet _portlet;
 

@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.staging.StagingGroupHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -65,7 +65,7 @@ public class CompanyExportPanelApp extends BasePanelApp {
 	private Portal _portal;
 
 	@Reference(
-		target = "(javax.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT + ")"
+		target = "(jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT + ")"
 	)
 	private Portlet _portlet;
 

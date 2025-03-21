@@ -5,14 +5,14 @@
 
 package com.liferay.bean.portlet.spring.extension.internal;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELResolver;
+
+import jakarta.portlet.PortletRequest;
+
 import java.beans.FeatureDescriptor;
 
 import java.util.Iterator;
-
-import javax.el.ELContext;
-import javax.el.ELResolver;
-
-import javax.portlet.PortletRequest;
 
 import org.springframework.beans.factory.BeanFactory;
 

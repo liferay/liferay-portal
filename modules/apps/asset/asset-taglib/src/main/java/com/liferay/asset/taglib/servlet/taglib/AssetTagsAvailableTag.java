@@ -9,10 +9,10 @@ import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetTagServiceUtil;
 import com.liferay.taglib.TagSupport;
 
+import jakarta.servlet.jsp.JspException;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.jsp.JspException;
 
 /**
  * @author Sergio González

@@ -23,8 +23,8 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	enabled = false,
 	property = {
-		"javax.portlet.name=" + SXPPortletKeys.SXP_POWER_TOOLS,
+		"jakarta.portlet.name=" + SXPPortletKeys.SXP_POWER_TOOLS,
 		"mvc.command.name=/sxp_power_tools/import_google_places"
 	},
 	service = MVCActionCommand.class

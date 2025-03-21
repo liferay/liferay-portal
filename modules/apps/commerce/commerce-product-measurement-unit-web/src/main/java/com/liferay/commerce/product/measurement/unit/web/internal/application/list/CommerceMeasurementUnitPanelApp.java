@@ -37,7 +37,7 @@ public class CommerceMeasurementUnitPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CPPortletKeys.CP_MEASUREMENT_UNIT + ")"
+		target = "(jakarta.portlet.name=" + CPPortletKeys.CP_MEASUREMENT_UNIT + ")"
 	)
 	private Portlet _portlet;
 

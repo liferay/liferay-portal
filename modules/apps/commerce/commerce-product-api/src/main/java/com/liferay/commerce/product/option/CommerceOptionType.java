@@ -7,10 +7,10 @@ package com.liferay.commerce.product.option;
 
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
  * @author Alessio Antonio Rendina

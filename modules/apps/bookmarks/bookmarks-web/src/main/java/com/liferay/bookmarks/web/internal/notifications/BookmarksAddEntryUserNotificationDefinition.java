@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
+	property = "jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
 	service = UserNotificationDefinition.class
 )
 public class BookmarksAddEntryUserNotificationDefinition

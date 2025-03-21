@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.site.navigation.directory.web.internal.constants.SitesDirectoryPortletKeys;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Peter Fellwock
  */
 @Component(
-	property = "javax.portlet.name=" + SitesDirectoryPortletKeys.SITES_DIRECTORY,
+	property = "jakarta.portlet.name=" + SitesDirectoryPortletKeys.SITES_DIRECTORY,
 	service = ConfigurationAction.class
 )
 public class SitesDirectoryConfigurationAction

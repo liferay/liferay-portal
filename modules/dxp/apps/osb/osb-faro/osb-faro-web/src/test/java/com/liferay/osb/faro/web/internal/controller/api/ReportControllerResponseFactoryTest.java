@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.ws.rs.core.Response;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.ws.rs.core.Response;
 
 import org.junit.ClassRule;
 import org.junit.Rule;

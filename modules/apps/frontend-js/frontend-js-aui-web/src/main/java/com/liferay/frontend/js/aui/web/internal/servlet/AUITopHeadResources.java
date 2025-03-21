@@ -9,13 +9,13 @@ import com.liferay.frontend.js.aui.web.internal.configuration.AUIConfiguration;
 import com.liferay.frontend.js.top.head.extender.TopHeadResources;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

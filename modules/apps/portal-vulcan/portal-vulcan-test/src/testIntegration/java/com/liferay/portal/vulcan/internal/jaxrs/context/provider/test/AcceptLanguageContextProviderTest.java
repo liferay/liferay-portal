@@ -28,14 +28,14 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.test.util.MockFeature;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.test.util.MockMessage;
 
+import jakarta.ws.rs.NotAcceptableException;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.HttpHeaders;
+
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.ws.rs.NotAcceptableException;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.HttpHeaders;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 

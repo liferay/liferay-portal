@@ -7,7 +7,7 @@ package com.liferay.multi.factor.authentication.spi.checker.headless;
 
 import com.liferay.multi.factor.authentication.spi.checker.MFAChecker;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Tomas Polesovsky

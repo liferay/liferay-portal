@@ -27,11 +27,11 @@ import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiPageLocalService;
 import com.liferay.wiki.service.persistence.WikiNodeUtil;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Máté Thurzó
  */
 @Component(
-	property = "javax.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
+	property = "jakarta.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class WikiDisplayExportImportPortletPreferencesProcessor

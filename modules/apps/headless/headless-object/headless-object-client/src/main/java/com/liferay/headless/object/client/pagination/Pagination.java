@@ -5,7 +5,7 @@
 
 package com.liferay.headless.object.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Alicia García

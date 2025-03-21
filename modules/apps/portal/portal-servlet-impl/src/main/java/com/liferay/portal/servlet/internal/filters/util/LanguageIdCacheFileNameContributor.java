@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.servlet.filters.util.CacheFileNameContributor;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Locale;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

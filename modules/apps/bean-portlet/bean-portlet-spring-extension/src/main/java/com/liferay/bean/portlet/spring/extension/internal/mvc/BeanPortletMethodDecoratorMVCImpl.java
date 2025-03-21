@@ -10,26 +10,26 @@ import com.liferay.bean.portlet.extension.BeanPortletMethodDecorator;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.annotation.ManagedBean;
+
+import jakarta.mvc.Controller;
+import jakarta.mvc.MvcContext;
+import jakarta.mvc.binding.BindingResult;
+
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validator;
+
+import jakarta.ws.rs.core.Configuration;
+
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
 import java.lang.reflect.Method;
-
-import javax.annotation.ManagedBean;
-
-import javax.mvc.Controller;
-import javax.mvc.MvcContext;
-import javax.mvc.binding.BindingResult;
-
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import javax.validation.MessageInterpolator;
-import javax.validation.Validator;
-
-import javax.ws.rs.core.Configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

@@ -19,8 +19,8 @@ import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portal.workflow.security.permission.WorkflowTaskPermission;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + PortletKeys.MY_WORKFLOW_TASK,
+		"jakarta.portlet.name=" + PortletKeys.MY_WORKFLOW_TASK,
 		"mvc.command.name=/portal_workflow_task/assign_task"
 	},
 	service = MVCResourceCommand.class

@@ -29,9 +29,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.users.admin.search.UserSearchTerms;
 import com.liferay.users.admin.web.internal.util.DisplayStyleUtil;
 
-import java.util.List;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletURL;
+import java.util.List;
 
 /**
  * @author Pei-Jung Lan

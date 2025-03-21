@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.wiki.constants.WikiPortletKeys;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Zsolt Berentey
  */
 @Component(
-	property = "javax.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
+	property = "jakarta.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
 	service = PortletDataHandler.class
 )
 public class WikiDisplayPortletDataHandler extends BasePortletDataHandler {

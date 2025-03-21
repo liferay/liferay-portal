@@ -49,23 +49,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Alessio Antonio Rendina
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseReplenishmentItemResourceImpl
 	implements EntityModelResource, ReplenishmentItemResource,
 			   VulcanBatchEngineTaskItemDelegate<ReplenishmentItem>,
@@ -89,16 +89,16 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
 		"/replenishment-items/by-externalReferenceCode/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteReplenishmentItemByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 	}
@@ -121,16 +121,16 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/replenishment-items/by-externalReferenceCode/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ReplenishmentItem getReplenishmentItemByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -155,17 +155,17 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path(
 		"/replenishment-items/by-externalReferenceCode/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ReplenishmentItem patchReplenishmentItemByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			ReplenishmentItem replenishmentItem)
 		throws Exception {
@@ -226,17 +226,17 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
 		"/replenishment-items/by-externalReferenceCode/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public ReplenishmentItem putReplenishmentItemByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			ReplenishmentItem replenishmentItem)
 		throws Exception {
@@ -262,14 +262,14 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/replenishment-items/{replenishmentItemId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/replenishment-items/{replenishmentItemId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteReplenishmentItem(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("replenishmentItemId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("replenishmentItemId")
 			Long replenishmentItemId)
 		throws Exception {
 	}
@@ -292,14 +292,14 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/replenishment-items/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/replenishment-items/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteReplenishmentItemBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -338,14 +338,14 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/replenishment-items/{replenishmentItemId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/replenishment-items/{replenishmentItemId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ReplenishmentItem getReplenishmentItem(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("replenishmentItemId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("replenishmentItemId")
 			Long replenishmentItemId)
 		throws Exception {
 
@@ -370,15 +370,15 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/replenishment-items/{replenishmentItemId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path("/replenishment-items/{replenishmentItemId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ReplenishmentItem patchReplenishmentItem(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("replenishmentItemId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("replenishmentItemId")
 			Long replenishmentItemId,
 			ReplenishmentItem replenishmentItem)
 		throws Exception {
@@ -412,15 +412,15 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/skus/by-sku/{sku}/replenishment-items")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/skus/by-sku/{sku}/replenishment-items")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<ReplenishmentItem> getReplenishmentItemsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("sku")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("sku")
 			String sku,
-			@javax.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -456,24 +456,24 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/skus/by-sku/{sku}/replenishment-items/export-batch")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/skus/by-sku/{sku}/replenishment-items/export-batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postReplenishmentItemsPageExportBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("sku")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("sku")
 			String sku,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.DefaultValue("JSON")
-			@javax.ws.rs.QueryParam("contentType")
+			@jakarta.ws.rs.DefaultValue("JSON")
+			@jakarta.ws.rs.QueryParam("contentType")
 			String contentType,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("fieldNames")
+			@jakarta.ws.rs.QueryParam("fieldNames")
 			String fieldNames)
 		throws Exception {
 
@@ -522,16 +522,16 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/warehouses/{warehouseId}/replenishment-items")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/warehouses/{warehouseId}/replenishment-items")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<ReplenishmentItem> getWarehouseIdReplenishmentItemsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("warehouseId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("warehouseId")
 			Long warehouseId,
-			@javax.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -559,20 +559,20 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
 		"/warehouses/{warehouseId}/skus/by-sku/{sku}/replenishment-items"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ReplenishmentItem postReplenishmentItem(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("warehouseId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("warehouseId")
 			Long warehouseId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("sku")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("sku")
 			String sku,
 			ReplenishmentItem replenishmentItem)
 		throws Exception {
@@ -606,23 +606,23 @@ public abstract class BaseReplenishmentItemResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ReplenishmentItem")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path(
 		"/warehouses/{warehouseId}/skus/by-sku/{sku}/replenishment-items/batch"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postReplenishmentItemBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("warehouseId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("warehouseId")
 			Long warehouseId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("sku")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("sku")
 			String sku,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {

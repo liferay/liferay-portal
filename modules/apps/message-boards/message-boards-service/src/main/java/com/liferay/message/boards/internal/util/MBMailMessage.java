@@ -13,14 +13,14 @@ import com.liferay.portal.kernel.util.HtmlParser;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.mail.internet.MimeUtility;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.mail.internet.MimeUtility;
 
 /**
  * @author Jorge Ferrer

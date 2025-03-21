@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Adolfo Pérez
  */
 @Component(
-	property = "javax.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS_STATUS_UPDATE,
+	property = "jakarta.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS_STATUS_UPDATE,
 	service = ConfigurationAction.class
 )
 public class MicroblogsStatusUpdateConfigurationAction

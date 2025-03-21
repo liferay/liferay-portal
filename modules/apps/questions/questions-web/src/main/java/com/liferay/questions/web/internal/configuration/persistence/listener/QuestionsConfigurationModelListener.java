@@ -99,7 +99,7 @@ public class QuestionsConfigurationModelListener
 				properties.get("historyRouterBasePath"));
 			Dictionary<String, Object> assetRendererFactoryProperties =
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", QuestionsPortletKeys.QUESTIONS
+					"jakarta.portlet.name", QuestionsPortletKeys.QUESTIONS
 				).put(
 					"service.ranking:Integer", 100
 				).build();

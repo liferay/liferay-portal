@@ -155,7 +155,7 @@ public class BasePortletPreferencesUpgradeProcessTest
 		long companyId, long ownerId, int ownerType, long plid,
 		String portletId, String xml) {
 
-		javax.portlet.PortletPreferences portletPreferences =
+		jakarta.portlet.PortletPreferences portletPreferences =
 			PortletPreferencesFactoryUtil.fromXML(
 				companyId, ownerId, ownerType, plid, portletId, xml);
 

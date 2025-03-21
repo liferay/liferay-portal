@@ -24,11 +24,11 @@ import com.liferay.portal.search.tuning.synonyms.web.internal.constants.Synonyms
 import com.liferay.portal.search.tuning.synonyms.web.internal.display.context.SynonymSetDisplayContext;
 import com.liferay.portal.search.tuning.synonyms.web.internal.index.SynonymSetFields;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Adam Brandizzi

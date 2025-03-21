@@ -17,9 +17,9 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ContactsPortletKeys.CONTACTS_CENTER,
-		"javax.portlet.name=" + ContactsPortletKeys.MEMBERS,
-		"javax.portlet.name=" + ContactsPortletKeys.PROFILE
+		"jakarta.portlet.name=" + ContactsPortletKeys.CONTACTS_CENTER,
+		"jakarta.portlet.name=" + ContactsPortletKeys.MEMBERS,
+		"jakarta.portlet.name=" + ContactsPortletKeys.PROFILE
 	},
 	service = ConfigurationAction.class
 )

@@ -55,7 +55,7 @@ public class NestedPortletsPortletManagerTest {
 	@DeleteAfterTestRun
 	private Group _group;
 
-	@Inject(filter = "javax.portlet.name=" + PortletKeys.NESTED_PORTLETS)
+	@Inject(filter = "jakarta.portlet.name=" + PortletKeys.NESTED_PORTLETS)
 	private PortletManager _portletManager;
 
 }

@@ -36,9 +36,9 @@ import com.liferay.segments.service.SegmentsExperimentLocalService;
 import com.liferay.segments.service.SegmentsExperimentRelLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
-import java.util.Arrays;
+import jakarta.servlet.http.Cookie;
 
-import javax.servlet.http.Cookie;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;

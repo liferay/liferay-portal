@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Adolfo Pérez
  */
 @Component(
-	property = "javax.portlet.name=" + ItemSelectorPortletKeys.ITEM_SELECTOR,
+	property = "jakarta.portlet.name=" + ItemSelectorPortletKeys.ITEM_SELECTOR,
 	service = ControlPanelEntry.class
 )
 public class ItemSelectorControlPanelEntry extends BaseControlPanelEntry {

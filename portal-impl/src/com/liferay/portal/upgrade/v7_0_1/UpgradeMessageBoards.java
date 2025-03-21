@@ -14,10 +14,10 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Locale;
 import java.util.Set;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Roberto Díaz

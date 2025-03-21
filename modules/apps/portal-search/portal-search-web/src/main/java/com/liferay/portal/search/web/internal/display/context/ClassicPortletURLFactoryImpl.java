@@ -7,10 +7,10 @@ package com.liferay.portal.search.web.internal.display.context;
 
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
 /**
  * @author André de Oliveira

@@ -8,12 +8,12 @@ package com.liferay.portal.osgi.web.servlet.context.helper.definition;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.Servlet;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.Servlet;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

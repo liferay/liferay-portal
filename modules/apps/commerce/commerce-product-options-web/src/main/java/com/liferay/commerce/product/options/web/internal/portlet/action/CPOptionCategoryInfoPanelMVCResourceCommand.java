@@ -11,8 +11,8 @@ import com.liferay.commerce.product.options.web.internal.portlet.action.helper.A
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.CP_SPECIFICATION_OPTIONS,
+		"jakarta.portlet.name=" + CPPortletKeys.CP_SPECIFICATION_OPTIONS,
 		"mvc.command.name=/cp_specification_options/cp_option_category_info_panel"
 	},
 	service = MVCResourceCommand.class

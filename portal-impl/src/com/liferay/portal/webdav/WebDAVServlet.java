@@ -32,10 +32,10 @@ import com.liferay.portal.kernel.webdav.methods.Method;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.webdav.methods.MethodFactoryUtil;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author Brian Wing Shun Chan

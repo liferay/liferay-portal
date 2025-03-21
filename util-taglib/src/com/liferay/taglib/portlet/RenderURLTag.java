@@ -5,7 +5,7 @@
 
 package com.liferay.taglib.portlet;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Brian Wing Shun Chan

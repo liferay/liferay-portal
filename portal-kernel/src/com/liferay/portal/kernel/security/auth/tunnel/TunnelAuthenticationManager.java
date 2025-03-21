@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.security.auth.tunnel;
 
 import com.liferay.portal.kernel.security.auth.AuthException;
 
-import java.net.HttpURLConnection;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.net.HttpURLConnection;
 
 /**
  * @author Tomas Polesovsky

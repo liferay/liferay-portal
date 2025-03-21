@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
+		"jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
 		"model.class.name=com.liferay.bookmarks.model.BookmarksFolder"
 	},
 	service = SocialActivityInterpreter.class

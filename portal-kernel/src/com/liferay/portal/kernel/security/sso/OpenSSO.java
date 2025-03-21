@@ -5,11 +5,11 @@
 
 package com.liferay.portal.kernel.security.sso;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Michael C. Han

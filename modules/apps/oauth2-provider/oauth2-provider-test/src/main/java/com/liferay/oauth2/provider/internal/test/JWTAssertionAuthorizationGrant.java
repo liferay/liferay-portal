@@ -7,11 +7,11 @@ package com.liferay.oauth2.provider.internal.test;
 
 import com.liferay.oauth2.provider.internal.test.util.JWTAssertionUtil;
 
-import java.util.List;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
 
 import org.apache.cxf.rs.security.oauth2.grants.jwt.Constants;
 

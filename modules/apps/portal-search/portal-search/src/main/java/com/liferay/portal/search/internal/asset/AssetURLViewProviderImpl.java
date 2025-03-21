@@ -25,11 +25,11 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.asset.AssetURLViewProvider;
 import com.liferay.portal.search.web.constants.SearchResultsPortletKeys;
 
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.WindowState;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.WindowState;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

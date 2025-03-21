@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.mobile.device;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

@@ -46,12 +46,12 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -163,7 +163,7 @@ public class EditObjectEntryRelatedModelMVCActionCommandTest {
 				bundleContext.getServiceReferences(
 					MVCActionCommand.class,
 					StringBundler.concat(
-						"(&(javax.portlet.name=",
+						"(&(jakarta.portlet.name=",
 						objectDefinition2.getPortletId(),
 						")(mvc.command.name=/object_entries",
 						"/edit_object_entry_related_model))")));

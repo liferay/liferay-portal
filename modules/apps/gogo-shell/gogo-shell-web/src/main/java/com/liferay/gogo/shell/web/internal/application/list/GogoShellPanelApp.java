@@ -37,7 +37,7 @@ public class GogoShellPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + GogoShellPortletKeys.GOGO_SHELL + ")"
+		target = "(jakarta.portlet.name=" + GogoShellPortletKeys.GOGO_SHELL + ")"
 	)
 	private Portlet _portlet;
 

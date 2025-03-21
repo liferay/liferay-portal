@@ -37,17 +37,17 @@ import com.liferay.portal.language.LanguageResources;
 import com.liferay.social.kernel.model.SocialActivityInterpreter;
 import com.liferay.social.kernel.model.SocialRequestInterpreter;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PreferencesValidator;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.Portlet;
-import javax.portlet.PreferencesValidator;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -75,8 +75,8 @@ public class PortletBagImpl implements PortletBag {
 		_serviceRegistrations = serviceRegistrations;
 
 		_filterString =
-			"(|(javax.portlet.name=" + portletName +
-				")(javax.portlet.name=ALL))";
+			"(|(jakarta.portlet.name=" + portletName +
+				")(jakarta.portlet.name=ALL))";
 		_resourceBundleLoaderSnapshot = new Snapshot<>(
 			PortletBagImpl.class, ResourceBundleLoader.class,
 			StringBundler.concat(

@@ -160,6 +160,11 @@ import com.liferay.upload.UploadFileEntryHandler;
 import com.liferay.upload.UploadHandler;
 import com.liferay.upload.UploadResponseHandler;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -168,11 +173,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -241,14 +241,14 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"company.id", objectDefinition.getCompanyId()
 				).put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).build()),
 			_bundleContext.registerService(
 				ControlPanelEntry.class,
 				new ObjectDefinitionsControlPanelEntry(
 					objectDefinition, _objectDefinitionLocalService),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).build()),
 			_bundleContext.registerService(
 				FDSView.class,
@@ -516,15 +516,15 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					"com.liferay.portlet.preferences-unique-per-layout",
 					!enabled
 				).put(
-					"javax.portlet.display-name",
+					"jakarta.portlet.display-name",
 					objectDefinition.getPluralLabel(LocaleUtil.getSiteDefault())
 				).put(
-					"javax.portlet.init-param.view-template",
+					"jakarta.portlet.init-param.view-template",
 					"/object_entries/view_object_entries.jsp"
 				).put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).put(
-					"javax.portlet.security-role-ref",
+					"jakarta.portlet.security-role-ref",
 					() -> {
 						if (objectDefinition.isRootDescendantNode()) {
 							return StringPool.BLANK;
@@ -533,14 +533,14 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 						return null;
 					}
 				).put(
-					"javax.portlet.version", "3.0"
+					"jakarta.portlet.version", "3.0"
 				).build()),
 			_bundleContext.registerService(
 				MVCActionCommand.class,
 				new DeleteAttachmentMVCActionCommand(
 					_dlFileEntryLocalService, objectDefinition),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).put(
 					"mvc.command.name", "/object_entries/delete_attachment"
 				).build()),
@@ -552,7 +552,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_objectRelationshipLocalService,
 					_objectScopeProviderRegistry, _portal),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).put(
 					"mvc.command.name", "/object_entries/edit_object_entry"
 				).build()),
@@ -563,7 +563,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_objectRelationshipLocalService,
 					_objectRelationshipService),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).put(
 					"mvc.command.name",
 					"/object_entries/edit_object_entry_related_model"
@@ -574,7 +574,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_attachmentUploadFileEntryHandler,
 					_attachmentUploadResponseHandler, _uploadHandler),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).put(
 					"mvc.command.name", "/object_entries/upload_attachment"
 				).build()),
@@ -583,7 +583,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				new EditObjectEntryMVCRenderCommand(
 					_objectEntryDisplayContextFactory, _portal),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).put(
 					"mvc.command.name", "/object_entries/edit_object_entry"
 				).build()),
@@ -604,14 +604,14 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_portal.getClassNameId(objectDefinition.getClassName()),
 					UserNotificationDefinition.NOTIFICATION_TYPE_UPDATE_ENTRY),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).build()),
 			_bundleContext.registerService(
 				UserNotificationHandler.class,
 				new ObjectUserNotificationsHandler(
 					_assetDisplayPageFriendlyURLProvider, objectDefinition),
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", objectDefinition.getPortletId()
+					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).build()));
 
 		if (FeatureFlagManagerUtil.isEnabled("LPD-21926")) {

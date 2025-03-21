@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Zoltán Takács
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v2.0")
+@jakarta.ws.rs.Path("/v2.0")
 public abstract class BaseCategoryResourceImpl implements CategoryResource {
 
 	/**
@@ -57,14 +57,14 @@ public abstract class BaseCategoryResourceImpl implements CategoryResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Category")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/discount-categories/{discountCategoryId}/category")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/discount-categories/{discountCategoryId}/category")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Category getDiscountCategoryCategory(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("discountCategoryId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("discountCategoryId")
 			Long discountCategoryId)
 		throws Exception {
 
@@ -87,16 +87,16 @@ public abstract class BaseCategoryResourceImpl implements CategoryResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Category")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/price-modifier-categories/{priceModifierCategoryId}/category"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Category getPriceModifierCategoryCategory(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("priceModifierCategoryId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("priceModifierCategoryId")
 			Long priceModifierCategoryId)
 		throws Exception {
 

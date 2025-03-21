@@ -37,7 +37,7 @@ public class CommerceTermEntryPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommerceTermEntryPortletKeys.COMMERCE_TERM_ENTRY + ")"
+		target = "(jakarta.portlet.name=" + CommerceTermEntryPortletKeys.COMMERCE_TERM_ENTRY + ")"
 	)
 	private Portlet _portlet;
 

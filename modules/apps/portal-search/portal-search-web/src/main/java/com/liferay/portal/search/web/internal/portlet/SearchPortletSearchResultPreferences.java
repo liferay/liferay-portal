@@ -12,7 +12,7 @@ import com.liferay.portal.search.web.internal.display.context.ThemeDisplaySuppli
 import com.liferay.portal.search.web.internal.document.DocumentFormPermissionChecker;
 import com.liferay.portal.search.web.internal.document.DocumentFormPermissionCheckerImpl;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author André de Oliveira

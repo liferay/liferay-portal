@@ -9,16 +9,16 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.CacheControl;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.WindowState;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import java.util.Locale;
-
-import javax.portlet.CacheControl;
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletRequest;
-import javax.portlet.WindowState;
 
 /**
  * @author Brian Wing Shun Chan

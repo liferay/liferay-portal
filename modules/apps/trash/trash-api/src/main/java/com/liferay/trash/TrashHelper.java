@@ -11,9 +11,9 @@ import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.trash.model.TrashEntry;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

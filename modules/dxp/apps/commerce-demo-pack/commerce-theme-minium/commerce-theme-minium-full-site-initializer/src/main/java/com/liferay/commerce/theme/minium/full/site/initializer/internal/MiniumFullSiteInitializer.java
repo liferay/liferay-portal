@@ -31,10 +31,10 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.site.exception.InitializationException;
 import com.liferay.site.initializer.SiteInitializer;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

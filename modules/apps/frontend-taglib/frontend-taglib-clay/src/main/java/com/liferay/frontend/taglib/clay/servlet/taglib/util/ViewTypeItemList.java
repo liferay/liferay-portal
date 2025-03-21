@@ -10,10 +10,10 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.ArrayList;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Carlos Lancha

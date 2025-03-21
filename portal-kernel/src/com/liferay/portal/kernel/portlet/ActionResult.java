@@ -5,12 +5,12 @@
 
 package com.liferay.portal.kernel.portlet;
 
+import jakarta.portlet.Event;
+
 import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.List;
-
-import javax.portlet.Event;
 
 /**
  * @author Shuyang Zhou

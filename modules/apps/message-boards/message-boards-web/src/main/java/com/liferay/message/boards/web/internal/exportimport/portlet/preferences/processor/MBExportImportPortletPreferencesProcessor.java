@@ -28,9 +28,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.xml.Element;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gergely Mathe
  */
 @Component(
-	property = "javax.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS,
+	property = "jakarta.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class MBExportImportPortletPreferencesProcessor
@@ -248,7 +248,7 @@ public class MBExportImportPortletPreferencesProcessor
 	private MBCategoryLocalService _mbCategoryLocalService;
 
 	@Reference(
-		target = "(javax.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS + ")"
+		target = "(jakarta.portlet.name=" + MBPortletKeys.MESSAGE_BOARDS + ")"
 	)
 	private PortletDataHandler _mbPortletDataHandler;
 

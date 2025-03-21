@@ -11,8 +11,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 

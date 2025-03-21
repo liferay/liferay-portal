@@ -37,7 +37,7 @@ public class CommerceHealthCheckPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePortletKeys.COMMERCE_HEALTH_CHECK + ")"
+		target = "(jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_HEALTH_CHECK + ")"
 	)
 	private Portlet _portlet;
 

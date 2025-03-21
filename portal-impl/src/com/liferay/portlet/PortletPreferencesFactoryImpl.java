@@ -56,20 +56,20 @@ import com.liferay.portal.kernel.xml.StAXReaderUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.portletconfiguration.util.ConfigurationPortletRequest;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PreferencesValidator;
+import jakarta.portlet.filter.PortletRequestWrapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-import javax.portlet.PreferencesValidator;
-import javax.portlet.filter.PortletRequestWrapper;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;

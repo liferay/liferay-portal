@@ -8,18 +8,18 @@ package com.liferay.portlet.internal;
 import com.liferay.portal.kernel.servlet.Header;
 import com.liferay.portal.kernel.servlet.MetaInfoCacheServletResponse;
 
+import jakarta.portlet.CacheControl;
+import jakarta.portlet.MimeResponse;
+
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.CacheControl;
-import javax.portlet.MimeResponse;
-
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author Brian Wing Shun Chan

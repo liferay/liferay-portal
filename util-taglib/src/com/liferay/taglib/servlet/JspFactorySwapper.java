@@ -7,7 +7,7 @@ package com.liferay.taglib.servlet;
 
 import com.liferay.portal.kernel.util.ServerDetector;
 
-import javax.servlet.jsp.JspFactory;
+import jakarta.servlet.jsp.JspFactory;
 
 /**
  * @author Shuyang Zhou

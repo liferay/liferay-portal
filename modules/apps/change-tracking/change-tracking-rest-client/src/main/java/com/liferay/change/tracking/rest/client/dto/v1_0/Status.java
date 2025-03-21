@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author David Truong

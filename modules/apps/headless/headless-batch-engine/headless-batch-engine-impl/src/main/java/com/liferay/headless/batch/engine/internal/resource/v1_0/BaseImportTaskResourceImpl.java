@@ -28,20 +28,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Ivica Cardic
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseImportTaskResourceImpl
 	implements ImportTaskResource, VulcanCRUDItemDelegate<ImportTask> {
 
@@ -64,16 +64,16 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/import-task/by-external-reference-code/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ImportTask getImportTaskByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -99,16 +99,16 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/import-task/by-external-reference-code/{externalReferenceCode}/content"
 	)
-	@javax.ws.rs.Produces("application/octet-stream")
+	@jakarta.ws.rs.Produces("application/octet-stream")
 	@Override
 	public Response getImportTaskByExternalReferenceCodeContent(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -133,16 +133,16 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/import-task/by-external-reference-code/{externalReferenceCode}/failed-items/report"
 	)
-	@javax.ws.rs.Produces("application/octet-stream")
+	@jakarta.ws.rs.Produces("application/octet-stream")
 	@Override
 	public Response getImportTaskByExternalReferenceCodeFailedItemReport(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -187,32 +187,32 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.Consumes(
+	@jakarta.ws.rs.Consumes(
 		{
 			"application/json", "application/x-ndjson", "application/xml",
 			"text/csv"
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/import-task/{className}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/import-task/{className}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ImportTask deleteImportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("className")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("className")
 			String className,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("externalReferenceCode")
+			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("importStrategy")
+			@jakarta.ws.rs.QueryParam("importStrategy")
 			String importStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("taskItemDelegateName")
+			@jakarta.ws.rs.QueryParam("taskItemDelegateName")
 			String taskItemDelegateName,
 			Object object)
 		throws Exception {
@@ -256,27 +256,27 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/import-task/{className}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/import-task/{className}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ImportTask deleteImportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("className")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("className")
 			String className,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("externalReferenceCode")
+			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("importStrategy")
+			@jakarta.ws.rs.QueryParam("importStrategy")
 			String importStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("taskItemDelegateName")
+			@jakarta.ws.rs.QueryParam("taskItemDelegateName")
 			String taskItemDelegateName,
 			MultipartBody multipartBody)
 		throws Exception {
@@ -336,44 +336,44 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.Consumes(
+	@jakarta.ws.rs.Consumes(
 		{
 			"application/json", "application/x-ndjson", "application/xml",
 			"text/csv"
 		}
 	)
-	@javax.ws.rs.Path("/import-task/{className}")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/import-task/{className}")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ImportTask postImportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("className")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("className")
 			String className,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("batchExternalReferenceCode")
+			@jakarta.ws.rs.QueryParam("batchExternalReferenceCode")
 			String batchExternalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("batchRestrictFields")
+			@jakarta.ws.rs.QueryParam("batchRestrictFields")
 			String batchRestrictFields,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("createStrategy")
+			@jakarta.ws.rs.QueryParam("createStrategy")
 			String createStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("externalReferenceCode")
+			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("fieldNameMapping")
+			@jakarta.ws.rs.QueryParam("fieldNameMapping")
 			String fieldNameMapping,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("importStrategy")
+			@jakarta.ws.rs.QueryParam("importStrategy")
 			String importStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("taskItemDelegateName")
+			@jakarta.ws.rs.QueryParam("taskItemDelegateName")
 			String taskItemDelegateName,
 			Object object)
 		throws Exception {
@@ -433,39 +433,39 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.Path("/import-task/{className}")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path("/import-task/{className}")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ImportTask postImportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("className")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("className")
 			String className,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("batchExternalReferenceCode")
+			@jakarta.ws.rs.QueryParam("batchExternalReferenceCode")
 			String batchExternalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("batchRestrictFields")
+			@jakarta.ws.rs.QueryParam("batchRestrictFields")
 			String batchRestrictFields,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("createStrategy")
+			@jakarta.ws.rs.QueryParam("createStrategy")
 			String createStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("externalReferenceCode")
+			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("fieldNameMapping")
+			@jakarta.ws.rs.QueryParam("fieldNameMapping")
 			String fieldNameMapping,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("importStrategy")
+			@jakarta.ws.rs.QueryParam("importStrategy")
 			String importStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("taskItemDelegateName")
+			@jakarta.ws.rs.QueryParam("taskItemDelegateName")
 			String taskItemDelegateName,
 			MultipartBody multipartBody)
 		throws Exception {
@@ -513,35 +513,35 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.Consumes(
+	@jakarta.ws.rs.Consumes(
 		{
 			"application/json", "application/x-ndjson", "application/xml",
 			"text/csv"
 		}
 	)
-	@javax.ws.rs.Path("/import-task/{className}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Path("/import-task/{className}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public ImportTask putImportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("className")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("className")
 			String className,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("externalReferenceCode")
+			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("importStrategy")
+			@jakarta.ws.rs.QueryParam("importStrategy")
 			String importStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("taskItemDelegateName")
+			@jakarta.ws.rs.QueryParam("taskItemDelegateName")
 			String taskItemDelegateName,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("updateStrategy")
+			@jakarta.ws.rs.QueryParam("updateStrategy")
 			String updateStrategy,
 			Object object)
 		throws Exception {
@@ -589,30 +589,30 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.Path("/import-task/{className}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path("/import-task/{className}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public ImportTask putImportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("className")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("className")
 			String className,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("externalReferenceCode")
+			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("importStrategy")
+			@jakarta.ws.rs.QueryParam("importStrategy")
 			String importStrategy,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("taskItemDelegateName")
+			@jakarta.ws.rs.QueryParam("taskItemDelegateName")
 			String taskItemDelegateName,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("updateStrategy")
+			@jakarta.ws.rs.QueryParam("updateStrategy")
 			String updateStrategy,
 			MultipartBody multipartBody)
 		throws Exception {
@@ -639,14 +639,14 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/import-task/{importTaskId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/import-task/{importTaskId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ImportTask getImportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("importTaskId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("importTaskId")
 			Long importTaskId)
 		throws Exception {
 
@@ -672,14 +672,14 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/import-task/{importTaskId}/content")
-	@javax.ws.rs.Produces("application/octet-stream")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/import-task/{importTaskId}/content")
+	@jakarta.ws.rs.Produces("application/octet-stream")
 	@Override
 	public Response getImportTaskContent(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("importTaskId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("importTaskId")
 			Long importTaskId)
 		throws Exception {
 
@@ -704,14 +704,14 @@ public abstract class BaseImportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ImportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/import-task/{importTaskId}/failed-items/report")
-	@javax.ws.rs.Produces("application/octet-stream")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/import-task/{importTaskId}/failed-items/report")
+	@jakarta.ws.rs.Produces("application/octet-stream")
 	@Override
 	public Response getImportTaskFailedItemReport(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("importTaskId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("importTaskId")
 			Long importTaskId)
 		throws Exception {
 

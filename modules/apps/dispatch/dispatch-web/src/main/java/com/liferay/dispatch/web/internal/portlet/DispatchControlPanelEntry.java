@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Matija Petanjek
  */
 @Component(
-	property = "javax.portlet.name=" + DispatchPortletKeys.DISPATCH,
+	property = "jakarta.portlet.name=" + DispatchPortletKeys.DISPATCH,
 	service = ControlPanelEntry.class
 )
 public class DispatchControlPanelEntry extends BaseControlPanelEntry {

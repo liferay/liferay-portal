@@ -8,6 +8,10 @@ package com.liferay.portlet.test;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletContext;
 
+import jakarta.portlet.PortletRequestDispatcher;
+
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 
 import java.net.MalformedURLException;
@@ -16,10 +20,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.PortletRequestDispatcher;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author David Arques

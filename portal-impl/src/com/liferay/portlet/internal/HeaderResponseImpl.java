@@ -28,6 +28,12 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.xml.StAXReaderUtil;
 
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -40,12 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.HeaderRequest;
-import javax.portlet.PortletRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -72,7 +72,7 @@ public class HeaderResponseImpl
 		}
 
 		if (Objects.equals(name, "PortletHub") &&
-			Objects.equals(scope, "javax.portlet")) {
+			Objects.equals(scope, "jakarta.portlet")) {
 
 			return;
 		}

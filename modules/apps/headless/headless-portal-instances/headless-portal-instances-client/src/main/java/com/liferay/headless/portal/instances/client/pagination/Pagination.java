@@ -5,7 +5,7 @@
 
 package com.liferay.headless.portal.instances.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Alberto Chaparro

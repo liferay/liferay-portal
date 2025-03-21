@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.instance.tracker.url.provider;
 
 import com.liferay.osgi.util.ServiceTrackerFactory;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;

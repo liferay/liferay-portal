@@ -53,7 +53,7 @@ public class FriendlyURLMapperTrackerImplTest {
 			bundleContext.registerService(
 				FriendlyURLMapper.class, friendlyURLMapper,
 				MapUtil.singletonDictionary(
-					"javax.portlet.name", _PORTLET_NAME));
+					"jakarta.portlet.name", _PORTLET_NAME));
 
 		try {
 			Assert.assertSame(

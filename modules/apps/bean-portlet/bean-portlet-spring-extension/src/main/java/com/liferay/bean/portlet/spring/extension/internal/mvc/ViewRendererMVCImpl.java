@@ -10,27 +10,27 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.annotation.ManagedBean;
+
+import jakarta.mvc.Models;
+import jakarta.mvc.binding.BindingResult;
+import jakarta.mvc.binding.ParamError;
+import jakarta.mvc.engine.ViewEngine;
+import jakarta.mvc.engine.ViewEngineException;
+
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+
+import jakarta.ws.rs.core.Configuration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.ManagedBean;
-
-import javax.mvc.Models;
-import javax.mvc.binding.BindingResult;
-import javax.mvc.binding.ParamError;
-import javax.mvc.engine.ViewEngine;
-import javax.mvc.engine.ViewEngineException;
-
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-
-import javax.ws.rs.core.Configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -175,8 +175,8 @@ public class ViewRendererMVCImpl
 
 		private ViewEnginePriorityComparator() {
 
-			// The Javadoc for javax.mvc.engine.ViewEngine states "View engines
-			// can be decorated with javax.annotation.Priority to indicate their
+			// The Javadoc for jakarta.mvc.engine.ViewEngine states "View engines
+			// can be decorated with jakarta.annotation.Priority to indicate their
 			// priority; otherwise the priority is assumed to be
 			// ViewEngine.PRIORITY_APPLICATION."
 

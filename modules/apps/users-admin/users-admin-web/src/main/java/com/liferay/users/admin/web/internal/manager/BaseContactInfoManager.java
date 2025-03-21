@@ -5,9 +5,9 @@
 
 package com.liferay.users.admin.web.internal.manager;
 
-import java.util.List;
+import jakarta.portlet.ActionRequest;
 
-import javax.portlet.ActionRequest;
+import java.util.List;
 
 /**
  * @author Drew Brokke

@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Akos Thurzo
  */
 @Component(
-	property = "javax.portlet.name=" + SiteTeamsPortletKeys.SITE_TEAMS,
+	property = "jakarta.portlet.name=" + SiteTeamsPortletKeys.SITE_TEAMS,
 	service = StagedModelDataHandler.class
 )
 public class TeamStagedModelDataHandler

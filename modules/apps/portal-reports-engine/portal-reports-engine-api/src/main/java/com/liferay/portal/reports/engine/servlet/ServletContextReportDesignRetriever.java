@@ -7,11 +7,11 @@ package com.liferay.portal.reports.engine.servlet;
 
 import com.liferay.portal.reports.engine.ReportDesignRetriever;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 
 import java.util.Date;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Michael C. Han

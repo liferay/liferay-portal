@@ -5,10 +5,10 @@
 
 package com.liferay.bean.portlet.extension;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

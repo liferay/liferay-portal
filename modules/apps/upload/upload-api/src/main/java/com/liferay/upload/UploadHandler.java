@@ -7,8 +7,8 @@ package com.liferay.upload;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Alejandro Tardín

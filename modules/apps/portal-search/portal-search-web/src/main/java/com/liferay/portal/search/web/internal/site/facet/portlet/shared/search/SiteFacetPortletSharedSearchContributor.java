@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author André de Oliveira
  */
 @Component(
-	property = "javax.portlet.name=" + SiteFacetPortletKeys.SITE_FACET,
+	property = "jakarta.portlet.name=" + SiteFacetPortletKeys.SITE_FACET,
 	service = PortletSharedSearchContributor.class
 )
 public class SiteFacetPortletSharedSearchContributor

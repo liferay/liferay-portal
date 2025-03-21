@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + MentionsPortletKeys.MENTIONS,
+	property = "jakarta.portlet.name=" + MentionsPortletKeys.MENTIONS,
 	service = UserNotificationHandler.class
 )
 public class MentionsUserNotificationHandler

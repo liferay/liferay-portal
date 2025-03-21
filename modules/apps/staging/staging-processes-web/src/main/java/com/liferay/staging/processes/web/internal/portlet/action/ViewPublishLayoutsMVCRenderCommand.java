@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES,
+		"jakarta.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES,
 		"mvc.command.name=/staging_processes/view_publish_layouts"
 	},
 	service = MVCRenderCommand.class

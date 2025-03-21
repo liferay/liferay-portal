@@ -22,11 +22,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.util.PortalInstances;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Collection;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Manuel de la Peña

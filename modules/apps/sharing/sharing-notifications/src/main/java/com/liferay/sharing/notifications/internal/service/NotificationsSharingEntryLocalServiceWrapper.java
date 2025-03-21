@@ -37,6 +37,8 @@ import com.liferay.sharing.notifications.internal.util.SharingNotificationSubcri
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalServiceWrapper;
 
+import jakarta.portlet.PortletRequest;
+
 import java.text.Format;
 
 import java.util.Collection;
@@ -44,8 +46,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import javax.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -9,9 +9,9 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.util.SetUtil;
 
-import java.util.Set;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletResponse;
+import java.util.Set;
 
 /**
  * @author Andrea Di Giorgi

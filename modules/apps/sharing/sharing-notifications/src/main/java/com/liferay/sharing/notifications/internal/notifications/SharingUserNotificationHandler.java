@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alejandro Tardín
  */
 @Component(
-	property = "javax.portlet.name=" + SharingPortletKeys.SHARING,
+	property = "jakarta.portlet.name=" + SharingPortletKeys.SHARING,
 	service = UserNotificationHandler.class
 )
 public class SharingUserNotificationHandler

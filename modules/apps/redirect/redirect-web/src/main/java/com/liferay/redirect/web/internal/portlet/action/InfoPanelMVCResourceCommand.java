@@ -14,11 +14,11 @@ import com.liferay.redirect.service.RedirectEntryLocalService;
 import com.liferay.redirect.web.internal.constants.RedirectPortletKeys;
 import com.liferay.redirect.web.internal.display.context.RedirectEntryInfoPanelDisplayContext;
 
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + RedirectPortletKeys.REDIRECT,
+		"jakarta.portlet.name=" + RedirectPortletKeys.REDIRECT,
 		"mvc.command.name=/redirect/info_panel"
 	},
 	service = MVCResourceCommand.class

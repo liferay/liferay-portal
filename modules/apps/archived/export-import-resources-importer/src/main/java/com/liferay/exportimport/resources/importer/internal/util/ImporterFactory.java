@@ -39,12 +39,12 @@ import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.plugin.PluginPackageUtil;
 import com.liferay.portal.search.index.IndexStatusManager;
 
+import jakarta.servlet.ServletContext;
+
 import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.Set;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

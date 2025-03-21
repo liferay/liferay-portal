@@ -8,10 +8,10 @@ package com.liferay.portal.kernel.portlet;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletRequest;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan

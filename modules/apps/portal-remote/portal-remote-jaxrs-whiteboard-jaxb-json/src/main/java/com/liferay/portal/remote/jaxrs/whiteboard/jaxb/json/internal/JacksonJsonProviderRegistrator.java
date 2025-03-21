@@ -7,11 +7,11 @@ package com.liferay.portal.remote.jaxrs.whiteboard.jaxb.json.internal;
 
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
-import java.util.Map;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
+import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

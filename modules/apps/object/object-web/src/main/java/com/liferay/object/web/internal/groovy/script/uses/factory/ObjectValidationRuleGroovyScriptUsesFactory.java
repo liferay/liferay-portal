@@ -16,9 +16,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.script.management.groovy.script.use.GroovyScriptUse;
 import com.liferay.portal.security.script.management.groovy.script.uses.factory.GroovyScriptUsesFactory;
 
-import java.util.List;
+import jakarta.portlet.ResourceRequest;
 
-import javax.portlet.ResourceRequest;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

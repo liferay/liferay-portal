@@ -8,19 +8,19 @@ package com.liferay.bean.portlet.extension;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.ProcessAction;
+import jakarta.portlet.RenderMode;
+import jakarta.portlet.annotations.ActionMethod;
+import jakarta.portlet.annotations.EventMethod;
+import jakarta.portlet.annotations.HeaderMethod;
+import jakarta.portlet.annotations.PortletQName;
+import jakarta.portlet.annotations.RenderMethod;
+import jakarta.portlet.annotations.ServeResourceMethod;
+
 import java.lang.reflect.Method;
 
 import java.util.Objects;
-
-import javax.portlet.PortletMode;
-import javax.portlet.ProcessAction;
-import javax.portlet.RenderMode;
-import javax.portlet.annotations.ActionMethod;
-import javax.portlet.annotations.EventMethod;
-import javax.portlet.annotations.HeaderMethod;
-import javax.portlet.annotations.PortletQName;
-import javax.portlet.annotations.RenderMethod;
-import javax.portlet.annotations.ServeResourceMethod;
 
 import javax.xml.namespace.QName;
 

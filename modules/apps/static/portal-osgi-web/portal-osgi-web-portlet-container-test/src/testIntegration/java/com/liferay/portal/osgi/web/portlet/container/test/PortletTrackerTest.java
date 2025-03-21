@@ -35,6 +35,12 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.util.WebAppPool;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -49,12 +55,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -450,13 +450,13 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 		@Override
 		public void start(BundleContext bundleContext) throws Exception {
 			bundleContext.registerService(
-				javax.portlet.Portlet.class,
-				(javax.portlet.Portlet)ProxyUtil.newProxyInstance(
-					javax.portlet.Portlet.class.getClassLoader(),
-					new Class<?>[] {javax.portlet.Portlet.class},
+				jakarta.portlet.Portlet.class,
+				(jakarta.portlet.Portlet)ProxyUtil.newProxyInstance(
+					jakarta.portlet.Portlet.class.getClassLoader(),
+					new Class<?>[] {jakarta.portlet.Portlet.class},
 					(proxy, method, args) -> method.getDefaultValue()),
 				MapUtil.singletonDictionary(
-					"javax.portlet.name", TEST_BUNDLE_TEST_PORTLET_NAME));
+					"jakarta.portlet.name", TEST_BUNDLE_TEST_PORTLET_NAME));
 		}
 
 		@Override
@@ -519,7 +519,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 		// Register portlet using class name
 
 		registerService(
-			javax.portlet.Portlet.class, _internalClassTestPortlet,
+			jakarta.portlet.Portlet.class, _internalClassTestPortlet,
 			new HashMapDictionary<String, Object>());
 
 		_testPortletIsAvailable(expectedPortletId);
@@ -578,7 +578,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 		attributes.putValue(Constants.BUNDLE_VERSION, "1.0.0");
 		attributes.putValue(
 			Constants.IMPORT_PACKAGE,
-			"com.liferay.portal.kernel.util,javax.portlet,org.osgi.framework");
+			"com.liferay.portal.kernel.util,jakarta.portlet,org.osgi.framework");
 
 		attributes.putValue("Manifest-Version", "2");
 

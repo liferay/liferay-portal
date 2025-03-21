@@ -7,9 +7,9 @@ package com.liferay.portal.vulcan.fields;
 
 import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.List;
+import jakarta.ws.rs.core.MultivaluedMap;
 
-import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
 
 import org.apache.cxf.message.Message;
 

@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.portlet.SearchDisplayStyleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Drew Brokke

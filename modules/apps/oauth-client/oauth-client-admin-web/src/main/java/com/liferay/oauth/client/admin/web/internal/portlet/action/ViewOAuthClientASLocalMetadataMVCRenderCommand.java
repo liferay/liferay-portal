@@ -8,8 +8,8 @@ package com.liferay.oauth.client.admin.web.internal.portlet.action;
 import com.liferay.oauth.client.admin.web.internal.constants.OAuthClientAdminPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + OAuthClientAdminPortletKeys.OAUTH_CLIENT_ADMIN,
+		"jakarta.portlet.name=" + OAuthClientAdminPortletKeys.OAUTH_CLIENT_ADMIN,
 		"mvc.command.name=/oauth_client_admin/view_oauth_client_as_local_metadata"
 	},
 	service = MVCRenderCommand.class

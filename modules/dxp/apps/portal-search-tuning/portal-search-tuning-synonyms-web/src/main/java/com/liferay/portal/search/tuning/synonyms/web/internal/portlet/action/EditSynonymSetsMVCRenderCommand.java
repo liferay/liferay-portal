@@ -13,9 +13,9 @@ import com.liferay.portal.search.tuning.synonyms.web.internal.constants.Synonyms
 import com.liferay.portal.search.tuning.synonyms.web.internal.display.context.EditSynonymSetsDisplayBuilder;
 import com.liferay.portal.search.tuning.synonyms.web.internal.index.SynonymSetIndexReader;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SynonymsPortletKeys.SYNONYMS,
+		"jakarta.portlet.name=" + SynonymsPortletKeys.SYNONYMS,
 		"mvc.command.name=/synonyms/edit_synonym_sets"
 	},
 	service = MVCRenderCommand.class

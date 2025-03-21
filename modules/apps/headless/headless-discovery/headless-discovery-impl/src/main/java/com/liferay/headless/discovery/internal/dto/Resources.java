@@ -5,10 +5,10 @@
 
 package com.liferay.headless.discovery.internal.dto;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Javier Gamarra

@@ -5,7 +5,7 @@
 
 package com.liferay.headless.user.notification.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Carlos Correa

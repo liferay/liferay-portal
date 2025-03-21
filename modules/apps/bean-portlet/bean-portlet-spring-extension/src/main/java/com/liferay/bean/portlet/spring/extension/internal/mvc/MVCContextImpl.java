@@ -11,6 +11,20 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.mvc.MvcContext;
+import jakarta.mvc.locale.LocaleResolver;
+import jakarta.mvc.locale.LocaleResolverContext;
+import jakarta.mvc.security.Csrf;
+import jakarta.mvc.security.Encoders;
+
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.http.Cookie;
+
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.UriBuilder;
+
 import java.net.URI;
 
 import java.util.Collections;
@@ -19,20 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.mvc.MvcContext;
-import javax.mvc.locale.LocaleResolver;
-import javax.mvc.locale.LocaleResolverContext;
-import javax.mvc.security.Csrf;
-import javax.mvc.security.Encoders;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletRequest;
-
-import javax.servlet.http.Cookie;
-
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.UriBuilder;
 
 /**
  * @author Neil Griffin
@@ -63,7 +63,7 @@ public class MVCContextImpl implements MvcContext {
 		_csrf = new CsrfImpl(
 			"p_auth", csrfLiferayPortletURL.getParameter("p_auth"));
 
-		Map<String, javax.ws.rs.core.Cookie> cookieMap = new HashMap<>();
+		Map<String, jakarta.ws.rs.core.Cookie> cookieMap = new HashMap<>();
 
 		Cookie[] cookies = portletRequest.getCookies();
 
@@ -71,7 +71,7 @@ public class MVCContextImpl implements MvcContext {
 			for (Cookie cookie : cookies) {
 				cookieMap.put(
 					cookie.getName(),
-					new javax.ws.rs.core.Cookie(
+					new jakarta.ws.rs.core.Cookie(
 						cookie.getName(), cookie.getValue()));
 			}
 		}

@@ -5,10 +5,10 @@
 
 package com.liferay.portal.remote.soap.extender.test;
 
+import jakarta.xml.ws.handler.Handler;
+
 import java.util.Dictionary;
 import java.util.Hashtable;
-
-import javax.xml.ws.handler.Handler;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

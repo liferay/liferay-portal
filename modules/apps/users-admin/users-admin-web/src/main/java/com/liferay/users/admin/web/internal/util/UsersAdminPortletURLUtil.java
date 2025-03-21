@@ -16,8 +16,8 @@ import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
 import com.liferay.users.admin.constants.UserScreenNavigationEntryConstants;
 
-import javax.portlet.RenderResponse;
-import javax.portlet.RenderURL;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.RenderURL;
 
 /**
  * @author Samuel Trong Tran

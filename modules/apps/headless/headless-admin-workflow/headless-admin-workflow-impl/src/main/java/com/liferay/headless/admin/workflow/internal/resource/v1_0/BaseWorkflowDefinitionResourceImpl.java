@@ -48,23 +48,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseWorkflowDefinitionResourceImpl
 	implements EntityModelResource,
 			   VulcanBatchEngineTaskItemDelegate<WorkflowDefinition>,
@@ -101,16 +101,16 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/workflow-definitions")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/workflow-definitions")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<WorkflowDefinition> getWorkflowDefinitionsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("active")
+			@jakarta.ws.rs.QueryParam("active")
 			Boolean active,
-			@javax.ws.rs.core.Context Pagination pagination,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
 		throws Exception {
 
@@ -151,26 +151,26 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/workflow-definitions/export-batch")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/workflow-definitions/export-batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postWorkflowDefinitionsPageExportBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("active")
+			@jakarta.ws.rs.QueryParam("active")
 			Boolean active,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.DefaultValue("JSON")
-			@javax.ws.rs.QueryParam("contentType")
+			@jakarta.ws.rs.DefaultValue("JSON")
+			@jakarta.ws.rs.QueryParam("contentType")
 			String contentType,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("fieldNames")
+			@jakarta.ws.rs.QueryParam("fieldNames")
 			String fieldNames)
 		throws Exception {
 
@@ -203,10 +203,10 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/workflow-definitions")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/workflow-definitions")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WorkflowDefinition postWorkflowDefinition(
 			WorkflowDefinition workflowDefinition)
@@ -233,14 +233,14 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/workflow-definitions/batch")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/workflow-definitions/batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postWorkflowDefinitionBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -287,19 +287,19 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/workflow-definitions/by-name/{name}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/workflow-definitions/by-name/{name}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WorkflowDefinition getWorkflowDefinitionByName(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("name")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("name")
 			String name,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("contentFormat")
+			@jakarta.ws.rs.QueryParam("contentFormat")
 			String contentFormat,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("version")
+			@jakarta.ws.rs.QueryParam("version")
 			Integer version)
 		throws Exception {
 
@@ -316,10 +316,10 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/workflow-definitions/deploy")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/workflow-definitions/deploy")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WorkflowDefinition postWorkflowDefinitionDeploy(
 			WorkflowDefinition workflowDefinition)
@@ -338,10 +338,10 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/workflow-definitions/save")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/workflow-definitions/save")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WorkflowDefinition postWorkflowDefinitionSave(
 			WorkflowDefinition workflowDefinition)
@@ -372,18 +372,18 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/workflow-definitions/undeploy")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/workflow-definitions/undeploy")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteWorkflowDefinitionUndeploy(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.QueryParam("name")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("name")
 			String name,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.QueryParam("version")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("version")
 			String version)
 		throws Exception {
 	}
@@ -414,22 +414,22 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Path("/workflow-definitions/update-active")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/workflow-definitions/update-active")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WorkflowDefinition postWorkflowDefinitionUpdateActive(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.QueryParam("active")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("active")
 			Boolean active,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.QueryParam("name")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("name")
 			String name,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.QueryParam("version")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("version")
 			String version)
 		throws Exception {
 
@@ -454,14 +454,14 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/workflow-definitions/{workflowDefinitionId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/workflow-definitions/{workflowDefinitionId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteWorkflowDefinition(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("workflowDefinitionId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("workflowDefinitionId")
 			Long workflowDefinitionId)
 		throws Exception {
 	}
@@ -484,14 +484,14 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/workflow-definitions/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/workflow-definitions/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteWorkflowDefinitionBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -530,14 +530,14 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/workflow-definitions/{workflowDefinitionId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/workflow-definitions/{workflowDefinitionId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WorkflowDefinition getWorkflowDefinition(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("workflowDefinitionId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("workflowDefinitionId")
 			Long workflowDefinitionId)
 		throws Exception {
 
@@ -562,15 +562,15 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/workflow-definitions/{workflowDefinitionId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/workflow-definitions/{workflowDefinitionId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public WorkflowDefinition putWorkflowDefinition(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("workflowDefinitionId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("workflowDefinitionId")
 			Long workflowDefinitionId,
 			WorkflowDefinition workflowDefinition)
 		throws Exception {
@@ -596,14 +596,14 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "WorkflowDefinition")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/workflow-definitions/batch")
-	@javax.ws.rs.Produces("application/json")
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/workflow-definitions/batch")
+	@jakarta.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.PUT
 	@Override
 	public Response putWorkflowDefinitionBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {

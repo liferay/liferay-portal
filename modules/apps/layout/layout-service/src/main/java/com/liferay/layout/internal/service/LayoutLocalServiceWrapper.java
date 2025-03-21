@@ -623,7 +623,7 @@ public class LayoutLocalServiceWrapper
 						sourceLayout.getCompanyId(), sourceLayout.getGroupId(),
 						0, sourceLayout.getPlid(), portletId);
 
-				javax.portlet.PortletPreferences jxPortletPreferences =
+				jakarta.portlet.PortletPreferences jxPortletPreferences =
 					_portletPreferencesLocalService.fetchPreferences(
 						portletPreferencesIds);
 

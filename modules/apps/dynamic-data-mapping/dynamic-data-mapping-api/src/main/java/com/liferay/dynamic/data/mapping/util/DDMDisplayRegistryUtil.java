@@ -38,7 +38,7 @@ public class DDMDisplayRegistryUtil {
 		BundleContext bundleContext = bundle.getBundleContext();
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, DDMDisplay.class, "javax.portlet.name");
+			bundleContext, DDMDisplay.class, "jakarta.portlet.name");
 	}
 
 }

@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Kevin Tan
  */
 @Component(
-	property = "javax.portlet.name=" + SiteFacetPortletKeys.SITE_FACET,
+	property = "jakarta.portlet.name=" + SiteFacetPortletKeys.SITE_FACET,
 	service = TemplateHandler.class
 )
 public class SiteFacetPortletDisplayTemplateHandler

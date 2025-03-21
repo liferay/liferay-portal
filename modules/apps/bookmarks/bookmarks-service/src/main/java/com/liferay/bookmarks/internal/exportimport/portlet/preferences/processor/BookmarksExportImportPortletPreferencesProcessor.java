@@ -29,11 +29,11 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.xml.Element;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Máté Thurzó
  */
 @Component(
-	property = "javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
+	property = "jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class BookmarksExportImportPortletPreferencesProcessor
@@ -249,7 +249,7 @@ public class BookmarksExportImportPortletPreferencesProcessor
 		_bookmarksFolderStagedModelRepository;
 
 	@Reference(
-		target = "(javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS + ")"
+		target = "(jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS + ")"
 	)
 	private PortletDataHandler _bookmarksPortletDataHandler;
 

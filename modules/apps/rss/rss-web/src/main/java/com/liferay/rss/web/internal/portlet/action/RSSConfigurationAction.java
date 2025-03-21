@@ -16,14 +16,14 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 import com.liferay.rss.constants.RSSPortletKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Brian Wing Shun Chan
  */
 @Component(
-	property = "javax.portlet.name=" + RSSPortletKeys.RSS,
+	property = "jakarta.portlet.name=" + RSSPortletKeys.RSS,
 	service = ConfigurationAction.class
 )
 public class RSSConfigurationAction extends BaseConfigurationAction {

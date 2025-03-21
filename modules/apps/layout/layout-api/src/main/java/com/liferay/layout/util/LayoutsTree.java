@@ -7,9 +7,9 @@ package com.liferay.layout.util;
 
 import com.liferay.portal.kernel.json.JSONArray;
 
-import java.util.Set;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 /**
  * @author Akos Thurzo

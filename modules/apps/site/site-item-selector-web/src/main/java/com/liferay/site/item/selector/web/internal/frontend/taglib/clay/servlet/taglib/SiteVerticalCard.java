@@ -21,10 +21,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.constants.SiteWebKeys;
 import com.liferay.site.provider.GroupURLProvider;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Collections;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

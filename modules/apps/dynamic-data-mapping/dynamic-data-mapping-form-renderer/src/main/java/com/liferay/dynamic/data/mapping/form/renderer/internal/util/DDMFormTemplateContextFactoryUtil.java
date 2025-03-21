@@ -8,7 +8,7 @@ package com.liferay.dynamic.data.mapping.form.renderer.internal.util;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Pedro Queiroz

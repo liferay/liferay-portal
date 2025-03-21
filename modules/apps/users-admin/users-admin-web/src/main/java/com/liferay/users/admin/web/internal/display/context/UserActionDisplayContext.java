@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.users.admin.user.action.contributor.UserActionContributor;
 import com.liferay.users.admin.web.internal.constants.UsersAdminWebKeys;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Drew Brokke

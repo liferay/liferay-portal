@@ -7,8 +7,8 @@ package com.liferay.portlet.test;
 
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 
-import javax.portlet.ActionURL;
-import javax.portlet.MutableActionParameters;
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.MutableActionParameters;
 
 /**
  * @author David Arques

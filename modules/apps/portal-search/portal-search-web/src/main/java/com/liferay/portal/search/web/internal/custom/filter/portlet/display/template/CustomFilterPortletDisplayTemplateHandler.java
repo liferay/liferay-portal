@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Kevin Tan
  */
 @Component(
-	property = "javax.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
+	property = "jakarta.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
 	service = TemplateHandler.class
 )
 public class CustomFilterPortletDisplayTemplateHandler

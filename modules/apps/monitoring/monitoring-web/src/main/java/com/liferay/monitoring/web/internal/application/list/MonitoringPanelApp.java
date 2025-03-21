@@ -37,7 +37,7 @@ public class MonitoringPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + MonitoringPortletKeys.MONITORING + ")"
+		target = "(jakarta.portlet.name=" + MonitoringPortletKeys.MONITORING + ")"
 	)
 	private Portlet _portlet;
 

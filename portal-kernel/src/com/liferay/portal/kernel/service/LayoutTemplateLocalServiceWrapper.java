@@ -79,7 +79,7 @@ public class LayoutTemplateLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.LayoutTemplate> init(
-		javax.servlet.ServletContext servletContext, java.lang.String[] xmls,
+		jakarta.servlet.ServletContext servletContext, java.lang.String[] xmls,
 		com.liferay.portal.kernel.plugin.PluginPackage pluginPackage) {
 
 		return _layoutTemplateLocalService.init(
@@ -89,7 +89,7 @@ public class LayoutTemplateLocalServiceWrapper
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.LayoutTemplate> init(
 		java.lang.String servletContextName,
-		javax.servlet.ServletContext servletContext, java.lang.String[] xmls,
+		jakarta.servlet.ServletContext servletContext, java.lang.String[] xmls,
 		com.liferay.portal.kernel.plugin.PluginPackage pluginPackage) {
 
 		return _layoutTemplateLocalService.init(
@@ -99,7 +99,7 @@ public class LayoutTemplateLocalServiceWrapper
 	@Override
 	public void readLayoutTemplate(
 		java.lang.String servletContextName,
-		javax.servlet.ServletContext servletContext,
+		jakarta.servlet.ServletContext servletContext,
 		java.util.Set<com.liferay.portal.kernel.model.LayoutTemplate>
 			layoutTemplates,
 		com.liferay.portal.kernel.xml.Element element, boolean standard,

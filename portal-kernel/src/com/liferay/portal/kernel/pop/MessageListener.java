@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.pop;
 
-import java.util.List;
+import jakarta.mail.Message;
 
-import javax.mail.Message;
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan

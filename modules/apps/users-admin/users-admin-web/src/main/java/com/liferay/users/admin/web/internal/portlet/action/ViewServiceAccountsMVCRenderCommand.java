@@ -14,8 +14,8 @@ import com.liferay.users.admin.user.action.contributor.UserActionContributor;
 import com.liferay.users.admin.web.internal.constants.UsersAdminWebKeys;
 import com.liferay.users.admin.web.internal.users.admin.management.toolbar.FilterContributorRegistryUtil;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Deactivate;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + UsersAdminPortletKeys.SERVICE_ACCOUNTS,
+		"jakarta.portlet.name=" + UsersAdminPortletKeys.SERVICE_ACCOUNTS,
 		"mvc.command.name=/",
 		"mvc.command.name=/users_admin/view_service_accounts"
 	},

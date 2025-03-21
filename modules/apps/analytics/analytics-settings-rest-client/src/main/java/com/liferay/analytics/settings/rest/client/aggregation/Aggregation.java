@@ -8,7 +8,7 @@ package com.liferay.analytics.settings.rest.client.aggregation;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Riccardo Ferrari

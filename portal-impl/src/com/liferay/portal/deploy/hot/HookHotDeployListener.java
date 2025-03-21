@@ -97,6 +97,9 @@ import com.liferay.portal.util.JavaScriptBundleUtil;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 
 import java.lang.reflect.Constructor;
@@ -118,9 +121,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-
-import javax.servlet.Filter;
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

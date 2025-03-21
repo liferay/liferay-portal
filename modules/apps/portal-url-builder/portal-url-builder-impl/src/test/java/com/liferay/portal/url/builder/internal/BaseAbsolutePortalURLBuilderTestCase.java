@@ -17,9 +17,9 @@ import com.liferay.portal.servlet.BrowserSnifferUtil;
 import com.liferay.portal.url.builder.facet.CacheAwareAbsolutePortalURLBuilder.CachePolicy;
 import com.liferay.portal.url.builder.internal.util.CacheHelper;
 
-import java.util.Dictionary;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Dictionary;
 
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;

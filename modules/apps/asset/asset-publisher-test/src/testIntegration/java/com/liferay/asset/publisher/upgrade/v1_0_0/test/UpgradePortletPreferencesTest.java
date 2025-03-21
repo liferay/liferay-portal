@@ -42,6 +42,8 @@ import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.lang.reflect.Constructor;
 
 import java.text.DateFormat;
@@ -49,8 +51,6 @@ import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.After;
 import org.junit.Assert;

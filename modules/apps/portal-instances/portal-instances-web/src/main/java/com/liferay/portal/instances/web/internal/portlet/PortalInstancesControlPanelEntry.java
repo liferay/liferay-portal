@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alan Huang
  */
 @Component(
-	property = "javax.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES,
+	property = "jakarta.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES,
 	service = ControlPanelEntry.class
 )
 public class PortalInstancesControlPanelEntry

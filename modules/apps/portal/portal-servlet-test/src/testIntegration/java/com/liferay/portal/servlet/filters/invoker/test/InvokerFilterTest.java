@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterConfig;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterConfig;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

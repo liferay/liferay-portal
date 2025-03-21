@@ -47,22 +47,22 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Andrea Sbarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseWishListItemResourceImpl
 	implements EntityModelResource,
 			   VulcanBatchEngineTaskItemDelegate<WishListItem>,
@@ -87,14 +87,14 @@ public abstract class BaseWishListItemResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "WishListItem")}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/wishlist-items/{wishListItemId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/wishlist-items/{wishListItemId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteWishListItem(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("wishListItemId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("wishListItemId")
 			Long wishListItemId)
 		throws Exception {
 	}
@@ -115,14 +115,14 @@ public abstract class BaseWishListItemResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "WishListItem")}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/wishlist-items/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/wishlist-items/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteWishListItemBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -170,20 +170,20 @@ public abstract class BaseWishListItemResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "WishListItem")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/wishlist-items/{wishListItemId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/wishlist-items/{wishListItemId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WishListItem getWishListItem(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("wishListItemId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("wishListItemId")
 			Long wishListItemId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("accountId")
+			@jakarta.ws.rs.QueryParam("accountId")
 			Long accountId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("currencyCode")
+			@jakarta.ws.rs.QueryParam("currencyCode")
 			String currencyCode)
 		throws Exception {
 
@@ -225,22 +225,22 @@ public abstract class BaseWishListItemResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "WishListItem")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/wishlists/{wishListId}/wishlist-items")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/wishlists/{wishListId}/wishlist-items")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<WishListItem> getWishlistWishListWishListItemsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("wishListId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("wishListId")
 			Long wishListId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("accountId")
+			@jakarta.ws.rs.QueryParam("accountId")
 			Long accountId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("currencyCode")
+			@jakarta.ws.rs.QueryParam("currencyCode")
 			String currencyCode,
-			@javax.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -266,18 +266,18 @@ public abstract class BaseWishListItemResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "WishListItem")}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/wishlists/{wishListId}/wishlist-items")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/wishlists/{wishListId}/wishlist-items")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public WishListItem postWishlistWishListWishListItem(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("wishListId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("wishListId")
 			Long wishListId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("accountId")
+			@jakarta.ws.rs.QueryParam("accountId")
 			Long accountId,
 			WishListItem wishListItem)
 		throws Exception {

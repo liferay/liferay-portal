@@ -5,8 +5,8 @@
 
 package com.liferay.portal.remote.jaxrs.security.internal.entity;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Carlos Sierra Andrés

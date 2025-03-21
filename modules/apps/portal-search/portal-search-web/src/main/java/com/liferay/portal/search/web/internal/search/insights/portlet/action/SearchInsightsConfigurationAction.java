@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.search.web.internal.search.insights.constants.SearchInsightsPortletKeys;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Wade Cao
  */
 @Component(
-	property = "javax.portlet.name=" + SearchInsightsPortletKeys.SEARCH_INSIGHTS,
+	property = "jakarta.portlet.name=" + SearchInsightsPortletKeys.SEARCH_INSIGHTS,
 	service = ConfigurationAction.class
 )
 public class SearchInsightsConfigurationAction

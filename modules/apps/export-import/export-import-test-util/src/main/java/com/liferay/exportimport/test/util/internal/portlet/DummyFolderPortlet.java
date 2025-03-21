@@ -8,7 +8,7 @@ package com.liferay.exportimport.test.util.internal.portlet;
 import com.liferay.exportimport.test.util.constants.DummyFolderPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -18,9 +18,9 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"com.liferay.portlet.preferences-unique-per-layout=false",
-		"javax.portlet.name=" + DummyFolderPortletKeys.DUMMY_FOLDER,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.name=" + DummyFolderPortletKeys.DUMMY_FOLDER,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

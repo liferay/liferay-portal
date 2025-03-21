@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Christopher Kian
  */
 @Component(
-	property = "javax.portlet.name=" + MarketplaceAppManagerPortletKeys.MARKETPLACE_APP_MANAGER,
+	property = "jakarta.portlet.name=" + MarketplaceAppManagerPortletKeys.MARKETPLACE_APP_MANAGER,
 	service = ControlPanelEntry.class
 )
 public class MarketplaceAppManagerControlPanelEntry

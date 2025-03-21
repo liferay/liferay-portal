@@ -8,7 +8,7 @@ package com.liferay.product.navigation.personal.menu.web.internal.portlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.product.navigation.personal.menu.constants.PersonalMenuPortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -22,12 +22,12 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.preferences-owned-by-group=true",
 		"com.liferay.portlet.private-request-attributes=false",
 		"com.liferay.portlet.private-session-attributes=false",
-		"javax.portlet.display-name=Personal Menu",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.name=" + PersonalMenuPortletKeys.PERSONAL_MENU,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Personal Menu",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.name=" + PersonalMenuPortletKeys.PERSONAL_MENU,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

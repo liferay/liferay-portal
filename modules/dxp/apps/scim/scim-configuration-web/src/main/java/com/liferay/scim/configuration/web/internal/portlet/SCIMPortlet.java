@@ -8,7 +8,7 @@ package com.liferay.scim.configuration.web.internal.portlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.scim.configuration.web.internal.constants.ScimWebKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -20,11 +20,11 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.preferences-unique-per-layout=false",
 		"com.liferay.portlet.scopeable=false",
-		"javax.portlet.display-name=SCIM",
-		"javax.portlet.name=" + ScimWebKeys.SCIM_CONFIGURATION,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=SCIM",
+		"jakarta.portlet.name=" + ScimWebKeys.SCIM_CONFIGURATION,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

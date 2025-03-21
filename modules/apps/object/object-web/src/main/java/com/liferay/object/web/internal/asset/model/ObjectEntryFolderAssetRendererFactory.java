@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Mikel Lorza
  */
 @Component(
-	property = "javax.portlet.name=" + ObjectPortletKeys.OBJECT_DEFINITIONS,
+	property = "jakarta.portlet.name=" + ObjectPortletKeys.OBJECT_DEFINITIONS,
 	service = AssetRendererFactory.class
 )
 public class ObjectEntryFolderAssetRendererFactory

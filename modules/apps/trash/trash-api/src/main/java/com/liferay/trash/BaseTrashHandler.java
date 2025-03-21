@@ -31,10 +31,10 @@ import com.liferay.portal.kernel.trash.TrashRenderer;
 import com.liferay.trash.constants.TrashActionKeys;
 import com.liferay.trash.kernel.model.TrashEntry;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.Collections;
 import java.util.List;
-
-import javax.portlet.PortletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

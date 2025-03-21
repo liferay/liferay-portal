@@ -91,7 +91,7 @@ public class LanguageResourcesExtender
 			() -> {
 				bundleContext.addServiceListener(
 					_serviceListener,
-					"(&(!(javax.portlet.name=*))(language.id=*)(objectClass=" +
+					"(&(!(jakarta.portlet.name=*))(language.id=*)(objectClass=" +
 						ResourceBundle.class.getName() + "))");
 
 				return null;

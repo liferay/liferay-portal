@@ -7,10 +7,10 @@ package com.liferay.frontend.taglib.clay.servlet.taglib.util;
 
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Chema Balsas

@@ -12,7 +12,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Alessio Antonio Rendina

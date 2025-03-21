@@ -9,18 +9,18 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.annotations.PortletRequestScoped;
+import jakarta.portlet.annotations.PortletSerializable;
+import jakarta.portlet.annotations.PortletSessionScoped;
+import jakarta.portlet.annotations.RenderStateScoped;
+
 import java.util.List;
 import java.util.Set;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-
-import javax.portlet.PortletSession;
-import javax.portlet.annotations.PortletRequestScoped;
-import javax.portlet.annotations.PortletSerializable;
-import javax.portlet.annotations.PortletSessionScoped;
-import javax.portlet.annotations.RenderStateScoped;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;

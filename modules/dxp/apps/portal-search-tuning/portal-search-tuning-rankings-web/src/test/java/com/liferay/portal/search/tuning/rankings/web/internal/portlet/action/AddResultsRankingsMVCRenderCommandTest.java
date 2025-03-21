@@ -7,8 +7,8 @@ package com.liferay.portal.search.tuning.rankings.web.internal.portlet.action;
 
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.junit.Assert;
 import org.junit.Before;

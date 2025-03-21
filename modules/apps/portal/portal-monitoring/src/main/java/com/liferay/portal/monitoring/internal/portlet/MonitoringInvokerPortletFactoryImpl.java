@@ -12,12 +12,12 @@ import com.liferay.portal.kernel.portlet.InvokerPortlet;
 import com.liferay.portal.kernel.portlet.InvokerPortletFactory;
 import com.liferay.portal.monitoring.internal.configuration.MonitoringConfiguration;
 
-import java.util.Map;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
+import java.util.Map;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;

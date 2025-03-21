@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletURLWrapper;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portlet.internal.PortletResponseImpl;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Brian Wing Shun Chan

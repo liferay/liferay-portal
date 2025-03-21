@@ -7,16 +7,16 @@ package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
 import com.liferay.portal.kernel.util.LocaleUtil;
 
+import jakarta.annotation.Priority;
+
+import jakarta.enterprise.context.ApplicationScoped;
+
+import jakarta.mvc.locale.LocaleResolver;
+import jakarta.mvc.locale.LocaleResolverContext;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.annotation.Priority;
-
-import javax.enterprise.context.ApplicationScoped;
-
-import javax.mvc.locale.LocaleResolver;
-import javax.mvc.locale.LocaleResolverContext;
 
 /**
  * @author Neil Griffin

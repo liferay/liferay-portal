@@ -20,6 +20,8 @@ import com.liferay.saml.persistence.model.SamlSpIdpConnection;
 import com.liferay.saml.web.internal.exception.UserAttributeMappingException;
 import com.liferay.saml.web.internal.exception.UserIdentifierExpressionException;
 
+import jakarta.portlet.PortletRequest;
+
 import java.io.IOException;
 
 import java.util.AbstractMap;
@@ -31,8 +33,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Stian Sigvartsen

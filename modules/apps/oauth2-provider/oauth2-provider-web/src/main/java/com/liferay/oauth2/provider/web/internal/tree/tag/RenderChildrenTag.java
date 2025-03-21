@@ -7,14 +7,14 @@ package com.liferay.oauth2.provider.web.internal.tree.tag;
 
 import com.liferay.oauth2.provider.web.internal.tree.Tree;
 
+import jakarta.servlet.jsp.JspContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.JspFragment;
+import jakarta.servlet.jsp.tagext.JspTag;
+
 import java.io.IOException;
 
 import java.util.Deque;
-
-import javax.servlet.jsp.JspContext;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.JspFragment;
-import javax.servlet.jsp.tagext.JspTag;
 
 /**
  * @author Marta Medio

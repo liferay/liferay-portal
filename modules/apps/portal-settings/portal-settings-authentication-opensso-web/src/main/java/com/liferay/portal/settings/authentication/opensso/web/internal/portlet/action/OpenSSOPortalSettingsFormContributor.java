@@ -9,9 +9,9 @@ import com.liferay.portal.security.sso.opensso.constants.OpenSSOConstants;
 import com.liferay.portal.settings.authentication.opensso.web.internal.constants.PortalSettingsOpenSSOConstants;
 import com.liferay.portal.settings.portlet.action.PortalSettingsFormContributor;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
 
