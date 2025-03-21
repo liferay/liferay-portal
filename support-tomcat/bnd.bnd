@@ -1,6 +1,6 @@
 Bundle-Name: ${manifest.bundle.name}
 Bundle-SymbolicName: ${manifest.bundle.symbolic.name}
-Bundle-Version: 6.0.7
+Bundle-Version: 7.0.0
 Export-Package: com.liferay.support.tomcat.util.scan
 Include-Resource: classes
 -include ../common.bnd
