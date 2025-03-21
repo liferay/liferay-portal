@@ -18,8 +18,6 @@ Import-Package:\
 	io.fabric8.kubernetes.internal;mandatory:=usage;usage=test,\
 	io.fabric8.kubernetes.*;mandatory:=usage;usage=test,\
 	\
-	javax.*,\
-	\
 	kotlin.*;mandatory:=usage;usage=test,\
 	\
 	okhttp3.*;mandatory:=usage;usage=test,\
