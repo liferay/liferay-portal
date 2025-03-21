@@ -102,7 +102,7 @@ export default function SaveButtons({
 		}
 
 		const actionInput = document.getElementById(
-			`${portletNamespace}javax-portlet-action`
+			`${portletNamespace}jakarta-portlet-action`
 		);
 
 		if (editingDefaultValues) {

@@ -46,7 +46,7 @@ export default function ({
 		form.setAttribute(`${portletNamespace}redirect`, redirectUrl);
 
 		const inputId = document.getElementById(
-			`${portletNamespace}javax-portlet-action`
+			`${portletNamespace}jakarta-portlet-action`
 		);
 
 		if (inputId) {

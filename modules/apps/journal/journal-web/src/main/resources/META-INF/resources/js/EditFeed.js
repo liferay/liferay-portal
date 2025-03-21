@@ -38,7 +38,7 @@ export default function ({isNewJournalFeed, namespace, renderedWebContent}) {
 
 	const saveFeed = () => {
 		const actionInput = document.getElementById(
-			`${namespace}javax-portlet-action`
+			`${namespace}jakarta-portlet-action`
 		);
 
 		let feed = '/journal/update_feed';

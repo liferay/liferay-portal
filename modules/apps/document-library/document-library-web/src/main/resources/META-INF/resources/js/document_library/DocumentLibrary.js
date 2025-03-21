@@ -107,8 +107,8 @@ export default function DocumentLibrary({
 	function _moveToTrash() {
 		const action = 'move_to_trash';
 
-		if (form.elements[`${namespace}javax-portlet-action`]) {
-			form.elements[`${namespace}javax-portlet-action`].value = action;
+		if (form.elements[`${namespace}jakarta-portlet-action`]) {
+			form.elements[`${namespace}jakarta-portlet-action`].value = action;
 		}
 		else {
 			form.elements[`${namespace}cmd`].value = action;

@@ -29,7 +29,7 @@ const renderComponent = (props = DEFAULT_PROPS) => {
 		<>
 			<div className="article-content-content" />
 			<input id={`${props.portletNamespace}workflowAction`} />
-			<input id={`${props.portletNamespace}javax-portlet-action`} />
+			<input id={`${props.portletNamespace}jakarta-portlet-action`} />
 			<SaveButtons {...props} />
 		</>
 	);

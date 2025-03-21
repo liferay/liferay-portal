@@ -163,7 +163,7 @@ AUI.add(
 			setName(name) {
 				const instance = this;
 
-				instance.setParameter('javax.portlet.action', name);
+				instance.setParameter('jakarta.portlet.action', name);
 
 				return instance;
 			},
