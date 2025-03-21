@@ -1,9 +1,9 @@
 package ${configYAML.apiPackagePath}.client.aggregation;
 
+import jakarta.annotation.Generated;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Generated;
 
 /**
  * @author ${configYAML.author}

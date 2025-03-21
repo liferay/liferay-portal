@@ -3,9 +3,9 @@ package ${configYAML.apiPackagePath}.constant.${escapedVersion};
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import java.util.Objects;
+import jakarta.annotation.Generated;
 
-import javax.annotation.Generated;
+import java.util.Objects;
 
 /**
  * @author ${configYAML.author}

@@ -2,10 +2,10 @@ package ${configYAML.apiPackagePath}.client.permission;
 
 import ${configYAML.apiPackagePath}.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Collection;
 import java.util.Objects;
-
-import javax.annotation.Generated;
 
 /**
 * @author ${configYAML.author}
