@@ -42,7 +42,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
-import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
@@ -214,6 +213,20 @@ public abstract class BaseSiteResourceTestCase {
 				deleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCodeHttpResponse(
 					testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode(),
 					testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			siteResource.
+				getAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCodeHttpResponse(
+					testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode(),
+					testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			siteResource.
+				getAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCodeHttpResponse(
+					testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode(),
+					testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode()));
 	}
 
 	protected String
@@ -241,28 +254,92 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	@Test
-	public void testPostAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode()
+	public void testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode()
 		throws Exception {
 
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		Site site =
-			testPostAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_addSite();
+		Site postSite =
+			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_addSite();
 
-		assertHttpResponseStatusCode(
-			204,
+		Site getSite =
 			siteResource.
-				postAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCodeHttpResponse(
-					null, null));
+				getAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+					testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode(),
+					testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode());
 
-		assertHttpResponseStatusCode(
-			404,
-			siteResource.
-				postAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCodeHttpResponse(
-					null, null));
+		assertEquals(postSite, getSite);
+		assertValid(getSite);
+	}
+
+	protected String
+			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Site
-			testPostAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_addSite()
+			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_addSite()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode()
+		throws Exception {
+
+		Site postSite =
+			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_addSite();
+
+		Site randomSite = randomSite();
+
+		Site putSite =
+			siteResource.
+				putAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+					testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode(),
+					testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode());
+
+		assertEquals(randomSite, putSite);
+		assertValid(putSite);
+
+		Site getSite =
+			siteResource.
+				getAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+					testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode(),
+					testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode());
+
+		assertEquals(randomSite, getSite);
+		assertValid(getSite);
+	}
+
+	protected String
+			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getAssetLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Site
+			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_addSite()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -280,8 +357,7 @@ public abstract class BaseSiteResourceTestCase {
 
 		Page<Site> page =
 			siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-				externalReferenceCode, null, null, null, Pagination.of(1, 10),
-				null);
+				externalReferenceCode, null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -291,7 +367,7 @@ public abstract class BaseSiteResourceTestCase {
 					irrelevantExternalReferenceCode, randomIrrelevantSite());
 
 			page = siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-				irrelevantExternalReferenceCode, null, null, null,
+				irrelevantExternalReferenceCode, null, null,
 				Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -312,8 +388,7 @@ public abstract class BaseSiteResourceTestCase {
 				externalReferenceCode, randomSite());
 
 		page = siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-			externalReferenceCode, null, null, null, Pagination.of(1, 10),
-			null);
+			externalReferenceCode, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -336,104 +411,6 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	@Test
-	public void testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilterDateTimeEquals()
-		throws Exception {
-
-		List<EntityField> entityFields = getEntityFields(
-			EntityField.Type.DATE_TIME);
-
-		if (entityFields.isEmpty()) {
-			return;
-		}
-
-		String externalReferenceCode =
-			testGetAssetLibraryByExternalReferenceCodeSitesPage_getExternalReferenceCode();
-
-		Site site1 = randomSite();
-
-		site1 = testGetAssetLibraryByExternalReferenceCodeSitesPage_addSite(
-			externalReferenceCode, site1);
-
-		for (EntityField entityField : entityFields) {
-			Page<Site> page =
-				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null,
-					getFilterString(entityField, "between", site1),
-					Pagination.of(1, 2), null);
-
-			assertEquals(
-				Collections.singletonList(site1), (List<Site>)page.getItems());
-		}
-	}
-
-	@Test
-	public void testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilterDoubleEquals()
-		throws Exception {
-
-		testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilter(
-			"eq", EntityField.Type.DOUBLE);
-	}
-
-	@Test
-	public void testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilterStringContains()
-		throws Exception {
-
-		testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilter(
-			"contains", EntityField.Type.STRING);
-	}
-
-	@Test
-	public void testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilterStringEquals()
-		throws Exception {
-
-		testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilter(
-			"eq", EntityField.Type.STRING);
-	}
-
-	@Test
-	public void testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilterStringStartsWith()
-		throws Exception {
-
-		testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilter(
-			"startswith", EntityField.Type.STRING);
-	}
-
-	protected void
-			testGetAssetLibraryByExternalReferenceCodeSitesPageWithFilter(
-				String operator, EntityField.Type type)
-		throws Exception {
-
-		List<EntityField> entityFields = getEntityFields(type);
-
-		if (entityFields.isEmpty()) {
-			return;
-		}
-
-		String externalReferenceCode =
-			testGetAssetLibraryByExternalReferenceCodeSitesPage_getExternalReferenceCode();
-
-		Site site1 =
-			testGetAssetLibraryByExternalReferenceCodeSitesPage_addSite(
-				externalReferenceCode, randomSite());
-
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		Site site2 =
-			testGetAssetLibraryByExternalReferenceCodeSitesPage_addSite(
-				externalReferenceCode, randomSite());
-
-		for (EntityField entityField : entityFields) {
-			Page<Site> page =
-				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null,
-					getFilterString(entityField, operator, site1),
-					Pagination.of(1, 2), null);
-
-			assertEquals(
-				Collections.singletonList(site1), (List<Site>)page.getItems());
-		}
-	}
-
-	@Test
 	public void testGetAssetLibraryByExternalReferenceCodeSitesPageWithPagination()
 		throws Exception {
 
@@ -442,7 +419,7 @@ public abstract class BaseSiteResourceTestCase {
 
 		Page<Site> sitePage =
 			siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-				externalReferenceCode, null, null, null, null, null);
+				externalReferenceCode, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(sitePage.getTotalCount());
 
@@ -465,7 +442,7 @@ public abstract class BaseSiteResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<Site> page1 =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -477,7 +454,7 @@ public abstract class BaseSiteResourceTestCase {
 
 			Page<Site> page2 =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -487,7 +464,7 @@ public abstract class BaseSiteResourceTestCase {
 
 			Page<Site> page3 =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -498,7 +475,7 @@ public abstract class BaseSiteResourceTestCase {
 		else {
 			Page<Site> page1 =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(1, totalCount + 2), null);
 
 			List<Site> sites1 = (List<Site>)page1.getItems();
@@ -508,7 +485,7 @@ public abstract class BaseSiteResourceTestCase {
 
 			Page<Site> page2 =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
@@ -519,7 +496,7 @@ public abstract class BaseSiteResourceTestCase {
 
 			Page<Site> page3 =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(site1, (List<Site>)page3.getItems());
@@ -648,12 +625,12 @@ public abstract class BaseSiteResourceTestCase {
 
 		Page<Site> page =
 			siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-				externalReferenceCode, null, null, null, null, null);
+				externalReferenceCode, null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<Site> ascPage =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -662,7 +639,7 @@ public abstract class BaseSiteResourceTestCase {
 
 			Page<Site> descPage =
 				siteResource.getAssetLibraryByExternalReferenceCodeSitesPage(
-					externalReferenceCode, null, null, null,
+					externalReferenceCode, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -701,7 +678,7 @@ public abstract class BaseSiteResourceTestCase {
 			testGetAssetLibrarySitesPage_getIrrelevantAssetLibraryId();
 
 		Page<Site> page = siteResource.getAssetLibrarySitesPage(
-			assetLibraryId, null, null, null, Pagination.of(1, 10), null);
+			assetLibraryId, null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -710,7 +687,7 @@ public abstract class BaseSiteResourceTestCase {
 				irrelevantAssetLibraryId, randomIrrelevantSite());
 
 			page = siteResource.getAssetLibrarySitesPage(
-				irrelevantAssetLibraryId, null, null, null,
+				irrelevantAssetLibraryId, null, null,
 				Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -729,7 +706,7 @@ public abstract class BaseSiteResourceTestCase {
 			assetLibraryId, randomSite());
 
 		page = siteResource.getAssetLibrarySitesPage(
-			assetLibraryId, null, null, null, Pagination.of(1, 10), null);
+			assetLibraryId, null, null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -750,99 +727,11 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	@Test
-	public void testGetAssetLibrarySitesPageWithFilterDateTimeEquals()
-		throws Exception {
-
-		List<EntityField> entityFields = getEntityFields(
-			EntityField.Type.DATE_TIME);
-
-		if (entityFields.isEmpty()) {
-			return;
-		}
-
-		Long assetLibraryId = testGetAssetLibrarySitesPage_getAssetLibraryId();
-
-		Site site1 = randomSite();
-
-		site1 = testGetAssetLibrarySitesPage_addSite(assetLibraryId, site1);
-
-		for (EntityField entityField : entityFields) {
-			Page<Site> page = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null,
-				getFilterString(entityField, "between", site1),
-				Pagination.of(1, 2), null);
-
-			assertEquals(
-				Collections.singletonList(site1), (List<Site>)page.getItems());
-		}
-	}
-
-	@Test
-	public void testGetAssetLibrarySitesPageWithFilterDoubleEquals()
-		throws Exception {
-
-		testGetAssetLibrarySitesPageWithFilter("eq", EntityField.Type.DOUBLE);
-	}
-
-	@Test
-	public void testGetAssetLibrarySitesPageWithFilterStringContains()
-		throws Exception {
-
-		testGetAssetLibrarySitesPageWithFilter(
-			"contains", EntityField.Type.STRING);
-	}
-
-	@Test
-	public void testGetAssetLibrarySitesPageWithFilterStringEquals()
-		throws Exception {
-
-		testGetAssetLibrarySitesPageWithFilter("eq", EntityField.Type.STRING);
-	}
-
-	@Test
-	public void testGetAssetLibrarySitesPageWithFilterStringStartsWith()
-		throws Exception {
-
-		testGetAssetLibrarySitesPageWithFilter(
-			"startswith", EntityField.Type.STRING);
-	}
-
-	protected void testGetAssetLibrarySitesPageWithFilter(
-			String operator, EntityField.Type type)
-		throws Exception {
-
-		List<EntityField> entityFields = getEntityFields(type);
-
-		if (entityFields.isEmpty()) {
-			return;
-		}
-
-		Long assetLibraryId = testGetAssetLibrarySitesPage_getAssetLibraryId();
-
-		Site site1 = testGetAssetLibrarySitesPage_addSite(
-			assetLibraryId, randomSite());
-
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		Site site2 = testGetAssetLibrarySitesPage_addSite(
-			assetLibraryId, randomSite());
-
-		for (EntityField entityField : entityFields) {
-			Page<Site> page = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null,
-				getFilterString(entityField, operator, site1),
-				Pagination.of(1, 2), null);
-
-			assertEquals(
-				Collections.singletonList(site1), (List<Site>)page.getItems());
-		}
-	}
-
-	@Test
 	public void testGetAssetLibrarySitesPageWithPagination() throws Exception {
 		Long assetLibraryId = testGetAssetLibrarySitesPage_getAssetLibraryId();
 
 		Page<Site> sitePage = siteResource.getAssetLibrarySitesPage(
-			assetLibraryId, null, null, null, null, null);
+			assetLibraryId, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(sitePage.getTotalCount());
 
@@ -861,7 +750,7 @@ public abstract class BaseSiteResourceTestCase {
 
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<Site> page1 = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
+				assetLibraryId, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 					pageSizeLimit),
@@ -872,7 +761,7 @@ public abstract class BaseSiteResourceTestCase {
 			assertContains(site1, (List<Site>)page1.getItems());
 
 			Page<Site> page2 = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
+				assetLibraryId, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 					pageSizeLimit),
@@ -881,7 +770,7 @@ public abstract class BaseSiteResourceTestCase {
 			assertContains(site2, (List<Site>)page2.getItems());
 
 			Page<Site> page3 = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
+				assetLibraryId, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 					pageSizeLimit),
@@ -891,8 +780,8 @@ public abstract class BaseSiteResourceTestCase {
 		}
 		else {
 			Page<Site> page1 = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
-				Pagination.of(1, totalCount + 2), null);
+				assetLibraryId, null, null, Pagination.of(1, totalCount + 2),
+				null);
 
 			List<Site> sites1 = (List<Site>)page1.getItems();
 
@@ -900,8 +789,8 @@ public abstract class BaseSiteResourceTestCase {
 				sites1.toString(), totalCount + 2, sites1.size());
 
 			Page<Site> page2 = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
-				Pagination.of(2, totalCount + 2), null);
+				assetLibraryId, null, null, Pagination.of(2, totalCount + 2),
+				null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -910,7 +799,7 @@ public abstract class BaseSiteResourceTestCase {
 			Assert.assertEquals(sites2.toString(), 1, sites2.size());
 
 			Page<Site> page3 = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
+				assetLibraryId, null, null,
 				Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(site1, (List<Site>)page3.getItems());
@@ -1029,11 +918,11 @@ public abstract class BaseSiteResourceTestCase {
 		site2 = testGetAssetLibrarySitesPage_addSite(assetLibraryId, site2);
 
 		Page<Site> page = siteResource.getAssetLibrarySitesPage(
-			assetLibraryId, null, null, null, null, null);
+			assetLibraryId, null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<Site> ascPage = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
+				assetLibraryId, null, null,
 				Pagination.of(1, (int)page.getTotalCount() + 1),
 				entityField.getName() + ":asc");
 
@@ -1041,7 +930,7 @@ public abstract class BaseSiteResourceTestCase {
 			assertContains(site2, (List<Site>)ascPage.getItems());
 
 			Page<Site> descPage = siteResource.getAssetLibrarySitesPage(
-				assetLibraryId, null, null, null,
+				assetLibraryId, null, null,
 				Pagination.of(1, (int)page.getTotalCount() + 1),
 				entityField.getName() + ":desc");
 
@@ -1079,6 +968,16 @@ public abstract class BaseSiteResourceTestCase {
 			204,
 			siteResource.deleteAssetLibrarySiteHttpResponse(
 				testDeleteAssetLibrarySite_getAssetLibraryId(), site.getId()));
+
+		assertHttpResponseStatusCode(
+			404,
+			siteResource.getAssetLibrarySiteHttpResponse(
+				testDeleteAssetLibrarySite_getAssetLibraryId(), site.getId()));
+
+		assertHttpResponseStatusCode(
+			404,
+			siteResource.getAssetLibrarySiteHttpResponse(
+				testDeleteAssetLibrarySite_getAssetLibraryId(), 0L));
 	}
 
 	protected Long testDeleteAssetLibrarySite_getAssetLibraryId()
@@ -1094,28 +993,58 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	@Test
-	public void testPostAssetLibrarySite() throws Exception {
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		Site site = testPostAssetLibrarySite_addSite();
+	public void testGetAssetLibrarySite() throws Exception {
+		Site postSite = testGetAssetLibrarySite_addSite();
 
-		assertHttpResponseStatusCode(
-			204,
-			siteResource.postAssetLibrarySiteHttpResponse(
-				testDepotEntry.getDepotEntryId(), site.getId()));
+		Site getSite = siteResource.getAssetLibrarySite(
+			testGetAssetLibrarySite_getAssetLibraryId(), postSite.getId());
 
-		assertHttpResponseStatusCode(
-			404,
-			siteResource.postAssetLibrarySiteHttpResponse(
-				testDepotEntry.getDepotEntryId(), 0L));
+		assertEquals(postSite, getSite);
+		assertValid(getSite);
 	}
 
-	protected Site testPostAssetLibrarySite_addSite() throws Exception {
+	protected Long testGetAssetLibrarySite_getAssetLibraryId()
+		throws Exception {
+
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	@Rule
-	public SearchTestRule searchTestRule = new SearchTestRule();
+	protected Site testGetAssetLibrarySite_addSite() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPutAssetLibrarySite() throws Exception {
+		Site postSite = testPutAssetLibrarySite_addSite();
+
+		Site randomSite = randomSite();
+
+		Site putSite = siteResource.putAssetLibrarySite(
+			testPutAssetLibrarySite_getAssetLibraryId(), postSite.getId());
+
+		assertEquals(randomSite, putSite);
+		assertValid(putSite);
+
+		Site getSite = siteResource.getAssetLibrarySite(
+			testPutAssetLibrarySite_getAssetLibraryId(), putSite.getId());
+
+		assertEquals(randomSite, getSite);
+		assertValid(getSite);
+	}
+
+	protected Long testPutAssetLibrarySite_getAssetLibraryId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Site testPutAssetLibrarySite_addSite() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected Site testGraphQLSite_addSite() throws Exception {
 		throw new UnsupportedOperationException(

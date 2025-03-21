@@ -49,22 +49,26 @@ public interface SiteResource {
 				String siteExternalReferenceCode)
 		throws Exception;
 
-	public void
-			postAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+	public Site
+			getAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+				String assetLibraryExternalReferenceCode,
+				String siteExternalReferenceCode)
+		throws Exception;
+
+	public Site
+			putAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
 				String assetLibraryExternalReferenceCode,
 				String siteExternalReferenceCode)
 		throws Exception;
 
 	public Page<Site> getAssetLibraryByExternalReferenceCodeSitesPage(
 			String externalReferenceCode, String keywords, String search,
-			com.liferay.portal.kernel.search.filter.Filter filter,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public Page<Site> getAssetLibrarySitesPage(
 			Long assetLibraryId, String keywords, String search,
-			com.liferay.portal.kernel.search.filter.Filter filter,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
@@ -72,7 +76,10 @@ public interface SiteResource {
 	public void deleteAssetLibrarySite(Long assetLibraryId, Long siteId)
 		throws Exception;
 
-	public void postAssetLibrarySite(Long assetLibraryId, Long siteId)
+	public Site getAssetLibrarySite(Long assetLibraryId, Long siteId)
+		throws Exception;
+
+	public Site putAssetLibrarySite(Long assetLibraryId, Long siteId)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
