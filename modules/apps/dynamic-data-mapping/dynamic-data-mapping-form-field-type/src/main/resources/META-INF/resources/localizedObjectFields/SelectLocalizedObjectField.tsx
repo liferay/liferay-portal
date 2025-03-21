@@ -5,7 +5,8 @@
 
 import {ClayInput} from '@clayui/form';
 import {stringUtils} from '@liferay/object-js-components-web';
-import React, {useEffect, useMemo, useState} from 'react';
+import {useFormState} from 'data-engine-js-components-web';
+import React, {useEffect, useMemo} from 'react';
 
 import FieldBase from '../FieldBase/ReactFieldBase.es';
 import SingleSelectBase from '../Select/SingleSelectBase';
@@ -15,9 +16,7 @@ import {LocalizedValue} from '../types';
 import {isEmptyObject} from '../util/basicJsUtils';
 import LocalesDropdown, {
 	AvailableLocale,
-	EditingLocale,
 } from '../util/localizable/LocalesDropdown';
-import {getEditingLocales, getLocale} from './util/locales';
 
 import './SelectLocalizedObjectField.scss';
 
@@ -28,7 +27,6 @@ type valueTypes = {} | LocalizedValue<string>;
 export interface SelectLocalizedObjectFieldProps
 	extends Omit<SelectMainProps, 'value'> {
 	availableLocales: AvailableLocale[];
-	defaultLocale: AvailableLocale;
 	value: valueTypes;
 }
 
@@ -66,8 +64,6 @@ function normalizeValues(
 
 export default function SelectLocalizedObjectField({
 	availableLocales,
-	defaultLanguageId,
-	defaultLocale,
 	fieldName,
 	fixedOptions = [],
 	id,
@@ -82,27 +78,18 @@ export default function SelectLocalizedObjectField({
 	value,
 	...otherProps
 }: SelectLocalizedObjectFieldProps) {
-	const values = normalizeValues(defaultLanguageId, predefinedValue, value);
-
-	const [editingLocales, setEditingLocales] = useState<EditingLocale[]>(
-		getEditingLocales(availableLocales, defaultLocale, values)
-	);
-
-	const [currentEditingLocale, setCurrentEditingLocale] =
-		useState<EditingLocale>({
-			...getLocale(editingLocales, defaultLocale, defaultLanguageId),
-		});
-
-	const [localizedValues, setLocalizedValues] =
-		useState<LocalizedValue<string>>(values);
+	const {
+		defaultLanguageId,
+		editingLanguageId,
+	}: {defaultLanguageId: Locale; editingLanguageId: Locale} = useFormState();
 
 	const normalizedOptions = useNormalizedOptionsMemo({
-		editingLanguageId: currentEditingLocale.localeId,
+		editingLanguageId,
 		fixedOptions,
 		multiple: false,
 		options,
 		showEmptyOption,
-		valueArray: [localizedValues[currentEditingLocale.localeId]!],
+		valueArray: [(value as LocalizedValue<string>)[editingLanguageId]!],
 	});
 
 	const localizedOptions = useMemo(() => {
@@ -110,14 +97,14 @@ export default function SelectLocalizedObjectField({
 			...option,
 			label: stringUtils.getLocalizableLabel({
 				labels: option.labelMap,
-				preferredLanguageId: currentEditingLocale.localeId,
+				preferredLanguageId: editingLanguageId,
 				...(!option.labelMap &&
 					option.value === 'chooseAnOption' && {
 						fallbackLabel: option.label,
 					}),
 			}),
 		}));
-	}, [normalizedOptions, currentEditingLocale.localeId]);
+	}, [editingLanguageId, normalizedOptions]);
 
 	// If value from the outside state has a property pointing to an array,
 	// ensure it uses the normalized values of localizedValues.
@@ -127,47 +114,30 @@ export default function SelectLocalizedObjectField({
 			!isEmptyObject(value) &&
 			Object.values(value).some((arrayItem) => Array.isArray(arrayItem))
 		) {
-			onChange({}, {...localizedValues});
+			onChange(
+				{},
+				{...normalizeValues(defaultLanguageId, predefinedValue, value)}
+			);
 		}
-	}, [localizedValues, onChange, value, values]);
+	}, [defaultLanguageId, onChange, predefinedValue, value]);
 
 	const updateLocalizedValues = (localeId: Locale, newValues: React.Key) => {
-		const newLocalizedValues = {
-			...localizedValues,
-			[localeId]: newValues === 'chooseAnOption' ? '' : newValues,
-		};
-
-		setLocalizedValues(newLocalizedValues);
-
-		onChange({}, newLocalizedValues);
+		onChange(
+			{},
+			{
+				...value,
+				[localeId]: newValues === 'chooseAnOption' ? '' : newValues,
+			}
+		);
 	};
 
 	const handleChange = (newValues: React.Key) => {
-		updateLocalizedValues(currentEditingLocale.localeId, newValues);
-	};
-
-	const handleTranslationChange = (localeId: Liferay.Language.Locale) => {
-		const currentLocale = getLocale(
-			editingLocales,
-			defaultLocale,
-			localeId
-		);
-
-		const updatedLocale = {...currentLocale, isTranslated: true};
-
-		setEditingLocales((previous) =>
-			previous.map((locale) =>
-				locale.localeId === localeId ? updatedLocale : locale
-			)
-		);
-
-		setCurrentEditingLocale(updatedLocale);
+		updateLocalizedValues(editingLanguageId, newValues);
 	};
 
 	return (
 		<FieldBase
 			label={label}
-			localizedValue={localizedValues}
 			name={name}
 			readOnly={readOnly}
 			{...otherProps}
@@ -185,16 +155,21 @@ export default function SelectLocalizedObjectField({
 					options={localizedOptions}
 					placeholder={placeholder}
 					readOnly={readOnly}
-					selectedKey={localizedValues[currentEditingLocale.localeId]}
+					selectedKey={
+						normalizeValues(
+							defaultLanguageId,
+							predefinedValue,
+							value
+						)[editingLanguageId]
+					}
 					showEmptyOption={showEmptyOption}
 				/>
 
 				<ClayInput.GroupItem shrink>
 					<LocalesDropdown
-						availableLocales={editingLocales}
-						editingLocale={currentEditingLocale}
+						availableLocales={availableLocales}
 						fieldName={fieldName}
-						onLanguageClicked={handleTranslationChange}
+						value={value}
 					/>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
