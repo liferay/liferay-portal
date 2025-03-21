@@ -20,9 +20,9 @@ page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException" %><%@
 page import="com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys" %>
 
-<%@ page import="java.util.List" %>
+<%@ page import="jakarta.portlet.ActionRequest" %>
 
-<%@ page import="javax.portlet.ActionRequest" %>
+<%@ page import="java.util.List" %>
 
 <liferay-frontend:defineObjects />
 

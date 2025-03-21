@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -36,14 +36,14 @@ page import="com.liferay.rss.web.internal.util.RSSFeedEntry" %>
 page import="com.rometools.rome.feed.synd.SyndFeed" %><%@
 page import="com.rometools.rome.feed.synd.SyndImage" %>
 
+<%@ page import="jakarta.portlet.ValidatorException" %>
+
 <%@ page import="java.text.Format" %>
 
 <%@ page import="java.util.Enumeration" %><%@
 page import="java.util.List" %><%@
 page import="java.util.Map" %><%@
 page import="java.util.Objects" %>
-
-<%@ page import="javax.portlet.ValidatorException" %>
 
 <liferay-theme:defineObjects />
 

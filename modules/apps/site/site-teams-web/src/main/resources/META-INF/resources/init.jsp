@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -51,9 +51,9 @@ page import="com.liferay.site.teams.web.internal.display.context.SiteTeamsManage
 page import="com.liferay.site.teams.web.internal.frontend.taglib.clay.servlet.taglib.UserUserCard" %><%@
 page import="com.liferay.site.teams.web.internal.servlet.taglib.util.UserActionDropdownItemsProvider" %>
 
-<%@ page import="java.util.Objects" %>
+<%@ page import="jakarta.portlet.PortletURL" %>
 
-<%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="java.util.Objects" %>
 
 <liferay-frontend:defineObjects />
 

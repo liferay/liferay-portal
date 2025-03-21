@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
@@ -44,14 +44,14 @@ page import="com.liferay.portal.layoutconfiguration.util.RuntimePageUtil" %><%@
 page import="com.liferay.portal.util.PortletCategoryUtil" %><%@
 page import="com.liferay.portal.util.WebAppPool" %>
 
+<%@ page import="jakarta.portlet.PortletConfig" %><%@
+page import="jakarta.portlet.PortletMode" %><%@
+page import="jakarta.portlet.PortletRequest" %><%@
+page import="jakarta.portlet.WindowState" %>
+
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.List" %><%@
 page import="java.util.ResourceBundle" %>
-
-<%@ page import="javax.portlet.PortletConfig" %><%@
-page import="javax.portlet.PortletMode" %><%@
-page import="javax.portlet.PortletRequest" %><%@
-page import="javax.portlet.WindowState" %>
 
 <liferay-theme:defineObjects />
 

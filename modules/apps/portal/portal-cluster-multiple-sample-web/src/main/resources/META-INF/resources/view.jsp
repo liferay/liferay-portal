@@ -10,7 +10,7 @@
 <%@ page import="com.liferay.portal.cluster.multiple.sample.web.internal.ClusterSampleData" %><%@
 page import="com.liferay.portal.kernel.servlet.PortalSessionContext" %>
 
-<%@ page import="javax.servlet.http.HttpSession" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
 
 <portlet:defineObjects />
 

@@ -22,8 +22,8 @@ page import="com.liferay.wiki.web.internal.display.context.helper.WikiRequestHel
 page import="com.liferay.wiki.web.internal.display.context.helper.WikiURLHelper" %><%@
 page import="com.liferay.wiki.web.internal.util.WikiWebComponentProvider" %>
 
-<%@ page import="javax.portlet.PortletResponse" %><%@
-page import="javax.portlet.PortletURL" %>
+<%@ page import="jakarta.portlet.PortletResponse" %><%@
+page import="jakarta.portlet.PortletURL" %>
 
 <liferay-frontend:defineObjects />
 

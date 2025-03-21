@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -40,7 +40,7 @@ page import="com.liferay.portal.security.service.access.policy.web.internal.disp
 page import="com.liferay.portal.security.service.access.policy.web.internal.security.permission.resource.SAPEntryPermission" %><%@
 page import="com.liferay.taglib.search.ResultRow" %>
 
-<%@ page import="javax.portlet.ActionRequest" %>
+<%@ page import="jakarta.portlet.ActionRequest" %>
 
 <liferay-frontend:defineObjects />
 

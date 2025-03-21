@@ -18,4 +18,4 @@ page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.product.navigation.personal.menu.constants.PersonalMenuPortletKeys" %>
 
-<%@ page import="javax.portlet.PortletRequest" %>
+<%@ page import="jakarta.portlet.PortletRequest" %>

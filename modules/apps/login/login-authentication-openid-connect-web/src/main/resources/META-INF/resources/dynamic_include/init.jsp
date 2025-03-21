@@ -14,7 +14,7 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys" %>
 
-<%@ page import="javax.portlet.WindowState" %>
+<%@ page import="jakarta.portlet.WindowState" %>
 
 <liferay-frontend:defineObjects />
 

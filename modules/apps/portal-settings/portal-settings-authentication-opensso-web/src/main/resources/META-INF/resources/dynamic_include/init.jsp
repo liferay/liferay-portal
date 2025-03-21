@@ -21,7 +21,7 @@ page import="com.liferay.portal.security.sso.opensso.constants.OpenSSOConfigurat
 page import="com.liferay.portal.security.sso.opensso.constants.OpenSSOConstants" %><%@
 page import="com.liferay.portal.settings.authentication.opensso.web.internal.constants.PortalSettingsOpenSSOConstants" %>
 
-<%@ page import="javax.portlet.ActionRequest" %>
+<%@ page import="jakarta.portlet.ActionRequest" %>
 
 <liferay-theme:defineObjects />
 

@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -65,6 +65,8 @@ page import="com.liferay.saml.web.internal.util.NameIdTypeValuesUtil" %><%@
 page import="com.liferay.saml.web.internal.util.SamlTempFileEntryUtil" %><%@
 page import="com.liferay.taglib.search.ResultRow" %>
 
+<%@ page import="jakarta.portlet.PortletURL" %>
+
 <%@ page import="java.security.InvalidParameterException" %><%@
 page import="java.security.KeyStore" %><%@
 page import="java.security.cert.CertificateException" %><%@
@@ -78,8 +80,6 @@ page import="java.util.Enumeration" %><%@
 page import="java.util.List" %><%@
 page import="java.util.Map" %><%@
 page import="java.util.Objects" %>
-
-<%@ page import="javax.portlet.PortletURL" %>
 
 <liferay-theme:defineObjects />
 

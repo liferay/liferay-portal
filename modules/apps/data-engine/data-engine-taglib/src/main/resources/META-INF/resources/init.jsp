@@ -28,4 +28,4 @@
 <%@ page import="java.util.Set" %>
 
 <%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
-taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+taglib uri="jakarta.tags.core" prefix="c" %>

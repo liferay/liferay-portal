@@ -49,14 +49,14 @@ page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.users.admin.item.selector.UserOAuth2ItemSelectorCriterion" %>
 
+<%@ page import="jakarta.portlet.PortletURL" %>
+
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.Collection" %><%@
 page import="java.util.Collections" %><%@
 page import="java.util.Date" %><%@
 page import="java.util.HashSet" %><%@
 page import="java.util.Iterator" %>
-
-<%@ page import="javax.portlet.PortletURL" %>
 
 <%
 AssignScopesTreeDisplayContext assignScopesTreeDisplayContext = (AssignScopesTreeDisplayContext)request.getAttribute(OAuth2ProviderWebKeys.ASSIGN_SCOPES_TREE_DISPLAY_CONTEXT);

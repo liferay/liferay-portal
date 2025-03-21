@@ -56,8 +56,8 @@ page import="com.liferay.portal.workflow.kaleo.forms.web.internal.security.permi
 page import="com.liferay.portal.workflow.kaleo.forms.web.internal.util.KaleoFormsUtil" %><%@
 page import="com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion" %>
 
-<%@ page import="javax.portlet.PortletRequest" %><%@
-page import="javax.portlet.WindowState" %>
+<%@ page import="jakarta.portlet.PortletRequest" %><%@
+page import="jakarta.portlet.WindowState" %>
 
 <%
 KaleoFormsAdminDisplayContext kaleoFormsAdminDisplayContext = (KaleoFormsAdminDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);

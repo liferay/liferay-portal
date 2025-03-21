@@ -30,7 +30,7 @@ page import="java.util.Locale" %><%@
 page import="java.util.Map" %><%@
 page import="java.util.Set" %>
 
-<%@ page import="javax.portlet.PortletRequest" %>
+<%@ page import="jakarta.portlet.PortletRequest" %>
 
 <%@ include file="/init-ext.jspf" %>
 
