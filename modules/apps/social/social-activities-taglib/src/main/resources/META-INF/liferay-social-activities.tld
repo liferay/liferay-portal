@@ -57,7 +57,7 @@
 			<name>feedResourceURL</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>javax.portlet.ResourceURL</type>
+			<type>jakarta.portlet.ResourceURL</type>
 		</attribute>
 		<attribute>
 			<name>feedTitle</name>
