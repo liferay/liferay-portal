@@ -335,7 +335,7 @@ paths:
     "/asset-libraries/by-external-reference-code/{assetLibraryExternalReferenceCode}/sites/by-external-reference-code/{siteExternalReferenceCode}":
         delete:
             description:
-                Disconnects the site from the asset library using the provided external reference codes..
+                Disconnects the site with the given external reference code from the asset library.
             operationId: deleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode
             parameters:
                 - in: path
@@ -356,10 +356,10 @@ paths:
                     description:
                         default response
             tags: ["Site"]
-        post:
+        get:
             description:
-                Connects the site to the asset library using the provided external reference codes.
-            operationId: postAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode
+                Gets a site from the asset library using the provided external reference codes.
+            operationId: getAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode
             parameters:
                 - in: path
                   name: assetLibraryExternalReferenceCode
@@ -372,10 +372,41 @@ paths:
                   schema:
                       type: string
             responses:
-                204:
+                200:
                     content:
-                        application/json: {}
-                        application/xml: {}
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
+            tags: ["Site"]
+        put:
+            description:
+                Connects the site with the given external reference code to the asset library.
+            operationId: putAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode
+            parameters:
+                - in: path
+                  name: assetLibraryExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: siteExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
                     description:
                         default response
             tags: ["Site"]
@@ -632,10 +663,6 @@ paths:
                   schema:
                       type: string
                 - in: query
-                  name: filter
-                  schema:
-                      type: string
-                - in: query
                   name: keywords
                   schema:
                       type: string
@@ -883,10 +910,6 @@ paths:
                       format: int64
                       type: integer
                 - in: query
-                  name: filter
-                  schema:
-                      type: string
-                - in: query
                   name: keywords
                   schema:
                       type: string
@@ -952,10 +975,10 @@ paths:
                     description:
                         default response
             tags: ["Site"]
-        post:
+        get:
             description:
-                Connects the site to the asset library.
-            operationId: postAssetLibrarySite
+                Gets a site from the asset library.
+            operationId: getAssetLibrarySite
             parameters:
                 - in: path
                   name: assetLibraryId
@@ -970,10 +993,43 @@ paths:
                       format: int64
                       type: integer
             responses:
-                204:
+                200:
                     content:
-                        application/json: {}
-                        application/xml: {}
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
+            tags: ["Site"]
+        put:
+            description:
+                Connects the site to the asset library.
+            operationId: putAssetLibrarySite
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
                     description:
                         default response
             tags: ["Site"]
