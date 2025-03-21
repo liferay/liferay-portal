@@ -15,11 +15,11 @@ dependencies {
 	compileOnly project(":core:petra:petra-memory")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.liferay", name: "org.springframework.web", version: "5.3.39.JAKARTA_LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
-	testImplementation group: "javax.portlet", name: "portlet-api", version: "3.0.1"
-	testImplementation group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
-	testImplementation group: "org.springframework", name: "spring-web", version: "5.3.39"
+	testImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	testImplementation project(":core:petra:petra-process")
 }

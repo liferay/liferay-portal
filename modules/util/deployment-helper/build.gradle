@@ -23,8 +23,8 @@ dependencies {
 	compileInclude group: "org.zeroturnaround", name: "zt-zip", version: "1.15"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.string", version: "1.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.49.0"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.apache.ant", name: "ant", transitive: false, version: "1.10.14"
-	compileOnly group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
 	compileOnly group: "org.apache.maven", name: "maven-plugin-api", transitive: false, version: "3.0.4"
 	compileOnly group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
 }

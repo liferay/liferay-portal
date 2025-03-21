@@ -1,8 +1,8 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.logging.log4j.core", version: "2.17.1.LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "javax.portlet", name: "portlet-api", version: "3.0.1"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation group: "org.ow2.asm", name: "asm", version: "9.7"
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")

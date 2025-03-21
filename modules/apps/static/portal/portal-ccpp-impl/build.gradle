@@ -1,10 +1,10 @@
 dependencies {
 	compileInclude group: "com.liferay", name: "com.hp.hpl.jena", version: "1.4"
 	compileInclude group: "com.liferay", name: "com.megginson.sax.rdf", version: "1.0"
-	compileInclude group: "com.liferay", name: "javax.ccpp.ccpp-ri", version: "1.0"
+	compileInclude group: "com.liferay", name: "javax.ccpp.ri", version: "1.0.JAKARTA_LIFERAY-PATCHED-1"
 	compileInclude group: "oro", name: "oro", version: "2.0.8"
+	compileOnly group: "com.liferay", name: "javax.ccpp", version: "1.0.JAKARTA_LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	compileOnly group: "javax.ccpp", name: "ccpp", version: "1.0"
-	compileOnly group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 }

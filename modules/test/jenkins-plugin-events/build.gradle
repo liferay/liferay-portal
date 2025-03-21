@@ -14,7 +14,7 @@ dependencies {
 	api group: "org.apache.activemq", name: "activemq-client", version: "5.16.7"
 	api group: "org.jenkins-ci.plugins", name: "nodelabelparameter", version: "1.5.1"
 	api group: "org.json", name: "json", version: "20231013"
-	compileOnly group: "javax.annotation", name: "javax.annotation-api", version: "1.3.2"
+	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 }
 
 generateJenkinsPluginClassManifest {

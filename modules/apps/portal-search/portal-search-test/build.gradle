@@ -1,6 +1,6 @@
 dependencies {
+	testImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	testImplementation group: "javax.portlet", name: "portlet-api", version: "3.0.1"
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation project(":apps:calendar:calendar-api")
 	testImplementation project(":apps:portal-search:portal-search")

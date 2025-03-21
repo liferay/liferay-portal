@@ -4,11 +4,11 @@ buildService {
 }
 
 dependencies {
-	compileOnly group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2"
+	compileOnly group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2.JAKARTA_LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
-	compileOnly group: "javax.persistence", name: "javax.persistence-api", version: "2.2"
+	compileOnly group: "jakarta.persistence", name: "jakarta.persistence-api", version: "3.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"

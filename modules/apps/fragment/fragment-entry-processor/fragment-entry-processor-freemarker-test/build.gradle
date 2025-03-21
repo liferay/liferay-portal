@@ -2,7 +2,7 @@ dependencies {
 	testIntegrationImplementation group: "com.github.everit-org.json-schema", name: "org.everit.json.schema", version: "1.11.1"
 	testIntegrationImplementation group: "com.liferay", name: "org.freemarker", version: "2.3.33.LIFERAY-PATCHED-2"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
+	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation group: "org.jsoup", name: "jsoup", version: "1.15.3"
 	testIntegrationImplementation project(":apps:asset:asset-list-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
