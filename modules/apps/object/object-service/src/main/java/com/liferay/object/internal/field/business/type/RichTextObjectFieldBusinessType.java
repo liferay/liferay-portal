@@ -96,11 +96,6 @@ public class RichTextObjectFieldBusinessType
 		return value;
 	}
 
-	@Override
-	public boolean isLocalizable() {
-		return true;
-	}
-
 	@Reference
 	private HtmlParser _htmlParser;
 
