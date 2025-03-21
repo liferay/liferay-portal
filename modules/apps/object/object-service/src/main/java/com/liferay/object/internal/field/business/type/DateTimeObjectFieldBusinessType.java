@@ -196,11 +196,6 @@ public class DateTimeObjectFieldBusinessType
 			_userLocalService.getUser(userId), String.valueOf(value));
 	}
 
-	@Override
-	public boolean isLocalizable() {
-		return true;
-	}
-
 	private LocalDateTime _getLocalDateTime(
 		String sourceTimeZoneId, String targetTimeZoneId, String value) {
 

@@ -73,6 +73,11 @@ public class EncryptedObjectFieldBusinessType
 	}
 
 	@Override
+	public boolean isLocalizationSupported(ObjectField objectField) {
+		return false;
+	}
+
+	@Override
 	public boolean isVisible(ObjectDefinition objectDefinition) {
 		if (objectDefinition.isDefaultStorageType() &&
 			PropsValues.OBJECT_ENCRYPTION_ENABLED) {

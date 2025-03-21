@@ -88,11 +88,6 @@ public class DateObjectFieldBusinessType implements ObjectFieldBusinessType {
 		return PropertyDefinition.PropertyType.DATE_TIME;
 	}
 
-	@Override
-	public boolean isLocalizable() {
-		return true;
-	}
-
 	private String _getValue(String value) {
 		if (Validator.isNull(value)) {
 			return StringPool.BLANK;
