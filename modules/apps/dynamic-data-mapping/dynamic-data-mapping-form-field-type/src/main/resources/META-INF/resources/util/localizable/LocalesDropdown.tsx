@@ -38,15 +38,9 @@ const LocalesDropdown = ({
 	const alignElementRef = useRef(null);
 	const dispatch = useForm();
 	const dropdownMenuRef = useRef(null);
-	const {
-		defaultLanguageId,
-		editingLanguageId,
-	}: {
-		defaultLanguageId: Liferay.Language.Locale;
-		editingLanguageId: Liferay.Language.Locale;
-	} = useFormState();
 	const {portletNamespace} = useConfig();
 
+	const {defaultLanguageId, editingLanguageId} = useFormState();
 	const [dropdownActive, setDropdownActive] = useState(false);
 	const [editingLocale, setEditingLocale] = useState<AvailableLocale>(
 		availableLocales.find(({localeId}) => {

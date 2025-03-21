@@ -41,8 +41,7 @@ export default function DatePickerLocalizedObjectField(
 		value,
 	} = props;
 
-	const {editingLanguageId}: {editingLanguageId: Liferay.Language.Locale} =
-		useFormState();
+	const {editingLanguageId} = useFormState();
 
 	const dateMaskParams: DateMaskParams = useMemo(() => {
 		let parameters: DateMaskParams = {};

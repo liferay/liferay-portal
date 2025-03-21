@@ -15,8 +15,7 @@ import LocalesDropdown, {
 import type {FieldChangeEventHandler, LocalizedValue} from '../types';
 
 export default function CheckboxLocalizedObjectField(props: IProps) {
-	const {editingLanguageId}: {editingLanguageId: Liferay.Language.Locale} =
-		useFormState();
+	const {editingLanguageId} = useFormState();
 	const {availableLocales, fieldName, onChange, value} = props;
 	const checked = !!value[editingLanguageId];
 

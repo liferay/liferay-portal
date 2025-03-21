@@ -50,7 +50,10 @@ export function useForm(): ({
 	type: string;
 }) => void;
 
-export function useFormState<T extends {[key: string]: unknown}>(): T;
+export function useFormState<T extends {[key: string]: unknown}>(): T & {
+	defaultLanguageId: Liferay.Language.Locale;
+	editingLanguageId: Liferay.Language.Locale;
+};
 
 export const FormReport: React.FC<{
 	data?: string;

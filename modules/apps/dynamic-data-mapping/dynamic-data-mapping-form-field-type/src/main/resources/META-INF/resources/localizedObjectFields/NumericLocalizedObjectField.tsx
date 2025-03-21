@@ -36,8 +36,7 @@ export default function NumericLocalizedObjectField({
 	value,
 	...otherProps
 }: NumericProps) {
-	const {editingLanguageId}: {editingLanguageId: Liferay.Language.Locale} =
-		useFormState();
+	const {editingLanguageId} = useFormState();
 
 	const symbols = getSymbols({
 		editingLocale: editingLanguageId,

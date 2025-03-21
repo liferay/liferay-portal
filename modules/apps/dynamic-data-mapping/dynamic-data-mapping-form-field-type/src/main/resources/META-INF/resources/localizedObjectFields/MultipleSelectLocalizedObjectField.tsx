@@ -42,13 +42,7 @@ export default function MultipleSelectLocalizedObjectField({
 	tip,
 	value,
 }: MultipleSelectLocalizedObjectFieldProps) {
-	const {
-		defaultLanguageId,
-		editingLanguageId,
-	}: {
-		defaultLanguageId: Liferay.Language.Locale;
-		editingLanguageId: Liferay.Language.Locale;
-	} = useFormState();
+	const {defaultLanguageId, editingLanguageId} = useFormState();
 
 	const [localizedValues, setLocalizedValues] = useState(
 		getDefaultValue(editingLanguageId, value)
