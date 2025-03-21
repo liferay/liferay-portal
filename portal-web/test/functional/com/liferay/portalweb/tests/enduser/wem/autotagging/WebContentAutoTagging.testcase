@@ -146,7 +146,7 @@ definition {
 
 		WebContent.viewDefaultCP(webContentTitle = "Digital Transformation or Digital Experience");
 
-		AssertConsoleTextNotPresent(value1 = "javax.portlet.PortletException");
+		AssertConsoleTextNotPresent(value1 = "jakarta.portlet.PortletException");
 	}
 
 	@description = "This test ensures that if a user manually adds a tag when adding a web content, the entry will not be autotagged."

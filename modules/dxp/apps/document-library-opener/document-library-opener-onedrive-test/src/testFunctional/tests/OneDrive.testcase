@@ -605,7 +605,7 @@ definition {
 
 		OneDrive.editTitle(dmDocumentTitle = "OneDrive Entry Title ${num} Edited");
 
-		AssertConsoleTextNotPresent(value1 = "javax.portlet.PortletException: org.hibernate.exception.ConstraintViolationException");
+		AssertConsoleTextNotPresent(value1 = "jakarta.portlet.PortletException: org.hibernate.exception.ConstraintViolationException");
 	}
 
 	@description = "This test ensures that an Excel sheet can be deleted."

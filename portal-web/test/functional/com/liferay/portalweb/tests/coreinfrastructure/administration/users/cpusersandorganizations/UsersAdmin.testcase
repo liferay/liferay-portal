@@ -743,7 +743,7 @@ definition {
 
 		AssertConfirm(value1 = "Warning: This CSV file contains user supplied inputs. Opening a CSV file in a spreadsheet program may be dangerous.");
 
-		AssertConsoleTextNotPresent(value1 = "javax.servlet.ServletException");
+		AssertConsoleTextNotPresent(value1 = "jakarta.servlet.ServletException");
 	}
 
 	@description = "LPS-196309 | As an admin, I can assert that if the account the user is associated is deleted, the user will be listed again by using the filter type 'Unassociated Users'."

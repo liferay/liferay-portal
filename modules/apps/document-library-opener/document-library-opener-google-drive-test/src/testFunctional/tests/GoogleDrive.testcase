@@ -832,7 +832,7 @@ definition {
 
 		WaitForElementPresent(locator1 = "UserBar#USER_SIGN_IN");
 
-		AssertConsoleTextNotPresent(value1 = "javax.portlet.PortletException:");
+		AssertConsoleTextNotPresent(value1 = "jakarta.portlet.PortletException:");
 
 		User.loginUserPG(
 			password = PropsUtil.get("default.admin.password"),

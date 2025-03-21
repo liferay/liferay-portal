@@ -574,7 +574,7 @@ definition {
 		}
 
 		task ("Check no error are thrown ") {
-			AssertConsoleTextNotPresent(value1 = "javax.servlet.ServletException");
+			AssertConsoleTextNotPresent(value1 = "jakarta.servlet.ServletException");
 		}
 	}
 

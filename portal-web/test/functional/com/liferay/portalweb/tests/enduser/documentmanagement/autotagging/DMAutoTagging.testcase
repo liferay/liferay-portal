@@ -162,7 +162,7 @@ definition {
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
 
-		AssertConsoleTextNotPresent(value1 = "javax.portlet.PortletException");
+		AssertConsoleTextNotPresent(value1 = "jakarta.portlet.PortletException");
 
 		DMDocument.viewDefault();
 	}
