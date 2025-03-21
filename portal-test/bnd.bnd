@@ -31,23 +31,6 @@ Export-Package:\
 	\
 	org.springframework.mock.web
 Import-Package: *;resolution:=optional
-Include-Resource:\
-	classes,\
-	OSGI-INF/configurator=configurator,\
-	@${project.dir}/../lib/development/aspectj-rt.jar,\
-	@${project.dir}/../lib/development/commons-collections4.jar,\
-	@${project.dir}/../lib/development/commons-lang3.jar,\
-	@${project.dir}/../lib/development/dumbster.jar,\
-	@${project.dir}/../lib/development/hamcrest-core.jar,\
-	@${project.dir}/../lib/development/junit.jar,\
-	@${project.dir}/../lib/development/osgi-service-cm.jar,\
-	@${project.dir}/../lib/development/osgi-service-component.jar,\
-	@${project.dir}/../lib/development/osgi-service-log.jar,\
-	@${project.dir}/../lib/development/portletmvc4spring-test.jar,\
-	@${project.dir}/../lib/development/reflections.jar,\
-	@${project.dir}/../lib/development/sling-commons-osgi.jar,\
-	@${project.dir}/../lib/development/sling-testing-osgi-mock-core.jar,\
-	@${project.dir}/../lib/development/spring-test.jar
 Require-Capability:\
 	osgi.ee;\
 		filter:="(&(osgi.ee=JavaSE)(version=${ant.build.javac.target}))",\
