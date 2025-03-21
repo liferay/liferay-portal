@@ -29,9 +29,9 @@ Import-Package:\
 	*
 -dsannotations-options: inherit
 -includeresource:\
-	@cxf-rt-rs-extension-providers*.jar,\
-	@cxf-rt-rs-json-basic*.jar,\
-	@cxf-rt-rs-security-jose*.jar,\
-	@cxf-rt-rs-security-jose-jaxrs*.jar,\
-	@cxf-rt-rs-security-oauth2*.jar,\
-	@cxf-rt-security*.jar
+	@org.apache.cxf.rt.rs.extension.providers*.jar,\
+	@org.apache.cxf.rt.rs.json.basic*.jar,\
+	@org.apache.cxf.rt.rs.security.jose*.jar,\
+	@org.apache.cxf.rt.rs.security.jose.jaxrs*.jar,\
+	@org.apache.cxf.rt.rs.security.oauth2*.jar,\
+	@org.apache.cxf.rt.security*.jar

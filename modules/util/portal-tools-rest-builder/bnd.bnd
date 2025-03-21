@@ -34,5 +34,5 @@ Main-Class: com.liferay.portal.tools.rest.builder.RESTBuilder
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/util/*,\
 	@com.liferay.portal.tools.java.parser-*.jar!/com/liferay/portal/tools/java/parser/*.class,\
 	@com.liferay.portal.tools.java.parser-*.jar!/com/liferay/portal/tools/java/parser/util/JavaParserUtil.class,\
-	@javax.ws.rs-api-[0-9.]*.jar!/javax/ws/rs/core/Response.class,\
-	@javax.ws.rs-api-[0-9.]*.jar!/javax/ws/rs/core/Response$Status$Family.class
+	@jakarta.ws.rs-*.jar!/jakarta/ws/rs/core/Response.class,\
+	@jakarta.ws.rs-*.jar!/jakarta/ws/rs/core/Response$Status$Family.class

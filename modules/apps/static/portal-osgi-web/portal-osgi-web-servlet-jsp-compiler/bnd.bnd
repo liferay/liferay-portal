@@ -66,4 +66,4 @@ Provide-Capability:\
 	liferay.extender;\
 		liferay.extender="jsp.extender";\
 		version:Version="${Bundle-Version}"
--includeresource: @javax.servlet.jsp.jstl-[0-9.]*.jar!/META-INF/*.tld
+-includeresource: @jakarta.servlet.jsp.jstl-[0-9.]*.jar!/META-INF/*.tld
