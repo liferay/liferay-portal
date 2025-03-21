@@ -68,12 +68,20 @@ public class NumericDDMFormFieldTemplateContextContributor
 		).put(
 			"direction", ddmFormField.getProperty("direction")
 		).put(
+			"editOnlyInDefaultLanguage",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("editOnlyInDefaultLanguage"))
+		).put(
 			"hideField",
 			GetterUtil.getBoolean(ddmFormField.getProperty("hideField"))
 		).put(
 			"htmlAutocompleteAttribute",
 			GetterUtil.getString(
 				ddmFormField.getProperty("htmlAutocompleteAttribute"))
+		).put(
+			"isLocalizationSupported",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("isLocalizationSupported"))
 		).put(
 			"localizedObjectField", localizedObjectField
 		).put(

@@ -41,11 +41,19 @@ public class MultiselectPicklistDDMFormFieldTemplateContextContributor
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
 		DDMForm ddmForm = ddmFormField.getDDMForm();
+		boolean localizedObjectField = GetterUtil.getBoolean(
+			ddmFormField.getProperty("localizedObjectField"));
 
 		return HashMapBuilder.<String, Object>put(
-			"localizedObjectField",
+			"editOnlyInDefaultLanguage",
 			GetterUtil.getBoolean(
-				ddmFormField.getProperty("localizedObjectField"))
+				ddmFormField.getProperty("editOnlyInDefaultLanguage"))
+		).put(
+			"isLocalizationSupported",
+			GetterUtil.getBoolean(
+				ddmFormField.getProperty("isLocalizationSupported"))
+		).put(
+			"localizedObjectField", localizedObjectField
 		).put(
 			"options",
 			() -> {

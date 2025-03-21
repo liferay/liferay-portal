@@ -61,12 +61,20 @@ public class TextDDMFormFieldTemplateContextContributor
 			).put(
 				"displayStyle", _getDisplayStyle(ddmFormField)
 			).put(
+				"editOnlyInDefaultLanguage",
+				GetterUtil.getBoolean(
+					ddmFormField.getProperty("editOnlyInDefaultLanguage"))
+			).put(
 				"hideField",
 				GetterUtil.getBoolean(ddmFormField.getProperty("hideField"))
 			).put(
 				"htmlAutocompleteAttribute",
 				GetterUtil.getString(
 					ddmFormField.getProperty("htmlAutocompleteAttribute"))
+			).put(
+				"isLocalizationSupported",
+				GetterUtil.getBoolean(
+					ddmFormField.getProperty("isLocalizationSupported"))
 			).put(
 				"maxLength",
 				() -> {

@@ -1025,6 +1025,11 @@ public class ObjectEntryDisplayContextImpl
 			objectFieldBusinessType.getDDMFormFieldTypeName(
 				objectField.isLocalized()));
 
+		readOnly = _isReadOnly(objectEntry, objectField, readOnly);
+
+		ddmFormField.setReadOnly(readOnly);
+		objectField.setReadOnly(String.valueOf(readOnly));
+
 		Map<String, Object> properties = objectFieldBusinessType.getProperties(
 			objectField, _createObjectFieldRenderingContext(objectEntry));
 
@@ -1096,9 +1101,6 @@ public class ObjectEntryDisplayContextImpl
 				"objectEntryExternalReferenceCode",
 				objectEntry.getExternalReferenceCode());
 		}
-
-		ddmFormField.setReadOnly(
-			_isReadOnly(objectEntry, objectField, readOnly));
 
 		ddmFormField.setRequired(objectField.isRequired());
 

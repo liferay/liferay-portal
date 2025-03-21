@@ -78,10 +78,11 @@ public class AutoIncrementObjectFieldBusinessType
 
 	@Override
 	public Map<String, Object> getProperties(
-		ObjectField objectField,
-		ObjectFieldRenderingContext objectFieldRenderingContext) {
+			ObjectField objectField,
+			ObjectFieldRenderingContext objectFieldRenderingContext)
+		throws PortalException {
 
-		return Collections.emptyMap();
+		return super.getProperties(objectField, objectFieldRenderingContext);
 	}
 
 	@Override
