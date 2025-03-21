@@ -18,7 +18,7 @@
 			<package-name>antlr.*</package-name>
 			<package-name>com.google.common.*</package-name>
 			<package-name>com.sun.xml.ws.*</package-name>
-			<package-name>javax.validation.*</package-name>
+			<package-name>jakarta.validation.*</package-name>
 			<package-name>org.antlr.*</package-name>
 			<package-name>org.apache.commons.lang.*</package-name>
 			<package-name>org.mozilla.*</package-name>
@@ -26,9 +26,9 @@
 		</prefer-application-packages>
 		<prefer-application-resources>
 			<resource-name>META-INF/services/com.sun.xml.ws.*</resource-name>
-			<resource-name>META-INF/services/javax.servlet.ServletContainerInitializer</resource-name>
+			<resource-name>META-INF/services/jakarta.servlet.ServletContainerInitializer</resource-name>
 			<resource-name>META-INF/services/javax.xml.parsers.SAXParserFactory</resource-name>
-			<resource-name>META-INF/services/javax.xml.ws.spi.Provider</resource-name>
+			<resource-name>META-INF/services/jakarta.xml.ws.spi.Provider</resource-name>
 		</prefer-application-resources>
 		<optimistic-serialization>true</optimistic-serialization>
 		<show-archived-real-path-enabled>true</show-archived-real-path-enabled>

@@ -3,7 +3,7 @@
 <scr:component name="com.liferay.oauth2.provider.scope.sample.qa.SampleQAApp" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0">
 	<implementation class="com.liferay.oauth2.provider.scope.sample.qa.SampleQAApp" />
 	<service>
-		<provide interface="javax.ws.rs.core.Application" />
+		<provide interface="jakarta.ws.rs.core.Application" />
 	</service>
 	<property name="osgi.jaxrs.application.base" type="String" value="/sample-qa-app" />
 	<property name="oauth2.scopechecker.type" type="String" value="annotations" />

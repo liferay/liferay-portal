@@ -249,7 +249,7 @@
 		<qname xmlns:x="http://www.liferay.com/public-render-parameters">x:tags</qname>
 	</public-render-parameter>
 	<container-runtime-option>
-		<name>javax.portlet.escapeXml</name>
+		<name>jakarta.portlet.escapeXml</name>
 		<value>false</value>
 	</container-runtime-option>
 </portlet-app>

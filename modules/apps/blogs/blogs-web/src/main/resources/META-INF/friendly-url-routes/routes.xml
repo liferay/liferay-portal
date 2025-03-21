@@ -38,13 +38,13 @@
 	</route>
 	<route>
 		<pattern>/trackback/{entryId:\d+}</pattern>
-		<implicit-parameter name="javax.portlet.action">/blogs/trackback</implicit-parameter>
+		<implicit-parameter name="jakarta.portlet.action">/blogs/trackback</implicit-parameter>
 		<implicit-parameter name="p_p_lifecycle">1</implicit-parameter>
 		<implicit-parameter name="p_p_state">exclusive</implicit-parameter>
 	</route>
 	<route>
 		<pattern>/trackback/{urlTitle}</pattern>
-		<implicit-parameter name="javax.portlet.action">/blogs/trackback</implicit-parameter>
+		<implicit-parameter name="jakarta.portlet.action">/blogs/trackback</implicit-parameter>
 		<implicit-parameter name="p_p_lifecycle">1</implicit-parameter>
 		<implicit-parameter name="p_p_state">exclusive</implicit-parameter>
 	</route>
@@ -64,12 +64,12 @@
 	</route>
 	<route>
 		<pattern>/trackback/{entryId:\d+}/{p_p_state}</pattern>
-		<implicit-parameter name="javax.portlet.action">/blogs/trackback</implicit-parameter>
+		<implicit-parameter name="jakarta.portlet.action">/blogs/trackback</implicit-parameter>
 		<implicit-parameter name="p_p_lifecycle">1</implicit-parameter>
 	</route>
 	<route>
 		<pattern>/trackback/{urlTitle}/{p_p_state}</pattern>
-		<implicit-parameter name="javax.portlet.action">/blogs/trackback</implicit-parameter>
+		<implicit-parameter name="jakarta.portlet.action">/blogs/trackback</implicit-parameter>
 		<implicit-parameter name="p_p_lifecycle">1</implicit-parameter>
 	</route>
 </routes>

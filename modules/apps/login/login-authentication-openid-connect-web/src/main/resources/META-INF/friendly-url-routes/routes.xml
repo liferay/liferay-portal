@@ -4,7 +4,7 @@
 <routes>
 	<route>
 		<pattern>/openid_connect_request</pattern>
-		<implicit-parameter name="javax.portlet.action">/login/openid_connect_request</implicit-parameter>
+		<implicit-parameter name="jakarta.portlet.action">/login/openid_connect_request</implicit-parameter>
 		<implicit-parameter name="p_p_lifecycle">1</implicit-parameter>
 	</route>
 </routes>

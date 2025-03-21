@@ -1022,23 +1022,23 @@
 	</servlet-mapping>
 	<jsp-config>
 		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/core</taglib-uri>
+			<taglib-uri>jakarta.tags.core</taglib-uri>
 			<taglib-location>/WEB-INF/tld/c.tld</taglib-location>
 		</taglib>
 		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/fmt</taglib-uri>
+			<taglib-uri>jakarta.tags.fmt</taglib-uri>
 			<taglib-location>/WEB-INF/tld/fmt.tld</taglib-location>
 		</taglib>
 		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/functions</taglib-uri>
+			<taglib-uri>jakarta.tags.functions</taglib-uri>
 			<taglib-location>/WEB-INF/tld/fn.tld</taglib-location>
 		</taglib>
 		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/sql</taglib-uri>
+			<taglib-uri>jakarta.tags.sql</taglib-uri>
 			<taglib-location>/WEB-INF/tld/sql.tld</taglib-location>
 		</taglib>
 		<taglib>
-			<taglib-uri>http://java.sun.com/jsp/jstl/xml</taglib-uri>
+			<taglib-uri>jakarta.tags.xml</taglib-uri>
 			<taglib-location>/WEB-INF/tld/x.tld</taglib-location>
 		</taglib>
 		<taglib>
