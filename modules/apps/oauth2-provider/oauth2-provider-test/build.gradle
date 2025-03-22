@@ -17,7 +17,10 @@ dependencies {
 	compileOnly project(":apps:portal-security:portal-security-service-access-policy-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
+	testIntegrationImplementation group: "org.apache.cxf", name: "cxf-rt-frontend-jaxrs", version: "3.5.11"
 	testIntegrationImplementation group: "org.apache.cxf", name: "cxf-rt-rs-client", version: "3.5.11"
+	testIntegrationImplementation group: "org.apache.cxf", name: "cxf-rt-rs-extension-providers", version: "3.5.11"
+	testIntegrationImplementation group: "org.apache.cxf", name: "cxf-rt-rs-security-jose-jaxrs", version: "3.5.11"
 	testIntegrationImplementation group: "org.mockito", name: "mockito-core", version: "1.10.8"
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")

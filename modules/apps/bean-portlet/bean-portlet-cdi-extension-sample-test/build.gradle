@@ -8,6 +8,7 @@ dependencies {
 	implementation group: "com.liferay.faces", name: "com.liferay.faces.bridge.api", version: "4.3.0"
 	implementation group: "com.liferay.faces", name: "com.liferay.faces.bridge.ext", version: "6.1.1"
 	implementation group: "com.liferay.faces", name: "com.liferay.faces.bridge.impl", version: "4.3.0"
+	implementation group: "com.liferay.faces", name: "com.liferay.faces.util", version: "3.4.1"
 }
 
 deploy {

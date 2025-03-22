@@ -15,6 +15,7 @@ dependencies {
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "org.apache.cxf", name: "cxf-core", version: "3.5.11"
 	testImplementation group: "org.apache.cxf", name: "cxf-rt-frontend-jaxrs", version: "3.5.11"
 	testImplementation group: "org.assertj", name: "assertj-core", version: "3.10.0"
 }
