@@ -5,10 +5,32 @@
 
 package com.liferay.headless.asset.library.internal.resource.v1_0;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelService;
+import com.liferay.depot.service.DepotEntryService;
+import com.liferay.headless.asset.library.dto.v1_0.Site;
 import com.liferay.headless.asset.library.resource.v1_0.SiteResource;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.dto.converter.DTOConverter;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
+import com.liferay.portal.vulcan.util.SearchUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
+
+import java.util.Collections;
 
 /**
  * @author Roberto Díaz
@@ -18,4 +40,202 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = SiteResource.class
 )
 public class SiteResourceImpl extends BaseSiteResourceImpl {
+
+	@Override
+	public void
+			deleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+				String assetLibraryExternalReferenceCode,
+				String siteExternalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		Group assetLibraryGroup =
+			_groupLocalService.getGroupByExternalReferenceCode(
+				assetLibraryExternalReferenceCode,
+				contextCompany.getCompanyId());
+		Group siteGroup = _groupLocalService.getGroupByExternalReferenceCode(
+			siteExternalReferenceCode, contextCompany.getCompanyId());
+
+		deleteAssetLibrarySite(
+			assetLibraryGroup.getGroupId(), siteGroup.getGroupId());
+	}
+
+	@Override
+	public void deleteAssetLibrarySite(Long assetLibraryId, Long siteId)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
+			assetLibraryId);
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelService.
+				getDepotEntryGroupRelByDepotEntryIdToGroupId(
+					depotEntry.getDepotEntryId(), siteId);
+
+		_depotEntryGroupRelService.deleteDepotEntryGroupRel(
+			depotEntryGroupRel.getDepotEntryGroupRelId());
+	}
+
+	@Override
+	public Site
+			getAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+				String assetLibraryExternalReferenceCode,
+				String siteExternalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		Group assetLibraryGroup =
+			_groupLocalService.getGroupByExternalReferenceCode(
+				assetLibraryExternalReferenceCode,
+				contextCompany.getCompanyId());
+		Group siteGroup = _groupLocalService.getGroupByExternalReferenceCode(
+			siteExternalReferenceCode, contextCompany.getCompanyId());
+
+		return getAssetLibrarySite(
+			assetLibraryGroup.getGroupId(), siteGroup.getGroupId());
+	}
+
+	@Override
+	public Page<Site> getAssetLibraryByExternalReferenceCodeSitesPage(
+			String externalReferenceCode, String keywords, String search,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		Group assetLibraryGroup =
+			_groupLocalService.getGroupByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId());
+
+		return getAssetLibrarySitesPage(
+			assetLibraryGroup.getGroupId(), keywords, search, pagination,
+			sorts);
+	}
+
+	@Override
+	public Site getAssetLibrarySite(Long assetLibraryId, Long siteId)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelService.addDepotEntryGroupRel(
+				assetLibraryId, siteId);
+
+		return _toSite(depotEntryGroupRel);
+	}
+
+	@Override
+	public Page<Site> getAssetLibrarySitesPage(
+			Long assetLibraryId, String keywords, String search,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		// Get the DepopEntrGroup rels from depot index and toSite
+
+		return null;
+	}
+
+	@Override
+	public Site
+			putAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode(
+				String assetLibraryExternalReferenceCode,
+				String siteExternalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		Group assetLibraryGroup =
+			_groupLocalService.getGroupByExternalReferenceCode(
+				assetLibraryExternalReferenceCode,
+				contextCompany.getCompanyId());
+		Group siteGroup = _groupLocalService.getGroupByExternalReferenceCode(
+			siteExternalReferenceCode, contextCompany.getCompanyId());
+
+		return putAssetLibrarySite(
+			assetLibraryGroup.getGroupId(), siteGroup.getGroupId());
+	}
+
+	@Override
+	public Site putAssetLibrarySite(Long assetLibraryId, Long siteId)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		DepotEntry depotEntry = _depotEntryService.getGroupDepotEntry(
+			assetLibraryId);
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), siteId);
+
+		return _toSite(depotEntryGroupRel);
+	}
+
+	private Site _toSite(DepotEntryGroupRel depotEntryGroupRel)
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryService.getDepotEntry(
+			depotEntryGroupRel.getDepotEntryId());
+
+		return _siteDTOConverter.toDTO(
+			new DefaultDTOConverterContext(
+				contextAcceptLanguage.isAcceptAllLanguages(),
+				HashMapBuilder.put(
+					"delete",
+					addAction(
+						ActionKeys.DELETE, depotEntry, "deleteAssetLibrarySite")
+				).put(
+					"get",
+					addAction(
+						ActionKeys.VIEW, depotEntry, "getAssetLibrarySite")
+				).put(
+					"update",
+					addAction(
+						ActionKeys.UPDATE, depotEntry, "putAssetLibrarySite")
+				).build(),
+				_dtoConverterRegistry, depotEntryGroupRel,
+				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
+				contextUser));
+	}
+
+	@Reference
+	private DepotEntryGroupRelService _depotEntryGroupRelService;
+
+	@Reference
+	private DepotEntryService _depotEntryService;
+
+	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference(
+		target = "(component.name=com.liferay.headless.asset.library.internal.dto.v1_0.converter.SiteDTOConverter)"
+	)
+	private DTOConverter<DepotEntry, Site> _siteDTOConverter;
+
 }
