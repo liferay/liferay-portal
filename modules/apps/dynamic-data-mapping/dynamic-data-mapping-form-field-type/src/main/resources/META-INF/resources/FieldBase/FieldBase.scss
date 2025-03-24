@@ -12,6 +12,10 @@
 	&[data-field-name='layout'] {
 		padding-bottom: 80px;
 	}
+
+	&-information {
+		pointer-events: visible;
+	}
 }
 
 .ddm-form-field-repeatable-button-disabled {

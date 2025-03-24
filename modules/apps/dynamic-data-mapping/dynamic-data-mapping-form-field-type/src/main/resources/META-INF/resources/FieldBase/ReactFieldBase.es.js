@@ -108,7 +108,7 @@ const FieldInformation = ({popover, tooltip}) => {
 		<Popover {...popover} />
 	) : (
 		<span
-			className="c-ml-2 text-4 text-secondary"
+			className="c-ml-2 ddm-field-information text-4 text-secondary"
 			data-testid="tooltip"
 			tabIndex={0}
 			title={tooltip}
