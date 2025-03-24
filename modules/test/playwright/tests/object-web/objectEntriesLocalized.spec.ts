@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectDefinitionAPI} from '@liferay/object-admin-rest-client-js';
+import {
+	ObjectDefinitionApi,
+	ObjectField,
+	ObjectFieldApi,
+} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {accountSettingsPagesTest} from '../../fixtures/accountSettingsPagesTest';
@@ -705,6 +709,125 @@ test.describe('Localized object entries are saved correctly', () => {
 		await catalanOption.first().click();
 
 		await expectFinalCatalanState();
+	});
+
+	test('Non-localizable object fields are disabled and have correct tooltip information when managing translations', async ({
+		apiHelpers,
+		page,
+		viewObjectEntriesPage,
+	}) => {
+		const objectDefinitionLabel = 'ObjectDefinitionLabel' + getRandomInt();
+		const objectDefinitionName = 'ObjectDefinitionName' + getRandomInt();
+
+		const {objectFields} = await mockObjectFields({
+			apiHelpers,
+			objectFieldBusinessTypes: ['encrypted', 'text'],
+		});
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionApi);
+
+		const {body: objectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				active: true,
+				enableLocalization: true,
+				label: {
+					en_US: objectDefinitionLabel,
+				},
+				name: objectDefinitionName,
+				objectFields,
+				pluralLabel: {
+					en_US: objectDefinitionLabel,
+				},
+				portlet: true,
+				scope: 'company',
+				status: {
+					code: 0,
+				},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const objectFieldApiClient =
+			await apiHelpers.buildRestClient(ObjectFieldApi);
+
+		const integerLocalizedObjectField: ObjectField = {
+			DBType: 'Integer',
+			label: {
+				en_US: 'Integer Localized Field',
+			},
+			localized: true,
+			name: 'integerField',
+			objectFieldSettings: [],
+			readOnly: 'false',
+			required: false,
+			state: false,
+			system: false,
+		};
+
+		await objectFieldApiClient.postObjectDefinitionByExternalReferenceCodeObjectField(
+			objectDefinition.externalReferenceCode,
+			integerLocalizedObjectField
+		);
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await viewObjectEntriesPage.addObjectEntryButton.click();
+
+		const translationsDropdownTriggerButton = page
+			.getByTestId('triggerButton')
+			.first();
+
+		await translationsDropdownTriggerButton.click();
+
+		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
+
+		await catalanOption.first().click();
+
+		const encryptedContainer = page
+			.locator('.form-group')
+			.filter({has: page.getByLabel(objectFields[0].label['en_US'])});
+
+		await expect(encryptedContainer.getByRole('textbox')).toBeDisabled();
+
+		await expect(
+			encryptedContainer.getByTitle(
+				'This field does not support translations.'
+			)
+		).toBeVisible();
+
+		const textContainer = page
+			.locator('.form-group')
+			.filter({has: page.getByLabel(objectFields[1].label['en_US'])});
+
+		await expect(textContainer.getByRole('textbox')).toBeDisabled();
+
+		await expect(
+			textContainer.getByTitle('Translation is disabled for this field.')
+		).toBeVisible();
+
+		await translationsDropdownTriggerButton.click();
+
+		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
+
+		await englishOption.first().click();
+
+		await expect(encryptedContainer.getByRole('textbox')).toBeEnabled();
+
+		await expect(
+			encryptedContainer.getByTitle(
+				'This field does not support translations.'
+			)
+		).toBeHidden();
+
+		await expect(textContainer.getByRole('textbox')).toBeEnabled();
+
+		await expect(
+			textContainer.getByTitle('Translation is disabled for this field.')
+		).toBeHidden();
 	});
 
 	test('Numeric fields', async ({
