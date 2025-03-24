@@ -7,17 +7,23 @@ package com.liferay.depot.service.impl;
 
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.base.DepotEntryGroupRelLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -57,6 +63,8 @@ public class DepotEntryGroupRelLocalServiceImpl
 			depotEntryGroupRel.setUuid(serviceContext.getUuid());
 		}
 
+		_reindexDepotEntry(depotEntryId);
+
 		return depotEntryGroupRelPersistence.update(depotEntryGroupRel);
 	}
 
@@ -80,11 +88,23 @@ public class DepotEntryGroupRelLocalServiceImpl
 	public DepotEntryGroupRel deleteDepotEntryGroupRel(
 		DepotEntryGroupRel depotEntryGroupRel) {
 
-		return super.deleteDepotEntryGroupRel(depotEntryGroupRel);
+		DepotEntryGroupRel entryGroupRel = super.deleteDepotEntryGroupRel(
+			depotEntryGroupRel);
+
+		_reindexDepotEntry(depotEntryGroupRel.getDepotEntryId());
+
+		return entryGroupRel;
 	}
 
 	@Override
 	public void deleteToGroupDepotEntryGroupRels(long toGroupId) {
+		List<DepotEntryGroupRel> depotEntryGroupRels = getDepotEntryGroupRels(
+			toGroupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		for (DepotEntryGroupRel depotEntryGroupRel : depotEntryGroupRels) {
+			_reindexDepotEntry(depotEntryGroupRel.getDepotEntryId());
+		}
+
 		depotEntryGroupRelPersistence.removeByToGroupId(toGroupId);
 	}
 
@@ -170,5 +190,21 @@ public class DepotEntryGroupRelLocalServiceImpl
 
 		return depotEntryGroupRelPersistence.update(depotEntryGroupRel);
 	}
+
+	private void _reindexDepotEntry(long depotEntryId) {
+		TransactionCommitCallbackUtil.registerCallback(
+			() -> {
+				Indexer<DepotEntry> indexer =
+					IndexerRegistryUtil.nullSafeGetIndexer(DepotEntry.class);
+
+				indexer.reindex(
+					_depotEntryLocalService.getDepotEntry(depotEntryId));
+
+				return null;
+			});
+	}
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 }

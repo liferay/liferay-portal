@@ -6,6 +6,8 @@
 package com.liferay.depot.internal.search.spi.model.index.contributor;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Document;
@@ -36,6 +38,14 @@ public class DepotEntryModelDocumentContributor
 
 		document.addText(Field.DESCRIPTION, group.getDescription());
 
+		document.addKeyword(
+			"depotEntryGroupRelIds",
+			TransformUtil.transformToLongArray(
+				_depotEntryGroupRelLocalService.getDepotEntryGroupRels(
+					depotEntry),
+				depotEntryGroupRel ->
+					depotEntryGroupRel.getDepotEntryGroupRelId()));
+
 		document.addDate(Field.MODIFIED_DATE, depotEntry.getModifiedDate());
 		document.addText(Field.NAME, group.getName());
 
@@ -52,6 +62,9 @@ public class DepotEntryModelDocumentContributor
 				group.getName(locale));
 		}
 	}
+
+	@Reference
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
