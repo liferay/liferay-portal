@@ -4458,6 +4458,10 @@ information. Make sure to commit in all format-javadoc results.
 		<antcall target="functional-tomcat-mysql57" />
 	</target>
 
+	<target name="functional-marketplaceapp-smoke-tomcat-mysql84">
+		<antcall target="functional-tomcat-mysql84" />
+	</target>
+
 	<target name="functional-marketplaceapp-smoke-tomcat-postgresql">
 		<antcall target="functional-tomcat-postgresql" />
 	</target>
@@ -4996,6 +5000,27 @@ information. Make sure to commit in all format-javadoc results.
 			app.server.type="tomcat"
 			database.type="mysql"
 			database.version="5.7"
+			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
+			test.fix.pack.base.url="${test.fix.pack.base.url}"
+			test.license.xml.url="${test.license.xml.url}"
+			test.portal.bundle.version="${test.portal.bundle.version}"
+			test.portal.bundle.zip.url="${test.portal.bundle.zip.url}"
+			test.portal.log.assert="true"
+			test.sql.zip.url="${test.sql.zip.url}"
+		/>
+	</target>
+
+	<target name="functional-smoke-tomcat-mysql84-jdk17_zulu">
+		<antcall target="functional-tomcat-mysql84-jdk17_zulu" />
+	</target>
+
+	<target name="functional-smoke-tomcat-mysql84-jdk21_zulu">
+		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
+
+		<run-functional-test
+			app.server.type="tomcat"
+			database.type="mysql"
+			database.version="8.4"
 			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
 			test.fix.pack.base.url="${test.fix.pack.base.url}"
 			test.license.xml.url="${test.license.xml.url}"
@@ -5639,6 +5664,17 @@ information. Make sure to commit in all format-javadoc results.
 	<target name="functional-tomcat-mysql80-jdk21_zulu">
 		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.0" />
 	</target>
+
+	<target name="functional-tomcat-mysql84">
+		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
+	</target>
+
+	<target name="functional-tomcat-mysql84-jdk17_zulu">
+		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
+	</target>
+
+	<target name="functional-tomcat-mysql84-jdk21_zulu">
+		<run-functional-test app.server.type="tomcat" database.type="mysql" database.version="8.4" />
 
 	<target name="functional-tomcat-oracle">
 		<run-functional-test app.server.type="tomcat" database.type="oracle" />
@@ -9270,6 +9306,10 @@ ${output.content}</echo>
 
 	<target name="release-functional-smoke-tomcat-mysql57">
 		<antcall target="functional-tomcat-mysql57" />
+	</target>
+
+	<target name="release-functional-smoke-tomcat-mysql84">
+		<antcall target="functional-tomcat-mysql84" />
 	</target>
 
 	<target name="release-functional-smoke-tomcat-postgresql155">
