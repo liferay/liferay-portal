@@ -67,13 +67,13 @@ public class StyleBookEntryThemeIdUpgradeProcessTest {
 		styleBookEntry = _styleBookEntryLocalService.fetchStyleBookEntry(
 			styleBookEntry.getStyleBookEntryId());
 
-		LayoutSet privateLayoutSet = _group.getPrivateLayoutSet();
+		LayoutSet publicLayoutSet = _group.getPublicLayoutSet();
 
 		Assert.assertEquals(
-			"classic_WAR_classictheme", privateLayoutSet.getThemeId());
+			"classic_WAR_classictheme", publicLayoutSet.getThemeId());
 
 		Assert.assertEquals(
-			privateLayoutSet.getThemeId(), styleBookEntry.getThemeId());
+			publicLayoutSet.getThemeId(), styleBookEntry.getThemeId());
 	}
 
 	private void _runUpgrade() throws Exception {

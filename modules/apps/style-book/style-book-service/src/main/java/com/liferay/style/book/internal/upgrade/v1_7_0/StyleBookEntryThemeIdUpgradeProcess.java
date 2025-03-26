@@ -41,9 +41,9 @@ public class StyleBookEntryThemeIdUpgradeProcess extends UpgradeProcess {
 				Group group = _groupLocalService.getGroup(
 					resultSet.getLong("groupId"));
 
-				LayoutSet privateLayoutSet = group.getPrivateLayoutSet();
+				LayoutSet publicLayoutSet = group.getPublicLayoutSet();
 
-				preparedStatement2.setString(1, privateLayoutSet.getThemeId());
+				preparedStatement2.setString(1, publicLayoutSet.getThemeId());
 
 				preparedStatement2.setLong(
 					2, resultSet.getLong("ctCollectionId"));
