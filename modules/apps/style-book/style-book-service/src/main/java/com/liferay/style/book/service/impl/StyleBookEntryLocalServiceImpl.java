@@ -14,11 +14,13 @@ import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -96,7 +98,16 @@ public class StyleBookEntryLocalServiceImpl
 		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
 		styleBookEntry.setName(name);
 		styleBookEntry.setStyleBookEntryKey(styleBookEntryKey);
-		styleBookEntry.setThemeId(themeId);
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-30204")) {
+			styleBookEntry.setThemeId(themeId);
+		}
+		else {
+			LayoutSet publicLayoutSet = _layoutSetLocalService.getLayoutSet(
+				groupId, false);
+
+			styleBookEntry.setThemeId(publicLayoutSet.getThemeId());
+		}
 
 		return publishDraft(styleBookEntry);
 	}
@@ -591,6 +602,9 @@ public class StyleBookEntryLocalServiceImpl
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutSetLocalService _layoutSetLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
