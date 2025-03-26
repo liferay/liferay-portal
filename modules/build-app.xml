@@ -215,6 +215,9 @@
 				</antcall>
 			</sequential>
 		</for>
+
+		<delete dir="${osgi.dir}/portal" />
+		<delete dir="${osgi.dir}/static" />
 	</target>
 
 	<target name="build-app-lpkg-release">
@@ -248,6 +251,9 @@
 				</if>
 			</sequential>
 		</for>
+
+		<delete dir="${osgi.dir}/portal" />
+		<delete dir="${osgi.dir}/static" />
 	</target>
 
 	<target name="check-current-branch">
