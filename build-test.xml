@@ -11997,6 +11997,8 @@ ${update.properties}</echo>
 
 		<Logger level="ERROR" name="com.zaxxer.hikari.pool.PoolBase" />
 
+		<Logger level="ERROR" name="org.apache.http.client.protocol.ResponseProcessCookies" />
+
 		${log4j.logggers.root}
 	</Loggers>
 </Configuration>]]></echo>
