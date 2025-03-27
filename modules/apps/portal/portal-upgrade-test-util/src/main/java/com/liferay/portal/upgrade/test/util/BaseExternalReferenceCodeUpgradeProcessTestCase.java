@@ -88,12 +88,12 @@ public abstract class BaseExternalReferenceCodeUpgradeProcessTestCase {
 	@Test
 	public void testUpgradeProcess() throws Exception {
 		for (String tableName : getTableNames()) {
-			ExternalReferenceCodeModel[] externalReferenceCodeModels =
-				addExternalReferenceCodeModels(tableName);
-
 			List<IndexMetadata> indexMetadatas = _dropIndexes(tableName);
 
 			try {
+				ExternalReferenceCodeModel[] externalReferenceCodeModels =
+					addExternalReferenceCodeModels(tableName);
+
 				_prepareDatabaseForUpgradeProcess(
 					externalReferenceCodeModels,
 					_hasColumn(tableName, "groupId"), tableName);

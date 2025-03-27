@@ -11,7 +11,9 @@ import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.version.Version;
@@ -34,14 +36,35 @@ public class LayoutExternalReferenceCodeUpgradeProcessTest
 			String tableName)
 		throws PortalException {
 
+		serviceContext = ServiceContextTestUtil.getServiceContext(
+			group.getGroupId());
+
+		serviceContext.setUuid(_UUID);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
 		Layout layout = _layoutLocalService.addLayout(
-			null, TestPropsValues.getUserId(), group.getGroupId(), true,
+			"", TestPropsValues.getUserId(), group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			LayoutConstants.TYPE_CONTENT, false, false, null, serviceContext);
+
+		serviceContext = ServiceContextTestUtil.getServiceContext(
+			group.getGroupId());
+
+		serviceContext.setUuid(_UUID);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		Layout privateLayout = _layoutLocalService.addLayout(
+			"", TestPropsValues.getUserId(), group.getGroupId(), true,
 			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
 			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
 			LayoutConstants.TYPE_CONTENT, false, false, null, serviceContext);
 
 		return new ExternalReferenceCodeModel[] {
-			layout, layout.fetchDraftLayout()
+			layout, layout.fetchDraftLayout(), privateLayout,
+			privateLayout.fetchDraftLayout()
 		};
 	}
 
@@ -53,6 +76,14 @@ public class LayoutExternalReferenceCodeUpgradeProcessTest
 		Layout layout = (Layout)externalReferenceCodeModel;
 
 		return _layoutLocalService.fetchLayout(layout.getPlid());
+	}
+
+	@Override
+	protected String getExternalReferenceCode(
+		ExternalReferenceCodeModel externalReferenceCodeModel,
+		String tableName) {
+
+		return externalReferenceCodeModel.getExternalReferenceCode();
 	}
 
 	@Override
@@ -74,6 +105,8 @@ public class LayoutExternalReferenceCodeUpgradeProcessTest
 	protected Version getVersion() {
 		return null;
 	}
+
+	private static final String _UUID = "uuid";
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
