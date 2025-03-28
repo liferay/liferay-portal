@@ -1878,6 +1878,8 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 			}
 		}
 
+		instance = null;
+
 		_bundleHeaderReplacerBiFunction =
 			(BiFunction<String, Map<Object, Object>, Map<Object, Object>>)
 				instance;
