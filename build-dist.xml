@@ -659,7 +659,7 @@ java -jar ${app.server.weblogic.dir}/${app.server.weblogic.jar.name} -ignoreSysP
 				<matches pattern="10\.\d+\.\d+" string="${app.server.tomcat.version}" />
 			</and>
 			<then>
-				<var name="transformer.agent" value="-javaagent:${CATALINA_HOME}/../tools/portal-tools-jakarta-ee-transformer/com.liferay.portal.tools.jakarta.ee.transformer.jar" />
+				<var name="transformer.agent" value="\&quot;-javaagent:${CATALINA_HOME}/../tools/portal-tools-jakarta-ee-transformer/com.liferay.portal.tools.jakarta.ee.transformer.jar\&quot;" />
 
 				<if>
 					<not>
