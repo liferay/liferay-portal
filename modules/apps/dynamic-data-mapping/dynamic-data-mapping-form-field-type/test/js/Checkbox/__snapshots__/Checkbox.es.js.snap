@@ -6,37 +6,45 @@ exports[`Field Checkbox has a helptext 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -73,38 +81,46 @@ exports[`Field Checkbox has a key 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            checked=""
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="true"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="true"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                checked=""
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="true"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="true"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -130,38 +146,46 @@ exports[`Field Checkbox has a label 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-      label
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+          label
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -187,37 +211,45 @@ exports[`Field Checkbox has a predefined Value 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -243,38 +275,46 @@ exports[`Field Checkbox has a value 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            checked=""
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="true"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="true"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                checked=""
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="true"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="true"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -300,37 +340,45 @@ exports[`Field Checkbox has an id 1`] = `
     aria-labelledby="ID_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -356,38 +404,46 @@ exports[`Field Checkbox is not editable 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch disabled"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            class="toggle-switch-check"
-            disabled=""
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch disabled"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                class="toggle-switch-check"
+                disabled=""
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -413,38 +469,46 @@ exports[`Field Checkbox is not required 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            aria-required="false"
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                aria-required="false"
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -470,37 +534,45 @@ exports[`Field Checkbox is shown as a switcher 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"
@@ -527,23 +599,31 @@ exports[`Field Checkbox is shown as checkbox 1`] = `
     class="form-group hide"
   >
     <div
-      class="custom-control custom-checkbox"
+      class="input-group"
     >
-      <label>
+      <div
+        class="input-group-item"
+      >
+        <div
+          class="custom-control custom-checkbox"
+        >
+          <label>
+            <input
+              class="custom-control-input"
+              type="checkbox"
+            />
+            <span
+              class="custom-control-label"
+            />
+          </label>
+        </div>
         <input
-          class="custom-control-input"
-          type="checkbox"
+          class="form-control"
+          type="hidden"
+          value="false"
         />
-        <span
-          class="custom-control-label"
-        />
-      </label>
+      </div>
     </div>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
     <input
       name="undefined_edited"
       type="hidden"
@@ -569,37 +649,45 @@ exports[`Field Checkbox renders Label if showLabel is true 1`] = `
     aria-labelledby="undefined_fieldDetails"
     class="form-group hide"
   >
-    <label
-      class="toggle-switch"
+    <div
+      class="input-group"
     >
-      <label
-        class="toggle-switch simple-toggle-switch"
+      <div
+        class="input-group-item"
       >
-        <span
-          class="toggle-switch-check-bar"
+        <label
+          class="toggle-switch"
         >
-          <input
-            class="toggle-switch-check"
-            role="switch"
-            type="checkbox"
-            value="false"
-          />
-          <span
-            aria-hidden="true"
-            class="toggle-switch-bar"
+          <label
+            class="toggle-switch simple-toggle-switch"
           >
             <span
-              class="toggle-switch-handle"
-            />
-          </span>
-        </span>
-      </label>
-    </label>
-    <input
-      class="form-control"
-      type="hidden"
-      value="false"
-    />
+              class="toggle-switch-check-bar"
+            >
+              <input
+                class="toggle-switch-check"
+                role="switch"
+                type="checkbox"
+                value="false"
+              />
+              <span
+                aria-hidden="true"
+                class="toggle-switch-bar"
+              >
+                <span
+                  class="toggle-switch-handle"
+                />
+              </span>
+            </span>
+          </label>
+        </label>
+        <input
+          class="form-control"
+          type="hidden"
+          value="false"
+        />
+      </div>
+    </div>
     <input
       name="undefined_edited"
       type="hidden"

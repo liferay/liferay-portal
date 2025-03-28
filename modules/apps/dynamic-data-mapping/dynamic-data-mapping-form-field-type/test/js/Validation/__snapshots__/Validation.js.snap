@@ -10,40 +10,48 @@ exports[`Validation renders checkbox to enable Validation 1`] = `
       class="form-group hide"
       data-field-name="enableValidation"
     >
-      <label
-        class="toggle-switch"
+      <div
+        class="input-group"
       >
-        <label
-          class="toggle-switch simple-toggle-switch"
+        <div
+          class="input-group-item"
         >
-          <span
-            class="toggle-switch-check-bar"
+          <label
+            class="toggle-switch"
           >
-            <input
-              class="toggle-switch-check"
-              name="enableValidation"
-              role="switch"
-              type="checkbox"
-              value="false"
-            />
-            <span
-              aria-hidden="true"
-              class="toggle-switch-bar"
+            <label
+              class="toggle-switch simple-toggle-switch"
             >
               <span
-                class="toggle-switch-handle"
-              />
-            </span>
-          </span>
-        </label>
-        Validator
-      </label>
-      <input
-        class="form-control"
-        name="enableValidation"
-        type="hidden"
-        value="false"
-      />
+                class="toggle-switch-check-bar"
+              >
+                <input
+                  class="toggle-switch-check"
+                  name="enableValidation"
+                  role="switch"
+                  type="checkbox"
+                  value="false"
+                />
+                <span
+                  aria-hidden="true"
+                  class="toggle-switch-bar"
+                >
+                  <span
+                    class="toggle-switch-handle"
+                  />
+                </span>
+              </span>
+            </label>
+            Validator
+          </label>
+          <input
+            class="form-control"
+            name="enableValidation"
+            type="hidden"
+            value="false"
+          />
+        </div>
+      </div>
       <input
         name="enableValidation_edited"
         type="hidden"
