@@ -1507,7 +1507,7 @@ public class LiferayOSGiPlugin implements Plugin<Project> {
 		properties.put(Constants.FRAGMENT_HOST, bundleSymbolicName);
 
 		properties.put(
-			Constants.IMPORT_PACKAGE, "javax.servlet,javax.servlet.http");
+			Constants.IMPORT_PACKAGE, "jakarta.servlet,jakarta.servlet.http");
 
 		StringBuilder sb = new StringBuilder();
 

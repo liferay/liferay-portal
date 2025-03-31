@@ -222,17 +222,20 @@ public class LiferayBasePlugin implements Plugin<Project> {
 						project, PORTAL_CONFIGURATION_NAME,
 						"com.thoughtworks.qdox", "qdox", "1.12.1");
 					GradleUtil.addDependency(
-						project, PORTAL_CONFIGURATION_NAME, "javax.activation",
-						"activation", "1.1");
+						project, PORTAL_CONFIGURATION_NAME,
+						"jakarta.activation", "jakarta.activation-api",
+						"2.1.3");
 					GradleUtil.addDependency(
-						project, PORTAL_CONFIGURATION_NAME, "javax.portlet",
-						"portlet-api", "3.0.1");
+						project, PORTAL_CONFIGURATION_NAME,
+						"com.liferay.jakarta.portlet",
+						"com.liferay.jakarta.portlet-api", "4.0.0");
 					GradleUtil.addDependency(
-						project, PORTAL_CONFIGURATION_NAME, "javax.servlet",
-						"javax.servlet-api", "3.0.1");
+						project, PORTAL_CONFIGURATION_NAME, "jakarta.servlet",
+						"jakarta.servlet-api", "6.0.0");
 					GradleUtil.addDependency(
-						project, PORTAL_CONFIGURATION_NAME, "javax.servlet.jsp",
-						"javax.servlet.jsp-api", "2.3.1");
+						project, PORTAL_CONFIGURATION_NAME,
+						"jakarta.servlet.jsp", "jakarta.servlet.jsp-api",
+						"3.1.1");
 
 					AppServer appServer = liferayExtension.getAppServer();
 
