@@ -301,13 +301,13 @@ public class PicklistObjectFieldBusinessType
 		for (ListTypeEntry listTypeEntry :
 				_getListTypeEntries(objectField, objectFieldRenderingContext)) {
 
-			ddmFormFieldOptions.addOptionLabel(
-				listTypeEntry.getKey(), objectFieldRenderingContext.getLocale(),
-				GetterUtil.getString(
-					listTypeEntry.getName(
-						objectFieldRenderingContext.getLocale()),
-					listTypeEntry.getName(
-						listTypeEntry.getDefaultLanguageId())));
+			Map<Locale, String> nameMap = listTypeEntry.getNameMap();
+
+			for (Map.Entry<Locale, String> entry : nameMap.entrySet()) {
+				ddmFormFieldOptions.addOptionLabel(
+					listTypeEntry.getKey(), entry.getKey(),
+					GetterUtil.getString(entry.getValue()));
+			}
 		}
 
 		return ddmFormFieldOptions;
