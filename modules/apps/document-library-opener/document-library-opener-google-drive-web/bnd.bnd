@@ -4,6 +4,8 @@ Bundle-Version: 3.0.59
 Import-Package:\
 	!javax.jdo.*,\
 	\
+	!javax.servlet.*,\
+	\
 	!org.checkerframework.*,\
 	\
 	*

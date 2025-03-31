@@ -28,7 +28,7 @@ Import-Package:\
 	\
 	!jakarta.servlet.*,\
 	\
-	!javax.annotation.meta,\
+	!javax.annotation.*,\
 	\
 	!kotlin,\
 	\

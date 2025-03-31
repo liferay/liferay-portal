@@ -6,6 +6,10 @@ Import-Package:\
 	\
 	!com.sun.star.lib.unoloader,\
 	\
+	!javax.annotation,\
+	\
+	!javax.servlet.*,\
+	\
 	!net.oauth.jsontoken.*,\
 	\
 	!org.apache.http.*,\

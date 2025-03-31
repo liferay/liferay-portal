@@ -7,6 +7,10 @@ Import-Package:\
 	!com.sun.javadoc.*,\
 	!com.sun.tools.javadoc.*,\
 	\
+	!javax.servlet.http,\
+	\
+	!javax.ws.rs.core,\
+	\
 	!net.sf.saxon.*,\
 	\
 	!org.apache.tools.ant.*,\

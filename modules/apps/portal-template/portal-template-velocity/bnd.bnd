@@ -8,6 +8,8 @@ Import-Package:\
 	\
 	!com.werken.xpath,\
 	\
+	!javax.servlet.*,\
+	\
 	!org.apache.commons.digester,\
 	!org.apache.commons.validator,\
 	!org.apache.log,\

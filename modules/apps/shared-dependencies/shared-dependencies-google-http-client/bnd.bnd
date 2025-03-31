@@ -6,5 +6,7 @@ Import-Package:\
 	!com.google.appengine.api.memcache,\
 	!com.google.appengine.api.urlfetch,\
 	\
+	!javax.annotation,\
+	\
 	*
 -exportcontents: com.google.api.client.*

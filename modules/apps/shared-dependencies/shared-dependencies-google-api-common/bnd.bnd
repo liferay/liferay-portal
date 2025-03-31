@@ -1,6 +1,10 @@
 Bundle-Name: Liferay Shared Dependencies Google API Common
 Bundle-SymbolicName: com.liferay.shared.dependencies.google.api.common
 Bundle-Version: 1.0.2
+Import-Package:\
+	!javax.annotation.*,\
+	\
+	*
 -exportcontents:\
 	com.google.api.core.*,\
 	com.google.api.pathtemplate.*,\

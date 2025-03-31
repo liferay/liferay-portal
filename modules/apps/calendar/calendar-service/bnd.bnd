@@ -6,6 +6,10 @@ Import-Package:\
 	\
 	!groovy.*,\
 	\
+	!javax.enterprise.util,\
+	\
+	!javax.mail.internet,\
+	\
 	!net.fortuna.*,\
 	\
 	!org.codehaus.*,\

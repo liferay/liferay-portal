@@ -1,4 +1,8 @@
 Bundle-Name: Liferay Shared Dependencies Protobuf
 Bundle-SymbolicName: com.liferay.shared.dependencies.protobuf
 Bundle-Version: 4.0.2
+Import-Package:\
+	!javax.annotation.*,\
+	\
+	*
 -exportcontents: com.google.protobuf.*

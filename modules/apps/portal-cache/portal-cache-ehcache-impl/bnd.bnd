@@ -2,4 +2,8 @@ Bundle-Name: Liferay Portal Cache Ehcache Implementation
 Bundle-SymbolicName: com.liferay.portal.cache.ehcache.impl
 Bundle-Version: 4.0.38
 DynamicImport-Package: *
+Import-Package:\
+	!javax.annotation,\
+	\
+	*
 -dsannotations-options: inherit

@@ -4,6 +4,8 @@ Bundle-Version: 1.0.2
 Import-Package:\
 	!io.opentelemetry.*,\
 	\
+	!javax.annotation,\
+	\
 	!org.graalvm.*,\
 	\
 	*

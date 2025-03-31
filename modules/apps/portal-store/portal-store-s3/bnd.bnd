@@ -13,6 +13,10 @@ Import-Package:\
 	!com.sun.org.apache.xpath.internal,\
 	!com.sun.tools.doclets.standard,\
 	\
+	!javax.servlet,\
+	\
+	!javax.xml.bind,\
+	\
 	!org.apache.avalon.framework.logger,\
 	!org.apache.log,\
 	\

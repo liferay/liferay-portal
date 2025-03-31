@@ -26,6 +26,12 @@ Import-Package:\
 	\
 	!javax.annotation.*,\
 	\
+	!javax.json.*,\
+	\
+	!javax.persistence.*,\
+	\
+	!javax.servlet.*,\
+	\
 	!junit.*,\
 	\
 	!net.fortuna.*,\

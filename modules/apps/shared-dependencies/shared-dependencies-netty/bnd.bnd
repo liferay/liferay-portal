@@ -9,6 +9,8 @@ Import-Package:\
 	!com.nimbusds.common.contenttype.*,\
 	!com.nimbusds.langtag.*,\
 	\
+	!javax.servlet.*,\
+	\
 	!net.jcip.annotations.*,\
 	\
 	*

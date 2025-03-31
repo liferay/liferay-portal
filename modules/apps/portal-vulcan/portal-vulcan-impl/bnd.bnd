@@ -16,6 +16,10 @@ Import-Package:\
 	\
 	!javax.money.*,\
 	\
+	!javax.servlet,\
+	\
+	!javax.xml.bind,\
+	\
 	!lombok,\
 	\
 	!org.checkerframework.checker.nullness.qual.*,\

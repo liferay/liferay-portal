@@ -17,6 +17,8 @@ Import-Package:\
 	\
 	!io.opentelemetry.*,\
 	\
+	!javax.annotation,\
+	\
 	!lzma.sdk.*,\
 	\
 	!net.jpountz.*,\

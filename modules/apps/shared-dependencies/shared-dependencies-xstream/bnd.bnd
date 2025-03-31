@@ -4,6 +4,10 @@ Bundle-Version: 1.0.5
 Import-Package:\
 	!com.bea.*,\
 	\
+	!javax.activation,\
+	\
+	!javax.xml.bind,\
+	\
 	!net.sf.cglib.*,\
 	\
 	!nu.xom,\

@@ -17,6 +17,12 @@ Import-Package:\
 	\
 	!jakarta.json.*,\
 	\
+	!javax.activation,\
+	\
+	!javax.json.*,\
+	\
+	!javax.xml.bind.*,\
+	\
 	!jdk.nashorn.api.scripting.*,\
 	\
 	!lzma.sdk.*,\

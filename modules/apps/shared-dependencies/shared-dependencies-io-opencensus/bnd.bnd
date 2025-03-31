@@ -1,4 +1,8 @@
 Bundle-Name: Liferay Shared Dependencies IO Opencensus
 Bundle-SymbolicName: com.liferay.shared.dependencies.io.opencensus
 Bundle-Version: 1.0.2
+Import-Package:\
+	!javax.annotation.*,\
+	\
+	*
 -exportcontents: io.opencensus.*

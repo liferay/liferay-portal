@@ -12,6 +12,8 @@ Import-Package:\
 	\
 	!javax.rmi,\
 	\
+	!javax.servlet.*,\
+	\
 	!javax.transaction.*,\
 	\
 	*

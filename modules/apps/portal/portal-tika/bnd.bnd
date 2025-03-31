@@ -4,6 +4,10 @@ Bundle-SymbolicName: com.liferay.portal.tika
 Bundle-Version: 1.0.32
 Eclipse-BuddyPolicy: parent
 Import-Package:\
+	!javax.servlet.*,\
+	\
+	!javax.ws.rs.*,\
+	\
 	!org.apache.pdfbox.preflight.*,\
 	!org.apache.pdfbox.tools.imageio,\
 	\

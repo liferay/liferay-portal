@@ -47,7 +47,15 @@ Import-Package:\
 	\
 	!javassist.*,\
 	\
+	!javax.activation,\
+	\
+	!javax.annotation,\
+	\
 	!javax.jms.*,\
+	\
+	!javax.mail.*,\
+	\
+	!javax.servlet,\
 	\
 	!jline.*,\
 	\

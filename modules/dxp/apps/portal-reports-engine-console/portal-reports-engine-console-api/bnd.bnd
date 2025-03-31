@@ -13,6 +13,8 @@ Export-Package:\
 	com.liferay.portal.reports.engine.console.util,\
 	com.liferay.portal.reports.engine.console.util.comparator
 Import-Package:\
+	!javax.transaction.*,\
+	\
 	!net.sf.cglib.proxy.*,\
 	\
 	*

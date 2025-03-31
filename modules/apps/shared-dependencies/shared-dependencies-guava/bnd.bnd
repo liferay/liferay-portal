@@ -1,4 +1,8 @@
 Bundle-Name: Liferay Shared Dependencies Guava
 Bundle-SymbolicName: com.liferay.shared.dependencies.guava
 Bundle-Version: 9.0.1
+Import-Package:\
+	!javax.annotation.*,\
+	\
+	*
 -exportcontents: com.google.common.*

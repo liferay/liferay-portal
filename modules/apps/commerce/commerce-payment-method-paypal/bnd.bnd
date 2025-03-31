@@ -1,4 +1,8 @@
 Bundle-Name: Liferay Commerce Payment Method PayPal
 Bundle-SymbolicName: com.liferay.commerce.payment.method.paypal
 Bundle-Version: 4.0.40
+Import-Package:\
+	!javax.xml.bind,\
+	\
+	*
 Web-ContextPath: /commerce-payment-method-paypal
