@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.CollatorUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -48,6 +49,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.text.Collator;
 
@@ -57,6 +59,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -112,7 +116,8 @@ public class SelectDDMFormFieldTemplateContextContributor
 
 				return getOptions(
 					ddmFormField, ddmFormFieldOptions,
-					ddmFormFieldRenderingContext.getLocale(), objectField);
+					ddmFormFieldRenderingContext.getLocale(), objectField,
+					localizedObjectField, ddmFormFieldRenderingContext);
 			}
 		).put(
 			"predefinedValue",
@@ -247,7 +252,8 @@ public class SelectDDMFormFieldTemplateContextContributor
 
 	protected List<Map<String, Object>> getOptions(
 		DDMFormField ddmFormField, DDMFormFieldOptions ddmFormFieldOptions,
-		Locale locale, ObjectField objectField) {
+		Locale locale, ObjectField objectField, boolean localizedObjectField,
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
 		boolean alphabeticalOrder = GetterUtil.getBoolean(
 			ddmFormField.getProperty("alphabeticalOrder"));
@@ -280,24 +286,27 @@ public class SelectDDMFormFieldTemplateContextContributor
 			LocalizedValue localizedValue = ddmFormFieldOptions.getOptionLabels(
 				optionValue);
 
+			Map<Locale, String> labeMap = _getLabelMap(
+				ddmFormField, optionValue, _listTypeEntryLocalService,
+				localizedValue);
+
+			ThemeDisplay themeDisplay = getThemeDisplay(
+				ddmFormFieldRenderingContext.getHttpServletRequest());
+
 			options.add(
 				HashMapBuilder.<String, Object>put(
-					"label", localizedValue.getString(locale)
-				).put(
-					"labelMap",
+					"label",
 					() -> {
-						Map<Locale, String> labeMap =
-							DDMFormFieldTemplateContextContributorUtil.
-								getListTypeEntryNameMap(
-									ddmFormField, optionValue,
-									_listTypeEntryLocalService);
-
-						if (labeMap != null) {
-							return labeMap;
+						if (localizedObjectField) {
+							return GetterUtil.getString(
+								labeMap.get(localizedValue.getDefaultLocale()));
 						}
 
-						return localizedValue.getValues();
+						return GetterUtil.getString(
+							labeMap.get(themeDisplay.getLocale()));
 					}
+				).put(
+					"labelMap", labeMap
 				).put(
 					"reference",
 					ddmFormFieldOptions.getOptionReference(optionValue)
@@ -323,6 +332,13 @@ public class SelectDDMFormFieldTemplateContextContributor
 
 		return new AggregateResourceBundle(
 			resourceBundle, portalResourceBundle);
+	}
+
+	protected ThemeDisplay getThemeDisplay(
+		HttpServletRequest httpServletRequest) {
+
+		return (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	protected List<String> getValue(String valueString) {
@@ -356,6 +372,22 @@ public class SelectDDMFormFieldTemplateContextContributor
 
 	@Reference
 	protected Portal portal;
+
+	private Map<Locale, String> _getLabelMap(
+		DDMFormField ddmFormField, String key,
+		ListTypeEntryLocalService listTypeEntryLocalService,
+		LocalizedValue localizedValue) {
+
+		Map<Locale, String> labeMap =
+			DDMFormFieldTemplateContextContributorUtil.getListTypeEntryNameMap(
+				ddmFormField, key, listTypeEntryLocalService);
+
+		if (labeMap != null) {
+			return labeMap;
+		}
+
+		return localizedValue.getValues();
+	}
 
 	private ObjectField _getObjectField(
 		DDMFormField ddmFormField,
