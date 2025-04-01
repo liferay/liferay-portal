@@ -17,5 +17,10 @@ dependencies {
 	testImplementation group: "org.mock-server", name: "mockserver-client-java", version: "3.10.8"
 	testImplementation group: "org.mock-server", name: "mockserver-netty", version: "3.10.8"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "1.10.8"
+	testImplementation group: "org.springframework", name: "spring-test", version: "5.3.39"
 	testImplementation group: "org.springframework.boot", name: "spring-boot-test-autoconfigure", version: "2.7.18"
+}
+
+configurations.all {
+	exclude group: 'com.liferay', module: 'org.springframework.test'
 }
