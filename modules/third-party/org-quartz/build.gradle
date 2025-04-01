@@ -5,6 +5,7 @@ apply plugin: "com.liferay.patcher"
 task patch(type: PatchTask)
 
 dependencies {
+	api group: "jakarta.xml.bind", name: "jakarta.xml.bind-api", version: "4.0.2"
 	api group: "org.quartz-scheduler", name: "quartz", version: "2.1.7"
 }
 
