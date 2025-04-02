@@ -11,7 +11,6 @@ dependencies {
 	compileInclude group: "org.cryptacular", name: "cryptacular", version: "1.2.4"
 	compileInclude group: "xml-resolver", name: "xml-resolver", version: "1.2"
 	compileOnly group: "com.fasterxml.woodstox", name: "woodstox-core", version: "6.4.0"
-	compileOnly group: "com.google.code.findbugs", name: "jsr305", version: "3.0.2"
 	compileOnly group: "com.google.guava", name: "guava", version: "32.0.1-jre"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.opensaml.messaging", version: "3.3.0.LIFERAY-PATCHED-1"

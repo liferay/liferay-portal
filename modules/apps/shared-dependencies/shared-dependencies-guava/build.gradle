@@ -1,5 +1,4 @@
 dependencies {
-	compileInclude group: "com.google.code.findbugs", name: "jsr305", version: "3.0.2"
 	compileInclude group: "com.google.errorprone", name: "error_prone_annotations", version: "2.18.0"
 	compileInclude group: "com.google.guava", name: "failureaccess", version: "1.0.1"
 	compileInclude group: "com.google.guava", name: "guava", version: "32.0.1-jre"

@@ -51,14 +51,7 @@ deployDependencies {
 		include "org.freemarker-*.jar"
 	}
 
-	rename(/animal-sniffer-annotations-(.+)\.jar/, "animal-sniffer-annotations" + renameSuffix)
-	rename(/antlr-(.+)\.jar/, "antlr" + renameSuffix)
-	rename(/checker-qual-(.+)\.jar/, "checker-qual" + renameSuffix)
 	rename(/checkstyle-(.+)\.jar/, "checkstyle" + renameSuffix)
-	rename(/error_prone_annotations-(.+)\.jar/, "error_prone_annotations" + renameSuffix)
-	rename(/j2objc-annotations-(.+)\.jar/, "j2objc-annotations" + renameSuffix)
-	rename(/jsr305-(.+)\.jar/, "jsr305" + renameSuffix)
-	rename(/Saxon-HE-(.+)\.jar/, "Saxon-HE" + renameSuffix)
 	rename(/org.freemarker-(.+)\.jar/, "org.freemarker" + renameSuffix)
 }
 
