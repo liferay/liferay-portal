@@ -28,25 +28,6 @@ import java.util.Map;
  */
 public class DDMFormFieldTemplateContextContributorUtil {
 
-	public static Map<Locale, String> getListTypeEntryNameMap(
-		String key, long listTypeDefinitionId,
-		ListTypeEntryLocalService listTypeEntryLocalService) {
-
-		if (listTypeDefinitionId == 0) {
-			return null;
-		}
-
-		ListTypeEntry listTypeEntry =
-			listTypeEntryLocalService.fetchListTypeEntry(
-				listTypeDefinitionId, key);
-
-		if (listTypeEntry == null) {
-			return null;
-		}
-
-		return listTypeEntry.getNameMap();
-	}
-
 	public static Map<String, Object> getLocaleMap(Locale defaultLocale) {
 		JSONObject localeJSONObject = _getLocaleJSONObject(defaultLocale);
 
@@ -83,8 +64,8 @@ public class DDMFormFieldTemplateContextContributorUtil {
 				).put(
 					"labelMap",
 					() -> {
-						Map<Locale, String> labeMap = getListTypeEntryNameMap(
-							listTypeDefinitionId, optionValue,
+						Map<Locale, String> labeMap = _getListTypeEntryNameMap(
+							optionValue, listTypeDefinitionId,
 							listTypeEntryLocalService);
 
 						if (labeMap != null) {
@@ -102,6 +83,25 @@ public class DDMFormFieldTemplateContextContributorUtil {
 		}
 
 		return options;
+	}
+
+	private static Map<Locale, String> _getListTypeEntryNameMap(
+		String key, long listTypeDefinitionId,
+		ListTypeEntryLocalService listTypeEntryLocalService) {
+
+		if (listTypeDefinitionId == 0) {
+			return null;
+		}
+
+		ListTypeEntry listTypeEntry =
+			listTypeEntryLocalService.fetchListTypeEntry(
+				listTypeDefinitionId, key);
+
+		if (listTypeEntry == null) {
+			return null;
+		}
+
+		return listTypeEntry.getNameMap();
 	}
 
 	private static JSONObject _getLocaleJSONObject(Locale locale) {
