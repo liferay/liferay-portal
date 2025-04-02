@@ -147,10 +147,16 @@ public class DDMFormTemplateContextProcessor {
 	protected DDMFormFieldOptions getDDMFormFieldOptions(JSONArray jsonArray) {
 		DDMFormFieldOptions ddmFormFieldOptions = new DDMFormFieldOptions();
 
+		String defaultLocale = null;
+
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
 			String value = jsonObject.getString("value");
+
+			if ((defaultLocale == null) && jsonObject.has("defaultLocale")) {
+				defaultLocale = jsonObject.getString("defaultLocale");
+			}
 
 			JSONObject labelMapJSONObject = jsonObject.getJSONObject(
 				"labelMap");
@@ -172,6 +178,11 @@ public class DDMFormTemplateContextProcessor {
 
 			ddmFormFieldOptions.addOptionReference(
 				value, jsonObject.getString("reference"));
+		}
+
+		if (defaultLocale != null) {
+			ddmFormFieldOptions.setDefaultLocale(
+				LocaleUtil.fromLanguageId(defaultLocale));
 		}
 
 		return ddmFormFieldOptions;

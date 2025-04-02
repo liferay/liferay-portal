@@ -59,6 +59,9 @@ public class DDMFormFieldTemplateContextContributorUtil {
 
 			options.add(
 				HashMapBuilder.<String, Object>put(
+					"defaultLocale",
+					String.valueOf(localizedValue.getDefaultLocale())
+				).put(
 					"label",
 					localizedValue.getString(localizedValue.getDefaultLocale())
 				).put(
