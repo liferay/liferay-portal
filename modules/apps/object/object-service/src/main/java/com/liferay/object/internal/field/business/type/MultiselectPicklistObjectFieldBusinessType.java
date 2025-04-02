@@ -120,7 +120,8 @@ public class MultiselectPicklistObjectFieldBusinessType
 			"options",
 			() -> {
 				DDMFormFieldOptions ddmFormFieldOptions =
-					new DDMFormFieldOptions();
+					new DDMFormFieldOptions(
+						objectFieldRenderingContext.getLocale());
 
 				for (ListTypeEntry listTypeEntry :
 						_listTypeEntryLocalService.getListTypeEntries(
