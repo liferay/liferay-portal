@@ -9,7 +9,6 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateCont
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
-import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.util.DDMFormFieldTemplateContextContributorUtil;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
@@ -17,9 +16,6 @@ import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectD
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -59,47 +55,12 @@ public class MultiselectPicklistDDMFormFieldTemplateContextContributor
 			() -> {
 				DDMFormFieldOptions ddmFormFieldOptions =
 					(DDMFormFieldOptions)ddmFormField.getProperty("options");
-				List<Map<String, Object>> options = new ArrayList<>();
+				long listTypeDefinitionId = GetterUtil.getLong(
+					ddmFormField.getProperty("listTypeDefinitionId"));
 
-				for (String optionValue :
-						ddmFormFieldOptions.getOptionsValues()) {
-
-					if (optionValue == null) {
-						continue;
-					}
-
-					LocalizedValue localizedValue =
-						ddmFormFieldOptions.getOptionLabels(optionValue);
-
-					options.add(
-						HashMapBuilder.<String, Object>put(
-							"label",
-							localizedValue.getString(
-								localizedValue.getDefaultLocale())
-						).put(
-							"labelMap",
-							() -> {
-								Map<Locale, String> labeMap =
-									DDMFormFieldTemplateContextContributorUtil.
-										getListTypeEntryNameMap(
-											ddmFormField, optionValue,
-											_listTypeEntryLocalService);
-
-								if (labeMap != null) {
-									return labeMap;
-								}
-
-								return localizedValue.getValues();
-							}
-						).put(
-							"reference",
-							ddmFormFieldOptions.getOptionReference(optionValue)
-						).put(
-							"value", optionValue
-						).build());
-				}
-
-				return options;
+				return DDMFormFieldTemplateContextContributorUtil.getOptions(
+					ddmFormFieldOptions, listTypeDefinitionId,
+					_listTypeEntryLocalService);
 			}
 		).putAll(
 			DDMFormFieldTemplateContextContributorUtil.getLocaleMap(
