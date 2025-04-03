@@ -7,7 +7,8 @@ Bundle-Vendor: Liferay, Inc.
 Bundle-Version: 1.0.0
 Created-By: 1.8.0_171 (Oracle Corporation)
 Import-Package: com.liferay.oauth2.provider.scope;version="[1.0,2)",ja
- vax.ws.rs;version="[2.0,3)",javax.ws.rs.core;version="[2.0,3)"
+ karta.ws.rs;version="[3.0,4.0)",jakarta.ws.rs.core;version="[3.0,4.0)
+ "
 Javac-Debug: on
 Javac-Deprecation: off
 Javac-Encoding: UTF-8
@@ -29,8 +30,8 @@ Liferay-Releng-Restart-Required: true
 Liferay-Releng-Support-Url: http://www.liferay.com
 Liferay-Releng-Supported: false
 Private-Package: com.liferay.oauth2.provider.sample
-Provide-Capability: osgi.service;objectClass:List<String>="javax.ws.rs
- .core.Application"
+Provide-Capability: osgi.service;objectClass:List<String>="jakarta.ws.
+ rs.core.Application"
 Require-Capability: osgi.extender;filter:="(&(osgi.extender=osgi.compo
  nent)(version>=1.3.0)(!(version>=2.0.0)))",osgi.ee;filter:="(&(osgi.e
  e=JavaSE)(version=1.8))"

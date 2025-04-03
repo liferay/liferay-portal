@@ -6,8 +6,8 @@ Bundle-SymbolicName: test.portlet
 Bundle-Version: 1.0.0
 Created-By: 1.8.0_301 (Oracle Corporation)
 Export-Package: com.liferay.sample.portlet.constants;version="1.0.0"
-Import-Package: com.liferay.portal.kernel.portlet.bridges.mvc,javax.po
- rtlet,javax.servlet,javax.servlet.http
+Import-Package: com.liferay.portal.kernel.portlet.bridges.mvc,jakarta.
+ portlet,jakarta.servlet,jakarta.servlet.http
 Javac-Debug: on
 Javac-Deprecation: off
 Javac-Encoding: UTF-8
