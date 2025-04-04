@@ -212,10 +212,22 @@ public class KaleoDesignerDisplayContext {
 			kaleoDefinitionVersion -> JSONUtil.put(
 				"creatorName",
 				() -> {
-					User user = _userLocalService.getUser(
+					User user = _userLocalService.fetchUser(
 						kaleoDefinitionVersion.getUserId());
 
-					return user.getFullName();
+					if (user != null) {
+						return user.getFullName();
+					}
+
+					user = _userLocalService.fetchUserByScreenName(
+						kaleoDefinitionVersion.getCompanyId(),
+						"default-service-account");
+
+					if (user != null) {
+						return user.getFullName();
+					}
+
+					return StringPool.BLANK;
 				}
 			).put(
 				"dateCreated",
