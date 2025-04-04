@@ -15,6 +15,7 @@ import getBasicWebContentStructureId from '../../utils/structured-content/getBas
 import {clientExtensionsPageTest} from '../client-extension-web/fixtures/clientExtensionsPageTest';
 import {journalPagesTest} from '../journal-web/fixtures/journalPagesTest';
 import {getWorkflowDefinition} from './utils/getWorkflowDefinition';
+import performLogin, {performLogout, userData} from '../../utils/performLogin';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -177,4 +178,57 @@ test('LPD-49034 Custom Workflow Action Client Extension not working when the ass
 		.click();
 
 	await page.getByRole('link', {name: 'Unpublish'}).click();
+});
+
+test('LPD-52582 Error editing a workflow created by a deleted user', async ({
+	apiHelpers,
+	diagramViewPage,
+	page,
+	processBuilderPage,
+}) => {
+	const newAdminUser =
+			await apiHelpers.headlessAdminUser.postUserAccount();
+
+	userData[newAdminUser.alternateName] = {
+		name: newAdminUser.givenName,
+		password: 'test',
+		surname: newAdminUser.familyName,
+	};
+
+	const adminRole =
+		await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
+
+	await apiHelpers.headlessAdminUser.assignUserToRole(
+		adminRole.externalReferenceCode,
+		newAdminUser.id
+	);
+
+	await performLogout(page);
+	await performLogin(page, newAdminUser.alternateName);
+
+	const workflowDefinitionName =
+		'WorkflowDefinitionName/' + getRandomString();
+
+	const workflowDefinition =
+		await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionSave(
+			workflowDefinitionName,
+			getWorkflowDefinition('basic')
+		);
+
+	workflowDefinitionIds.push(workflowDefinition.id);
+
+	await performLogout(page);
+	await performLogin(page, 'test');
+
+	await apiHelpers.headlessAdminUser.deleteUserAccount(Number(newAdminUser.id));
+
+	await processBuilderPage.goto();
+
+	await processBuilderPage.clickWorkflowDefinitionName(
+		workflowDefinitionName
+	);
+
+	await expect(diagramViewPage.workflowDefinitionTitle).toHaveValue(
+		workflowDefinitionName
+	);
 });
