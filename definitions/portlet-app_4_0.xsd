@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        xmlns:portlet="http://jakarta.ee/xml/ns/portlet"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://jakarta.ee/xml/ns/portlet"
+        elementFormDefault="qualified" 
+        attributeFormDefault="unqualified" 
+        version="4.0"
+        xml:lang="en">
+	<annotation>
+		<documentation>
+		This is the XML Schema for the Portlet 4.0 deployment descriptor.
+		</documentation>
+	</annotation>
+	<annotation>
+		<documentation>
+		The following conventions apply to all J2EE
+		deployment descriptor elements unless indicated otherwise.
+		- In elements that specify a pathname to a file within the
+		  same JAR file, relative filenames (i.e., those not
+		  starting with "/") are considered relative to the root of
+		  the JAR file's namespace.  Absolute filenames (i.e., those
+		  starting with "/") also specify names in the root of the
+		  JAR file's namespace.  In general, relative names are
+		  preferred.  The exception is .war files where absolute
+		  names are preferred for consistency with the Servlet API.
+		</documentation>
+	</annotation>
+	<!-- *********************************************************** -->
+	<import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+	<element name="portlet-app" type="portlet:portlet-appType">
+		<annotation>
+			<documentation>
+			The portlet-app element is the root of the deployment descriptor
+			for a portlet application. This element has a required attribute version
+			to specify to which version of the schema the deployment descriptor
+			conforms. In order to be a valid JSR 362 portlet application the version
+			must have the value "3.0".
+			</documentation>
+		</annotation>
+		<unique name="portlet-name-uniqueness">
+			<annotation>
+				<documentation>
+				The portlet element contains the name of a portlet.
+				This name must be unique within the portlet application.
+				 </documentation>
+			</annotation>
+			<selector xpath="portlet:portlet"/>
+			<field xpath="portlet:portlet-name"/>
+		</unique>
+		<unique name="custom-portlet-mode-uniqueness">
+			<annotation>
+				<documentation>
+				The custom-portlet-mode element contains the portlet-mode.
+				This portlet mode must be unique within the portlet application.
+				</documentation>
+			</annotation>
+			<selector xpath="portlet:custom-portlet-mode"/>
+			<field xpath="portlet:portlet-mode"/>
+		</unique>
+		<unique name="custom-window-state-uniqueness">
+			<annotation>
+				<documentation>
+				The custom-window-state element contains the window-state.
+				This window state must be unique within the portlet application.
+				</documentation>
+			</annotation>
+			<selector xpath="portlet:custom-window-state"/>
+			<field xpath="portlet:window-state"/>
+		</unique>
+		<unique name="user-attribute-name-uniqueness">
+			<annotation>
+				<documentation>
+				The user-attribute element contains the name the attribute.
+				This name must be unique within the portlet application.
+				</documentation>
+			</annotation>
+			<selector xpath="portlet:user-attribute"/>
+			<field xpath="portlet:name"/>
+		</unique>
+		<unique name="filter-name-uniqueness">
+			<annotation>
+				<documentation>
+				The filter element contains the name of a filter.
+				The name must be unique within the portlet application.
+				</documentation>
+			</annotation>
+			<selector xpath="portlet:filter"/>
+			<field xpath="portlet:filter-name"/>
+		</unique>
+	</element>
+	<complexType name="portlet-appType">
+		<sequence>
+			<element name="portlet" type="portlet:portletType" minOccurs="0" maxOccurs="unbounded">
+				<unique name="init-param-name-uniqueness">
+					<annotation>
+						<documentation>
+						The init-param element contains the name the attribute.
+						This name must be unique within the portlet.
+						</documentation>
+					</annotation>
+					<selector xpath="portlet:init-param"/>
+					<field xpath="portlet:name"/>
+				</unique>
+				<unique name="supports-mime-type-uniqueness">
+					<annotation>
+						<documentation>
+						The supports element contains the supported mime-type.
+						This mime type must be unique within the portlet.
+						</documentation>
+					</annotation>
+					<selector xpath="portlet:supports"/>
+					<field xpath="mime-type"/>
+				</unique>
+				<unique name="preference-name-uniqueness">
+					<annotation>
+						<documentation>
+						The preference element contains the name the preference.
+						This name must be unique within the portlet.
+						</documentation>
+					</annotation>
+					<selector xpath="portlet:portlet-preferences/portlet:preference"/>
+					<field xpath="portlet:name"/>
+				</unique>
+				<unique name="security-role-ref-name-uniqueness">
+					<annotation>
+						<documentation>
+						The security-role-ref element contains the role-name.
+						This role name must be unique within the portlet.
+						</documentation>
+					</annotation>
+					<selector xpath="portlet:security-role-ref"/>
+					<field xpath="portlet:role-name"/>
+				</unique>
+			</element>
+			<element name="custom-portlet-mode" type="portlet:custom-portlet-modeType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="custom-window-state" type="portlet:custom-window-stateType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="user-attribute" type="portlet:user-attributeType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="resource-bundle" type="portlet:resource-bundleType" minOccurs="0"/>
+			<element name="filter" type="portlet:filterType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="filter-mapping" type="portlet:filter-mappingType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="default-namespace" type="xs:anyURI" minOccurs="0"/>
+			<element name="event-definition" type="portlet:event-definitionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="public-render-parameter" type="portlet:public-render-parameterType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="listener" type="portlet:listenerType" minOccurs="0" maxOccurs="unbounded"/>
+
+			<element name="container-runtime-option" type="portlet:container-runtime-optionType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="version" type="portlet:string" use="required"/>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="cache-scopeType">
+		<annotation>
+			<documentation>
+			Caching scope, allowed values are "private" indicating that the content should not be shared
+			across users and "public" indicating that the content may be shared across users.
+			The default value if not present is "private".
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="custom-portlet-modeType">
+		<annotation>
+			<documentation>
+			A custom portlet mode that one or more portlets in 
+			this portlet application supports.
+			If the portal does not need to provide some management functionality
+			for this portlet mode, the portal-managed element needs to be set
+			to "false", otherwise to "true". Default is "true".
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="portlet-mode" type="portlet:portlet-modeType"/>
+			<element name="portal-managed" type="portlet:portal-managedType" minOccurs="0"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="custom-window-stateType">
+		<annotation>
+			<documentation>
+			A custom window state that one or more portlets in this 
+			portlet application supports.
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="window-state" type="portlet:window-stateType"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="expiration-cacheType">
+		<annotation>
+			<documentation>
+			Expiration-time defines the time in seconds after which the portlet output expires. 
+			-1 indicates that the output never expires.
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="int"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="init-paramType">
+		<annotation>
+			<documentation>
+			The init-param element contains a name/value pair as an 
+			initialization param of the portlet
+			Used in:portlet
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="name" type="portlet:nameType"/>
+			<element name="value" type="portlet:valueType"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="keywordsType">
+		<annotation>
+			<documentation>
+			Locale specific keywords associated with this portlet.
+			The kewords are separated by commas.
+			Used in: portlet-info
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string">
+            <attribute ref="xml:lang"/>
+         </extension>
+		</simpleContent>
+	</complexType>
+	<complexType name="mime-typeType">
+		<annotation>
+			<documentation>
+			MIME type name, e.g. "text/html".
+			The MIME type may also contain the wildcard
+			character '*', like "text/*" or "*/*".
+			Used in: supports
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="nameType">
+		<annotation>
+			<documentation>
+			The name element contains the name of a parameter. 
+			Used in: init-param, ...
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="portletType">
+		<annotation>
+			<documentation>
+			The portlet element contains the declarative data of a portlet. 
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="portlet-name" type="portlet:portlet-nameType"/>
+			<element name="display-name" type="portlet:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="portlet-class" type="portlet:portlet-classType" minOccurs="0" maxOccurs="1"/>
+			<element name="init-param" type="portlet:init-paramType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="expiration-cache" type="portlet:expiration-cacheType" minOccurs="0"/>
+			<element name="cache-scope" type="portlet:cache-scopeType" minOccurs="0"/>
+			<element name="supports" type="portlet:supportsType" maxOccurs="unbounded"/>
+			<element name="supported-locale" type="portlet:supported-localeType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="resource-bundle" type="portlet:resource-bundleType" minOccurs="0"/>
+			<element name="portlet-info" type="portlet:portlet-infoType" minOccurs="0"/>
+			<element name="portlet-preferences" type="portlet:portlet-preferencesType" minOccurs="0"/>
+			<element name="security-role-ref" type="portlet:security-role-refType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="supported-processing-event" type="portlet:event-definition-referenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="supported-publishing-event" type="portlet:event-definition-referenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="supported-public-render-parameter" type="portlet:string" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="container-runtime-option" type="portlet:container-runtime-optionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="dependency" type="portlet:dependencyType" minOccurs="0" maxOccurs="unbounded"/>
+         <element name="async-supported" type="boolean" minOccurs="0" maxOccurs="1">
+            <annotation>
+               <documentation>
+                  If set to 'true', the portlet will support
+                  asynchronous processing in resource requests.
+               </documentation>
+            </annotation>
+         </element>
+         <element name="multipart-config" type="portlet:multipartType" minOccurs="0" maxOccurs="1"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<simpleType name="portlet-classType">
+		<annotation>
+			<documentation>
+			 The portlet-class element contains the fully
+			 qualified class name of the portlet.
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<restriction base="portlet:fully-qualified-classType"/>
+	</simpleType>
+	<complexType name="container-runtime-optionType">
+		<annotation>
+			<documentation>
+			 The container-runtime-option element contains settings
+			 for the portlet container that the portlet expects to be honored
+			 at runtime. These settings may re-define default portlet container
+			 behavior, like the jakarta.portlet.escapeXml setting that disables
+			 XML encoding of URLs produced by the portlet tag library as
+			 default.
+			 Names with the jakarta.portlet prefix are reserved for the Java
+			 Portlet Specification.
+			Used in: portlet-app, portlet
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="name" type="portlet:nameType"/>
+			<element name="value" type="portlet:valueType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="filter-mappingType">
+		<annotation>
+			<documentation>
+			Declaration of the filter mappings in this portlet
+			application is done by using filter-mappingType.
+			The container uses the filter-mapping
+			declarations to decide which filters to apply to a request,
+			and in what order. To determine which filters to
+			apply it matches filter-mapping declarations on the
+			portlet-name and the lifecyle phase defined in the
+			filter element. The order in which filters are invoked 
+			is the order in which filter-mapping declarations 
+			that match appear in the list of filter-mapping elements.
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="filter-name" type="portlet:filter-nameType"/>
+			<element name="portlet-name" type="portlet:portlet-nameType" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="filterType">
+		<annotation>
+			<documentation>
+				The filter element specifies a filter that can transform the 
+				content of portlet requests and portlet responses. 
+				Filters can access the initialization parameters declared in 
+				the deployment descriptor at runtime via the FilterConfig 
+				interface.
+				A filter can be restricted to one or more lifecycle phases
+				of the portlet. Valid entries for lifecycle are:
+				ACTION_PHASE, EVENT_PHASE, RENDER_PHASE,
+				RESOURCE_PHASE.
+            The filter-name element allows an annotated filter to be addressed
+            and replaced through a corresponding portlet deployment descriptor 
+            filter and / or filter mapping configuration.
+            If the filter class is null, the annotated filter with matching filter name will
+            be removed from the configuration. The ordinal element determines the order of execution
+            should there be multiple filters configured. The default ordinal number is 0.
+				Used in: portlet-app
+				</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="display-name" type="portlet:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="filter-name" type="portlet:filter-nameType" minOccurs="0" maxOccurs="1"/>
+			<element name="filter-class" type="portlet:fully-qualified-classType"/>
+         <element name="ordinal" type="xs:int" minOccurs="0" maxOccurs="1"/>
+			<element name="lifecycle" type="portlet:string" maxOccurs="unbounded"/>
+			<element name="init-param" type="portlet:init-paramType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="event-definitionType">
+		<annotation>
+			<documentation>
+			The event-definitionType is used to declare events the portlet can either
+			receive or emit.
+			The name must be unique and must be the one the 
+			portlet is using in its code for referencing this event.
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+         <element name="display-name" type="portlet:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+			<choice>
+				<element name="qname" type="xs:QName"/>
+				<element name="name" type="xs:NCName"/>
+			</choice>
+			<element name="alias" type="xs:QName" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="value-type" type="portlet:fully-qualified-classType" minOccurs="0"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="event-definition-referenceType">
+		<annotation>
+			<documentation>
+			The event-definition-referenceType is used to reference events 
+			declared with the event-definition element at application level.
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<choice>
+			<element name="qname" type="xs:QName"/>
+			<element name="name" type="xs:NCName"/>
+		</choice>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+
+	<complexType name="listenerType">
+		<annotation>
+			<documentation>
+			The listenerType is used to declare listeners for this portlet application.
+         The optional listener-name element allows an annotated listener to be addressed
+         and replaced through a corresponding portlet deployment descriptor configuration.
+         If a listener name is provided and the listener class is null, the annotated listener will
+         be removed from the configuration. The ordinal element determines the order of execution
+         should there be multiple listeners configured. The default ordinal number is 0.
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+         <element name="listener-name" type="portlet:string" minOccurs="0" maxOccurs="1"/>
+         <element name="ordinal" type="xs:int" minOccurs="0" maxOccurs="1"/>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="display-name" type="portlet:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="listener-class" type="portlet:fully-qualified-classType" minOccurs="0" maxOccurs="1"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="portlet-infoType">
+		<sequence>
+			<element name="title" type="portlet:titleType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="short-title" type="portlet:short-titleType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="keywords" type="portlet:keywordsType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<simpleType name="portal-managedType">
+		<annotation>
+			<documentation>
+			portal-managed indicates if a custom portlet mode
+			needs to be managed by the portal or not.
+			Per default all custom portlet modes are portal managed.
+			Valid values are: 
+			- true for portal-managed
+			- false for not portal managed
+			Used in: custom-portlet-modes
+			</documentation>
+		</annotation>
+		<restriction base="portlet:string">
+			<enumeration value="true"/>
+			<enumeration value="false"/>
+		</restriction>
+	</simpleType>
+	<complexType name="portlet-modeType">
+		<annotation>
+			<documentation>
+			Portlet modes. The specification pre-defines the following values 
+			as valid portlet mode constants: 
+			"edit", "help", "view".
+			Portlet mode names are not case sensitive.
+			Used in: custom-portlet-mode, supports
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="portlet-nameType">
+		<annotation>
+			<documentation>
+			The portlet-name element contains the canonical name of the 
+			portlet. Each portlet name is unique within the portlet 
+			application.
+			Used in: portlet, filter-mapping
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="portlet-preferencesType">
+		<annotation>
+			<documentation>
+			Portlet persistent preference store.
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="preference" type="portlet:preferenceType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="preferences-validator" type="portlet:preferences-validatorType" minOccurs="0"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="preferenceType">
+		<annotation>
+			<documentation>
+			Persistent preference values that may be used for customization 
+			and personalization by the portlet.
+			Used in: portlet-preferences
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="name" type="portlet:nameType"/>
+			<element name="value" type="portlet:valueType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="read-only" type="portlet:read-onlyType" minOccurs="0"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<simpleType name="preferences-validatorType">
+		<annotation>
+			<documentation>
+			The class specified under preferences-validator implements
+			the PreferencesValidator interface to validate the 
+			preferences settings.
+			Used in: portlet-preferences
+			</documentation>
+		</annotation>
+		<restriction base="portlet:fully-qualified-classType"/>
+	</simpleType>
+	<simpleType name="read-onlyType">
+		<annotation>
+			<documentation>
+			read-only indicates that a setting cannot
+			be changed in any of the standard portlet modes 
+			("view","edit" or "help").
+			Per default all preferences are modifiable.
+			Valid values are: 
+			- true for read-only
+			- false for modifiable
+			Used in: preferences
+			</documentation>
+		</annotation>
+		<restriction base="portlet:string">
+			<enumeration value="true"/>
+			<enumeration value="false"/>
+		</restriction>
+	</simpleType>
+	<complexType name="resource-bundleType">
+		<annotation>
+			<documentation>
+			Name of the resource bundle containing the language specific 
+			portlet informations in different languages (Filename without
+			the language specific part (e.g. _en) and the ending (.properties).
+			Used in: portlet-info
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="role-linkType">
+		<annotation>
+			<documentation>
+			The role-link element is a reference to a defined security role. 
+			The role-link element must contain the name of one of the 
+			security roles defined in the security-role elements.
+			Used in: security-role-ref
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="security-role-refType">
+		<annotation>
+			<documentation>
+			The security-role-ref element contains the declaration of a 
+			security role reference in the code of the web application. The 
+			declaration consists of an optional description, the security 
+			role name used in the code, and an optional link to a security 
+			role. If the security role is not specified, the Deployer must 
+			choose an appropriate security role.
+			The value of the role name element must be the String used 
+			as the parameter to the 
+			EJBContext.isCallerInRole(String roleName) method
+			or the HttpServletRequest.isUserInRole(String role) method.
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="role-name" type="portlet:role-nameType"/>
+			<element name="role-link" type="portlet:role-linkType" minOccurs="0"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="public-render-parameterType">
+		<annotation>
+			<documentation>
+			The public-render-parameters defines a render parameter that is allowed to be public
+			and thus be shared with other portlets.
+			The identifier must be used for referencing this public render parameter in the portlet code.
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="display-name" type="portlet:display-nameType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="identifier" type="portlet:string"/>
+			<choice>
+				<element name="qname" type="xs:QName"/>
+				<element name="name" type="xs:NCName"/>
+			</choice>
+			<element name="alias" type="xs:QName" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="short-titleType">
+		<annotation>
+			<documentation>
+			Locale specific short version of the static title.
+			Used in: portlet-info
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string">
+            <attribute ref="xml:lang"/>
+         </extension>
+		</simpleContent>
+	</complexType>
+	<complexType name="supportsType">
+		<annotation>
+			<documentation>
+			Supports indicates the portlet modes a 
+			portlet supports for a specific content type. All portlets must 
+			support the view mode. 
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="mime-type" type="portlet:mime-typeType"/>
+			<element name="portlet-mode" type="portlet:portlet-modeType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="window-state" type="portlet:window-stateType" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+   <complexType name="dependencyType">
+      <annotation>
+         <documentation>
+         Dependency specifies a resource on which the portlet depends.
+         </documentation>
+      </annotation>
+      <sequence>
+         <element name="name" type="portlet:string"/>
+         <element name="scope" type="portlet:string" minOccurs="0" maxOccurs="1"/>
+         <element name="version" type="portlet:string" minOccurs="0" maxOccurs="1"/>
+      </sequence>
+   </complexType>
+   <complexType name="multipartType">
+      <annotation>
+         <documentation>
+         Provides multipart configuration information.
+         </documentation>
+      </annotation>
+      <sequence>
+         <element name="location" type="portlet:string" minOccurs="0" maxOccurs="1"/>
+         <element name="max-file-size" type="xs:long" minOccurs="0" maxOccurs="1"/>
+         <element name="max-request-size" type="xs:long" minOccurs="0" maxOccurs="1"/>
+         <element name="file-size-threshold" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      </sequence>
+   </complexType>
+	<complexType name="supported-localeType">
+		<annotation>
+			<documentation>
+			Indicated the locales the portlet supports.
+			Used in: portlet
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="titleType">
+		<annotation>
+			<documentation>
+			Locale specific static title for this portlet.
+			Used in: portlet-info
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string">
+            <attribute ref="xml:lang"/>
+         </extension>
+		</simpleContent>
+	</complexType>
+	<complexType name="user-attributeType">
+		<annotation>
+			<documentation>
+			User attribute defines a user specific attribute that the
+			portlet application needs. The portlet within this application 
+			can access this attribute via the request parameter USER_INFO
+			map.
+			Used in: portlet-app
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="description" type="portlet:descriptionType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="name" type="portlet:nameType"/>
+		</sequence>
+		<attribute name="id" type="portlet:string" use="optional"/>
+	</complexType>
+	<complexType name="valueType">
+		<annotation>
+			<documentation>
+			The value element contains the value of a parameter.
+			Used in: init-param
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<complexType name="window-stateType">
+		<annotation>
+			<documentation>
+			Portlet window state. Window state names are not case sensitive.
+			Used in: custom-window-state
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string"/>
+		</simpleContent>
+	</complexType>
+	<!--- everything below is copied from j2ee_1_4.xsd -->
+	<complexType name="descriptionType">
+		<annotation>
+			<documentation>
+			The description element is used to provide text describing the 
+			parent element. The description element should include any 
+			information that the portlet application war file producer wants
+			to provide to the consumer of the portlet application war file 
+			(i.e., to the Deployer). Typically, the tools used by the 
+			portlet application war file consumer will display the 
+			description when processing the parent element that contains the 
+			description. It has an optional attribute xml:lang to indicate 
+			which language is used in the description according to 
+			RFC 1766 (http://www.ietf.org/rfc/rfc1766.txt). The default
+			value of this attribute is English(“en”).
+			Used in: init-param, portlet, portlet-app, security-role
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string">
+				<attribute ref="xml:lang"/>
+			</extension>
+		</simpleContent>
+	</complexType>
+	<complexType name="display-nameType">
+		<annotation>
+			<documentation>
+			The display-name type contains a short name that is intended
+			to be displayed by tools. It is used by display-name
+			elements.  The display name need not be unique.
+			Example:
+				...
+  			<display-name xml:lang="en">Employee Self Service</display-name>
+
+			It has an optional attribute xml:lang to indicate 
+			which language is used in the description according to 
+			RFC 1766 (http://www.ietf.org/rfc/rfc1766.txt). The default
+			value of this attribute is English(“en”).
+			</documentation>
+		</annotation>
+		<simpleContent>
+			<extension base="portlet:string">
+				<attribute ref="xml:lang"/>
+			</extension>
+		</simpleContent>
+	</complexType>
+	<simpleType name="fully-qualified-classType">
+		<annotation>
+			<documentation>
+			The elements that use this type designate the name of a
+			Java class or interface.
+			</documentation>
+		</annotation>
+		<restriction base="portlet:string"/>
+	</simpleType>
+	<simpleType name="role-nameType">
+		<annotation>
+			<documentation>
+			The role-nameType designates the name of a security role.
+
+			The name must conform to the lexical rules for an NMTOKEN.
+			</documentation>
+		</annotation>
+		<restriction base="NMTOKEN"/>
+	</simpleType>
+	<simpleType name="string">
+		<annotation>
+			<documentation>
+			This is a special string datatype that is defined by JavaEE 
+			as a base type for defining collapsed strings. When 
+			schemas require trailing/leading space elimination as 
+			well as collapsing the existing whitespace, this base 
+			type may be used.
+			</documentation>
+		</annotation>
+		<restriction base="xs:token">
+			<whiteSpace value="collapse"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="filter-nameType">
+		<annotation>
+			<documentation>
+			The logical name of the filter is declare
+			by using filter-nameType. This name is used to map the
+			filter.  Each filter name is unique within the portlet
+			application.
+			Used in: filter, filter-mapping
+			</documentation>
+		</annotation>
+		<restriction base="portlet:string"/>
+	</simpleType>
+</schema>
