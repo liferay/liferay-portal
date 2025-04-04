@@ -2906,9 +2906,9 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 		<resource-root path="${jdbc.driver}" />
 	</resources>
 	<dependencies>
-		<module name="javax.api" />
-		<module name="javax.servlet.api" optional="true" />
-		<module name="javax.transaction.api" />
+		<module name="jakarta.api" />
+		<module name="jakarta.servlet.api" optional="true" />
+		<module name="jakarta.transaction.api" />
 	</dependencies>
 </module>]]></echo>
 
@@ -3036,7 +3036,7 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 				<equals arg1="${app.server.type}" arg2="jboss" />
 				<then>
 					<echo file="${liferay.home}/tools/portal-tools-db-upgrade-client/app-server.properties">dir=${app.server.dir}
-extra.lib.dirs=modules/system/layers/base/javax/mail,modules/system/layers/base/javax/persistence,modules/system/layers/base/javax/servlet,modules/system/layers/base/javax/transaction
+extra.lib.dirs=modules/system/layers/base/jakarta/mail,modules/system/layers/base/jakarta/persistence,modules/system/layers/base/jakarta/servlet,modules/system/layers/base/jakarta/transaction
 global.lib.dir=modules/com/liferay/portal/main
 portal.dir=standalone/deployments/ROOT.war
 server.detector.server.id=jboss</echo>
@@ -3077,7 +3077,7 @@ server.detector.server.id=weblogic</echo>
 					<equals arg1="${app.server.type}" arg2="wildfly" />
 					<then>
 						<echo file="${liferay.home}/tools/portal-tools-db-upgrade-client/app-server.properties">dir=${app.server.dir}
-extra.lib.dirs=modules/system/layers/base/javax/mail,modules/system/layers/base/javax/persistence,modules/system/layers/base/javax/servlet,modules/system/layers/base/javax/transaction
+extra.lib.dirs=modules/system/layers/base/jakarta/mail,modules/system/layers/base/jakarta/persistence,modules/system/layers/base/jakarta/servlet,modules/system/layers/base/jakarta/transaction
 global.lib.dir=modules/com/liferay/portal/main
 portal.dir=standalone/deployments/ROOT.war
 server.detector.server.id=wildfly</echo>

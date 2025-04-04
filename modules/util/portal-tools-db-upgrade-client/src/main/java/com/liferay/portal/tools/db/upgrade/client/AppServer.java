@@ -169,13 +169,13 @@ public class AppServer {
 
 		sb.append(extraLibDirPrefix);
 
-		sb.append("javax/mail,");
+		sb.append("jakarta/mail,");
 		sb.append(extraLibDirPrefix);
-		sb.append("javax/persistence,");
+		sb.append("jakarta/persistence,");
 		sb.append(extraLibDirPrefix);
-		sb.append("javax/servlet,");
+		sb.append("jakarta/servlet,");
 		sb.append(extraLibDirPrefix);
-		sb.append("javax/transaction");
+		sb.append("jakarta/transaction");
 
 		return sb.toString();
 	}
