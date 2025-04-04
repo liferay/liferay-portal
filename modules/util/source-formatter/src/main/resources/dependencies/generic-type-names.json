@@ -1622,11 +1622,11 @@
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.enterprise.event.Event"
+			"name": "jakarta.enterprise.event.Event"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.enterprise.inject.Instance"
+			"name": "jakarta.enterprise.inject.Instance"
 		},
 		{
 			"genericTypeCount": 1,
@@ -1642,55 +1642,55 @@
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.validation.ConstraintViolation"
+			"name": "jakarta.validation.ConstraintViolation"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.websocket.Decoder.Text"
+			"name": "jakarta.websocket.Decoder.Text"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.websocket.Encoder.Text"
+			"name": "jakarta.websocket.Encoder.Text"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.ws.rs.client.Entity"
+			"name": "jakarta.ws.rs.client.Entity"
 		},
 		{
 			"genericTypeCount": 2,
-			"name": "javax.ws.rs.core.MultivaluedHashMap"
+			"name": "jakarta.ws.rs.core.MultivaluedHashMap"
 		},
 		{
 			"genericTypeCount": 2,
-			"name": "javax.ws.rs.core.MultivaluedMap"
+			"name": "jakarta.ws.rs.core.MultivaluedMap"
 		},
 		{
 			"genericTypeCount": 2,
-			"name": "javax.ws.rs.core.MultivaluedMap.Entry"
+			"name": "jakarta.ws.rs.core.MultivaluedMap.Entry"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.ws.rs.ext.ContextResolver"
+			"name": "jakarta.ws.rs.ext.ContextResolver"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.ws.rs.ext.ExceptionMapper"
+			"name": "jakarta.ws.rs.ext.ExceptionMapper"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.ws.rs.ext.MessageBodyReader"
+			"name": "jakarta.ws.rs.ext.MessageBodyReader"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.ws.rs.ext.MessageBodyWriter"
+			"name": "jakarta.ws.rs.ext.MessageBodyWriter"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.ws.rs.ext.ParamConverter"
+			"name": "jakarta.ws.rs.ext.ParamConverter"
 		},
 		{
 			"genericTypeCount": 1,
-			"name": "javax.xml.ws.handler.LogicalHandler"
+			"name": "jakarta.xml.ws.handler.LogicalHandler"
 		},
 		{
 			"genericTypeCount": 1,
