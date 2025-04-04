@@ -1687,8 +1687,10 @@ public class WabProcessor {
 	private static final String _XPATHS_JAVAEE = StringUtil.merge(
 		new String[] {
 			"//j2ee:filter-class", "//j2ee:listener-class",
-			"//j2ee:servlet-class", "//javaee:filter-class",
-			"//javaee:listener-class", "//javaee:servlet-class"
+			"//j2ee:servlet-class", "//jakartaee:filter-class",
+			"//jakartaee:listener-class", "//jakartaee:servlet-class",
+			"//javaee:filter-class", "//javaee:listener-class",
+			"//javaee:servlet-class"
 		},
 		"|");
 
@@ -1757,6 +1759,8 @@ public class WabProcessor {
 			"http://www.eclipse.org/gemini/blueprint/schema/blueprint"
 		).put(
 			"j2ee", "http://java.sun.com/xml/ns/j2ee"
+		).put(
+			"jakartaee", "https://jakarta.ee/xml/ns/jakartaee"
 		).put(
 			"javaee", "http://java.sun.com/xml/ns/javaee"
 		).put(
