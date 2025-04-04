@@ -122,6 +122,7 @@ definition {
 		property app.server.types = "tomcat,wildfly,weblogic";
 		property database.jndi.enabled = "true";
 		property database.types = "db2,mariadb,mysql,oracle,postgresql,sqlserver";
+		property environment.acceptance = "true";
 		property portal.smoke = "false";
 
 		SignIn.signInTestSetup();

@@ -73,7 +73,6 @@ public interface BatchEngineImportTaskLocalService
 	public BatchEngineImportTask addBatchEngineImportTask(
 		BatchEngineImportTask batchEngineImportTask);
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public BatchEngineImportTask addBatchEngineImportTask(
 			String externalReferenceCode, long companyId, long userId,
 			long batchSize, String callbackURL, String className,
@@ -83,7 +82,6 @@ public interface BatchEngineImportTaskLocalService
 			String taskItemDelegateName)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public BatchEngineImportTask addBatchEngineImportTask(
 			String externalReferenceCode, long companyId, long userId,
 			long batchSize, String callbackURL, String className,

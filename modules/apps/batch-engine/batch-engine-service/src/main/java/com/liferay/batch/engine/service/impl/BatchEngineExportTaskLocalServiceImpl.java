@@ -32,7 +32,6 @@ public class BatchEngineExportTaskLocalServiceImpl
 	extends BatchEngineExportTaskLocalServiceBaseImpl {
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public BatchEngineExportTask addBatchEngineExportTask(
 		String externalReferenceCode, long companyId, long userId,
 		String callbackURL, String className, String contentType,
