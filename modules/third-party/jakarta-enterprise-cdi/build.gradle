@@ -1,0 +1,3 @@
+dependencies {
+	compileOnly group: "jakarta.enterprise", name: "jakarta.enterprise.cdi-api", version: "4.1.0"
+}

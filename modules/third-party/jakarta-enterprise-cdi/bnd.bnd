@@ -1,0 +1,15 @@
+Bundle-SymbolicName: jakarta.enterprise.cdi
+Bundle-Version: 4.1.0.LIFERAY-PATCHED-1
+Export-Package:\
+	jakarta.decorator,\
+	\
+	jakarta.enterprise.*
+Require-Capability:\
+	osgi.extender;\
+		filter:="(osgi.extender=osgi.serviceloader.processor)",\
+	osgi.serviceloader;\
+		cardinality:=multiple;\
+		filter:="(osgi.serviceloader=jakarta.enterprise.inject.se.SeContainerInitializer)",\
+	osgi.serviceloader;\
+		cardinality:=multiple;\
+		filter:="(osgi.serviceloader=jakarta.enterprise.inject.spi.CDIProvider)"
