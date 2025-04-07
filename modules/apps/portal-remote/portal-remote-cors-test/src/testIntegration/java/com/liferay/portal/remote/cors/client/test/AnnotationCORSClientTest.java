@@ -32,7 +32,7 @@ public class AnnotationCORSClientTest extends BaseCORSClientTestCase {
 	@Before
 	public void setUp() {
 		registerJaxRsApplication(
-			new CORSTestApplication(), "test",
+			new CORSTestApplication(), "test-annotation",
 			HashMapDictionaryBuilder.<String, Object>put(
 				"liferay.cors.annotation", true
 			).build());
@@ -40,14 +40,18 @@ public class AnnotationCORSClientTest extends BaseCORSClientTestCase {
 
 	@Test
 	public void testApplicationAnnotationCORSForGuestUser() throws Exception {
-		assertJaxRSUrl("/test/cors-app", HttpMethod.OPTIONS, true, true);
-		assertJaxRSUrl("/test/cors-app", HttpMethod.GET, true, false);
+		assertJaxRSUrl(
+			"/test-annotation/cors-app", HttpMethod.OPTIONS, true, true);
+		assertJaxRSUrl(
+			"/test-annotation/cors-app", HttpMethod.GET, true, false);
 	}
 
 	@Test
 	public void testApplicationAnnotationCORSWithoutOAuth2() throws Exception {
-		assertJaxRSUrl("/test/cors-app", HttpMethod.OPTIONS, true, true);
-		assertJaxRSUrl("/test/cors-app", HttpMethod.GET, true, false);
+		assertJaxRSUrl(
+			"/test-annotation/cors-app", HttpMethod.OPTIONS, true, true);
+		assertJaxRSUrl(
+			"/test-annotation/cors-app", HttpMethod.GET, true, false);
 	}
 
 }
