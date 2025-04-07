@@ -133,6 +133,7 @@
 	<classpathentry kind="lib" path="lib/portal/istack-commons-runtime.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jabsorb.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="lib/portal/jaxb-core.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxb-runtime.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxen.jar"/>
 	<classpathentry kind="lib" path="lib/portal/jaxws-api.jar"/>
@@ -157,7 +158,8 @@
 	<classpathentry kind="lib" path="lib/portal/spring-web.jar"/>
 	<classpathentry kind="lib" path="lib/portal/stax-ex.jar"/>
 	<classpathentry kind="lib" path="lib/portal/transaction.jar"/>
+	<classpathentry kind="lib" path="lib/portal/txw2.jar"/>
 	<classpathentry kind="lib" path="lib/portal/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/portal/xml-apis.jar"/>
+	<classpathentry kind="lib" path="lib/portal/xml-apis.jar" />
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -6,7 +6,7 @@
 		<libraries>
 			<library>
 				<file-name>lib/development/activation.jar</file-name>
-				<version>1.1.1</version>
+				<version>2.1.3</version>
 				<project-name>JavaBeans Activation Framework</project-name>
 				<project-url>http://java.sun.com/products/javabeans/jaf</project-url>
 				<licenses>
@@ -18,7 +18,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/alloy-taglib.jar</file-name>
-				<version>1.1.14</version>
+				<version>1.1.14.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Alloy TagLibs</project-name>
 				<project-url>https://github.com/liferay/alloy-taglibs</project-url>
 				<licenses>
@@ -166,7 +166,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/catalina.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -178,7 +178,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/catalina-ha.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -520,7 +520,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/jstl-api.jar</file-name>
-				<version>1.2.2</version>
+				<version>3.0.2</version>
 				<project-name>JSTL</project-name>
 				<project-url>https://jstl.dev.java.net</project-url>
 				<licenses>
@@ -532,7 +532,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/jstl-impl.jar</file-name>
-				<version>1.2.3</version>
+				<version>3.0.1</version>
 				<project-name>JSTL</project-name>
 				<project-url>https://jstl.dev.java.net</project-url>
 				<licenses>
@@ -568,7 +568,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/mail.jar</file-name>
-				<version>1.6.6</version>
+				<version>2.1.3</version>
 				<project-name>JavaMail</project-name>
 				<project-url>https://eclipse-ee4j.github.io/mail</project-url>
 				<licenses>
@@ -652,7 +652,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/portlet.jar</file-name>
-				<version>3.0.1</version>
+				<version>4.0.0</version>
 				<project-name>JSR 362 Portlet Specification 3.0</project-name>
 				<project-url>https://jcp.org/en/jsr/detail?id=362</project-url>
 				<licenses>
@@ -874,7 +874,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/spring-test.jar</file-name>
-				<version>5.3.39</version>
+				<version>5.3.39.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Spring</project-name>
 				<project-url>http://www.springframework.org</project-url>
 				<licenses>
@@ -901,7 +901,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-annotations-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -913,7 +913,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -925,7 +925,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-coyote.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -937,7 +937,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-el-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -949,7 +949,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-jasper-el.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -961,7 +961,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-jasper.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -973,7 +973,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-jsp-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -985,7 +985,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-juli.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -997,7 +997,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-servlet-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -1009,7 +1009,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-tribes.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -1021,7 +1021,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-util.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -1033,7 +1033,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-util-scan.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -1045,7 +1045,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-websocket-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -1132,7 +1132,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/hibernate-core.jar</file-name>
-				<version>5.6.7.LIFERAY-PATCHED-2</version>
+				<version>5.6.7.LIFERAY-PATCHED-2.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Hibernate</project-name>
 				<project-url>http://www.hibernate.org</project-url>
 				<licenses>
@@ -1174,13 +1174,26 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jaxb-api.jar</file-name>
-				<version>2.3.0</version>
+				<version>4.0.2</version>
 				<project-name>JAXB-API</project-name>
 				<project-url>http://jaxb.java.net</project-url>
 				<licenses>
 					<license>
 						<license-name>CDDL 1.1</license-name>
 						<license-url>https://oss.oracle.com/licenses/CDDL-1.1</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>lib/portal/jaxb-core.jar</file-name>
+				<version>4.0.5</version>
+				<project-name>Eclipse Implementation of JAXB</project-name>
+				<project-url>https://eclipse-ee4j.github.io/jaxb-ri/</project-url>
+				<licenses>
+					<license>
+						<license-name>Eclipse Distribution License - v 1.0</license-name>
+						<license-url>
+	http://www.eclipse.org/org/documents/edl-v10.php</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -1199,7 +1212,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jaxb-runtime.jar</file-name>
-				<version>2.3.1.LIFERAY-PATCHED-2</version>
+				<version>4.0.5</version>
 				<project-name>Java Architecture for XML Binding</project-name>
 				<project-url>https://javaee.github.io/jaxb-v2</project-url>
 				<licenses>
@@ -1211,7 +1224,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jaxws-api.jar</file-name>
-				<version>2.3.1</version>
+				<version>3.0.1</version>
 				<project-name>JAX-WS (JSR 224) API</project-name>
 				<project-url>https://github.com/javaee/jax-ws-spec</project-url>
 				<licenses>
@@ -1276,7 +1289,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jws-api.jar</file-name>
-				<version>1.1</version>
+				<version>3.0.0</version>
 				<project-name>Java EE Web Services Metadata API</project-name>
 				<project-url>http://glassfish.java.net</project-url>
 				<licenses>
@@ -1312,7 +1325,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/persistence.jar</file-name>
-				<version>2.2.1</version>
+				<version>3.1.0</version>
 				<project-name>Java Persistence</project-name>
 				<project-url>http://java.sun.com/javaee/overview/faq/persistence.jsp</project-url>
 				<licenses>
@@ -1337,7 +1350,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/soap-api.jar</file-name>
-				<version>1.4.0</version>
+				<version>3.0.2</version>
 				<project-name>SAAJ API</project-name>
 				<project-url>https://javaee.github.io/javaee-spec</project-url>
 				<licenses>
@@ -1437,7 +1450,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/spring-orm.jar</file-name>
-				<version>5.3.39.LIFERAY-PATCHED-1</version>
+				<version>5.3.39.LIFERAY-PATCHED-1.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Spring</project-name>
 				<project-url>http://www.springframework.org</project-url>
 				<licenses>
@@ -1467,7 +1480,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/spring-web.jar</file-name>
-				<version>5.3.39</version>
+				<version>5.3.39.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Spring</project-name>
 				<project-url>http://www.springframework.org</project-url>
 				<licenses>
@@ -1494,12 +1507,22 @@
 			</library>
 			<library>
 				<file-name>lib/portal/transaction.jar</file-name>
-				<version>1.3</version>
+				<version>2.0.1</version>
 				<project-name>Project GlassFish Java Transaction API</project-name>
 				<project-url>http://jta-spec.java.net</project-url>
 				<licenses>
 					<license>CDDL 1.1</license>
 					<license-url>https://oss.oracle.com/licenses/CDDL-1.1</license-url>
+				</licenses>
+			</library>
+			<library>
+				<file-name>lib/portal/txw2.jar</file-name>
+				<version>4.0.5</version>
+				<project-name>Eclipse Implementation of JAXB</project-name>
+				<project-url>https://eclipse-ee4j.github.io/jaxb-ri/</project-url>
+				<licenses>
+					<license>Eclipse Distribution License - v 1.0</license>
+					<license-url>http://www.eclipse.org/org/documents/edl-v10.php </license-url>
 				</licenses>
 			</library>
 			<library>
