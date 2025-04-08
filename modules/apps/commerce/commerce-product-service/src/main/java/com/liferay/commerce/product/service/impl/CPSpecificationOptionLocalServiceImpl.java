@@ -21,6 +21,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -463,20 +464,29 @@ public class CPSpecificationOptionLocalServiceImpl
 			Map<Locale, String> titleMap, String key)
 		throws PortalException {
 
-		Locale locale = LocaleUtil.getSiteDefault();
-
-		if (MapUtil.isEmpty(titleMap) ||
-			Validator.isNull(titleMap.get(locale))) {
-
+		if (MapUtil.isEmpty(titleMap)) {
 			throw new CPSpecificationOptionTitleException();
+		}
+
+		CPSpecificationOption cpSpecificationOption =
+			cpSpecificationOptionPersistence.fetchByC_K(companyId, key);
+
+		if (cpSpecificationOptionId > 0) {
+			Locale locale = LocaleUtil.getSiteDefault();
+
+			if (Validator.isNull(titleMap.get(locale)) &&
+				Validator.isNull(
+					titleMap.get(
+						LanguageUtil.getLocale(
+							cpSpecificationOption.getDefaultLanguageId())))) {
+
+				throw new CPSpecificationOptionTitleException();
+			}
 		}
 
 		if (Validator.isNull(key)) {
 			throw new CPSpecificationOptionKeyException.MustNotBeNull();
 		}
-
-		CPSpecificationOption cpSpecificationOption =
-			cpSpecificationOptionPersistence.fetchByC_K(companyId, key);
 
 		if ((cpSpecificationOption != null) &&
 			(cpSpecificationOption.getCPSpecificationOptionId() !=
