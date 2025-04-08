@@ -1089,5 +1089,9 @@
 			<taglib-uri>http://liferay.com/tld/util</taglib-uri>
 			<taglib-location>/WEB-INF/tld/liferay-util.tld</taglib-location>
 		</taglib>
+		<taglib>
+			<taglib-uri>jakarta.tags.portlet</taglib-uri>
+			<taglib-location>/WEB-INF/tld/liferay-portlet.tld</taglib-location>
+		</taglib>
 	</jsp-config>
 </web-app>

@@ -283,7 +283,7 @@ public class BaseAutoDeployer implements AutoDeployer {
 			displayName = displayName.substring(1);
 		}
 
-		StringBundler sb = new StringBundler(69);
+		StringBundler sb = new StringBundler(77);
 
 		sb.append("<display-name>");
 		sb.append(displayName);
@@ -344,6 +344,15 @@ public class BaseAutoDeployer implements AutoDeployer {
 			sb.append("</taglib-uri>");
 			sb.append("<taglib-location>");
 			sb.append("/WEB-INF/tld/liferay-portlet_3_0.tld");
+			sb.append("</taglib-location>");
+			sb.append("</taglib>");
+
+			sb.append("<taglib>");
+			sb.append("<taglib-uri>");
+			sb.append("jakarta.tags.portlet");
+			sb.append("</taglib-uri>");
+			sb.append("<taglib-location>");
+			sb.append("/WEB-INF/tld/liferay-portlet.tld");
 			sb.append("</taglib-location>");
 			sb.append("</taglib>");
 		}
@@ -578,6 +587,8 @@ public class BaseAutoDeployer implements AutoDeployer {
 		}
 
 		if (Validator.isNotNull(portletTaglibDTD)) {
+			FileUtil.copyFile(
+				portletTaglibDTD, srcFile + "/WEB-INF/tld/liferay-portlet.tld");
 			FileUtil.copyFile(
 				portletTaglibDTD,
 				srcFile + "/WEB-INF/tld/liferay-portlet_3_0.tld");
