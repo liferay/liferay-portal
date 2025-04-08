@@ -343,7 +343,7 @@ public class BaseAutoDeployer implements AutoDeployer {
 			sb.append("http://xmlns.jcp.org/portlet_3_0");
 			sb.append("</taglib-uri>");
 			sb.append("<taglib-location>");
-			sb.append("/WEB-INF/tld/liferay-portlet.tld");
+			sb.append("/WEB-INF/tld/liferay-portlet_3_0.tld");
 			sb.append("</taglib-location>");
 			sb.append("</taglib>");
 		}
@@ -579,7 +579,8 @@ public class BaseAutoDeployer implements AutoDeployer {
 
 		if (Validator.isNotNull(portletTaglibDTD)) {
 			FileUtil.copyFile(
-				portletTaglibDTD, srcFile + "/WEB-INF/tld/liferay-portlet.tld");
+				portletTaglibDTD,
+				srcFile + "/WEB-INF/tld/liferay-portlet_3_0.tld");
 			FileUtil.copyFile(
 				DeployUtil.getResourcePath(
 					tempDirPaths, "liferay-portlet_2_0.tld"),
