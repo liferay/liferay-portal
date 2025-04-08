@@ -5,8 +5,6 @@
 
 package com.liferay.poshi.runner.util;
 
-import com.sun.mail.imap.IMAPFolder;
-
 import java.util.Properties;
 
 import javax.mail.Flags;
@@ -17,6 +15,8 @@ import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.eclipse.angus.mail.imap.IMAPFolder;
 
 /**
  * @author Kwang Lee
