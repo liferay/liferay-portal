@@ -15,6 +15,7 @@ const AdminCatalogResource = CommerceServiceProvider.AdminCatalogAPI('v1');
 const CPDefinitionSpecificationOptionValueAutocomplete = ({
 	catalogDefaultLanguageId,
 	createNewSpecification,
+	siteLanguage
 }) => {
 	const [specifications, setSpecifications] = useState([]);
 	const [listTypeDefinitions, setListTypeDefinitions] = useState([]);
@@ -122,6 +123,14 @@ const CPDefinitionSpecificationOptionValueAutocomplete = ({
 		return current.name > next.name ? 1 : -1;
 	});
 
+	function getName(title) {
+		if (title[catalogDefaultLanguageId]) {
+			return title[catalogDefaultLanguageId];
+		} else {
+			return title[siteLanguage];
+		}
+	}
+
 	return (
 		<ClayForm.Group aria-required={true}>
 			<label
@@ -182,7 +191,7 @@ const CPDefinitionSpecificationOptionValueAutocomplete = ({
 									specificationKey,
 								});
 							}}
-							textValue={title[catalogDefaultLanguageId]}
+							textValue={getName(title)}
 						/>
 					)}
 				</ClayAutocomplete>
