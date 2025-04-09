@@ -7977,6 +7977,12 @@ junit.jvm.override.version=21</echo>
 		</antcall>
 	</target>
 
+	<target name="modules-unit-opensearch2">
+		<antcall target="modules-unit">
+			<param name="run.opensearch2.unit.tests" value="true" />
+		</antcall>
+	</target>
+
 	<target name="modules-unit-project-templates">
 		<antcall target="modules-unit">
 			<param name="project.templates.test" value="true" />
@@ -8011,6 +8017,16 @@ junit.jvm.override.version=21</echo>
 			<param name="junit.jvm.override.version" value="21" />
 			<param name="project.templates.test" value="true" />
 			<param name="project.templates.test.builds" value="false" />
+		</antcall>
+	</target>
+
+	<target name="modules-unit-remote-eleasticsearch">
+		<antcall target="modules-unit" />
+	</target>
+
+	<target name="modules-unit-solr">
+		<antcall target="modules-unit">
+			<param name="run.solr.unit.tests" value="true" />
 		</antcall>
 	</target>
 
