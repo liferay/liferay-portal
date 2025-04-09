@@ -83,7 +83,7 @@ test('LPD-47067 check that two forms on same page with simplecaptcha could refre
 });
 
 async function addAndConfigureForms(formName, formWidgetPage, widgetPagePage) {
-	for (let count = 0; count < 2; count++) {
+	for (let count = 2; count < 4; count++) {
 		await widgetPagePage.addPortlet('Form');
 
 		await formWidgetPage.dropdownButton.nth(count).click();
