@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 
@@ -69,8 +70,10 @@ public class CommerceProductDefinitionSpecificationFDSDataProvider
 				return new ProductSpecification(
 					cpDefinitionSpecificationOptionValue.
 						getCPDefinitionSpecificationOptionValueId(),
-					cpSpecificationOption.getTitle(languageId),
-					cpDefinitionSpecificationOptionValue.getValue(languageId),
+					_getCPSpecificationOptionTitle(
+						cpSpecificationOption, languageId),
+					_getCPDefinitionSpecificationOptionValue(
+						cpDefinitionSpecificationOptionValue, languageId),
 					_getCPOptionCategoryTitle(
 						cpDefinitionSpecificationOptionValue, languageId),
 					cpDefinitionSpecificationOptionValue.getPriority());
@@ -87,6 +90,29 @@ public class CommerceProductDefinitionSpecificationFDSDataProvider
 
 		return _cpDefinitionSpecificationOptionValueService.
 			getCPDefinitionSpecificationOptionValuesCount(cpDefinitionId, null);
+	}
+
+	private String _getCPDefinitionSpecificationOptionValue(
+		CPDefinitionSpecificationOptionValue
+			cpDefinitionSpecificationOptionValue,
+		String languageId) {
+
+		if (cpDefinitionSpecificationOptionValue.
+				getAvailableLanguageIds().length == 1) {
+
+			return cpDefinitionSpecificationOptionValue.getValue(
+				cpDefinitionSpecificationOptionValue.getAvailableLanguageIds()
+					[0]);
+		}
+
+		if (Validator.isBlank(
+				cpDefinitionSpecificationOptionValue.getValue(languageId))) {
+
+			return cpDefinitionSpecificationOptionValue.getValue(
+				cpDefinitionSpecificationOptionValue.getDefaultLanguageId());
+		}
+
+		return cpDefinitionSpecificationOptionValue.getValue(languageId);
 	}
 
 	private String _getCPOptionCategoryTitle(
@@ -118,6 +144,22 @@ public class CommerceProductDefinitionSpecificationFDSDataProvider
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private String _getCPSpecificationOptionTitle(
+		CPSpecificationOption cpSpecificationOption, String languageId) {
+
+		if (cpSpecificationOption.getAvailableLanguageIds().length == 1) {
+			return cpSpecificationOption.getTitle(
+				cpSpecificationOption.getAvailableLanguageIds()[0]);
+		}
+
+		if (Validator.isBlank(cpSpecificationOption.getTitle(languageId))) {
+			return cpSpecificationOption.getTitle(
+				cpSpecificationOption.getDefaultLanguageId());
+		}
+
+		return cpSpecificationOption.getTitle(languageId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
