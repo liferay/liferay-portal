@@ -149,3 +149,47 @@ test(
 		}
 	}
 );
+
+test(
+	'Product specification can be added and saved with a catalog in a different language',
+	{tag: '@LPD-52730'},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				defaultLanguageId: 'de_DE',
+				name: getRandomString(),
+			});
+
+		const specification =
+			await apiHelpers.headlessCommerceAdminCatalog.postSpecification();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {de_DE: getRandomString(), en_US: getRandomString()},
+			});
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await commerceAdminProductDetailsPage.addExistingProductSpecification(
+			'Add an Existing Specification',
+			specification.title.en_US,
+			'item1'
+		);
+
+		await expect(page.getByText(specification.title.en_US)).toBeVisible();
+
+		await commerceAdminProductDetailsPage.createSpecificationProduct(
+			'Create New Specification',
+			'Specification-1',
+			'item2'
+		);
+
+		await expect(page.getByText('Specification-1')).toBeVisible();
+	}
+);

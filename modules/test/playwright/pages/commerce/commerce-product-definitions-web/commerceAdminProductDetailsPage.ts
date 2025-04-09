@@ -6,6 +6,7 @@
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
 export class CommerceAdminProductDetailsPage {
+	readonly addExistingSpecificationValueTextbox: Locator;
 	readonly addSpecification: Locator;
 	readonly addSpecificationFrame: FrameLocator;
 	readonly backLink: Locator;
@@ -51,6 +52,8 @@ export class CommerceAdminProductDetailsPage {
 			.getByTestId('management-toolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 		this.addSpecificationFrame = page.frameLocator('iframe >> nth=2');
+		this.addExistingSpecificationValueTextbox =
+			this.addSpecificationFrame.getByRole('textbox');
 		this.backLink = page.getByRole('link', {exact: true, name: 'Back'});
 		this.closeEditFrame = page
 			.frameLocator('iframe >> nth=1')
@@ -157,6 +160,21 @@ export class CommerceAdminProductDetailsPage {
 		if (specificationValue) {
 			await this.frameChooseSpecificationValue(specificationValue);
 		}
+		await this.frameSubmitSpecification.click();
+	}
+
+	async addExistingProductSpecification(
+		chooseAddOrEdit: string,
+		specificationName: string,
+		specificationValue: string
+	) {
+		await this.addSpecification.click();
+		await (await this.menuItemSpecification(chooseAddOrEdit)).click();
+		await this.frameDropdownSpecification.click();
+		await (await this.frameChooseSpecification(specificationName)).click();
+		await this.addExistingSpecificationValueTextbox.fill(
+			specificationValue
+		);
 		await this.frameSubmitSpecification.click();
 	}
 
