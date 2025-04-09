@@ -20,7 +20,7 @@
 									"pt_BR": "Base de conhecimento"
 								},
 								"type": "url",
-								"url": "/knowledge-base",
+								"url": "https://help.liferay.com/hc",
 								"useNewTab": false
 							},
 							{
@@ -32,7 +32,7 @@
 									"pt_BR": "Documentação"
 								},
 								"type": "url",
-								"url": "/documentation",
+								"url": "https://learn.liferay.com/documentation",
 								"useNewTab": false
 							}
 						],
@@ -62,7 +62,7 @@
 									"pt_BR": "Transferências"
 								},
 								"type": "url",
-								"url": "/downloads",
+								"url": "https://customer.liferay.com/downloads",
 								"useNewTab": false
 							}
 						],
@@ -87,7 +87,7 @@
 									"pt_BR": "Visão geral da segurança"
 								},
 								"type": "url",
-								"url": "/security-overview",
+								"url": "https://help.liferay.com/hc/articles/360016700231",
 								"useNewTab": false
 							},
 							{
@@ -136,7 +136,7 @@
 									"pt_BR": "Suporte ao produto"
 								},
 								"type": "url",
-								"url": "/product-support",
+								"url": "https://help.liferay.com/hc/en-us/categories/360000892912",
 								"useNewTab": false
 							},
 							{
@@ -148,7 +148,7 @@
 									"pt_BR": "Suporte à conta"
 								},
 								"type": "url",
-								"url": "/account-support",
+								"url": "https://help.liferay.com/hc/articles/360018414031",
 								"useNewTab": false
 							}
 						],
@@ -173,7 +173,7 @@
 									"pt_BR": "Perguntas frequentes sobre suporte"
 								},
 								"type": "url",
-								"url": "/support-faq",
+								"url": "https://help.liferay.com/hc/articles/360015994791",
 								"useNewTab": false
 							},
 							{
@@ -210,7 +210,7 @@
 									"pt_BR": "Enviar um tíquete"
 								},
 								"type": "url",
-								"url": "/submit-a-ticket",
+								"url": "https://help.liferay.com/hc/en-us/requests/new",
 								"useNewTab": false
 							},
 							{
@@ -222,7 +222,7 @@
 									"pt_BR": "Meus tíquetes"
 								},
 								"type": "url",
-								"url": "/my-tickets",
+								"url": "https://help.liferay.com/hc/requests",
 								"useNewTab": false
 							},
 							{
@@ -234,7 +234,7 @@
 									"pt_BR": "Tíquetes da minha equipe"
 								},
 								"type": "url",
-								"url": "/my-teams-tickets",
+								"url": "https://help.liferay.com/hc/en-us/requests/organization",
 								"useNewTab": false
 							},
 							{

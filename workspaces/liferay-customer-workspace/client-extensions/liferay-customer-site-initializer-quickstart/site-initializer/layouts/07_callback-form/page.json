@@ -1,8 +1,11 @@
 {
-	"friendlyURL": "/attach-file-to-ticket",
+	"friendlyURL": "/callback-form",
 	"hidden": true,
 	"name_i18n": {
-		"en_US": "Attach File to Ticket"
+		"en_US": "Callback Form",
+		"es_ES": "Petición de devolución de llamada",
+		"ja_JP": "コールバック・リクエスト",
+		"pt_BR": "Solicitação de Retorno de Chamada"
 	},
 	"permissions": [
 		{
