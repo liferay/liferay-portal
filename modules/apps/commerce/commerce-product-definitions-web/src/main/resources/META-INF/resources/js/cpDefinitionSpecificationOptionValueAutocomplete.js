@@ -15,7 +15,7 @@ const AdminCatalogResource = CommerceServiceProvider.AdminCatalogAPI('v1');
 const CPDefinitionSpecificationOptionValueAutocomplete = ({
 	catalogDefaultLanguageId,
 	createNewSpecification,
-	siteLanguage
+	siteLanguage,
 }) => {
 	const [specifications, setSpecifications] = useState([]);
 	const [listTypeDefinitions, setListTypeDefinitions] = useState([]);
@@ -126,7 +126,8 @@ const CPDefinitionSpecificationOptionValueAutocomplete = ({
 	function getName(title) {
 		if (title[catalogDefaultLanguageId]) {
 			return title[catalogDefaultLanguageId];
-		} else {
+		}
+		else {
 			return title[siteLanguage];
 		}
 	}
