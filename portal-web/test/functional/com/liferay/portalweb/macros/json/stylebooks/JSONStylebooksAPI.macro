@@ -14,7 +14,7 @@ definition {
 				-d groupId=${groupId} \
 				-d name=${styleBookEntryName} \
 				-d styleBookEntryKey= \
-				-d themeId=''
+				-d themeId='classic_WAR_classictheme'
 		''';
 
 		var styleBookEntryId = JSONCurlUtil.post(${curl}, "$.styleBookEntryId");
