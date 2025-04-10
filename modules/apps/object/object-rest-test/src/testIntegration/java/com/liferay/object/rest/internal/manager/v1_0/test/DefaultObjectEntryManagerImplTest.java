@@ -410,6 +410,8 @@ public class DefaultObjectEntryManagerImplTest
 						_createObjectFieldSetting(
 							"fileSource", "documentsAndMedia"),
 						_createObjectFieldSetting("maximumFileSize", "100"))
+				).indexed(
+					true
 				).readOnly(
 					"conditional"
 				).readOnlyConditionExpression(
@@ -2852,6 +2854,9 @@ public class DefaultObjectEntryManagerImplTest
 							_objectRelationshipFieldName,
 							parentObjectEntry1.getId()
 						).put(
+							"attachmentObjectFieldName",
+							_getAttachmentObjectFieldValue()
+						).put(
 							"localizedDateObjectFieldName", "2024-01-01"
 						).put(
 							"longIntegerObjectFieldName", 21394167160L
@@ -3608,6 +3613,24 @@ public class DefaultObjectEntryManagerImplTest
 		testGetObjectEntries(
 			HashMapBuilder.put(
 				"search", parentObjectEntry1.getExternalReferenceCode()
+			).build(),
+			childObjectEntry1);
+
+		objectField = objectFieldLocalService.fetchObjectField(
+			_objectDefinition2.getObjectDefinitionId(),
+			"attachmentObjectFieldName");
+
+		_objectDefinition2.setTitleObjectFieldId(
+			objectField.getObjectFieldId());
+
+		objectDefinitionLocalService.updateObjectDefinition(_objectDefinition2);
+
+		com.liferay.portal.kernel.repository.model.FileEntry fileEntry =
+			_dlAppLocalService.getFileEntry(_getFileEntryId(childObjectEntry1));
+
+		testGetObjectEntries(
+			HashMapBuilder.put(
+				"search", fileEntry.getTitle()
 			).build(),
 			childObjectEntry1);
 
@@ -5823,7 +5846,11 @@ public class DefaultObjectEntryManagerImplTest
 				return;
 			}
 
-			Assert.assertEquals(expectedEntry.getValue(), fileEntry.getId());
+			FileEntry expectedEntryFileEntry =
+				(FileEntry)expectedEntry.getValue();
+
+			Assert.assertEquals(
+				expectedEntryFileEntry.getId(), fileEntry.getId());
 
 			DLFileEntry dlFileEntry = _dlFileEntryLocalService.getFileEntry(
 				fileEntry.getId());
