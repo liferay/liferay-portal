@@ -39,9 +39,13 @@ definition {
 		}
 
 		task ("View the company logo shown in sticker") {
-			AssertVisible(
-				key_imageName = "company_logo",
-				locator1 = "ProductMenu#STICKER");
+			var backgroundImage = Css.getCssValue(
+				attribute = "background-image",
+				element = "//div[contains(@class,'product-menu-sidebar')]//div[contains(@class,'sticker')]");
+
+			TestUtils.assertContain(
+				actual = ${backgroundImage},
+				expected = "company_logo");
 		}
 
 		task ("Assert the padding settings of category") {

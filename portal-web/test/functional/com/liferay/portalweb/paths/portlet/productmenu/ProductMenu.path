@@ -158,11 +158,6 @@
 	<td>//a[contains(@id,'ProductMenu')][*[name()='svg'][contains(@class,'icon-times')]]</td>
 	<td></td>
 </tr>
-<tr>
-	<td>STICKER</td>
-	<td>//div[contains(@class,'product-menu-sidebar')]//div[contains(@class,'sticker')][contains(@style,'${key_imageName}')]</td>
-	<td></td>
-</tr>
 </tbody>
 </table>
 </body>
