@@ -14,7 +14,7 @@
 				<c:when test="<%= Validator.isNotNull(siteAdministrationPanelCategoryDisplayContext.getLogoURL()) %>">
 					<aui:style type="text/css">
 						.site-administration--header-no-collapsible {
-							background-image: url(<%= siteAdministrationPanelCategoryDisplayContext.getLogoURL() %>);
+							background-image: url(<%= siteAdministrationPanelCategoryDisplayContext.getLogoURL() %>) !important;
 						}
 					</aui:style>
 

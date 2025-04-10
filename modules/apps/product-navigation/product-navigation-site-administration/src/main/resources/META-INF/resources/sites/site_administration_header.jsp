@@ -24,7 +24,7 @@ int childPanelCategoriesSize = GetterUtil.getInteger(request.getAttribute("produ
 
 				<aui:style type="text/css">
 					.site-administration--header {
-						background-image: url(<%= siteAdministrationPanelCategoryDisplayContext.getLogoURL() %>);
+						background-image: url(<%= siteAdministrationPanelCategoryDisplayContext.getLogoURL() %>) !important;
 					}
 				</aui:style>
 
