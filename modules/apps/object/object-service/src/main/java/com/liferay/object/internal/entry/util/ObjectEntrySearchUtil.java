@@ -5,6 +5,7 @@
 
 package com.liferay.object.internal.entry.util;
 
+import com.liferay.document.library.kernel.model.DLFileEntryTable;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryTable;
@@ -14,8 +15,11 @@ import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTable;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -74,13 +78,30 @@ public class ObjectEntrySearchUtil {
 	}
 
 	public static Predicate getObjectFieldPredicate(
-		Column<?, ?> column, String dbType, String search) {
+		String businessType, Column<?, ?> column, String dbType,
+		String search) {
 
 		if (column == null) {
 			return null;
 		}
 
 		Column<?, Object> objectColumn = (Column<?, Object>)column;
+
+		if (businessType.equals(
+				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
+			!Validator.isNumber(search)) {
+
+			return objectColumn.in(
+				DSLQueryFactoryUtil.select(
+					DLFileEntryTable.INSTANCE.fileEntryId
+				).from(
+					DLFileEntryTable.INSTANCE
+				).where(
+					DLFileEntryTable.INSTANCE.title.like(
+						StringBundler.concat(
+							StringPool.PERCENT, search, StringPool.PERCENT))
+				));
+		}
 
 		if (dbType.equals(ObjectFieldConstants.DB_TYPE_BIG_DECIMAL) ||
 			dbType.equals(ObjectFieldConstants.DB_TYPE_DOUBLE)) {
@@ -147,6 +168,7 @@ public class ObjectEntrySearchUtil {
 		}
 
 		Predicate objectFieldPredicate = getObjectFieldPredicate(
+			titleObjectField.getBusinessType(),
 			objectFieldLocalService.getColumn(
 				objectDefinition.getObjectDefinitionId(),
 				titleObjectField.getName()),
