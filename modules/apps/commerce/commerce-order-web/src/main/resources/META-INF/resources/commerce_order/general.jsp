@@ -505,6 +505,7 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 				itemsPerPage="<%= 10 %>"
 				nestedItemsKey="orderItemId"
 				nestedItemsReferenceKey="orderItems"
+				propsTransformer="{CommerceOrderItemsFDSPropsTransformer} from commerce-order-web"
 			/>
 		</commerce-ui:panel>
 	</div>
