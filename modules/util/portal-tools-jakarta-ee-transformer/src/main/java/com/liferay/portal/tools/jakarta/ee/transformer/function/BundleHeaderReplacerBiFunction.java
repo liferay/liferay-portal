@@ -39,61 +39,63 @@ public class BundleHeaderReplacerBiFunction
 	public Map<Object, Object> apply(
 		String invoker, Map<Object, Object> headerMap) {
 
-		Map<Object, Object> modifiedHeaderMap = new LinkedHashMap<>();
+		return headerMap;
 
-		StringBuilder sb = new StringBuilder();
-
-		for (Map.Entry<Object, Object> entry : headerMap.entrySet()) {
-			Object key = entry.getKey();
-			Object value = entry.getValue();
-
-			if ((value instanceof String) &&
-				!Objects.equals(key.toString(), "Bundle-ClassPath")) {
-
-				String newValue = TransformerAgent.replace(
-					TransformerAgent.replacementDashDotMap, (String)value);
-
-				if (Objects.equals(key.toString(), "Import-Package")) {
-					newValue = _fixDuplication(newValue);
-
-					newValue = _fixVersion(newValue);
-				}
-				else if (Objects.equals(key.toString(), "Export-Package")) {
-					newValue = _fixVersion(newValue);
-				}
-
-				newValue = _fixContract(newValue);
-
-				if (!Objects.equals(value, newValue)) {
-					sb.append("key: ");
-					sb.append(entry.getKey());
-					sb.append(", old value: ");
-					sb.append(value);
-					sb.append(", new value: ");
-					sb.append(newValue);
-					sb.append(", ");
-				}
-
-				value = newValue;
-			}
-
-			modifiedHeaderMap.put(key, value);
-		}
-
-		if (sb.length() != 0) {
-			sb.setLength(sb.length() - 2);
-			sb.append(']');
-		}
-
-		if (!_JAKARTA_EE_TRANSFORMER_BUNDLE_HEADER_REPLACER_LOGGING_DISABLED &&
-			!sb.isEmpty()) {
-
-			System.err.println(
-				"JakartaEETransformer#BundleHeaderReplacer#" + invoker + "[" +
-					sb.toString());
-		}
-
-		return modifiedHeaderMap;
+//		Map<Object, Object> modifiedHeaderMap = new LinkedHashMap<>();
+//
+//		StringBuilder sb = new StringBuilder();
+//
+//		for (Map.Entry<Object, Object> entry : headerMap.entrySet()) {
+//			Object key = entry.getKey();
+//			Object value = entry.getValue();
+//
+//			if ((value instanceof String) &&
+//				!Objects.equals(key.toString(), "Bundle-ClassPath")) {
+//
+//				String newValue = TransformerAgent.replace(
+//					TransformerAgent.replacementDashDotMap, (String)value);
+//
+//				if (Objects.equals(key.toString(), "Import-Package")) {
+//					newValue = _fixDuplication(newValue);
+//
+//					newValue = _fixVersion(newValue);
+//				}
+//				else if (Objects.equals(key.toString(), "Export-Package")) {
+//					newValue = _fixVersion(newValue);
+//				}
+//
+//				newValue = _fixContract(newValue);
+//
+//				if (!Objects.equals(value, newValue)) {
+//					sb.append("key: ");
+//					sb.append(entry.getKey());
+//					sb.append(", old value: ");
+//					sb.append(value);
+//					sb.append(", new value: ");
+//					sb.append(newValue);
+//					sb.append(", ");
+//				}
+//
+//				value = newValue;
+//			}
+//
+//			modifiedHeaderMap.put(key, value);
+//		}
+//
+//		if (sb.length() != 0) {
+//			sb.setLength(sb.length() - 2);
+//			sb.append(']');
+//		}
+//
+//		if (!_JAKARTA_EE_TRANSFORMER_BUNDLE_HEADER_REPLACER_LOGGING_DISABLED &&
+//			!sb.isEmpty()) {
+//
+//			System.err.println(
+//				"JakartaEETransformer#BundleHeaderReplacer#" + invoker + "[" +
+//					sb.toString());
+//		}
+//
+//		return modifiedHeaderMap;
 	}
 
 	private static Map<String, String> _loadOSGiContracts() throws IOException {
