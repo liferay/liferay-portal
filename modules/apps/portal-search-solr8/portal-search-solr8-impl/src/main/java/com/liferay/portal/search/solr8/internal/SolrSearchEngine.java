@@ -25,11 +25,6 @@ public class SolrSearchEngine implements SearchEngine {
 	}
 
 	@Override
-	public IndexSearcher getIndexSearcher() {
-		return _indexSearcher;
-	}
-
-	@Override
 	public IndexWriter getIndexWriter() {
 		return _indexWriter;
 	}
@@ -37,6 +32,11 @@ public class SolrSearchEngine implements SearchEngine {
 	@Override
 	public String getVendor() {
 		return "Solr";
+	}
+
+	@Override
+	public IndexSearcher getIndexSearcher() {
+		return _indexSearcher;
 	}
 
 	@Override
