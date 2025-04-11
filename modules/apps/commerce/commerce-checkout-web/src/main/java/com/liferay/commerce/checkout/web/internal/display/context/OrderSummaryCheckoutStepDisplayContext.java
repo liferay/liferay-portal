@@ -47,7 +47,11 @@ import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -90,7 +94,7 @@ public class OrderSummaryCheckoutStepDisplayContext {
 		CommerceTermEntryLocalService commerceTermEntryLocalService,
 		CPInstanceHelper cpInstanceHelper,
 		CPInstanceUnitOfMeasureLocalService cpInstanceUnitOfMeasureLocalService,
-		HttpServletRequest httpServletRequest,
+		HttpServletRequest httpServletRequest, JSONFactory jsonFactory,
 		PercentageFormatter percentageFormatter, Portal portal,
 		PortletResourcePermission portletResourcePermission) {
 
@@ -110,6 +114,7 @@ public class OrderSummaryCheckoutStepDisplayContext {
 		_cpInstanceUnitOfMeasureLocalService =
 			cpInstanceUnitOfMeasureLocalService;
 		_httpServletRequest = httpServletRequest;
+		_jsonFactory = jsonFactory;
 		_percentageFormatter = percentageFormatter;
 		_portal = portal;
 		_portletResourcePermission = portletResourcePermission;
@@ -236,6 +241,21 @@ public class OrderSummaryCheckoutStepDisplayContext {
 		}
 
 		return commerceTermEntry.getLabel(LanguageUtil.getLanguageId(locale));
+	}
+
+	public String getJSONOptionValue(String json, String key) {
+		try {
+			JSONObject jsonObject = _jsonFactory.createJSONObject(json);
+
+			return jsonObject.getString(key);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return StringPool.BLANK;
 	}
 
 	public List<KeyValuePair> getKeyValuePairs(
@@ -529,6 +549,9 @@ public class OrderSummaryCheckoutStepDisplayContext {
 
 	private static final BigDecimal _ONE_HUNDRED = BigDecimal.valueOf(100);
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		OrderSummaryCheckoutStepDisplayContext.class);
+
 	private final CommerceChannelLocalService _commerceChannelLocalService;
 	private final CommerceContext _commerceContext;
 	private final CommerceOptionValueHelper _commerceOptionValueHelper;
@@ -550,6 +573,7 @@ public class OrderSummaryCheckoutStepDisplayContext {
 	private final CPInstanceUnitOfMeasureLocalService
 		_cpInstanceUnitOfMeasureLocalService;
 	private final HttpServletRequest _httpServletRequest;
+	private final JSONFactory _jsonFactory;
 	private final PercentageFormatter _percentageFormatter;
 	private final Portal _portal;
 	private final PortletResourcePermission _portletResourcePermission;
