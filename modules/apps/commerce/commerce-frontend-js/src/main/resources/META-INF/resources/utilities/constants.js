@@ -19,6 +19,7 @@ export const FIELD_TYPE = {
 	checkbox: 'checkbox',
 	checkboxMultiple: 'checkbox_multiple',
 	date: 'date',
+	document_library: 'document_library',
 	numeric: 'numeric',
 	radio: 'radio',
 	select: 'select',

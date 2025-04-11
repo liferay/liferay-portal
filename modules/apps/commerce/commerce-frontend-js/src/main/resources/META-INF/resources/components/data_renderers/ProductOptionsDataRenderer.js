@@ -3,11 +3,23 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {MiniCartUtils} from 'commerce-frontend-js';
 import React from 'react';
 
+import {parseValue} from '../mini_cart/util';
+
 const ProductOptionsDataRenderer = ({itemData: {options = '[]', skuId}}) => {
-	const productOptions = JSON.parse(options);
+	const productOptions = [];
+
+	try {
+		productOptions.push(...JSON.parse(options));
+	}
+	catch (_notValidJson) {
+		productOptions.push(
+			...options.split(/,\s*[^","]/).map((value) => ({
+				value: [value.endsWith('}') ? `{${value}` : value],
+			}))
+		);
+	}
 
 	return (
 		<>
@@ -34,9 +46,8 @@ const ProductOptionsDataRenderer = ({itemData: {options = '[]', skuId}}) => {
 									</div>
 
 									<p className="item-sku">
-										{MiniCartUtils.parseValue(
-											skuOptionValueNames
-										) || MiniCartUtils.parseValue(value)}
+										{parseValue(skuOptionValueNames) ||
+											parseValue(value)}
 									</p>
 								</div>
 							) : null

@@ -9,6 +9,7 @@ export {default as CommerceServiceProvider} from './ServiceProvider/index';
 
 export * as MiniCartUtils from './components/mini_cart/util';
 export {default as PriceRenderer} from './components/data_renderers/PriceRenderer';
+export {default as ProductOptionsDataRenderer} from './components/data_renderers/ProductOptionsDataRenderer';
 export {
 	accountSelector,
 	AddToCart,
@@ -37,6 +38,7 @@ export {
 	ProductOptionRadio,
 	ProductOptionSelect,
 	ProductOptionText,
+	ProductOptionUpload,
 	QuantitySelector,
 	QuantitySelectorComponent,
 	RequestQuote,

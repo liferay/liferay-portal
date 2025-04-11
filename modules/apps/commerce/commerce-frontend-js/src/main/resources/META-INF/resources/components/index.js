@@ -39,6 +39,7 @@ export {default as ProductOptionNumeric} from './product_options/ProductOptionNu
 export {default as ProductOptionRadio} from './product_options/ProductOptionRadio';
 export {default as ProductOptionSelect} from './product_options/ProductOptionSelect';
 export {default as ProductOptionText} from './product_options/ProductOptionText';
+export {default as ProductOptionUpload} from './product_options/ProductOptionUpload';
 export {default as QuantitySelectorComponent} from './quantity_selector/QuantitySelector';
 export {default as QuantitySelector} from './quantity_selector/entry';
 export {default as RequestQuote} from './request_quote/entry';

@@ -303,9 +303,22 @@ export function filterOptions(jsonString) {
 }
 
 export function parseValue(value) {
-	return Array.isArray(value)
-		? value.filter((item) => item === 0 || item).join(', ')
-		: value;
+	if (Array.isArray(value)) {
+		const [valueContent] = value;
+
+		if (valueContent.includes('fileEntryId')) {
+			try {
+				const {title} = JSON.parse(valueContent);
+
+				return title;
+			}
+			catch (_ignore) {}
+		}
+
+		return value.filter((item) => item === 0 || item).join(', ');
+	}
+
+	return value;
 }
 
 export function summaryDataMapper({
