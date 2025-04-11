@@ -36,7 +36,9 @@ public class PendingCommerceOrderItemTableFDSView extends BaseTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"actionLink")
 		).add(
-			"options", "options"
+			"options", "options",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"productOptionsDataRenderer")
 		).add(
 			"sku", "sku",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(

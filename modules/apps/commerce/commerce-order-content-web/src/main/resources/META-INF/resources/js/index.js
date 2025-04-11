@@ -6,7 +6,8 @@
 export {default as InfoBox} from './InfoBox';
 export {default as OrderActions} from './OrderActions';
 export {default as OrderSummary} from './OrderSummary';
-export {default as PendingOrderItemActionDropdownPropsTransformer} from './PendingOrderItemActionDropdownPropsTransformer';
+export {default as PendingOrderItemClassicFDSPropsTransformer} from './PendingOrderItemClassicFDSPropsTransformer';
+export {default as PlacedOrderItemClassicFDSPropsTransformer} from './PlacedOrderItemClassicFDSPropsTransformer';
 export {default as StepTracker} from './StepTracker';
 export {default as attachModalToHTMLElement} from './attachModalToHTMLElement';
 export {default as commerceOrderOrderTypeModal} from './commerceOrderOrderTypeModal';

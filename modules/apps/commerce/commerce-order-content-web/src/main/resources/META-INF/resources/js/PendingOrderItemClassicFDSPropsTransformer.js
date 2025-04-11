@@ -3,11 +3,18 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {commerceEvents} from 'commerce-frontend-js';
+import {ProductOptionsDataRenderer, commerceEvents} from 'commerce-frontend-js';
 
-export default function propsTransformer({...otherProps}) {
+export default function PendingOrderItemClassicFDSPropsTransformer(props) {
 	return {
-		...otherProps,
+		...props,
+		customDataRenderers: {
+			productOptionsDataRenderer: (componentProps) =>
+				ProductOptionsDataRenderer({
+					...componentProps,
+					additionalProps: props.additionalProps,
+				}),
+		},
 		onActionDropdownItemClick({action, itemData}) {
 			if (action.data && action.data.action === 'edit') {
 				Liferay.fire(commerceEvents.OPEN_MINICART_FOR_EDITING, {

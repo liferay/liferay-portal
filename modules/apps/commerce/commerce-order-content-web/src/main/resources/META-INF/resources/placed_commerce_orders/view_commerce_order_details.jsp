@@ -391,6 +391,7 @@ if (commerceOrder != null) {
 			itemsPerPage="<%= 10 %>"
 			nestedItemsKey="orderItemId"
 			nestedItemsReferenceKey="orderItems"
+			propsTransformer="{PlacedOrderItemClassicFDSPropsTransformer} from commerce-order-content-web"
 			style="stacked"
 		/>
 	</div>

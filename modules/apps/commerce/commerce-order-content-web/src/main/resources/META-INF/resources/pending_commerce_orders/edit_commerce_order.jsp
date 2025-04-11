@@ -502,7 +502,7 @@ List<String> errorMessages = (List<String>)request.getAttribute(CommerceWebKeys.
 			itemsPerPage="<%= 10 %>"
 			nestedItemsKey="orderItemId"
 			nestedItemsReferenceKey="orderItems"
-			propsTransformer="{PendingOrderItemActionDropdownPropsTransformer} from commerce-order-content-web"
+			propsTransformer="{PendingOrderItemClassicFDSPropsTransformer} from commerce-order-content-web"
 			style="stacked"
 		/>
 	</div>
