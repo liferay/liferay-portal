@@ -13,11 +13,19 @@ import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOption;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.template.react.renderer.ComponentDescriptor;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
+import com.liferay.portal.vulcan.dto.converter.DTOConverter;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import java.io.PrintWriter;
 
@@ -92,7 +100,9 @@ public class DocumentLibraryCommerceOptionTypeImpl
 
 		ddmFormField.setLabel(ddmFormFieldLabelLocalizedValue);
 
+		ddmFormField.setName(cpDefinitionOptionRel.getKey());
 		ddmFormField.setRequired(cpDefinitionOptionRel.isRequired());
+
 		ddmForm.addDDMFormField(ddmFormField);
 		ddmForm.addAvailableLocale(locale);
 		ddmForm.setDefaultLocale(locale);
@@ -101,8 +111,7 @@ public class DocumentLibraryCommerceOptionTypeImpl
 			new DDMFormRenderingContext();
 
 		ddmFormRenderingContext.setContainerId(
-			"ProductOptions" +
-				cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+			"ProductOptions" + cpDefinitionOptionRel.getCPDefinitionId());
 		ddmFormRenderingContext.setHttpServletRequest(httpServletRequest);
 		ddmFormRenderingContext.setHttpServletResponse(httpServletResponse);
 		ddmFormRenderingContext.setLocale(locale);
@@ -112,15 +121,51 @@ public class DocumentLibraryCommerceOptionTypeImpl
 
 		printWriter.write(
 			_ddmFormRenderer.render(ddmForm, ddmFormRenderingContext));
+
+		printWriter.write("<div>");
+
+		_reactRenderer.renderReact(
+			new ComponentDescriptor(
+				"{ProductOptionUpload} from commerce-frontend-js"),
+			HashMapBuilder.<String, Object>put(
+				"componentId", StringUtil.randomId()
+			).put(
+				"cpDefinitionId", cpDefinitionOptionRel.getCPDefinitionId()
+			).put(
+				"namespace", portletDisplay.getNamespace()
+			).put(
+				"productOption",
+				_productOptionDTOConverter.toDTO(
+					new DefaultDTOConverterContext(
+						_dtoConverterRegistry,
+						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+						_portal.getLocale(httpServletRequest), null,
+						_portal.getUser(httpServletRequest)))
+			).build(),
+			httpServletRequest, printWriter);
+
+		printWriter.write("</div>");
 	}
 
 	@Reference
 	private DDMFormRenderer _ddmFormRenderer;
 
 	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
 	private Language _language;
 
 	@Reference
 	private Portal _portal;
+
+	@Reference(
+		target = "(component.name=com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.ProductOptionDTOConverter)"
+	)
+	private DTOConverter<CPDefinitionOptionRel, ProductOption>
+		_productOptionDTOConverter;
+
+	@Reference
+	private ReactRenderer _reactRenderer;
 
 }
