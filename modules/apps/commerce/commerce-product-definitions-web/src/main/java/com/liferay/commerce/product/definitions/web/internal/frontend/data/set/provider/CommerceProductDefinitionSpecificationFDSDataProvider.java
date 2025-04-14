@@ -97,12 +97,12 @@ public class CommerceProductDefinitionSpecificationFDSDataProvider
 			cpDefinitionSpecificationOptionValue,
 		String languageId) {
 
-		if (cpDefinitionSpecificationOptionValue.
-				getAvailableLanguageIds().length == 1) {
+		String[] availableLanguageIds =
+			cpDefinitionSpecificationOptionValue.getAvailableLanguageIds();
 
+		if (availableLanguageIds.length == 1) {
 			return cpDefinitionSpecificationOptionValue.getValue(
-				cpDefinitionSpecificationOptionValue.getAvailableLanguageIds()
-					[0]);
+				availableLanguageIds[0]);
 		}
 
 		if (Validator.isBlank(
@@ -149,9 +149,11 @@ public class CommerceProductDefinitionSpecificationFDSDataProvider
 	private String _getCPSpecificationOptionTitle(
 		CPSpecificationOption cpSpecificationOption, String languageId) {
 
-		if (cpSpecificationOption.getAvailableLanguageIds().length == 1) {
-			return cpSpecificationOption.getTitle(
-				cpSpecificationOption.getAvailableLanguageIds()[0]);
+		String[] availableLanguageIds =
+			cpSpecificationOption.getAvailableLanguageIds();
+
+		if (availableLanguageIds.length == 1) {
+			return cpSpecificationOption.getTitle(availableLanguageIds[0]);
 		}
 
 		if (Validator.isBlank(cpSpecificationOption.getTitle(languageId))) {

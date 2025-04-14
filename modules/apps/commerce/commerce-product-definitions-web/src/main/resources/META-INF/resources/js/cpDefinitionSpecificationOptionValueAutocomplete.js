@@ -127,9 +127,8 @@ const CPDefinitionSpecificationOptionValueAutocomplete = ({
 		if (title[catalogDefaultLanguageId]) {
 			return title[catalogDefaultLanguageId];
 		}
-		else {
-			return title[siteLanguage];
-		}
+
+		return title[siteLanguage];
 	}
 
 	return (
