@@ -44,7 +44,8 @@ public class IdpSsoSamlPortalFilter extends BaseSamlPortalFilter {
 		HttpServletResponse httpServletResponse) {
 
 		if (!_samlProviderConfigurationHelper.isEnabled() ||
-			!_samlProviderConfigurationHelper.isRoleIdp()) {
+			(!_samlProviderConfigurationHelper.isRoleIdp() &&
+			 !_samlProviderConfigurationHelper.isRoleIdpAndSp())) {
 
 			return false;
 		}

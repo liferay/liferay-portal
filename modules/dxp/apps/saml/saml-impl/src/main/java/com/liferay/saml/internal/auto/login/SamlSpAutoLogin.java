@@ -37,7 +37,8 @@ public class SamlSpAutoLogin extends BaseAutoLogin {
 
 		try {
 			if (!_samlProviderConfigurationHelper.isEnabled() ||
-				!_samlProviderConfigurationHelper.isRoleSp()) {
+				(!_samlProviderConfigurationHelper.isRoleSp() &&
+				 !_samlProviderConfigurationHelper.isRoleIdpAndSp())) {
 
 				return null;
 			}

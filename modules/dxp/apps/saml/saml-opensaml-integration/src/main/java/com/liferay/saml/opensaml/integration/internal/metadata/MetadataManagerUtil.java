@@ -79,6 +79,16 @@ public class MetadataManagerUtil {
 						credentialResolver, localEntityManager),
 					encryptionCredential);
 			}
+			else if (samlProviderConfigurationHelper.isRoleIdpAndSp()) {
+				return MetadataGeneratorUtil.buildIdpAndSpEntityDescriptor(
+					portalURL, localEntityId,
+					_isSignAuthnRequest(samlProviderConfigurationHelper),
+					_isWantAuthnRequestSigned(samlProviderConfigurationHelper),
+					_isSignMetadata(samlProviderConfigurationHelper),
+					_getSigningCredential(
+						credentialResolver, localEntityManager),
+					encryptionCredential);
+			}
 
 			return null;
 		}

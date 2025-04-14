@@ -5,6 +5,7 @@
 
 package com.liferay.saml.opensaml.integration.internal.provider;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -105,6 +106,44 @@ public class DBMetadataResolver extends AbstractMetadataResolver {
 		}
 	}
 
+	private String _fetchSamlIdpSPMetadataXml(long companyId, String entityId) {
+		try {
+			SamlIdpSpConnection samlIdpSpConnection =
+				_samlIdpSpConnectionLocalService.getSamlIdpSpConnection(
+					companyId, entityId);
+
+			if (samlIdpSpConnection.isEnabled()) {
+				return samlIdpSpConnection.getMetadataXml();
+			}
+		}
+		catch (PortalException pe) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe);
+			}
+		}
+
+		return null;
+	}
+
+	private String _fetchSamlSpIdpMetadataXml(long companyId, String entityId) {
+		try {
+			SamlSpIdpConnection samlSpIdpConnection =
+				_samlSpIdpConnectionLocalService.getSamlSpIdpConnection(
+					companyId, entityId);
+
+			if (samlSpIdpConnection.isEnabled()) {
+				return samlSpIdpConnection.getMetadataXml();
+			}
+		}
+		catch (PortalException pe) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(pe);
+			}
+		}
+
+		return null;
+	}
+
 	private EntityDescriptor _getEntityDescriptor(String entityID)
 		throws Exception {
 
@@ -177,6 +216,16 @@ public class DBMetadataResolver extends AbstractMetadataResolver {
 
 				return null;
 			}
+		}
+		else if (_samlProviderConfigurationHelper.isRoleIdpAndSp()) {
+			String metadataXml = _fetchSamlSpIdpMetadataXml(
+				companyId, entityId);
+
+			if (Validator.isNull(metadataXml)) {
+				metadataXml = _fetchSamlIdpSPMetadataXml(companyId, entityId);
+			}
+
+			return metadataXml;
 		}
 
 		return null;

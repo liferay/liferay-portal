@@ -40,7 +40,8 @@ public class SingleLogoutAction extends BaseSamlStrutsAction {
 
 		String requestURI = httpServletRequest.getRequestURI();
 
-		if (_samlProviderConfigurationHelper.isRoleIdp() &&
+		if ((_samlProviderConfigurationHelper.isRoleIdp() ||
+			 _samlProviderConfigurationHelper.isRoleIdpAndSp()) &&
 			requestURI.endsWith("/slo_logout")) {
 
 			_singleLogoutProfile.processIdpLogout(

@@ -20,6 +20,8 @@ public interface SamlProviderConfigurationHelper {
 
 	public boolean isRoleIdp();
 
+	public boolean isRoleIdpAndSp();
+
 	public boolean isRoleSp();
 
 	public void updateProperties(UnicodeProperties unicodeProperties)

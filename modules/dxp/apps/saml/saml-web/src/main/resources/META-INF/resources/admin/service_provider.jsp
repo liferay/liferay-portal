@@ -15,7 +15,7 @@
 	<aui:fieldset label="general">
 		<aui:input helpMessage="saml-sp-assertion-signature-required-description" label="saml-sp-assertion-signature-required" name='<%= "settings--" + PortletPropsKeys.SAML_SP_ASSERTION_SIGNATURE_REQUIRED + "--" %>' type="checkbox" value="<%= samlProviderConfiguration.assertionSignatureRequired() %>" />
 
-		<aui:input helpMessage="saml-sp-clock-skew-description" label="clock-skew" name='<%= "settings--" + PortletPropsKeys.SAML_SP_CLOCK_SKEW + "--" %>' value="<%= samlProviderConfiguration.clockSkew() %>" />
+		<aui:input helpMessage="saml-sp-clock-skew-description" label="saml-sp-clock-skew" name='<%= "settings--" + PortletPropsKeys.SAML_SP_CLOCK_SKEW + "--" %>' value="<%= samlProviderConfiguration.clockSkew() %>" />
 
 		<aui:input helpMessage="saml-sp-ldap-import-enabled-description" label="saml-sp-ldap-import-enabled" name='<%= "settings--" + PortletPropsKeys.SAML_SP_LDAP_IMPORT_ENABLED + "--" %>' type="checkbox" value="<%= samlProviderConfiguration.ldapImportEnabled() %>" />
 

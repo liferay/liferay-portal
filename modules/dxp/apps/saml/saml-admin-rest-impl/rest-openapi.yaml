@@ -30,7 +30,7 @@ components:
                     type: string
                     writeOnly: true
                 role:
-                    enum: [idp, sp]
+                    enum: [both, idp, sp]
                     type: string
                 signMetadata:
                     type: boolean

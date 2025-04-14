@@ -33,9 +33,11 @@ import com.liferay.saml.persistence.model.SamlIdpSpSession;
 import com.liferay.saml.persistence.model.SamlIdpSsoSession;
 import com.liferay.saml.persistence.model.SamlPeerBinding;
 import com.liferay.saml.persistence.model.SamlSpSession;
+import com.liferay.saml.persistence.service.SamlIdpSpConnectionLocalService;
 import com.liferay.saml.persistence.service.SamlIdpSpSessionLocalService;
 import com.liferay.saml.persistence.service.SamlIdpSsoSessionLocalService;
 import com.liferay.saml.persistence.service.SamlPeerBindingLocalService;
+import com.liferay.saml.persistence.service.SamlSpIdpConnectionLocalService;
 import com.liferay.saml.runtime.SamlException;
 import com.liferay.saml.runtime.exception.UnsolicitedLogoutResponseException;
 import com.liferay.saml.runtime.exception.UnsupportedBindingException;
@@ -779,6 +781,34 @@ public class SingleLogoutProfileImpl
 		}
 	}
 
+	private boolean _isIdpSpConnection(String entityId) {
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		try {
+			_samlIdpSpConnectionLocalService.getSamlIdpSpConnection(
+				companyId, entityId);
+		}
+		catch (PortalException e) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean _isSpIdPConnection(String entityId) {
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		try {
+			_samlSpIdpConnectionLocalService.getSamlSpIdpConnection(
+				companyId, entityId);
+		}
+		catch (PortalException e) {
+			return false;
+		}
+
+		return true;
+	}
+
 	private void _performIdpFinishLogout(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse,
@@ -950,6 +980,21 @@ public class SingleLogoutProfileImpl
 		else if (samlProviderConfigurationHelper.isRoleSp()) {
 			_processSpLogoutRequest(httpServletResponse, messageContext);
 		}
+		else if (samlProviderConfigurationHelper.isRoleIdpAndSp()) {
+			SAMLPeerEntityContext samlPeerEntityContext =
+				messageContext.getSubcontext(SAMLPeerEntityContext.class);
+
+			if (_isSpIdPConnection(samlPeerEntityContext.getEntityId())) {
+				_processSpLogoutRequest(httpServletResponse, messageContext);
+			}
+			else if (_isIdpSpConnection(samlPeerEntityContext.getEntityId())) {
+				_processIdpLogoutRequest(
+					httpServletRequest, httpServletResponse, messageContext);
+			}
+			else {
+				_processSpLogoutRequest(httpServletResponse, messageContext);
+			}
+		}
 	}
 
 	private void _processSingleLogoutResponse(
@@ -964,6 +1009,23 @@ public class SingleLogoutProfileImpl
 		}
 		else if (samlProviderConfigurationHelper.isRoleSp()) {
 			_processSpLogoutResponse(httpServletRequest, httpServletResponse);
+		}
+		else if (samlProviderConfigurationHelper.isRoleIdpAndSp()) {
+			SAMLPeerEntityContext samlPeerEntityContext =
+				messageContext.getSubcontext(SAMLPeerEntityContext.class);
+
+			if (_isSpIdPConnection(samlPeerEntityContext.getEntityId())) {
+				_processSpLogoutResponse(
+					httpServletRequest, httpServletResponse);
+			}
+			else if (_isIdpSpConnection(samlPeerEntityContext.getEntityId())) {
+				_processIdpLogoutResponse(
+					httpServletRequest, httpServletResponse, messageContext);
+			}
+			else {
+				_processIdpLogoutResponse(
+					httpServletRequest, httpServletResponse, messageContext);
+			}
 		}
 	}
 
@@ -1065,7 +1127,9 @@ public class SingleLogoutProfileImpl
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		if (samlProviderConfigurationHelper.isRoleIdp()) {
+		if (samlProviderConfigurationHelper.isRoleIdp() ||
+			samlProviderConfigurationHelper.isRoleIdpAndSp()) {
+
 			terminateSsoSession(httpServletRequest, httpServletResponse);
 		}
 
@@ -1418,6 +1482,10 @@ public class SingleLogoutProfileImpl
 				samlSpSessionLocalService.fetchSamlSpSessionsBySessionIndex(
 					CompanyThreadLocal.getCompanyId(), sessionIndex);
 
+			if (Validator.isNull(samlSpSessions)) {
+				continue;
+			}
+
 			for (SamlSpSession samlSpSession : samlSpSessions) {
 				SamlPeerBinding samlPeerBinding =
 					_samlPeerBindingLocalService.getSamlPeerBinding(
@@ -1451,6 +1519,9 @@ public class SingleLogoutProfileImpl
 	private SamlHttpRequestHelper _samlHttpRequestHelper;
 
 	@Reference
+	private SamlIdpSpConnectionLocalService _samlIdpSpConnectionLocalService;
+
+	@Reference
 	private SamlIdpSpSessionLocalService _samlIdpSpSessionLocalService;
 
 	@Reference
@@ -1458,6 +1529,9 @@ public class SingleLogoutProfileImpl
 
 	@Reference
 	private SamlPeerBindingLocalService _samlPeerBindingLocalService;
+
+	@Reference
+	private SamlSpIdpConnectionLocalService _samlSpIdpConnectionLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

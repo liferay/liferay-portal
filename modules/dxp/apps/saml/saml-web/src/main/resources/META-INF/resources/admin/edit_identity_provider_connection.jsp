@@ -66,7 +66,7 @@ else {
 
 		<aui:input name="enabled" />
 
-		<aui:input helpMessage="saml-sp-clock-skew-description" label="clock-skew" name="clockSkew" value="<%= String.valueOf(clockSkew) %>" />
+		<aui:input helpMessage="saml-sp-clock-skew-description" label="saml-sp-clock-skew" name="clockSkew" value="<%= String.valueOf(clockSkew) %>" />
 
 		<aui:input helpMessage="force-authn-help" name="forceAuthn" />
 

@@ -96,6 +96,22 @@ public class SamlProviderConfigurationHelperImpl
 	}
 
 	@Override
+	public boolean isRoleIdpAndSp() {
+		SamlProviderConfiguration samlProviderConfiguration =
+			getSamlProviderConfiguration();
+
+		String role = samlProviderConfiguration.role();
+
+		if (Validator.isNotNull(role) &&
+			role.equals(SamlProviderConfigurationKeys.SAML_ROLE_BOTH)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
 	public boolean isRoleSp() {
 		SamlProviderConfiguration samlProviderConfiguration =
 			getSamlProviderConfiguration();

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.ldap.exportimport.LDAPUserImporter;
 import com.liferay.saml.opensaml.integration.field.expression.handler.UserFieldExpressionHandler;
@@ -233,15 +232,15 @@ public class DefaultUserFieldExpressionHandler
 
 		currentUser = _userLocalService.getUserById(currentUser.getUserId());
 
-		if (!StringUtil.equals(
+		if (!Objects.equals(
 				currentUser.getEmailAddress(), newUser.getEmailAddress())) {
 
-			currentUser = _userLocalService.updateEmailAddress(
-				currentUser.getUserId(), StringPool.BLANK,
+			newUser = _userLocalService.updateEmailAddress(
+				newUser.getUserId(), StringPool.BLANK,
 				newUser.getEmailAddress(), newUser.getEmailAddress());
 
-			_userLocalService.updateEmailAddressVerified(
-				currentUser.getUserId(), true);
+			newUser = _userLocalService.updateEmailAddressVerified(
+				newUser.getUserId(), true);
 		}
 
 		if (Objects.equals(
@@ -253,7 +252,7 @@ public class DefaultUserFieldExpressionHandler
 				currentUser.getScreenName(), newUser.getScreenName()) &&
 			Objects.equals(currentUser.getUuid(), newUser.getUuid())) {
 
-			return currentUser;
+			return newUser;
 		}
 
 		Contact contact = newUser.getContact();

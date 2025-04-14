@@ -56,6 +56,16 @@ public class SamlProviderConfigurationHelperUtil {
 		return samlProviderConfigurationHelper.isRoleSp();
 	}
 
+	//	public static boolean isRoleIdpAndSp() {
+
+	// 		SamlProviderConfigurationHelper samlProviderConfigurationHelper =
+
+	//			getSamlProviderConfigurationHelper();
+
+	//
+	//		return samlProviderConfigurationHelper.isRoleIdpAndSp();
+	//	}
+
 	private static final ServiceTracker
 		<SamlProviderConfigurationHelper, SamlProviderConfigurationHelper>
 			_serviceTracker = ServiceTrackerFactory.open(

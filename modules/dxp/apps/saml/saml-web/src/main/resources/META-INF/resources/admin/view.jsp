@@ -24,6 +24,9 @@ if (samlProviderConfigurationHelper.isRoleIdp()) {
 else if (samlProviderConfigurationHelper.isRoleSp()) {
 	tabs1Names += ",service-provider,identity-provider-connections";
 }
+else if (samlProviderConfigurationHelper.isRoleIdpAndSp()) {
+	tabs1Names += ",identity-provider,service-provider-connections,service-provider,identity-provider-connections";
+}
 %>
 
 <div class="container-fluid container-fluid-max-xl sheet">

@@ -10,6 +10,8 @@ package com.liferay.saml.constants;
  */
 public interface SamlProviderConfigurationKeys {
 
+	public static final String SAML_ROLE_BOTH = "both";
+
 	public static final String SAML_ROLE_IDP = "idp";
 
 	public static final String SAML_ROLE_SP = "sp";
