@@ -939,11 +939,7 @@ public class JournalDisplayContext {
 			return new JournalRecentArticlesResultRowSplitter(_themeDisplay);
 		}
 
-		if (Objects.equals(getDisplayStyle(), "icon")) {
-			return new JournalResultRowSplitter();
-		}
-
-		return null;
+		return new JournalResultRowSplitter();
 	}
 
 	public String getScheduledArticleMessage(JournalArticle journalArticle) {
