@@ -7,7 +7,7 @@ package com.liferay.source.formatter.dependencies;
 
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 /**
  * @author Qi Zhang

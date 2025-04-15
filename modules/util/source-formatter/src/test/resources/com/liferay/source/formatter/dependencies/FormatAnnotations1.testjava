@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.spring.aop.Skip;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.model.SystemEventConstants;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -23,16 +23,16 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"com.liferay.portlet.display-category=category.social",
 		"com.liferay.portlet.css-class-wrapper=social-networking-portlet-friends-activities",
-		"javax.portlet.display-name=Friends' Activities",
-		"javax.portlet.init-param.config-template=/friends_activities/configuration.jsp",
-		"javax.portlet.init-param.view-template=/friends_activities/view.jsp",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.supports.mime-type=text/html",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.info.title=Friends' Activities",
-		"javax.portlet.info.short-title=Friends' Activities",
-		"javax.portlet.info.keywords=Friends' activities",
-		"javax.portlet.security-role-ref=administrator,guest,power-user,user"
+		"jakarta.portlet.display-name=Friends' Activities",
+		"jakarta.portlet.init-param.config-template=/friends_activities/configuration.jsp",
+		"jakarta.portlet.init-param.view-template=/friends_activities/view.jsp",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.supports.mime-type=text/html",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.info.title=Friends' Activities",
+		"jakarta.portlet.info.short-title=Friends' Activities",
+		"jakarta.portlet.info.keywords=Friends' activities",
+		"jakarta.portlet.security-role-ref=administrator,guest,power-user,user"
 	},
 	service = Portlet.class
 )

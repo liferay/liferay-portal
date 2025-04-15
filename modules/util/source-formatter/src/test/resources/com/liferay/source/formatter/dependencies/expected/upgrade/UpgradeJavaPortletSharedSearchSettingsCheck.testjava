@@ -9,8 +9,8 @@ import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSe
 
 import java.util.Optional;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Nícolas Moura

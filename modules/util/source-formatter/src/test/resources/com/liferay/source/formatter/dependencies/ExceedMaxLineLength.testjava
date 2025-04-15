@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=com_liferay_social_activities_portlet_SocialActivitiesPortlet",
+		"jakarta.portlet.name=com_liferay_social_activities_portlet_SocialActivitiesPortlet",
 		"mvc.command.name=rss"
 	},
 	service = MVCActionCommand.class

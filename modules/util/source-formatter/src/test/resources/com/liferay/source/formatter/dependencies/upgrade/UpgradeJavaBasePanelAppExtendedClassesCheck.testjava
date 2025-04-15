@@ -9,7 +9,7 @@ public class UpgradeJavaBasePanelAppExtendedClassesCheck extends BasePanelApp {
 
 	@Override
 	@Reference(
-		target = "(javax.portlet.name=" + CacheManagementPortletKeys.CACHE_MANAGEMENT_PORTLET + ")",
+		target = "(jakarta.portlet.name=" + CacheManagementPortletKeys.CACHE_MANAGEMENT_PORTLET + ")",
 		unbind = "-"
 	)
 	public void setPortlet(Portlet portlet) {

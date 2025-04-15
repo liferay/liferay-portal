@@ -8,7 +8,7 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class UpgradeJavaBasePanelAppExtendedClassesCheck extends BasePanelApp {
 
 	@Reference(
-		target = "(javax.portlet.name=" + CacheManagementPortletKeys.CACHE_MANAGEMENT_PORTLET + ")"
+		target = "(jakarta.portlet.name=" + CacheManagementPortletKeys.CACHE_MANAGEMENT_PORTLET + ")"
 	)
 	private Portlet _portlet;
 

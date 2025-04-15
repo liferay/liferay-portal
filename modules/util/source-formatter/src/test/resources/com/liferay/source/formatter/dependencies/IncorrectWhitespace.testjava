@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
 
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"com.liferay.portlet.css-class-wrapper=social-networking-portlet-friends-activities",
         "com.liferay.portlet.display-category=category.social",
-		"javax.portlet.display-name=Friends' Activities"
+		"jakarta.portlet.display-name=Friends' Activities"
 	},
 	service = { LiferayPortlet.class, Portlet.class }
 )

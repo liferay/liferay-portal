@@ -8,7 +8,7 @@ package com.liferay.source.formatter.dependencies;
 import com.liferay.polls.constants.PollsPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -31,17 +31,17 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.scopeable=true",
 		"com.liferay.portlet.struts-path=polls_display",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Polls Display",
-		"javax.portlet.expiration-cache=0", "javax.portlet.info.keywords=Polls",
-		"javax.portlet.info.short-title=Polls Display",
-		"javax.portlet.info.title=Polls Display",
-		"javax.portlet.init-param.config-template=/polls_display/configuration.jsp",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/polls_display/view.jsp",
-		"javax.portlet.name=" + PollsPortletKeys.POLLS_DISPLAY,
-		"javax.portlet.portlet-mode=text/html;config",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user"
+		"jakarta.portlet.display-name=Polls Display",
+		"jakarta.portlet.expiration-cache=0", "jakarta.portlet.info.keywords=Polls",
+		"jakarta.portlet.info.short-title=Polls Display",
+		"jakarta.portlet.info.title=Polls Display",
+		"jakarta.portlet.init-param.config-template=/polls_display/configuration.jsp",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/polls_display/view.jsp",
+		"jakarta.portlet.name=" + PollsPortletKeys.POLLS_DISPLAY,
+		"jakarta.portlet.portlet-mode=text/html;config",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=power-user,user"
 	},
 	service = Portlet.class
 )
