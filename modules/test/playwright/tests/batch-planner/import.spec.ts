@@ -1487,7 +1487,7 @@ test('cannot import CSV file with object entry with UPSERT strategy', async ({
 
 	await expect(
 		page.getByText(
-			'javax.ws.rs.NotSupportedException: Create strategy "UPSERT" is not supported for'
+			'jakarta.ws.rs.NotSupportedException: Create strategy "UPSERT" is not supported for'
 		)
 	).toBeVisible();
 });
