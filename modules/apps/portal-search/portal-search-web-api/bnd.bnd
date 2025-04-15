@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search Web API
 Bundle-SymbolicName: com.liferay.portal.search.web.api
-Bundle-Version: 12.2.1
+Bundle-Version: 13.0.0
 Export-Package:\
 	com.liferay.portal.search.web.application.list.constants,\
 	com.liferay.portal.search.web.constants,\

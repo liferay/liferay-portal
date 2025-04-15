@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Batch Engine API
 Bundle-SymbolicName: com.liferay.batch.engine.api
-Bundle-Version: 29.1.0
+Bundle-Version: 30.0.0
 Export-Package:\
 	com.liferay.batch.engine,\
 	com.liferay.batch.engine.action,\

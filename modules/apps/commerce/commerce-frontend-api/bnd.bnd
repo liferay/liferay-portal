@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Frontend API
 Bundle-SymbolicName: com.liferay.commerce.frontend.api
-Bundle-Version: 20.0.2
+Bundle-Version: 21.0.0
 Export-Package:\
 	com.liferay.commerce.frontend.helper,\
 	com.liferay.commerce.frontend.model

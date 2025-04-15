@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Map Taglib
 Bundle-SymbolicName: com.liferay.map.taglib
-Bundle-Version: 5.0.24
+Bundle-Version: 6.0.0
 Export-Package: com.liferay.map.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

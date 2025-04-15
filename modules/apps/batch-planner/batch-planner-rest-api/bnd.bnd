@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Batch Planner REST API
 Bundle-SymbolicName: com.liferay.batch.planner.rest.api
-Bundle-Version: 5.2.3
+Bundle-Version: 6.0.0
 Export-Package:\
 	com.liferay.batch.planner.rest.dto.v1_0,\
 	com.liferay.batch.planner.rest.resource.v1_0

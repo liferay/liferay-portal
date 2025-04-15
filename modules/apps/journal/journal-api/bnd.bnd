@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Journal API
 Bundle-SymbolicName: com.liferay.journal.api
-Bundle-Version: 37.2.2
+Bundle-Version: 38.0.0
 Export-Package:\
 	com.liferay.journal.configuration,\
 	com.liferay.journal.constants,\

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Machine Learning API
 Bundle-SymbolicName: com.liferay.headless.commerce.machine.learning.api
-Bundle-Version: 8.2.8
+Bundle-Version: 9.0.0
 Export-Package:\
 	com.liferay.headless.commerce.machine.learning.dto.v1_0,\
 	com.liferay.headless.commerce.machine.learning.resource.v1_0

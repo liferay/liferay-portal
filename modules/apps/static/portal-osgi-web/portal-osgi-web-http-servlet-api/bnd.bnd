@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal OSGi Web HTTP Servlet API
 Bundle-SymbolicName: com.liferay.portal.osgi.web.http.servlet.api
-Bundle-Version: 1.0.2
+Bundle-Version: 2.0.0
 Export-Package: com.liferay.portal.osgi.web.http.servlet

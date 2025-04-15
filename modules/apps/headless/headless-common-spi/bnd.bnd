@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Common SPI
 Bundle-SymbolicName: com.liferay.headless.common.spi
-Bundle-Version: 9.0.1
+Bundle-Version: 10.0.0
 Export-Package:\
 	com.liferay.headless.common.spi.odata.entity,\
 	com.liferay.headless.common.spi.resource,\

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Repository Authorization API
 Bundle-SymbolicName: com.liferay.document.library.repository.authorization.api
-Bundle-Version: 5.1.7
+Bundle-Version: 6.0.0
 Export-Package:\
 	com.liferay.document.library.repository.authorization.capability,\
 	com.liferay.document.library.repository.authorization.oauth2

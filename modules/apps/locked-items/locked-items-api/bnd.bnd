@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Locked Items API
 Bundle-SymbolicName: com.liferay.locked.items.api
-Bundle-Version: 1.0.2
+Bundle-Version: 2.0.0
 Export-Package:\
 	com.liferay.locked.items.constants,\
 	com.liferay.locked.items.renderer

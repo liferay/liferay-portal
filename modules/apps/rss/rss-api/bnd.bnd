@@ -1,6 +1,6 @@
 Bundle-Name: Liferay RSS API
 Bundle-SymbolicName: com.liferay.rss.api
-Bundle-Version: 5.0.8
+Bundle-Version: 6.0.0
 Export-Package:\
 	com.liferay.rss.constants,\
 	com.liferay.rss.export,\

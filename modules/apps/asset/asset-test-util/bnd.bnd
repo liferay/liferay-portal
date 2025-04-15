@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Test Utilities
 Bundle-SymbolicName: com.liferay.asset.test.util
-Bundle-Version: 11.1.1
+Bundle-Version: 12.0.0
 Export-Package:\
 	com.liferay.asset.test.util,\
 	com.liferay.asset.test.util.asset.renderer.factory

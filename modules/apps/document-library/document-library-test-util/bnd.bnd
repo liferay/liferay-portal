@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Test Utilities
 Bundle-SymbolicName: com.liferay.document.library.test.util
-Bundle-Version: 4.2.1
+Bundle-Version: 5.0.0
 Export-Package:\
 	com.liferay.document.library.test.util,\
 	com.liferay.document.library.test.util.search

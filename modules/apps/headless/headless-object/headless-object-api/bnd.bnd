@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Object API
 Bundle-SymbolicName: com.liferay.headless.object.api
-Bundle-Version: 1.0.2
+Bundle-Version: 2.0.0
 Export-Package:\
 	com.liferay.headless.object.dto.v1_0,\
 	com.liferay.headless.object.resource.v1_0

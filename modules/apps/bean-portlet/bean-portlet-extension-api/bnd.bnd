@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Bean Portlet Extension API
 Bundle-SymbolicName: com.liferay.bean.portlet.extension.api
-Bundle-Version: 2.0.9
+Bundle-Version: 3.0.0
 Export-Package: com.liferay.bean.portlet.extension

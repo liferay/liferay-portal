@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend JS Loader Modules Extender API
 Bundle-SymbolicName: com.liferay.frontend.js.loader.modules.extender.api
-Bundle-Version: 10.0.3
+Bundle-Version: 11.0.0
 Export-Package:\
 	com.liferay.frontend.js.loader.modules.extender.esm,\
 	com.liferay.frontend.js.loader.modules.extender.npm

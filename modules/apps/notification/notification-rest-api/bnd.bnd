@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Notification REST API
 Bundle-SymbolicName: com.liferay.notification.rest.api
-Bundle-Version: 7.2.8
+Bundle-Version: 8.0.0
 Export-Package:\
 	com.liferay.notification.rest.dto.v1_0,\
 	com.liferay.notification.rest.dto.v1_0.util,\

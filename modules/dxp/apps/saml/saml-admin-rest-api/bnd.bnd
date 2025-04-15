@@ -1,6 +1,6 @@
 Bundle-Name: Liferay SAML Admin REST API
 Bundle-SymbolicName: com.liferay.saml.admin.rest.api
-Bundle-Version: 1.1.8
+Bundle-Version: 2.0.0
 Export-Package:\
 	com.liferay.saml.admin.rest.dto.v1_0,\
 	com.liferay.saml.admin.rest.resource.v1_0

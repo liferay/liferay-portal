@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Analytics Reports API
 Bundle-SymbolicName: com.liferay.analytics.reports.api
-Bundle-Version: 6.0.2
+Bundle-Version: 7.0.0
 Export-Package:\
 	com.liferay.analytics.reports.constants,\
 	com.liferay.analytics.reports.info.action.provider,\

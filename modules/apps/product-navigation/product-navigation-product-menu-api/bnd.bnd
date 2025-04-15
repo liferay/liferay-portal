@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Product Navigation Product Menu API
 Bundle-SymbolicName: com.liferay.product.navigation.product.menu.api
-Bundle-Version: 8.0.5
+Bundle-Version: 9.0.0
 Export-Package:\
 	com.liferay.product.navigation.product.menu.constants,\
 	com.liferay.product.navigation.product.menu.display.context,\

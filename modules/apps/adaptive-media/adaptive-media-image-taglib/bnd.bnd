@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Adaptive Media Image Taglib
 Bundle-SymbolicName: com.liferay.adaptive.media.image.taglib
-Bundle-Version: 5.0.11
+Bundle-Version: 6.0.0
 Export-Package: com.liferay.adaptive.media.image.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

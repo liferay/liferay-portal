@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Item Selector API
 Bundle-SymbolicName: com.liferay.site.item.selector.api
-Bundle-Version: 8.0.1
+Bundle-Version: 9.0.0
 Export-Package:\
 	com.liferay.site.item.selector,\
 	com.liferay.site.item.selector.display.context,\

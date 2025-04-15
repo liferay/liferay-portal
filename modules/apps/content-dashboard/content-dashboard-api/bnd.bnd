@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Content Dashboard API
 Bundle-SymbolicName: com.liferay.content.dashboard.api
-Bundle-Version: 9.2.1
+Bundle-Version: 10.0.0
 Export-Package:\
 	com.liferay.content.dashboard.info.item,\
 	com.liferay.content.dashboard.item,\

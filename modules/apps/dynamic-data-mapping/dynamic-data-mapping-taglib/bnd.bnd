@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dynamic Data Mapping Taglib
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.taglib
-Bundle-Version: 6.1.12
+Bundle-Version: 7.0.0
 Export-Package:\
 	com.liferay.dynamic.data.mapping.taglib.servlet.taglib,\
 	com.liferay.dynamic.data.mapping.taglib.servlet.taglib.base

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Currency API
 Bundle-SymbolicName: com.liferay.commerce.currency.api
-Bundle-Version: 19.0.2
+Bundle-Version: 20.0.0
 Export-Package:\
 	com.liferay.commerce.currency.configuration,\
 	com.liferay.commerce.currency.constants,\

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend Taglib Form Navigator
 Bundle-SymbolicName: com.liferay.frontend.taglib.form.navigator
-Bundle-Version: 6.3.2
+Bundle-Version: 7.0.0
 Export-Package:\
 	com.liferay.frontend.taglib.form.navigator,\
 	com.liferay.frontend.taglib.form.navigator.constants,\

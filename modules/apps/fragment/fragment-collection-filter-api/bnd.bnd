@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Fragment Collection Filter API
 Bundle-SymbolicName: com.liferay.fragment.collection.filter.api
-Bundle-Version: 2.0.2
+Bundle-Version: 3.0.0
 Export-Package:\
 	com.liferay.fragment.collection.filter,\
 	com.liferay.fragment.collection.filter.constants

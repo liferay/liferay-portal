@@ -1,6 +1,6 @@
 Bundle-Name: Liferay SCIM REST API
 Bundle-SymbolicName: com.liferay.scim.rest.api
-Bundle-Version: 5.0.1
+Bundle-Version: 6.0.0
 Export-Package:\
 	com.liferay.scim.rest.dto.v1_0,\
 	com.liferay.scim.rest.resource.v1_0,\

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Segments Asah REST API
 Bundle-SymbolicName: com.liferay.segments.asah.rest.api
-Bundle-Version: 10.2.8
+Bundle-Version: 11.0.0
 Export-Package:\
 	com.liferay.segments.asah.rest.dto.v1_0,\
 	com.liferay.segments.asah.rest.resource.v1_0

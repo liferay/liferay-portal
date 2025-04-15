@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend Taglib Clay
 Bundle-SymbolicName: com.liferay.frontend.taglib.clay
-Bundle-Version: 15.2.1
+Bundle-Version: 16.0.0
 Export-Package:\
 	com.liferay.frontend.taglib.clay.servlet.taglib,\
 	com.liferay.frontend.taglib.clay.servlet.taglib.contributor,\

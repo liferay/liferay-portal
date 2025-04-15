@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend Taglib Dynamic Section
 Bundle-SymbolicName: com.liferay.frontend.taglib.dynamic.section
-Bundle-Version: 5.0.10
+Bundle-Version: 6.0.0
 Export-Package:\
 	com.liferay.frontend.taglib.dynamic.section,\
 	com.liferay.frontend.taglib.dynamic.section.servlet.taglib

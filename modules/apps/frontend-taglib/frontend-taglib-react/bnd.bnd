@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend Taglib React
 Bundle-SymbolicName: com.liferay.frontend.taglib.react
-Bundle-Version: 6.0.4
+Bundle-Version: 7.0.0
 Export-Package:\
 	com.liferay.frontend.taglib.react.servlet.taglib,\
 	com.liferay.frontend.taglib.react.servlet.taglib.util

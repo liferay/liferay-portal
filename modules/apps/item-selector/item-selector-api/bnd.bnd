@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Item Selector API
 Bundle-SymbolicName: com.liferay.item.selector.api
-Bundle-Version: 6.8.2
+Bundle-Version: 7.0.0
 Export-Package:\
 	com.liferay.item.selector,\
 	com.liferay.item.selector.constants,\

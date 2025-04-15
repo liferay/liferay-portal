@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Verify Test Utilities
 Bundle-SymbolicName: com.liferay.portal.verify.test.util
-Bundle-Version: 5.0.2
+Bundle-Version: 6.0.0
 Export-Package: com.liferay.portal.verify.test.util

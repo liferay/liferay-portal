@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Upload Test Utilities
 Bundle-SymbolicName: com.liferay.portal.upload.test.util
-Bundle-Version: 1.0.2
+Bundle-Version: 2.0.0
 Export-Package: com.liferay.portal.upload.test.util

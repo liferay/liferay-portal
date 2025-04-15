@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Users Admin API
 Bundle-SymbolicName: com.liferay.users.admin.api
-Bundle-Version: 7.1.1
+Bundle-Version: 8.0.0
 Export-Package:\
 	com.liferay.users.admin.configuration,\
 	com.liferay.users.admin.constants,\

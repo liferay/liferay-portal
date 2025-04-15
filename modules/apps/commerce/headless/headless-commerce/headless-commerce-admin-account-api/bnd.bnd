@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Admin Account API
 Bundle-SymbolicName: com.liferay.headless.commerce.admin.account.api
-Bundle-Version: 24.0.8
+Bundle-Version: 25.0.0
 Export-Package:\
 	com.liferay.headless.commerce.admin.account.dto.v1_0,\
 	com.liferay.headless.commerce.admin.account.resource.v1_0

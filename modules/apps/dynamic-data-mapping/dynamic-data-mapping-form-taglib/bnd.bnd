@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dynamic Data Mapping Form Taglib
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.form.taglib
-Bundle-Version: 5.0.9
+Bundle-Version: 6.0.0
 Export-Package: com.liferay.dynamic.data.mapping.form.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

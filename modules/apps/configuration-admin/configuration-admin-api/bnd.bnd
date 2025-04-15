@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Configuration Admin API
 Bundle-SymbolicName: com.liferay.configuration.admin.api
-Bundle-Version: 4.4.1
+Bundle-Version: 5.0.0
 Export-Package:\
 	com.liferay.configuration.admin.category,\
 	com.liferay.configuration.admin.constants,\

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Price List API
 Bundle-SymbolicName: com.liferay.commerce.price.list.api
-Bundle-Version: 33.0.2
+Bundle-Version: 34.0.0
 Export-Package:\
 	com.liferay.commerce.price.list.configuration,\
 	com.liferay.commerce.price.list.constants,\

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Publisher API
 Bundle-SymbolicName: com.liferay.asset.publisher.api
-Bundle-Version: 6.3.4
+Bundle-Version: 7.0.0
 Export-Package:\
 	com.liferay.asset.publisher.action,\
 	com.liferay.asset.publisher.constants,\

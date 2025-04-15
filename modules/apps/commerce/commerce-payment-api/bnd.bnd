@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Payment Api
 Bundle-SymbolicName: com.liferay.commerce.payment.api
-Bundle-Version: 19.3.2
+Bundle-Version: 20.0.0
 Export-Package:\
 	com.liferay.commerce.payment.audit,\
 	com.liferay.commerce.payment.configuration,\

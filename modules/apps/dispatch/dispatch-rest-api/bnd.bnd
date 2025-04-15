@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dispatch REST API
 Bundle-SymbolicName: com.liferay.dispatch.rest.api
-Bundle-Version: 1.2.8
+Bundle-Version: 2.0.0
 Export-Package:\
 	com.liferay.dispatch.rest.dto.v1_0,\
 	com.liferay.dispatch.rest.resource.v1_0

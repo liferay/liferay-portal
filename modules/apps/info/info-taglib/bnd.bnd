@@ -1,6 +1,6 @@
 Bundle-Name: Liferay info Taglib
 Bundle-SymbolicName: com.liferay.info.taglib
-Bundle-Version: 2.1.12
+Bundle-Version: 3.0.0
 Export-Package:\
 	com.liferay.info.taglib.list.renderer,\
 	com.liferay.info.taglib.servlet.taglib

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay User Taglib
 Bundle-SymbolicName: com.liferay.user.taglib
-Bundle-Version: 1.0.8
+Bundle-Version: 2.0.0
 Export-Package: com.liferay.user.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

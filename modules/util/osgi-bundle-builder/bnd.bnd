@@ -1,6 +1,6 @@
 Bundle-Name: Liferay OSGi Bundle Builder
 Bundle-SymbolicName: com.liferay.osgi.bundle.builder
-Bundle-Version: 2.1.5
+Bundle-Version: 2.2.0
 Export-Package:\
 	com.liferay.osgi.bundle.builder,\
 	com.liferay.osgi.bundle.builder.commands

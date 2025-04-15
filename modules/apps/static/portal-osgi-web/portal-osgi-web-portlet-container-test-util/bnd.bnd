@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal OSGi Web Portlet Container Test Utilities
 Bundle-SymbolicName: com.liferay.portal.osgi.web.portlet.container.test.util
-Bundle-Version: 3.0.21
+Bundle-Version: 4.0.0
 Export-Package: com.liferay.portal.osgi.web.portlet.container.test.util

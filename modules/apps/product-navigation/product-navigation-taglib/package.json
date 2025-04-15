@@ -16,5 +16,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "6.0.81"
+	"version": "7.0.0"
 }

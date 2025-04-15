@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend Editor Taglib
 Bundle-SymbolicName: com.liferay.frontend.editor.taglib
-Bundle-Version: 4.1.8
+Bundle-Version: 5.0.0
 Export-Package: com.liferay.frontend.editor.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

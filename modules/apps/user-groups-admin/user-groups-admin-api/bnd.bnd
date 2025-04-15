@@ -1,6 +1,6 @@
 Bundle-Name: Liferay User Groups Admin API
 Bundle-SymbolicName: com.liferay.user.groups.admin.api
-Bundle-Version: 7.0.2
+Bundle-Version: 8.0.0
 Export-Package:\
 	com.liferay.user.groups.admin.constants,\
 	com.liferay.user.groups.admin.search

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Export Import Changeset Taglib
 Bundle-SymbolicName: com.liferay.exportimport.changeset.taglib
-Bundle-Version: 5.0.2
+Bundle-Version: 6.0.0
 Export-Package: com.liferay.exportimport.changeset.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

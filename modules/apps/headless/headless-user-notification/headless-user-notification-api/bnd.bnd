@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless User Notification API
 Bundle-SymbolicName: com.liferay.headless.user.notification.api
-Bundle-Version: 1.2.8
+Bundle-Version: 2.0.0
 Export-Package:\
 	com.liferay.headless.user.notification.dto.v1_0,\
 	com.liferay.headless.user.notification.resource.v1_0

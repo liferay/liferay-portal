@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset Info Display API
 Bundle-SymbolicName: com.liferay.asset.info.display.api
-Bundle-Version: 6.0.9
+Bundle-Version: 7.0.0
 Export-Package: com.liferay.asset.info.display.url.provider

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Initializer Extender API
 Bundle-SymbolicName: com.liferay.site.initializer.extender.api
-Bundle-Version: 4.0.4
+Bundle-Version: 5.0.0
 Export-Package:\
 	com.liferay.site.initializer.extender,\
 	com.liferay.site.initializer.extender.configuration

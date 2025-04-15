@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Adaptive Media API
 Bundle-SymbolicName: com.liferay.adaptive.media.api
-Bundle-Version: 10.0.2
+Bundle-Version: 11.0.0
 Export-Package:\
 	com.liferay.adaptive.media,\
 	com.liferay.adaptive.media.constants,\

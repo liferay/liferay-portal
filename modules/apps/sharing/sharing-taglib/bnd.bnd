@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Sharing Taglib
 Bundle-SymbolicName: com.liferay.sharing.taglib
-Bundle-Version: 3.0.49
+Bundle-Version: 4.0.0
 Export-Package: com.liferay.sharing.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

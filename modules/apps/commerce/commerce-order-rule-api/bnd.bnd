@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Order Rule API
 Bundle-SymbolicName: com.liferay.commerce.order.rule.api
-Bundle-Version: 10.0.2
+Bundle-Version: 11.0.0
 Export-Package:\
 	com.liferay.commerce.order.rule.configuration,\
 	com.liferay.commerce.order.rule.constants,\

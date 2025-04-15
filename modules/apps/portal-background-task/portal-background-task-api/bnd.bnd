@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Background Task API
 Bundle-SymbolicName: com.liferay.portal.background.task.api
-Bundle-Version: 9.0.1
+Bundle-Version: 10.0.0
 Export-Package:\
 	com.liferay.portal.background.task.configuration,\
 	com.liferay.portal.background.task.constants,\

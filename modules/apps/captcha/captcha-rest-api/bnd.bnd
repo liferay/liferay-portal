@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Captcha REST API
 Bundle-SymbolicName: com.liferay.captcha.rest.api
-Bundle-Version: 3.0.7
+Bundle-Version: 4.0.0
 Export-Package:\
 	com.liferay.captcha.rest.dto.v1_0,\
 	com.liferay.captcha.rest.resource.v1_0

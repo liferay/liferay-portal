@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Frontend Taglib
 Bundle-SymbolicName: com.liferay.commerce.frontend.taglib
-Bundle-Version: 23.2.14
+Bundle-Version: 24.0.0
 Export-Package: com.liferay.commerce.frontend.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

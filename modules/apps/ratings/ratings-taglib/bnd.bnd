@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Ratings Taglib
 Bundle-SymbolicName: com.liferay.ratings.taglib
-Bundle-Version: 3.1.39
+Bundle-Version: 4.0.0
 Export-Package: com.liferay.ratings.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Admin Taxonomy API
 Bundle-SymbolicName: com.liferay.headless.admin.taxonomy.api
-Bundle-Version: 16.5.0
+Bundle-Version: 17.0.0
 Export-Package:\
 	com.liferay.headless.admin.taxonomy.dto.v1_0,\
 	com.liferay.headless.admin.taxonomy.resource.v1_0

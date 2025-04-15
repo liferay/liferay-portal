@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Remote JSON Web Service API
 Bundle-SymbolicName: com.liferay.portal.remote.json.web.service.api
-Bundle-Version: 1.0.2
+Bundle-Version: 2.0.0
 Export-Package:\
 	com.liferay.portal.remote.json.web.service,\
 	com.liferay.portal.remote.json.web.service.exception

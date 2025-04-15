@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Display Page API
 Bundle-SymbolicName: com.liferay.asset.display.page.api
-Bundle-Version: 17.0.2
+Bundle-Version: 18.0.0
 Export-Package:\
 	com.liferay.asset.display.page.configuration,\
 	com.liferay.asset.display.page.constants,\

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Template React Renderer API
 Bundle-SymbolicName: com.liferay.portal.template.react.renderer.api
-Bundle-Version: 5.0.6
+Bundle-Version: 6.0.0
 Export-Package: com.liferay.portal.template.react.renderer

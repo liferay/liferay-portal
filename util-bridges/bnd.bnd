@@ -1,6 +1,6 @@
 Bundle-Name: ${manifest.bundle.name}
 Bundle-SymbolicName: ${manifest.bundle.symbolic.name}
-Bundle-Version: 10.0.5
+Bundle-Version: 11.0.0
 Export-Package: com.liferay.util.bridges.*
 Import-Package:\
 	com.liferay.*,\

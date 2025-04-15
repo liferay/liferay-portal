@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Test Utilities
 Bundle-SymbolicName: com.liferay.layout.test.util
-Bundle-Version: 11.0.5
+Bundle-Version: 12.0.0
 Export-Package: com.liferay.layout.test.util
