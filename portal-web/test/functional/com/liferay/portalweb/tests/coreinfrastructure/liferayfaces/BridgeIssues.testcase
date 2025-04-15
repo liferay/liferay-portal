@@ -168,7 +168,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "BridgeIssues#RESOURCE2",
-			value1 = "javax.faces:jsf.js");
+			value1 = "jakarta.faces:jsf.js");
 
 		Click(
 			key_pageLink = "go to next view with immediate=",
@@ -188,7 +188,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "BridgeIssues#RESOURCE3",
-			value1 = "javax.faces:jsf.js");
+			value1 = "jakarta.faces:jsf.js");
 
 		Click(
 			key_pageLink = "go to previous view with immediate=",
@@ -200,7 +200,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "BridgeIssues#RESOURCE2",
-			value1 = "javax.faces:jsf.js");
+			value1 = "jakarta.faces:jsf.js");
 
 		AssertElementNotPresent(locator1 = "BridgeIssues#RESOURCE3");
 

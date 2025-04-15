@@ -87,7 +87,7 @@ definition {
 
 		AssertConsoleTextNotPresent(value1 = "Please configure tunneling.servlet.shared.secret");
 
-		AssertConsoleTextNotPresent(value1 = "javax.portlet.PortletException: java.lang.NullPointerException");
+		AssertConsoleTextNotPresent(value1 = "jakarta.portlet.PortletException: java.lang.NullPointerException");
 	}
 
 	@summary = "Default summary"

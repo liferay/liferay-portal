@@ -155,7 +155,7 @@ definition {
 
 			AssertConsoleTextNotPresent(value1 = "java.sql.BatchUpdateException");
 
-			AssertConsoleTextNotPresent(value1 = "javax.persistence.PersistenceException");
+			AssertConsoleTextNotPresent(value1 = "jakarta.persistence.PersistenceException");
 		}
 	}
 

@@ -285,7 +285,7 @@ definition {
 				editableText = "Editing Finished",
 				fragmentName = "Content");
 
-			AssertConsoleTextNotPresent(value1 = "javax.portlet.PortletException:");
+			AssertConsoleTextNotPresent(value1 = "jakarta.portlet.PortletException:");
 
 			AssertConsoleTextNotPresent(value1 = "org.apache.jasper.JasperException:");
 
