@@ -58,7 +58,7 @@ export default function propsTransformer({
 		form.setAttribute('method', 'post');
 
 		const actionInputElement = form.querySelector(
-			`#${portletNamespace}javax-portlet-action`
+			`#${portletNamespace}jakarta-portlet-action`
 		);
 
 		if (actionInputElement) {

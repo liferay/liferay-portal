@@ -195,7 +195,7 @@ export const ACTIONS = {
 						'addUserIds': values.join(','),
 						'assignmentsRedirect':
 							assignmentsRedirectURL.toString(),
-						'javax.portlet.action':
+						'jakarta.portlet.action':
 							'/users_admin/edit_organization_assignments',
 						organizationId,
 						'p_auth': Liferay.authToken,

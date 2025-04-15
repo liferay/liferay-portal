@@ -45,7 +45,7 @@ const ACTIONS = {
 					}
 
 					const actionURL = createActionURL(basePortletURL, {
-						'javax.portlet.action': 'deletePasswordPolicies',
+						'jakarta.portlet.action': 'deletePasswordPolicies',
 					});
 
 					submitForm(form, actionURL.toString());

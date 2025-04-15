@@ -27,7 +27,7 @@ export default function _JournalPortlet({
 	const formId = `${namespace}fm1`;
 
 	const actionInput = document.getElementById(
-		`${namespace}javax-portlet-action`
+		`${namespace}jakarta-portlet-action`
 	);
 	const availableLocalesInput = document.getElementById(
 		`${namespace}availableLocales`

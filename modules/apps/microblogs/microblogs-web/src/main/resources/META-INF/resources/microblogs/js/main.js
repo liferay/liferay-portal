@@ -104,7 +104,7 @@ AUI().use(
 				const portletURL = new Liferay.Util.PortletURL.createPortletURL(
 					instance._baseActionURL,
 					{
-						'javax.portlet.action':
+						'jakarta.portlet.action':
 							'updateMicroblogsEntryViewCount',
 						microblogsEntryId,
 						'p_p_state': 'normal',

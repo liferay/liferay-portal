@@ -311,7 +311,7 @@ AUI.add(
 										config.baseActionURL,
 										{
 											'entryId': contact.entryId,
-											'javax.portlet.action':
+											'jakarta.portlet.action':
 												'deleteEntry',
 											'p_p_state': 'NORMAL',
 										}

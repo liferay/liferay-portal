@@ -25,7 +25,7 @@ AUI.add(
 					const instance = this;
 
 					const actionParameters = {
-						'javax.portlet.action': config.actionName,
+						'jakarta.portlet.action': config.actionName,
 					};
 
 					A.mix(actionParameters, config.queryParameters);

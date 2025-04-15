@@ -1732,7 +1732,7 @@ AUI.add(
 				getUploadURL() {
 					const uploadParameters = {
 						'cmd': 'add_temp',
-						'javax.portlet.action':
+						'jakarta.portlet.action':
 							'/document_library/upload_file_entry',
 						'p_auth': Liferay.authToken,
 						'p_p_id': Liferay.PortletKeys.DOCUMENT_LIBRARY,
