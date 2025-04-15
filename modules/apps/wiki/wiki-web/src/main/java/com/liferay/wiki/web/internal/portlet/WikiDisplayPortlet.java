@@ -15,12 +15,12 @@ import com.liferay.trash.TrashHelper;
 import com.liferay.trash.util.TrashWebKeys;
 import com.liferay.wiki.constants.WikiPortletKeys;
 
-import java.io.IOException;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -42,15 +42,15 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.scopeable=true",
 		"com.liferay.portlet.struts-path=wiki_display",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Wiki Display",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.always-display-default-configuration-icons=true",
-		"javax.portlet.init-param.portlet-title-based-navigation=false",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Wiki Display",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.always-display-default-configuration-icons=true",
+		"jakarta.portlet.init-param.portlet-title-based-navigation=false",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

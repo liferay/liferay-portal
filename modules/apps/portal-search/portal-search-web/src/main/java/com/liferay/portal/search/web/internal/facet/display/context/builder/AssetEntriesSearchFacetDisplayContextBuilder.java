@@ -29,6 +29,8 @@ import com.liferay.portal.search.web.internal.type.facet.configuration.TypeFacet
 import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
+import jakarta.portlet.RenderRequest;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -38,8 +40,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Lino Alves

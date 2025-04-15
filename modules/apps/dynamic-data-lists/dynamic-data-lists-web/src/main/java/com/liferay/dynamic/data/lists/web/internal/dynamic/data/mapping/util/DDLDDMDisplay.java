@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eduardo García
  */
 @Component(
-	property = "javax.portlet.name=" + DDLPortletKeys.DYNAMIC_DATA_LISTS,
+	property = "jakarta.portlet.name=" + DDLPortletKeys.DYNAMIC_DATA_LISTS,
 	service = DDMDisplay.class
 )
 public class DDLDDMDisplay extends BaseDDMDisplay {

@@ -68,14 +68,14 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.settings.web.internal.exception.RequiredLocaleException;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
+
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -87,7 +87,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+		"jakarta.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 		"mvc.command.name=/portal_settings/edit_company"
 	},
 	service = MVCActionCommand.class

@@ -22,6 +22,17 @@ import com.liferay.portal.model.impl.PortletFilterImpl;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.PortletFilterFactory;
 
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.filter.ActionFilter;
+import jakarta.portlet.filter.EventFilter;
+import jakarta.portlet.filter.FilterConfig;
+import jakarta.portlet.filter.HeaderFilter;
+import jakarta.portlet.filter.PortletFilter;
+import jakarta.portlet.filter.RenderFilter;
+import jakarta.portlet.filter.ResourceFilter;
+
 import java.io.Closeable;
 
 import java.util.Collections;
@@ -31,17 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.filter.ActionFilter;
-import javax.portlet.filter.EventFilter;
-import javax.portlet.filter.FilterConfig;
-import javax.portlet.filter.HeaderFilter;
-import javax.portlet.filter.PortletFilter;
-import javax.portlet.filter.RenderFilter;
-import javax.portlet.filter.ResourceFilter;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -66,7 +66,7 @@ public class InvokerFilterContainerImpl
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			_bundleContext, PortletFilter.class,
-			"(javax.portlet.name=" + rootPortletId + ")",
+			"(jakarta.portlet.name=" + rootPortletId + ")",
 			(serviceReference, emitter) -> {
 				PortletFilter portletFilter = _bundleContext.getService(
 					serviceReference);
@@ -132,13 +132,15 @@ public class InvokerFilterContainerImpl
 						Map<String, String> params = new HashMap<>();
 
 						for (String key : serviceReference.getPropertyKeys()) {
-							if (!key.startsWith("javax.portlet.init-param.")) {
+							if (!key.startsWith(
+									"jakarta.portlet.init-param.")) {
+
 								continue;
 							}
 
 							params.put(
 								key.substring(
-									"javax.portlet.init-param.".length()),
+									"jakarta.portlet.init-param.".length()),
 								GetterUtil.getString(
 									serviceReference.getProperty(key)));
 						}
@@ -188,7 +190,7 @@ public class InvokerFilterContainerImpl
 
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.name", rootPortletId
+				"jakarta.portlet.name", rootPortletId
 			).put(
 				"preinitialized.filter", Boolean.TRUE
 			).build();

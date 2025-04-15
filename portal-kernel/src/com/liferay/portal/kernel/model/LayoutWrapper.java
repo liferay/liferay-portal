@@ -1150,7 +1150,7 @@ public class LayoutWrapper
 
 	@Override
 	public String getRegularURL(
-			javax.servlet.http.HttpServletRequest httpServletRequest)
+			jakarta.servlet.http.HttpServletRequest httpServletRequest)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return model.getRegularURL(httpServletRequest);
@@ -1158,7 +1158,7 @@ public class LayoutWrapper
 
 	@Override
 	public String getResetLayoutURL(
-			javax.servlet.http.HttpServletRequest httpServletRequest)
+			jakarta.servlet.http.HttpServletRequest httpServletRequest)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return model.getResetLayoutURL(httpServletRequest);
@@ -1166,7 +1166,7 @@ public class LayoutWrapper
 
 	@Override
 	public String getResetMaxStateURL(
-			javax.servlet.http.HttpServletRequest httpServletRequest)
+			jakarta.servlet.http.HttpServletRequest httpServletRequest)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return model.getResetMaxStateURL(httpServletRequest);
@@ -1571,8 +1571,8 @@ public class LayoutWrapper
 
 	@Override
 	public boolean includeLayoutContent(
-			javax.servlet.http.HttpServletRequest httpServletRequest,
-			javax.servlet.http.HttpServletResponse httpServletResponse)
+			jakarta.servlet.http.HttpServletRequest httpServletRequest,
+			jakarta.servlet.http.HttpServletResponse httpServletResponse)
 		throws Exception {
 
 		return model.includeLayoutContent(
@@ -1917,7 +1917,7 @@ public class LayoutWrapper
 
 	@Override
 	public boolean matches(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		String friendlyURL) {
 
 		return model.matches(httpServletRequest, friendlyURL);

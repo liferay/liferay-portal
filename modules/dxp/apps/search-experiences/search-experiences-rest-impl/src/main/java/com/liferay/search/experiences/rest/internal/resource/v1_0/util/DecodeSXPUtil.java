@@ -11,9 +11,9 @@ import com.liferay.search.experiences.rest.dto.v1_0.ElementInstance;
 import com.liferay.search.experiences.rest.dto.v1_0.SXPBlueprint;
 import com.liferay.search.experiences.rest.dto.v1_0.SXPElement;
 
-import java.net.URLDecoder;
+import jakarta.validation.Valid;
 
-import javax.validation.Valid;
+import java.net.URLDecoder;
 
 /**
  * @author Gustavo Lima

@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Julio Camarero
  */
 @Component(
-	property = "javax.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES,
+	property = "jakarta.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES,
 	service = ControlPanelEntry.class
 )
 public class StagingProcessesControlPanelEntry extends BaseControlPanelEntry {

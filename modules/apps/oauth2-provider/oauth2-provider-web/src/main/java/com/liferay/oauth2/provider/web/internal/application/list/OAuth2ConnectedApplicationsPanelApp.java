@@ -37,7 +37,7 @@ public class OAuth2ConnectedApplicationsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + OAuth2ProviderPortletKeys.OAUTH2_CONNECTED_APPLICATIONS + ")"
+		target = "(jakarta.portlet.name=" + OAuth2ProviderPortletKeys.OAUTH2_CONNECTED_APPLICATIONS + ")"
 	)
 	private Portlet _portlet;
 

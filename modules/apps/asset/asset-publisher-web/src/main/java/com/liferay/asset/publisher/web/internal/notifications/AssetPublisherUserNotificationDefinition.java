@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Roberto Díaz
  */
 @Component(
-	property = "javax.portlet.name=" + AssetPublisherPortletKeys.ASSET_PUBLISHER,
+	property = "jakarta.portlet.name=" + AssetPublisherPortletKeys.ASSET_PUBLISHER,
 	service = UserNotificationDefinition.class
 )
 public class AssetPublisherUserNotificationDefinition

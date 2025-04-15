@@ -14,9 +14,9 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.reading.time.web.internal.constants.ReadingTimePortletKeys;
 
-import java.util.Map;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletURL;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 

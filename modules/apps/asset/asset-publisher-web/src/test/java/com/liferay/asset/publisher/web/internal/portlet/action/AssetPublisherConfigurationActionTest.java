@@ -22,11 +22,11 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

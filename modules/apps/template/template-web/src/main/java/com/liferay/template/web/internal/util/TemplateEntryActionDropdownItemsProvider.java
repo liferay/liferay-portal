@@ -24,9 +24,9 @@ import com.liferay.template.constants.TemplatePortletKeys;
 import com.liferay.template.model.TemplateEntry;
 import com.liferay.template.web.internal.security.permissions.resource.TemplateEntryPermission;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Eudaldo Alonso

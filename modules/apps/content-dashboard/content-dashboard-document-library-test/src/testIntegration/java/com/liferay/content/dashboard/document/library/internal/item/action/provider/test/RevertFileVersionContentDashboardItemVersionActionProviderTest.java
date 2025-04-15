@@ -41,11 +41,11 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.portlet.ActionRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.net.URLEncoder;
-
-import javax.portlet.ActionRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;

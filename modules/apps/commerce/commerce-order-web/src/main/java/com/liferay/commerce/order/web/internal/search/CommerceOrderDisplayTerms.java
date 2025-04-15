@@ -10,10 +10,10 @@ import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Andrea Di Giorgi

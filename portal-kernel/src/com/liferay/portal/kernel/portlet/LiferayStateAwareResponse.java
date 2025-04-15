@@ -5,10 +5,10 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import java.util.List;
+import jakarta.portlet.Event;
+import jakarta.portlet.StateAwareResponse;
 
-import javax.portlet.Event;
-import javax.portlet.StateAwareResponse;
+import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
 

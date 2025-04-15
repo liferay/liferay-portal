@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.settings;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;

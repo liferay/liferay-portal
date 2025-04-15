@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
+import jakarta.ws.rs.core.Application;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -32,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import javax.ws.rs.core.Application;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

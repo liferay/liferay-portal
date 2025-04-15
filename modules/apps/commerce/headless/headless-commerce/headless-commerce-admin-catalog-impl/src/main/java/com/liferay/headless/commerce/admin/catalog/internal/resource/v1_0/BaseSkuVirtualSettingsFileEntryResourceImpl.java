@@ -49,23 +49,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Zoltán Takács
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSkuVirtualSettingsFileEntryResourceImpl
 	implements EntityModelResource, SkuVirtualSettingsFileEntryResource,
 			   VulcanBatchEngineTaskItemDelegate<SkuVirtualSettingsFileEntry>,
@@ -91,13 +91,13 @@ public abstract class BaseSkuVirtualSettingsFileEntryResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/sku-virtual-settings-file-entries/{id}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/sku-virtual-settings-file-entries/{id}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteSkuVirtualSettingsFileEntry(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -122,14 +122,14 @@ public abstract class BaseSkuVirtualSettingsFileEntryResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/sku-virtual-settings-file-entries/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/sku-virtual-settings-file-entries/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteSkuVirtualSettingsFileEntryBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -171,13 +171,13 @@ public abstract class BaseSkuVirtualSettingsFileEntryResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/sku-virtual-settings-file-entries/{id}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/sku-virtual-settings-file-entries/{id}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public SkuVirtualSettingsFileEntry getSkuVirtualSettingsFileEntry(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -207,14 +207,14 @@ public abstract class BaseSkuVirtualSettingsFileEntryResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/sku-virtual-settings-file-entries/{id}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path("/sku-virtual-settings-file-entries/{id}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public SkuVirtualSettingsFileEntry patchSkuVirtualSettingsFileEntry(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			MultipartBody multipartBody)
 		throws Exception {
@@ -250,19 +250,19 @@ public abstract class BaseSkuVirtualSettingsFileEntryResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/sku-virtual-settings/{id}/sku-virtual-settings-file-entries"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<SkuVirtualSettingsFileEntry>
 			getSkuVirtualSettingIdSkuVirtualSettingsFileEntriesPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("id")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("id")
 				Long id,
-				@javax.ws.rs.core.Context Pagination pagination)
+				@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -291,18 +291,18 @@ public abstract class BaseSkuVirtualSettingsFileEntryResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path(
 		"/sku-virtual-settings/{id}/sku-virtual-settings-file-entries"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public SkuVirtualSettingsFileEntry
 			postSkuVirtualSettingIdSkuVirtualSettingsFileEntry(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("id")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("id")
 				Long id,
 				MultipartBody multipartBody)
 		throws Exception {

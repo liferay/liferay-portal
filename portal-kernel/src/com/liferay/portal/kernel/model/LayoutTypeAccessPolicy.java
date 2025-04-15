@@ -8,9 +8,9 @@ package com.liferay.portal.kernel.model;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
-import java.io.Serializable;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 
 /**
  * @author Adolfo Pérez

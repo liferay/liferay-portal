@@ -17,10 +17,10 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import jakarta.ws.rs.core.UriInfo;
+
 import java.util.Collections;
 import java.util.Objects;
-
-import javax.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra

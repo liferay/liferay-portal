@@ -5,13 +5,13 @@
 
 package com.liferay.portal.vulcan.internal.param.converter;
 
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.ext.ParamConverter;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.ext.ParamConverter;
 
 /**
  * @author Ivica Cardic

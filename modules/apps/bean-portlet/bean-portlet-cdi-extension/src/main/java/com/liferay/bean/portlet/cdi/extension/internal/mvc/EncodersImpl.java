@@ -7,7 +7,7 @@ package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
 import com.liferay.portal.kernel.util.HtmlUtil;
 
-import javax.mvc.security.Encoders;
+import jakarta.mvc.security.Encoders;
 
 /**
  * @author Neil Griffin

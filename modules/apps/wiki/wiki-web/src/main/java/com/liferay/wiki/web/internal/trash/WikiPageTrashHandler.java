@@ -47,10 +47,10 @@ import com.liferay.wiki.service.WikiPageService;
 import com.liferay.wiki.web.internal.asset.model.WikiPageAssetRenderer;
 import com.liferay.wiki.web.internal.util.WikiPageAttachmentsUtil;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

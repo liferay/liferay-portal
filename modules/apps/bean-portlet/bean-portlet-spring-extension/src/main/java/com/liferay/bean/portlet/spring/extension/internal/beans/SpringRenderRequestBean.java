@@ -8,28 +8,28 @@ package com.liferay.bean.portlet.spring.extension.internal.beans;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManager;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManagerThreadLocal;
 
+import jakarta.annotation.ManagedBean;
+import jakarta.annotation.Priority;
+
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.RenderParameters;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderState;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.filter.RenderRequestWrapper;
+
+import jakarta.servlet.http.Cookie;
+
 import java.security.Principal;
 
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.annotation.ManagedBean;
-import javax.annotation.Priority;
-
-import javax.portlet.PortalContext;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderParameters;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderState;
-import javax.portlet.WindowState;
-import javax.portlet.filter.RenderRequestWrapper;
-
-import javax.servlet.http.Cookie;
 
 /**
  * @author Neil Griffin

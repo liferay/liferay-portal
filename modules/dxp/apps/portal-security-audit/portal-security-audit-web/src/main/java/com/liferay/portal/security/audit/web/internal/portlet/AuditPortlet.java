@@ -14,17 +14,17 @@ import com.liferay.portal.security.audit.AuditEvent;
 import com.liferay.portal.security.audit.web.internal.AuditEventManagerUtil;
 import com.liferay.portal.security.audit.web.internal.constants.AuditPortletKeys;
 
-import java.io.IOException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -36,15 +36,16 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.icon=/icons/audit.png",
 		"com.liferay.portlet.instanceable=false",
-		"javax.portlet.display-name=Audit", "javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + AuditPortletKeys.AUDIT,
-		"javax.portlet.portlet-info.short-title=Audit",
-		"javax.portlet.portlet-info.title=Audit",
-		"javax.portlet.portlet-mode=text/html;view",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Audit",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + AuditPortletKeys.AUDIT,
+		"jakarta.portlet.portlet-info.short-title=Audit",
+		"jakarta.portlet.portlet-info.title=Audit",
+		"jakarta.portlet.portlet-mode=text/html;view",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

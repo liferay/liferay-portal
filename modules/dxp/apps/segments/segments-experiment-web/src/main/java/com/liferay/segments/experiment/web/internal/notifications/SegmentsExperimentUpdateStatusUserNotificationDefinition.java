@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Eduardo García
  */
 @Component(
-	property = "javax.portlet.name=" + SegmentsPortletKeys.SEGMENTS_EXPERIMENT,
+	property = "jakarta.portlet.name=" + SegmentsPortletKeys.SEGMENTS_EXPERIMENT,
 	service = UserNotificationDefinition.class
 )
 public class SegmentsExperimentUpdateStatusUserNotificationDefinition

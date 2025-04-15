@@ -21,8 +21,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
-		"javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN,
+		"jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
+		"jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN,
 		"mvc.command.name=/bookmarks/edit_folder"
 	},
 	service = MVCRenderCommand.class

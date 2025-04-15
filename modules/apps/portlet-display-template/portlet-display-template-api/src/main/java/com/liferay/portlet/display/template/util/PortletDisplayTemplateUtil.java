@@ -10,11 +10,11 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Lily Chi

@@ -31,17 +31,17 @@ import com.liferay.portal.theme.ThemeDisplayFactory;
 import com.liferay.portal.upload.LiferayServletRequest;
 import com.liferay.upload.UniqueFileNameProvider;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -156,7 +156,7 @@ public class UploadPortletTest extends BasePortletContainerTestCase {
 			bundleContext.registerService(
 				MVCActionCommand.class, mvcActionCommand,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", TestUploadPortlet.PORTLET_NAME
+					"jakarta.portlet.name", TestUploadPortlet.PORTLET_NAME
 				).put(
 					"mvc.command.name", TestUploadPortlet.MVC_COMMAND_NAME
 				).build());
@@ -181,28 +181,28 @@ public class UploadPortletTest extends BasePortletContainerTestCase {
 				"com.liferay.portlet.use-default-template",
 				Boolean.TRUE.toString()
 			).put(
-				"javax.portlet.display-name", "Test Upload Portlet"
+				"jakarta.portlet.display-name", "Test Upload Portlet"
 			).put(
-				"javax.portlet.expiration-cache", "0"
+				"jakarta.portlet.expiration-cache", "0"
 			).put(
-				"javax.portlet.init-param.check-auth-token",
+				"jakarta.portlet.init-param.check-auth-token",
 				Boolean.FALSE.toString()
 			).put(
-				"javax.portlet.init-param.single-page-application-cacheable",
+				"jakarta.portlet.init-param.single-page-application-cacheable",
 				Boolean.FALSE.toString()
 			).put(
-				"javax.portlet.init-param.template-path", "/"
+				"jakarta.portlet.init-param.template-path", "/"
 			).put(
-				"javax.portlet.init-param.view-template",
+				"jakarta.portlet.init-param.view-template",
 				"/" + TestUploadPortlet.PORTLET_NAME + "/view.jsp"
 			).put(
-				"javax.portlet.name", TestUploadPortlet.PORTLET_NAME
+				"jakarta.portlet.name", TestUploadPortlet.PORTLET_NAME
 			).put(
-				"javax.portlet.resource-bundle", "content.Language"
+				"jakarta.portlet.resource-bundle", "content.Language"
 			).put(
-				"javax.portlet.security-role-ref", "guest,power-user,user"
+				"jakarta.portlet.security-role-ref", "guest,power-user,user"
 			).put(
-				"javax.portlet.supports.mime-type", "text/html"
+				"jakarta.portlet.supports.mime-type", "text/html"
 			).build(),
 			TestUploadPortlet.PORTLET_NAME);
 	}

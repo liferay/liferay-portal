@@ -11,12 +11,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.async.PortletAsyncScopeManager;
 
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
 import java.io.Closeable;
 import java.io.IOException;
-
-import javax.portlet.PortletConfig;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 /**
  * @author Neil Griffin

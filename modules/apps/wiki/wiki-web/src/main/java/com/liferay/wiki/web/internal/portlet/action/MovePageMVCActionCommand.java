@@ -23,8 +23,8 @@ import com.liferay.wiki.exception.PageTitleException;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiPageService;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,9 +34,9 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + WikiPortletKeys.WIKI,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
 		"mvc.command.name=/wiki/move_page"
 	},
 	service = MVCActionCommand.class

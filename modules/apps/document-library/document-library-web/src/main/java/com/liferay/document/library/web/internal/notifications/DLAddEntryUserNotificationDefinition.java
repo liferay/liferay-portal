@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY,
+	property = "jakarta.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY,
 	service = UserNotificationDefinition.class
 )
 public class DLAddEntryUserNotificationDefinition

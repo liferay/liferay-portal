@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Shuyang Zhou

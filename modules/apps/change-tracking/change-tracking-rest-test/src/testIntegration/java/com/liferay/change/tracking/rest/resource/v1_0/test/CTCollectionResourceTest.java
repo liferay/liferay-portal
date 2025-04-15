@@ -31,10 +31,10 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.ws.rs.core.Response;
+
 import java.util.Date;
 import java.util.Map;
-
-import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

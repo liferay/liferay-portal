@@ -8,7 +8,7 @@ package com.liferay.dynamic.data.mapping.web.internal.search;
 import com.liferay.portal.kernel.dao.search.DAOParamUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Eduardo Lundgren

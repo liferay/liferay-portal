@@ -8,7 +8,7 @@ package com.liferay.knowledge.base.internal.upgrade.v1_3_4;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.upgrade.BasePortletPreferencesUpgradeProcess;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Adolfo Pérez

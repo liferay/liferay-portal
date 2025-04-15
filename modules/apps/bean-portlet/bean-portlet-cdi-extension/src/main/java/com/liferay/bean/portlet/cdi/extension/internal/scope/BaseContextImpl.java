@@ -5,8 +5,8 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.scope;
 
-import javax.enterprise.context.spi.Context;
-import javax.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.Context;
+import jakarta.enterprise.context.spi.Contextual;
 
 /**
  * @author Neil Griffin

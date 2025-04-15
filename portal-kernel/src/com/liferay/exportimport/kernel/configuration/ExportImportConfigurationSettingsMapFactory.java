@@ -8,13 +8,13 @@ package com.liferay.exportimport.kernel.configuration;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 
+import jakarta.portlet.PortletRequest;
+
 import java.io.Serializable;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import javax.portlet.PortletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

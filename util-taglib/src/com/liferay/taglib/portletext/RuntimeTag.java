@@ -45,6 +45,17 @@ import com.liferay.taglib.servlet.PipingServletResponseFactory;
 import com.liferay.taglib.util.PortalIncludeUtil;
 import com.liferay.taglib.util.ThreadLocalUtil;
 
+import jakarta.portlet.GenericPortlet;
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.HeaderResponse;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.TagSupport;
+
 import java.lang.reflect.Method;
 
 import java.util.HashMap;
@@ -52,17 +63,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
-
-import javax.portlet.GenericPortlet;
-import javax.portlet.HeaderRequest;
-import javax.portlet.HeaderResponse;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * @author Brian Wing Shun Chan
@@ -515,7 +515,8 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 		String portletClassName = portlet.getPortletClass();
 
 		if (Objects.equals(
-				portletClassName, "javax.portlet.faces.GenericFacesPortlet")) {
+				portletClassName,
+				"jakarta.portlet.faces.GenericFacesPortlet")) {
 
 			return true;
 		}
@@ -536,7 +537,8 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 			Class<?> portletClass = classLoader.loadClass(portletClassName);
 
 			if (ClassUtil.isSubclass(
-					portletClass, "javax.portlet.faces.GenericFacesPortlet")) {
+					portletClass,
+					"jakarta.portlet.faces.GenericFacesPortlet")) {
 
 				return true;
 			}

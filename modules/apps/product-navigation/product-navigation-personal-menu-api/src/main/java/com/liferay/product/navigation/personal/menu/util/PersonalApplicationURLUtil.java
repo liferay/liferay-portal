@@ -35,9 +35,9 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.product.navigation.personal.menu.configuration.PersonalMenuConfiguration;
 import com.liferay.product.navigation.personal.menu.configuration.PersonalMenuConfigurationRegistry;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;

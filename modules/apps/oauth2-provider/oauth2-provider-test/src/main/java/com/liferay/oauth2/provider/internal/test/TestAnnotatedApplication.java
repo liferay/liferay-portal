@@ -8,15 +8,15 @@ package com.liferay.oauth2.provider.internal.test;
 import com.liferay.oauth2.provider.scope.RequiresNoScope;
 import com.liferay.oauth2.provider.scope.RequiresScope;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import java.util.Collections;
 import java.util.Set;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Application;
 
 /**
  * @author Carlos Sierra Andrés

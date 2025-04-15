@@ -22,9 +22,9 @@ import com.liferay.segments.constants.SegmentsConstants;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.model.SegmentsEntry;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eduardo García
  */
 @Component(
-	property = "javax.portlet.name=" + SegmentsPortletKeys.SEGMENTS,
+	property = "jakarta.portlet.name=" + SegmentsPortletKeys.SEGMENTS,
 	service = PortletDataHandler.class
 )
 public class SegmentsPortletDataHandler extends BasePortletDataHandler {

@@ -23,9 +23,9 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.RenderParametersPool;
 
-import java.util.Collections;
+import jakarta.portlet.PortletRequest;
 
-import javax.portlet.PortletRequest;
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

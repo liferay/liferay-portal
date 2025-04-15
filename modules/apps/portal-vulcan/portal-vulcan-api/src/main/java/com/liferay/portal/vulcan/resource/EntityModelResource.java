@@ -8,7 +8,7 @@ package com.liferay.portal.vulcan.resource;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.odata.entity.EntityModel;
 
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 /**
  * @author Brian Wing Shun Chan

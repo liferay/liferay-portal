@@ -42,12 +42,12 @@ import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSe
 import com.liferay.wiki.service.WikiNodeLocalService;
 import com.liferay.wiki.service.WikiPageLocalService;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.RenderRequest;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -57,7 +57,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Wade Cao
  */
 @Component(
-	property = "javax.portlet.name=" + SimilarResultsPortletKeys.SIMILAR_RESULTS,
+	property = "jakarta.portlet.name=" + SimilarResultsPortletKeys.SIMILAR_RESULTS,
 	service = PortletSharedSearchContributor.class
 )
 public class SimilarResultsPortletSharedSearchContributor

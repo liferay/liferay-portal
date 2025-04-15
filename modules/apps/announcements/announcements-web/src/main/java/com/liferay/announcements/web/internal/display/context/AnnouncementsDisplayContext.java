@@ -55,6 +55,13 @@ import com.liferay.segments.context.RequestContextMapper;
 import com.liferay.segments.model.SegmentsEntryRole;
 import com.liferay.segments.service.SegmentsEntryRoleLocalServiceUtil;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.text.DateFormat;
 import java.text.Format;
 
@@ -64,13 +71,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Adolfo Pérez

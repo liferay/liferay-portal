@@ -16,9 +16,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.language.override.service.PLOEntryService;
 import com.liferay.portal.language.override.web.internal.constants.PLOPortletKeys;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.ResourceURL;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.ResourceURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Erick Monteiro
  */
 @Component(
-	property = "javax.portlet.name=" + PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE,
+	property = "jakarta.portlet.name=" + PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE,
 	service = PortletConfigurationIcon.class
 )
 public class ExportPLOEntriesPortletConfigurationIcon

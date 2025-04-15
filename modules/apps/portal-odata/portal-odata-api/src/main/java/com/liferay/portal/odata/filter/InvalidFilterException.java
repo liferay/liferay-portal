@@ -5,7 +5,7 @@
 
 package com.liferay.portal.odata.filter;
 
-import javax.ws.rs.BadRequestException;
+import jakarta.ws.rs.BadRequestException;
 
 /**
  * Models errors that occur when handling {@link Filter} objects.

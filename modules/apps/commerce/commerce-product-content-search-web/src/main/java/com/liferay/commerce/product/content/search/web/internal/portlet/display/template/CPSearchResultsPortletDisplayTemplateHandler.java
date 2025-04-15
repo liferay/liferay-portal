@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_SEARCH_RESULTS,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_SEARCH_RESULTS,
 	service = TemplateHandler.class
 )
 public class CPSearchResultsPortletDisplayTemplateHandler

@@ -50,10 +50,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Collections;
 import java.util.Locale;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

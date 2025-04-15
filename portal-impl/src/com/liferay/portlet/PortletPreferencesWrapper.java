@@ -5,16 +5,16 @@
 
 package com.liferay.portlet;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
 
 /**
  * @author Brian Wing Shun Chan

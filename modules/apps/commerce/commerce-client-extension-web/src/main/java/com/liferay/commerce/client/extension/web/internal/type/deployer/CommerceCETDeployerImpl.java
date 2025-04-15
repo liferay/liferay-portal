@@ -16,10 +16,10 @@ import com.liferay.portal.catapult.PortalCatapult;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.UserService;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.Arrays;
 import java.util.List;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

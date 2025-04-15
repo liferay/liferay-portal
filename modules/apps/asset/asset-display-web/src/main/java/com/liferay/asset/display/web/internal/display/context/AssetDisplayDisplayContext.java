@@ -7,7 +7,7 @@ package com.liferay.asset.display.web.internal.display.context;
 
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

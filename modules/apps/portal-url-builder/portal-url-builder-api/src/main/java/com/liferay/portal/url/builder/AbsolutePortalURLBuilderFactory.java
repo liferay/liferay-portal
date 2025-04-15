@@ -5,7 +5,7 @@
 
 package com.liferay.portal.url.builder;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Creates new Absolute Portal URL Builder instances.

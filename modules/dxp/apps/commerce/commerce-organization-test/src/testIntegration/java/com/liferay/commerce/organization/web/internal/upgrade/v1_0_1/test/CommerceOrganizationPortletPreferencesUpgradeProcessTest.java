@@ -81,7 +81,7 @@ public class CommerceOrganizationPortletPreferencesUpgradeProcessTest {
 			_portletPreferencesLocalService.getPortletPreferences(
 				portletPreferences.getPortletPreferencesId());
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			PortletPreferenceValueLocalServiceUtil.getPreferences(
 				portletPreferences);
 

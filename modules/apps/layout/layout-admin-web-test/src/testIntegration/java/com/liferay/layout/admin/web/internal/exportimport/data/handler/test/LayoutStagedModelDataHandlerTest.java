@@ -139,6 +139,9 @@ import com.liferay.template.model.TemplateEntry;
 import com.liferay.template.service.TemplateEntryLocalService;
 import com.liferay.template.test.util.TemplateTestUtil;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -146,9 +149,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -2105,9 +2105,9 @@ public class LayoutStagedModelDataHandlerTest
 			).put(
 				"com.liferay.portlet.preferences-owned-by-group", "true"
 			).put(
-				"javax.portlet.init-param.view-template", "/view.jsp"
+				"jakarta.portlet.init-param.view-template", "/view.jsp"
 			).put(
-				"javax.portlet.name", _TEST_PORTLET_NAME
+				"jakarta.portlet.name", _TEST_PORTLET_NAME
 			).build());
 	}
 

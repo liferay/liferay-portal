@@ -9,9 +9,9 @@ import com.liferay.commerce.order.rule.constants.COREntryConstants;
 import com.liferay.commerce.order.rule.entry.type.COREntryTypeJSPContributor;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

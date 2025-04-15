@@ -44,7 +44,7 @@ public class MarketplacePaymentMethodsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + MarketplacePortletKeys.PAYMENT_METHODS + ")"
+		target = "(jakarta.portlet.name=" + MarketplacePortletKeys.PAYMENT_METHODS + ")"
 	)
 	private Portlet _portlet;
 

@@ -28,12 +28,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.mail.internet.InternetAddress;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;

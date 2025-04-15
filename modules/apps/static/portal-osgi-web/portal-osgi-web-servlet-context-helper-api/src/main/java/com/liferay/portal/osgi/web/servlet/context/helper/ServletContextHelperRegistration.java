@@ -7,10 +7,10 @@ package com.liferay.portal.osgi.web.servlet.context.helper;
 
 import com.liferay.portal.osgi.web.servlet.context.helper.definition.WebXMLDefinition;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.annotation.versioning.ProviderType;
 

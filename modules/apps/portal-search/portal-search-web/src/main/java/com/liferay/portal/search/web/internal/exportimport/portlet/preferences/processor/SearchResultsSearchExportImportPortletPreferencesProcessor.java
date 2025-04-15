@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Felipe Lorenz
  */
 @Component(
-	property = "javax.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS,
+	property = "jakarta.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class SearchResultsSearchExportImportPortletPreferencesProcessor

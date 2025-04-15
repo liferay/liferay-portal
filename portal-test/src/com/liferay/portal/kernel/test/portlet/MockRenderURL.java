@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.PortalContext;
-import javax.portlet.RenderURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.RenderURL;
 
 /**
  * @author Dante Wang

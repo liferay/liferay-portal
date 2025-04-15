@@ -15,14 +15,14 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.Serializable;
 
 import java.text.Collator;
 
 import java.util.Comparator;
 import java.util.Locale;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Ryan Park

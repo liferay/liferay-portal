@@ -24,11 +24,11 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.Map;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	configurationPid = "com.liferay.commerce.product.configuration.AttachmentsConfiguration",
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.COMMERCE_CATALOGS,
+		"jakarta.portlet.name=" + CPPortletKeys.COMMERCE_CATALOGS,
 		"mvc.command.name=/commerce_catalogs/edit_commerce_catalog_external_reference_code"
 	},
 	service = MVCRenderCommand.class

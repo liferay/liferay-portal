@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.asset.SearchableAssetClassNamesProvider;
 import com.liferay.portal.search.web.internal.portlet.preferences.BasePortletPreferences;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Lino Alves

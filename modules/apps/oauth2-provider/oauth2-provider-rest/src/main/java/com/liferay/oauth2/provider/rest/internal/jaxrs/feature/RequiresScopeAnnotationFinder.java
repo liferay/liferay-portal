@@ -8,6 +8,9 @@ package com.liferay.oauth2.provider.rest.internal.jaxrs.feature;
 import com.liferay.oauth2.provider.scope.RequiresScope;
 import com.liferay.petra.reflect.AnnotationLocator;
 
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.Path;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -17,9 +20,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.Path;
 
 /**
  * @author Carlos Sierra Andrés

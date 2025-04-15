@@ -133,7 +133,7 @@ public class PortletPreferencesCTDisplayRenderer
 		).display(
 			"preferences",
 			() -> {
-				javax.portlet.PortletPreferences jxPortletPreferences =
+				jakarta.portlet.PortletPreferences jxPortletPreferences =
 					_portletPreferenceValueLocalService.getPreferences(
 						portletPreferences);
 

@@ -47,21 +47,21 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSiteResourceImpl
 	implements EntityModelResource, SiteResource,
 			   VulcanBatchEngineTaskItemDelegate<Site>,
@@ -87,12 +87,12 @@ public abstract class BaseSiteResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/my-user-account/sites")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/my-user-account/sites")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Site> getMyUserAccountSitesPage(
-			@javax.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -114,14 +114,14 @@ public abstract class BaseSiteResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/sites/by-friendly-url-path/{friendlyUrlPath: .+}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/sites/by-friendly-url-path/{friendlyUrlPath: .+}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Site getSiteByFriendlyUrlPath(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("friendlyUrlPath")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("friendlyUrlPath")
 			String friendlyUrlPath)
 		throws Exception {
 
@@ -144,14 +144,14 @@ public abstract class BaseSiteResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/sites/{siteId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/sites/{siteId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Site getSite(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("siteId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("siteId")
 			Long siteId)
 		throws Exception {
 

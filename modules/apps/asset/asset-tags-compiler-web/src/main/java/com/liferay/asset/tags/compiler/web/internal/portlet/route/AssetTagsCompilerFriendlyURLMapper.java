@@ -14,10 +14,10 @@ import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.Map;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
 
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Shuyang Zhou
  */
 @Component(
-	property = "javax.portlet.name=" + AssetTagsCompilerPortletKeys.ASSET_TAGS_COMPILER,
+	property = "jakarta.portlet.name=" + AssetTagsCompilerPortletKeys.ASSET_TAGS_COMPILER,
 	service = FriendlyURLMapper.class
 )
 public class AssetTagsCompilerFriendlyURLMapper extends BaseFriendlyURLMapper {

@@ -24,16 +24,16 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.filter.PortletFilter;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.Portlet;
-import javax.portlet.filter.PortletFilter;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -115,7 +115,7 @@ public class RegistrationUtil {
 			Dictionary<String, Object> dictionary = beanPortlet.toDictionary(
 				beanApp);
 
-			dictionary.put("javax.portlet.name", portletId);
+			dictionary.put("jakarta.portlet.name", portletId);
 
 			Bundle bundle = bundleContext.getBundle();
 
@@ -192,7 +192,7 @@ public class RegistrationUtil {
 
 		Dictionary<String, Object> dictionary = beanFilter.toDictionary();
 
-		dictionary.put("javax.portlet.name", portletId);
+		dictionary.put("jakarta.portlet.name", portletId);
 
 		return bundleContext.registerService(
 			PortletFilter.class,

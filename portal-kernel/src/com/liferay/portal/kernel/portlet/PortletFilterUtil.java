@@ -5,23 +5,23 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import java.io.IOException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.EventRequest;
+import jakarta.portlet.EventResponse;
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.HeaderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+import jakarta.portlet.filter.FilterChain;
+import jakarta.portlet.filter.HeaderFilterChain;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.EventRequest;
-import javax.portlet.EventResponse;
-import javax.portlet.HeaderRequest;
-import javax.portlet.HeaderResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import javax.portlet.filter.FilterChain;
-import javax.portlet.filter.HeaderFilterChain;
+import java.io.IOException;
 
 /**
  * @author Michael Young

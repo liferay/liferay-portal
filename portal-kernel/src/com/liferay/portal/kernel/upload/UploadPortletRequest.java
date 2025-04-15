@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.upload;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Brian Wing Shun Chan

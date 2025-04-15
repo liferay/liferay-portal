@@ -49,13 +49,13 @@ import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.portlet.asset.model.impl.AssetTagImpl;
 import com.liferay.portlet.asset.service.permission.AssetTagsPermission;
 
+import jakarta.ws.rs.core.MultivaluedMap;
+
 import java.sql.Timestamp;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

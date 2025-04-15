@@ -18,11 +18,11 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Eudaldo Alonso

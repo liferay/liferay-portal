@@ -5,14 +5,14 @@
 
 package com.liferay.portal.kernel.servlet;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Deepak Gothe
@@ -65,12 +65,12 @@ public class PortletServletObjectsFactory implements ServletObjectsFactory {
 	}
 
 	private static final String _PORTLET_CONTAINER_SERVLET_CONFIG =
-		"javax.portlet.portletc.servletConfig";
+		"jakarta.portlet.portletc.servletConfig";
 
 	private static final String _PORTLET_CONTAINER_SERVLET_REQUEST =
-		"javax.portlet.portletc.httpServletRequest";
+		"jakarta.portlet.portletc.httpServletRequest";
 
 	private static final String _PORTLET_CONTAINER_SERVLET_RESPONSE =
-		"javax.portlet.portletc.httpServletResponse";
+		"jakarta.portlet.portletc.httpServletResponse";
 
 }

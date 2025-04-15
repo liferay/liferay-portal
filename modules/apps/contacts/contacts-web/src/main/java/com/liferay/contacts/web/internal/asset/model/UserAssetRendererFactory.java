@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Michael C. Han
  */
 @Component(
-	property = "javax.portlet.name=" + ContactsPortletKeys.CONCTACTS_CENTER,
+	property = "jakarta.portlet.name=" + ContactsPortletKeys.CONCTACTS_CENTER,
 	service = AssetRendererFactory.class
 )
 public class UserAssetRendererFactory extends BaseAssetRendererFactory<User> {

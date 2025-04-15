@@ -8,16 +8,16 @@ package com.liferay.portal.kernel.settings;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
 
 /**
  * @author Jorge Ferrer

@@ -5,6 +5,13 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
+import jakarta.portlet.ClientDataRequest;
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
+
+import jakarta.servlet.http.Part;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,13 +20,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import java.util.Collection;
-
-import javax.portlet.ClientDataRequest;
-import javax.portlet.PortalContext;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
-
-import javax.servlet.http.Part;
 
 /**
  * @author Dante Wang

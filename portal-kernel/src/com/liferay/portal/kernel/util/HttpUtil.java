@@ -7,12 +7,12 @@ package com.liferay.portal.kernel.util;
 
 import com.liferay.portal.kernel.module.service.Snapshot;
 
+import jakarta.servlet.http.Cookie;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URL;
-
-import javax.servlet.http.Cookie;
 
 /**
  * @author Brian Wing Shun Chan

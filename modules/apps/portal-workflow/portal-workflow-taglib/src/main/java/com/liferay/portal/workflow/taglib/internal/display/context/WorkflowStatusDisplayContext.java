@@ -20,11 +20,11 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.workflow.taglib.internal.constants.WorkflowStatusConstants;
 import com.liferay.taglib.util.TagResourceBundleUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Feliphe Marinho

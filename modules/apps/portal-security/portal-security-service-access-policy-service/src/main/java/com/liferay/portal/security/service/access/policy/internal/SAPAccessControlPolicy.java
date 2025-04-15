@@ -29,6 +29,8 @@ import com.liferay.portal.security.service.access.policy.constants.SAPConstants;
 import com.liferay.portal.security.service.access.policy.model.SAPEntry;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
@@ -36,8 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.remote.cors.configuration.WebContextCORSConfiguration;
 import com.liferay.portal.remote.cors.internal.CORSSupport;
 
+import jakarta.servlet.Filter;
+
 import java.util.Dictionary;
 import java.util.Map;
-
-import javax.servlet.Filter;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;

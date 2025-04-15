@@ -9,9 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.liferay.petra.string.StringBundler;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Javier Gamarra

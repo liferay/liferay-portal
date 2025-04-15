@@ -47,22 +47,22 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseFormDocumentResourceImpl
 	implements EntityModelResource, FormDocumentResource,
 			   VulcanBatchEngineTaskItemDelegate<FormDocument>,
@@ -86,14 +86,14 @@ public abstract class BaseFormDocumentResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "FormDocument")}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/form-documents/{formDocumentId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/form-documents/{formDocumentId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteFormDocument(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("formDocumentId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("formDocumentId")
 			Long formDocumentId)
 		throws Exception {
 	}
@@ -116,14 +116,14 @@ public abstract class BaseFormDocumentResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "FormDocument")}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/form-documents/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/form-documents/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteFormDocumentBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -162,14 +162,14 @@ public abstract class BaseFormDocumentResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "FormDocument")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/form-documents/{formDocumentId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/form-documents/{formDocumentId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public FormDocument getFormDocument(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("formDocumentId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("formDocumentId")
 			Long formDocumentId)
 		throws Exception {
 

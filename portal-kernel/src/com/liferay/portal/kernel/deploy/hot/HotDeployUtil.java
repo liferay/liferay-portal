@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +26,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Ivica Cardic

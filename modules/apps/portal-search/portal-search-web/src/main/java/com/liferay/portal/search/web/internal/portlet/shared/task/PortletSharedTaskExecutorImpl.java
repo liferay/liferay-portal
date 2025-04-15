@@ -9,11 +9,11 @@ import com.liferay.portal.search.web.internal.portlet.shared.task.helper.Portlet
 import com.liferay.portal.search.web.portlet.shared.task.PortletSharedTask;
 import com.liferay.portal.search.web.portlet.shared.task.PortletSharedTaskExecutor;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.portlet.RenderRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -15,11 +15,11 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Bárbara Cabrera
  */
 @Component(
-	property = "javax.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES,
+	property = "jakarta.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES,
 	service = PortletConfigurationIcon.class
 )
 public class ImportPortletConfigurationIcon

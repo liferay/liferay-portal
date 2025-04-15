@@ -14,12 +14,12 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 
+import jakarta.portlet.Portlet;
+
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.portlet.Portlet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -90,7 +90,7 @@ public abstract class BasePortletContainerTestCase {
 			String portletName, boolean addToLayout)
 		throws Exception {
 
-		properties.put("javax.portlet.name", portletName);
+		properties.put("jakarta.portlet.name", portletName);
 
 		registerService(Portlet.class, portlet, properties);
 

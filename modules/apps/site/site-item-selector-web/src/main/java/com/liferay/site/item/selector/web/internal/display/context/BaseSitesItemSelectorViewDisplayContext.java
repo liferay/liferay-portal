@@ -18,12 +18,12 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.item.selector.display.context.SitesItemSelectorViewDisplayContext;
 import com.liferay.site.item.selector.web.internal.constants.SitesItemSelectorWebKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Julio Camarero

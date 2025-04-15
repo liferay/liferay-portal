@@ -27,20 +27,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Ivica Cardic
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseExportTaskResourceImpl
 	implements ExportTaskResource, VulcanCRUDItemDelegate<ExportTask> {
 
@@ -63,16 +63,16 @@ public abstract class BaseExportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ExportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/export-task/by-external-reference-code/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ExportTask getExportTaskByExternalReferenceCode(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -98,16 +98,16 @@ public abstract class BaseExportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ExportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/export-task/by-external-reference-code/{externalReferenceCode}/content"
 	)
-	@javax.ws.rs.Produces("application/octet-stream")
+	@jakarta.ws.rs.Produces("application/octet-stream")
 	@Override
 	public Response getExportTaskByExternalReferenceCodeContent(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -159,33 +159,33 @@ public abstract class BaseExportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ExportTask")}
 	)
-	@javax.ws.rs.Path("/export-task/{className}/{contentType}")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/export-task/{className}/{contentType}")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ExportTask postExportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("className")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("className")
 			String className,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("contentType")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("contentType")
 			String contentType,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("batchNestedFields")
+			@jakarta.ws.rs.QueryParam("batchNestedFields")
 			String batchNestedFields,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("externalReferenceCode")
+			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("fieldNames")
+			@jakarta.ws.rs.QueryParam("fieldNames")
 			String fieldNames,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("taskItemDelegateName")
+			@jakarta.ws.rs.QueryParam("taskItemDelegateName")
 			String taskItemDelegateName)
 		throws Exception {
 
@@ -211,14 +211,14 @@ public abstract class BaseExportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ExportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/export-task/{exportTaskId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/export-task/{exportTaskId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ExportTask getExportTask(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("exportTaskId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("exportTaskId")
 			Long exportTaskId)
 		throws Exception {
 
@@ -244,14 +244,14 @@ public abstract class BaseExportTaskResourceImpl
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ExportTask")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/export-task/{exportTaskId}/content")
-	@javax.ws.rs.Produces("application/octet-stream")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/export-task/{exportTaskId}/content")
+	@jakarta.ws.rs.Produces("application/octet-stream")
 	@Override
 	public Response getExportTaskContent(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("exportTaskId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("exportTaskId")
 			Long exportTaskId)
 		throws Exception {
 

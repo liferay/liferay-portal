@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuPortletKeys;
 import com.liferay.product.navigation.control.menu.web.internal.display.context.AddContentPanelDisplayContext;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ProductNavigationControlMenuPortletKeys.PRODUCT_NAVIGATION_CONTROL_MENU,
+		"jakarta.portlet.name=" + ProductNavigationControlMenuPortletKeys.PRODUCT_NAVIGATION_CONTROL_MENU,
 		"mvc.command.name=/product_navigation_control_menu/get_contents"
 	},
 	service = MVCResourceCommand.class

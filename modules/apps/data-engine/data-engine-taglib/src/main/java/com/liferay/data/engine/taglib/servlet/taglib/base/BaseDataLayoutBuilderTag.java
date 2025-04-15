@@ -7,9 +7,9 @@ package com.liferay.data.engine.taglib.servlet.taglib.base;
 
 import com.liferay.data.engine.taglib.internal.servlet.ServletContextUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author Jeyvison Nascimento
@@ -61,7 +61,7 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 		return _localizable;
 	}
 
-	public javax.servlet.ServletContext getModuleServletContext() {
+	public jakarta.servlet.ServletContext getModuleServletContext() {
 		return _moduleServletContext;
 	}
 
@@ -117,7 +117,7 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 		_localizable = localizable;
 	}
 
-	public void setModuleServletContext(javax.servlet.ServletContext moduleServletContext) {
+	public void setModuleServletContext(jakarta.servlet.ServletContext moduleServletContext) {
 		_moduleServletContext = moduleServletContext;
 	}
 
@@ -209,7 +209,7 @@ public abstract class BaseDataLayoutBuilderTag extends com.liferay.taglib.util.I
 	private java.lang.String _fieldSetContentType = null;
 	private java.lang.Long _groupId = null;
 	private boolean _localizable = false;
-	private javax.servlet.ServletContext _moduleServletContext = null;
+	private jakarta.servlet.ServletContext _moduleServletContext = null;
 	private java.lang.String _namespace = null;
 	private java.util.Set _scopes = null;
 	private boolean _searchableFieldsDisabled = false;

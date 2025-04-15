@@ -49,6 +49,12 @@ import com.liferay.translation.url.provider.TranslationURLProvider;
 import com.liferay.translation.web.internal.display.context.ImportTranslationResultsDisplayContext;
 import com.liferay.translation.web.internal.helper.TranslationRequestHelper;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -61,12 +67,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -75,7 +75,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + TranslationPortletKeys.TRANSLATION,
+		"jakarta.portlet.name=" + TranslationPortletKeys.TRANSLATION,
 		"mvc.command.name=/translation/import_translation"
 	},
 	service = MVCActionCommand.class

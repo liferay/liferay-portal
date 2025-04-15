@@ -26,10 +26,10 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Lourdes Fernández Besada

@@ -31,12 +31,12 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ActionRequest;
+
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import javax.portlet.ActionRequest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -51,7 +51,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+		"jakarta.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 		"mvc.command.name=/analytics_settings/add_channel"
 	},
 	service = MVCActionCommand.class

@@ -85,6 +85,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portlet.PortletPreferencesImpl;
 import com.liferay.portlet.display.template.test.util.BaseExportImportTestCase;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -96,8 +98,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

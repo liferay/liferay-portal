@@ -37,7 +37,7 @@ public class SiteTemplateSettingsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + LayoutSetPrototypePortletKeys.SITE_TEMPLATE_SETTINGS + ")"
+		target = "(jakarta.portlet.name=" + LayoutSetPrototypePortletKeys.SITE_TEMPLATE_SETTINGS + ")"
 	)
 	private Portlet _portlet;
 

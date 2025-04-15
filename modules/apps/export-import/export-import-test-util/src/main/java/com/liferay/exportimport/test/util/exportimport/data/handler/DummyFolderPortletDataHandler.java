@@ -17,9 +17,9 @@ import com.liferay.exportimport.test.util.model.DummyFolder;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.xml.Element;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Akos Thurzo
  */
 @Component(
-	property = "javax.portlet.name=" + DummyFolderPortletKeys.DUMMY_FOLDER,
+	property = "jakarta.portlet.name=" + DummyFolderPortletKeys.DUMMY_FOLDER,
 	service = PortletDataHandler.class
 )
 public class DummyFolderPortletDataHandler extends BasePortletDataHandler {

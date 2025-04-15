@@ -9,13 +9,13 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
+import jakarta.portlet.PortletRequest;
+
 import java.io.Serializable;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import javax.portlet.PortletRequest;
 
 /**
  * Provides a way to build a settings map for an {@link

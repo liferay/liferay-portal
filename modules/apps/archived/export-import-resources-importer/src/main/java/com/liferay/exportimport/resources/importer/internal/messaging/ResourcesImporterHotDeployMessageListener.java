@@ -33,9 +33,9 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Dictionary;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.util.Dictionary;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

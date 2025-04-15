@@ -36,11 +36,11 @@ import com.liferay.portal.search.suggestions.Suggestion;
 import com.liferay.portal.search.suggestions.SuggestionsContributorResults;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.MutableRenderParameters;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import javax.portlet.MutableRenderParameters;
 
 import org.junit.Assert;
 import org.junit.Before;

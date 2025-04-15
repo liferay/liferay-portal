@@ -26,13 +26,13 @@ import com.liferay.wiki.exception.PageContentException;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiNodeLocalService;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
@@ -183,7 +183,7 @@ public class HtmlEngine extends BaseWikiEngine {
 
 	private static final Log _log = LogFactoryUtil.getLog(HtmlEngine.class);
 
-	@Reference(target = "(javax.portlet.name=" + WikiPortletKeys.WIKI + ")")
+	@Reference(target = "(jakarta.portlet.name=" + WikiPortletKeys.WIKI + ")")
 	private FriendlyURLMapper _friendlyURLMapper;
 
 	private String _friendlyURLMapping;

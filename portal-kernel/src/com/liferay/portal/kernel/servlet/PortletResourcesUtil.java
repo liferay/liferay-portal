@@ -11,13 +11,13 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

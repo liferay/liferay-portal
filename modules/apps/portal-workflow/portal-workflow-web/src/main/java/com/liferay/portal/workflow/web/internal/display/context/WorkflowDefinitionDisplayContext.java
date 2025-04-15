@@ -49,19 +49,19 @@ import com.liferay.portal.workflow.web.internal.util.filter.WorkflowDefinitionDe
 import com.liferay.portal.workflow.web.internal.util.filter.WorkflowDefinitionScopePredicate;
 import com.liferay.portal.workflow.web.internal.util.filter.WorkflowDefinitionTitlePredicate;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
-
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Leonardo Barros

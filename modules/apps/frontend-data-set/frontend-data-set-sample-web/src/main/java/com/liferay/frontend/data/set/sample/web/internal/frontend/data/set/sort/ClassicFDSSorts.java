@@ -13,9 +13,9 @@ import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSN
 import com.liferay.frontend.data.set.sort.FDSSorts;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 

@@ -20,10 +20,10 @@ import com.liferay.portal.search.web.internal.portlet.preferences.PortletPrefere
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletPreferences;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -8,12 +8,12 @@ package com.liferay.util.servlet.filters;
 import com.liferay.portal.kernel.servlet.Header;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Alexander Chow

@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.list.type.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Gabriel Albuquerque

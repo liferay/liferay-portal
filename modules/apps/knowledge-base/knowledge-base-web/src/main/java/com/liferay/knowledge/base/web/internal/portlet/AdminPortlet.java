@@ -32,22 +32,22 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.trash.TrashHelper;
 import com.liferay.trash.util.TrashWebKeys;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequestDispatcher;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequestDispatcher;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,19 +68,19 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.preferences-unique-per-layout=false",
 		"com.liferay.portlet.scopeable=true",
 		"com.liferay.portlet.show-portlet-access-denied=false",
-		"javax.portlet.display-name=Knowledge Base",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.always-send-redirect=true",
-		"javax.portlet.init-param.copy-request-parameters=true",
-		"javax.portlet.init-param.portlet-title-based-navigation=true",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/knowledge_base/view",
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,guest,power-user,user",
-		"javax.portlet.supported-public-render-parameter=categoryId",
-		"javax.portlet.supported-public-render-parameter=tag",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Knowledge Base",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.always-send-redirect=true",
+		"jakarta.portlet.init-param.copy-request-parameters=true",
+		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/knowledge_base/view",
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,guest,power-user,user",
+		"jakarta.portlet.supported-public-render-parameter=categoryId",
+		"jakarta.portlet.supported-public-render-parameter=tag",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

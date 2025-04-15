@@ -21,12 +21,12 @@ import com.liferay.portal.vulcan.internal.jaxrs.context.provider.test.util.MockM
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.test.util.MockResource;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
-import java.util.Locale;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.NotAcceptableException;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.HttpHeaders;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.NotAcceptableException;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.HttpHeaders;
+import java.util.Locale;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 

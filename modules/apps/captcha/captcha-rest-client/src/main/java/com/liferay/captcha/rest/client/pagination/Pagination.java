@@ -5,7 +5,7 @@
 
 package com.liferay.captcha.rest.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Loc Pham

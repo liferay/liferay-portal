@@ -7,10 +7,10 @@ package com.liferay.frontend.taglib.clay.servlet.taglib.util;
 
 import com.liferay.petra.function.UnsafeSupplier;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Hugo Huijser

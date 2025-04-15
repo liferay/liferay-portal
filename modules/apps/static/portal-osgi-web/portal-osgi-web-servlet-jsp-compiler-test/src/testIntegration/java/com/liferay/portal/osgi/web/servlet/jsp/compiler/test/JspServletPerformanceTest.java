@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.servlet.Servlet;
+
 import java.io.InputStream;
 
 import java.net.URL;
@@ -29,8 +31,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-
-import javax.servlet.Servlet;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

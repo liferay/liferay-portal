@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.session.timeout;
 
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

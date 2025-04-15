@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.security.auth.InterruptedPortletRequestWhitelistUtil;
 import com.liferay.portal.util.PropsValues;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -28,13 +28,13 @@ import org.osgi.service.component.annotations.Deactivate;
 		"com.liferay.portlet.css-class-wrapper=portlet-mfa-email-otp-verify",
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.preferences-company-wide=true",
-		"javax.portlet.display-name=Multi Factor Authentication Email One-Time Password Verify",
-		"javax.portlet.init-param.mvc-command-names-default-views=/mfa_email_otp_verify/verify",
-		"javax.portlet.init-param.portlet-title-based-navigation=true",
-		"javax.portlet.init-param.template-path=/META-INF/resources/mfa_email_otp_verify/",
-		"javax.portlet.name=" + MFAEmailOTPPortletKeys.MFA_EMAIL_OTP_VERIFY,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.version=3.0",
+		"jakarta.portlet.display-name=Multi Factor Authentication Email One-Time Password Verify",
+		"jakarta.portlet.init-param.mvc-command-names-default-views=/mfa_email_otp_verify/verify",
+		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/mfa_email_otp_verify/",
+		"jakarta.portlet.name=" + MFAEmailOTPPortletKeys.MFA_EMAIL_OTP_VERIFY,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.version=4.0",
 		"portlet.add.default.resource.check.whitelist=" + MFAEmailOTPPortletKeys.MFA_EMAIL_OTP_VERIFY
 	},
 	service = Portlet.class

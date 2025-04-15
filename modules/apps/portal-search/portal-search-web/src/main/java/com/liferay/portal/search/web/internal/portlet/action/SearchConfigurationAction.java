@@ -16,11 +16,11 @@ import com.liferay.portal.search.web.constants.SearchPortletKeys;
 import com.liferay.portal.search.web.facet.SearchFacet;
 import com.liferay.portal.search.web.internal.facet.util.SearchFacetRegistryUtil;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alexander Chow
  */
 @Component(
-	property = "javax.portlet.name=" + SearchPortletKeys.SEARCH,
+	property = "jakarta.portlet.name=" + SearchPortletKeys.SEARCH,
 	service = ConfigurationAction.class
 )
 public class SearchConfigurationAction extends DefaultConfigurationAction {

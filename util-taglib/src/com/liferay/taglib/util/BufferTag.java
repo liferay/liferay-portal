@@ -7,7 +7,7 @@ package com.liferay.taglib.util;
 
 import com.liferay.portal.kernel.util.StringUtil;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * @author Brian Wing Shun Chan

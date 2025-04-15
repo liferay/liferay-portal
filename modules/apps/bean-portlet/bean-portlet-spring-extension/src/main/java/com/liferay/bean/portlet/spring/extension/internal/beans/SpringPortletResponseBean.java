@@ -8,15 +8,15 @@ package com.liferay.bean.portlet.spring.extension.internal.beans;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManager;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManagerThreadLocal;
 
+import jakarta.annotation.ManagedBean;
+import jakarta.annotation.Priority;
+
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.filter.PortletResponseWrapper;
+
+import jakarta.servlet.http.Cookie;
+
 import java.util.Collection;
-
-import javax.annotation.ManagedBean;
-import javax.annotation.Priority;
-
-import javax.portlet.PortletResponse;
-import javax.portlet.filter.PortletResponseWrapper;
-
-import javax.servlet.http.Cookie;
 
 import org.w3c.dom.Element;
 

@@ -11,10 +11,10 @@ import com.liferay.portal.vulcan.resource.OpenAPIResource;
 import com.liferay.portal.vulcan.yaml.YAMLUtil;
 import com.liferay.portal.vulcan.yaml.openapi.OpenAPIYAML;
 
-import java.util.Collections;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Response;
+import java.util.Collections;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

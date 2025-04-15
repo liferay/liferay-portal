@@ -40,7 +40,7 @@ public class TrashPanelApp extends BasePanelApp {
 		return TrashPortletKeys.TRASH;
 	}
 
-	@Reference(target = "(javax.portlet.name=" + TrashPortletKeys.TRASH + ")")
+	@Reference(target = "(jakarta.portlet.name=" + TrashPortletKeys.TRASH + ")")
 	private Portlet _portlet;
 
 }

@@ -9,7 +9,7 @@ import com.liferay.frontend.taglib.form.navigator.FormNavigatorCategoryProvider;
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntryProvider;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Roberto Díaz

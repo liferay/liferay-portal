@@ -18,6 +18,15 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portlet.PublicRenderParametersPool;
 
+import jakarta.portlet.Event;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -27,15 +36,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.Event;
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
-
-import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;

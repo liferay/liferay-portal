@@ -20,10 +20,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ActionRequest;
+
 import java.util.Dictionary;
 import java.util.Objects;
-
-import javax.portlet.ActionRequest;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+		"jakarta.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 		"mvc.command.name=/analytics_settings/edit_synced_contacts"
 	},
 	service = MVCActionCommand.class

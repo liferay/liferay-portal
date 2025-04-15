@@ -16,7 +16,7 @@ import com.liferay.segments.item.selector.SegmentsEntryItemSelectorReturnType;
 import com.liferay.segments.item.selector.web.internal.display.context.SegmentsEntryDisplayContext;
 import com.liferay.segments.model.SegmentsEntry;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Stefan Tanasie

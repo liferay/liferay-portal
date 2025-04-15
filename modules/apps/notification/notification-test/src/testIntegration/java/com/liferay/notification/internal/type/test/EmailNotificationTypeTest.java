@@ -124,6 +124,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.text.DateFormat;
 
 import java.time.chrono.IsoChronology;
@@ -138,8 +140,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.AfterClass;

@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jonathan Lee
  */
 @Component(
-	property = "javax.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS,
+	property = "jakarta.portlet.name=" + MicroblogsPortletKeys.MICROBLOGS,
 	service = SocialActivityInterpreter.class
 )
 public class MicroblogsActivityInterpreter

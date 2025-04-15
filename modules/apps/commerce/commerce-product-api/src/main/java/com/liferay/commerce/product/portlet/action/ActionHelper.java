@@ -16,12 +16,12 @@ import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletRequest;
+
 import java.io.IOException;
 
 import java.util.List;
-
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
 
 /**
  * @author Marco Leo

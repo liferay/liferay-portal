@@ -37,7 +37,7 @@ public class SearchResultsSearchExportImportPortletPreferencesProcessorTest
 	}
 
 	@Inject(
-		filter = "javax.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS
+		filter = "jakarta.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS
 	)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;

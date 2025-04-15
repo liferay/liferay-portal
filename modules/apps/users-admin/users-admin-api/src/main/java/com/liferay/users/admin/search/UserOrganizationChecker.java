@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.util.PropsValues;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Brian Wing Shun Chan

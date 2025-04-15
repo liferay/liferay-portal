@@ -11,7 +11,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.headless.commerce.delivery.cart.resource.v1_0.CartResource;
 import com.liferay.petra.string.StringPool;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Luca Pellizzon

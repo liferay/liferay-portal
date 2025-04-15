@@ -10,12 +10,12 @@ import com.liferay.wiki.engine.BaseWikiEngine;
 import com.liferay.wiki.engine.WikiEngine;
 import com.liferay.wiki.model.WikiPage;
 
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Collections;
 import java.util.Map;
-
-import javax.portlet.PortletURL;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

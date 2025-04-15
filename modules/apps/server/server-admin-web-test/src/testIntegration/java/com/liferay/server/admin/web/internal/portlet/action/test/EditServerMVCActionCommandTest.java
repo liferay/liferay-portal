@@ -69,14 +69,14 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.PortalPreferencesImpl;
 import com.liferay.portlet.PortalPreferencesWrapper;
 
+import jakarta.portlet.ActionRequest;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
-
-import javax.portlet.ActionRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -295,7 +295,7 @@ public class EditServerMVCActionCommandTest {
 				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
 				RandomTestUtil.randomString());
 
-			javax.portlet.PortletPreferences jxPortletPreferences =
+			jakarta.portlet.PortletPreferences jxPortletPreferences =
 				_portletPreferenceValueLocalService.getPreferences(
 					_portletPreferences);
 
@@ -410,7 +410,7 @@ public class EditServerMVCActionCommandTest {
 
 	@Test
 	public void testUpdateMail() {
-		javax.portlet.PortletPreferences portletPreferences =
+		jakarta.portlet.PortletPreferences portletPreferences =
 			PrefsPropsUtil.getPreferences(CompanyConstants.SYSTEM);
 
 		try {
@@ -558,7 +558,7 @@ public class EditServerMVCActionCommandTest {
 	private void _testUpdateMailPortletPreferences(
 		BooleanSupplier booleanSupplier, IntSupplier intSupplier,
 		Supplier<String> stringSupplier,
-		javax.portlet.PortletPreferences portletPreferences) {
+		jakarta.portlet.PortletPreferences portletPreferences) {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
@@ -600,7 +600,7 @@ public class EditServerMVCActionCommandTest {
 		ReflectionTestUtil.invoke(
 			_mvcActionCommand, "_updateMail",
 			new Class<?>[] {
-				ActionRequest.class, javax.portlet.PortletPreferences.class
+				ActionRequest.class, jakarta.portlet.PortletPreferences.class
 			},
 			mockLiferayPortletActionRequest, portletPreferences);
 

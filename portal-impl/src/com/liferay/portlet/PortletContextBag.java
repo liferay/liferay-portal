@@ -7,11 +7,11 @@ package com.liferay.portlet;
 
 import com.liferay.portal.kernel.portlet.CustomUserAttributes;
 
+import jakarta.portlet.PortletURLGenerationListener;
+import jakarta.portlet.filter.PortletFilter;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletURLGenerationListener;
-import javax.portlet.filter.PortletFilter;
 
 /**
  * @author Brian Wing Shun Chan

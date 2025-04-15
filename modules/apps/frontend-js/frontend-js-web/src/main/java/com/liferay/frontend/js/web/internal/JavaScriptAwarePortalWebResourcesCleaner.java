@@ -40,7 +40,7 @@ public class JavaScriptAwarePortalWebResourcesCleaner {
 
 		bundleContext.addServiceListener(
 			_serviceListener,
-			"(&(!(javax.portlet.name=*))(language.id=*)(objectClass=" +
+			"(&(!(jakarta.portlet.name=*))(language.id=*)(objectClass=" +
 				ResourceBundle.class.getName() + "))");
 	}
 

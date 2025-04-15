@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.model.Group;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
 /**
  * @author Adolfo Pérez

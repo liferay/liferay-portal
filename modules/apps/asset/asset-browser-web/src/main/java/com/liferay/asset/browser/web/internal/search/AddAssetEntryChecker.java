@@ -8,7 +8,7 @@ package com.liferay.asset.browser.web.internal.search;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Jürgen Kappler

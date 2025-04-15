@@ -7,7 +7,7 @@ package com.liferay.product.navigation.control.menu;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Provides an interface that defines categories to be used by a

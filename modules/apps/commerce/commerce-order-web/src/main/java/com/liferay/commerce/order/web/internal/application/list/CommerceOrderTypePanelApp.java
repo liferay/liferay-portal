@@ -37,7 +37,7 @@ public class CommerceOrderTypePanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER_TYPE + ")"
+		target = "(jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER_TYPE + ")"
 	)
 	private Portlet _portlet;
 

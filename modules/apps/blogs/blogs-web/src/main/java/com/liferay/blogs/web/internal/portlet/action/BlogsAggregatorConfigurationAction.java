@@ -10,10 +10,10 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 
-import javax.portlet.PortletConfig;
+import jakarta.portlet.PortletConfig;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR,
+	property = "jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR,
 	service = ConfigurationAction.class
 )
 public class BlogsAggregatorConfigurationAction

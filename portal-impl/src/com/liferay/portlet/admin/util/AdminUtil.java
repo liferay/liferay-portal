@@ -8,9 +8,9 @@ package com.liferay.portlet.admin.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.ActionRequest;
+import jakarta.portlet.ActionRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan

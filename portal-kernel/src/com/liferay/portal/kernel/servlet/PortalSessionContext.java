@@ -7,11 +7,11 @@ package com.liferay.portal.kernel.servlet;
 
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Brian Wing Shun Chan

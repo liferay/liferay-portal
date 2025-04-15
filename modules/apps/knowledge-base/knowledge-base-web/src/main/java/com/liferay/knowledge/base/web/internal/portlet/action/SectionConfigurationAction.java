@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Peter Shin
  */
 @Component(
-	property = "javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION,
+	property = "jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION,
 	service = ConfigurationAction.class
 )
 public class SectionConfigurationAction extends DefaultConfigurationAction {

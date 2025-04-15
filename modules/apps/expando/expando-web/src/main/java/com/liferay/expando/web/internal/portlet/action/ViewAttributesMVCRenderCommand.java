@@ -10,9 +10,9 @@ import com.liferay.expando.web.internal.display.context.ExpandoDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.Portal;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ExpandoPortletKeys.EXPANDO,
+		"jakarta.portlet.name=" + ExpandoPortletKeys.EXPANDO,
 		"mvc.command.name=/expando/view_attributes"
 	},
 	service = MVCRenderCommand.class

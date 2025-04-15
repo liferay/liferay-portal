@@ -38,7 +38,7 @@ public class PortletDisplayTemplatePanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE + ")"
+		target = "(jakarta.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE + ")"
 	)
 	private Portlet _portlet;
 

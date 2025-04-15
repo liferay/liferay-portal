@@ -51,16 +51,16 @@ import com.liferay.users.admin.item.selector.UserOrganizationItemSelectorCriteri
 import com.liferay.users.admin.web.internal.search.OrganizationUserChecker;
 import com.liferay.users.admin.web.internal.util.comparator.OrganizationUserNameComparator;
 
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Pei-Jung Lan

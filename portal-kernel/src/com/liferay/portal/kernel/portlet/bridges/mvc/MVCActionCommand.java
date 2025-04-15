@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.portlet.bridges.mvc;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletException;
 
 /**
  * Provides an interface to allow the portlet to process a particular action
@@ -34,7 +34,7 @@ import javax.portlet.PortletException;
  *
  * <ul>
  * <li>
- * <code>javax.portlet.name</code>: The portlet name associated to this action
+ * <code>jakarta.portlet.name</code>: The portlet name associated to this action
  * command.
  * </li>
  * <li>
@@ -47,7 +47,7 @@ import javax.portlet.PortletException;
  * <p>
  * The method {@link MVCPortlet#processAction(ActionRequest, ActionResponse)}
  * searches the OSGi Registry for the action command that matches both the
- * portlet name with the property <code>javax.portlet.name</code> and the
+ * portlet name with the property <code>jakarta.portlet.name</code> and the
  * parameter value <code>ActionRequest.ACTION_NAME</code> with the property
  * <code>mvc.command.name</code>.
  * </p>

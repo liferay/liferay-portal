@@ -24,13 +24,13 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.translation.info.field.TranslationInfoFieldChecker;
 import com.liferay.translation.snapshot.TranslationSnapshot;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Adolfo Pérez

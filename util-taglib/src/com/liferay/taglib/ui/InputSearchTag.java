@@ -11,9 +11,9 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.BaseValidatorTagSupport;
 import com.liferay.taglib.util.TagResourceBundleUtil;
 
-import java.util.ResourceBundle;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.ResourceBundle;
 
 /**
  * @author Roberto Díaz

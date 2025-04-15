@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntryContributorUti
 import com.liferay.site.navigation.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.taglib.util.IncludeTag;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
 
 /**
  * @author Eudaldo Alonso

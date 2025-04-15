@@ -26,10 +26,10 @@ import com.liferay.portal.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.servlet.filters.secure.NonceUtil;
 import com.liferay.portal.util.PortalInstances;
 
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * @author Tomas Polesovsky

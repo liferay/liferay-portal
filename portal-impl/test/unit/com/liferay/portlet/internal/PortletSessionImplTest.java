@@ -13,16 +13,16 @@ import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletSession;
+
+import jakarta.servlet.http.HttpSession;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import java.util.Enumeration;
 import java.util.Map;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletSession;
-
-import javax.servlet.http.HttpSession;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

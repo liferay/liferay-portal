@@ -5,12 +5,12 @@
 
 package com.liferay.websocket.whiteboard.internal;
 
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.server.ServerEndpointConfig;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.websocket.Endpoint;
-import javax.websocket.server.ServerEndpointConfig;
 
 import org.osgi.framework.ServiceObjects;
 import org.osgi.service.log.LogService;

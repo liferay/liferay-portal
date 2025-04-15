@@ -17,12 +17,12 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.trash.TrashHelper;
 import com.liferay.trash.util.TrashWebKeys;
 
-import java.io.IOException;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,17 +47,18 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.scopeable=true",
 		"com.liferay.portlet.struts-path=blogs",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Blogs", "javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.always-display-default-configuration-icons=true",
-		"javax.portlet.init-param.always-send-redirect=true",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.name=" + BlogsPortletKeys.BLOGS,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=guest,power-user,user",
-		"javax.portlet.supported-public-render-parameter=categoryId",
-		"javax.portlet.supported-public-render-parameter=resetCur",
-		"javax.portlet.supported-public-render-parameter=tag",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Blogs",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.always-display-default-configuration-icons=true",
+		"jakarta.portlet.init-param.always-send-redirect=true",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=guest,power-user,user",
+		"jakarta.portlet.supported-public-render-parameter=categoryId",
+		"jakarta.portlet.supported-public-render-parameter=resetCur",
+		"jakarta.portlet.supported-public-render-parameter=tag",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

@@ -7,7 +7,7 @@ package com.liferay.saml.helper;
 
 import com.liferay.saml.runtime.SamlException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Michael C. Han

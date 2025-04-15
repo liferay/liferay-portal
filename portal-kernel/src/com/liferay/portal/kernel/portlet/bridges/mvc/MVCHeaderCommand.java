@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.portlet.bridges.mvc;
 
 import com.liferay.petra.string.StringPool;
 
-import javax.portlet.HeaderRequest;
-import javax.portlet.HeaderResponse;
-import javax.portlet.PortletException;
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.HeaderResponse;
+import jakarta.portlet.PortletException;
 
 /**
  * Provides an interface to handle the header phase of the portlet. This
@@ -35,7 +35,7 @@ import javax.portlet.PortletException;
  *
  * <ul>
  * <li>
- * <code>javax.portlet.name</code>: The portlet name associated to this header
+ * <code>jakarta.portlet.name</code>: The portlet name associated to this header
  * command.
  * </li>
  * <li>
@@ -48,7 +48,7 @@ import javax.portlet.PortletException;
  * <p>
  * The method {@link MVCPortlet#renderHeaders(HeaderRequest, HeaderResponse)}
  * searches the OSGi Registry for the header command that matches both the
- * portlet name with the property <code>javax.portlet.name</code> and the
+ * portlet name with the property <code>jakarta.portlet.name</code> and the
  * parameter value <code>mvc.command.name</code> with the property
  * <code>mvc.command.name</code>.
  * </p>

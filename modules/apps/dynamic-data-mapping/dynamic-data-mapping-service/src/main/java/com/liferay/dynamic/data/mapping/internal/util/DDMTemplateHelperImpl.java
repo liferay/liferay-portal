@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.engine.TemplateContextHelper;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -39,8 +41,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

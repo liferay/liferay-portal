@@ -16,6 +16,8 @@ import com.liferay.sharepoint.soap.repository.connector.internal.util.RemoteExce
 import com.microsoft.schemas.sharepoint.soap.GetVersionsDocument;
 import com.microsoft.schemas.sharepoint.soap.GetVersionsResponseDocument;
 
+import jakarta.xml.bind.DatatypeConverter;
+
 import java.rmi.RemoteException;
 
 import java.util.ArrayList;
@@ -23,8 +25,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.bind.DatatypeConverter;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;

@@ -7,7 +7,7 @@ package com.liferay.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * @author Chema Balsas

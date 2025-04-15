@@ -38,7 +38,7 @@ public class ReportsEngineConsolePanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + ReportsEngineConsolePortletKeys.REPORTS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + ReportsEngineConsolePortletKeys.REPORTS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

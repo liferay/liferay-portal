@@ -13,10 +13,10 @@ import com.liferay.portal.vulcan.internal.graphql.data.processor.LiferayMethodDa
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 
-import java.lang.reflect.Method;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 /**
  * @author Carlos Correa

@@ -5,10 +5,10 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import java.util.Collection;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.PortletMode;
-import javax.portlet.RenderResponse;
+import java.util.Collection;
 
 /**
  * @author Dante Wang

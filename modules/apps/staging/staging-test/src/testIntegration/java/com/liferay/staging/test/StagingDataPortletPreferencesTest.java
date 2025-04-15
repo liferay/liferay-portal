@@ -48,10 +48,10 @@ import com.liferay.wiki.service.WikiNodeLocalService;
 import com.liferay.wiki.service.WikiPageLocalService;
 import com.liferay.wiki.test.util.WikiTestUtil;
 
-import java.util.Map;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletPreferences;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -100,7 +100,7 @@ public class StagingDataPortletPreferencesTest
 			ServiceTrackerFactory.open(
 				bundle.getBundleContext(),
 				StringBundler.concat(
-					"(javax.portlet.name=", DDLPortletKeys.DYNAMIC_DATA_LISTS,
+					"(jakarta.portlet.name=", DDLPortletKeys.DYNAMIC_DATA_LISTS,
 					")"),
 				null);
 

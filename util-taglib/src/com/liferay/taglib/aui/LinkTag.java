@@ -10,10 +10,10 @@ import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNo
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.aui.base.BaseLinkTag;
 
-import java.io.IOException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
+import java.io.IOException;
 
 /**
  * @author Iván Zaera Avellón

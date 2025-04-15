@@ -5,7 +5,7 @@
 
 package com.liferay.object.admin.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

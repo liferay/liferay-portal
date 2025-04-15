@@ -7,7 +7,7 @@ package com.liferay.asset.publisher.web.internal.portlet;
 
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -25,19 +25,19 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Recent Content",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + AssetPublisherPortletKeys.RECENT_CONTENT,
-		"javax.portlet.preferences=classpath:/META-INF/portlet-preferences/recent-content-default-portlet-preferences.xml",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=guest,power-user,user",
-		"javax.portlet.supported-public-render-parameter=assetEntryId",
-		"javax.portlet.supported-public-render-parameter=categoryId",
-		"javax.portlet.supported-public-render-parameter=resetCur",
-		"javax.portlet.supported-public-render-parameter=tag",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Recent Content",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + AssetPublisherPortletKeys.RECENT_CONTENT,
+		"jakarta.portlet.preferences=classpath:/META-INF/portlet-preferences/recent-content-default-portlet-preferences.xml",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=guest,power-user,user",
+		"jakarta.portlet.supported-public-render-parameter=assetEntryId",
+		"jakarta.portlet.supported-public-render-parameter=categoryId",
+		"jakarta.portlet.supported-public-render-parameter=resetCur",
+		"jakarta.portlet.supported-public-render-parameter=tag",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

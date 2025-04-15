@@ -343,7 +343,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 		// Data
 
 		if (exportPortletData) {
-			javax.portlet.PortletPreferences jxPortletPreferences = null;
+			jakarta.portlet.PortletPreferences jxPortletPreferences = null;
 
 			if (ExportImportThreadLocal.isInitialLayoutStagingInProcess()) {
 				if (layout != null) {
@@ -577,7 +577,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 	public void exportPortletData(
 			PortletDataContext portletDataContext, Portlet portlet,
 			Layout layout,
-			javax.portlet.PortletPreferences jxPortletPreferences,
+			jakarta.portlet.PortletPreferences jxPortletPreferences,
 			Element parentElement)
 		throws Exception {
 
@@ -777,7 +777,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 
 		long scopeGroupId = portletDataContext.getGroupId();
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			PortletPreferencesFactoryUtil.getLayoutPortletSetup(
 				layout, portletDataContext.getPortletId());
 
@@ -988,7 +988,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 			String portletId, long plid, Element parentElement)
 		throws Exception {
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(
 				portletPreferences);
 
@@ -1138,7 +1138,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 			Element parentElement)
 		throws Exception {
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(
 				portletPreferences);
 
@@ -1408,7 +1408,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 				}
 			}
 
-			javax.portlet.PortletPreferences jxPortletPreferences = null;
+			jakarta.portlet.PortletPreferences jxPortletPreferences = null;
 
 			if (layout == null) {
 				jxPortletPreferences =

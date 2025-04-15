@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 import com.liferay.portal.workflow.web.internal.util.WorkflowInstancePortletUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

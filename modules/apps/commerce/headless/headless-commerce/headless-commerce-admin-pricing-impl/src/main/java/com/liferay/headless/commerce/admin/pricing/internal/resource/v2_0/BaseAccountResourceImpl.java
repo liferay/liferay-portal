@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Zoltán Takács
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v2.0")
+@jakarta.ws.rs.Path("/v2.0")
 public abstract class BaseAccountResourceImpl implements AccountResource {
 
 	/**
@@ -57,14 +57,14 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Account")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/discount-accounts/{discountAccountId}/account")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/discount-accounts/{discountAccountId}/account")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Account getDiscountAccountAccount(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("discountAccountId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("discountAccountId")
 			Long discountAccountId)
 		throws Exception {
 
@@ -87,14 +87,14 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Account")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/price-list-accounts/{priceListAccountId}/account")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/price-list-accounts/{priceListAccountId}/account")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Account getPriceListAccountAccount(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("priceListAccountId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("priceListAccountId")
 			Long priceListAccountId)
 		throws Exception {
 

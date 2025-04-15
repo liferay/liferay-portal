@@ -76,6 +76,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.staging.configuration.StagingConfiguration;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.File;
 import java.io.Serializable;
 
@@ -89,8 +91,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;

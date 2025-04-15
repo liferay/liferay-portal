@@ -40,7 +40,7 @@ import java.util.Map;
  *
  * <ul>
  * <li>
- * <code>javax.portlet.name</code>: The portlet name. If specified, the
+ * <code>jakarta.portlet.name</code>: The portlet name. If specified, the
  * options are applied to every editor used in that portlet.
  * </li>
  * <li>

@@ -37,7 +37,7 @@ public class MyOrganizationsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + UsersAdminPortletKeys.MY_ORGANIZATIONS + ")"
+		target = "(jakarta.portlet.name=" + UsersAdminPortletKeys.MY_ORGANIZATIONS + ")"
 	)
 	private Portlet _portlet;
 

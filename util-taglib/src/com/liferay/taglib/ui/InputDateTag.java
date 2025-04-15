@@ -8,10 +8,10 @@ package com.liferay.taglib.ui;
 import com.liferay.petra.string.StringPool;
 import com.liferay.taglib.BaseValidatorTagSupport;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan

@@ -392,7 +392,7 @@ public class LanguageResources {
 			try {
 				_serviceReferences = _bundleContext.getServiceReferences(
 					ResourceBundle.class,
-					"(&(!(javax.portlet.name=*))(language.id=" +
+					"(&(!(jakarta.portlet.name=*))(language.id=" +
 						LocaleUtil.toLanguageId(locale) + "))");
 			}
 			catch (InvalidSyntaxException invalidSyntaxException) {
@@ -443,7 +443,7 @@ public class LanguageResources {
 						}
 
 					},
-					"(&(!(javax.portlet.name=*))(language.id=*))");
+					"(&(!(jakarta.portlet.name=*))(language.id=*))");
 			}
 			catch (InvalidSyntaxException invalidSyntaxException) {
 				throw new ExceptionInInitializerError(invalidSyntaxException);

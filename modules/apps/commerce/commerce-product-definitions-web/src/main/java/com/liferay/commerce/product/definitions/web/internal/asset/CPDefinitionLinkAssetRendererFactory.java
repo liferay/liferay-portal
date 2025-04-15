@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Danny Situ
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
 	service = AssetRendererFactory.class
 )
 public class CPDefinitionLinkAssetRendererFactory

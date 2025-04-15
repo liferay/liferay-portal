@@ -15,11 +15,11 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+
 import java.util.Collections;
 import java.util.Dictionary;
-
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

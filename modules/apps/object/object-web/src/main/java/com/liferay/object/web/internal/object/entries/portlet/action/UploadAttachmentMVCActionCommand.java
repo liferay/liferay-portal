@@ -10,8 +10,8 @@ import com.liferay.upload.UploadFileEntryHandler;
 import com.liferay.upload.UploadHandler;
 import com.liferay.upload.UploadResponseHandler;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 /**
  * @author Carolina Barbosa

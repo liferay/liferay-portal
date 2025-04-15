@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Stian Sigvartsen
  */
 @Component(
-	property = "javax.portlet.name=" + AuditPortletKeys.AUDIT,
+	property = "jakarta.portlet.name=" + AuditPortletKeys.AUDIT,
 	service = ControlPanelEntry.class
 )
 public class AuditControlPanelEntry extends AdministratorControlPanelEntry {

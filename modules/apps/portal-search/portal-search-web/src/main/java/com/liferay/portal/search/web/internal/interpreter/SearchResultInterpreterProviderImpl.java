@@ -39,7 +39,8 @@ public class SearchResultInterpreterProviderImpl
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, SearchResultInterpreter.class, "javax.portlet.name");
+			bundleContext, SearchResultInterpreter.class,
+			"jakarta.portlet.name");
 	}
 
 	@Deactivate

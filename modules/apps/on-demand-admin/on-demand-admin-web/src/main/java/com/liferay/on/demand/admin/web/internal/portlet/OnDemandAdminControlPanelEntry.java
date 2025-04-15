@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pei-Jung Lan
  */
 @Component(
-	property = "javax.portlet.name=" + OnDemandAdminPortletKeys.ON_DEMAND_ADMIN,
+	property = "jakarta.portlet.name=" + OnDemandAdminPortletKeys.ON_DEMAND_ADMIN,
 	service = ControlPanelEntry.class
 )
 public class OnDemandAdminControlPanelEntry extends BaseControlPanelEntry {

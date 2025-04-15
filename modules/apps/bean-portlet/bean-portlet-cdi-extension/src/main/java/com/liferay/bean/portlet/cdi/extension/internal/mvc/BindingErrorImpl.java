@@ -5,7 +5,7 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.mvc.binding.BindingError;
+import jakarta.mvc.binding.BindingError;
 
 /**
  * @author Neil Griffin

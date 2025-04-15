@@ -22,8 +22,8 @@ import com.liferay.taglib.security.PermissionsURLTag;
 import com.liferay.user.groups.admin.constants.UserGroupsAdminPortletKeys;
 import com.liferay.user.groups.admin.web.internal.portlet.action.ActionUtil;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + UserGroupsAdminPortletKeys.USER_GROUPS_ADMIN,
+		"jakarta.portlet.name=" + UserGroupsAdminPortletKeys.USER_GROUPS_ADMIN,
 		"path=/edit_user_group.jsp", "path=/edit_user_group_assignments.jsp"
 	},
 	service = PortletConfigurationIcon.class

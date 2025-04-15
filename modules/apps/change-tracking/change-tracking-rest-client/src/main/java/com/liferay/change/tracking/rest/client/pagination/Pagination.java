@@ -5,7 +5,7 @@
 
 package com.liferay.change.tracking.rest.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author David Truong

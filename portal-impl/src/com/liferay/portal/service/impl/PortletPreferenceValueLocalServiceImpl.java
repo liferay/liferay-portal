@@ -32,7 +32,7 @@ public class PortletPreferenceValueLocalServiceImpl
 	}
 
 	@Override
-	public javax.portlet.PortletPreferences getPreferences(
+	public jakarta.portlet.PortletPreferences getPreferences(
 		PortletPreferences portletPreferences) {
 
 		Map<String, List<PortletPreferenceValue>> portletPreferenceValuesMap =

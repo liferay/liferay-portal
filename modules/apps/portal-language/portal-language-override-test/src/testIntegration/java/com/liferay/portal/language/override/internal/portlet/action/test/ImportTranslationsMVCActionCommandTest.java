@@ -23,9 +23,9 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import java.io.File;
+import jakarta.portlet.ActionRequest;
 
-import javax.portlet.ActionRequest;
+import java.io.File;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

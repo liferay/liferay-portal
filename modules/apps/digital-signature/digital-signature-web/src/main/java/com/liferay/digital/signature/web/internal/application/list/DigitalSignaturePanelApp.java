@@ -57,7 +57,7 @@ public class DigitalSignaturePanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + DigitalSignaturePortletKeys.DIGITAL_SIGNATURE + ")"
+		target = "(jakarta.portlet.name=" + DigitalSignaturePortletKeys.DIGITAL_SIGNATURE + ")"
 	)
 	private Portlet _portlet;
 

@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 
 import java.net.URL;
@@ -26,8 +28,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.Bundle;
 

@@ -20,10 +20,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.Set;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

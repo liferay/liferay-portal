@@ -16,7 +16,7 @@ import com.liferay.product.navigation.personal.menu.PersonalMenuEntry;
 import com.liferay.saved.content.constants.MySavedContentPortletKeys;
 import com.liferay.saved.content.security.permission.SavedContentPermission;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

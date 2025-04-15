@@ -26,6 +26,9 @@ import com.liferay.portal.remote.json.web.service.JSONWebServiceActionMapping;
 import com.liferay.portal.remote.json.web.service.JSONWebServiceActionsManager;
 import com.liferay.portal.remote.json.web.service.web.internal.JSONWebServiceNamingUtil;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.Serializable;
 
@@ -43,9 +46,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import jodd.util.ClassUtil;
 

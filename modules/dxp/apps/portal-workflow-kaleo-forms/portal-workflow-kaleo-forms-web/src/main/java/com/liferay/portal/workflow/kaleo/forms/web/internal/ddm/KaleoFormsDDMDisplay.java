@@ -25,10 +25,10 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.workflow.kaleo.forms.constants.KaleoFormsPortletKeys;
 import com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess;
 
-import java.util.Locale;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marcellus Tavares
  */
 @Component(
-	property = "javax.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN,
+	property = "jakarta.portlet.name=" + KaleoFormsPortletKeys.KALEO_FORMS_ADMIN,
 	service = DDMDisplay.class
 )
 public class KaleoFormsDDMDisplay extends BaseDDMDisplay {

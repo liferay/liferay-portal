@@ -8,7 +8,7 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.access.token.authenti
 import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDataProvider;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
-import javax.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerRequestFilter;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

@@ -28,7 +28,7 @@ import com.liferay.portal.search.web.internal.user.facet.constants.UserFacetPort
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portlet.display.template.upgrade.BaseUpgradePortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

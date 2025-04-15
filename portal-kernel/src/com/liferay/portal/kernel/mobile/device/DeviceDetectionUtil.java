@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.mobile.device;
 
 import com.liferay.portal.kernel.module.service.Snapshot;
 
-import java.util.Set;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 /**
  * @author Milen Dyankov

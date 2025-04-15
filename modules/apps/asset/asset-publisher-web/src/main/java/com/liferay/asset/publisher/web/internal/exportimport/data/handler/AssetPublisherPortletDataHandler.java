@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Julio Camarero
  */
 @Component(
-	property = "javax.portlet.name=" + AssetPublisherPortletKeys.ASSET_PUBLISHER,
+	property = "jakarta.portlet.name=" + AssetPublisherPortletKeys.ASSET_PUBLISHER,
 	service = PortletDataHandler.class
 )
 public class AssetPublisherPortletDataHandler

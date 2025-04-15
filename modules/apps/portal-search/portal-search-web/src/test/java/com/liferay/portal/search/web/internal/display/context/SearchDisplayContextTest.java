@@ -33,13 +33,13 @@ import com.liferay.portal.search.web.constants.SearchPortletParameterNames;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portlet.portletconfiguration.util.ConfigurationRenderRequest;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Collections;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

@@ -10,8 +10,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
-import javax.ws.rs.NotAcceptableException;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.NotAcceptableException;
+import jakarta.ws.rs.core.Response;
 
 /**
  * Converts any {@code NotAcceptableException} to a {@code 400} error.

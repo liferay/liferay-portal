@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.portlet.LiferayRenderResponse;
 import com.liferay.portlet.internal.RenderRequestImpl;
 import com.liferay.portlet.internal.RenderResponseImpl;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.filter.RenderRequestWrapper;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.filter.RenderRequestWrapper;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

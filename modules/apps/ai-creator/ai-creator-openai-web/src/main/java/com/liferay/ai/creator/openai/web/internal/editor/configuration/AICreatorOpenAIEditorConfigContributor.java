@@ -21,9 +21,9 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Map;
+import jakarta.portlet.PortletMode;
 
-import javax.portlet.PortletMode;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"editor.config.key=rich_text", "editor.name=ckeditor_classic",
-		"javax.portlet.name=" + JournalPortletKeys.JOURNAL
+		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL
 	},
 	service = EditorConfigContributor.class
 )

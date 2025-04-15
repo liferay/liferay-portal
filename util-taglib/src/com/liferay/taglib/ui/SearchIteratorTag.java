@@ -8,9 +8,9 @@ package com.liferay.taglib.ui;
 import com.liferay.portal.kernel.dao.search.ResultRowSplitter;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Objects;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  * @author Brian Wing Shun Chan

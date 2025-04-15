@@ -25,7 +25,7 @@ import com.liferay.scim.rest.internal.manager.UserManagerImpl;
 import com.liferay.scim.rest.internal.util.ScimUtil;
 import com.liferay.scim.rest.resource.v1_0.GroupResource;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;

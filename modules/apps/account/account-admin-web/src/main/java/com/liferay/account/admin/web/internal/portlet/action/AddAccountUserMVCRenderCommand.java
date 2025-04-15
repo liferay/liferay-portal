@@ -11,9 +11,9 @@ import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -23,9 +23,9 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	configurationPid = "com.liferay.users.admin.configuration.UserFileUploadsConfiguration",
 	property = {
-		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
-		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT,
-		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_USERS_ADMIN,
+		"jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
+		"jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT,
+		"jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_USERS_ADMIN,
 		"mvc.command.name=/account_admin/add_account_user"
 	},
 	service = MVCRenderCommand.class

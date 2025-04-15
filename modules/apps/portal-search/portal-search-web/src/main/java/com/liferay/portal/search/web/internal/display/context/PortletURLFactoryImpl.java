@@ -11,12 +11,12 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.internal.portlet.shared.search.NullPortletURL;
 
-import java.util.Map;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import java.util.Map;
 
 /**
  * @author André de Oliveira

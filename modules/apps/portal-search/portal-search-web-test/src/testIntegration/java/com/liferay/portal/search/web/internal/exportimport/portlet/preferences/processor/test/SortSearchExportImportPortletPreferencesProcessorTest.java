@@ -36,7 +36,7 @@ public class SortSearchExportImportPortletPreferencesProcessorTest
 		return _exportImportPortletPreferencesProcessor;
 	}
 
-	@Inject(filter = "javax.portlet.name=" + SortPortletKeys.SORT)
+	@Inject(filter = "jakarta.portlet.name=" + SortPortletKeys.SORT)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;
 

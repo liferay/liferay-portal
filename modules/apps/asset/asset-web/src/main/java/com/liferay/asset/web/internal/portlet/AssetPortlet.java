@@ -8,7 +8,7 @@ package com.liferay.asset.web.internal.portlet;
 import com.liferay.asset.constants.AssetPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -25,11 +25,12 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.struts-path=asset",
 		"com.liferay.portlet.system=true",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Asset", "javax.portlet.expiration-cache=0",
-		"javax.portlet.name=" + AssetPortletKeys.ASSET,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Asset",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.name=" + AssetPortletKeys.ASSET,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

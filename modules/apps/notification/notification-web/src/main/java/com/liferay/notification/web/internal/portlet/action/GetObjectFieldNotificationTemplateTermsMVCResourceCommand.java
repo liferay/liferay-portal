@@ -25,11 +25,11 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES,
+		"jakarta.portlet.name=" + NotificationPortletKeys.NOTIFICATION_TEMPLATES,
 		"mvc.command.name=/notification_templates/get_object_field_notification_template_terms"
 	},
 	service = MVCResourceCommand.class

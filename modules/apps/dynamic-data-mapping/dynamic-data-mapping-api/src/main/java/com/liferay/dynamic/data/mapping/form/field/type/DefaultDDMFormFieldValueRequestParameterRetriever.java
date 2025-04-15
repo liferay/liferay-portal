@@ -7,7 +7,7 @@ package com.liferay.dynamic.data.mapping.form.field.type;
 
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Marcellus Tavares

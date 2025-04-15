@@ -8,10 +8,10 @@ package com.liferay.frontend.taglib.dynamic.section.servlet.taglib;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.taglib.TagSupport;
 
-import java.io.IOException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
+import java.io.IOException;
 
 /**
  * @author Matthew Tambara

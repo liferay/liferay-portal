@@ -27,11 +27,11 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upload.test.util.UploadTestUtil;
 
+import jakarta.portlet.ActionRequest;
+
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-
-import javax.portlet.ActionRequest;
 
 import org.junit.Assert;
 import org.junit.Before;

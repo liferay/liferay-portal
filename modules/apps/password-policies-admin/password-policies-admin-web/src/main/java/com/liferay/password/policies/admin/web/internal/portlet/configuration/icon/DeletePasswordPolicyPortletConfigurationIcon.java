@@ -19,11 +19,11 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.service.permission.PasswordPolicyPermissionUtil;
 
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + PasswordPoliciesAdminPortletKeys.PASSWORD_POLICIES_ADMIN,
+		"jakarta.portlet.name=" + PasswordPoliciesAdminPortletKeys.PASSWORD_POLICIES_ADMIN,
 		"path=/edit_password_policy.jsp",
 		"path=/edit_password_policy_assignments.jsp"
 	},

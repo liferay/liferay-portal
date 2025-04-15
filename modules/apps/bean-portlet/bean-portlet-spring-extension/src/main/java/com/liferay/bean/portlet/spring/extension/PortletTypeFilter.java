@@ -5,34 +5,34 @@
 
 package com.liferay.bean.portlet.spring.extension;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+
+import jakarta.portlet.EventPortlet;
+import jakarta.portlet.HeaderPortlet;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletAsyncListener;
+import jakarta.portlet.ResourceServingPortlet;
+import jakarta.portlet.annotations.ActionMethod;
+import jakarta.portlet.annotations.DestroyMethod;
+import jakarta.portlet.annotations.EventMethod;
+import jakarta.portlet.annotations.HeaderMethod;
+import jakarta.portlet.annotations.InitMethod;
+import jakarta.portlet.annotations.PortletLifecycleFilter;
+import jakarta.portlet.annotations.PortletRequestScoped;
+import jakarta.portlet.annotations.PortletSessionScoped;
+import jakarta.portlet.annotations.RenderMethod;
+import jakarta.portlet.annotations.RenderStateScoped;
+import jakarta.portlet.annotations.ServeResourceMethod;
+import jakarta.portlet.filter.ActionFilter;
+import jakarta.portlet.filter.EventFilter;
+import jakarta.portlet.filter.HeaderFilter;
+import jakarta.portlet.filter.RenderFilter;
+import jakarta.portlet.filter.ResourceFilter;
+
 import java.io.IOException;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-
-import javax.portlet.EventPortlet;
-import javax.portlet.HeaderPortlet;
-import javax.portlet.Portlet;
-import javax.portlet.PortletAsyncListener;
-import javax.portlet.ResourceServingPortlet;
-import javax.portlet.annotations.ActionMethod;
-import javax.portlet.annotations.DestroyMethod;
-import javax.portlet.annotations.EventMethod;
-import javax.portlet.annotations.HeaderMethod;
-import javax.portlet.annotations.InitMethod;
-import javax.portlet.annotations.PortletLifecycleFilter;
-import javax.portlet.annotations.PortletRequestScoped;
-import javax.portlet.annotations.PortletSessionScoped;
-import javax.portlet.annotations.RenderMethod;
-import javax.portlet.annotations.RenderStateScoped;
-import javax.portlet.annotations.ServeResourceMethod;
-import javax.portlet.filter.ActionFilter;
-import javax.portlet.filter.EventFilter;
-import javax.portlet.filter.HeaderFilter;
-import javax.portlet.filter.RenderFilter;
-import javax.portlet.filter.ResourceFilter;
 
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.ClassMetadata;

@@ -47,7 +47,7 @@ public class KaleoDesignerPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + KaleoDesignerPortletKeys.KALEO_DESIGNER + ")"
+		target = "(jakarta.portlet.name=" + KaleoDesignerPortletKeys.KALEO_DESIGNER + ")"
 	)
 	private Portlet _portlet;
 

@@ -8,9 +8,9 @@ package com.liferay.taglib.ui;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.taglib.util.IncludeTag;
 
-import java.util.TimeZone;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.TimeZone;
 
 /**
  * @author Brian Wing Shun Chan

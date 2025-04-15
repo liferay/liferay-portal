@@ -8,10 +8,10 @@ package com.liferay.portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.servlet.HttpSessionWrapper;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Brian Wing Shun Chan

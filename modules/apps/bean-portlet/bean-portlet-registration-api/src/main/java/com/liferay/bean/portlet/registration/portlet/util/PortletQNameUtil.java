@@ -8,7 +8,7 @@ package com.liferay.bean.portlet.registration.portlet.util;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.QName;
 
-import javax.portlet.annotations.PortletQName;
+import jakarta.portlet.annotations.PortletQName;
 
 /**
  * @author Shuyang Zhou

@@ -37,7 +37,7 @@ public class AccountGroupsAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + AccountPortletKeys.ACCOUNT_GROUPS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_GROUPS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

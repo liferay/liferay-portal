@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -23,8 +23,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING,
-		"javax.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
+		"jakarta.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING,
+		"jakarta.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
 		"mvc.command.name=/dynamic_data_mapping/refresh_template"
 	},
 	service = MVCActionCommand.class

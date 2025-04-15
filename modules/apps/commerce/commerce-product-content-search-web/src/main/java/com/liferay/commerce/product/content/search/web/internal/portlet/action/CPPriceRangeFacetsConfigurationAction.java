@@ -20,7 +20,7 @@ import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchRe
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchResponse;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_PRICE_RANGE_FACETS,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_PRICE_RANGE_FACETS,
 	service = ConfigurationAction.class
 )
 public class CPPriceRangeFacetsConfigurationAction

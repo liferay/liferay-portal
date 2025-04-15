@@ -27,11 +27,11 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.trash.service.TrashEntryService;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,8 +41,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
-		"javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN,
+		"jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
+		"jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN,
 		"mvc.command.name=/bookmarks/edit_folder"
 	},
 	service = MVCActionCommand.class

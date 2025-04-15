@@ -5,7 +5,7 @@
 
 package com.liferay.portal.search.web.portlet.shared.search;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

@@ -7,11 +7,11 @@ package com.liferay.portal.kernel.servlet;
 
 import com.liferay.portal.kernel.util.ObjectValuePair;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 
 import java.net.URL;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Minhchau Dang

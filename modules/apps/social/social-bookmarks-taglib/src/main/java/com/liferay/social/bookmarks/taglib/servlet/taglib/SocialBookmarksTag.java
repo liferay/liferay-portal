@@ -18,13 +18,13 @@ import com.liferay.social.bookmarks.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.social.bookmarks.taglib.internal.util.SocialBookmarksRegistryUtil;
 import com.liferay.taglib.util.IncludeTag;
 
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+
 import java.util.List;
-
-import javax.portlet.PortletURL;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 /**
  * @author Brian Wing Shun Chan

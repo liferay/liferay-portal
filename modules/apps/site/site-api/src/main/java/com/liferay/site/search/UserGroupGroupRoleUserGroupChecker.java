@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalServiceUtil;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Brett Swaim

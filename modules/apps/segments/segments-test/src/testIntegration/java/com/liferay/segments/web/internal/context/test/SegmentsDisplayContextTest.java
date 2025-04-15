@@ -56,13 +56,13 @@ import com.liferay.segments.criteria.CriteriaSerializer;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
+import jakarta.portlet.Portlet;
+
 import java.net.URLEncoder;
 
 import java.nio.charset.StandardCharsets;
 
 import java.util.Map;
-
-import javax.portlet.Portlet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -233,7 +233,7 @@ public class SegmentsDisplayContextTest {
 
 		Assert.assertTrue(
 			deleteURL.contains(
-				"param_javax.portlet.action=/segments/delete_segments_entry"));
+				"param_jakarta.portlet.action=/segments/delete_segments_entry"));
 		Assert.assertTrue(
 			deleteURL.contains(
 				"param_segmentsEntryId=" + segmentsEntry.getSegmentsEntryId()));

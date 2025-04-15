@@ -9,10 +9,10 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.notification.web.internal.display.context.helper.NotificationRequestHelper;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Arrays;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Paulo Albuquerque

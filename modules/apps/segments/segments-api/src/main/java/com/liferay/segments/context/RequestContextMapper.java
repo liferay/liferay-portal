@@ -5,7 +5,7 @@
 
 package com.liferay.segments.context;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Raymond Augé

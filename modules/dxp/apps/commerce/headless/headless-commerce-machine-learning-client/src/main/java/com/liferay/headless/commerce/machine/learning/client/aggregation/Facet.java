@@ -8,7 +8,7 @@ package com.liferay.headless.commerce.machine.learning.client.aggregation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Riccardo Ferrari

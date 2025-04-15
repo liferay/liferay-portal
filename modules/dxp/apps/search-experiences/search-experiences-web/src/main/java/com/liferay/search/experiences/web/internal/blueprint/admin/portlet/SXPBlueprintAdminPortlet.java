@@ -8,7 +8,7 @@ package com.liferay.search.experiences.web.internal.blueprint.admin.portlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -21,12 +21,12 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.css-class-wrapper=portlet-sxp-blueprint-admin",
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.header-portlet-css=/sxp_blueprint_admin/css/main.css",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/sxp_blueprint_admin/view.jsp",
-		"javax.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/sxp_blueprint_admin/view.jsp",
+		"jakarta.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

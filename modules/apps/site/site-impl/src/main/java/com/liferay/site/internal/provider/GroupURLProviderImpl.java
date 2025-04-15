@@ -27,8 +27,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.constants.SiteWebKeys;
 import com.liferay.site.provider.GroupURLProvider;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

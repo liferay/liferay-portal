@@ -11,9 +11,9 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.PortletRequestDispatcher;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.PortletRequestDispatcher;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -22,8 +22,8 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ExportImportPortletKeys.COMPANY_IMPORT,
-		"javax.portlet.name=" + ExportImportPortletKeys.IMPORT,
+		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_IMPORT,
+		"jakarta.portlet.name=" + ExportImportPortletKeys.IMPORT,
 		"mvc.command.name=/export_import/import_layouts"
 	},
 	service = MVCResourceCommand.class

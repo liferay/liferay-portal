@@ -45,6 +45,14 @@ import com.liferay.portlet.PortletContextBagPool;
 import com.liferay.portlet.PortletFilterFactory;
 import com.liferay.portlet.PortletURLListenerFactory;
 
+import jakarta.portlet.PortletURLGenerationListener;
+import jakarta.portlet.filter.ActionFilter;
+import jakarta.portlet.filter.EventFilter;
+import jakarta.portlet.filter.RenderFilter;
+import jakarta.portlet.filter.ResourceFilter;
+
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 
 import java.util.HashMap;
@@ -60,14 +68,6 @@ import java.util.jar.Manifest;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import javax.portlet.PortletURLGenerationListener;
-import javax.portlet.filter.ActionFilter;
-import javax.portlet.filter.EventFilter;
-import javax.portlet.filter.RenderFilter;
-import javax.portlet.filter.ResourceFilter;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -395,18 +395,18 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 		Set<PortletFilter> portletFilters = portletApp.getPortletFilters();
 
 		for (PortletFilter portletFilter : portletFilters) {
-			javax.portlet.filter.PortletFilter portletFilterInstance =
-				(javax.portlet.filter.PortletFilter)newInstance(
+			jakarta.portlet.filter.PortletFilter portletFilterInstance =
+				(jakarta.portlet.filter.PortletFilter)newInstance(
 					classLoader,
 					new Class<?>[] {
 						ActionFilter.class, EventFilter.class,
-						javax.portlet.filter.PortletFilter.class,
+						jakarta.portlet.filter.PortletFilter.class,
 						RenderFilter.class, ResourceFilter.class
 					},
 					portletFilter.getFilterClass());
 
-			Map<String, javax.portlet.filter.PortletFilter> portletFiltersMap =
-				portletContextBag.getPortletFilters();
+			Map<String, jakarta.portlet.filter.PortletFilter>
+				portletFiltersMap = portletContextBag.getPortletFilters();
 
 			portletFiltersMap.put(
 				portletFilter.getFilterName(), portletFilterInstance);

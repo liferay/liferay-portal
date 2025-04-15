@@ -8,7 +8,7 @@ package com.liferay.portal.vulcan.internal.jaxrs.exception.mapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
-import javax.validation.ValidationException;
+import jakarta.validation.ValidationException;
 
 /**
  * Converts any {@code ValidationException} to a {@code 400} error.

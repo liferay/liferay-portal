@@ -10,7 +10,7 @@ import com.liferay.content.dashboard.item.action.exception.ContentDashboardItemA
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author David Arques

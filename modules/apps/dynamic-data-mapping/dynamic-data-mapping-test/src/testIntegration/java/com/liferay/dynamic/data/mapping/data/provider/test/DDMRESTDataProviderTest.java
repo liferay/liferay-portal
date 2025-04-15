@@ -52,10 +52,10 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.ws.rs.core.Application;
+
 import java.util.List;
 import java.util.Locale;
-
-import javax.ws.rs.core.Application;
 
 import org.junit.After;
 import org.junit.AfterClass;

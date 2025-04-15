@@ -5,7 +5,7 @@
 
 package com.liferay.portal.vulcan.openapi;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Carlos Correa

@@ -9,10 +9,10 @@ import com.liferay.client.extension.type.CET;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.Date;
 import java.util.Properties;
-
-import javax.portlet.PortletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

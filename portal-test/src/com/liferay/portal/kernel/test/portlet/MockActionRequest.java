@@ -5,11 +5,11 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import javax.portlet.ActionParameters;
-import javax.portlet.ActionRequest;
-import javax.portlet.PortalContext;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletMode;
+import jakarta.portlet.ActionParameters;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletMode;
 
 /**
  * @author Dante Wang
@@ -35,7 +35,7 @@ public class MockActionRequest
 	}
 
 	public MockActionRequest(String actionName) {
-		setParameter("javax.portlet.action", actionName);
+		setParameter("jakarta.portlet.action", actionName);
 	}
 
 	@Override

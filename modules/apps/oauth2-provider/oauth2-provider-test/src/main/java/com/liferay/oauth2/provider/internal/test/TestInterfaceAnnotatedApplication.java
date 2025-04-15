@@ -5,10 +5,10 @@
 
 package com.liferay.oauth2.provider.internal.test;
 
+import jakarta.ws.rs.core.Application;
+
 import java.util.Collections;
 import java.util.Set;
-
-import javax.ws.rs.core.Application;
 
 /**
  * @author Carlos Sierra Andrés

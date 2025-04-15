@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.site.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Rubén Pulido

@@ -32,10 +32,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.LayoutTypeControllerTracker;
 
-import java.util.ResourceBundle;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import java.util.ResourceBundle;
 
 /**
  * @author Jürgen Kappler

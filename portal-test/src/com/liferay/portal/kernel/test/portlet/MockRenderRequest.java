@@ -5,13 +5,13 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortalContext;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletMode;
-import javax.portlet.RenderParameters;
-import javax.portlet.RenderRequest;
-import javax.portlet.WindowState;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.RenderParameters;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.WindowState;
 
 /**
  * @author Dante Wang

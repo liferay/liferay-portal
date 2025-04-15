@@ -10,7 +10,7 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Rachael Koestartyo

@@ -8,7 +8,7 @@ package com.liferay.portal.search.web.internal.display.context;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author André de Oliveira

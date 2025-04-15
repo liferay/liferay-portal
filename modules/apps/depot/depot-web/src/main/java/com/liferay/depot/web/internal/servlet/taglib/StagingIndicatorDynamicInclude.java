@@ -43,18 +43,18 @@ import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.site.provider.GroupURLProvider;
 import com.liferay.taglib.util.HtmlTopTag;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspException;
+
 import java.io.IOException;
 import java.io.Writer;
 
 import java.util.Map;
-
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

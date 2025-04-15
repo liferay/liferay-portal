@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eduardo García
  */
 @Component(
-	property = "javax.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES,
+	property = "jakarta.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES,
 	service = AssetRendererFactory.class
 )
 public class LayoutAssetRendererFactory

@@ -177,6 +177,10 @@ import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
 
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Feature;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -199,10 +203,6 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-
-import javax.ws.rs.Priorities;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.Feature;
 
 import org.hibernate.SessionFactory;
 

@@ -48,6 +48,14 @@ import com.liferay.portal.struts.model.ModuleConfig;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 
 import java.util.Arrays;
@@ -56,14 +64,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Brian Wing Shun Chan
@@ -75,10 +75,10 @@ import javax.servlet.http.HttpSession;
 public class PortalRequestProcessor {
 
 	public static final String INCLUDE_PATH_INFO =
-		"javax.servlet.include.path_info";
+		"jakarta.servlet.include.path_info";
 
 	public static final String INCLUDE_SERVLET_PATH =
-		"javax.servlet.include.servlet_path";
+		"jakarta.servlet.include.servlet_path";
 
 	public PortalRequestProcessor(
 		ModuleConfig moduleConfig, ServletContext servletContext,

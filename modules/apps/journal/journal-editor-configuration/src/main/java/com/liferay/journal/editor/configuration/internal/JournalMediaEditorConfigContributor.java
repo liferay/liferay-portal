@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"editor.name=alloyeditor",
-		"javax.portlet.name=" + JournalPortletKeys.JOURNAL
+		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL
 	},
 	service = EditorConfigContributor.class
 )

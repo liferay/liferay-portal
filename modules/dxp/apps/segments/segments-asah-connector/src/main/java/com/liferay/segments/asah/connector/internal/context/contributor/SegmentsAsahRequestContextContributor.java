@@ -11,10 +11,10 @@ import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.context.Context;
 import com.liferay.segments.context.contributor.RequestContextContributor;
 
-import java.util.Objects;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 

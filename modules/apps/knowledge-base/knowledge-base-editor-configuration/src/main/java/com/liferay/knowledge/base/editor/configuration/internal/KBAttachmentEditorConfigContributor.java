@@ -26,11 +26,11 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.language.LanguageResources;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,11 +41,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"editor.config.key=contentEditor",
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SEARCH,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SEARCH,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION
 	},
 	service = EditorConfigContributor.class
 )

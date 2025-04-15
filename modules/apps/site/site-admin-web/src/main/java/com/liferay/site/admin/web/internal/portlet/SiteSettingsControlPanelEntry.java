@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Jorge Ferrer
  */
 @Component(
-	property = "javax.portlet.name=" + ConfigurationAdminPortletKeys.SITE_SETTINGS,
+	property = "jakarta.portlet.name=" + ConfigurationAdminPortletKeys.SITE_SETTINGS,
 	service = ControlPanelEntry.class
 )
 public class SiteSettingsControlPanelEntry extends BaseControlPanelEntry {

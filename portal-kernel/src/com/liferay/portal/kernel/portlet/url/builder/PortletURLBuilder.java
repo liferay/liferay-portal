@@ -12,18 +12,18 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Map;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.PortletSecurityException;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderURL;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletSecurityException;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderURL;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
+import java.util.Map;
 
 /**
  * @author Hugo Huijser

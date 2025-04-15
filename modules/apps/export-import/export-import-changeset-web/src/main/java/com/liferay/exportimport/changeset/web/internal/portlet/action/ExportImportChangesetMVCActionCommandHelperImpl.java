@@ -10,8 +10,8 @@ import com.liferay.exportimport.changeset.ChangesetManager;
 import com.liferay.exportimport.changeset.portlet.action.ExportImportChangesetMVCActionCommandHelper;
 import com.liferay.portal.kernel.util.Constants;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

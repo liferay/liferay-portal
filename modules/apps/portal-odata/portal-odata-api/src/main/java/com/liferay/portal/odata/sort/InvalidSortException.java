@@ -5,7 +5,7 @@
 
 package com.liferay.portal.odata.sort;
 
-import javax.ws.rs.BadRequestException;
+import jakarta.ws.rs.BadRequestException;
 
 /**
  * Models {@link Sort} errors.

@@ -47,22 +47,22 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Rafael Praxedes
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseProcessMetricResourceImpl
 	implements EntityModelResource, ProcessMetricResource,
 			   VulcanBatchEngineTaskItemDelegate<ProcessMetric> {
@@ -97,16 +97,16 @@ public abstract class BaseProcessMetricResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ProcessMetric")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/processes/metrics")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/processes/metrics")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<ProcessMetric> getProcessMetricsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("title")
+			@jakarta.ws.rs.QueryParam("title")
 			String title,
-			@javax.ws.rs.core.Context Pagination pagination,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
 		throws Exception {
 
@@ -147,26 +147,26 @@ public abstract class BaseProcessMetricResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ProcessMetric")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/processes/metrics/export-batch")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/processes/metrics/export-batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postProcessMetricsPageExportBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("title")
+			@jakarta.ws.rs.QueryParam("title")
 			String title,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.DefaultValue("JSON")
-			@javax.ws.rs.QueryParam("contentType")
+			@jakarta.ws.rs.DefaultValue("JSON")
+			@jakarta.ws.rs.QueryParam("contentType")
 			String contentType,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("fieldNames")
+			@jakarta.ws.rs.QueryParam("fieldNames")
 			String fieldNames)
 		throws Exception {
 
@@ -219,23 +219,23 @@ public abstract class BaseProcessMetricResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ProcessMetric")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/processes/{processId}/metrics")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/processes/{processId}/metrics")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ProcessMetric getProcessMetric(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("processId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("processId")
 			Long processId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("completed")
+			@jakarta.ws.rs.QueryParam("completed")
 			Boolean completed,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("dateEnd")
+			@jakarta.ws.rs.QueryParam("dateEnd")
 			Date dateEnd,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("dateStart")
+			@jakarta.ws.rs.QueryParam("dateStart")
 			Date dateStart)
 		throws Exception {
 

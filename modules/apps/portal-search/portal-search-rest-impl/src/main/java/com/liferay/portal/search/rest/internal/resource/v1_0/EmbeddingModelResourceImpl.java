@@ -17,9 +17,9 @@ import com.liferay.portal.search.rest.resource.v1_0.EmbeddingModelResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.Collections;
+import jakarta.ws.rs.NotFoundException;
 
-import javax.ws.rs.NotFoundException;
+import java.util.Collections;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

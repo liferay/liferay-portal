@@ -10,8 +10,8 @@ import com.liferay.journal.web.internal.helper.JournalRSSHelper;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseRSSMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"auth.token.ignore.mvc.action=true",
-		"javax.portlet.name=" + JournalPortletKeys.JOURNAL,
+		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
 		"mvc.command.name=/journal/rss",
 		"portlet.add.default.resource.check.whitelist.mvc.action=true"
 	},

@@ -8,9 +8,9 @@ package com.liferay.saved.content.web.internal.portlet.action;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.saved.content.constants.MySavedContentPortletKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + MySavedContentPortletKeys.MY_SAVED_CONTENT,
+		"jakarta.portlet.name=" + MySavedContentPortletKeys.MY_SAVED_CONTENT,
 		"mvc.command.name=/",
 		"mvc.command.name=/saved_content/view_my_saved_content"
 	},

@@ -5,7 +5,7 @@
 
 package com.liferay.osb.testray.rest.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author José Abelenda

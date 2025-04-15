@@ -5,7 +5,7 @@
 
 package com.liferay.product.navigation.product.menu.helper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

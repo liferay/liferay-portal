@@ -27,10 +27,10 @@ import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.io.InputStream;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import java.io.InputStream;
 
 import org.junit.After;
 import org.junit.Before;

@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Roberto Díaz
  */
 @Component(
-	property = "javax.portlet.name=" + FlagsPortletKeys.FLAGS,
+	property = "jakarta.portlet.name=" + FlagsPortletKeys.FLAGS,
 	service = UserNotificationDefinition.class
 )
 public class FlagsAddEntryUserNotificationDefinition

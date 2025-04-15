@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.web.internal.display.context.SegmentsDisplayContext;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Diego Hu

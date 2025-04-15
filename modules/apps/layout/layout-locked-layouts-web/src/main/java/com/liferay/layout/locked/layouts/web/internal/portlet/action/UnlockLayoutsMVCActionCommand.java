@@ -19,8 +19,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,8 +30,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + LockedItemsPortletKeys.LOCKED_ITEMS,
-		"javax.portlet.name=" + LockedLayoutsPortletKeys.LOCKED_LAYOUTS_PORTLET,
+		"jakarta.portlet.name=" + LockedItemsPortletKeys.LOCKED_ITEMS,
+		"jakarta.portlet.name=" + LockedLayoutsPortletKeys.LOCKED_LAYOUTS_PORTLET,
 		"mvc.command.name=/layout_locked_layouts/unlock_layouts",
 		"mvc.command.name=/locked_items/unlock_layouts"
 	},

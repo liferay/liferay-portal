@@ -112,6 +112,12 @@ import com.liferay.portlet.extra.config.ExtraPortletAppConfig;
 import com.liferay.portlet.extra.config.ExtraPortletAppConfigRegistry;
 import com.liferay.util.JS;
 
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PreferencesValidator;
+import jakarta.portlet.WindowState;
+
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -130,12 +136,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-
-import javax.portlet.PortletMode;
-import javax.portlet.PreferencesValidator;
-import javax.portlet.WindowState;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -3066,7 +3066,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			ServiceReference<FriendlyURLMapper> serviceReference) {
 
 			Object propertyValue = serviceReference.getProperty(
-				"javax.portlet.name");
+				"jakarta.portlet.name");
 
 			if (propertyValue == null) {
 				return null;

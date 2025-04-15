@@ -20,11 +20,11 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.ratings.kernel.RatingsType;
 import com.liferay.ratings.kernel.transformer.RatingsDataTransformerUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

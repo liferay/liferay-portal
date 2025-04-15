@@ -28,10 +28,10 @@ import com.liferay.portal.workflow.kaleo.forms.constants.KaleoFormsWebKeys;
 import com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess;
 import com.liferay.portal.workflow.kaleo.forms.web.internal.util.KaleoFormsUtil;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Mariano Álvaro Sáiz

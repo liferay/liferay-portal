@@ -30,20 +30,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Olivér Kecskeméty
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseUserResourceImpl implements UserResource {
 
 	/**
@@ -71,18 +71,18 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "User")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/v2/Users")
-	@javax.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/v2/Users")
+	@jakarta.ws.rs.Produces("application/scim+json")
 	@Override
 	public Object getV2Users(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("count")
+			@jakarta.ws.rs.QueryParam("count")
 			Integer count,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("startIndex")
+			@jakarta.ws.rs.QueryParam("startIndex")
 			Integer startIndex,
-			@javax.ws.rs.core.Context
+			@jakarta.ws.rs.core.Context
 				com.liferay.portal.kernel.search.filter.Filter filter)
 		throws Exception {
 
@@ -98,10 +98,10 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "User")}
 	)
-	@javax.ws.rs.Consumes("application/scim+json")
-	@javax.ws.rs.Path("/v2/Users")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.Consumes("application/scim+json")
+	@jakarta.ws.rs.Path("/v2/Users")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/scim+json")
 	@Override
 	public Response postV2User(User user) throws Exception {
 		Response.ResponseBuilder responseBuilder = Response.ok();
@@ -118,10 +118,10 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "User")}
 	)
-	@javax.ws.rs.Consumes("application/scim+json")
-	@javax.ws.rs.Path("/v2/Users/.search")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.Consumes("application/scim+json")
+	@jakarta.ws.rs.Path("/v2/Users/.search")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/scim+json")
 	@Override
 	public Response postV2UserSearch(QueryAttributes queryAttributes)
 		throws Exception {
@@ -148,12 +148,12 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "User")}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/v2/Users/{id}")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/v2/Users/{id}")
 	@Override
 	public Response deleteV2User(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			String id)
 		throws Exception {
 
@@ -179,13 +179,13 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "User")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/v2/Users/{id}")
-	@javax.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/v2/Users/{id}")
+	@jakarta.ws.rs.Produces("application/scim+json")
 	@Override
 	public Object getV2UserById(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			String id)
 		throws Exception {
 
@@ -209,14 +209,14 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "User")}
 	)
-	@javax.ws.rs.Consumes("application/scim+json")
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/v2/Users/{id}")
-	@javax.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.Consumes("application/scim+json")
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path("/v2/Users/{id}")
+	@jakarta.ws.rs.Produces("application/scim+json")
 	@Override
 	public Response patchV2User(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			String id,
 			PatchOp patchOp)
 		throws Exception {
@@ -243,14 +243,14 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "User")}
 	)
-	@javax.ws.rs.Consumes("application/scim+json")
-	@javax.ws.rs.Path("/v2/Users/{id}")
-	@javax.ws.rs.Produces("application/scim+json")
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Consumes("application/scim+json")
+	@jakarta.ws.rs.Path("/v2/Users/{id}")
+	@jakarta.ws.rs.Produces("application/scim+json")
+	@jakarta.ws.rs.PUT
 	@Override
 	public Response putV2User(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			String id,
 			User user)
 		throws Exception {

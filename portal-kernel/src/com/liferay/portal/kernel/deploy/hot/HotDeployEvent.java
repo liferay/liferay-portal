@@ -13,14 +13,14 @@ import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Ivica Cardic

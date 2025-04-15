@@ -20,7 +20,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "javax.portlet.name=" + TrashPortletKeys.TRASH,
+	property = "jakarta.portlet.name=" + TrashPortletKeys.TRASH,
 	service = ControlPanelEntry.class
 )
 public class TrashControlPanelEntry extends BaseControlPanelEntry {

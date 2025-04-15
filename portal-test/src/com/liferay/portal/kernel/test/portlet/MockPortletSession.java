@@ -5,6 +5,12 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletSession;
+
+import jakarta.servlet.http.HttpSessionBindingEvent;
+import jakarta.servlet.http.HttpSessionBindingListener;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -12,12 +18,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletSession;
-
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
 
 import org.springframework.mock.web.MockHttpSession;
 

@@ -9,8 +9,8 @@ import com.liferay.document.library.opener.onedrive.web.internal.DLOpenerOneDriv
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.util.Portal;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.ResourceURL;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.ResourceURL;
 
 /**
  * @author Cristina González

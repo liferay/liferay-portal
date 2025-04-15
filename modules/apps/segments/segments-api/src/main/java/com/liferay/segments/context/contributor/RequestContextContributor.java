@@ -7,7 +7,7 @@ package com.liferay.segments.context.contributor;
 
 import com.liferay.segments.context.Context;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Provides an interface for extending the {@link Context} with information from

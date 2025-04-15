@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.upgrade.BasePortletPreferencesUpgradeProcess;
 import com.liferay.portal.search.web.internal.category.facet.portlet.CategoryFacetPortletPreferences;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Joshua Cords

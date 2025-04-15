@@ -10,7 +10,7 @@ import com.liferay.portal.kernel.model.PortletPreferencesIds;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Raymond Augé

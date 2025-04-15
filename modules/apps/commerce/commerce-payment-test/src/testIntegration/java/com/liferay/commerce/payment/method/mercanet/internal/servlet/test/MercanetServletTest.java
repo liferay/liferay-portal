@@ -20,7 +20,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PortalImpl;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

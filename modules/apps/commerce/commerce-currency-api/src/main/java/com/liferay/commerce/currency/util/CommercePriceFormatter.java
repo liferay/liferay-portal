@@ -8,11 +8,11 @@ package com.liferay.commerce.currency.util;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import jakarta.portlet.ActionRequest;
+
 import java.math.BigDecimal;
 
 import java.util.Locale;
-
-import javax.portlet.ActionRequest;
 
 /**
  * @author Marco Leo

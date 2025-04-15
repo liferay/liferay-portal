@@ -8,13 +8,13 @@ package com.liferay.portal.kernel.portlet;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
+import jakarta.portlet.PortletException;
+
+import jakarta.servlet.http.Part;
+
 import java.io.IOException;
 
 import java.util.Collection;
-
-import javax.portlet.PortletException;
-
-import javax.servlet.http.Part;
 
 /**
  * @author Jiefeng Wu

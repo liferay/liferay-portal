@@ -14,6 +14,12 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.vulcan.internal.test.util.URLConnectionUtil;
 
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 
@@ -21,12 +27,6 @@ import java.net.URLConnection;
 
 import java.util.Collections;
 import java.util.Set;
-
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
 
 import org.junit.After;
 import org.junit.Assert;

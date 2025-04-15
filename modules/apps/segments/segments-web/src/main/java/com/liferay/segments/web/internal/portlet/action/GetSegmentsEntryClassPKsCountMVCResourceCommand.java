@@ -17,16 +17,16 @@ import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributorRegi
 import com.liferay.segments.odata.retriever.ODataRetriever;
 import com.liferay.segments.web.internal.constants.SegmentsWebKeys;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.PrintWriter;
 
 import java.util.Locale;
-
-import javax.portlet.PortletException;
-import javax.portlet.PortletSession;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SegmentsPortletKeys.SEGMENTS,
+		"jakarta.portlet.name=" + SegmentsPortletKeys.SEGMENTS,
 		"mvc.command.name=/segments/get_segments_entry_class_pks_count"
 	},
 	service = MVCResourceCommand.class

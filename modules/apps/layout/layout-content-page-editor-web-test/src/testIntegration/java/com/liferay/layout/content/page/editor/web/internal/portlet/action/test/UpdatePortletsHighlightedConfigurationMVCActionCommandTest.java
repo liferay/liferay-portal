@@ -39,9 +39,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.WebAppPool;
 
-import java.util.Set;
+import jakarta.portlet.ActionRequest;
 
-import javax.portlet.ActionRequest;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;

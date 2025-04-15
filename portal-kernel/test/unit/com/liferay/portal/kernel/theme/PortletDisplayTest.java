@@ -8,7 +8,7 @@ package com.liferay.portal.kernel.theme;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;

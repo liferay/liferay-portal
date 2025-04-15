@@ -35,15 +35,15 @@ import com.liferay.portal.search.tuning.synonyms.web.internal.index.SynonymSetFi
 import com.liferay.portal.search.tuning.synonyms.web.internal.index.SynonymSetIndexReader;
 import com.liferay.portal.search.tuning.synonyms.web.internal.storage.SynonymSetStorageAdapter;
 
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.RenderURL;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Arrays;
-
-import javax.portlet.ActionURL;
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;

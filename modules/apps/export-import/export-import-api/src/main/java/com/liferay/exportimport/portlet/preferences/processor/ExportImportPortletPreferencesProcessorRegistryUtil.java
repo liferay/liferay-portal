@@ -93,7 +93,7 @@ public class ExportImportPortletPreferencesProcessorRegistryUtil {
 					_bundleContext.getService(serviceReference);
 
 			String portletName = GetterUtil.getString(
-				serviceReference.getProperty("javax.portlet.name"));
+				serviceReference.getProperty("jakarta.portlet.name"));
 
 			_exportImportPortletPreferencesProcessors.put(
 				portletName, exportImportPortletPreferencesProcessor);
@@ -124,7 +124,7 @@ public class ExportImportPortletPreferencesProcessorRegistryUtil {
 			_bundleContext.ungetService(serviceReference);
 
 			String portletName = GetterUtil.getString(
-				serviceReference.getProperty("javax.portlet.name"));
+				serviceReference.getProperty("jakarta.portlet.name"));
 
 			_exportImportPortletPreferencesProcessors.remove(portletName);
 		}

@@ -12,9 +12,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.struts.Definition;
 import com.liferay.portal.struts.TilesUtil;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Mika Koivisto

@@ -5,15 +5,15 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.annotated.type;
 
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import java.util.Set;
-
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedField;
-import javax.enterprise.inject.spi.AnnotatedMethod;
-import javax.enterprise.inject.spi.AnnotatedType;
 
 /**
  * @author Shuyang Zhou

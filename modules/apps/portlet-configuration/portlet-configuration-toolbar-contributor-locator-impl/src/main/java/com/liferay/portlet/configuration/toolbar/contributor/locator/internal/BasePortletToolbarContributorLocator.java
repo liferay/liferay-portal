@@ -16,9 +16,9 @@ import com.liferay.portal.kernel.portlet.toolbar.contributor.locator.PortletTool
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
 
-import javax.portlet.PortletRequest;
+import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -50,7 +50,7 @@ public abstract class BasePortletToolbarContributorLocator
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundleContext, PortletToolbarContributor.class,
-			"(javax.portlet.name=*)",
+			"(jakarta.portlet.name=*)",
 			new ServiceReferenceMapper<String, PortletToolbarContributor>() {
 
 				@Override
@@ -60,7 +60,7 @@ public abstract class BasePortletToolbarContributorLocator
 					Emitter<String> emitter) {
 
 					List<String> portletNames = StringPlus.asList(
-						serviceReference.getProperty("javax.portlet.name"));
+						serviceReference.getProperty("jakarta.portlet.name"));
 					List<String> values = StringPlus.asList(
 						serviceReference.getProperty(getPropertyName()));
 

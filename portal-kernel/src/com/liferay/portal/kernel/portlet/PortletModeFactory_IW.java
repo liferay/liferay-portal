@@ -13,11 +13,11 @@ public class PortletModeFactory_IW {
 		return _instance;
 	}
 
-	public javax.portlet.PortletMode getPortletMode(java.lang.String name) {
+	public jakarta.portlet.PortletMode getPortletMode(java.lang.String name) {
 		return PortletModeFactory.getPortletMode(name);
 	}
 
-	public javax.portlet.PortletMode getPortletMode(java.lang.String name,
+	public jakarta.portlet.PortletMode getPortletMode(java.lang.String name,
 		int portletMajorVersion) {
 		return PortletModeFactory.getPortletMode(name, portletMajorVersion);
 	}

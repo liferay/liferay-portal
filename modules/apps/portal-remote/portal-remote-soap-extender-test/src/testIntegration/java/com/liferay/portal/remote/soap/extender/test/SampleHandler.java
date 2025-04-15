@@ -7,6 +7,11 @@ package com.liferay.portal.remote.soap.extender.test;
 
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 
+import jakarta.xml.ws.LogicalMessage;
+import jakarta.xml.ws.handler.LogicalHandler;
+import jakarta.xml.ws.handler.LogicalMessageContext;
+import jakarta.xml.ws.handler.MessageContext;
+
 import java.io.InputStream;
 
 import java.net.URL;
@@ -16,10 +21,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.ws.LogicalMessage;
-import javax.xml.ws.handler.LogicalHandler;
-import javax.xml.ws.handler.LogicalMessageContext;
-import javax.xml.ws.handler.MessageContext;
 
 /**
  * @author Carlos Sierra Andrés

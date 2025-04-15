@@ -37,7 +37,7 @@ public class AssetCategoriesPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

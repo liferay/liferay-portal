@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * <ul>
  * <li>
- * <code>javax.portlet.name</code>: The portlet name. If specified, the
+ * <code>jakarta.portlet.name</code>: The portlet name. If specified, the
  * configuration populated in the JSON object is applied to every editor used
  * in that portlet.
  * </li>

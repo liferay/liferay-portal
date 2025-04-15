@@ -56,6 +56,8 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.Serializable;
 
 import java.util.Arrays;
@@ -69,8 +71,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Test;

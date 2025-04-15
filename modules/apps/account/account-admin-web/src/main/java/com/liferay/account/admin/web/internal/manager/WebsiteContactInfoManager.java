@@ -11,9 +11,9 @@ import com.liferay.portal.kernel.service.WebsiteLocalService;
 import com.liferay.portal.kernel.service.WebsiteService;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.List;
+import jakarta.portlet.ActionRequest;
 
-import javax.portlet.ActionRequest;
+import java.util.List;
 
 /**
  * @author Danny Situ

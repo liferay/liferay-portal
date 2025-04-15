@@ -7,11 +7,11 @@ package com.liferay.commerce.payment.method.mercanet.internal;
 
 import com.liferay.commerce.payment.request.CommercePaymentRequest;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.math.BigDecimal;
 
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Luca Pellizzon

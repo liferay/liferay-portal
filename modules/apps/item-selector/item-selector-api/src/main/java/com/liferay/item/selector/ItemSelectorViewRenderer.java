@@ -5,12 +5,12 @@
 
 package com.liferay.item.selector;
 
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.PageContext;
+
 import java.io.IOException;
-
-import javax.portlet.PortletURL;
-
-import javax.servlet.ServletException;
-import javax.servlet.jsp.PageContext;
 
 /**
  * @author Iván Zaera

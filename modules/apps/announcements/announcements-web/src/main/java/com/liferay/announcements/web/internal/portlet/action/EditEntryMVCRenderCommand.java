@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,9 +24,9 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ALERTS,
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS,
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ALERTS,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN,
 		"mvc.command.name=/announcements/edit_entry"
 	},
 	service = MVCRenderCommand.class

@@ -37,7 +37,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -243,7 +243,7 @@ public class MentionsPortletTest {
 	@Inject
 	private LayoutLocalService _layoutLocalService;
 
-	@Inject(filter = "javax.portlet.name=" + MentionsPortletKeys.MENTIONS)
+	@Inject(filter = "jakarta.portlet.name=" + MentionsPortletKeys.MENTIONS)
 	private Portlet _portlet;
 
 	@Inject

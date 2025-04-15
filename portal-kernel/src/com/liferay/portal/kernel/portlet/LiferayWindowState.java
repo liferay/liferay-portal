@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.WindowState;
+import jakarta.portlet.WindowState;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan

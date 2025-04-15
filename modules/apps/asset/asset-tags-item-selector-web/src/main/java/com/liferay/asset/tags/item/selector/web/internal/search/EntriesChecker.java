@@ -9,7 +9,7 @@ import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Eudaldo Alonso

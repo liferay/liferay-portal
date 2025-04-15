@@ -5,7 +5,7 @@
 
 package com.liferay.account.admin.web.internal.manager;
 
-import javax.portlet.ActionRequest;
+import jakarta.portlet.ActionRequest;
 
 /**
  * @author Danny Situ

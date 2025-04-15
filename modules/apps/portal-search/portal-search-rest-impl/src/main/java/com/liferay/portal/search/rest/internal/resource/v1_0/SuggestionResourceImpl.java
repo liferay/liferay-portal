@@ -37,14 +37,14 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portlet.RenderRequestFactory;
 import com.liferay.portlet.RenderResponseFactory;
 
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Collections;
 import java.util.Map;
-
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Olivia Yu
  */
 @Component(
-	property = "javax.portlet.name=" + SortPortletKeys.SORT,
+	property = "jakarta.portlet.name=" + SortPortletKeys.SORT,
 	service = TemplateHandler.class
 )
 public class SortPortletDisplayTemplateHandler

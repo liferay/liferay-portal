@@ -24,13 +24,13 @@ import com.liferay.portal.search.web.internal.user.facet.configuration.UserFacet
 import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author André de Oliveira

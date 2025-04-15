@@ -7,11 +7,11 @@ package com.liferay.portal.servlet.filters.absoluteredirects;
 
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import java.io.IOException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.IOException;
 
 /**
  * @author Jorge Ferrer

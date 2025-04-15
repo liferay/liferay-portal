@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY,
+		"jakarta.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY,
 		"model.class.name=com.liferay.document.library.kernel.model.DLFileEntry"
 	},
 	service = SocialActivityInterpreter.class

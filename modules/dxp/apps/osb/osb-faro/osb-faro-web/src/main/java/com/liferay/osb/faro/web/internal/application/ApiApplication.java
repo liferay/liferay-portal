@@ -13,10 +13,10 @@ import com.liferay.osb.faro.web.internal.controller.api.RecommendationController
 import com.liferay.osb.faro.web.internal.controller.api.ReportController;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 
+import jakarta.ws.rs.core.Application;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.ws.rs.core.Application;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

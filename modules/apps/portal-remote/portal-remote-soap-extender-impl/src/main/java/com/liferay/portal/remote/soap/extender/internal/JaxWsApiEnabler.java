@@ -10,11 +10,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.remote.soap.extender.internal.configuration.JaxWsApiConfiguration;
 
+import jakarta.xml.ws.spi.Provider;
+
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
-
-import javax.xml.ws.spi.Provider;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;

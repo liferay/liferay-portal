@@ -7,7 +7,7 @@ package com.liferay.commerce.payment.engine;
 
 import com.liferay.commerce.payment.result.CommercePaymentResult;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Luca Pellizzon

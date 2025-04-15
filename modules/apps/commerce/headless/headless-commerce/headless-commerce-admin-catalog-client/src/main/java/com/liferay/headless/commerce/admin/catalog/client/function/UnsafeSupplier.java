@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

@@ -7,8 +7,8 @@ package com.liferay.exportimport.resources.importer.portlet.preferences;
 
 import com.liferay.portal.kernel.json.JSONObject;
 
-import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Michael C. Han

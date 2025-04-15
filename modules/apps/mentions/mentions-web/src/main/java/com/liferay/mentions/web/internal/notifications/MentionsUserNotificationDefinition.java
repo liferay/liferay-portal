@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + MentionsPortletKeys.MENTIONS,
+	property = "jakarta.portlet.name=" + MentionsPortletKeys.MENTIONS,
 	service = UserNotificationDefinition.class
 )
 public class MentionsUserNotificationDefinition

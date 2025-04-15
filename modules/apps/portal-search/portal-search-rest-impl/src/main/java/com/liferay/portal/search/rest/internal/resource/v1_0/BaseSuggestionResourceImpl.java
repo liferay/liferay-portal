@@ -29,19 +29,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Petteri Karttunen
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSuggestionResourceImpl implements SuggestionResource {
 
 	/**
@@ -85,33 +85,33 @@ public abstract class BaseSuggestionResourceImpl implements SuggestionResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Suggestion")}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/suggestions")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/suggestions")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<SuggestionsContributorResults> postSuggestionsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("currentURL")
+			@jakarta.ws.rs.QueryParam("currentURL")
 			String currentURL,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("destinationFriendlyURL")
+			@jakarta.ws.rs.QueryParam("destinationFriendlyURL")
 			String destinationFriendlyURL,
 			@Deprecated @io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("groupId")
+			@jakarta.ws.rs.QueryParam("groupId")
 			Long groupId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("keywordsParameterName")
+			@jakarta.ws.rs.QueryParam("keywordsParameterName")
 			String keywordsParameterName,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("plid")
+			@jakarta.ws.rs.QueryParam("plid")
 			Long plid,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("scope")
+			@jakarta.ws.rs.QueryParam("scope")
 			String scope,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.QueryParam("search")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("search")
 			String search,
 			SuggestionsContributorConfiguration[]
 				suggestionsContributorConfigurations)

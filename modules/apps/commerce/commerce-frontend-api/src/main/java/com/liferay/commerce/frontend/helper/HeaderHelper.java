@@ -11,9 +11,9 @@ import com.liferay.commerce.frontend.model.HeaderActionModel;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 
-import java.util.List;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletURL;
+import java.util.List;
 
 /**
  * @author Alec Sloan

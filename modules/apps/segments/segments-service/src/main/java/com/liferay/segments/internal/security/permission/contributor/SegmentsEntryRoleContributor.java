@@ -29,11 +29,11 @@ import com.liferay.segments.context.RequestContextMapper;
 import com.liferay.segments.model.SegmentsEntryRole;
 import com.liferay.segments.service.SegmentsEntryRoleLocalService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

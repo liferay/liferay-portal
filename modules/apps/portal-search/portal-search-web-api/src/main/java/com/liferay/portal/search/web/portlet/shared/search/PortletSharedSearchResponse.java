@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.web.search.request.SearchSettings;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.RenderRequest;
+import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
 

@@ -8,11 +8,11 @@ package com.liferay.change.tracking.spi.display;
 import com.liferay.change.tracking.spi.display.context.DisplayContext;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.InputStream;
 
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Display renderer used to describe and render models of a given type. If an

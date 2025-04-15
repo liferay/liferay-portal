@@ -16,9 +16,9 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,7 +68,7 @@ public class GroupPagesPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES + ")"
+		target = "(jakarta.portlet.name=" + LayoutAdminPortletKeys.GROUP_PAGES + ")"
 	)
 	private Portlet _portlet;
 

@@ -8,8 +8,8 @@ package com.liferay.captcha.taglib.internal.struts;
 import com.liferay.captcha.util.CaptchaUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 

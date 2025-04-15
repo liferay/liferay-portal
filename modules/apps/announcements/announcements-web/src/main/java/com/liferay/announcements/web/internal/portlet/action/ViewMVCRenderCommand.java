@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.Objects;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -24,9 +24,9 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ALERTS,
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS,
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ALERTS,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN,
 		"mvc.command.name=/", "mvc.command.name=/alerts/view",
 		"mvc.command.name=/announcements/view"
 	},

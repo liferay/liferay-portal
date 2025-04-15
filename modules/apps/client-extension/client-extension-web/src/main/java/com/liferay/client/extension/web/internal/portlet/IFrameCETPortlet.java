@@ -16,6 +16,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,9 +26,6 @@ import java.io.StringWriter;
 import java.util.Dictionary;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 /**
  * @author Iván Zaera Avellón
@@ -54,13 +54,13 @@ public class IFrameCETPortlet extends BaseCETPortlet<IFrameCET> {
 		).put(
 			"com.liferay.portlet.instanceable", cet.isInstanceable()
 		).put(
-			"javax.portlet.display-name", cet.getName(LocaleUtil.US)
+			"jakarta.portlet.display-name", cet.getName(LocaleUtil.US)
 		).put(
-			"javax.portlet.name", _portletId
+			"jakarta.portlet.name", _portletId
 		).put(
-			"javax.portlet.security-role-ref", "power-user,user"
+			"jakarta.portlet.security-role-ref", "power-user,user"
 		).put(
-			"javax.portlet.version", "3.0"
+			"jakarta.portlet.version", "3.0"
 		).build();
 	}
 

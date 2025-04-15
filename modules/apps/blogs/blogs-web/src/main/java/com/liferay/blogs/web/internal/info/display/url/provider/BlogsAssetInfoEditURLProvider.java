@@ -9,7 +9,7 @@ import com.liferay.asset.info.display.url.provider.AssetInfoEditURLProvider;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.info.display.url.provider.InfoEditURLProvider;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

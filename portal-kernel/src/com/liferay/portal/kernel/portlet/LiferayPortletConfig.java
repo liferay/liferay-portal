@@ -7,8 +7,8 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.model.Portlet;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -19,7 +19,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface LiferayPortletConfig extends PortletConfig {
 
 	public static final String RUNTIME_OPTION_ESCAPE_XML =
-		"javax.portlet.escapeXml";
+		"jakarta.portlet.escapeXml";
 
 	public static final String RUNTIME_OPTION_PORTAL_CONTEXT =
 		"com.liferay.portal.portalContext";

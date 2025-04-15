@@ -37,7 +37,7 @@ public class FaroAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + FaroAdminPortletKeys.FARO_ADMIN + ")",
+		target = "(jakarta.portlet.name=" + FaroAdminPortletKeys.FARO_ADMIN + ")",
 		unbind = "-"
 	)
 	private Portlet _portlet;

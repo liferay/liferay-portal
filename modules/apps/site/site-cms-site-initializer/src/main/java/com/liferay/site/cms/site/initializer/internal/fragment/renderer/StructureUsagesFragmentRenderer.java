@@ -10,14 +10,14 @@ import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.site.cms.site.initializer.internal.display.context.StructureUsagesDisplayContext;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.util.Locale;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

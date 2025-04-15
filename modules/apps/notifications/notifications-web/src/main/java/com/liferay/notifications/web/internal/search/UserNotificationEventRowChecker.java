@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author István András Dézsi

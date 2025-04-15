@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

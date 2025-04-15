@@ -8,7 +8,7 @@ package com.liferay.portlet.configuration.css.web.internal.frontend.taglib.form.
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntry;
 import com.liferay.portlet.configuration.css.web.internal.constants.PortletConfigurationCSSConstants;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

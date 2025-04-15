@@ -10,10 +10,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.io.IOException;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletException;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
+import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

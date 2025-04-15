@@ -15,8 +15,8 @@ import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfiguration
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Samuel Trong Tran
  */
 @Component(
-	property = "javax.portlet.name=" + CTPortletKeys.PUBLICATIONS,
+	property = "jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS,
 	service = PortletConfigurationIcon.class
 )
 public class CTCollectionTemplatesPortletConfigurationIcon

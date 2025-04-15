@@ -137,7 +137,7 @@ public class CTPortletPermissionPortalInstanceLifecycleListener
 		CTPortletPermissionPortalInstanceLifecycleListener.class);
 
 	@Reference(
-		target = "(javax.portlet.name=" + CTPortletKeys.PUBLICATIONS + ")"
+		target = "(jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS + ")"
 	)
 	private Portlet _portlet;
 

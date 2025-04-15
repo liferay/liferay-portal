@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  * @deprecated As of Cavanaugh (7.4.x)
  */
 @Component(
-	property = "javax.portlet.name=" + ContactsPortletKeys.CONTACTS_CENTER,
+	property = "jakarta.portlet.name=" + ContactsPortletKeys.CONTACTS_CENTER,
 	service = UserNotificationDefinition.class
 )
 @Deprecated

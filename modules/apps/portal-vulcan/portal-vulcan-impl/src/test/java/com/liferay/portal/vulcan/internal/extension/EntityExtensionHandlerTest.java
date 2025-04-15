@@ -13,14 +13,14 @@ import com.liferay.portal.vulcan.extension.EntityExtensionHandler;
 import com.liferay.portal.vulcan.extension.ExtensionProvider;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 
+import jakarta.validation.ValidationException;
+
 import java.io.Serializable;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import javax.validation.ValidationException;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -8,7 +8,7 @@ package com.liferay.trash.web.internal.search;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * Defines display terms used by the <code>SearchIteratorTag</code> (in

@@ -15,12 +15,12 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.RenderRequest;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
 
 /**
  * @author Brian Wing Shun Chan

@@ -9,12 +9,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import javax.servlet.ServletContext;
 
 import org.junit.Assert;
 import org.junit.Test;

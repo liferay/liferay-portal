@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -26,8 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Igor Spasic

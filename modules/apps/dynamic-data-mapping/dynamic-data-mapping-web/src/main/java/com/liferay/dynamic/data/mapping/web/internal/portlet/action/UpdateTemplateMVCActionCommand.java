@@ -15,13 +15,13 @@ import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
 import java.io.File;
 
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -30,8 +30,8 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING,
-		"javax.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
+		"jakarta.portlet.name=" + DDMPortletKeys.DYNAMIC_DATA_MAPPING,
+		"jakarta.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
 		"mvc.command.name=/dynamic_data_mapping/update_template"
 	},
 	service = MVCActionCommand.class

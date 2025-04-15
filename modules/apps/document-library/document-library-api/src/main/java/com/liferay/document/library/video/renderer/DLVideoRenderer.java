@@ -7,7 +7,7 @@ package com.liferay.document.library.video.renderer;
 
 import com.liferay.portal.kernel.repository.model.FileVersion;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

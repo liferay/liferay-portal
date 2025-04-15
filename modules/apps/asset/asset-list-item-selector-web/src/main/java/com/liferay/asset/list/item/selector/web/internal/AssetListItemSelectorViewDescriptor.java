@@ -13,7 +13,7 @@ import com.liferay.item.selector.TableItemView;
 import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

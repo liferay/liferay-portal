@@ -37,7 +37,7 @@ public class SAPPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + SAPPortletKeys.SERVICE_ACCESS_POLICY + ")"
+		target = "(jakarta.portlet.name=" + SAPPortletKeys.SERVICE_ACCESS_POLICY + ")"
 	)
 	private Portlet _portlet;
 

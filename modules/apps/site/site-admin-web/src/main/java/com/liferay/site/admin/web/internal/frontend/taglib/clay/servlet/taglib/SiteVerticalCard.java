@@ -25,9 +25,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.admin.web.internal.display.context.SiteAdminDisplayContext;
 import com.liferay.site.admin.web.internal.servlet.taglib.util.SiteActionDropdownItemsProvider;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Eudaldo Alonso

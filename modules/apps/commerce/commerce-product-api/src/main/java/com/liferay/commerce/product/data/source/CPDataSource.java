@@ -7,9 +7,9 @@ package com.liferay.commerce.product.data.source;
 
 import aQute.bnd.annotation.ProviderType;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * @author Marco Leo

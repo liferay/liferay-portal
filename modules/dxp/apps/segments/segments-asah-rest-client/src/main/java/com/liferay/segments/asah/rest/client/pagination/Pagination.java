@@ -5,7 +5,7 @@
 
 package com.liferay.segments.asah.rest.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

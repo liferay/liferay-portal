@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Andrea Sbarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BasePlacedOrderAddressResourceImpl
 	implements PlacedOrderAddressResource {
 
@@ -63,17 +63,17 @@ public abstract class BasePlacedOrderAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PlacedOrderAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-billing-address"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PlacedOrderAddress
 			getPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode)
 		throws Exception {
 
@@ -101,17 +101,17 @@ public abstract class BasePlacedOrderAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PlacedOrderAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-shipping-address"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PlacedOrderAddress
 			getPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode)
 		throws Exception {
 
@@ -139,16 +139,16 @@ public abstract class BasePlacedOrderAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PlacedOrderAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/placed-orders/{placedOrderId}/placed-order-billing-address"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PlacedOrderAddress getPlacedOrderPlacedOrderBillingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("placedOrderId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("placedOrderId")
 			Long placedOrderId)
 		throws Exception {
 
@@ -176,16 +176,16 @@ public abstract class BasePlacedOrderAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "PlacedOrderAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/placed-orders/{placedOrderId}/placed-order-shipping-address"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PlacedOrderAddress getPlacedOrderPlacedOrderShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("placedOrderId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("placedOrderId")
 			Long placedOrderId)
 		throws Exception {
 

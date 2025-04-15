@@ -7,10 +7,10 @@ package com.liferay.taglib.servlet;
 
 import com.liferay.petra.string.StringPool;
 
+import jakarta.servlet.jsp.JspWriter;
+
 import java.io.IOException;
 import java.io.Writer;
-
-import javax.servlet.jsp.JspWriter;
 
 /**
  * @author Shuyang Zhou

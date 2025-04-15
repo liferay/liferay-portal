@@ -22,14 +22,14 @@ import com.liferay.site.admin.web.internal.util.SiteInitializerItem;
 import com.liferay.site.constants.SiteWebKeys;
 import com.liferay.site.initializer.SiteInitializerRegistry;
 
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

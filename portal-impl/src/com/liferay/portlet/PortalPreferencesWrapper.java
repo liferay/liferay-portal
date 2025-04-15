@@ -5,13 +5,13 @@
 
 package com.liferay.portlet;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.Enumeration;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Alexander Chow

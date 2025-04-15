@@ -8,9 +8,9 @@ package com.liferay.info.field.item.selector.web.internal.search;
 import com.liferay.info.field.InfoField;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 
-import java.util.List;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderResponse;
+import java.util.List;
 
 /**
  * @author Eudaldo Alonso

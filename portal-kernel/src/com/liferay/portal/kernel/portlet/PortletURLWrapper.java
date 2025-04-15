@@ -5,19 +5,19 @@
 
 package com.liferay.portal.kernel.portlet;
 
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.PortletSecurityException;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
+import jakarta.portlet.annotations.PortletSerializable;
+
 import java.io.IOException;
 import java.io.Writer;
 
 import java.util.Map;
-
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletSecurityException;
-import javax.portlet.PortletURL;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
-import javax.portlet.annotations.PortletSerializable;
 
 /**
  * @author Brian Wing Shun Chan

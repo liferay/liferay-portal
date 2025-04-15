@@ -14,9 +14,9 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.style.book.model.StyleBookEntry;
 
-import java.util.Locale;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.RenderRequest;
+import java.util.Locale;
 
 /**
  * @author Eudaldo Alonso

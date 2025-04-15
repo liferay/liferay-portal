@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.servlet;
 
-import java.security.Principal;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 /**
  * @author Brian Wing Shun Chan

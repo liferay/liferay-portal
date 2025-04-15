@@ -8,14 +8,14 @@ package com.liferay.portal.vulcan.internal.jaxrs.validation;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
+import jakarta.validation.executable.ExecutableValidator;
+
 import java.lang.reflect.Method;
 
 import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ValidationException;
-import javax.validation.Validator;
-import javax.validation.executable.ExecutableValidator;
 
 /**
  * @author Javier Gamarra

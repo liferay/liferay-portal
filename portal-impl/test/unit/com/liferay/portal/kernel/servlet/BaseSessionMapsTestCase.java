@@ -10,13 +10,13 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.util.PortalImpl;
 import com.liferay.util.SerializableUtil;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

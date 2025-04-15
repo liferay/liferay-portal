@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
 import com.liferay.portal.model.impl.GroupImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceURL;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceURL;
 
 import org.junit.After;
 import org.junit.Assert;

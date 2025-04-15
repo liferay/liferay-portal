@@ -13,10 +13,10 @@ import com.liferay.portal.vulcan.jackson.databind.ObjectMapperProviderUtil;
 
 import io.swagger.v3.oas.models.OpenAPI;
 
-import java.util.Set;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.Provider;
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
+import java.util.Set;
 
 /**
  * @author Javier Gamarra

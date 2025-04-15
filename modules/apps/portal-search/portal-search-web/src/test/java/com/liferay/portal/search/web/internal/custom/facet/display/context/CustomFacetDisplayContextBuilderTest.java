@@ -30,10 +30,10 @@ import com.liferay.portal.search.web.internal.facet.display.context.FacetDisplay
 import com.liferay.portal.search.web.internal.util.DateRangeFactoryUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Collections;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;

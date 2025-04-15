@@ -37,7 +37,7 @@ public class PluginsAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + PluginsAdminPortletKeys.PLUGINS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + PluginsAdminPortletKeys.PLUGINS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

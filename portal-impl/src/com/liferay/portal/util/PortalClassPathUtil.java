@@ -19,6 +19,9 @@ import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -36,9 +39,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;

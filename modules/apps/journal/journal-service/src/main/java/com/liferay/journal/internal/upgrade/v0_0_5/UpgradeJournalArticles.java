@@ -28,12 +28,12 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portlet.PortletPreferencesImpl;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Eudaldo Alonso

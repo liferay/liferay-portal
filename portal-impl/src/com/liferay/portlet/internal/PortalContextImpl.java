@@ -9,6 +9,10 @@ import com.liferay.portal.kernel.portlet.LiferayPortletMode;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -16,10 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.portlet.PortalContext;
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
 
 /**
  * @author Brian Wing Shun Chan

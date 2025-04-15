@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Istvan Sajtos
  */
 @Component(
-	property = "javax.portlet.name=" + LoginPortletKeys.FORGOT_PASSWORD,
+	property = "jakarta.portlet.name=" + LoginPortletKeys.FORGOT_PASSWORD,
 	service = PortletManager.class
 )
 public class ForgotPasswordPortletManager implements PortletManager {

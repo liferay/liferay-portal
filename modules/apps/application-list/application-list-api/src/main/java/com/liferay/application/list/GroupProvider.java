@@ -7,7 +7,7 @@ package com.liferay.application.list;
 
 import com.liferay.portal.kernel.model.Group;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Provides an interface that defines how a <code>Group</code> (in

@@ -8,6 +8,8 @@ package com.liferay.portlet;
 import com.liferay.portal.kernel.util.MappingEnumeration;
 import com.liferay.portal.kernel.util.SetUtil;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Minhchau Dang

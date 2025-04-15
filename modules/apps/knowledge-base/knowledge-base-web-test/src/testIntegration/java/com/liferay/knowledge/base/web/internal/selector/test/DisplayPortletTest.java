@@ -35,9 +35,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.test.MockLiferayPortletContext;
 
-import java.util.Arrays;
+import jakarta.portlet.Portlet;
 
-import javax.portlet.Portlet;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -233,7 +233,7 @@ public class DisplayPortletTest {
 	private Company _company;
 
 	@Inject(
-		filter = "javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY
+		filter = "jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY
 	)
 	private Portlet _displayPortlet;
 

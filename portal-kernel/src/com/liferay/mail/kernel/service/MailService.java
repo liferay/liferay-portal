@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.transaction.Transactional;
 
-import javax.mail.Session;
+import jakarta.mail.Session;
 
 /**
  * @author Brian Wing Shun Chan

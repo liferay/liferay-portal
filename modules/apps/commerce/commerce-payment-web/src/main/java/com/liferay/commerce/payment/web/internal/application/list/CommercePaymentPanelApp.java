@@ -37,7 +37,7 @@ public class CommercePaymentPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePortletKeys.COMMERCE_PAYMENT + ")"
+		target = "(jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_PAYMENT + ")"
 	)
 	private Portlet _portlet;
 

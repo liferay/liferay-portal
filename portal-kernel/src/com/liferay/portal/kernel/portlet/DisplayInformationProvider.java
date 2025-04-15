@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Eudaldo Alonso

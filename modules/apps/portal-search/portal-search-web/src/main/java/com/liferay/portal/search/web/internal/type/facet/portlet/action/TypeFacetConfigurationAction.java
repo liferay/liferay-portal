@@ -15,11 +15,11 @@ import com.liferay.portal.search.web.internal.facet.display.context.builder.Asse
 import com.liferay.portal.search.web.internal.type.facet.constants.TypeFacetPortletKeys;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Lino Alves
  */
 @Component(
-	property = "javax.portlet.name=" + TypeFacetPortletKeys.TYPE_FACET,
+	property = "jakarta.portlet.name=" + TypeFacetPortletKeys.TYPE_FACET,
 	service = ConfigurationAction.class
 )
 public class TypeFacetConfigurationAction extends BaseConfigurationAction {

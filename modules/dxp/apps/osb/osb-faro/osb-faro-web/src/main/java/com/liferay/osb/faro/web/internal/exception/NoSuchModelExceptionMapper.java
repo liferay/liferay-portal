@@ -8,9 +8,9 @@ package com.liferay.osb.faro.web.internal.exception;
 import com.liferay.osb.faro.engine.client.model.ErrorResponse;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 /**
  * @author André Miranda

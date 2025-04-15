@@ -10,11 +10,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.Deserializer;
 import com.liferay.portal.kernel.io.Serializer;
 
+import jakarta.servlet.http.Cookie;
+
 import java.nio.ByteBuffer;
 
 import java.util.Objects;
-
-import javax.servlet.http.Cookie;
 
 /**
  * @author Shuyang Zhou

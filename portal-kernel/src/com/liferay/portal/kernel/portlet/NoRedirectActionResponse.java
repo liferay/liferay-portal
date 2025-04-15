@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.ActionResponse;
-import javax.portlet.filter.ActionResponseWrapper;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.filter.ActionResponseWrapper;
 
 /**
  * @author Brian Wing Shun Chan

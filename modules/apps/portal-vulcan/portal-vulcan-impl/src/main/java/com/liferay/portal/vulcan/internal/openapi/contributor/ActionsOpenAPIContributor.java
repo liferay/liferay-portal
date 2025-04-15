@@ -22,10 +22,10 @@ import io.swagger.v3.oas.models.media.MapSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 
+import jakarta.ws.rs.core.UriInfo;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.ws.rs.core.UriInfo;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

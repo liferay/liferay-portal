@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Wade Cao
  */
 @Component(
-	property = "javax.portlet.name=" + SearchOptionsPortletKeys.SEARCH_OPTIONS,
+	property = "jakarta.portlet.name=" + SearchOptionsPortletKeys.SEARCH_OPTIONS,
 	service = PortletSharedSearchContributor.class
 )
 public class SearchOptionsPortletSharedSearchContributor

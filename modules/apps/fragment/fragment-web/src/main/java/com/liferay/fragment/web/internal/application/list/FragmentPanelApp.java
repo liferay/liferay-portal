@@ -54,7 +54,7 @@ public class FragmentPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + FragmentPortletKeys.FRAGMENT + ")"
+		target = "(jakarta.portlet.name=" + FragmentPortletKeys.FRAGMENT + ")"
 	)
 	private Portlet _portlet;
 

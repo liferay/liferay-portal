@@ -37,7 +37,7 @@ public class CommerceCurrencyPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommerceCurrencyPortletKeys.COMMERCE_CURRENCY + ")"
+		target = "(jakarta.portlet.name=" + CommerceCurrencyPortletKeys.COMMERCE_CURRENCY + ")"
 	)
 	private Portlet _portlet;
 

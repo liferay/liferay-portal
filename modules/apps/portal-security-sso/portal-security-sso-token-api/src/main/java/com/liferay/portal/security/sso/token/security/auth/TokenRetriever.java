@@ -5,7 +5,7 @@
 
 package com.liferay.portal.security.sso.token.security.auth;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Defines the public interface for authentication token location

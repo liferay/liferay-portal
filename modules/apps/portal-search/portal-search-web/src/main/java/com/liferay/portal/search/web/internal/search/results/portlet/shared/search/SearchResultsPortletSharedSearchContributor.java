@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author André de Oliveira
  */
 @Component(
-	property = "javax.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS,
+	property = "jakarta.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS,
 	service = PortletSharedSearchContributor.class
 )
 public class SearchResultsPortletSharedSearchContributor

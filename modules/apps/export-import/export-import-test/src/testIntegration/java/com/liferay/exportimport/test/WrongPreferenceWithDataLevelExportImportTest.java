@@ -18,9 +18,9 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import java.util.Dictionary;
+import jakarta.portlet.Portlet;
 
-import javax.portlet.Portlet;
+import java.util.Dictionary;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -55,7 +55,7 @@ public class WrongPreferenceWithDataLevelExportImportTest
 		BundleContext bundleContext = bundle.getBundleContext();
 
 		Dictionary<String, String> portletProperties =
-			MapUtil.singletonDictionary("javax.portlet.name", _PORTLET_NAME);
+			MapUtil.singletonDictionary("jakarta.portlet.name", _PORTLET_NAME);
 
 		ServiceRegistration<Portlet> portletServiceRegistration =
 			bundleContext.registerService(

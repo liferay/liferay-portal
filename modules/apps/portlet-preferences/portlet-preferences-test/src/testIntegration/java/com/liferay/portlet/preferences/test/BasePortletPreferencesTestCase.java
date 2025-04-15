@@ -69,8 +69,8 @@ public abstract class BasePortletPreferencesTestCase {
 			portlet.getPortletId(), portlet, defaultPreferences);
 	}
 
-	protected javax.portlet.PortletPreferences fetchLayoutJxPortletPreferences(
-			Layout layout, Portlet portlet)
+	protected jakarta.portlet.PortletPreferences
+			fetchLayoutJxPortletPreferences(Layout layout, Portlet portlet)
 		throws Exception {
 
 		return portletPreferencesLocalService.fetchPreferences(

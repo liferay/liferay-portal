@@ -33,9 +33,9 @@ import com.liferay.site.navigation.test.util.SiteNavigationMenuItemTestUtil;
 import com.liferay.site.navigation.test.util.SiteNavigationMenuTestUtil;
 import com.liferay.sites.kernel.util.Sites;
 
-import java.util.Map;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;

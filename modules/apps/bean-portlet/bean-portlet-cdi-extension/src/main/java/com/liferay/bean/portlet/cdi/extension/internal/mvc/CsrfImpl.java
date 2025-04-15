@@ -5,7 +5,7 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.mvc.security.Csrf;
+import jakarta.mvc.security.Csrf;
 
 /**
  * @author Neil Griffin

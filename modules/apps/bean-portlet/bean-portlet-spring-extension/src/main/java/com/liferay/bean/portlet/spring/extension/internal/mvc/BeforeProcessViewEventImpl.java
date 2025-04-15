@@ -5,8 +5,8 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
-import javax.mvc.engine.ViewEngine;
-import javax.mvc.event.BeforeProcessViewEvent;
+import jakarta.mvc.engine.ViewEngine;
+import jakarta.mvc.event.BeforeProcessViewEvent;
 
 /**
  * @author Neil Griffin

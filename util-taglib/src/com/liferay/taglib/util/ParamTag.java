@@ -7,7 +7,7 @@ package com.liferay.taglib.util;
 
 import com.liferay.taglib.TagSupport;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * @author Brian Wing Shun Chan

@@ -5,11 +5,11 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 
-import javax.mvc.RedirectScoped;
-import javax.mvc.binding.BindingResult;
+import jakarta.mvc.RedirectScoped;
+import jakarta.mvc.binding.BindingResult;
 
 /**
  * @author Neil Griffin

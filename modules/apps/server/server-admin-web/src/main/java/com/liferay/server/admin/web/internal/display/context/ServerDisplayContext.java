@@ -14,10 +14,10 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.List;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.util.List;
 
 /**
  * @author Pei-Jung Lan

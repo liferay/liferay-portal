@@ -9,7 +9,7 @@ import com.liferay.freemarker.osgi.bridge.internal.BundleTemplateLoader;
 
 import freemarker.cache.TemplateLoader;
 
-import freemarker.ext.servlet.FreemarkerServlet;
+import freemarker.ext.jakarta.servlet.FreemarkerServlet;
 
 import org.osgi.framework.FrameworkUtil;
 

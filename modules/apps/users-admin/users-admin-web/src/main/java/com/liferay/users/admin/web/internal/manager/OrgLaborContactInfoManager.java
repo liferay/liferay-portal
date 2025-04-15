@@ -10,9 +10,9 @@ import com.liferay.portal.kernel.service.OrgLaborLocalService;
 import com.liferay.portal.kernel.service.OrgLaborService;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.List;
+import jakarta.portlet.ActionRequest;
 
-import javax.portlet.ActionRequest;
+import java.util.List;
 
 /**
  * @author Samuel Trong Tran

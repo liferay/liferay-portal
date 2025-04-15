@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
+	property = "jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
 	service = CustomAttributesDisplay.class
 )
 public class KBFolderCustomAttributesDisplay

@@ -26,13 +26,13 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenuItemTypeConstants;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Pavel Savinov

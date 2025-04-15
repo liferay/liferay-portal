@@ -35,13 +35,13 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.engine.TemplateContextHelper;
 import com.liferay.template.web.internal.util.TemplateDDMTemplateUtil;
 
+import jakarta.portlet.PortletConfig;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import javax.portlet.PortletConfig;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

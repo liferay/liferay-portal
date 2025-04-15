@@ -61,7 +61,7 @@ public class SocialActivityInterpreterLocalServiceImplTest {
 					return null;
 				}),
 			MapUtil.singletonDictionary(
-				"javax.portlet.name",
+				"jakarta.portlet.name",
 				"SocialActivityInterpreterLocalServiceImplTest"));
 	}
 

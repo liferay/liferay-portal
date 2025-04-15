@@ -37,7 +37,7 @@ public class CommerceAvailabilityEstimatePanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePortletKeys.COMMERCE_AVAILABILITY_ESTIMATE + ")"
+		target = "(jakarta.portlet.name=" + CommercePortletKeys.COMMERCE_AVAILABILITY_ESTIMATE + ")"
 	)
 	private Portlet _portlet;
 

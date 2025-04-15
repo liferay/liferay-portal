@@ -36,7 +36,7 @@ public class AuditPanelApp extends BasePanelApp {
 		return AuditPortletKeys.AUDIT;
 	}
 
-	@Reference(target = "(javax.portlet.name=" + AuditPortletKeys.AUDIT + ")")
+	@Reference(target = "(jakarta.portlet.name=" + AuditPortletKeys.AUDIT + ")")
 	private Portlet _portlet;
 
 }

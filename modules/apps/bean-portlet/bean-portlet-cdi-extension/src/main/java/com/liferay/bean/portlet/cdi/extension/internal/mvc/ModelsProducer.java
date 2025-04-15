@@ -5,12 +5,12 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
-import javax.mvc.Models;
-import javax.mvc.RedirectScoped;
+import jakarta.mvc.Models;
+import jakarta.mvc.RedirectScoped;
 
 /**
  * @author Neil Griffin

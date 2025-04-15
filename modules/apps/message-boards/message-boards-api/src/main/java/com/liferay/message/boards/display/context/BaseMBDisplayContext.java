@@ -7,10 +7,10 @@ package com.liferay.message.boards.display.context;
 
 import com.liferay.portal.kernel.display.context.BaseDisplayContext;
 
-import java.util.UUID;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 /**
  * @author Iván Zaera

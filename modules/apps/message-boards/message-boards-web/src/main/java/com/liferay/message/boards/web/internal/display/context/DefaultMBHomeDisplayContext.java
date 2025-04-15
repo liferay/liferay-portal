@@ -11,10 +11,10 @@ import com.liferay.message.boards.web.internal.display.context.helper.MBRequestH
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 
-import java.util.UUID;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 /**
  * @author Iván Zaera

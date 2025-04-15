@@ -33,9 +33,9 @@ import com.liferay.portal.model.impl.CompanyImpl;
 import com.liferay.portal.model.impl.LayoutImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;

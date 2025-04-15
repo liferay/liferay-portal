@@ -7,7 +7,7 @@ package com.liferay.taglib.aui;
 
 import com.liferay.taglib.aui.base.BaseColTag;
 
-import javax.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.JspWriter;
 
 /**
  * @author     Eduardo Lundgren

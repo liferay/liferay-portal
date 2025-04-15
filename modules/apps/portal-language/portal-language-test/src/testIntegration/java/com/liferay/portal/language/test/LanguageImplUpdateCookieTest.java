@@ -14,9 +14,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.Locale;
+import jakarta.servlet.http.Cookie;
 
-import javax.servlet.http.Cookie;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

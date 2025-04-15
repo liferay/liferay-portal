@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Tomas Polesovsky
  */
 @Component(
-	property = "javax.portlet.name=" + GogoShellPortletKeys.GOGO_SHELL,
+	property = "jakarta.portlet.name=" + GogoShellPortletKeys.GOGO_SHELL,
 	service = ControlPanelEntry.class
 )
 public class GogoShellControlPanelEntry extends OmniadminControlPanelEntry {

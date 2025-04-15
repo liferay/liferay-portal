@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Riccardo Alberti
  */
 @Component(
-	property = "javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_DISCOUNT,
+	property = "jakarta.portlet.name=" + CommercePricingPortletKeys.COMMERCE_DISCOUNT,
 	service = CustomAttributesDisplay.class
 )
 public class CommerceDiscountCustomAttributesDisplay

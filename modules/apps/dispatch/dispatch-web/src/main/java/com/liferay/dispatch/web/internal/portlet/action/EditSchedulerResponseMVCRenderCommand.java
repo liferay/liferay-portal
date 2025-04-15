@@ -11,9 +11,9 @@ import com.liferay.dispatch.web.internal.display.context.SchedulerResponseDispla
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + DispatchPortletKeys.DISPATCH,
+		"jakarta.portlet.name=" + DispatchPortletKeys.DISPATCH,
 		"mvc.command.name=/dispatch/edit_scheduler_response"
 	},
 	service = MVCRenderCommand.class

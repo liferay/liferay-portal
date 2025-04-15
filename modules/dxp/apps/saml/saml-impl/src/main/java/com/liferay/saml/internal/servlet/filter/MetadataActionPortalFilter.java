@@ -11,12 +11,12 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.saml.helper.SamlHttpRequestHelper;
 import com.liferay.saml.runtime.configuration.SamlProviderConfigurationHelper;
 
-import java.io.PrintWriter;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

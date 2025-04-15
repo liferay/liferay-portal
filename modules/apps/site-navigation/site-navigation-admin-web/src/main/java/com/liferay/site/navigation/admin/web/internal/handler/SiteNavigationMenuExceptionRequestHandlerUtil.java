@@ -17,8 +17,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.exception.DuplicateSiteNavigationMenuException;
 import com.liferay.site.navigation.exception.SiteNavigationMenuNameException;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 /**
  * @author Jürgen Kappler

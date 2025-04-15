@@ -8,14 +8,14 @@ package com.liferay.deployment.helper.servlet;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.PropsUtil;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 /**
  * @author Raymond Augé

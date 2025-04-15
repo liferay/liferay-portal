@@ -11,8 +11,8 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,11 +22,11 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SEARCH,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SEARCH,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION,
 		"mvc.command.name=/knowledge_base/unsubscribe_kb_article"
 	},
 	service = MVCActionCommand.class

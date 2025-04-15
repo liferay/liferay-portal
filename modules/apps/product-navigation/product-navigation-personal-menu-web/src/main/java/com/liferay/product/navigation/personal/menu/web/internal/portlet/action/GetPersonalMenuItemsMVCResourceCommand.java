@@ -33,18 +33,18 @@ import com.liferay.product.navigation.personal.menu.PersonalMenuEntry;
 import com.liferay.product.navigation.personal.menu.constants.PersonalMenuPortletKeys;
 import com.liferay.product.navigation.personal.menu.util.PersonalApplicationURLUtil;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TreeSet;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -56,7 +56,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + PersonalMenuPortletKeys.PERSONAL_MENU,
+		"jakarta.portlet.name=" + PersonalMenuPortletKeys.PERSONAL_MENU,
 		"mvc.command.name=/product_navigation_personal_menu/get_personal_menu_items"
 	},
 	service = MVCResourceCommand.class

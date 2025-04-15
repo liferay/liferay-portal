@@ -202,6 +202,10 @@ import com.liferay.social.kernel.service.persistence.SocialRelationPersistence;
 import com.liferay.users.admin.kernel.file.uploads.UserFileUploadsSettings;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
+import jakarta.mail.internet.InternetAddress;
+
+import jakarta.portlet.PortletPreferences;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -230,10 +234,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
-import javax.mail.internet.InternetAddress;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * Provides the local service for accessing, adding, authenticating, deleting,

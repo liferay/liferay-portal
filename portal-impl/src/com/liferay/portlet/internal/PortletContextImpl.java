@@ -15,6 +15,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 
+import jakarta.portlet.PortletRequestDispatcher;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+
 import java.io.InputStream;
 
 import java.net.MalformedURLException;
@@ -25,11 +30,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.portlet.PortletRequestDispatcher;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

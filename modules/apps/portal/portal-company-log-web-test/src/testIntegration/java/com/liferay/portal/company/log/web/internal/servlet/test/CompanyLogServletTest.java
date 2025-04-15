@@ -41,6 +41,9 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PortalImpl;
 
+import jakarta.servlet.Servlet;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -52,9 +55,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletResponse;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

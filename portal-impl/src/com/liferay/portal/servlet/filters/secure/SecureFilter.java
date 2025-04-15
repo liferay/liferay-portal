@@ -5,7 +5,7 @@
 
 package com.liferay.portal.servlet.filters.secure;
 
-import javax.servlet.FilterConfig;
+import jakarta.servlet.FilterConfig;
 
 /**
  * @author Mariano Álvaro Sáiz

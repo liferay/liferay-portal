@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alan Huang
  */
 @Component(
-	property = "javax.portlet.name=" + ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
+	property = "jakarta.portlet.name=" + ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
 	service = ControlPanelEntry.class
 )
 public class SystemSettingsControlPanelEntry

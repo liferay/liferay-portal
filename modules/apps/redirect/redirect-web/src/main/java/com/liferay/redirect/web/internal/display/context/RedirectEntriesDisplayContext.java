@@ -46,18 +46,18 @@ import com.liferay.redirect.web.internal.util.comparator.RedirectComparator;
 import com.liferay.redirect.web.internal.util.comparator.RedirectDateComparator;
 import com.liferay.staging.StagingGroupHelper;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.ResourceURL;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletException;
-import javax.portlet.PortletURL;
-import javax.portlet.ResourceURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Alejandro Tardín

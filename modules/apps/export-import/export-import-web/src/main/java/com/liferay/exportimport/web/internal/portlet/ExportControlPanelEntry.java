@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Julio Camarero
  */
 @Component(
-	property = "javax.portlet.name=" + ExportImportPortletKeys.EXPORT,
+	property = "jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
 	service = ControlPanelEntry.class
 )
 public class ExportControlPanelEntry extends ExportImportControlPanelEntry {

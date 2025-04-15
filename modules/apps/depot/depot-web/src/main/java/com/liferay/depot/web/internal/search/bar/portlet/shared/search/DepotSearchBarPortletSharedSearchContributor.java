@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR,
+		"jakarta.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR,
 		"service.ranking:Integer=100"
 	},
 	service = PortletSharedSearchContributor.class
@@ -34,7 +34,7 @@ public class DepotSearchBarPortletSharedSearchContributor
 	}
 
 	@Reference(
-		target = "(&(javax.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR + ")(!(component.name=com.liferay.depot.web.internal.search.bar.portlet.shared.search.DepotSearchBarPortletSharedSearchContributor)))"
+		target = "(&(jakarta.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR + ")(!(component.name=com.liferay.depot.web.internal.search.bar.portlet.shared.search.DepotSearchBarPortletSharedSearchContributor)))"
 	)
 	private PortletSharedSearchContributor
 		_defaultSearchBarPortletSharedSearchContributor;

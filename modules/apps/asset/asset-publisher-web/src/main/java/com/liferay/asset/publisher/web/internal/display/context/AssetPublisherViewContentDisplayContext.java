@@ -20,9 +20,9 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.Objects;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.RenderRequest;
+import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso

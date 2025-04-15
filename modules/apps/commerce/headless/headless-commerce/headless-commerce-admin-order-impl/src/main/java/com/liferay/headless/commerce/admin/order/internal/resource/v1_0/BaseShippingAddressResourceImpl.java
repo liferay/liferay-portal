@@ -26,20 +26,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Alessio Antonio Rendina
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseShippingAddressResourceImpl
 	implements ShippingAddressResource {
 
@@ -61,13 +61,13 @@ public abstract class BaseShippingAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ShippingAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/orderItems/{id}/shippingAddress")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/orderItems/{id}/shippingAddress")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ShippingAddress getOrderItemShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -92,16 +92,16 @@ public abstract class BaseShippingAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ShippingAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/orders/by-externalReferenceCode/{externalReferenceCode}/shippingAddress"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ShippingAddress getOrderByExternalReferenceCodeShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -126,17 +126,17 @@ public abstract class BaseShippingAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ShippingAddress")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path(
 		"/orders/by-externalReferenceCode/{externalReferenceCode}/shippingAddress"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Response patchOrderByExternalReferenceCodeShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			ShippingAddress shippingAddress)
 		throws Exception {
@@ -164,13 +164,13 @@ public abstract class BaseShippingAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ShippingAddress")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/orders/{id}/shippingAddress")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/orders/{id}/shippingAddress")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ShippingAddress getOrderIdShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -195,14 +195,14 @@ public abstract class BaseShippingAddressResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ShippingAddress")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/orders/{id}/shippingAddress")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path("/orders/{id}/shippingAddress")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Response patchOrderIdShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			ShippingAddress shippingAddress)
 		throws Exception {

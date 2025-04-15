@@ -10,7 +10,7 @@ import com.liferay.object.rest.internal.deployer.ObjectDefinitionDeployerImpl;
 import com.liferay.object.rest.internal.jaxrs.context.provider.util.ObjectContextProviderUtil;
 import com.liferay.portal.kernel.util.Portal;
 
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.Provider;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;

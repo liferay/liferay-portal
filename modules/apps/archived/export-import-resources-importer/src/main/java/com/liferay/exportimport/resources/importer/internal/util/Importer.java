@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.resources.importer.internal.util;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

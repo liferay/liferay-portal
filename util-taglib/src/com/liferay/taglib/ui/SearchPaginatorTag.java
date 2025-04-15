@@ -7,7 +7,7 @@ package com.liferay.taglib.ui;
 
 import com.liferay.petra.string.StringPool;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Brian Wing Shun Chan

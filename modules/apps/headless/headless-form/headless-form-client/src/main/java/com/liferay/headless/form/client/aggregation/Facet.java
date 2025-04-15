@@ -8,7 +8,7 @@ package com.liferay.headless.form.client.aggregation;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

@@ -10,10 +10,10 @@ import aQute.bnd.annotation.ProviderType;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.petra.string.StringPool;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
  * @author Pablo Molina

@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.reports.engine.console.constants.ReportsEngineConsolePortletKeys;
 import com.liferay.portal.reports.engine.console.web.internal.admin.portlet.AdminPortlet;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -25,18 +25,18 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.display-category=category.bi",
 		"com.liferay.portlet.header-portlet-css=/admin/css/main.css",
 		"com.liferay.portlet.icon=/icons/display.png",
-		"javax.portlet.display-name=Report Display",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.copy-request-parameters=true",
-		"javax.portlet.init-param.mvc-action-command-package-prefix=com.liferay.portal.reports.engine.console.web.admin.portlet.action",
-		"javax.portlet.init-param.view-template=/display/reports_display.jsp",
-		"javax.portlet.name=" + ReportsEngineConsolePortletKeys.DISPLAY_REPORTS,
-		"javax.portlet.portlet-info.keywords=Reports Display",
-		"javax.portlet.portlet-info.short-title=Reports Display",
-		"javax.portlet.portlet-info.title=Reports Display",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,guest,power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Report Display",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.copy-request-parameters=true",
+		"jakarta.portlet.init-param.mvc-action-command-package-prefix=com.liferay.portal.reports.engine.console.web.admin.portlet.action",
+		"jakarta.portlet.init-param.view-template=/display/reports_display.jsp",
+		"jakarta.portlet.name=" + ReportsEngineConsolePortletKeys.DISPLAY_REPORTS,
+		"jakarta.portlet.portlet-info.keywords=Reports Display",
+		"jakarta.portlet.portlet-info.short-title=Reports Display",
+		"jakarta.portlet.portlet-info.title=Reports Display",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,guest,power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

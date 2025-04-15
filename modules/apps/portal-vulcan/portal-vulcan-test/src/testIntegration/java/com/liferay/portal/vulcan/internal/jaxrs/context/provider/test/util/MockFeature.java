@@ -5,12 +5,12 @@
 
 package com.liferay.portal.vulcan.internal.jaxrs.context.provider.test.util;
 
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
 
 /**
  * @author Cristina González

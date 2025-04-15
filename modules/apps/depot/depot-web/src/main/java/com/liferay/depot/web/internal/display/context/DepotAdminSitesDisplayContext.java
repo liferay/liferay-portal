@@ -31,10 +31,10 @@ import com.liferay.site.item.selector.SiteItemSelectorCriterion;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Cristina González

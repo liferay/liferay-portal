@@ -11,10 +11,10 @@ import com.liferay.fragment.web.internal.constants.FragmentTypeConstants;
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 
-import java.util.Objects;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.util.Objects;
 
 /**
  * @author Jürgen Kappler

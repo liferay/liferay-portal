@@ -48,23 +48,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Alessio Antonio Rendina
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseAccountMemberResourceImpl
 	implements AccountMemberResource, EntityModelResource,
 			   VulcanBatchEngineTaskItemDelegate<AccountMember> {
@@ -97,19 +97,19 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/accounts/by-externalReferenceCode/{externalReferenceCode}/accountMembers"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<AccountMember>
 			getAccountByExternalReferenceCodeAccountMembersPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode,
-				@javax.ws.rs.core.Context Pagination pagination)
+				@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -135,17 +135,17 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
 		"/accounts/by-externalReferenceCode/{externalReferenceCode}/accountMembers"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public AccountMember postAccountByExternalReferenceCodeAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			AccountMember accountMember)
 		throws Exception {
@@ -177,20 +177,20 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
 		"/accounts/by-externalReferenceCode/{externalReferenceCode}/accountMembers/{userId}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Response deleteAccountByExternalReferenceCodeAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userId")
 			Long userId)
 		throws Exception {
 
@@ -223,20 +223,20 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/accounts/by-externalReferenceCode/{externalReferenceCode}/accountMembers/{userId}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public AccountMember getAccountByExternalReferenceCodeAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userId")
 			Long userId)
 		throws Exception {
 
@@ -267,21 +267,21 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path(
 		"/accounts/by-externalReferenceCode/{externalReferenceCode}/accountMembers/{userId}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Response patchAccountByExternalReferenceCodeAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userId")
 			Long userId,
 			AccountMember accountMember)
 		throws Exception {
@@ -319,15 +319,15 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/accounts/{id}/accountMembers")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/accounts/{id}/accountMembers")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<AccountMember> getAccountIdAccountMembersPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
-			@javax.ws.rs.core.Context Pagination pagination)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -353,14 +353,14 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/accounts/{id}/accountMembers")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path("/accounts/{id}/accountMembers")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public AccountMember postAccountIdAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			AccountMember accountMember)
 		throws Exception {
@@ -388,14 +388,14 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path("/accounts/accountMembers/batch")
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/accounts/accountMembers/batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postAccountIdAccountMemberBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -440,17 +440,17 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/accounts/{id}/accountMembers/{userId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/accounts/{id}/accountMembers/{userId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Response deleteAccountIdAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userId")
 			Long userId)
 		throws Exception {
 
@@ -483,17 +483,17 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/accounts/{id}/accountMembers/{userId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/accounts/{id}/accountMembers/{userId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public AccountMember getAccountIdAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userId")
 			Long userId)
 		throws Exception {
 
@@ -524,18 +524,18 @@ public abstract class BaseAccountMemberResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "AccountMember")
 		}
 	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.PATCH
-	@javax.ws.rs.Path("/accounts/{id}/accountMembers/{userId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path("/accounts/{id}/accountMembers/{userId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Response patchAccountIdAccountMember(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userId")
 			Long userId,
 			AccountMember accountMember)
 		throws Exception {

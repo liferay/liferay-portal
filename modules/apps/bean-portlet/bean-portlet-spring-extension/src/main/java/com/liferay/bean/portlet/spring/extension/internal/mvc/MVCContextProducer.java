@@ -5,19 +5,19 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
+import jakarta.annotation.PostConstruct;
+
+import jakarta.mvc.MvcContext;
+import jakarta.mvc.locale.LocaleResolver;
+import jakarta.mvc.security.Encoders;
+
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletRequest;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-
-import javax.mvc.MvcContext;
-import javax.mvc.locale.LocaleResolver;
-import javax.mvc.security.Encoders;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -59,7 +59,7 @@ public class MVCContextProducer implements ApplicationContextAware {
 	private ApplicationContext _applicationContext;
 
 	@Autowired
-	private javax.ws.rs.core.Configuration _configuration;
+	private jakarta.ws.rs.core.Configuration _configuration;
 
 	@Autowired
 	private Encoders _encoders;
@@ -77,7 +77,7 @@ public class MVCContextProducer implements ApplicationContextAware {
 
 		private LocaleResolverPriorityComparator() {
 
-			// The Javadoc for javax.mvc.locale.LocaleResolver states "If no
+			// The Javadoc for jakarta.mvc.locale.LocaleResolver states "If no
 			// priority is explicitly defined, the priority is assumed to be
 			// 1000."
 

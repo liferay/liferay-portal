@@ -20,8 +20,8 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Riccardo Ferrari

@@ -221,6 +221,8 @@ import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.template.model.TemplateEntry;
 import com.liferay.template.service.TemplateEntryLocalService;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -234,8 +236,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.servlet.ServletContext;
 
 import org.junit.After;
 import org.junit.Assert;

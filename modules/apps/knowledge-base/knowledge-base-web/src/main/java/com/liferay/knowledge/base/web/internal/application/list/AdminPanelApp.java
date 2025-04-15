@@ -37,7 +37,7 @@ public class AdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

@@ -5,7 +5,7 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
-import javax.mvc.engine.ViewEngine;
+import jakarta.mvc.engine.ViewEngine;
 
 import org.springframework.context.ApplicationEvent;
 

@@ -20,7 +20,7 @@ import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.xml.Element;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alejandro Tardín
  */
 @Component(
-	property = "javax.portlet.name=" + DepotPortletKeys.DEPOT_ADMIN,
+	property = "jakarta.portlet.name=" + DepotPortletKeys.DEPOT_ADMIN,
 	service = PortletDataHandler.class
 )
 public class DepotAdminPortletDataHandler extends BasePortletDataHandler {

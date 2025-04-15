@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
 		"mvc.command.name=/", "mvc.command.name=/wiki_admin/view"
 	},
 	service = MVCRenderCommand.class

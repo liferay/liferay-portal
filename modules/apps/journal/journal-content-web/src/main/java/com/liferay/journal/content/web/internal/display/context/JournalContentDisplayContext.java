@@ -75,17 +75,17 @@ import com.liferay.trash.TrashHelper;
 import com.liferay.trash.constants.TrashActionKeys;
 import com.liferay.trash.model.TrashEntry;
 
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletURL;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletMode;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
 
 /**
  * @author Eudaldo Alonso

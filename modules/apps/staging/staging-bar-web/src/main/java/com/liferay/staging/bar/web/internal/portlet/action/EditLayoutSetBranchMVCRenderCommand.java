@@ -8,9 +8,9 @@ package com.liferay.staging.bar.web.internal.portlet.action;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.staging.bar.web.internal.portlet.constants.StagingBarPortletKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + StagingBarPortletKeys.STAGING_BAR,
+		"jakarta.portlet.name=" + StagingBarPortletKeys.STAGING_BAR,
 		"mvc.command.name=/staging_bar/edit_layout_set_branch"
 	},
 	service = MVCRenderCommand.class

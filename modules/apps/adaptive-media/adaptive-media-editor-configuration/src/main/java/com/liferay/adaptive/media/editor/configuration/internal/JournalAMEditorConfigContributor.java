@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"editor.name=alloyeditor", "editor.name=ckeditor",
 		"editor.name=ckeditor_classic",
-		"javax.portlet.name=" + JournalPortletKeys.JOURNAL,
+		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
 		"service.ranking:Integer=101"
 	},
 	service = EditorConfigContributor.class

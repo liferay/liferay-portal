@@ -8,7 +8,7 @@ package com.liferay.object.rest.internal.jaxrs.exception.mapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.Provider;
 
 /**
  * @author João Pedro Carvalho Malta

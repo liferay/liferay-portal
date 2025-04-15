@@ -12,7 +12,7 @@ import com.liferay.headless.admin.content.client.http.HttpInvoker;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.hamcrest.CoreMatchers;
 

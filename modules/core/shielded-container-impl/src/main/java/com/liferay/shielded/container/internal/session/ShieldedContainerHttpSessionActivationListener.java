@@ -7,6 +7,11 @@ package com.liferay.shielded.container.internal.session;
 
 import com.liferay.shielded.container.internal.ShieldedContainerClassLoader;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionActivationListener;
+import jakarta.servlet.http.HttpSessionEvent;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -16,11 +21,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionActivationListener;
-import javax.servlet.http.HttpSessionEvent;
 
 /**
  * @author Shuyang Zhou

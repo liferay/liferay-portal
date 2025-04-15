@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ExportImportPortletKeys.EXPORT_IMPORT,
+		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT_IMPORT,
 		"mvc.command.name=/export_import/publish_layouts"
 	},
 	service = MVCRenderCommand.class

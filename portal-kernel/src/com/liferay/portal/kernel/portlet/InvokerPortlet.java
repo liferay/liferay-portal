@@ -5,13 +5,13 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.EventPortlet;
-import javax.portlet.HeaderPortlet;
-import javax.portlet.Portlet;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
-import javax.portlet.ResourceServingPortlet;
+import jakarta.portlet.EventPortlet;
+import jakarta.portlet.HeaderPortlet;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.ResourceServingPortlet;
 
 import org.osgi.annotation.versioning.ProviderType;
 

@@ -16,10 +16,10 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -28,11 +28,11 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SEARCH,
-		"javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ARTICLE,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SEARCH,
+		"jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_SECTION,
 		"mvc.command.name=/", "mvc.command.name=/knowledge_base/view"
 	},
 	service = MVCRenderCommand.class

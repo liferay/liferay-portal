@@ -26,11 +26,11 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.COMMERCE_CHANNELS,
+		"jakarta.portlet.name=" + CPPortletKeys.COMMERCE_CHANNELS,
 		"mvc.command.name=/commerce_channels/edit_commerce_payment_method_group_rel_address_restriction"
 	},
 	service = MVCActionCommand.class

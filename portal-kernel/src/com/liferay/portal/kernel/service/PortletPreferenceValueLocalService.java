@@ -268,7 +268,7 @@ public interface PortletPreferenceValueLocalService
 		long companyId, String name, String smallValue);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public javax.portlet.PortletPreferences getPreferences(
+	public jakarta.portlet.PortletPreferences getPreferences(
 		PortletPreferences portletPreferences);
 
 	/**

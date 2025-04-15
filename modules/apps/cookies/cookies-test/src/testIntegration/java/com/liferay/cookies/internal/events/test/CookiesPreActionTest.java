@@ -14,11 +14,11 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.servlet.http.Cookie;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.servlet.http.Cookie;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

@@ -8,11 +8,11 @@ package com.liferay.portal.spring.hibernate;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.persistence.PersistenceException;
+
 import java.sql.Connection;
 
 import java.util.Map;
-
-import javax.persistence.PersistenceException;
 
 import javax.sql.DataSource;
 

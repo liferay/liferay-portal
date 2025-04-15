@@ -9,7 +9,7 @@ import com.liferay.mail.kernel.model.Account;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 
-import javax.mail.Session;
+import jakarta.mail.Session;
 
 /**
  * @author Brian Wing Shun Chan

@@ -15,9 +15,9 @@ import com.liferay.search.experiences.rest.resource.v1_0.SXPBlueprintResource;
 import com.liferay.site.initializer.extender.OSBSiteInitializer;
 import com.liferay.site.initializer.extender.SiteInitializerUtil;
 
-import java.util.Map;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

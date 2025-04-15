@@ -9,9 +9,9 @@ import com.liferay.dynamic.data.mapping.configuration.DDMWebConfiguration;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 
-import java.util.Map;
+import jakarta.portlet.Portlet;
 
-import javax.portlet.Portlet;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -36,16 +36,16 @@ import org.osgi.service.component.annotations.Modified;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Widget Templates",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.always-send-redirect=true",
-		"javax.portlet.init-param.refererWebDAVToken=application_display_template",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/view_template.jsp",
-		"javax.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Widget Templates",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.always-send-redirect=true",
+		"jakarta.portlet.init-param.refererWebDAVToken=application_display_template",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/view_template.jsp",
+		"jakarta.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

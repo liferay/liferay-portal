@@ -37,7 +37,7 @@ public class AMPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + AMPortletKeys.ADAPTIVE_MEDIA + ")"
+		target = "(jakarta.portlet.name=" + AMPortletKeys.ADAPTIVE_MEDIA + ")"
 	)
 	private Portlet _portlet;
 

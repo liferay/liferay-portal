@@ -15,7 +15,7 @@ import com.liferay.saml.admin.rest.resource.v1_0.SamlProviderResource;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentServiceObjects;

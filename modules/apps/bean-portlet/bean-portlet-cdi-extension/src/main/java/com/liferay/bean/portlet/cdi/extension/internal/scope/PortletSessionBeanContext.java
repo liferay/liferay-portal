@@ -5,14 +5,14 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.scope;
 
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.annotations.PortletSessionScoped;
+
 import java.lang.annotation.Annotation;
-
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-
-import javax.portlet.PortletSession;
-import javax.portlet.annotations.PortletSessionScoped;
 
 /**
  * @author Neil Griffin

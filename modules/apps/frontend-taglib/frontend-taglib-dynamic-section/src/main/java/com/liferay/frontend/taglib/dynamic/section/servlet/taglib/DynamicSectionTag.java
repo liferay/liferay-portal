@@ -11,12 +11,12 @@ import com.liferay.frontend.taglib.dynamic.section.internal.util.DynamicSectionU
 import com.liferay.petra.string.StringBundler;
 import com.liferay.taglib.BaseBodyTagSupport;
 
-import java.util.List;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.tagext.BodyTag;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTag;
+import java.util.List;
 
 /**
  * @author Matthew Tambara

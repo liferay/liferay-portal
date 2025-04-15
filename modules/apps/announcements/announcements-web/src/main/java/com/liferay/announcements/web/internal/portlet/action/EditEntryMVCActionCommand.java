@@ -25,11 +25,11 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,9 +40,9 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ALERTS,
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS,
-		"javax.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ALERTS,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS,
+		"jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN,
 		"mvc.command.name=/announcements/edit_entry"
 	},
 	service = MVCActionCommand.class

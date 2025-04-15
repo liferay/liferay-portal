@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 
-import java.util.Map;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderResponse;
+import java.util.Map;
 
 /**
  * @author Balazs Breier

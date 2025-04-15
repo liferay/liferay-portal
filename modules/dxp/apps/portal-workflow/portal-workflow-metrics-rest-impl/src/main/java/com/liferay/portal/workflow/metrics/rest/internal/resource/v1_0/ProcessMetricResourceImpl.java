@@ -47,6 +47,8 @@ import com.liferay.portal.workflow.metrics.rest.internal.resource.helper.Resourc
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.ProcessMetricResource;
 import com.liferay.portal.workflow.metrics.search.index.constants.WorkflowMetricsIndexNameConstants;
 
+import jakarta.ws.rs.core.MultivaluedMap;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -55,8 +57,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

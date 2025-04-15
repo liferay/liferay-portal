@@ -5,9 +5,9 @@
 
 package com.liferay.portlet.portletconfiguration.util;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.ResourceRequest;
-import javax.portlet.filter.ResourceRequestWrapper;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.filter.ResourceRequestWrapper;
 
 /**
  * @author Raymond Augé

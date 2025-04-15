@@ -5,6 +5,8 @@
 
 package com.liferay.portal.kernel.util;
 
+import jakarta.servlet.http.Cookie;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.Cookie;
 
 import org.osgi.annotation.versioning.ProviderType;
 

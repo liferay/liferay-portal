@@ -17,10 +17,10 @@ import com.liferay.social.activities.web.internal.helper.SocialActivitiesQueryHe
 import com.liferay.social.activities.web.internal.portlet.display.context.helper.SocialActivitiesRequestHelper;
 import com.liferay.social.kernel.model.SocialActivitySet;
 
+import jakarta.portlet.ResourceURL;
+
 import java.util.List;
 import java.util.ResourceBundle;
-
-import javax.portlet.ResourceURL;
 
 /**
  * @author Adolfo Pérez

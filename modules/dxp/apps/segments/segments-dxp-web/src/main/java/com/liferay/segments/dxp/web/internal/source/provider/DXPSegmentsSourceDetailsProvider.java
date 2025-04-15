@@ -9,9 +9,9 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.source.provider.SegmentsSourceDetailsProvider;
 
-import java.util.Locale;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -180,7 +180,7 @@ public class FlagsUserNotificationHandlerTest {
 	}
 
 	@Inject(
-		filter = "javax.portlet.name=com_liferay_flags_web_portlet_FlagsPortlet"
+		filter = "jakarta.portlet.name=com_liferay_flags_web_portlet_FlagsPortlet"
 	)
 	private UserNotificationHandler _userNotificationHandler;
 

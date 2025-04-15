@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.HeaderRequest;
+import jakarta.portlet.HeaderRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

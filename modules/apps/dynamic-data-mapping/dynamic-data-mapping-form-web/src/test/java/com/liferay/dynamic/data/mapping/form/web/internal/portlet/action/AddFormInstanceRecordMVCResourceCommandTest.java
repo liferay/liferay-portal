@@ -26,11 +26,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PropsImpl;
 
+import jakarta.portlet.ResourceRequest;
+
 import java.io.InputStream;
 
 import java.util.Objects;
-
-import javax.portlet.ResourceRequest;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;

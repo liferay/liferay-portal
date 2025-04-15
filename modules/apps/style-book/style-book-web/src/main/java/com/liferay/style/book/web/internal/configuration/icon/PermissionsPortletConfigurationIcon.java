@@ -22,8 +22,8 @@ import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.taglib.security.PermissionsURLTag;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "javax.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK,
+	property = "jakarta.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK,
 	service = PortletConfigurationIcon.class
 )
 public class PermissionsPortletConfigurationIcon

@@ -9,10 +9,11 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 
+import jakarta.xml.ws.Service;
+
 import java.net.URL;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 
 import org.junit.After;
 import org.junit.Before;

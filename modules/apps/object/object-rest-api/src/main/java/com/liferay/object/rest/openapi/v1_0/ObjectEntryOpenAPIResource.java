@@ -9,12 +9,12 @@ import com.liferay.portal.vulcan.batch.engine.Field;
 
 import io.swagger.v3.oas.models.media.Schema;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * @author Luis Miguel Barcos

@@ -13,7 +13,7 @@ import com.liferay.account.service.AccountEntryUserRelLocalServiceUtil;
 import com.liferay.account.validator.AccountEntryEmailAddressValidator;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Erick Monteiro

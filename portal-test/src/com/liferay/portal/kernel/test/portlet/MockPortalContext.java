@@ -5,16 +5,16 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortalContext;
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
 
 /**
  * @author Dante Wang

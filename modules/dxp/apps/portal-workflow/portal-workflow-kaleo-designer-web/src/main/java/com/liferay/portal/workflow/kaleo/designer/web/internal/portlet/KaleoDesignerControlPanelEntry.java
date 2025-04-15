@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Inácio Nery
  */
 @Component(
-	property = "javax.portlet.name=" + KaleoDesignerPortletKeys.KALEO_DESIGNER,
+	property = "jakarta.portlet.name=" + KaleoDesignerPortletKeys.KALEO_DESIGNER,
 	service = ControlPanelEntry.class
 )
 public class KaleoDesignerControlPanelEntry

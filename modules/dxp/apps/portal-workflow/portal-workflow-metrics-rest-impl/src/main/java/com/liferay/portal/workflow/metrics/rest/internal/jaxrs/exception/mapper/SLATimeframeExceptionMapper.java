@@ -9,9 +9,9 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.workflow.metrics.exception.WorkflowMetricsSLADefinitionTimeframeException;
 import com.liferay.portal.workflow.metrics.rest.dto.v1_0.GenericError;
 
-import java.util.List;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
-import javax.ws.rs.ext.ExceptionMapper;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 

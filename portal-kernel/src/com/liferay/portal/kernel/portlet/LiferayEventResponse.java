@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.EventResponse;
+import jakarta.portlet.EventResponse;
 
 import org.osgi.annotation.versioning.ProviderType;
 

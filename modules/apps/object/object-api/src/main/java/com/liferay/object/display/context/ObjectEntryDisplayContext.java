@@ -15,9 +15,9 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 
-import java.util.Map;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.jsp.PageContext;
+import java.util.Map;
 
 /**
  * @author Gabriel Albuquerque

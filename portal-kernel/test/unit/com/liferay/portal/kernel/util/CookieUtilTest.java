@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.util;
 
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

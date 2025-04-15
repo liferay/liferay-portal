@@ -17,9 +17,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.wiki.constants.WikiPortletKeys;
 
-import java.util.Map;
+import jakarta.portlet.ResourceURL;
 
-import javax.portlet.ResourceURL;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,9 +30,9 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"editor.name=alloyeditor_creole", "editor.name=ckeditor_creole",
-		"javax.portlet.name=" + WikiPortletKeys.WIKI,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
 		"service.ranking:Integer=100"
 	},
 	service = EditorConfigContributor.class

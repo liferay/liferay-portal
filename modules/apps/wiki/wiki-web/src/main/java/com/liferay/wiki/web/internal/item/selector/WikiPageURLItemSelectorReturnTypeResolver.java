@@ -19,9 +19,9 @@ import com.liferay.wiki.escape.WikiEscapeUtil;
 import com.liferay.wiki.item.selector.WikiPageURLItemSelectorReturnType;
 import com.liferay.wiki.model.WikiPage;
 
-import java.net.URL;
+import jakarta.portlet.PortletRequest;
 
-import javax.portlet.PortletRequest;
+import java.net.URL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

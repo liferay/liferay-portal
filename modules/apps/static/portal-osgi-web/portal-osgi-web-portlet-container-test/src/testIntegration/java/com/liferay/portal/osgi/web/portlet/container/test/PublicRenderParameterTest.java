@@ -28,14 +28,14 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.osgi.web.portlet.container.test.util.PortletContainerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -92,7 +92,7 @@ public class PublicRenderParameterTest extends BasePortletContainerTestCase {
 					ApplicationType.WIDGET.toString()
 				}
 			).put(
-				"javax.portlet.supported-public-render-parameter", prpName
+				"jakarta.portlet.supported-public-render-parameter", prpName
 			).build(),
 			TEST_PORTLET_ID, false);
 
@@ -174,7 +174,7 @@ public class PublicRenderParameterTest extends BasePortletContainerTestCase {
 		setUpPortlet(
 			testPortlet,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.supported-public-render-parameter", prpName
+				"jakarta.portlet.supported-public-render-parameter", prpName
 			).build(),
 			TEST_PORTLET_ID);
 

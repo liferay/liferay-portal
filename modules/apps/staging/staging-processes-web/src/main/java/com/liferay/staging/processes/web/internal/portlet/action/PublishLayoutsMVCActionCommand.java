@@ -27,10 +27,10 @@ import com.liferay.portal.kernel.util.SessionTreeJSClicks;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.staging.constants.StagingProcessesPortletKeys;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES,
+		"jakarta.portlet.name=" + StagingProcessesPortletKeys.STAGING_PROCESSES,
 		"mvc.command.name=/staging_processes/publish_layouts"
 	},
 	service = MVCActionCommand.class

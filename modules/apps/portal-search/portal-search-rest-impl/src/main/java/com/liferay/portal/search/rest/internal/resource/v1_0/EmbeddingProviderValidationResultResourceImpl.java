@@ -13,7 +13,7 @@ import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderValidationResult;
 import com.liferay.portal.search.rest.resource.v1_0.EmbeddingProviderValidationResultResource;
 
-import javax.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -37,7 +37,7 @@ public class CommerceTaxCategoryPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CPPortletKeys.CP_TAX_CATEGORY + ")"
+		target = "(jakarta.portlet.name=" + CPPortletKeys.CP_TAX_CATEGORY + ")"
 	)
 	private Portlet _portlet;
 

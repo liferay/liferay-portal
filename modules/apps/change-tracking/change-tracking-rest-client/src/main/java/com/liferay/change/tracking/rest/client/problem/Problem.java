@@ -9,7 +9,7 @@ import com.liferay.change.tracking.rest.client.json.BaseJSONParser;
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author David Truong

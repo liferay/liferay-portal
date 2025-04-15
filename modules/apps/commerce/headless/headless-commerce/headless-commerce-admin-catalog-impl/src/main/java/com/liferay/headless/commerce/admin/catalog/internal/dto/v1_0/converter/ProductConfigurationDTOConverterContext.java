@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
+import jakarta.ws.rs.core.UriInfo;
+
 import java.util.Locale;
 import java.util.Map;
-
-import javax.ws.rs.core.UriInfo;
 
 /**
  * @author Andrea Sbarra

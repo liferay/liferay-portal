@@ -7,15 +7,15 @@ package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
 import com.liferay.portal.kernel.util.LocaleUtil;
 
+import jakarta.annotation.ManagedBean;
+import jakarta.annotation.Priority;
+
+import jakarta.mvc.locale.LocaleResolver;
+import jakarta.mvc.locale.LocaleResolverContext;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.annotation.ManagedBean;
-import javax.annotation.Priority;
-
-import javax.mvc.locale.LocaleResolver;
-import javax.mvc.locale.LocaleResolverContext;
 
 /**
  * @author Neil Griffin

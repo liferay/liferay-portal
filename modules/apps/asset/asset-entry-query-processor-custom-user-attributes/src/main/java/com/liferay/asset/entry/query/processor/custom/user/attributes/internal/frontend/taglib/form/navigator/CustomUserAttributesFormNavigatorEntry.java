@@ -17,12 +17,12 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import jakarta.portlet.PortletPreferences;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

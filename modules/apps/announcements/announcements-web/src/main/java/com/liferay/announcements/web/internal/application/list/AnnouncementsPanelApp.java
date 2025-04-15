@@ -37,7 +37,7 @@ public class AnnouncementsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

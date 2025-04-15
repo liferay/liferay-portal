@@ -19,10 +19,10 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletConfig;
+import jakarta.portlet.PortletConfig;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	property = "javax.portlet.name=" + CommerceOrganizationPortletKeys.COMMERCE_ORGANIZATION,
+	property = "jakarta.portlet.name=" + CommerceOrganizationPortletKeys.COMMERCE_ORGANIZATION,
 	service = ConfigurationAction.class
 )
 public class CommerceOrganizationConfigurationAction

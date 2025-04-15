@@ -43,14 +43,14 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.lang.reflect.Constructor;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;

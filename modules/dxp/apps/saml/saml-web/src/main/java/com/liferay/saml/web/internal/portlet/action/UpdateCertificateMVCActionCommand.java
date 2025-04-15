@@ -35,6 +35,9 @@ import com.liferay.saml.runtime.metadata.LocalEntityManager;
 import com.liferay.saml.util.PortletPropsKeys;
 import com.liferay.saml.web.internal.util.SamlTempFileEntryUtil;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
 import java.io.IOException;
 
 import java.security.KeyPair;
@@ -48,9 +51,6 @@ import java.security.cert.X509Certificate;
 
 import java.util.Calendar;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -61,7 +61,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	configurationPid = "com.liferay.saml.runtime.configuration.SamlKeyStoreManagerConfiguration",
 	property = {
-		"javax.portlet.name=" + SamlPortletKeys.SAML_ADMIN,
+		"jakarta.portlet.name=" + SamlPortletKeys.SAML_ADMIN,
 		"mvc.command.name=/admin/update_certificate"
 	},
 	service = MVCActionCommand.class

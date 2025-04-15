@@ -5,10 +5,10 @@
 
 package com.liferay.frontend.taglib.clay.servlet.taglib;
 
+import jakarta.servlet.jsp.JspException;
+
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.jsp.JspException;
 
 /**
  * @author Chema Balsas

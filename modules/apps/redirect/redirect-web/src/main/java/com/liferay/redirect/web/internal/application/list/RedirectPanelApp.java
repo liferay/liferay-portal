@@ -37,7 +37,7 @@ public class RedirectPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + RedirectPortletKeys.REDIRECT + ")"
+		target = "(jakarta.portlet.name=" + RedirectPortletKeys.REDIRECT + ")"
 	)
 	private Portlet _portlet;
 

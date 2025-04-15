@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.portlet.bridges.mvc;
 
-import javax.portlet.PortletException;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 /**
  * Provides an interface to allow the portlet to serve a resource. This
@@ -33,7 +33,7 @@ import javax.portlet.ResourceResponse;
  *
  * <ul>
  * <li>
- * <code>javax.portlet.name</code>: The portlet name associated to this resource
+ * <code>jakarta.portlet.name</code>: The portlet name associated to this resource
  * command.
  * </li>
  * <li>
@@ -47,7 +47,7 @@ import javax.portlet.ResourceResponse;
  * The method {@link MVCPortlet#serveResource(ResourceRequest,
  * ResourceResponse)} searches the OSGi Registry for the resource command that
  * matches both the resource request's portlet name with the property
- * <code>javax.portlet.name</code> and the resource request's
+ * <code>jakarta.portlet.name</code> and the resource request's
  * <code>ResourceID</code> with the property <code>mvc.command.name</code>.
  * </p>
  *

@@ -14,7 +14,7 @@ import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.layout.portlet.preferences.updater.PortletPreferencesUpdater;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

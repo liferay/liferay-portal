@@ -14,14 +14,14 @@ public class UnicodeLanguageUtil_IW {
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern,
 		com.liferay.portal.kernel.language.LanguageWrapper argument) {
 		return UnicodeLanguageUtil.format(httpServletRequest, pattern, argument);
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern,
 		com.liferay.portal.kernel.language.LanguageWrapper argument,
 		boolean translateArguments) {
@@ -30,14 +30,14 @@ public class UnicodeLanguageUtil_IW {
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern,
 		com.liferay.portal.kernel.language.LanguageWrapper[] arguments) {
 		return UnicodeLanguageUtil.format(httpServletRequest, pattern, arguments);
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern,
 		com.liferay.portal.kernel.language.LanguageWrapper[] arguments,
 		boolean translateArguments) {
@@ -46,13 +46,13 @@ public class UnicodeLanguageUtil_IW {
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern, java.lang.Object argument) {
 		return UnicodeLanguageUtil.format(httpServletRequest, pattern, argument);
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern, java.lang.Object argument,
 		boolean translateArguments) {
 		return UnicodeLanguageUtil.format(httpServletRequest, pattern,
@@ -60,13 +60,13 @@ public class UnicodeLanguageUtil_IW {
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern, java.lang.Object[] arguments) {
 		return UnicodeLanguageUtil.format(httpServletRequest, pattern, arguments);
 	}
 
 	public java.lang.String format(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String pattern, java.lang.Object[] arguments,
 		boolean translateArguments) {
 		return UnicodeLanguageUtil.format(httpServletRequest, pattern,
@@ -122,13 +122,13 @@ public class UnicodeLanguageUtil_IW {
 	}
 
 	public java.lang.String get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String key) {
 		return UnicodeLanguageUtil.get(httpServletRequest, key);
 	}
 
 	public java.lang.String get(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String key, java.lang.String defaultValue) {
 		return UnicodeLanguageUtil.get(httpServletRequest, key, defaultValue);
 	}
@@ -153,14 +153,14 @@ public class UnicodeLanguageUtil_IW {
 	}
 
 	public java.lang.String getTimeDescription(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		long milliseconds) {
 		return UnicodeLanguageUtil.getTimeDescription(httpServletRequest,
 			milliseconds);
 	}
 
 	public java.lang.String getTimeDescription(
-		javax.servlet.http.HttpServletRequest httpServletRequest,
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.Long milliseconds) {
 		return UnicodeLanguageUtil.getTimeDescription(httpServletRequest,
 			milliseconds);

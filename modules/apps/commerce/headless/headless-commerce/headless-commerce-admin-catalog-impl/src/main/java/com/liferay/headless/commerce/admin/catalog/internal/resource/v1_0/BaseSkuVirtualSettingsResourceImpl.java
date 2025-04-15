@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Zoltán Takács
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseSkuVirtualSettingsResourceImpl
 	implements SkuVirtualSettingsResource {
 
@@ -60,16 +60,16 @@ public abstract class BaseSkuVirtualSettingsResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "SkuVirtualSettings")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/skus/by-externalReferenceCode/{externalReferenceCode}/sku-virtual-settings"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public SkuVirtualSettings getSkuByExternalReferenceCodeSkuVirtualSettings(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -94,13 +94,13 @@ public abstract class BaseSkuVirtualSettingsResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "SkuVirtualSettings")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/skus/{id}/sku-virtual-settings")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/skus/{id}/sku-virtual-settings")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public SkuVirtualSettings getSkuIdSkuVirtualSettings(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull @javax.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 

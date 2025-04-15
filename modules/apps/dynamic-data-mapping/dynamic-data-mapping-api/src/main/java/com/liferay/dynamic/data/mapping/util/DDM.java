@@ -18,11 +18,11 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import jakarta.portlet.PortletRequest;
+
 import java.io.Serializable;
 
 import java.util.Locale;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Eduardo Lundgren

@@ -20,10 +20,10 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.List;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;

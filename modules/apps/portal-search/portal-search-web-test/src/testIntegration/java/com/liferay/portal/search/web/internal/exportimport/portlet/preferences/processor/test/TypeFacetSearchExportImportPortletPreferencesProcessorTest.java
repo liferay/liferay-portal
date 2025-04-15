@@ -36,7 +36,7 @@ public class TypeFacetSearchExportImportPortletPreferencesProcessorTest
 		return _exportImportPortletPreferencesProcessor;
 	}
 
-	@Inject(filter = "javax.portlet.name=" + TypeFacetPortletKeys.TYPE_FACET)
+	@Inject(filter = "jakarta.portlet.name=" + TypeFacetPortletKeys.TYPE_FACET)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;
 

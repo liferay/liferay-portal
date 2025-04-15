@@ -20,7 +20,7 @@ import com.liferay.portal.search.web.internal.search.bar.portlet.helper.SearchBa
 import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author André de Oliveira
  */
 @Component(
-	property = "javax.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR,
+	property = "jakarta.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR,
 	service = ConfigurationAction.class
 )
 public class SearchBarConfigurationAction extends BaseConfigurationAction {

@@ -32,7 +32,7 @@ import com.liferay.site.navigation.model.SiteNavigationMenu;
 import com.liferay.site.navigation.test.util.SiteNavigationMenuTestUtil;
 import com.liferay.sites.kernel.util.Sites;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;

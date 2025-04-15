@@ -17,13 +17,13 @@ import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.PortletPreferencesSettings;
 import com.liferay.portal.kernel.util.PortletKeys;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 
 import java.util.Collection;
 import java.util.Date;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ValidatorException;
 
 /**
  * @author Iván Zaera

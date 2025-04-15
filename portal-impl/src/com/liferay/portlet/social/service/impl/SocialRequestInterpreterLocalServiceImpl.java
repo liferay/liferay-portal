@@ -57,7 +57,7 @@ public class SocialRequestInterpreterLocalServiceImpl
 		_serviceTracker = new ServiceTracker<>(
 			_bundleContext,
 			SystemBundleUtil.createFilter(
-				"(&(javax.portlet.name=*)(objectClass=" +
+				"(&(jakarta.portlet.name=*)(objectClass=" +
 					SocialRequestInterpreter.class.getName() + "))"),
 			new SocialRequestInterpreterServiceTrackerCustomizer());
 
@@ -244,7 +244,7 @@ public class SocialRequestInterpreterLocalServiceImpl
 
 			if (!(requestInterpreter instanceof SocialRequestInterpreterImpl)) {
 				String portletId = (String)serviceReference.getProperty(
-					"javax.portlet.name");
+					"jakarta.portlet.name");
 
 				requestInterpreter = new SocialRequestInterpreterImpl(
 					portletId, requestInterpreter);

@@ -5,6 +5,10 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
+import jakarta.annotation.ManagedBean;
+
+import jakarta.mvc.Models;
+
 import java.io.Serializable;
 
 import java.util.Collections;
@@ -12,10 +16,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.ManagedBean;
-
-import javax.mvc.Models;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

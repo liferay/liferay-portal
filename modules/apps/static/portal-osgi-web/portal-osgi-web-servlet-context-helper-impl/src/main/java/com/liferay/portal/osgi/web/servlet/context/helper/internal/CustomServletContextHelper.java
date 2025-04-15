@@ -19,6 +19,13 @@ import com.liferay.portal.osgi.web.servlet.context.helper.definition.WebResource
 import com.liferay.portal.servlet.delegate.ServletContextDelegate;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -27,13 +34,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;

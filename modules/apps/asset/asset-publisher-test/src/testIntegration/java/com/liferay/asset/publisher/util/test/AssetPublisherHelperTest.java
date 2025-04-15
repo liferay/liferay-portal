@@ -58,11 +58,11 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.ratings.test.util.RatingsTestUtil;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

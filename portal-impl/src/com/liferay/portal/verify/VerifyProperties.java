@@ -1846,7 +1846,7 @@ public class VerifyProperties {
 		"intraband.welder.socket.tcp.no.delay",
 		"invitation.email.max.recipients", "invitation.email.message.body",
 		"invitation.email.message.subject", "invoker.filter.chain.cache.size",
-		"javadoc.manager.enabled", "javax.persistence.validation.mode",
+		"javadoc.manager.enabled", "jakarta.persistence.validation.mode",
 		"jbi.workflow.url", "jcr.initialize.on.startup",
 		"jcr.jackrabbit.config.file.path",
 		"jcr.jackrabbit.credentials.password",

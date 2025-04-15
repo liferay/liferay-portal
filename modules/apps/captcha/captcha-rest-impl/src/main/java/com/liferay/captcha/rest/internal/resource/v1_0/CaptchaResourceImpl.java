@@ -21,9 +21,9 @@ import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.servlet.filters.secure.NonceUtil;
 
-import java.io.ByteArrayOutputStream;
+import jakarta.ws.rs.ForbiddenException;
 
-import javax.ws.rs.ForbiddenException;
+import java.io.ByteArrayOutputStream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

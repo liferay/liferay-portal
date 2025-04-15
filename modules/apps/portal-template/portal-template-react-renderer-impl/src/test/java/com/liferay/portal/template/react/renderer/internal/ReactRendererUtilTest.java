@@ -20,6 +20,8 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -31,8 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

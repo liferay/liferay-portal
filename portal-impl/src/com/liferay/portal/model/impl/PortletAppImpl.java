@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.model.PublicRenderParameter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.QName;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -22,8 +24,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
 
 import javax.xml.XMLConstants;
 

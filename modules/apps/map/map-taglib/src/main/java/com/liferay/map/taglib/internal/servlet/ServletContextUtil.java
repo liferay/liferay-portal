@@ -12,9 +12,9 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.GroupLocalService;
 
-import java.util.Collection;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.util.Collection;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

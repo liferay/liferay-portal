@@ -44,7 +44,7 @@ public class MarketplaceGeneralPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + MarketplacePortletKeys.GENERAL + ")"
+		target = "(jakarta.portlet.name=" + MarketplacePortletKeys.GENERAL + ")"
 	)
 	private Portlet _portlet;
 

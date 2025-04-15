@@ -9,7 +9,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchEntry;
 import com.liferay.taglib.util.ParamAndPropertyAncestorTagImpl;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * @author Raymond Augé

@@ -70,14 +70,14 @@ import com.liferay.social.kernel.model.SocialRequestInterpreter;
 import com.liferay.social.kernel.model.impl.SocialActivityInterpreterImpl;
 import com.liferay.social.kernel.model.impl.SocialRequestInterpreterImpl;
 
+import jakarta.portlet.PreferencesValidator;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PreferencesValidator;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -99,20 +99,20 @@ public class PortletBagFactory {
 
 		_validate();
 
-		javax.portlet.Portlet portletInstance = _getPortletInstance(portlet);
+		jakarta.portlet.Portlet portletInstance = _getPortletInstance(portlet);
 
 		return create(portlet, portletInstance, destroyPrevious);
 	}
 
 	public PortletBag create(
-			Portlet portlet, javax.portlet.Portlet portletInstance,
+			Portlet portlet, jakarta.portlet.Portlet portletInstance,
 			boolean destroyPrevious)
 		throws Exception {
 
 		_validate();
 
 		Dictionary<String, Object> properties = MapUtil.singletonDictionary(
-			"javax.portlet.name", portlet.getPortletName());
+			"jakarta.portlet.name", portlet.getPortletName());
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
@@ -269,7 +269,7 @@ public class PortletBagFactory {
 		return _configuration.get(propertyKey);
 	}
 
-	private javax.portlet.Portlet _getPortletInstance(Portlet portlet)
+	private jakarta.portlet.Portlet _getPortletInstance(Portlet portlet)
 		throws Exception {
 
 		Class<?> portletClass = null;
@@ -285,7 +285,7 @@ public class PortletBagFactory {
 			return null;
 		}
 
-		return (javax.portlet.Portlet)portletClass.newInstance();
+		return (jakarta.portlet.Portlet)portletClass.newInstance();
 	}
 
 	private <T> T _newInstance(
@@ -850,7 +850,7 @@ public class PortletBagFactory {
 			bundleContext.registerService(
 				WebDAVStorage.class, webDAVStorageInstance,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"javax.portlet.name", portlet.getPortletId()
+					"jakarta.portlet.name", portlet.getPortletId()
 				).put(
 					"webdav.storage.token", portlet.getWebDAVStorageToken()
 				).build());

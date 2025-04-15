@@ -7,9 +7,9 @@ package com.liferay.site.manager;
 
 import com.liferay.portal.kernel.model.Group;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Julio Camarero

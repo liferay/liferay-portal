@@ -10,9 +10,9 @@ import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author guywandji

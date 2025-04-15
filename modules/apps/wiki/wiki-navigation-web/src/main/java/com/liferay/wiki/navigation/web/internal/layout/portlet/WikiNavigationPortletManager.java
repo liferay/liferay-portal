@@ -17,8 +17,8 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + WikiNavigationPortletKeys.PAGE_MENU,
-		"javax.portlet.name=" + WikiNavigationPortletKeys.TREE_MENU
+		"jakarta.portlet.name=" + WikiNavigationPortletKeys.PAGE_MENU,
+		"jakarta.portlet.name=" + WikiNavigationPortletKeys.TREE_MENU
 	},
 	service = PortletManager.class
 )

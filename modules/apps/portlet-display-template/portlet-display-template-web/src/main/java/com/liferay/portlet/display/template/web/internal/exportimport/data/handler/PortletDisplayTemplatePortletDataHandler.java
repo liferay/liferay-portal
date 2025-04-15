@@ -33,10 +33,10 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.xml.Element;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	enabled = false,
-	property = "javax.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
+	property = "jakarta.portlet.name=" + PortletKeys.PORTLET_DISPLAY_TEMPLATE,
 	service = PortletDataHandler.class
 )
 public class PortletDisplayTemplatePortletDataHandler

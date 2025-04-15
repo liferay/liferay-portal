@@ -27,13 +27,13 @@ import com.liferay.portal.layoutconfiguration.util.velocity.TemplateProcessor;
 import com.liferay.portlet.internal.PortletBagUtil;
 import com.liferay.portlet.internal.PortletTypeUtil;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.time.StopWatch;
 
@@ -206,7 +206,7 @@ public class RuntimePageUtil {
 					continue;
 				}
 
-				javax.portlet.Portlet portlet =
+				jakarta.portlet.Portlet portlet =
 					PortletBagUtil.getPortletInstance(
 						httpServletRequest.getServletContext(), portletModel,
 						portletModel.getRootPortletId());

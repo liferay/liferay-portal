@@ -16,8 +16,8 @@ import com.liferay.portal.kernel.webdav.methods.Method;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.webdav.WebDAVServlet;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

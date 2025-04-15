@@ -18,11 +18,11 @@ import com.liferay.portal.workflow.definition.groovy.script.use.WorkflowDefiniti
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 import com.liferay.portal.workflow.portlet.tab.WorkflowPortletTabRegistry;
 
+import jakarta.portlet.ResourceRequest;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.portlet.ResourceRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

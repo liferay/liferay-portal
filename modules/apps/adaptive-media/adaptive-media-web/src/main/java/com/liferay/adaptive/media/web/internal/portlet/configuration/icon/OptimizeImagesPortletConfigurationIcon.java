@@ -23,10 +23,10 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.Collection;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import java.util.Collection;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + AMPortletKeys.ADAPTIVE_MEDIA,
+	property = "jakarta.portlet.name=" + AMPortletKeys.ADAPTIVE_MEDIA,
 	service = PortletConfigurationIcon.class
 )
 public class OptimizeImagesPortletConfigurationIcon

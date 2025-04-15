@@ -12,10 +12,10 @@ import com.liferay.exportimport.portlet.preferences.processor.base.BaseExportImp
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.util.ListUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Reference;
 

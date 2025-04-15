@@ -10,12 +10,12 @@ import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.portlet.LiferayPortletContext;
 import com.liferay.portlet.internal.PortletContextImpl;
 
+import jakarta.portlet.PortletContext;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.PortletContext;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Michael C. Han

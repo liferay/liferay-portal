@@ -12,11 +12,11 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.redirect.model.RedirectEntry;
 import com.liferay.redirect.web.internal.constants.RedirectPortletKeys;
 
-import java.util.Map;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
+import java.util.Map;
 
 /**
  * @author Alejandro Tardín

@@ -33,6 +33,10 @@ import com.liferay.portlet.PortalPreferencesImpl;
 import com.liferay.portlet.PortalPreferencesWrapper;
 import com.liferay.portlet.PortletPreferencesImpl;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 
 import java.util.Enumeration;
@@ -40,10 +44,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

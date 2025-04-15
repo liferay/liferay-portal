@@ -5,7 +5,7 @@
 
 package com.liferay.search.experiences.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Brian Wing Shun Chan

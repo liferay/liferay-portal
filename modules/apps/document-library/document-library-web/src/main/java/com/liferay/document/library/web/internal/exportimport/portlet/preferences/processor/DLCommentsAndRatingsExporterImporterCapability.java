@@ -9,9 +9,9 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
 
-import java.util.Map;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 

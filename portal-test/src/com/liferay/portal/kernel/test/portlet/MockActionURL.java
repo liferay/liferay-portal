@@ -5,10 +5,10 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import javax.portlet.ActionURL;
-import javax.portlet.MimeResponse;
-import javax.portlet.MutableActionParameters;
-import javax.portlet.PortalContext;
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.MutableActionParameters;
+import jakarta.portlet.PortalContext;
 
 /**
  * @author Dante Wang

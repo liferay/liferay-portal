@@ -5,11 +5,11 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.beans;
 
+import jakarta.portlet.PortletResponse;
+
+import jakarta.servlet.http.Cookie;
+
 import java.util.Collection;
-
-import javax.portlet.PortletResponse;
-
-import javax.servlet.http.Cookie;
 
 import org.w3c.dom.Element;
 

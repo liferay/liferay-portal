@@ -43,11 +43,11 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.test.MockLiferayPortletContext;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletURL;
+
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletURL;
 
 import org.junit.Assert;
 import org.junit.Before;

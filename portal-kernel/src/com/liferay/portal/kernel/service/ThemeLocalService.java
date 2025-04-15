@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.annotation.versioning.ProviderType;
 

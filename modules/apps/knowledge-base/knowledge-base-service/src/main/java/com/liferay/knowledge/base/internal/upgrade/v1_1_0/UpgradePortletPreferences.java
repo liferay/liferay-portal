@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.upgrade.CamelCaseUpgradePortletPreferences;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Collections;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Peter Shin

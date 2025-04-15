@@ -10,14 +10,14 @@ import com.liferay.petra.io.unsync.UnsyncPrintWriter;
 import com.liferay.portal.kernel.internal.servlet.RestrictedByteArrayCacheOutputStream;
 import com.liferay.portal.kernel.internal.servlet.RestrictedByteArrayCacheOutputStream.FlushPreAction;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.nio.ByteBuffer;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Shuyang Zhou

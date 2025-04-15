@@ -16,13 +16,13 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletPreferences;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Balazs Breier
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_SORT,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_SORT,
 	service = ConfigurationAction.class
 )
 public class CPSortConfigurationAction extends BaseConfigurationAction {

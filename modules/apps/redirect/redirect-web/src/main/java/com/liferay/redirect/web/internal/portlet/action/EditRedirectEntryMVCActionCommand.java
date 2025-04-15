@@ -21,10 +21,10 @@ import com.liferay.redirect.service.RedirectEntryService;
 import com.liferay.redirect.web.internal.constants.RedirectPortletKeys;
 import com.liferay.redirect.web.internal.util.RedirectUtil;
 
-import java.util.Date;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import java.util.Date;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + RedirectPortletKeys.REDIRECT,
+		"jakarta.portlet.name=" + RedirectPortletKeys.REDIRECT,
 		"mvc.command.name=/redirect/edit_redirect_entry"
 	},
 	service = MVCActionCommand.class

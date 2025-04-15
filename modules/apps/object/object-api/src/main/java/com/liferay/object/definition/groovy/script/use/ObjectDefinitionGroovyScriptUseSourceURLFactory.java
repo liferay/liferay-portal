@@ -14,8 +14,8 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.util.PropsValues;
 
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
 
 /**
  * @author Feliphe Marinho

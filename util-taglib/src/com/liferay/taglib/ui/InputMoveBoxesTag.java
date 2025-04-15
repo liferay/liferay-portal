@@ -8,9 +8,9 @@ package com.liferay.taglib.ui;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.taglib.util.IncludeTag;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan

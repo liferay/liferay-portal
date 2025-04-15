@@ -10,9 +10,9 @@ import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.Date;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * @author Luca Pellizzon

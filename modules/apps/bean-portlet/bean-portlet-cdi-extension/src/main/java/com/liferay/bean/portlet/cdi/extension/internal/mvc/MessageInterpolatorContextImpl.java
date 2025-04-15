@@ -5,9 +5,9 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.MessageInterpolator;
-import javax.validation.metadata.ConstraintDescriptor;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.metadata.ConstraintDescriptor;
 
 /**
  * @author Neil Griffin

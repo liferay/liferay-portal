@@ -51,6 +51,10 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.mail.internet.InternetAddress;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.Writer;
 
 import java.net.URL;
@@ -62,10 +66,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Function;
-
-import javax.mail.internet.InternetAddress;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -8,8 +8,8 @@ package com.liferay.shielded.container.internal.proxy;
 import com.liferay.shielded.container.internal.ShieldedContainerClassLoader;
 import com.liferay.shielded.container.internal.session.SerializationUtil;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * @author Shuyang Zhou

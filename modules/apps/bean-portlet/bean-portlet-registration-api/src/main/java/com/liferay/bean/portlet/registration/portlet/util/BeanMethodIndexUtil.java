@@ -8,6 +8,10 @@ package com.liferay.bean.portlet.registration.portlet.util;
 import com.liferay.bean.portlet.extension.BeanPortletMethod;
 import com.liferay.bean.portlet.extension.BeanPortletMethodType;
 
+import jakarta.portlet.annotations.ActionMethod;
+import jakarta.portlet.annotations.EventMethod;
+import jakarta.portlet.annotations.PortletQName;
+
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
@@ -16,10 +20,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.annotations.ActionMethod;
-import javax.portlet.annotations.EventMethod;
-import javax.portlet.annotations.PortletQName;
 
 import javax.xml.namespace.QName;
 

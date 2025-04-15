@@ -13,11 +13,11 @@ import com.liferay.wiki.exception.NoSuchNodeException;
 import com.liferay.wiki.navigation.web.internal.constants.WikiNavigationPortletKeys;
 import com.liferay.wiki.service.WikiNodeService;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + WikiNavigationPortletKeys.TREE_MENU,
+	property = "jakarta.portlet.name=" + WikiNavigationPortletKeys.TREE_MENU,
 	service = ConfigurationAction.class
 )
 public class WikiNavigationTreeMenuConfigurationAction

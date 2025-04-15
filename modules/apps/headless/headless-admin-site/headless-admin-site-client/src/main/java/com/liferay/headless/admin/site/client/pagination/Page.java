@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Rubén Pulido

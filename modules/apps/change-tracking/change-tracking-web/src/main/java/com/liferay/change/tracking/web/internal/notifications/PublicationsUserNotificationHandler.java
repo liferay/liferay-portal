@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pei-Jung Lan
  */
 @Component(
-	property = "javax.portlet.name=" + CTPortletKeys.PUBLICATIONS,
+	property = "jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS,
 	service = UserNotificationHandler.class
 )
 public class PublicationsUserNotificationHandler

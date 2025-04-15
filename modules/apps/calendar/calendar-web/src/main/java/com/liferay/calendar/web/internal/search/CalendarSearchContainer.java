@@ -7,8 +7,8 @@ package com.liferay.calendar.web.internal.search;
 
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
 /**
  * @author Mariano Álvaro Sáiz

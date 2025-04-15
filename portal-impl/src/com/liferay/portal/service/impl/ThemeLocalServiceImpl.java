@@ -43,6 +43,8 @@ import com.liferay.portal.service.base.ThemeLocalServiceBaseImpl;
 import com.liferay.portal.util.ThemeFactoryUtil;
 import com.liferay.util.ContextReplace;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,8 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

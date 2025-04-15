@@ -5,14 +5,14 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
-import javax.annotation.ManagedBean;
+import jakarta.annotation.ManagedBean;
 
-import javax.mvc.Models;
+import jakarta.mvc.Models;
 
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletRequest;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletRequest;
 
-import javax.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

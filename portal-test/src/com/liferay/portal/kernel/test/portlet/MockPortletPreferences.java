@@ -7,6 +7,11 @@ package com.liferay.portal.kernel.test.portlet;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PreferencesValidator;
+import jakarta.portlet.ReadOnlyException;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 
 import java.util.Collections;
@@ -15,11 +20,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PreferencesValidator;
-import javax.portlet.ReadOnlyException;
-import javax.portlet.ValidatorException;
 
 import org.springframework.util.Assert;
 

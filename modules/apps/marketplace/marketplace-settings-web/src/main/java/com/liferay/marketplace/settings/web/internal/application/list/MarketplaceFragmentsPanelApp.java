@@ -44,7 +44,7 @@ public class MarketplaceFragmentsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + MarketplacePortletKeys.FRAGMENTS + ")"
+		target = "(jakarta.portlet.name=" + MarketplacePortletKeys.FRAGMENTS + ")"
 	)
 	private Portlet _portlet;
 

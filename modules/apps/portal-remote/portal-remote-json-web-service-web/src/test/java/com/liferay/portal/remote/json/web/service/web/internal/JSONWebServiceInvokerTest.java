@@ -20,6 +20,8 @@ import com.liferay.portal.remote.json.web.service.JSONWebServiceAction;
 import com.liferay.portal.remote.json.web.service.web.internal.action.JSONWebServiceInvokerAction;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -28,8 +30,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.Assert;

@@ -16,10 +16,10 @@ import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionValues;
 import com.liferay.ratings.kernel.transformer.RatingsDataTransformer;
 import com.liferay.ratings.kernel.transformer.RatingsDataTransformerUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.AfterClass;
 import org.junit.Assert;

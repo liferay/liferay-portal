@@ -35,7 +35,7 @@ public class LayoutAssetEntryProviderRegistryImpl
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, LayoutAssetEntryProvider.class,
-			"javax.portlet.name");
+			"jakarta.portlet.name");
 	}
 
 	@Deactivate

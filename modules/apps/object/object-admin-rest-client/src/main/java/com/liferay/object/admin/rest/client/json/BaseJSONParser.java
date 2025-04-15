@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

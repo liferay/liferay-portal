@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.webdav.methods.Method;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.junit.ClassRule;
 import org.junit.Rule;

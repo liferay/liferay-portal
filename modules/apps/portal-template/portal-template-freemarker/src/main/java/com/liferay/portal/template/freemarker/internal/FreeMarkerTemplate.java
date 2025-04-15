@@ -36,14 +36,14 @@ import freemarker.template.TemplateModelWithAPISupport;
 import freemarker.template.WrappingTemplateModel;
 import freemarker.template.utility.ObjectWrapperWithAPISupport;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.Serializable;
 import java.io.Writer;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Mika Koivisto

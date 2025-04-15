@@ -5,7 +5,7 @@
 
 package com.liferay.object.display.context;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Pedro Leite

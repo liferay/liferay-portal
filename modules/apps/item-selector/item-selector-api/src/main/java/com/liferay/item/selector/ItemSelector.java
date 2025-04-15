@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletURL;
 
 import org.osgi.annotation.versioning.ProviderType;
 

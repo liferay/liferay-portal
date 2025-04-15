@@ -7,11 +7,11 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.authorize.exception.m
 
 import com.liferay.petra.string.StringBundler;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
 

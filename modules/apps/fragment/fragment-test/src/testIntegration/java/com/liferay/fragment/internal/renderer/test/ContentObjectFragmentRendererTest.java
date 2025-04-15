@@ -66,9 +66,9 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.template.model.TemplateEntry;
 import com.liferay.template.test.util.TemplateTestUtil;
 
-import java.util.HashMap;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Assert;

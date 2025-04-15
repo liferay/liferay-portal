@@ -12,9 +12,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
-import java.util.List;
+import jakarta.ws.rs.core.Response;
 
-import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Converts any {@code InvalidFormatException} to a {@code 400} error.

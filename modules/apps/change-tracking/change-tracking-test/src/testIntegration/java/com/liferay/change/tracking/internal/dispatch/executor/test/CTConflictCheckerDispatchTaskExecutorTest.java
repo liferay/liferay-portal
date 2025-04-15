@@ -183,7 +183,7 @@ public class CTConflictCheckerDispatchTaskExecutorTest {
 	private UserNotificationEventLocalService
 		_userNotificationEventLocalService;
 
-	@Inject(filter = "javax.portlet.name=" + CTPortletKeys.PUBLICATIONS)
+	@Inject(filter = "jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS)
 	private UserNotificationHandler _userNotificationHandler;
 
 }

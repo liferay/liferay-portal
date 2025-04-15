@@ -5,7 +5,7 @@
 
 package com.liferay.saml.admin.rest.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Stian Sigvartsen

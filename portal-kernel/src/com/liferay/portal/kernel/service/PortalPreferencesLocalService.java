@@ -26,7 +26,7 @@ import java.io.Serializable;
 
 import java.util.List;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.annotation.versioning.ProviderType;
 

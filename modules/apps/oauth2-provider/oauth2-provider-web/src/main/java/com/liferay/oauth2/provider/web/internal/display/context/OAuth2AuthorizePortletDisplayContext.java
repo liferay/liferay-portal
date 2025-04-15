@@ -12,10 +12,10 @@ import com.liferay.oauth2.provider.service.OAuth2ApplicationService;
 import com.liferay.oauth2.provider.web.internal.AssignableScopes;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Tomas Polesovsky

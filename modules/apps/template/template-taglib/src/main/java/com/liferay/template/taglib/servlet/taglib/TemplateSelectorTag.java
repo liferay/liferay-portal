@@ -36,14 +36,14 @@ import com.liferay.template.constants.TemplatePortletKeys;
 import com.liferay.template.taglib.internal.security.permission.resource.DDMTemplatePermission;
 import com.liferay.template.taglib.internal.servlet.ServletContextUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 /**
  * @author Eudaldo Alonso

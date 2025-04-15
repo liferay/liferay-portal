@@ -20,10 +20,10 @@ import com.liferay.portal.workflow.kaleo.forms.model.KaleoTaskFormPair;
 import com.liferay.portal.workflow.kaleo.forms.model.KaleoTaskFormPairs;
 import com.liferay.portal.workflow.kaleo.forms.web.internal.util.KaleoFormsUtil;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Mariano Álvaro Sáiz

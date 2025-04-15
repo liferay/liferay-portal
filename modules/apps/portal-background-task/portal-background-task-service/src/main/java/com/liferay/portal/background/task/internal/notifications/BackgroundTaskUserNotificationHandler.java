@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Dante Wang
  */
 @Component(
-	property = "javax.portlet.name=" + BackgroundTaskPortletKeys.BACKGROUND_TASK,
+	property = "jakarta.portlet.name=" + BackgroundTaskPortletKeys.BACKGROUND_TASK,
 	service = UserNotificationHandler.class
 )
 public class BackgroundTaskUserNotificationHandler

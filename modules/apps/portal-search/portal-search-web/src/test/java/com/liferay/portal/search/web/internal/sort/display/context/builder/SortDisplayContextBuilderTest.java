@@ -20,7 +20,7 @@ import com.liferay.portal.search.web.internal.sort.display.context.SortDisplayCo
 import com.liferay.portal.search.web.internal.sort.portlet.SortPortletPreferencesImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

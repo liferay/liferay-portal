@@ -8,22 +8,22 @@ package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.annotation.PostConstruct;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Produces;
+
+import jakarta.inject.Inject;
+
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.NoProviderFoundException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+
 import java.util.Iterator;
-
-import javax.annotation.PostConstruct;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
-
-import javax.inject.Inject;
-
-import javax.validation.MessageInterpolator;
-import javax.validation.NoProviderFoundException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 /**
  * @author Neil Griffin

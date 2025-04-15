@@ -8,7 +8,7 @@ package com.liferay.commerce.product.type.virtual.web.internal.display.context.h
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Alessio Antonio Rendina

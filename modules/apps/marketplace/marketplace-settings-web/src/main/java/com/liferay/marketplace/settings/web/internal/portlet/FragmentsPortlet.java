@@ -8,7 +8,7 @@ package com.liferay.marketplace.settings.web.internal.portlet;
 import com.liferay.marketplace.constants.MarketplacePortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -17,11 +17,12 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.description=", "javax.portlet.display-name=Fragments",
-		"javax.portlet.name=" + MarketplacePortletKeys.FRAGMENTS,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.description=",
+		"jakarta.portlet.display-name=Fragments",
+		"jakarta.portlet.name=" + MarketplacePortletKeys.FRAGMENTS,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

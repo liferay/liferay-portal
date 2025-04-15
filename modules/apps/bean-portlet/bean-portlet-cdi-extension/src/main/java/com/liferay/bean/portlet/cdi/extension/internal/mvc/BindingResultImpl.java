@@ -5,6 +5,10 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
+import jakarta.mvc.binding.BindingError;
+import jakarta.mvc.binding.ParamError;
+import jakarta.mvc.binding.ValidationError;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -12,10 +16,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.mvc.binding.BindingError;
-import javax.mvc.binding.ParamError;
-import javax.mvc.binding.ValidationError;
 
 /**
  * @author Neil Griffin

@@ -7,7 +7,7 @@ package com.liferay.commerce.product.type.virtual.order.content.web.internal.dis
 
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Alessio Antonio Rendina

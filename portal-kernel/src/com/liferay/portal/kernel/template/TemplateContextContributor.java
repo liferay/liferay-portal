@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.template;
 
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author Julio Camarero

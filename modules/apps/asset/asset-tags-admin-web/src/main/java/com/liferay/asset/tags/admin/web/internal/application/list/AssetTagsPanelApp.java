@@ -37,7 +37,7 @@ public class AssetTagsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

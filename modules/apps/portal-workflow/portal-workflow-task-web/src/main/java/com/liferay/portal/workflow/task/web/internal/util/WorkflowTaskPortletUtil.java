@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Marcellus Tavares

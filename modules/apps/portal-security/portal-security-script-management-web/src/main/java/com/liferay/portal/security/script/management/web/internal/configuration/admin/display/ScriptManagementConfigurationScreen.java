@@ -12,14 +12,14 @@ import com.liferay.portal.security.script.management.configuration.helper.Script
 import com.liferay.portal.security.script.management.web.internal.display.context.ScriptManagementConfigurationDisplayContext;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.util.Locale;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

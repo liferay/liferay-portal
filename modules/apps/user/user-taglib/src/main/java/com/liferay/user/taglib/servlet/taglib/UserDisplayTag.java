@@ -10,9 +10,9 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.taglib.util.IncludeTag;
 import com.liferay.user.taglib.internal.servlet.ServletContextUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author Brian Wing Shun Chan

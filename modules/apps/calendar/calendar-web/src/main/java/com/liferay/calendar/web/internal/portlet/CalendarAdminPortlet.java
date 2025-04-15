@@ -8,7 +8,7 @@ package com.liferay.calendar.web.internal.portlet;
 import com.liferay.calendar.constants.CalendarPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -25,12 +25,12 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.icon=/icons/calendar.png",
 		"com.liferay.portlet.preferences-owned-by-group=true",
 		"com.liferay.portlet.preferences-unique-per-layout=false",
-		"javax.portlet.display-name=Calendar Admin",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.name=" + CalendarPortletKeys.CALENDAR_ADMIN,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Calendar Admin",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.name=" + CalendarPortletKeys.CALENDAR_ADMIN,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

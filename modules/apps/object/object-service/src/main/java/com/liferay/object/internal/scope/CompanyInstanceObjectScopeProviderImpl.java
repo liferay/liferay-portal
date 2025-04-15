@@ -10,9 +10,9 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.portal.kernel.language.Language;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

@@ -114,7 +114,7 @@ public class ThemeLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.Theme> init(
-		javax.servlet.ServletContext servletContext,
+		jakarta.servlet.ServletContext servletContext,
 		java.lang.String themesPath, boolean loadFromServletContext,
 		java.lang.String[] xmls,
 		com.liferay.portal.kernel.plugin.PluginPackage pluginPackage) {
@@ -127,7 +127,7 @@ public class ThemeLocalServiceWrapper
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.Theme> init(
 		java.lang.String servletContextName,
-		javax.servlet.ServletContext servletContext,
+		jakarta.servlet.ServletContext servletContext,
 		java.lang.String themesPath, boolean loadFromServletContext,
 		java.lang.String[] xmls,
 		com.liferay.portal.kernel.plugin.PluginPackage pluginPackage) {

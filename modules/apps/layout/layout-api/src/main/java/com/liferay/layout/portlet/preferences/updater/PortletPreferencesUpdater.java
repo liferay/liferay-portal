@@ -7,7 +7,7 @@ package com.liferay.layout.portlet.preferences.updater;
 
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Rafael Praxedes

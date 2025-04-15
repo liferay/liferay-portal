@@ -28,15 +28,15 @@ import com.liferay.sharing.web.internal.display.SharingEntryPermissionDisplay;
 import com.liferay.sharing.web.internal.display.SharingEntryPermissionDisplayAction;
 import com.liferay.sharing.web.internal.helper.SharingHelper;
 
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
 import java.text.DateFormat;
 import java.text.Format;
 
 import java.util.Date;
 import java.util.List;
-
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SharingPortletKeys.MANAGE_COLLABORATORS,
+		"jakarta.portlet.name=" + SharingPortletKeys.MANAGE_COLLABORATORS,
 		"mvc.command.name=/"
 	},
 	service = MVCRenderCommand.class

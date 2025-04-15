@@ -8,7 +8,7 @@ package com.liferay.user.associated.data.web.internal.search;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.user.associated.data.web.internal.display.UADApplicationExportDisplay;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Pei-Jung Lan

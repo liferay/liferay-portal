@@ -8,16 +8,16 @@ package com.liferay.portal.kernel.servlet;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.InstanceFactory;
 
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+
 import java.io.IOException;
 
 import java.util.Enumeration;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

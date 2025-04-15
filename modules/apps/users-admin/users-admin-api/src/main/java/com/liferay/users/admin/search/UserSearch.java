@@ -16,14 +16,14 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 
 /**
  * @author Brian Wing Shun Chan

@@ -5,11 +5,11 @@
 
 package com.liferay.bean.portlet.registration.portlet.filter;
 
+import jakarta.portlet.filter.PortletFilter;
+
 import java.util.Dictionary;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.filter.PortletFilter;
 
 /**
  * @author Neil Griffin

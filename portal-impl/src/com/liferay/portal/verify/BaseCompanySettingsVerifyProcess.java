@@ -20,12 +20,12 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 
 import java.util.Dictionary;
 import java.util.Set;
-
-import javax.portlet.ValidatorException;
 
 /**
  * @author Michael C. Han

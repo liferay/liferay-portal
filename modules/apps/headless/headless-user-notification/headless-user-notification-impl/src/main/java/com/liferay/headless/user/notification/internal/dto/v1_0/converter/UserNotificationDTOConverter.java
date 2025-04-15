@@ -93,7 +93,8 @@ public class UserNotificationDTOConverter
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, UserNotificationHandler.class, "javax.portlet.name");
+			bundleContext, UserNotificationHandler.class,
+			"jakarta.portlet.name");
 	}
 
 	@Deactivate

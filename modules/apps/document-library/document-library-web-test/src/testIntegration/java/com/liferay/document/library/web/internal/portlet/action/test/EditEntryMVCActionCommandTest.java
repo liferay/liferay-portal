@@ -36,11 +36,11 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.portlet.PortletException;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletException;
 
 import org.junit.Assert;
 import org.junit.Before;

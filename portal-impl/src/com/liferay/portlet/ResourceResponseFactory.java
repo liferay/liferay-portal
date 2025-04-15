@@ -9,10 +9,10 @@ import com.liferay.portal.kernel.portlet.LiferayResourceResponse;
 import com.liferay.portlet.internal.ResourceRequestImpl;
 import com.liferay.portlet.internal.ResourceResponseImpl;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.filter.ResourceRequestWrapper;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.filter.ResourceRequestWrapper;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

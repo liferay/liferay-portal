@@ -12,10 +12,10 @@ import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Organization;
 
-import java.util.List;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
+import java.util.List;
 
 /**
  * @author Eudaldo Alonso

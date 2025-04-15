@@ -5,7 +5,7 @@
 
 package com.liferay.portal.osgi.web.servlet;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
 /**
  * @author Preston Crary

@@ -50,23 +50,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseMessageBoardAttachmentResourceImpl
 	implements EntityModelResource, MessageBoardAttachmentResource,
 			   VulcanBatchEngineTaskItemDelegate<MessageBoardAttachment>,
@@ -95,14 +95,14 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/message-board-attachments/{messageBoardAttachmentId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/message-board-attachments/{messageBoardAttachmentId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteMessageBoardAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("messageBoardAttachmentId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("messageBoardAttachmentId")
 			Long messageBoardAttachmentId)
 		throws Exception {
 	}
@@ -127,14 +127,14 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/message-board-attachments/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/message-board-attachments/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteMessageBoardAttachmentBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -190,14 +190,14 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/message-board-attachments/{messageBoardAttachmentId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/message-board-attachments/{messageBoardAttachmentId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public MessageBoardAttachment getMessageBoardAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("messageBoardAttachmentId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("messageBoardAttachmentId")
 			Long messageBoardAttachmentId)
 		throws Exception {
 
@@ -239,17 +239,17 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/message-board-messages/{messageBoardMessageId}/message-board-attachments"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<MessageBoardAttachment>
 			getMessageBoardMessageMessageBoardAttachmentsPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("messageBoardMessageId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("messageBoardMessageId")
 				Long messageBoardMessageId)
 		throws Exception {
 
@@ -288,28 +288,28 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path(
 		"/message-board-messages/{messageBoardMessageId}/message-board-attachments/export-batch"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response
 			postMessageBoardMessageMessageBoardAttachmentsPageExportBatch(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("messageBoardMessageId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("messageBoardMessageId")
 				Long messageBoardMessageId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("callbackURL")
+				@jakarta.ws.rs.QueryParam("callbackURL")
 				String callbackURL,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.DefaultValue("JSON")
-				@javax.ws.rs.QueryParam("contentType")
+				@jakarta.ws.rs.DefaultValue("JSON")
+				@jakarta.ws.rs.QueryParam("contentType")
 				String contentType,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("fieldNames")
+				@jakarta.ws.rs.QueryParam("fieldNames")
 				String fieldNames)
 		throws Exception {
 
@@ -356,17 +356,17 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path(
 		"/message-board-messages/{messageBoardMessageId}/message-board-attachments"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public MessageBoardAttachment postMessageBoardMessageMessageBoardAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("messageBoardMessageId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("messageBoardMessageId")
 			Long messageBoardMessageId,
 			MultipartBody multipartBody)
 		throws Exception {
@@ -398,21 +398,21 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path(
 		"/message-board-messages/{messageBoardMessageId}/message-board-attachments/batch"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postMessageBoardMessageMessageBoardAttachmentBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("messageBoardMessageId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("messageBoardMessageId")
 			Long messageBoardMessageId,
 			MultipartBody multipartBody,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -469,17 +469,17 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/message-board-threads/{messageBoardThreadId}/message-board-attachments"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<MessageBoardAttachment>
 			getMessageBoardThreadMessageBoardAttachmentsPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("messageBoardThreadId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("messageBoardThreadId")
 				Long messageBoardThreadId)
 		throws Exception {
 
@@ -518,28 +518,28 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path(
 		"/message-board-threads/{messageBoardThreadId}/message-board-attachments/export-batch"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response
 			postMessageBoardThreadMessageBoardAttachmentsPageExportBatch(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("messageBoardThreadId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("messageBoardThreadId")
 				Long messageBoardThreadId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("callbackURL")
+				@jakarta.ws.rs.QueryParam("callbackURL")
 				String callbackURL,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.DefaultValue("JSON")
-				@javax.ws.rs.QueryParam("contentType")
+				@jakarta.ws.rs.DefaultValue("JSON")
+				@jakarta.ws.rs.QueryParam("contentType")
 				String contentType,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("fieldNames")
+				@jakarta.ws.rs.QueryParam("fieldNames")
 				String fieldNames)
 		throws Exception {
 
@@ -586,17 +586,17 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path(
 		"/message-board-threads/{messageBoardThreadId}/message-board-attachments"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public MessageBoardAttachment postMessageBoardThreadMessageBoardAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("messageBoardThreadId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("messageBoardThreadId")
 			Long messageBoardThreadId,
 			MultipartBody multipartBody)
 		throws Exception {
@@ -628,21 +628,21 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path(
 		"/message-board-threads/{messageBoardThreadId}/message-board-attachments/batch"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postMessageBoardThreadMessageBoardAttachmentBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("messageBoardThreadId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("messageBoardThreadId")
 			Long messageBoardThreadId,
 			MultipartBody multipartBody,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -695,27 +695,27 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
 		"/sites/{siteId}/message-board-messages/by-external-reference-code/{messageBoardMessageExternalReferenceCode}/message-board-attachments/by-external-reference-code/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void
 			deleteSiteMessageBoardMessageByExternalReferenceCodeMessageBoardMessageExternalReferenceCodeMessageBoardAttachmentByExternalReferenceCode(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("siteId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("siteId")
 				Long siteId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam(
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam(
 					"messageBoardMessageExternalReferenceCode"
 				)
 				String messageBoardMessageExternalReferenceCode,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode)
 		throws Exception {
 	}
@@ -759,27 +759,27 @@ public abstract class BaseMessageBoardAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/sites/{siteId}/message-board-messages/by-external-reference-code/{messageBoardMessageExternalReferenceCode}/message-board-attachments/by-external-reference-code/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public MessageBoardAttachment
 			getSiteMessageBoardMessageByExternalReferenceCodeMessageBoardMessageExternalReferenceCodeMessageBoardAttachmentByExternalReferenceCode(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("siteId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("siteId")
 				Long siteId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam(
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam(
 					"messageBoardMessageExternalReferenceCode"
 				)
 				String messageBoardMessageExternalReferenceCode,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode)
 		throws Exception {
 

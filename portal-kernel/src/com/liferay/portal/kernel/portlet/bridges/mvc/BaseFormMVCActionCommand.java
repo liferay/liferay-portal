@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.portlet.bridges.mvc;
 
 import com.liferay.portal.kernel.servlet.SessionErrors;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletException;
 
 /**
  * @author Tomas Polesovsky

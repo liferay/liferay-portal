@@ -20,8 +20,8 @@ import com.liferay.redirect.service.RedirectEntryLocalService;
 import com.liferay.redirect.web.internal.constants.RedirectPortletKeys;
 import com.liferay.redirect.web.internal.util.RedirectUtil;
 
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + RedirectPortletKeys.REDIRECT,
+		"jakarta.portlet.name=" + RedirectPortletKeys.REDIRECT,
 		"mvc.command.name=/redirect/get_redirect_entry_chain_cause"
 	},
 	service = MVCResourceCommand.class

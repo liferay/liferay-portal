@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
 import org.junit.Assert;
 

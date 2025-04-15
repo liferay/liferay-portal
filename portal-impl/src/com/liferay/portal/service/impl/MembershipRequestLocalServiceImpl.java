@@ -50,6 +50,8 @@ import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
 import com.liferay.portal.service.base.MembershipRequestLocalServiceBaseImpl;
 import com.liferay.portal.util.ResourcePermissionUtil;
 
+import jakarta.mail.internet.InternetAddress;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -57,8 +59,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.mail.internet.InternetAddress;
 
 /**
  * @author Jorge Ferrer

@@ -8,7 +8,7 @@ package com.liferay.layout.test;
 import com.liferay.layout.test.constants.LayoutPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -21,12 +21,12 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.instanceable=false",
 		"com.liferay.portlet.preferences-owned-by-group=true",
 		"com.liferay.portlet.scopeable=true",
-		"javax.portlet.display-name=Noninstanceable Test",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET,
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Noninstanceable Test",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET,
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

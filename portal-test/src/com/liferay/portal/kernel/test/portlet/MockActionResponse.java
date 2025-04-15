@@ -5,17 +5,17 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.RenderURL;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
+
 import java.io.IOException;
 
 import java.util.Map;
-
-import javax.portlet.ActionResponse;
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.RenderURL;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
 
 /**
  * @author Dante Wang

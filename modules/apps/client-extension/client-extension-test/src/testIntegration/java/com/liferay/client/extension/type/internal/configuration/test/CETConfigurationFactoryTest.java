@@ -44,14 +44,14 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.Portlet;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.TimeoutException;
-
-import javax.portlet.Portlet;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -345,10 +345,10 @@ public class CETConfigurationFactoryTest {
 		Assert.assertEquals("Test " + _VIRTUAL_HOSTNAME, cet.getName());
 
 		String filterString = StringBundler.concat(
-			"(&(javax.portlet.name=com_liferay_client_extension_web",
+			"(&(jakarta.portlet.name=com_liferay_client_extension_web",
 			"_internal_portlet_ClientExtensionEntryPortlet_",
 			_virtualInstanceCompanyId, "_LXC_test)",
-			"(objectClass=javax.portlet.Portlet))");
+			"(objectClass=jakarta.portlet.Portlet))");
 		int timeout = 10_000;
 
 		ServiceTracker<Portlet, Portlet> serviceTracker =

@@ -21,10 +21,10 @@ import com.liferay.portal.kernel.util.comparator.GroupDescriptiveNameComparator;
 import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
 import com.liferay.portal.kernel.util.comparator.GroupTypeComparator;
 
-import java.util.Locale;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import java.util.Locale;
 
 /**
  * @author Brian Wing Shun Chan

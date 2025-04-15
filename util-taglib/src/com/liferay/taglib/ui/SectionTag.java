@@ -10,13 +10,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.taglib.util.IncludeTag;
 
+import jakarta.portlet.PortletResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+
 import java.util.Map;
-
-import javax.portlet.PortletResponse;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 /**
  * @author Brian Wing Shun Chan

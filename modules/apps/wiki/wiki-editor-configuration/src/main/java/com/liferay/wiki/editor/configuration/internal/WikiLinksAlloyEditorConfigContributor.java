@@ -26,9 +26,9 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"editor.config.key=contentEditor", "editor.name=alloyeditor_creole",
-		"javax.portlet.name=" + WikiPortletKeys.WIKI,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY
 	},
 	service = EditorConfigContributor.class
 )

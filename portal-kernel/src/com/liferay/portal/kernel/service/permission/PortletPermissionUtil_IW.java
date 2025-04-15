@@ -257,7 +257,7 @@ public class PortletPermissionUtil_IW {
 		com.liferay.portal.kernel.security.permission.PermissionChecker permissionChecker,
 		long scopeGroupId, com.liferay.portal.kernel.model.Layout layout,
 		com.liferay.portal.kernel.model.Portlet portlet,
-		javax.portlet.PortletMode portletMode)
+		jakarta.portlet.PortletMode portletMode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return PortletPermissionUtil.hasAccessPermission(permissionChecker,
 			scopeGroupId, layout, portlet, portletMode);

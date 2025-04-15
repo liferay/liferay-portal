@@ -33,6 +33,9 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
+
 import java.io.Serializable;
 
 import java.util.Calendar;
@@ -40,9 +43,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
 
 /**
  * @author Máté Thurzó

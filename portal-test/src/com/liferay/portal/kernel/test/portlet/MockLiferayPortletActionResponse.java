@@ -11,26 +11,26 @@ import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.servlet.URLEncoder;
 import com.liferay.portlet.test.MockActionURL;
 
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderURL;
+import jakarta.portlet.ResourceURL;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Map;
-
-import javax.portlet.ActionResponse;
-import javax.portlet.ActionURL;
-import javax.portlet.MimeResponse;
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderURL;
-import javax.portlet.ResourceURL;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.namespace.QName;
 

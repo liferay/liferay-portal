@@ -16,13 +16,13 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.portlet.PortletRequest;
+
 import java.text.Format;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Tina Tian

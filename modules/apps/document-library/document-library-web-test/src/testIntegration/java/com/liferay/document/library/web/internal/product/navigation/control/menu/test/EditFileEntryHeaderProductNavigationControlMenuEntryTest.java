@@ -34,7 +34,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import jodd.net.MimeTypes;
 

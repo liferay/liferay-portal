@@ -5,12 +5,12 @@
 
 package com.liferay.portlet.internal;
 
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.filter.FilterConfig;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
-
-import javax.portlet.PortletContext;
-import javax.portlet.filter.FilterConfig;
 
 /**
  * @author Brian Wing Shun Chan

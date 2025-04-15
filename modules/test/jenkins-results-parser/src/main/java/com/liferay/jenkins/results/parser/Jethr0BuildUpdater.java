@@ -9,15 +9,15 @@ import com.liferay.jenkins.results.parser.jethr0.Jethr0Client;
 import com.liferay.jenkins.results.parser.jethr0.Jethr0ClientFactory;
 import com.liferay.jenkins.results.parser.jethr0.Jethr0MessageListener;
 
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.TextMessage;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.TextMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;

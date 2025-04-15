@@ -11,6 +11,17 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.RenderParameters;
+import jakarta.portlet.WindowState;
+
+import jakarta.servlet.http.Cookie;
+
 import java.security.Principal;
 
 import java.util.Collections;
@@ -23,17 +34,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.PortalContext;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderParameters;
-import javax.portlet.WindowState;
-
-import javax.servlet.http.Cookie;
 
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -521,7 +521,7 @@ public class MockPortletRequest implements PortletRequest {
 	private boolean _active = true;
 	private final Map<String, Object> _attributes =
 		LinkedHashMapBuilder.<String, Object>put(
-			"javax.portlet.lifecycle_phase", getLifecyclePhase()
+			"jakarta.portlet.lifecycle_phase", getLifecyclePhase()
 		).build();
 	private String _authType;
 	private String _contextPath = StringPool.BLANK;

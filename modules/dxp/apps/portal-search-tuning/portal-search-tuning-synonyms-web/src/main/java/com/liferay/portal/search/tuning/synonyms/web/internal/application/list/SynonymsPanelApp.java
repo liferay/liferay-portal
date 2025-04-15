@@ -57,7 +57,7 @@ public class SynonymsPanelApp extends BasePanelApp {
 	protected SearchEngineInformation searchEngineInformation;
 
 	@Reference(
-		target = "(javax.portlet.name=" + SynonymsPortletKeys.SYNONYMS + ")"
+		target = "(jakarta.portlet.name=" + SynonymsPortletKeys.SYNONYMS + ")"
 	)
 	private Portlet _portlet;
 

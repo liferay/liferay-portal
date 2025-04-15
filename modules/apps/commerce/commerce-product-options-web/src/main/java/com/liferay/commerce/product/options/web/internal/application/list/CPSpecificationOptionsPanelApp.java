@@ -48,7 +48,7 @@ public class CPSpecificationOptionsPanelApp extends BasePanelApp {
 	private Language _language;
 
 	@Reference(
-		target = "(javax.portlet.name=" + CPPortletKeys.CP_SPECIFICATION_OPTIONS + ")"
+		target = "(jakarta.portlet.name=" + CPPortletKeys.CP_SPECIFICATION_OPTIONS + ")"
 	)
 	private Portlet _portlet;
 

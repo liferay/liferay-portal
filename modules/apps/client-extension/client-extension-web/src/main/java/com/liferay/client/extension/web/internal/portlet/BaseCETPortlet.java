@@ -13,12 +13,12 @@ import com.liferay.portal.kernel.servlet.taglib.util.OutputData;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.RenderRequest;
+
 import java.io.IOException;
 
 import java.util.Properties;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.RenderRequest;
 
 /**
  * @author Iván Zaera Avellón

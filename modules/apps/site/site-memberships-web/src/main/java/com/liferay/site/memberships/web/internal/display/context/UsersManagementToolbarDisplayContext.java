@@ -41,11 +41,11 @@ import com.liferay.site.memberships.web.internal.util.GroupUtil;
 import com.liferay.site.teams.item.selector.SiteTeamsItemSelectorCriterion;
 import com.liferay.users.admin.item.selector.UserSiteMembershipItemSelectorCriterion;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 
+import jakarta.validation.ValidationException;
+
 import java.io.Serializable;
 
 import java.math.BigDecimal;
@@ -19,8 +21,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.Collections;
 import java.util.Map;
-
-import javax.validation.ValidationException;
 
 import org.junit.ClassRule;
 import org.junit.Rule;

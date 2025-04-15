@@ -41,10 +41,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.test.MockLiferayPortletContext;
 
+import jakarta.portlet.Portlet;
+
 import java.util.Date;
 import java.util.List;
-
-import javax.portlet.Portlet;
 
 import org.junit.Assert;
 import org.junit.Before;

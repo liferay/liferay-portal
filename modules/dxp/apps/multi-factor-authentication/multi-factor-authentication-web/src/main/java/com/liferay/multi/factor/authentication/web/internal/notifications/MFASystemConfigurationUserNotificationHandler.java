@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marta Medio
  */
 @Component(
-	property = "javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+	property = "jakarta.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 	service = UserNotificationHandler.class
 )
 public class MFASystemConfigurationUserNotificationHandler

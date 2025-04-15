@@ -8,7 +8,7 @@ package com.liferay.portal.search.web.internal.portlet.preferences;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author André de Oliveira

@@ -37,10 +37,10 @@ import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 
-import java.util.NoSuchElementException;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.RenderRequest;
+import java.util.NoSuchElementException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Shuyang Zhou
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_SEARCH_RESULTS,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_SEARCH_RESULTS,
 	service = PortletSharedSearchContributor.class
 )
 public class CPSearchResultsPortletSharedSearchContributor

@@ -25,10 +25,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.field.Field;
 import com.liferay.segments.field.customizer.SegmentsFieldCustomizer;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

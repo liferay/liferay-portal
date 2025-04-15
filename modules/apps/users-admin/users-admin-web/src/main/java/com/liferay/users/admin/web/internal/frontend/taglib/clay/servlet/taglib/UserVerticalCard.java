@@ -12,10 +12,10 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.taglib.util.LexiconUtil;
 import com.liferay.users.admin.web.internal.servlet.taglib.util.UserActionDropdownItems;
 
-import java.util.List;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.util.List;
 
 /**
  * @author Eudaldo Alonso

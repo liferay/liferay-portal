@@ -5,7 +5,7 @@
 
 package com.liferay.websocket.whiteboard.test.encode.data;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Cristina González

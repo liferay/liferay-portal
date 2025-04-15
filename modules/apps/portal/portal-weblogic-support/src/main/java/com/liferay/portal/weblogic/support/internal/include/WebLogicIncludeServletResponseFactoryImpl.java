@@ -7,7 +7,7 @@ package com.liferay.portal.weblogic.support.internal.include;
 
 import com.liferay.portal.servlet.filters.weblogic.WebLogicIncludeServletResponseFactory;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 

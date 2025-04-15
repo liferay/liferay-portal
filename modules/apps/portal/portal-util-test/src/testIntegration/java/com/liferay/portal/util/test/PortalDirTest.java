@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
-import java.io.File;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.io.File;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

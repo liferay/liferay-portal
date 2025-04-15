@@ -42,6 +42,8 @@ import com.liferay.saml.runtime.exception.IssuerException;
 import com.liferay.saml.runtime.exception.SignatureException;
 import com.liferay.saml.runtime.exception.SubjectException;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-
-import javax.servlet.http.HttpSession;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.security.IdentifierGenerationStrategy;

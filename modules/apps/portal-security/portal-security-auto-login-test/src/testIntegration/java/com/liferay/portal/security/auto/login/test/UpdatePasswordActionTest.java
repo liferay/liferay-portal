@@ -35,9 +35,9 @@ import com.liferay.portal.struts.Action;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.Date;
+import jakarta.servlet.http.HttpSession;
 
-import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

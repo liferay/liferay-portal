@@ -8,8 +8,8 @@ package com.liferay.portal.instances.web.internal.portlet.action;
 import com.liferay.portal.instances.web.internal.constants.PortalInstancesPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES,
+		"jakarta.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES,
 		"mvc.command.name=/", "mvc.command.name=/portal_instances/view"
 	},
 	service = MVCRenderCommand.class

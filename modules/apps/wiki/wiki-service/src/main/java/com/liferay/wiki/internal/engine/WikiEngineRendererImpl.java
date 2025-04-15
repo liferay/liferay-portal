@@ -24,12 +24,12 @@ import com.liferay.wiki.exception.WikiFormatException;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.model.WikiPageDisplay;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.portlet.PortletURL;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

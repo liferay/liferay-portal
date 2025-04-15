@@ -19,8 +19,8 @@ import com.liferay.portlet.RenderResponseFactory;
 import com.liferay.roles.admin.search.SetUserRoleChecker;
 import com.liferay.roles.admin.search.UnsetUserRoleChecker;
 
-import javax.portlet.RenderResponse;
-import javax.portlet.filter.RenderResponseWrapper;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.filter.RenderResponseWrapper;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

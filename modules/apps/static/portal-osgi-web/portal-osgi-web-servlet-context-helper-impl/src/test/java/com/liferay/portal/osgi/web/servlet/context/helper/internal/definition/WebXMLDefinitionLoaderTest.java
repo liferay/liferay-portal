@@ -17,6 +17,8 @@ import com.liferay.portal.osgi.web.servlet.context.helper.internal.order.OrderUt
 import com.liferay.portal.osgi.web.servlet.context.helper.order.Order;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.ServletContextListener;
+
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -26,8 +28,6 @@ import java.util.EventListener;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletContextListener;
 
 import javax.xml.parsers.SAXParserFactory;
 

@@ -8,8 +8,8 @@ package com.liferay.search.experiences.web.internal.blueprint.admin.portlet.acti
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	enabled = false,
 	property = {
-		"javax.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN,
+		"jakarta.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN,
 		"mvc.command.name=/sxp_blueprint_admin/edit_sxp_element"
 	},
 	service = MVCRenderCommand.class

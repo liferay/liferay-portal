@@ -21,12 +21,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.util.ContentTypes;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

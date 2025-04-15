@@ -7,7 +7,7 @@ package com.liferay.commerce.channel.web.internal.display.context.helper;
 
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Marco Leo

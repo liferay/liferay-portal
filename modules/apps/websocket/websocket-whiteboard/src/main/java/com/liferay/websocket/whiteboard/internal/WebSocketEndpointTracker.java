@@ -9,18 +9,18 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
+import jakarta.servlet.ServletContext;
+
+import jakarta.websocket.Decoder;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.Encoder;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpointConfig;
+
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.servlet.ServletContext;
-
-import javax.websocket.Decoder;
-import javax.websocket.DeploymentException;
-import javax.websocket.Encoder;
-import javax.websocket.Endpoint;
-import javax.websocket.server.ServerContainer;
-import javax.websocket.server.ServerEndpointConfig;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceObjects;
@@ -43,7 +43,7 @@ public class WebSocketEndpointTracker {
 	@Activate
 	protected void activate(final BundleContext bundleContext) {
 		Object serverContainer = _servletContext.getAttribute(
-			"javax.websocket.server.ServerContainer");
+			"jakarta.websocket.server.ServerContainer");
 
 		if (serverContainer == null) {
 			if (_log.isInfoEnabled()) {

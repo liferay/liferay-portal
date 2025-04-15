@@ -56,6 +56,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.ratings.kernel.model.RatingsEntry;
 import com.liferay.ratings.test.util.RatingsTestUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -63,8 +65,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -778,7 +778,7 @@ public class DLExportImportPortletPreferencesProcessorTest {
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
 
-	@Inject(filter = "javax.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY)
+	@Inject(filter = "jakarta.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;
 

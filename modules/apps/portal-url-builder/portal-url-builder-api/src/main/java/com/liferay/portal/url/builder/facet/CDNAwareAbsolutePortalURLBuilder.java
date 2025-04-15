@@ -20,7 +20,7 @@ public interface CDNAwareAbsolutePortalURLBuilder<T> {
 	 * Returns a version of this URL builder that ignores the CDN part. See
 	 * {@code
 	 * com.liferay.portal.kernel.util.Portal#getCDNHost(
-	 * javax.servlet.http.HttpServletRequest)} for details.
+	 * jakarta.servlet.http.HttpServletRequest)} for details.
 	 *
 	 * @return a version of this URL builder that ignores the CDN part
 	 */

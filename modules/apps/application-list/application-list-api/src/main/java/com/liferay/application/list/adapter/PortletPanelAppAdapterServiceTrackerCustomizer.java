@@ -37,7 +37,7 @@ public class PortletPanelAppAdapterServiceTrackerCustomizer
 	@Override
 	public PanelApp addingService(ServiceReference<Portlet> serviceReference) {
 		String portletId = (String)serviceReference.getProperty(
-			"javax.portlet.name");
+			"jakarta.portlet.name");
 
 		if (Validator.isNull(portletId)) {
 			return null;

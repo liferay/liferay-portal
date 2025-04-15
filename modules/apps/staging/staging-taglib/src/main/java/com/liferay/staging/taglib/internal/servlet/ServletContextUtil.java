@@ -8,7 +8,7 @@ package com.liferay.staging.taglib.internal.servlet;
 import com.liferay.layout.util.LayoutsTree;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Daniel Kocsis

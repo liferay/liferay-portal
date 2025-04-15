@@ -8,13 +8,13 @@ package com.liferay.configuration.admin.web.internal.util;
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.configuration.admin.web.internal.constants.ConfigurationAdminWebKeys;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Jorge Ferrer

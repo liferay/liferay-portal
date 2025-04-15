@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Daniel Kocsis
  */
 @Component(
-	property = "javax.portlet.name=" + CalendarPortletKeys.CALENDAR_ADMIN,
+	property = "jakarta.portlet.name=" + CalendarPortletKeys.CALENDAR_ADMIN,
 	service = StagedModelDataHandler.class
 )
 public class CalendarStagedModelDataHandler

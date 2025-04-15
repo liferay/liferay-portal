@@ -17,10 +17,10 @@ import com.liferay.portal.language.test.constants.LanguageImplTestConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

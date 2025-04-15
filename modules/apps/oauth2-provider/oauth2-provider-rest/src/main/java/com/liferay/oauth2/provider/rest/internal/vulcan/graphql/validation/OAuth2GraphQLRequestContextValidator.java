@@ -23,15 +23,15 @@ import com.liferay.portal.security.access.control.AccessControlAdvisorImpl;
 import com.liferay.portal.vulcan.graphql.validation.GraphQLRequestContext;
 import com.liferay.portal.vulcan.graphql.validation.GraphQLRequestContextValidator;
 
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.core.Application;
+
 import java.lang.annotation.Annotation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.core.Application;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;

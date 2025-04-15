@@ -9,7 +9,7 @@ import com.liferay.bookmarks.constants.BookmarksPortletKeys;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.upgrade.BasePortletPreferencesUpgradeProcess;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Iván Zaera

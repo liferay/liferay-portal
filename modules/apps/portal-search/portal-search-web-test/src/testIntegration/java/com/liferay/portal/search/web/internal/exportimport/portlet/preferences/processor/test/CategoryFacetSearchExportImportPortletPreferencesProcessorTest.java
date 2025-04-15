@@ -29,9 +29,9 @@ import com.liferay.portal.search.web.internal.category.facet.constants.CategoryF
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.HashMap;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -281,7 +281,7 @@ public class CategoryFacetSearchExportImportPortletPreferencesProcessorTest
 	}
 
 	@Inject(
-		filter = "javax.portlet.name=" + CategoryFacetPortletKeys.CATEGORY_FACET
+		filter = "jakarta.portlet.name=" + CategoryFacetPortletKeys.CATEGORY_FACET
 	)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;

@@ -187,7 +187,7 @@ public class UserNotificationManagerUtil {
 			_userNotificationDefinitions =
 				ServiceTrackerMapFactory.openMultiValueMap(
 					_bundleContext, UserNotificationDefinition.class,
-					"javax.portlet.name");
+					"jakarta.portlet.name");
 	private static final Map<String, Map<String, UserNotificationHandler>>
 		_userNotificationHandlers = new ConcurrentHashMap<>();
 	private static final ServiceTracker

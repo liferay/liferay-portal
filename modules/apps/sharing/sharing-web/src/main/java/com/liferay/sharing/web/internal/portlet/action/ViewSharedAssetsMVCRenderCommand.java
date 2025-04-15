@@ -10,9 +10,9 @@ import com.liferay.sharing.web.internal.constants.SharingPortletKeys;
 import com.liferay.sharing.web.internal.display.context.ViewSharedAssetsDisplayContext;
 import com.liferay.sharing.web.internal.display.context.ViewSharedAssetsDisplayContextFactory;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SharingPortletKeys.SHARED_ASSETS,
+		"jakarta.portlet.name=" + SharingPortletKeys.SHARED_ASSETS,
 		"mvc.command.name=/"
 	},
 	service = MVCRenderCommand.class

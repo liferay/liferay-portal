@@ -11,9 +11,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFunction;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 
-import java.util.function.Function;
+import jakarta.portlet.ActionRequest;
 
-import javax.portlet.ActionRequest;
+import java.util.function.Function;
 
 /**
  * @author Alejandro Tardín

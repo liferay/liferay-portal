@@ -35,6 +35,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.context.SearchContextFactory;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.text.DateFormat;
 
 import java.util.Arrays;
@@ -43,8 +45,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;

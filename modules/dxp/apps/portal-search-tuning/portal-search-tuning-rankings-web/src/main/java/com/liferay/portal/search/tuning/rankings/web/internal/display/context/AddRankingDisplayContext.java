@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.search.experiences.SXPBlueprintTitleProvider;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
 
-import java.util.Map;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.util.Map;
 
 /**
  * @author Eudaldo Alonso

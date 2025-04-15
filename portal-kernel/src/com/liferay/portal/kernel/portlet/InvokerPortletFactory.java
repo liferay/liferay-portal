@@ -5,10 +5,10 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
 
 import org.osgi.annotation.versioning.ProviderType;
 

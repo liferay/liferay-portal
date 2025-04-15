@@ -20,7 +20,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_COMPARE_CONTENT_MINI_WEB,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_COMPARE_CONTENT_MINI_WEB,
 	service = ConfigurationAction.class
 )
 public class CPCompareContentMiniConfigurationAction

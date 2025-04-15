@@ -50,23 +50,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Javier Gamarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 	implements EntityModelResource, KnowledgeBaseAttachmentResource,
 			   VulcanBatchEngineTaskItemDelegate<KnowledgeBaseAttachment>,
@@ -107,17 +107,17 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/knowledge-base-articles/{knowledgeBaseArticleId}/knowledge-base-attachments"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<KnowledgeBaseAttachment>
 			getKnowledgeBaseArticleKnowledgeBaseAttachmentsPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("knowledgeBaseArticleId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("knowledgeBaseArticleId")
 				Long knowledgeBaseArticleId)
 		throws Exception {
 
@@ -156,28 +156,28 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path(
 		"/knowledge-base-articles/{knowledgeBaseArticleId}/knowledge-base-attachments/export-batch"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response
 			postKnowledgeBaseArticleKnowledgeBaseAttachmentsPageExportBatch(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("knowledgeBaseArticleId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("knowledgeBaseArticleId")
 				Long knowledgeBaseArticleId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("callbackURL")
+				@jakarta.ws.rs.QueryParam("callbackURL")
 				String callbackURL,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.DefaultValue("JSON")
-				@javax.ws.rs.QueryParam("contentType")
+				@jakarta.ws.rs.DefaultValue("JSON")
+				@jakarta.ws.rs.QueryParam("contentType")
 				String contentType,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.ws.rs.QueryParam("fieldNames")
+				@jakarta.ws.rs.QueryParam("fieldNames")
 				String fieldNames)
 		throws Exception {
 
@@ -224,18 +224,18 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("multipart/form-data")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path(
 		"/knowledge-base-articles/{knowledgeBaseArticleId}/knowledge-base-attachments"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public KnowledgeBaseAttachment
 			postKnowledgeBaseArticleKnowledgeBaseAttachment(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("knowledgeBaseArticleId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("knowledgeBaseArticleId")
 				Long knowledgeBaseArticleId,
 				MultipartBody multipartBody)
 		throws Exception {
@@ -267,21 +267,21 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path(
 		"/knowledge-base-articles/{knowledgeBaseArticleId}/knowledge-base-attachments/batch"
 	)
-	@javax.ws.rs.POST
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postKnowledgeBaseArticleKnowledgeBaseAttachmentBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("knowledgeBaseArticleId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("knowledgeBaseArticleId")
 			Long knowledgeBaseArticleId,
 			MultipartBody multipartBody,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -326,14 +326,14 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/knowledge-base-attachments/{knowledgeBaseAttachmentId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/knowledge-base-attachments/{knowledgeBaseAttachmentId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteKnowledgeBaseAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("knowledgeBaseAttachmentId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("knowledgeBaseAttachmentId")
 			Long knowledgeBaseAttachmentId)
 		throws Exception {
 	}
@@ -358,14 +358,14 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.Consumes("application/json")
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path("/knowledge-base-attachments/batch")
-	@javax.ws.rs.Produces("application/json")
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/knowledge-base-attachments/batch")
+	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response deleteKnowledgeBaseAttachmentBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("callbackURL")
+			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
 			Object object)
 		throws Exception {
@@ -421,14 +421,14 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/knowledge-base-attachments/{knowledgeBaseAttachmentId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/knowledge-base-attachments/{knowledgeBaseAttachmentId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public KnowledgeBaseAttachment getKnowledgeBaseAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("knowledgeBaseAttachmentId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("knowledgeBaseAttachmentId")
 			Long knowledgeBaseAttachmentId)
 		throws Exception {
 
@@ -466,27 +466,27 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.DELETE
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
 		"/sites/{siteId}/knowledge-base-articles/by-external-reference-code/{knowledgeBaseArticleExternalReferenceCode}/knowledge-base-attachments/by-external-reference-code/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void
 			deleteSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("siteId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("siteId")
 				Long siteId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam(
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam(
 					"knowledgeBaseArticleExternalReferenceCode"
 				)
 				String knowledgeBaseArticleExternalReferenceCode,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode)
 		throws Exception {
 	}
@@ -534,27 +534,27 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/sites/{siteId}/knowledge-base-articles/by-external-reference-code/{knowledgeBaseArticleExternalReferenceCode}/knowledge-base-attachments/by-external-reference-code/{externalReferenceCode}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public KnowledgeBaseAttachment
 			getSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("siteId")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("siteId")
 				Long siteId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam(
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam(
 					"knowledgeBaseArticleExternalReferenceCode"
 				)
 				String knowledgeBaseArticleExternalReferenceCode,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("externalReferenceCode")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
 				String externalReferenceCode)
 		throws Exception {
 

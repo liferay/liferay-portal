@@ -8,7 +8,7 @@ package com.liferay.site.taglib.servlet.taglib;
 import com.liferay.site.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.taglib.util.IncludeTag;
 
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author Eduardo García

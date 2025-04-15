@@ -15,9 +15,9 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -69,7 +69,7 @@ public class ImportPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + ExportImportPortletKeys.IMPORT + ")"
+		target = "(jakarta.portlet.name=" + ExportImportPortletKeys.IMPORT + ")"
 	)
 	private Portlet _portlet;
 

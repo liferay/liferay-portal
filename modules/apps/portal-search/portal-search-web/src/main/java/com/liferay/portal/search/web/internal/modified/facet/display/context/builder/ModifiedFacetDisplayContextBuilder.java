@@ -30,6 +30,8 @@ import com.liferay.portal.search.web.internal.util.DateRangeFactoryUtil;
 import com.liferay.portal.search.web.internal.util.DisplayContextHelperUtil;
 import com.liferay.portal.search.web.internal.util.comparator.BucketDisplayContextComparatorFactoryUtil;
 
+import jakarta.portlet.RenderRequest;
+
 import java.io.Serializable;
 
 import java.text.DateFormat;
@@ -40,8 +42,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Lino Alves

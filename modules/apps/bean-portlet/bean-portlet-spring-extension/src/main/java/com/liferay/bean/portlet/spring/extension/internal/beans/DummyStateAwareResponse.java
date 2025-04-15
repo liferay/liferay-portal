@@ -5,14 +5,14 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.beans;
 
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.StateAwareResponse;
+import jakarta.portlet.WindowState;
+
 import java.io.Serializable;
 
 import java.util.Map;
-
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.StateAwareResponse;
-import javax.portlet.WindowState;
 
 import javax.xml.namespace.QName;
 

@@ -17,9 +17,9 @@ import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.provider.PLOOriginalTranslationProvider;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
 
-import java.util.Locale;
+import jakarta.portlet.RenderRequest;
 
-import javax.portlet.RenderRequest;
+import java.util.Locale;
 
 /**
  * @author Drew Brokke

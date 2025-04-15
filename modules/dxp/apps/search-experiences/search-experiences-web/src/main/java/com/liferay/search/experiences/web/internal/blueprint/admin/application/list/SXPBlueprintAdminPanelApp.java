@@ -58,7 +58,7 @@ public class SXPBlueprintAdminPanelApp extends BasePanelApp {
 	protected SearchEngineInformation searchEngineInformation;
 
 	@Reference(
-		target = "(javax.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

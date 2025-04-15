@@ -16,12 +16,12 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.File;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

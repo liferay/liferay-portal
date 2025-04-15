@@ -7,7 +7,7 @@ package com.liferay.dynamic.data.mapping.form.taglib.internal.servlet;
 
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

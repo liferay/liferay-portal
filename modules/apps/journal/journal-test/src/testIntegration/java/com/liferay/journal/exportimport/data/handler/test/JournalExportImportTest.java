@@ -890,7 +890,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	@Inject
 	private JournalContent _journalContent;
 
-	@Inject(filter = "javax.portlet.name=" + JournalPortletKeys.JOURNAL)
+	@Inject(filter = "jakarta.portlet.name=" + JournalPortletKeys.JOURNAL)
 	private PortletDataHandler _journalPortletDataHandler;
 
 	@Inject

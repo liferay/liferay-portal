@@ -8,8 +8,8 @@ package com.liferay.dynamic.data.mapping.web.internal.search;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 
 /**
  * @author Eduardo Lundgren

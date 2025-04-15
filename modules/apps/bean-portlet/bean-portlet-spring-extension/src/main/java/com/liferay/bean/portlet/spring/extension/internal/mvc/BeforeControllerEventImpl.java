@@ -5,10 +5,10 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
-import javax.mvc.event.BeforeControllerEvent;
+import jakarta.mvc.event.BeforeControllerEvent;
 
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Neil Griffin

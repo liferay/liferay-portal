@@ -579,24 +579,24 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 		String newPropertyAttribute = StringUtil.replace(
 			propertyAttribute,
 			new String[] {
-				"\"javax.portlet.supports.mime-type=text/html\",",
-				"\"javax.portlet.supports.mime-type=text/html\""
+				"\"jakarta.portlet.supports.mime-type=text/html\",",
+				"\"jakarta.portlet.supports.mime-type=text/html\""
 			},
 			new String[] {StringPool.BLANK, StringPool.BLANK});
 
 		if (newPropertyAttribute.contains(
-				"\"javax.portlet.init-param.config-template=") &&
-			!newPropertyAttribute.contains("javax.portlet.portlet-mode=")) {
+				"\"jakarta.portlet.init-param.config-template=") &&
+			!newPropertyAttribute.contains("jakarta.portlet.portlet-mode=")) {
 
 			newPropertyAttribute = _addNewProperties(
 				newPropertyAttribute,
-				"\"javax.portlet.portlet-mode=text/html;config\"");
+				"\"jakarta.portlet.portlet-mode=text/html;config\"");
 		}
 
 		if (isAttributeValue(_CHECK_PORTLET_VERSION_KEY, absolutePath) &&
 			!absolutePath.contains("/modules/apps/archived/") &&
 			!absolutePath.contains("/modules/sdk/") &&
-			!newPropertyAttribute.contains("\"javax.portlet.version=3.0\"")) {
+			!newPropertyAttribute.contains("\"jakarta.portlet.version=4.0\"")) {
 
 			String serviceAttributeValue = getAnnotationAttributeValue(
 				annotation, "service");
@@ -613,7 +613,7 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 
 			if (serviceAttributeValues.contains("Portlet.class")) {
 				newPropertyAttribute = _addNewProperties(
-					newPropertyAttribute, "\"javax.portlet.version=3.0\"");
+					newPropertyAttribute, "\"jakarta.portlet.version=4.0\"");
 			}
 		}
 

@@ -9,7 +9,7 @@ import com.liferay.blogs.web.internal.configuration.BlogsPortletInstanceConfigur
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Sergio González

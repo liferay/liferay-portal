@@ -27,19 +27,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Alejandro Tardín
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseEntityModelResourceTestEntity2ResourceImpl
 	implements EntityModelResourceTestEntity2Resource {
 
@@ -66,17 +66,17 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceImpl
 			)
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/entity-model-resource-test-entities2/{entityModelResourceTestEntity2Id}"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public EntityModelResourceTestEntity2
 			getEntityModelResourceTestEntities2EntityModelResourceTestEntity2(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@javax.validation.constraints.NotNull
-				@javax.ws.rs.PathParam("entityModelResourceTestEntity2Id")
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("entityModelResourceTestEntity2Id")
 				Long entityModelResourceTestEntity2Id)
 		throws Exception {
 

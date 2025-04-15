@@ -11,14 +11,14 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
+
 import java.io.IOException;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;

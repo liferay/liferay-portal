@@ -16,16 +16,16 @@ import com.liferay.sharing.web.internal.display.context.ViewSharedAssetsDisplayC
 import com.liferay.sharing.web.internal.display.context.ViewSharingEntryAssetEntryDisplayContext;
 import com.liferay.sharing.web.internal.util.AssetRendererSharingUtil;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Alejandro Tardín

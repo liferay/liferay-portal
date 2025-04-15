@@ -8,11 +8,11 @@ package com.liferay.frontend.taglib.clay.servlet.taglib.util;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Chema Balsas

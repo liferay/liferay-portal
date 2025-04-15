@@ -8,9 +8,9 @@ package com.liferay.object.web.internal.display.context.helper;
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * @author Marco Leo

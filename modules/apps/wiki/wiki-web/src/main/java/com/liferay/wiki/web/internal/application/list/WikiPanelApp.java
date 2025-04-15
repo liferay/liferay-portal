@@ -49,7 +49,7 @@ public class WikiPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + WikiPortletKeys.WIKI_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + WikiPortletKeys.WIKI_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

@@ -17,9 +17,9 @@ import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.service.CountryService;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Alessio Antonio Rendina

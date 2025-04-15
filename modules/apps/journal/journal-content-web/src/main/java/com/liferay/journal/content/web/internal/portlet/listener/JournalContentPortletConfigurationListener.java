@@ -18,9 +18,9 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Objects;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Lourdes Fernández Besada
  */
 @Component(
-	property = "javax.portlet.name=" + JournalContentPortletKeys.JOURNAL_CONTENT,
+	property = "jakarta.portlet.name=" + JournalContentPortletKeys.JOURNAL_CONTENT,
 	service = PortletConfigurationListener.class
 )
 public class JournalContentPortletConfigurationListener

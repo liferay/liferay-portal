@@ -8,15 +8,15 @@ package com.liferay.portal.remote.rest.extender.internal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ext.RuntimeDelegate;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ext.RuntimeDelegate;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Server;

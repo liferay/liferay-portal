@@ -32,12 +32,12 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.CustomAttributesUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Marco Leo

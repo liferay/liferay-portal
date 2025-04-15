@@ -7,7 +7,7 @@ package com.liferay.frontend.data.set.url;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Gianmarco Brunialti Masera

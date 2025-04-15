@@ -52,7 +52,7 @@ public class HeadlessBuilderPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + HeadlessBuilderPortletKeys.HEADLESS_BUILDER + ")"
+		target = "(jakarta.portlet.name=" + HeadlessBuilderPortletKeys.HEADLESS_BUILDER + ")"
 	)
 	private Portlet _portlet;
 

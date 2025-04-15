@@ -11,11 +11,11 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.StringEntityField;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.core.MultivaluedMap;
+
 import java.util.Collections;
 import java.util.Map;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * @author Cristina González

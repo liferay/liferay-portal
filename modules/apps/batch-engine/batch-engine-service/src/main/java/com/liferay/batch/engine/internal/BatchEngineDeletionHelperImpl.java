@@ -104,7 +104,8 @@ public class BatchEngineDeletionHelperImpl
 	protected void activate(BundleContext bundleContext) {
 		_portletIdServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
-				bundleContext, PortletDataHandler.class, "javax.portlet.name");
+				bundleContext, PortletDataHandler.class,
+				"jakarta.portlet.name");
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, PortletDataHandler.class,
 			"batch.engine.task.item.delegate.item.class.name");

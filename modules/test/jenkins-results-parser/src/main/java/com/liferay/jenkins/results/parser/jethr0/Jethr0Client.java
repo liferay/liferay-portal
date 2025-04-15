@@ -7,13 +7,13 @@ package com.liferay.jenkins.results.parser.jethr0;
 
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageListener;
+
 import java.io.Closeable;
 import java.io.IOException;
 
 import java.util.Map;
-
-import javax.jms.JMSException;
-import javax.jms.MessageListener;
 
 import org.json.JSONObject;
 

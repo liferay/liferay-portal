@@ -5,11 +5,11 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
-import javax.validation.MessageInterpolator;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

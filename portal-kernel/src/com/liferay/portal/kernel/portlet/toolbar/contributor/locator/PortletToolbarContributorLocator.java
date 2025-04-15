@@ -7,9 +7,9 @@ package com.liferay.portal.kernel.portlet.toolbar.contributor.locator;
 
 import com.liferay.portal.kernel.portlet.toolbar.contributor.PortletToolbarContributor;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
 
-import javax.portlet.PortletRequest;
+import java.util.List;
 
 /**
  * Provides an interface responsible for providing {@link

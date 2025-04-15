@@ -5,7 +5,7 @@
 
 package com.liferay.notification.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Gabriel Albuquerque

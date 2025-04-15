@@ -55,6 +55,9 @@ import com.liferay.portal.util.PortalClassPathUtil;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+
 import java.beans.PropertyDescriptor;
 
 import java.io.Closeable;
@@ -83,9 +86,6 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 
 import javax.sql.DataSource;
 

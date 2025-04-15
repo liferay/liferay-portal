@@ -28,12 +28,12 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.PortletException;
+
 import java.io.ByteArrayOutputStream;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.PortletException;
 
 import org.junit.Assert;
 import org.junit.Before;

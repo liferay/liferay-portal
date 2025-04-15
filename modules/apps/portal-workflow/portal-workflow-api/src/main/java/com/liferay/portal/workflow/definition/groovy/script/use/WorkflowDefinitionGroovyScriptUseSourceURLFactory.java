@@ -15,8 +15,8 @@ import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 import com.liferay.portal.workflow.constants.WorkflowWebKeys;
 import com.liferay.portal.workflow.portlet.tab.WorkflowPortletTabRegistry;
 
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
 
 /**
  * @author Feliphe Marinho

@@ -26,6 +26,9 @@ import com.liferay.portal.kernel.settings.SettingsException;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -37,9 +40,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ValidatorException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

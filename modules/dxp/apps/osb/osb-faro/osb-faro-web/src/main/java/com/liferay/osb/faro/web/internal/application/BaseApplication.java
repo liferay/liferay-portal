@@ -17,10 +17,10 @@ import com.liferay.osb.faro.web.internal.request.filter.SecurityFilter;
 import com.liferay.osb.faro.web.internal.request.filter.TokenAuthenticationFilter;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 
+import jakarta.ws.rs.core.Application;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.ws.rs.core.Application;
 
 /**
  * @author Matthew Kong

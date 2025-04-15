@@ -5,9 +5,9 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import java.util.Comparator;
+import jakarta.annotation.Priority;
 
-import javax.annotation.Priority;
+import java.util.Comparator;
 
 /**
  * @author Neil Griffin

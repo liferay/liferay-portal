@@ -17,12 +17,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.PortletRequest;
+
 import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Levente Hudák

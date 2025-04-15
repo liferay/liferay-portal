@@ -14,7 +14,7 @@
 
 package com.liferay.taglib.aui.base;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * @author Eduardo Lundgren

@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.search.web.constants.SearchResultsPortletKeys;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Lino Alves
  */
 @Component(
-	property = "javax.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS,
+	property = "jakarta.portlet.name=" + SearchResultsPortletKeys.SEARCH_RESULTS,
 	service = ConfigurationAction.class
 )
 public class SearchResultsConfigurationAction extends BaseConfigurationAction {

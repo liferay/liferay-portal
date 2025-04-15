@@ -26,11 +26,11 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.staging.constants.StagingConfigurationPortletKeys;
 import com.liferay.staging.constants.StagingProcessesPortletKeys;
 
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.ServletContext;
+
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

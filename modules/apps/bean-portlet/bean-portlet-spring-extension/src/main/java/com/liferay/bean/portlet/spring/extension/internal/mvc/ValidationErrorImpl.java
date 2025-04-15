@@ -5,9 +5,9 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
-import javax.mvc.binding.ValidationError;
+import jakarta.mvc.binding.ValidationError;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 
 /**
  * @author Neil Griffin

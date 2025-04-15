@@ -16,7 +16,7 @@ import com.liferay.portal.vulcan.internal.test.util.PaginationConfigurationTestU
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
-import javax.ws.rs.core.Feature;
+import jakarta.ws.rs.core.Feature;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 

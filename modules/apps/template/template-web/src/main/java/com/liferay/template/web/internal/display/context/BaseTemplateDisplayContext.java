@@ -20,10 +20,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.template.constants.TemplatePortletKeys;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Lourdes Fernández Besada

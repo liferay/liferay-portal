@@ -22,8 +22,8 @@ import com.liferay.saved.content.constants.MySavedContentPortletKeys;
 import com.liferay.saved.content.model.SavedContentEntry;
 import com.liferay.saved.content.service.SavedContentEntryService;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + MySavedContentPortletKeys.MY_SAVED_CONTENT,
+		"jakarta.portlet.name=" + MySavedContentPortletKeys.MY_SAVED_CONTENT,
 		"mvc.command.name=/saved_content/edit_saved_content_entry"
 	},
 	service = MVCActionCommand.class

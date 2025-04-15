@@ -7,13 +7,13 @@ package com.liferay.product.navigation.control.menu;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Provides an interface that defines entries to be used by a

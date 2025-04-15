@@ -46,6 +46,37 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.annotations.CustomPortletMode;
+import jakarta.portlet.annotations.CustomWindowState;
+import jakarta.portlet.annotations.Dependency;
+import jakarta.portlet.annotations.EventDefinition;
+import jakarta.portlet.annotations.InitParameter;
+import jakarta.portlet.annotations.LocaleString;
+import jakarta.portlet.annotations.Multipart;
+import jakarta.portlet.annotations.PortletApplication;
+import jakarta.portlet.annotations.PortletConfiguration;
+import jakarta.portlet.annotations.PortletConfigurations;
+import jakarta.portlet.annotations.PortletLifecycleFilter;
+import jakarta.portlet.annotations.PortletListener;
+import jakarta.portlet.annotations.PortletPreferencesValidator;
+import jakarta.portlet.annotations.PortletQName;
+import jakarta.portlet.annotations.PublicRenderParameterDefinition;
+import jakarta.portlet.annotations.RuntimeOption;
+import jakarta.portlet.annotations.SecurityRoleRef;
+import jakarta.portlet.annotations.Supports;
+import jakarta.portlet.annotations.UserAttribute;
+import jakarta.portlet.filter.ActionFilter;
+import jakarta.portlet.filter.EventFilter;
+import jakarta.portlet.filter.HeaderFilter;
+import jakarta.portlet.filter.PortletFilter;
+import jakarta.portlet.filter.RenderFilter;
+import jakarta.portlet.filter.ResourceFilter;
+
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -63,37 +94,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletRequest;
-import javax.portlet.annotations.CustomPortletMode;
-import javax.portlet.annotations.CustomWindowState;
-import javax.portlet.annotations.Dependency;
-import javax.portlet.annotations.EventDefinition;
-import javax.portlet.annotations.InitParameter;
-import javax.portlet.annotations.LocaleString;
-import javax.portlet.annotations.Multipart;
-import javax.portlet.annotations.PortletApplication;
-import javax.portlet.annotations.PortletConfiguration;
-import javax.portlet.annotations.PortletConfigurations;
-import javax.portlet.annotations.PortletLifecycleFilter;
-import javax.portlet.annotations.PortletListener;
-import javax.portlet.annotations.PortletPreferencesValidator;
-import javax.portlet.annotations.PortletQName;
-import javax.portlet.annotations.PublicRenderParameterDefinition;
-import javax.portlet.annotations.RuntimeOption;
-import javax.portlet.annotations.SecurityRoleRef;
-import javax.portlet.annotations.Supports;
-import javax.portlet.annotations.UserAttribute;
-import javax.portlet.filter.ActionFilter;
-import javax.portlet.filter.EventFilter;
-import javax.portlet.filter.HeaderFilter;
-import javax.portlet.filter.PortletFilter;
-import javax.portlet.filter.RenderFilter;
-import javax.portlet.filter.ResourceFilter;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 
 import javax.xml.namespace.QName;
 
@@ -313,11 +313,12 @@ public class BeanPortletRegistrarUtil {
 			String[] serviceClasses = (String[])serviceReference.getProperty(
 				Constants.OBJECTCLASS);
 
-			if (ArrayUtil.contains(serviceClasses, "javax.portlet.Portlet")) {
+			if (ArrayUtil.contains(serviceClasses, "jakarta.portlet.Portlet")) {
 				totalBeanPortlets++;
 			}
 			else if (ArrayUtil.contains(
-						serviceClasses, "javax.portlet.filter.PortletFilter")) {
+						serviceClasses,
+						"jakarta.portlet.filter.PortletFilter")) {
 
 				totalBeanFilters++;
 			}
@@ -627,7 +628,7 @@ public class BeanPortletRegistrarUtil {
 
 		Map<String, Preference> preferences = new HashMap<>();
 
-		for (javax.portlet.annotations.Preference preference :
+		for (jakarta.portlet.annotations.Preference preference :
 				portletConfiguration.prefs()) {
 
 			preferences.put(

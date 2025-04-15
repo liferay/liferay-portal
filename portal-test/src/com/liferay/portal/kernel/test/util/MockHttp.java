@@ -8,6 +8,8 @@ package com.liferay.portal.kernel.test.util;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.portal.kernel.util.Http;
 
+import jakarta.servlet.http.Cookie;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +18,6 @@ import java.net.URL;
 
 import java.util.Collections;
 import java.util.Map;
-
-import javax.servlet.http.Cookie;
 
 /**
  * @author Mikel Lorza

@@ -559,8 +559,8 @@ public class WikiPageLocalServiceWrapper
 
 	@Override
 	public com.liferay.wiki.model.WikiPageDisplay getDisplay(
-			long nodeId, String title, javax.portlet.PortletURL viewPageURL,
-			java.util.function.Supplier<javax.portlet.PortletURL>
+			long nodeId, String title, jakarta.portlet.PortletURL viewPageURL,
+			java.util.function.Supplier<jakarta.portlet.PortletURL>
 				editPageURLSupplier,
 			String attachmentURLPrefix)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -722,8 +722,8 @@ public class WikiPageLocalServiceWrapper
 
 	@Override
 	public com.liferay.wiki.model.WikiPageDisplay getPageDisplay(
-			long nodeId, String title, javax.portlet.PortletURL viewPageURL,
-			javax.portlet.PortletURL editPageURL, String attachmentURLPrefix)
+			long nodeId, String title, jakarta.portlet.PortletURL viewPageURL,
+			jakarta.portlet.PortletURL editPageURL, String attachmentURLPrefix)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _wikiPageLocalService.getPageDisplay(
@@ -732,8 +732,8 @@ public class WikiPageLocalServiceWrapper
 
 	@Override
 	public com.liferay.wiki.model.WikiPageDisplay getPageDisplay(
-			WikiPage page, javax.portlet.PortletURL viewPageURL,
-			javax.portlet.PortletURL editPageURL, String attachmentURLPrefix)
+			WikiPage page, jakarta.portlet.PortletURL viewPageURL,
+			jakarta.portlet.PortletURL editPageURL, String attachmentURLPrefix)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _wikiPageLocalService.getPageDisplay(
@@ -742,8 +742,8 @@ public class WikiPageLocalServiceWrapper
 
 	@Override
 	public com.liferay.wiki.model.WikiPageDisplay getPageDisplay(
-			WikiPage page, javax.portlet.PortletURL viewPageURL,
-			javax.portlet.PortletURL editPageURL, String attachmentURLPrefix,
+			WikiPage page, jakarta.portlet.PortletURL viewPageURL,
+			jakarta.portlet.PortletURL editPageURL, String attachmentURLPrefix,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -754,8 +754,8 @@ public class WikiPageLocalServiceWrapper
 
 	@Override
 	public com.liferay.wiki.model.WikiPageDisplay getPageDisplay(
-			WikiPage page, javax.portlet.PortletURL viewPageURL,
-			java.util.function.Supplier<javax.portlet.PortletURL>
+			WikiPage page, jakarta.portlet.PortletURL viewPageURL,
+			java.util.function.Supplier<jakarta.portlet.PortletURL>
 				editPageURLSupplier,
 			String attachmentURLPrefix,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)

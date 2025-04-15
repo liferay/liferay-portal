@@ -45,18 +45,18 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.portlet.ActionParameters;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.MutableActionParameters;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletPreferences;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.ActionParameters;
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.MutableActionParameters;
-import javax.portlet.Portlet;
-import javax.portlet.PortletPreferences;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -99,7 +99,7 @@ public class PortletConfigurationPortletTest {
 		_serviceRegistration = bundleContext.registerService(
 			Portlet.class, new MVCPortlet(),
 			HashMapDictionaryBuilder.put(
-				"javax.portlet.name", portletId
+				"jakarta.portlet.name", portletId
 			).build());
 
 		_serviceBuilderPortlet = _portletLocalService.getPortletById(

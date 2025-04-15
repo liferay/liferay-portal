@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ClientDataRequest;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ClientDataRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

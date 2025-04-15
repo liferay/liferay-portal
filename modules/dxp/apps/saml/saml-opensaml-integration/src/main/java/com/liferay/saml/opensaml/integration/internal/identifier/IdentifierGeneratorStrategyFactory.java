@@ -12,7 +12,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.SecureRandom;
 import com.liferay.portal.kernel.util.UnicodeFormatter;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import net.shibboleth.utilities.java.support.security.IdentifierGenerationStrategy;
 

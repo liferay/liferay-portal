@@ -22,9 +22,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.xml.Element;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Máté Thurzó
  */
 @Component(
-	property = "javax.portlet.name=" + BlogsPortletKeys.BLOGS,
+	property = "jakarta.portlet.name=" + BlogsPortletKeys.BLOGS,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class BlogsExportImportPortletPreferencesProcessor
@@ -160,7 +160,7 @@ public class BlogsExportImportPortletPreferencesProcessor
 	@Reference
 	private BlogsEntryLocalService _blogsEntryLocalService;
 
-	@Reference(target = "(javax.portlet.name=" + BlogsPortletKeys.BLOGS + ")")
+	@Reference(target = "(jakarta.portlet.name=" + BlogsPortletKeys.BLOGS + ")")
 	private PortletDataHandler _blogsPortletDataHandler;
 
 	@Reference(target = "(name=BlogsExportCapability)")

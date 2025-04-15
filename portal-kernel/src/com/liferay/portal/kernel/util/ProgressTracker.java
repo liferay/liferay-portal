@@ -7,16 +7,16 @@ package com.liferay.portal.kernel.util;
 
 import com.liferay.petra.string.StringPool;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Jorge Ferrer

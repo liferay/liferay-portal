@@ -14,11 +14,11 @@ import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ParamUtil;
 
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.ResourceRequest;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.RenderRequest;
-import javax.portlet.ResourceRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

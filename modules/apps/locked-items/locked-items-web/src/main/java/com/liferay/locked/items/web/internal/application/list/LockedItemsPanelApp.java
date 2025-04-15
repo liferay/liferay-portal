@@ -61,7 +61,7 @@ public class LockedItemsPanelApp extends BasePanelApp {
 	private LockedItemsRendererRegistry _lockedItemsRendererRegistry;
 
 	@Reference(
-		target = "(javax.portlet.name=" + LockedItemsPortletKeys.LOCKED_ITEMS + ")"
+		target = "(jakarta.portlet.name=" + LockedItemsPortletKeys.LOCKED_ITEMS + ")"
 	)
 	private Portlet _portlet;
 

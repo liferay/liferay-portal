@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Roberto Díaz
  */
 @Component(
-	property = "javax.portlet.name=" + FlagsPortletKeys.FLAGS,
+	property = "jakarta.portlet.name=" + FlagsPortletKeys.FLAGS,
 	service = UserNotificationHandler.class
 )
 public class FlagsUserNotificationHandler extends BaseUserNotificationHandler {

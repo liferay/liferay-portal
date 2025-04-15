@@ -10,10 +10,10 @@ import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portlet.PortletBagFactory;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Brian Wing Shun Chan

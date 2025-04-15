@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Jorge Ferrer
  */
 @Component(
-	property = "javax.portlet.name=" + SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN,
+	property = "jakarta.portlet.name=" + SiteMembershipsPortletKeys.SITE_MEMBERSHIPS_ADMIN,
 	service = ControlPanelEntry.class
 )
 public class SiteMembershipsControlPanelEntry extends BaseControlPanelEntry {

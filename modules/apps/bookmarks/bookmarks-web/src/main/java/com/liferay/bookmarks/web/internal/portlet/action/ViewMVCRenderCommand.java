@@ -16,9 +16,9 @@ import com.liferay.portal.kernel.portlet.toolbar.contributor.PortletToolbarContr
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,8 +28,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
-		"javax.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN,
+		"jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS,
+		"jakarta.portlet.name=" + BookmarksPortletKeys.BOOKMARKS_ADMIN,
 		"mvc.command.name=/", "mvc.command.name=/bookmarks/view",
 		"mvc.command.name=/bookmarks/view_folder"
 	},

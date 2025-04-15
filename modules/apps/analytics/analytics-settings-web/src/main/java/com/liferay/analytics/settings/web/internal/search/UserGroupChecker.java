@@ -8,9 +8,9 @@ package com.liferay.analytics.settings.web.internal.search;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.model.UserGroup;
 
-import java.util.Set;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderResponse;
+import java.util.Set;
 
 /**
  * @author Geyson Silva

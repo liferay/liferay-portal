@@ -37,7 +37,7 @@ public class SamlAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + SamlPortletKeys.SAML_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + SamlPortletKeys.SAML_ADMIN + ")"
 	)
 	private Portlet _portlet;
 

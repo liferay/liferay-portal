@@ -15,11 +15,11 @@ import com.liferay.portal.search.web.internal.custom.filter.display.context.Cust
 import com.liferay.portal.search.web.internal.custom.filter.display.context.builder.CustomFilterDisplayContextBuilder;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.RenderRequest;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Luan Maoski
  */
 @Component(
-	property = "javax.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
+	property = "jakarta.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
 	service = ConfigurationAction.class
 )
 public class CustomFilterPortletConfigurationAction

@@ -24,8 +24,8 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"editor.config.key=coverImageCaptionEditor",
 		"editor.name=ballooneditor",
-		"javax.portlet.name=" + BlogsPortletKeys.BLOGS,
-		"javax.portlet.name=" + BlogsPortletKeys.BLOGS_ADMIN
+		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS,
+		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_ADMIN
 	},
 	service = EditorConfigContributor.class
 )

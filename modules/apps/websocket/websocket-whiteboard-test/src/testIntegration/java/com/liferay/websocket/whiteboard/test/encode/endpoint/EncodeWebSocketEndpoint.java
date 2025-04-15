@@ -7,14 +7,14 @@ package com.liferay.websocket.whiteboard.test.encode.endpoint;
 
 import com.liferay.websocket.whiteboard.test.encode.data.Example;
 
-import java.io.IOException;
+import jakarta.websocket.EncodeException;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
+import jakarta.websocket.RemoteEndpoint;
+import jakarta.websocket.Session;
 
-import javax.websocket.EncodeException;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.RemoteEndpoint;
-import javax.websocket.Session;
+import java.io.IOException;
 
 /**
  * @author Cristina González

@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Crescenzo Rega
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_SPECIFICATION_OPTION_FACETS,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_SPECIFICATION_OPTION_FACETS,
 	service = TemplateHandler.class
 )
 public class CPSpecificationOptionFacetsPortletDisplayTemplateHandler

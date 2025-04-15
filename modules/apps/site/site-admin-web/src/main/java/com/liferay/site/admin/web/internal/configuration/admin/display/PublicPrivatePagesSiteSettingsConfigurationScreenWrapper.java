@@ -18,10 +18,10 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 
-import java.util.Locale;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

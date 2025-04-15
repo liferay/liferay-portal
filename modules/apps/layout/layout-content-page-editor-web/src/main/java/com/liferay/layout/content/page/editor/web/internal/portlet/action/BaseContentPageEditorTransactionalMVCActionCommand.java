@@ -26,10 +26,10 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.concurrent.Callable;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import java.util.concurrent.Callable;
 
 import org.osgi.service.component.annotations.Reference;
 

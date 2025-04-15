@@ -42,14 +42,14 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.product.navigation.personal.menu.util.PersonalApplicationURLUtil;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.WindowState;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.WindowState;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -216,7 +216,7 @@ public class WorkflowTaskUserNotificationHandlerTest {
 	private UserNotificationEventLocalService
 		_userNotificationEventLocalService;
 
-	@Inject(filter = "javax.portlet.name=" + PortletKeys.MY_WORKFLOW_TASK)
+	@Inject(filter = "jakarta.portlet.name=" + PortletKeys.MY_WORKFLOW_TASK)
 	private UserNotificationHandler _userNotificationHandler;
 
 	@Inject

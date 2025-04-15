@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Felipe Lorenz
  */
 @Component(
-	property = "javax.portlet.name=" + TagFacetPortletKeys.TAG_FACET,
+	property = "jakarta.portlet.name=" + TagFacetPortletKeys.TAG_FACET,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class TagFacetSearchExportImportPortletPreferencesProcessor

@@ -11,14 +11,14 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.JspEngineInfo;
-import javax.servlet.jsp.JspFactory;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspEngineInfo;
+import jakarta.servlet.jsp.JspFactory;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author Shuyang Zhou

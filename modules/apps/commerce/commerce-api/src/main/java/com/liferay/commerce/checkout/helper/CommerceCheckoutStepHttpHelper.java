@@ -8,7 +8,7 @@ package com.liferay.commerce.checkout.helper;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.annotation.versioning.ProviderType;
 

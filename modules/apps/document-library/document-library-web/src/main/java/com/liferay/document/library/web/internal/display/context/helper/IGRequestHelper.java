@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.web.internal.display.context.helper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Iván Zaera

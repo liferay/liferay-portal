@@ -77,7 +77,7 @@ public class PortletPreferenceValuesUpgradeProcessTest {
 			_portletPreferencesLocalService.getPortletPreferences(
 				portletPreferences.getPortletPreferencesId());
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			PortletPreferenceValueLocalServiceUtil.getPreferences(
 				portletPreferences);
 

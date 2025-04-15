@@ -9,9 +9,9 @@ import com.liferay.configuration.admin.web.internal.display.ConfigurationCategor
 import com.liferay.configuration.admin.web.internal.display.ConfigurationEntry;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Drew Brokke

@@ -8,7 +8,7 @@ package com.liferay.asset.display.page.layout.asset.entry.provider;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.portal.kernel.model.Layout;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Roberto Díaz

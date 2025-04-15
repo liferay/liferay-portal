@@ -27,10 +27,10 @@ import com.liferay.portal.remote.json.web.service.web.internal.action.JSONWebSer
 import com.liferay.portal.remote.json.web.service.web.internal.action.JSONWebServiceInvokerAction;
 import com.liferay.portal.util.PropsValues;
 
-import java.lang.reflect.InvocationTargetException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Igor Spasic

@@ -17,12 +17,12 @@ import com.liferay.social.kernel.model.SocialActivityCounterDefinition;
 import com.liferay.social.kernel.model.SocialActivityDefinition;
 import com.liferay.social.kernel.util.SocialConfigurationUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Zsolt Berentey

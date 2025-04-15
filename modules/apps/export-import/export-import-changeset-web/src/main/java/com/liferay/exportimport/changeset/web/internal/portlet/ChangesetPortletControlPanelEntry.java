@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Máté Thurzó
  */
 @Component(
-	property = "javax.portlet.name=" + ChangesetPortletKeys.CHANGESET,
+	property = "jakarta.portlet.name=" + ChangesetPortletKeys.CHANGESET,
 	service = ControlPanelEntry.class
 )
 public class ChangesetPortletControlPanelEntry extends BaseControlPanelEntry {

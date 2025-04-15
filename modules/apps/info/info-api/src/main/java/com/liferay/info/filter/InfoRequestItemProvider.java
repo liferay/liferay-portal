@@ -7,7 +7,7 @@ package com.liferay.info.filter;
 
 import com.liferay.info.type.Keyed;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso

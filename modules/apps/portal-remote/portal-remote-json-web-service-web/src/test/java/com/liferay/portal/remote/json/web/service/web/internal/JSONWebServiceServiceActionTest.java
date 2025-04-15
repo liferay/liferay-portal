@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.remote.json.web.service.JSONWebServiceAction;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.File;
 
 import java.nio.file.Files;
@@ -26,8 +28,6 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.Assert;

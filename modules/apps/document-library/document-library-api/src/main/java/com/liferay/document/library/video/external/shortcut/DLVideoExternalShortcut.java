@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.video.external.shortcut;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Provides an external video shortcut to be used by the document library to

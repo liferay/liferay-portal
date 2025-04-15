@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.portlet.async;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.annotation.versioning.ProviderType;
 

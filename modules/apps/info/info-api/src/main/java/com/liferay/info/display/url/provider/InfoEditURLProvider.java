@@ -5,7 +5,7 @@
 
 package com.liferay.info.display.url.provider;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Jürgen Kappler

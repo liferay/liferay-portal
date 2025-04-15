@@ -9,9 +9,9 @@ import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.util.SetUtil;
 
-import java.util.Set;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.RenderResponse;
+import java.util.Set;
 
 /**
  * @author Riccardo Alberti

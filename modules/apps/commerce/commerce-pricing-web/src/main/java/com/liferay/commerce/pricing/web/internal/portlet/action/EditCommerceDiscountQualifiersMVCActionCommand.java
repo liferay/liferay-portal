@@ -16,10 +16,10 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.Objects;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_DISCOUNT,
+		"jakarta.portlet.name=" + CommercePricingPortletKeys.COMMERCE_DISCOUNT,
 		"mvc.command.name=/commerce_discount/edit_commerce_discount_qualifiers"
 	},
 	service = MVCActionCommand.class

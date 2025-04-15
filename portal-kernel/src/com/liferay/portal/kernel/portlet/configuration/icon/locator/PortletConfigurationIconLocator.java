@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.portlet.configuration.icon.locator;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
 
-import javax.portlet.PortletRequest;
+import java.util.List;
 
 /**
  * @author Eudaldo Alonso

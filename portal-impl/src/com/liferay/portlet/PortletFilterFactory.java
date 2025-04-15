@@ -8,14 +8,14 @@ package com.liferay.portlet;
 import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.util.InstanceFactory;
 
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.UnavailableException;
+import jakarta.portlet.filter.FilterConfig;
+import jakarta.portlet.filter.PortletFilter;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
-import javax.portlet.UnavailableException;
-import javax.portlet.filter.FilterConfig;
-import javax.portlet.filter.PortletFilter;
 
 /**
  * @author Brian Wing Shun Chan

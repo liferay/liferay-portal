@@ -23,9 +23,9 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Map;
+import jakarta.portlet.PortletMode;
 
-import javax.portlet.PortletMode;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
+	property = "jakarta.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
 	service = EditorConfigContributor.class
 )
 public class CommerceCKEditorConfigContributor

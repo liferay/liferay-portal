@@ -30,15 +30,15 @@ import com.liferay.portal.kernel.util.SessionTreeJSClicks;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
 
 import java.util.Map;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,8 +49,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
-		"javax.portlet.name=" + ExportImportPortletKeys.EXPORT,
+		"jakarta.portlet.name=" + ExportImportPortletKeys.COMPANY_EXPORT,
+		"jakarta.portlet.name=" + ExportImportPortletKeys.EXPORT,
 		"mvc.command.name=/export_import/export_layouts"
 	},
 	service = MVCActionCommand.class

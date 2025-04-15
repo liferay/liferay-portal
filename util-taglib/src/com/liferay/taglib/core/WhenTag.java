@@ -5,8 +5,8 @@
 
 package com.liferay.taglib.core;
 
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * @author Shuyang Zhou

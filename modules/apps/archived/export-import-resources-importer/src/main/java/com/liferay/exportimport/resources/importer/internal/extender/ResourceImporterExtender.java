@@ -18,12 +18,12 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.plugin.PluginPackageUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

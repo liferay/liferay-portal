@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Marco Galluzzi
  */
 @Component(
-	property = "javax.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
+	property = "jakarta.portlet.name=" + KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
 	service = UserNotificationDefinition.class
 )
 public class KBReviewEntryUserNotificationDefinition

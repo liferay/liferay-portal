@@ -22,9 +22,9 @@ import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pavel Savinov
  */
 @Component(
-	property = "javax.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK,
+	property = "jakarta.portlet.name=" + StyleBookPortletKeys.STYLE_BOOK,
 	service = PortletDataHandler.class
 )
 public class StyleBookPortletDataHandler extends BasePortletDataHandler {

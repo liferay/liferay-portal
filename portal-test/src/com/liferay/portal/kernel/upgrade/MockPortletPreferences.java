@@ -7,12 +7,12 @@ package com.liferay.portal.kernel.upgrade;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Iván Zaera

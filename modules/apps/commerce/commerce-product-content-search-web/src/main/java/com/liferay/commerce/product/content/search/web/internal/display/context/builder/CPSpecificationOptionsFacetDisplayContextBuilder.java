@@ -34,6 +34,9 @@ import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchRequest;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchResponse;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.RenderRequest;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -41,9 +44,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.RenderRequest;
 
 /**
  * @author Crescenzo Rega

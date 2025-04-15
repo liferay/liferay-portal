@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import javax.portlet.MutableRenderParameters;
+import jakarta.portlet.MutableRenderParameters;
 
 /**
  * @author Dante Wang

@@ -14,7 +14,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Felipe Lorenz
  */
 @Component(
-	property = "javax.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
+	property = "jakarta.portlet.name=" + CustomFilterPortletKeys.CUSTOM_FILTER,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class CustomFilterSearchExportImportPortletPreferencesProcessor

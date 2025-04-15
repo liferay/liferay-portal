@@ -7,12 +7,12 @@ package com.liferay.portal.kernel.url;
 
 import com.liferay.petra.reflect.ReflectionUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.Set;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Raymond Augé

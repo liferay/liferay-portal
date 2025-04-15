@@ -5,7 +5,7 @@
 
 package com.liferay.portal.servlet.filters.util;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Carlos Sierra Andrés

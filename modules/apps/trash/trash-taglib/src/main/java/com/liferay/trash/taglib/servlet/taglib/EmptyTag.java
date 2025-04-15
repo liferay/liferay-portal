@@ -8,10 +8,10 @@ package com.liferay.trash.taglib.servlet.taglib;
 import com.liferay.taglib.util.IncludeTag;
 import com.liferay.trash.taglib.internal.servlet.ServletContextUtil;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Creates a component for users to permanently delete items (articles, images,

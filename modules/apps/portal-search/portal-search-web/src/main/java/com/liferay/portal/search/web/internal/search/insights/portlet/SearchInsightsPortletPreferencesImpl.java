@@ -8,7 +8,7 @@ package com.liferay.portal.search.web.internal.search.insights.portlet;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.search.web.internal.portlet.preferences.BasePortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 /**
  * @author Wade Cao

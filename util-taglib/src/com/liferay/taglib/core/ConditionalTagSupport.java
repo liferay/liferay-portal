@@ -8,8 +8,8 @@ package com.liferay.taglib.core;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.taglib.TagSupport;
 
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author Shuyang Zhou

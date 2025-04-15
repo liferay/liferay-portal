@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.template.constants.TemplatePortletKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + TemplatePortletKeys.TEMPLATE,
+		"jakarta.portlet.name=" + TemplatePortletKeys.TEMPLATE,
 		"mvc.command.name=/template/get_ddm_template"
 	},
 	service = MVCResourceCommand.class

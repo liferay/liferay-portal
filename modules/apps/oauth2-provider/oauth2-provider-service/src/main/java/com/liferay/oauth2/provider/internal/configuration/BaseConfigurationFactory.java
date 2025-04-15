@@ -26,11 +26,11 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.ws.rs.core.Application;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.core.Application;
 
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.annotations.Deactivate;

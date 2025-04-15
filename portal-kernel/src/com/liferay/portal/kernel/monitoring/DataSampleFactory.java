@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.monitoring;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Michael C. Han

@@ -8,8 +8,8 @@ package com.liferay.blogs.web.internal.portlet.action;
 import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR,
+		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR,
 		"mvc.command.name=/", "mvc.command.name=/blogs_aggregator/view"
 	},
 	service = MVCRenderCommand.class

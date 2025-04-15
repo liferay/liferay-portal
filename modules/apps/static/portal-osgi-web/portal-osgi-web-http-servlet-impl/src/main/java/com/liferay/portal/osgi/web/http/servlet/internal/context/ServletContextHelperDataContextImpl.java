@@ -8,6 +8,8 @@ package com.liferay.portal.osgi.web.http.servlet.internal.context;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.File;
 
 import java.util.Collections;
@@ -15,8 +17,6 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.ServletContext;
 
 import org.eclipse.equinox.http.servlet.internal.context.ServletContextHelperDataContext;
 

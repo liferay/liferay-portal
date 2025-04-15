@@ -7,9 +7,9 @@ package com.liferay.product.navigation.control.menu.util;
 
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuCategory;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Lance Ji

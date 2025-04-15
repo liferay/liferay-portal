@@ -7,15 +7,15 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.filter.RenderRequestWrapper;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.RenderRequest;
-import javax.portlet.filter.RenderRequestWrapper;
 
 /**
  * @author Brian Wing Shun Chan

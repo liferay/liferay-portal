@@ -7,15 +7,15 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import jakarta.portlet.EventRequest;
+import jakarta.portlet.filter.EventRequestWrapper;
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.portlet.EventRequest;
-import javax.portlet.filter.EventRequestWrapper;
 
 /**
  * @author Brian Wing Shun Chan

@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import javax.portlet.ActionRequest;
+import jakarta.portlet.ActionRequest;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -50,11 +50,11 @@ public class MVCActionCommandTest {
 		_portlet = new MVCPortlet();
 
 		_portletServiceRegistration = bundleContext.registerService(
-			javax.portlet.Portlet.class, _portlet,
+			jakarta.portlet.Portlet.class, _portlet,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.init-param.copy-request-parameters", "false"
+				"jakarta.portlet.init-param.copy-request-parameters", "false"
 			).put(
-				"javax.portlet.name", _PORTLET_NAME
+				"jakarta.portlet.name", _PORTLET_NAME
 			).build());
 
 		_mvcActionCommandServiceRegistration1 = bundleContext.registerService(
@@ -67,7 +67,7 @@ public class MVCActionCommandTest {
 				return true;
 			},
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.name", _PORTLET_NAME
+				"jakarta.portlet.name", _PORTLET_NAME
 			).put(
 				"mvc.command.name", _TEST_MVC_ACTION_COMMAND_NAME_1
 			).build());
@@ -82,7 +82,7 @@ public class MVCActionCommandTest {
 				return true;
 			},
 			HashMapDictionaryBuilder.<String, Object>put(
-				"javax.portlet.name", _PORTLET_NAME
+				"jakarta.portlet.name", _PORTLET_NAME
 			).put(
 				"mvc.command.name", _TEST_MVC_ACTION_COMMAND_NAME_2
 			).build());
@@ -197,8 +197,8 @@ public class MVCActionCommandTest {
 		_mvcActionCommandServiceRegistration1;
 	private static ServiceRegistration<MVCActionCommand>
 		_mvcActionCommandServiceRegistration2;
-	private static javax.portlet.Portlet _portlet;
-	private static ServiceRegistration<javax.portlet.Portlet>
+	private static jakarta.portlet.Portlet _portlet;
+	private static ServiceRegistration<jakarta.portlet.Portlet>
 		_portletServiceRegistration;
 
 }

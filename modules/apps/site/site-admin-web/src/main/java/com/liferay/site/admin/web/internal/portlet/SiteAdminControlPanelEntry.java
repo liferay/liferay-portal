@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Miguel Pastor
  */
 @Component(
-	property = "javax.portlet.name=" + SiteAdminPortletKeys.SITE_ADMIN,
+	property = "jakarta.portlet.name=" + SiteAdminPortletKeys.SITE_ADMIN,
 	service = ControlPanelEntry.class
 )
 public class SiteAdminControlPanelEntry extends BaseControlPanelEntry {

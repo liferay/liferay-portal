@@ -88,6 +88,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
+import jakarta.portlet.GenericPortlet;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletPreferences;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,10 +105,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.portlet.GenericPortlet;
-import javax.portlet.Portlet;
-import javax.portlet.PortletPreferences;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -1551,7 +1551,7 @@ public class PageTemplatesImporterTest {
 				HashMapDictionaryBuilder.put(
 					"com.liferay.portlet.instanceable", "true"
 				).put(
-					"javax.portlet.name", portletId
+					"jakarta.portlet.name", portletId
 				).build()));
 	}
 

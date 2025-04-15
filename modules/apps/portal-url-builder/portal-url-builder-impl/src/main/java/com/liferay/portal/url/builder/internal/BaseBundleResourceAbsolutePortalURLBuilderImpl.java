@@ -17,7 +17,7 @@ import com.liferay.portal.url.builder.facet.PathProxyAwareAbsolutePortalURLBuild
 import com.liferay.portal.url.builder.internal.util.CacheHelper;
 import com.liferay.portal.url.builder.internal.util.URLUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.Bundle;
 

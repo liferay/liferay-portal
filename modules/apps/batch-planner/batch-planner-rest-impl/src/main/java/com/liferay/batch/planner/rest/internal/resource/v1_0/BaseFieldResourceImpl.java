@@ -28,19 +28,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Matija Petanjek
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseFieldResourceImpl implements FieldResource {
 
 	/**
@@ -63,17 +63,17 @@ public abstract class BaseFieldResourceImpl implements FieldResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Field")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/plans/{internalClassNameKey}/fields")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/plans/{internalClassNameKey}/fields")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Field> getPlanInternalClassNameKeyFieldsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("internalClassNameKey")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("internalClassNameKey")
 			String internalClassNameKey,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("export")
+			@jakarta.ws.rs.QueryParam("export")
 			Boolean export)
 		throws Exception {
 

@@ -8,9 +8,9 @@ package com.liferay.message.boards.web.internal.display.context;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
-import java.util.Date;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * @author Jürgen KAppler

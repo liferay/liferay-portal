@@ -25,7 +25,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.util.PropsValues;
 
-import javax.portlet.PortletPreferences;
+import jakarta.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gergely Mathe
  */
 @Component(
-	property = "javax.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY,
+	property = "jakarta.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY,
 	service = PortletDataHandler.class
 )
 public class DLPortletDataHandler extends BasePortletDataHandler {
@@ -163,7 +163,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY_ADMIN + ")"
+		target = "(jakarta.portlet.name=" + DLPortletKeys.DOCUMENT_LIBRARY_ADMIN + ")"
 	)
 	private PortletDataHandler _dlAdminPortletDataHandler;
 

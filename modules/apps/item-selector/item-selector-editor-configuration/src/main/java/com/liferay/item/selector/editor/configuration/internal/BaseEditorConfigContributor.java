@@ -12,11 +12,11 @@ import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Sergio González

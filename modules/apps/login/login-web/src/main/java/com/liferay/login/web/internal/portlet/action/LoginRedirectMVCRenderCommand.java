@@ -8,8 +8,8 @@ package com.liferay.login.web.internal.portlet.action;
 import com.liferay.login.web.constants.LoginPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -18,8 +18,8 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + LoginPortletKeys.FAST_LOGIN,
-		"javax.portlet.name=" + LoginPortletKeys.LOGIN,
+		"jakarta.portlet.name=" + LoginPortletKeys.FAST_LOGIN,
+		"jakarta.portlet.name=" + LoginPortletKeys.LOGIN,
 		"mvc.command.name=/login/login_redirect"
 	},
 	service = MVCRenderCommand.class

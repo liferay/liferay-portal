@@ -11,10 +11,10 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.util.TagResourceBundleUtil;
 
-import java.util.Set;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
+import java.util.Set;
 
 /**
  * @author Chema Balsas

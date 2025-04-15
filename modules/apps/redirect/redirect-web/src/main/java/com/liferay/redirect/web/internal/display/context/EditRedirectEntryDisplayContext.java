@@ -14,11 +14,11 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.redirect.model.RedirectEntry;
 
+import jakarta.portlet.ResourceURL;
+
 import java.text.DateFormat;
 
 import java.util.Date;
-
-import javax.portlet.ResourceURL;
 
 /**
  * @author Adolfo Pérez

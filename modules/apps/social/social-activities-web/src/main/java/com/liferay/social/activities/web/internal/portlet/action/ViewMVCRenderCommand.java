@@ -10,9 +10,9 @@ import com.liferay.social.activities.constants.SocialActivitiesPortletKeys;
 import com.liferay.social.activities.web.internal.constants.SocialActivitiesWebKeys;
 import com.liferay.social.activities.web.internal.helper.SocialActivitiesQueryHelper;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + SocialActivitiesPortletKeys.SOCIAL_ACTIVITIES,
+		"jakarta.portlet.name=" + SocialActivitiesPortletKeys.SOCIAL_ACTIVITIES,
 		"mvc.command.name=/"
 	},
 	service = MVCRenderCommand.class

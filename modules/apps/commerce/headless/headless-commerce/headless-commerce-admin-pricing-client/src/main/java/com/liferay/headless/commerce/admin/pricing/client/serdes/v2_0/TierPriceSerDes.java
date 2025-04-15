@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

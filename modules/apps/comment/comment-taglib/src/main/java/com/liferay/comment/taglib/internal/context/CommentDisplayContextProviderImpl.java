@@ -15,8 +15,8 @@ import com.liferay.portal.kernel.comment.display.context.CommentSectionDisplayCo
 import com.liferay.portal.kernel.comment.display.context.CommentTreeDisplayContext;
 import com.liferay.portal.kernel.display.context.BaseDisplayContextProvider;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Adolfo Pérez

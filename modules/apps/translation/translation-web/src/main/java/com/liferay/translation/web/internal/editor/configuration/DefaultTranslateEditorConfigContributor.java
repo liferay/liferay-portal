@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"editor.config.key=defaultTranslateEditor",
-		"javax.portlet.name=" + TranslationPortletKeys.TRANSLATION
+		"jakarta.portlet.name=" + TranslationPortletKeys.TRANSLATION
 	},
 	service = EditorConfigContributor.class
 )

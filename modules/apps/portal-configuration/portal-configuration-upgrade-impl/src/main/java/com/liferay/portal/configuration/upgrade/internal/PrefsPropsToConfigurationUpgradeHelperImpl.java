@@ -16,14 +16,14 @@ import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
+
 import java.lang.reflect.Method;
 
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Objects;
-
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.Configuration;

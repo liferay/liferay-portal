@@ -8,26 +8,26 @@ package com.liferay.bean.portlet.spring.extension.internal.beans;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManager;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManagerThreadLocal;
 
+import jakarta.annotation.ManagedBean;
+import jakarta.annotation.Priority;
+
+import jakarta.portlet.ActionURL;
+import jakarta.portlet.CacheControl;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderURL;
+import jakarta.portlet.ResourceURL;
+import jakarta.portlet.filter.MimeResponseWrapper;
+
+import jakarta.servlet.http.Cookie;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import java.util.Collection;
 import java.util.Locale;
-
-import javax.annotation.ManagedBean;
-import javax.annotation.Priority;
-
-import javax.portlet.ActionURL;
-import javax.portlet.CacheControl;
-import javax.portlet.MimeResponse;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderURL;
-import javax.portlet.ResourceURL;
-import javax.portlet.filter.MimeResponseWrapper;
-
-import javax.servlet.http.Cookie;
 
 import org.w3c.dom.Element;
 

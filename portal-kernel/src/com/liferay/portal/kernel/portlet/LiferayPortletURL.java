@@ -5,13 +5,13 @@
 
 package com.liferay.portal.kernel.portlet;
 
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.ResourceURL;
+
 import java.io.Serializable;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
-
-import javax.portlet.PortletURL;
-import javax.portlet.ResourceURL;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -44,7 +44,7 @@ public interface LiferayPortletURL
 	 * @param      name the name of the URL parameter
 	 * @return     the first value of the URL parameter
 	 * @deprecated As of Judson (7.1.x), replaced by {@link
-	 *             javax.portlet.PortletParameters#getValue(String)}
+	 *             jakarta.portlet.PortletParameters#getValue(String)}
 	 */
 	@Deprecated
 	public String getParameter(String name);
@@ -228,13 +228,13 @@ public interface LiferayPortletURL
 	 *
 	 * <ul>
 	 * <li>
-	 * {@link javax.portlet.PortletRequest#ACTION_PHASE}
+	 * {@link jakarta.portlet.PortletRequest#ACTION_PHASE}
 	 * </li>
 	 * <li>
-	 * {@link javax.portlet.PortletRequest#RENDER_PHASE}
+	 * {@link jakarta.portlet.PortletRequest#RENDER_PHASE}
 	 * </li>
 	 * <li>
-	 * {@link javax.portlet.PortletRequest#RESOURCE_PHASE}
+	 * {@link jakarta.portlet.PortletRequest#RESOURCE_PHASE}
 	 * </li>
 	 * </ul>
 	 *
@@ -250,7 +250,7 @@ public interface LiferayPortletURL
 	 *             <code>false</code> any existing values will be overwritten
 	 *             with the new value.
 	 * @deprecated As of Judson (7.1.x), replaced by {@link
-	 *             javax.portlet.MutablePortletParameters#setValue(String,
+	 *             jakarta.portlet.MutablePortletParameters#setValue(String,
 	 *             String)}  Sets the URL parameter to the value
 	 */
 	@Deprecated
@@ -264,7 +264,7 @@ public interface LiferayPortletURL
 	 *             <code>false</code> any existing values will be overwritten
 	 *             with the new values.
 	 * @deprecated As of Judson (7.1.x), replaced by {@link
-	 *             javax.portlet.MutablePortletParameters#setValues(String,
+	 *             jakarta.portlet.MutablePortletParameters#setValues(String,
 	 *             String...)}  Sets the URL parameter the values
 	 */
 	@Deprecated

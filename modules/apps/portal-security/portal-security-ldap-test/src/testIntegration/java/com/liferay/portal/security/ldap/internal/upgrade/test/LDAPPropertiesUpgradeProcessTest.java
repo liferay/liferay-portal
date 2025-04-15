@@ -30,13 +30,13 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.IOException;
 
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.After;
 import org.junit.AfterClass;

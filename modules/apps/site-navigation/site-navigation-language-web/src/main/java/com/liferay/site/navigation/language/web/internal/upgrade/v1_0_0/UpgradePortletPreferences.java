@@ -14,8 +14,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
 import com.liferay.site.navigation.language.constants.SiteNavigationLanguagePortletKeys;
 
-import javax.portlet.PortletPreferences;
-import javax.portlet.ReadOnlyException;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.ReadOnlyException;
 
 /**
  * @author Eduardo García

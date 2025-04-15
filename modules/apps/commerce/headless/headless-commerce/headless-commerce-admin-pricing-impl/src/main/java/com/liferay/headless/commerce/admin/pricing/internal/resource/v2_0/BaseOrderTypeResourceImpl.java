@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Zoltán Takács
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v2.0")
+@jakarta.ws.rs.Path("/v2.0")
 public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 
 	/**
@@ -57,14 +57,14 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderType")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/discount-order-types/{discountOrderTypeId}/order-type")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/discount-order-types/{discountOrderTypeId}/order-type")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public OrderType getDiscountOrderTypeOrderType(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("discountOrderTypeId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("discountOrderTypeId")
 			Long discountOrderTypeId)
 		throws Exception {
 
@@ -87,16 +87,16 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderType")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/price-list-order-types/{priceListOrderTypeId}/order-type"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public OrderType getPriceListOrderTypeOrderType(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("priceListOrderTypeId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("priceListOrderTypeId")
 			Long priceListOrderTypeId)
 		throws Exception {
 

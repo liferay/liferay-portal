@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.result.SearchResultContributor;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import java.util.Locale;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

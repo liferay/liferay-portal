@@ -17,6 +17,8 @@ import com.liferay.portal.osgi.web.wab.generator.internal.handler.WabURLStreamHa
 import com.liferay.portal.osgi.web.wab.generator.internal.processor.WabProcessor;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +38,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -236,7 +236,7 @@ public class WabGenerator
 	private ServiceRegistration<FileInstaller> _serviceRegistration;
 
 	@Reference(
-		target = "(&(original.bean=true)(bean.id=javax.servlet.ServletContext))"
+		target = "(&(original.bean=true)(bean.id=jakarta.servlet.ServletContext))"
 	)
 	private ServletContext _servletContext;
 

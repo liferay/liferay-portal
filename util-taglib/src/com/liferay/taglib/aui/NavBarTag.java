@@ -9,9 +9,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.taglib.aui.base.BaseNavBarTag;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyTag;
 
 /**
  * @author Eduardo Lundgren

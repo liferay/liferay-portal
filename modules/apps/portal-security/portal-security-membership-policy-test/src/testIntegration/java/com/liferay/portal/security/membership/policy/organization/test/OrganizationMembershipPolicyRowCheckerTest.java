@@ -21,8 +21,8 @@ import com.liferay.portlet.RenderResponseFactory;
 import com.liferay.site.search.OrganizationRoleUserChecker;
 import com.liferay.users.admin.search.UserOrganizationChecker;
 
-import javax.portlet.RenderResponse;
-import javax.portlet.filter.RenderResponseWrapper;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.filter.RenderResponseWrapper;
 
 import org.junit.Assert;
 import org.junit.ClassRule;

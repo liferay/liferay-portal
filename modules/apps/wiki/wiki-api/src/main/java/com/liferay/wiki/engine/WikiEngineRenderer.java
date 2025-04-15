@@ -9,9 +9,9 @@ import com.liferay.wiki.exception.PageContentException;
 import com.liferay.wiki.exception.WikiFormatException;
 import com.liferay.wiki.model.WikiPage;
 
-import java.util.Collection;
+import jakarta.portlet.PortletURL;
 
-import javax.portlet.PortletURL;
+import java.util.Collection;
 
 import org.osgi.annotation.versioning.ProviderType;
 

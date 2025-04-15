@@ -5,7 +5,7 @@
 
 package com.liferay.batch.planner.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Matija Petanjek

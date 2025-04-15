@@ -89,6 +89,8 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.site.initializer.extender.CommerceSiteInitializer;
 import com.liferay.site.initializer.extender.SiteInitializerUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.math.BigDecimal;
 
 import java.net.URL;
@@ -97,8 +99,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.BundleWiring;

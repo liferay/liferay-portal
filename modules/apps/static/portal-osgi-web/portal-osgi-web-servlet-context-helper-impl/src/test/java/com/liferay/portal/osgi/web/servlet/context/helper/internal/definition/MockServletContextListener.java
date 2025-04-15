@@ -5,8 +5,8 @@
 
 package com.liferay.portal.osgi.web.servlet.context.helper.internal.definition;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /**
  * @author Miguel Pastor

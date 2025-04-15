@@ -10,8 +10,8 @@ import com.liferay.document.library.kernel.util.VideoConverter;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.PortletKeys;
 
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,8 +22,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + PortletKeys.SERVER_ADMIN, "mvc.command.name=/",
-		"mvc.command.name=/server_admin/view"
+		"jakarta.portlet.name=" + PortletKeys.SERVER_ADMIN,
+		"mvc.command.name=/", "mvc.command.name=/server_admin/view"
 	},
 	service = MVCRenderCommand.class
 )

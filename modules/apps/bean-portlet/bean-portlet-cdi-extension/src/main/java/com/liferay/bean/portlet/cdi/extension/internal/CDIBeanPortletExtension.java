@@ -32,6 +32,51 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.ObservesAsync;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+
+import jakarta.portlet.ActionParameters;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletAsyncListener;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletRequestDispatcher;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+import jakarta.portlet.annotations.ContextPath;
+import jakarta.portlet.annotations.Namespace;
+import jakarta.portlet.annotations.PortletName;
+import jakarta.portlet.annotations.PortletRequestScoped;
+import jakarta.portlet.annotations.PortletSerializable;
+import jakarta.portlet.annotations.PortletSessionScoped;
+import jakarta.portlet.annotations.RenderStateScoped;
+import jakarta.portlet.annotations.WindowId;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.PrintWriter;
 
 import java.lang.annotation.Annotation;
@@ -46,51 +91,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.ObservesAsync;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
-import javax.portlet.ActionParameters;
-import javax.portlet.ActionRequest;
-import javax.portlet.MimeResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletAsyncListener;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletException;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletRequestDispatcher;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import javax.portlet.annotations.ContextPath;
-import javax.portlet.annotations.Namespace;
-import javax.portlet.annotations.PortletName;
-import javax.portlet.annotations.PortletRequestScoped;
-import javax.portlet.annotations.PortletSerializable;
-import javax.portlet.annotations.PortletSessionScoped;
-import javax.portlet.annotations.RenderStateScoped;
-import javax.portlet.annotations.WindowId;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -391,13 +391,13 @@ public class CDIBeanPortletExtension implements Extension {
 
 			boolean importsMvcPackage = false;
 
-			if (importPackageHeader.contains("javax.mvc;")) {
+			if (importPackageHeader.contains("jakarta.mvc;")) {
 				importsMvcPackage = true;
 			}
 
 			boolean importsMvcBindingPackage = false;
 
-			if (importPackageHeader.contains("javax.mvc.binding;")) {
+			if (importPackageHeader.contains("jakarta.mvc.binding;")) {
 				importsMvcBindingPackage = true;
 			}
 

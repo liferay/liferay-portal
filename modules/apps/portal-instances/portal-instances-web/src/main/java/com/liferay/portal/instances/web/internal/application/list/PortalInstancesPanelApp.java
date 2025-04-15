@@ -37,7 +37,7 @@ public class PortalInstancesPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES + ")"
+		target = "(jakarta.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES + ")"
 	)
 	private Portlet _portlet;
 

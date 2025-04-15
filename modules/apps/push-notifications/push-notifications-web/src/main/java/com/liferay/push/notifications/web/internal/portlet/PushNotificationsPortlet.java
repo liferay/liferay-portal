@@ -11,14 +11,14 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.push.notifications.constants.PushNotificationsPortletKeys;
 import com.liferay.push.notifications.service.PushNotificationsDeviceService;
 
-import java.io.IOException;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,16 +30,16 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"com.liferay.portlet.css-class-wrapper=push-notifications",
 		"com.liferay.portlet.display-category=category.hidden",
-		"javax.portlet.display-name=Push Notifications",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.info.keywords=Push Notifications",
-		"javax.portlet.info.short-title=Push Notifications",
-		"javax.portlet.info.title=Push Notifications",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + PushNotificationsPortletKeys.PUSH_NOTIFICATIONS,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Push Notifications",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.info.keywords=Push Notifications",
+		"jakarta.portlet.info.short-title=Push Notifications",
+		"jakarta.portlet.info.title=Push Notifications",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + PushNotificationsPortletKeys.PUSH_NOTIFICATIONS,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

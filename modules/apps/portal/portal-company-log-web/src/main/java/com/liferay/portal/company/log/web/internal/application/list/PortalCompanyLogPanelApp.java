@@ -58,7 +58,7 @@ public class PortalCompanyLogPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + PortalCompanyLogPortletKeys.PORTAL_COMPANY_LOG + ")"
+		target = "(jakarta.portlet.name=" + PortalCompanyLogPortletKeys.PORTAL_COMPANY_LOG + ")"
 	)
 	private Portlet _portlet;
 

@@ -38,13 +38,13 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.File;
 import java.io.InputStream;
 
 import java.util.Iterator;
 import java.util.List;
-
-import javax.portlet.PortletPreferences;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

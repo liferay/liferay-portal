@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import javax.portlet.ActionParameters;
-import javax.portlet.MutableActionParameters;
+import jakarta.portlet.ActionParameters;
+import jakarta.portlet.MutableActionParameters;
 
 /**
  * @author Dante Wang

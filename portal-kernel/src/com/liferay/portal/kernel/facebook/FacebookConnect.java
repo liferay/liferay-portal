@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.facebook;
 
 import com.liferay.portal.kernel.json.JSONObject;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Wilson Man

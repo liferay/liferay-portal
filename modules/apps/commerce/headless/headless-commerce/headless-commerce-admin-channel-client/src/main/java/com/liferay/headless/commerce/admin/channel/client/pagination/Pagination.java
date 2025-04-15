@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.admin.channel.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Andrea Sbarra

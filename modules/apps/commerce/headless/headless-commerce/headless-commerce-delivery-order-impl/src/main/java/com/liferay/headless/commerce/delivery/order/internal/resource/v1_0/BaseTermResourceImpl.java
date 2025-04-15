@@ -26,19 +26,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Andrea Sbarra
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseTermResourceImpl implements TermResource {
 
 	/**
@@ -60,16 +60,16 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Term")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/placed-orders/by-externalReferenceCode/{externalReferenceCode}/delivery-term"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Term getPlacedOrderByExternalReferenceCodeDeliveryTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -95,16 +95,16 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Term")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path(
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
 		"/placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-term"
 	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Term getPlacedOrderByExternalReferenceCodePaymentTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("externalReferenceCode")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode)
 		throws Exception {
 
@@ -130,14 +130,14 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Term")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/placed-orders/{placedOrderId}/delivery-term")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/placed-orders/{placedOrderId}/delivery-term")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Term getPlacedOrderDeliveryTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("placedOrderId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("placedOrderId")
 			Long placedOrderId)
 		throws Exception {
 
@@ -163,14 +163,14 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Term")}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/placed-orders/{placedOrderId}/payment-term")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/placed-orders/{placedOrderId}/payment-term")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Term getPlacedOrderPaymentTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("placedOrderId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("placedOrderId")
 			Long placedOrderId)
 		throws Exception {
 

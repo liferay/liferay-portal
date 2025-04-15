@@ -21,9 +21,9 @@ import org.osgi.service.component.annotations.Component;
 	configurationPid = "com.liferay.wiki.configuration.WikiFileUploadConfiguration",
 	property = {
 		"editor.config.key=contentEditor", "editor.name=alloyeditor",
-		"editor.name=ckeditor", "javax.portlet.name=" + WikiPortletKeys.WIKI,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
-		"javax.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
+		"editor.name=ckeditor", "jakarta.portlet.name=" + WikiPortletKeys.WIKI,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
+		"jakarta.portlet.name=" + WikiPortletKeys.WIKI_DISPLAY,
 		"service.ranking:Integer=100"
 	},
 	service = EditorConfigContributor.class

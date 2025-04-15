@@ -8,7 +8,7 @@ package com.liferay.portal.search.elasticsearch.monitoring.web.internal.servlet.
 import com.liferay.portal.search.elasticsearch.monitoring.web.internal.constants.MonitoringWebConstants;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.osgi.service.component.annotations.Component;
 

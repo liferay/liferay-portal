@@ -10,9 +10,9 @@ import com.liferay.portal.kernel.deploy.hot.HotDeployEvent;
 import com.liferay.portal.kernel.deploy.hot.HotDeployException;
 import com.liferay.portal.kernel.servlet.SecurePluginContextListener;
 
-import java.lang.reflect.Method;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.lang.reflect.Method;
 
 /**
  * @author Brian Wing Shun Chan

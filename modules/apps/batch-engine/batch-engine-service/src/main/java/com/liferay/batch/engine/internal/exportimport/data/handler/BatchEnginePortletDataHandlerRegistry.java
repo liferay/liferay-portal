@@ -114,7 +114,7 @@ public class BatchEnginePortletDataHandlerRegistry {
 					(String)serviceReference.getProperty(
 						"batch.engine.task.item.delegate.item.class.name")
 				).put(
-					"javax.portlet.name",
+					"jakarta.portlet.name",
 					(String)serviceReference.getProperty(
 						"batch.engine.task.item.delegate.portlet.id")
 				).build());

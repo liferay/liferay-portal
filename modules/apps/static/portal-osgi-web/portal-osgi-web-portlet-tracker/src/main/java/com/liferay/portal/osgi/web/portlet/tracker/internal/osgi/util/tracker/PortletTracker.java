@@ -75,6 +75,10 @@ import com.liferay.portlet.PortletBagFactory;
 import com.liferay.portlet.PortletContextBag;
 import com.liferay.portlet.PortletContextBagPool;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.WindowState;
+
 import java.io.IOException;
 
 import java.net.URL;
@@ -94,10 +98,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.function.Supplier;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -131,7 +131,7 @@ public class PortletTracker
 		}
 
 		String portletName = (String)serviceReference.getProperty(
-			"javax.portlet.name");
+			"jakarta.portlet.name");
 
 		if (Validator.isNull(portletName)) {
 			Class<?> clazz = portlet.getClass();
@@ -402,10 +402,10 @@ public class PortletTracker
 
 			portletApp.setDefaultNamespace(
 				(String)serviceReference.getProperty(
-					"javax.portlet.default-namespace"));
+					"jakarta.portlet.default-namespace"));
 
 			String jxPortletVersion = (String)serviceReference.getProperty(
-				"javax.portlet.version");
+				"jakarta.portlet.version");
 
 			if (jxPortletVersion == null) {
 				portletApp.setSpecMajorVersion(2);
@@ -435,14 +435,16 @@ public class PortletTracker
 			portletModel.setPortletName(portletName);
 			portletModel.setDisplayName(
 				GetterUtil.getString(
-					serviceReference.getProperty("javax.portlet.display-name"),
+					serviceReference.getProperty(
+						"jakarta.portlet.display-name"),
 					portletName));
 
 			Class<?> portletClazz = portlet.getClass();
 
 			portletModel.setPortletClass(
 				GetterUtil.getString(
-					serviceReference.getProperty("javax.portlet.portlet-class"),
+					serviceReference.getProperty(
+						"jakarta.portlet.portlet-class"),
 					portletClazz.getName()));
 
 			_collectJxPortletFeatures(serviceReference, portletModel);
@@ -550,7 +552,8 @@ public class PortletTracker
 
 		portletModel.setAsyncSupported(
 			GetterUtil.getBoolean(
-				serviceReference.getProperty("javax.portlet.async-supported")));
+				serviceReference.getProperty(
+					"jakarta.portlet.async-supported")));
 	}
 
 	private void _collectContainerRuntimeOptions(
@@ -564,13 +567,13 @@ public class PortletTracker
 
 		for (String servicePropertyKey : serviceReference.getPropertyKeys()) {
 			if (!servicePropertyKey.startsWith(
-					"javax.portlet.container-runtime-option.")) {
+					"jakarta.portlet.container-runtime-option.")) {
 
 				continue;
 			}
 
 			String name = servicePropertyKey.substring(
-				"javax.portlet.container-runtime-option.".length());
+				"jakarta.portlet.container-runtime-option.".length());
 
 			String portletName = portletModel.getPortletName();
 
@@ -602,7 +605,7 @@ public class PortletTracker
 		PortletApp portletApp = portletModel.getPortletApp();
 
 		List<String> definitions = StringPlus.asList(
-			serviceReference.getProperty("javax.portlet.event-definition"));
+			serviceReference.getProperty("jakarta.portlet.event-definition"));
 
 		for (String definition : definitions) {
 			EventDefinition eventDefinition = null;
@@ -652,7 +655,7 @@ public class PortletTracker
 		com.liferay.portal.kernel.model.Portlet portletModel) {
 
 		int expirationCache = GetterUtil.getInteger(
-			serviceReference.getProperty("javax.portlet.expiration-cache"));
+			serviceReference.getProperty("jakarta.portlet.expiration-cache"));
 
 		portletModel.setExpCache(expirationCache);
 	}
@@ -664,12 +667,12 @@ public class PortletTracker
 		Map<String, String> initParams = new HashMap<>();
 
 		for (String initParamKey : serviceReference.getPropertyKeys()) {
-			if (!initParamKey.startsWith("javax.portlet.init-param.")) {
+			if (!initParamKey.startsWith("jakarta.portlet.init-param.")) {
 				continue;
 			}
 
 			initParams.put(
-				initParamKey.substring("javax.portlet.init-param.".length()),
+				initParamKey.substring("jakarta.portlet.init-param.".length()),
 				GetterUtil.getString(
 					serviceReference.getProperty(initParamKey)));
 		}
@@ -912,7 +915,7 @@ public class PortletTracker
 		PortletApp portletApp = portletModel.getPortletApp();
 
 		List<String> listenerClassNames = StringPlus.asList(
-			serviceReference.getProperty("javax.portlet.listener"));
+			serviceReference.getProperty("jakarta.portlet.listener"));
 
 		List<PortletURLListener> portletURLListeners = new ArrayList<>();
 
@@ -948,21 +951,21 @@ public class PortletTracker
 		portletModel.setMultipartFileSizeThreshold(
 			GetterUtil.getInteger(
 				serviceReference.getProperty(
-					"javax.portlet.multipart.file-size-threshold")));
+					"jakarta.portlet.multipart.file-size-threshold")));
 		portletModel.setMultipartLocation(
 			GetterUtil.getString(
 				serviceReference.getProperty(
-					"javax.portlet.multipart.location"),
+					"jakarta.portlet.multipart.location"),
 				portletModel.getMultipartLocation()));
 		portletModel.setMultipartMaxFileSize(
 			GetterUtil.getLong(
 				serviceReference.getProperty(
-					"javax.portlet.multipart.max-file-size"),
+					"jakarta.portlet.multipart.max-file-size"),
 				-1L));
 		portletModel.setMultipartMaxRequestSize(
 			GetterUtil.getLong(
 				serviceReference.getProperty(
-					"javax.portlet.multipart.max-request-size"),
+					"jakarta.portlet.multipart.max-request-size"),
 				-1L));
 	}
 
@@ -971,7 +974,7 @@ public class PortletTracker
 		com.liferay.portal.kernel.model.Portlet portletModel) {
 
 		List<String> dependencies = StringPlus.asList(
-			serviceReference.getProperty("javax.portlet.dependency"));
+			serviceReference.getProperty("jakarta.portlet.dependency"));
 
 		for (String dependency : dependencies) {
 			String[] parts = StringUtil.split(dependency, CharPool.SEMICOLON);
@@ -987,18 +990,18 @@ public class PortletTracker
 		com.liferay.portal.kernel.model.Portlet portletModel) {
 
 		String portletInfoTitle = GetterUtil.getString(
-			serviceReference.getProperty("javax.portlet.info.title"));
+			serviceReference.getProperty("jakarta.portlet.info.title"));
 
 		String portletDisplayName = GetterUtil.getString(
-			serviceReference.getProperty("javax.portlet.display-name"),
+			serviceReference.getProperty("jakarta.portlet.display-name"),
 			portletInfoTitle);
 
 		String portletInfoShortTitle = GetterUtil.getString(
-			serviceReference.getProperty("javax.portlet.info.short-title"));
+			serviceReference.getProperty("jakarta.portlet.info.short-title"));
 		String portletInfoKeyWords = GetterUtil.getString(
-			serviceReference.getProperty("javax.portlet.info.keywords"));
+			serviceReference.getProperty("jakarta.portlet.info.keywords"));
 		String portletDescription = GetterUtil.getString(
-			serviceReference.getProperty("javax.portlet.description"));
+			serviceReference.getProperty("jakarta.portlet.description"));
 
 		PortletInfo portletInfo = new PortletInfo(
 			portletDisplayName, portletInfoShortTitle, portletInfoKeyWords,
@@ -1014,7 +1017,7 @@ public class PortletTracker
 		Map<String, Set<String>> portletModes = null;
 
 		List<String> portletModesStrings = StringPlus.asList(
-			serviceReference.getProperty("javax.portlet.portlet-mode"));
+			serviceReference.getProperty("jakarta.portlet.portlet-mode"));
 
 		for (String portletModesString : portletModesStrings) {
 			String[] portletModesStringParts = StringUtil.split(
@@ -1051,7 +1054,7 @@ public class PortletTracker
 		com.liferay.portal.kernel.model.Portlet portletModel) {
 
 		String defaultPreferences = GetterUtil.getString(
-			serviceReference.getProperty("javax.portlet.preferences"));
+			serviceReference.getProperty("jakarta.portlet.preferences"));
 
 		if ((defaultPreferences != null) &&
 			defaultPreferences.startsWith("classpath:")) {
@@ -1075,7 +1078,7 @@ public class PortletTracker
 
 		String preferencesValidator = GetterUtil.getString(
 			serviceReference.getProperty(
-				"javax.portlet.preferences-validator"));
+				"jakarta.portlet.preferences-validator"));
 
 		if (Validator.isNotNull(preferencesValidator)) {
 			portletModel.setPreferencesValidator(preferencesValidator);
@@ -1087,7 +1090,7 @@ public class PortletTracker
 		com.liferay.portal.kernel.model.Portlet portletModel) {
 
 		String resourceBundle = GetterUtil.getString(
-			serviceReference.getProperty("javax.portlet.resource-bundle"),
+			serviceReference.getProperty("jakarta.portlet.resource-bundle"),
 			portletModel.getResourceBundle());
 
 		portletModel.setResourceBundle(resourceBundle);
@@ -1100,7 +1103,7 @@ public class PortletTracker
 		Set<String> unlinkedRoles = new HashSet<>();
 
 		List<String> roleRefs = StringPlus.asList(
-			serviceReference.getProperty("javax.portlet.security-role-ref"));
+			serviceReference.getProperty("jakarta.portlet.security-role-ref"));
 
 		if (roleRefs.isEmpty()) {
 			roleRefs.add("administrator");
@@ -1129,7 +1132,7 @@ public class PortletTracker
 		supportedLocales.addAll(
 			StringPlus.asList(
 				serviceReference.getProperty(
-					"javax.portlet.supported-locale")));
+					"jakarta.portlet.supported-locale")));
 
 		portletModel.setSupportedLocales(supportedLocales);
 	}
@@ -1144,7 +1147,7 @@ public class PortletTracker
 
 		List<String> supportedProcessingEvents = StringPlus.asList(
 			serviceReference.getProperty(
-				"javax.portlet.supported-processing-event"));
+				"jakarta.portlet.supported-processing-event"));
 
 		for (String supportedProcessingEvent : supportedProcessingEvents) {
 			String name = supportedProcessingEvent;
@@ -1188,7 +1191,7 @@ public class PortletTracker
 
 		List<String> supportedPublicRenderParameters = StringPlus.asList(
 			serviceReference.getProperty(
-				"javax.portlet.supported-public-render-parameter"));
+				"jakarta.portlet.supported-public-render-parameter"));
 
 		for (String supportedPublicRenderParameter :
 				supportedPublicRenderParameters) {
@@ -1226,7 +1229,7 @@ public class PortletTracker
 
 		List<String> supportedPublishingEvents = StringPlus.asList(
 			serviceReference.getProperty(
-				"javax.portlet.supported-publishing-event"));
+				"jakarta.portlet.supported-publishing-event"));
 
 		for (String supportedPublishingEvent : supportedPublishingEvents) {
 			String name = supportedPublishingEvent;
@@ -1254,7 +1257,7 @@ public class PortletTracker
 		Map<String, Set<String>> windowStates = null;
 
 		List<String> windowStatesStrings = StringPlus.asList(
-			serviceReference.getProperty("javax.portlet.window-state"));
+			serviceReference.getProperty("jakarta.portlet.window-state"));
 
 		for (String windowStatesString : windowStatesStrings) {
 			String[] windowStatesStringParts = StringUtil.split(

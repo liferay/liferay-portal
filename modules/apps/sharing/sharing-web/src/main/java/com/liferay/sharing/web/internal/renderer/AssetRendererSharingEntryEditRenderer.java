@@ -13,7 +13,7 @@ import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.renderer.SharingEntryEditRenderer;
 import com.liferay.sharing.web.internal.util.AssetRendererSharingUtil;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
 /**
  * @author Alejandro Tardín

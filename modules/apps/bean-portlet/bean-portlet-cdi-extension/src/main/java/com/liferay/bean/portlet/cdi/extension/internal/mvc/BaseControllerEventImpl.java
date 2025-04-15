@@ -5,8 +5,8 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Neil Griffin

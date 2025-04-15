@@ -5,7 +5,7 @@
 
 package com.liferay.headless.asset.library.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Roberto Díaz

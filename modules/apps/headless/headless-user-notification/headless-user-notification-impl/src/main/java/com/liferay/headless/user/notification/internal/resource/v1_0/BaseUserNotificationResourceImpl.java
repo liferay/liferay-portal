@@ -47,21 +47,21 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  * @author Carlos Correa
  * @generated
  */
 @Generated("")
-@javax.ws.rs.Path("/v1.0")
+@jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseUserNotificationResourceImpl
 	implements EntityModelResource, UserNotificationResource,
 			   VulcanBatchEngineTaskItemDelegate<UserNotification>,
@@ -112,18 +112,18 @@ public abstract class BaseUserNotificationResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "UserNotification")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/my-user-notifications")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/my-user-notifications")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<UserNotification> getMyUserNotificationsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("search")
+			@jakarta.ws.rs.QueryParam("search")
 			String search,
-			@javax.ws.rs.core.Context
+			@jakarta.ws.rs.core.Context
 				com.liferay.portal.kernel.search.filter.Filter filter,
-			@javax.ws.rs.core.Context Pagination pagination,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
 		throws Exception {
 
@@ -179,22 +179,22 @@ public abstract class BaseUserNotificationResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "UserNotification")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/user-accounts/{userAccountId}/user-notifications")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/user-accounts/{userAccountId}/user-notifications")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<UserNotification> getUserAccountUserNotificationsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userAccountId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userAccountId")
 			Long userAccountId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.ws.rs.QueryParam("search")
+			@jakarta.ws.rs.QueryParam("search")
 			String search,
-			@javax.ws.rs.core.Context
+			@jakarta.ws.rs.core.Context
 				com.liferay.portal.kernel.search.filter.Filter filter,
-			@javax.ws.rs.core.Context Pagination pagination,
-			@javax.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
 		throws Exception {
 
@@ -230,14 +230,14 @@ public abstract class BaseUserNotificationResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "UserNotification")
 		}
 	)
-	@javax.ws.rs.GET
-	@javax.ws.rs.Path("/user-notifications/{userNotificationId}")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/user-notifications/{userNotificationId}")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public UserNotification getUserNotification(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userNotificationId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userNotificationId")
 			Long userNotificationId)
 		throws Exception {
 
@@ -273,14 +273,14 @@ public abstract class BaseUserNotificationResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "UserNotification")
 		}
 	)
-	@javax.ws.rs.Path("/user-notifications/{userNotificationId}/read")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Path("/user-notifications/{userNotificationId}/read")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public void putUserNotificationRead(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userNotificationId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userNotificationId")
 			Long userNotificationId)
 		throws Exception {
 	}
@@ -314,14 +314,14 @@ public abstract class BaseUserNotificationResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "UserNotification")
 		}
 	)
-	@javax.ws.rs.Path("/user-notifications/{userNotificationId}/unread")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
+	@jakarta.ws.rs.Path("/user-notifications/{userNotificationId}/unread")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
 	@Override
 	public void putUserNotificationUnread(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("userNotificationId")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("userNotificationId")
 			Long userNotificationId)
 		throws Exception {
 	}

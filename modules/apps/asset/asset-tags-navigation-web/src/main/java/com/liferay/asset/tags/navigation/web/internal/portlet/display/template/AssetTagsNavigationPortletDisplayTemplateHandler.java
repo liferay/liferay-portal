@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Juan Fernández
  */
 @Component(
-	property = "javax.portlet.name=" + AssetTagsNavigationPortletKeys.ASSET_TAGS_NAVIGATION,
+	property = "jakarta.portlet.name=" + AssetTagsNavigationPortletKeys.ASSET_TAGS_NAVIGATION,
 	service = TemplateHandler.class
 )
 public class AssetTagsNavigationPortletDisplayTemplateHandler

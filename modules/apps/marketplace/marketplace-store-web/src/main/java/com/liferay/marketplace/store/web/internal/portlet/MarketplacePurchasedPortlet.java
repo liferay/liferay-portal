@@ -7,7 +7,7 @@ package com.liferay.marketplace.store.web.internal.portlet;
 
 import com.liferay.marketplace.constants.MarketplaceStorePortletKeys;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -27,14 +27,15 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.description=", "javax.portlet.display-name=Purchased",
-		"javax.portlet.init-param.add-process-action-success-action=false",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + MarketplaceStorePortletKeys.MARKETPLACE_PURCHASED,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.description=",
+		"jakarta.portlet.display-name=Purchased",
+		"jakarta.portlet.init-param.add-process-action-success-action=false",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + MarketplaceStorePortletKeys.MARKETPLACE_PURCHASED,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

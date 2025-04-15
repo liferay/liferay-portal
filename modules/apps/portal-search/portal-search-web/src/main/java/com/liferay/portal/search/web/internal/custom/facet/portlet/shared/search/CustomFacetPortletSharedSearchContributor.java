@@ -51,7 +51,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Petteri Karttunen
  */
 @Component(
-	property = "javax.portlet.name=" + CustomFacetPortletKeys.CUSTOM_FACET,
+	property = "jakarta.portlet.name=" + CustomFacetPortletKeys.CUSTOM_FACET,
 	service = PortletSharedSearchContributor.class
 )
 public class CustomFacetPortletSharedSearchContributor

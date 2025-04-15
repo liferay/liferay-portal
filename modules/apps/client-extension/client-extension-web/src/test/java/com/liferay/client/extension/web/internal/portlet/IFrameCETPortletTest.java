@@ -12,14 +12,14 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.Properties;
-
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -12,9 +12,9 @@ import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortle
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.similar.results.web.internal.constants.SimilarResultsPortletKeys;
 
-import java.util.List;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Felipe Lorenz
  */
 @Component(
-	property = "javax.portlet.name=" + SimilarResultsPortletKeys.SIMILAR_RESULTS,
+	property = "jakarta.portlet.name=" + SimilarResultsPortletKeys.SIMILAR_RESULTS,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class SimilarResultsExportImportPortletPreferencesProcessor

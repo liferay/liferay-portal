@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.kaleo.forms.web.internal.frontend.taglib.for
 
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntry;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

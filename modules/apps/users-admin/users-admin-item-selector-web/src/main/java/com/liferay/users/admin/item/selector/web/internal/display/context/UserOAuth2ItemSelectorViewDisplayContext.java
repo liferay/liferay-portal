@@ -24,13 +24,13 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.users.admin.search.UserSearch;
 import com.liferay.users.admin.search.UserSearchTerms;
 
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Marta Medio

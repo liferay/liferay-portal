@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"com.liferay.portlet.friendly-url-routes=META-INF/friendly-url-routes/routes.xml",
-		"javax.portlet.name=" + WorkflowPortletKeys.USER_WORKFLOW
+		"jakarta.portlet.name=" + WorkflowPortletKeys.USER_WORKFLOW
 	},
 	service = FriendlyURLMapper.class
 )

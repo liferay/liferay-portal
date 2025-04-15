@@ -12,10 +12,10 @@ import com.liferay.dynamic.data.mapping.util.DDMFieldsCounter;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashSet;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Marcellus Tavares

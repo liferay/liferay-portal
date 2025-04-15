@@ -8,15 +8,15 @@ package com.liferay.portal.vulcan.internal.jaxrs.validation;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.internal.jaxrs.context.provider.ContextProviderUtil;
 
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.ext.Provider;
+
 import java.io.IOException;
 
 import java.lang.reflect.Method;
 
 import java.util.List;
-
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.ext.Provider;
 
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.InterceptorChain;

@@ -24,10 +24,10 @@ import com.liferay.portal.search.test.util.BaseSearchResultUtilTestCase;
 import com.liferay.portal.search.test.util.SearchTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;

@@ -24,7 +24,7 @@ import com.liferay.portal.url.builder.PortletDependencyAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.ServletAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.internal.util.CacheHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.framework.Bundle;
 

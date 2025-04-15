@@ -39,12 +39,12 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import jakarta.portlet.RenderRequest;
+
 import java.io.Serializable;
 
 import java.util.Date;
 import java.util.Objects;
-
-import javax.portlet.RenderRequest;
 
 import org.apache.commons.lang.time.StopWatch;
 

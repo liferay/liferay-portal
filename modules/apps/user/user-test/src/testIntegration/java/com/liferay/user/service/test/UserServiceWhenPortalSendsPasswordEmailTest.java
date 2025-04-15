@@ -24,9 +24,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 import com.liferay.portal.util.PropsUtil;
 
-import java.util.Objects;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.Objects;
 
 import org.junit.After;
 import org.junit.AfterClass;

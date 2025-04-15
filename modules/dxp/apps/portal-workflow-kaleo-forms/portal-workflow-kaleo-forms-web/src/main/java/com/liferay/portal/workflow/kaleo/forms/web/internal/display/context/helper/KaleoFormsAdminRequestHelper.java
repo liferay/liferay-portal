@@ -8,7 +8,7 @@ package com.liferay.portal.workflow.kaleo.forms.web.internal.display.context.hel
 import com.liferay.portal.kernel.display.context.helper.BaseRequestHelper;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.RenderRequest;
+import jakarta.portlet.RenderRequest;
 
 /**
  * @author Leonardo Barros

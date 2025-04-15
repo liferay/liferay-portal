@@ -11,7 +11,7 @@ import com.liferay.account.service.AccountEntryLocalServiceUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
 /**
  * @author Albert Lee

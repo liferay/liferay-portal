@@ -5,19 +5,19 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
+import jakarta.portlet.PortalContext;
+import jakarta.portlet.PortletAsyncContext;
+import jakarta.portlet.PortletContext;
+import jakarta.portlet.ResourceParameters;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+import jakarta.portlet.ResourceURL;
+
+import jakarta.servlet.DispatcherType;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.portlet.PortalContext;
-import javax.portlet.PortletAsyncContext;
-import javax.portlet.PortletContext;
-import javax.portlet.ResourceParameters;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-import javax.portlet.ResourceURL;
-
-import javax.servlet.DispatcherType;
 
 /**
  * @author Dante Wang

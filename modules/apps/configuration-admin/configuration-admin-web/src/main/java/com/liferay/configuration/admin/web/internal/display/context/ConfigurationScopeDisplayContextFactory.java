@@ -11,9 +11,9 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.io.Serializable;
+import jakarta.portlet.PortletRequest;
 
-import javax.portlet.PortletRequest;
+import java.io.Serializable;
 
 /**
  * @author Drew Brokke

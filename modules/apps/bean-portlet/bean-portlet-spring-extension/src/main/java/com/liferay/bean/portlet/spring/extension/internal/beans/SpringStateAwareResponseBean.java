@@ -8,24 +8,24 @@ package com.liferay.bean.portlet.spring.extension.internal.beans;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManager;
 import com.liferay.bean.portlet.spring.extension.internal.scope.SpringScopedBeanManagerThreadLocal;
 
+import jakarta.annotation.ManagedBean;
+import jakarta.annotation.Priority;
+
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletModeException;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.StateAwareResponse;
+import jakarta.portlet.WindowState;
+import jakarta.portlet.WindowStateException;
+import jakarta.portlet.filter.StateAwareResponseWrapper;
+
+import jakarta.servlet.http.Cookie;
+
 import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Map;
-
-import javax.annotation.ManagedBean;
-import javax.annotation.Priority;
-
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.PortletMode;
-import javax.portlet.PortletModeException;
-import javax.portlet.PortletResponse;
-import javax.portlet.StateAwareResponse;
-import javax.portlet.WindowState;
-import javax.portlet.WindowStateException;
-import javax.portlet.filter.StateAwareResponseWrapper;
-
-import javax.servlet.http.Cookie;
 
 import javax.xml.namespace.QName;
 

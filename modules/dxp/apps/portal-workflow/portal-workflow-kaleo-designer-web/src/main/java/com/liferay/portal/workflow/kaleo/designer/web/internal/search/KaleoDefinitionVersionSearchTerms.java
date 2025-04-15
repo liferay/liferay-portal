@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.kaleo.designer.web.internal.search;
 
 import com.liferay.portal.kernel.dao.search.DAOParamUtil;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Inácio Nery

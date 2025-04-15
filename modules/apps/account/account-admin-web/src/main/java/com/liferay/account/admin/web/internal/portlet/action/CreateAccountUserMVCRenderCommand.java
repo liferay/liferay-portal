@@ -20,9 +20,9 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_USERS_REGISTRATION,
+		"jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_USERS_REGISTRATION,
 		"mvc.command.name=/account_admin/create_account_user",
 		"portlet.add.default.resource.check.whitelist.mvc.action=true"
 	},

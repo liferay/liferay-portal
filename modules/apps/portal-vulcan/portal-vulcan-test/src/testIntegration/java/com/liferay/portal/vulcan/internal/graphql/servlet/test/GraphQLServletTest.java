@@ -28,6 +28,8 @@ import com.liferay.portal.vulcan.graphql.annotation.GraphQLTypeExtension;
 import com.liferay.portal.vulcan.graphql.servlet.ServletData;
 import com.liferay.portal.vulcan.internal.test.util.PaginationConfigurationTestUtil;
 
+import jakarta.ws.rs.NotFoundException;
+
 import java.lang.reflect.Field;
 
 import java.util.Arrays;
@@ -35,8 +37,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.NotFoundException;
 
 import org.junit.After;
 import org.junit.Assert;

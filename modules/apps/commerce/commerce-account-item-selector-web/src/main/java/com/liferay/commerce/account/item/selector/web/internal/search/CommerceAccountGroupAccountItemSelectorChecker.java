@@ -11,7 +11,7 @@ import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
 /**
  * @author Alessio Antonio Rendina

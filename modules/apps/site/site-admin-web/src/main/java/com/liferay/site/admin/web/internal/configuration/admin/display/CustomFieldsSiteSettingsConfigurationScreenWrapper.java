@@ -15,9 +15,9 @@ import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigu
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 import com.liferay.taglib.util.CustomAttributesUtil;
 
-import java.util.Locale;
+import jakarta.servlet.ServletContext;
 
-import javax.servlet.ServletContext;
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

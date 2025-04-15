@@ -10,9 +10,9 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.remote.soap.extender.SoapDescriptorBuilder;
 import com.liferay.portal.remote.soap.extender.internal.configuration.SoapExtenderConfiguration;
 
-import java.util.Map;
+import jakarta.xml.ws.handler.Handler;
 
-import javax.xml.ws.handler.Handler;
+import java.util.Map;
 
 import org.apache.cxf.Bus;
 import org.apache.felix.dm.DependencyManager;

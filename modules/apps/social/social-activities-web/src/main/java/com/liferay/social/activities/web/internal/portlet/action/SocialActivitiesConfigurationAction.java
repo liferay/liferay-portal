@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.social.activities.constants.SocialActivitiesPortletKeys;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Raymond Augé
  */
 @Component(
-	property = "javax.portlet.name=" + SocialActivitiesPortletKeys.SOCIAL_ACTIVITIES,
+	property = "jakarta.portlet.name=" + SocialActivitiesPortletKeys.SOCIAL_ACTIVITIES,
 	service = ConfigurationAction.class
 )
 public class SocialActivitiesConfigurationAction

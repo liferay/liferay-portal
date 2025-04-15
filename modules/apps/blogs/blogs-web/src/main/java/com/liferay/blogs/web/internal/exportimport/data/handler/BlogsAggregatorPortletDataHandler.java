@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Julio Camarero
  */
 @Component(
-	property = "javax.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR,
+	property = "jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR,
 	service = PortletDataHandler.class
 )
 public class BlogsAggregatorPortletDataHandler

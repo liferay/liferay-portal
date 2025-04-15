@@ -58,11 +58,11 @@ import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.test.util.SegmentsTestUtil;
 
+import jakarta.portlet.GenericPortlet;
+import jakarta.portlet.Portlet;
+
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.GenericPortlet;
-import javax.portlet.Portlet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -267,7 +267,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid, portletId, portlet,
 				null);
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(
 				portletPreferences);
 
@@ -448,7 +448,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 			String expected, String name, long plid, String portletId)
 		throws Exception {
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(
 				_portletPreferencesLocalService.getPortletPreferences(
 					PortletKeys.PREFS_OWNER_ID_DEFAULT,
@@ -473,7 +473,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 				HashMapDictionaryBuilder.put(
 					"com.liferay.portlet.instanceable", "true"
 				).put(
-					"javax.portlet.name", portletId
+					"jakarta.portlet.name", portletId
 				).build());
 
 		try {

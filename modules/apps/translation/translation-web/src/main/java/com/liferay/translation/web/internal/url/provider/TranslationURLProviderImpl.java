@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.translation.constants.TranslationPortletKeys;
 import com.liferay.translation.url.provider.TranslationURLProvider;
 
-import javax.portlet.PortletURL;
+import jakarta.portlet.PortletURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

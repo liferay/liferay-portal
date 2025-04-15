@@ -15,16 +15,16 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuPortletKeys;
 
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
-
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,11 +40,11 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.instanceable=false",
 		"com.liferay.portlet.system=true",
 		"com.liferay.portlet.use-default-template=false",
-		"javax.portlet.display-name=Control Menu",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + ProductNavigationControlMenuPortletKeys.PRODUCT_NAVIGATION_CONTROL_MENU,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Control Menu",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + ProductNavigationControlMenuPortletKeys.PRODUCT_NAVIGATION_CONTROL_MENU,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

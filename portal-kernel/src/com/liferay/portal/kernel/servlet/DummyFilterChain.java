@@ -5,9 +5,9 @@
 
 package com.liferay.portal.kernel.servlet;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

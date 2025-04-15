@@ -18,13 +18,13 @@ import com.liferay.taglib.servlet.PipingServletResponseFactory;
 import com.liferay.taglib.ui.IconMenuTag;
 import com.liferay.taglib.ui.IconTag;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
+
 import java.util.List;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
 
 /**
  * @author Brian Wing Shun Chan

@@ -11,12 +11,12 @@ import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.segments.field.Field;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import javax.portlet.PortletRequest;
 
 /**
  * Provides an interface for customizing a {@link Field}.

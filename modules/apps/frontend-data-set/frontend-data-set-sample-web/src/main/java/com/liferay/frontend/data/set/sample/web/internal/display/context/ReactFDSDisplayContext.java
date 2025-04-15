@@ -9,7 +9,7 @@ import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSN
 import com.liferay.frontend.data.set.sample.web.internal.serializer.FDSSerializerUtil;
 import com.liferay.frontend.data.set.serializer.FDSSerializer;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Marko Cikos

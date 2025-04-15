@@ -200,8 +200,8 @@ public class TemplatesAspect {
 			"com.liferay.portal.kernel.theme.ThemeDisplay", "java.util.Map",
 			"java.lang.String", "java.lang.String",
 			"com.liferay.portal.kernel.io.unsync.UnsyncStringWriter",
-			"javax.servlet.http.HttpServletRequest",
-			"javax.servlet.http.HttpServletResponse"
+			"jakarta.servlet.http.HttpServletRequest",
+			"jakarta.servlet.http.HttpServletResponse"
 		},
 		timerName = "Transformer FreeMarker Template"
 	)

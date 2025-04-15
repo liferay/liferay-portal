@@ -37,7 +37,7 @@ public class ConfigurationAdminPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + ConfigurationAdminPortletKeys.SYSTEM_SETTINGS + ")"
+		target = "(jakarta.portlet.name=" + ConfigurationAdminPortletKeys.SYSTEM_SETTINGS + ")"
 	)
 	private Portlet _portlet;
 

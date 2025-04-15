@@ -8,7 +8,7 @@ package com.liferay.dynamic.data.mapping.taglib.internal.servlet;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Leonardo Barros

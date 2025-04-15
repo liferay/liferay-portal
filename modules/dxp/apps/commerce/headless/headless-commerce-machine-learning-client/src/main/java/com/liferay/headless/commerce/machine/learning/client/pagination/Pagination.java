@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.machine.learning.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Riccardo Ferrari

@@ -18,10 +18,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.tuning.rankings.constants.ResultRankingsConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletRequest;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletRequest;
 
 import org.junit.Before;
 import org.junit.ClassRule;

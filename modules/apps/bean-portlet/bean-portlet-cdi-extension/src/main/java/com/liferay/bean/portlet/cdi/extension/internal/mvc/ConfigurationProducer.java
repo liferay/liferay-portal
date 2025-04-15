@@ -5,14 +5,14 @@
 
 package com.liferay.bean.portlet.cdi.extension.internal.mvc;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
 
-import javax.portlet.PortletConfig;
-import javax.portlet.PortletContext;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletContext;
 
-import javax.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Configuration;
 
 /**
  * @author Neil Griffin

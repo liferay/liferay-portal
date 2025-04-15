@@ -72,6 +72,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.util.PortalInstances;
 
+import jakarta.portlet.Portlet;
+
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -83,8 +85,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.Portlet;
 
 import org.apache.felix.cm.PersistenceManager;
 
@@ -521,7 +521,7 @@ public class CompanyLocalServiceDBPartitionTest
 					Portlet.class,
 					StringBundler.concat(
 						"(&(com.liferay.portlet.company=",
-						copiedCompany.getCompanyId(), ")(javax.portlet.name=",
+						copiedCompany.getCompanyId(), ")(jakarta.portlet.name=",
 						objectDefinition.getPortletId(), "))"));
 
 			Assert.assertFalse(serviceReferences.isEmpty());

@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.model.portlet;
 
 import com.liferay.portal.kernel.module.service.Snapshot;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Neil Griffin

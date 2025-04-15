@@ -5,13 +5,13 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
+import jakarta.ws.rs.core.EntityTag;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Variant;
+
 import java.util.Date;
 import java.util.List;
-
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Variant;
 
 /**
  * @author Neil Griffin

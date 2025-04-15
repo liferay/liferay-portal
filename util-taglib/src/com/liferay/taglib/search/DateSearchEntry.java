@@ -13,13 +13,13 @@ import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.text.Format;
 
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Julio Camarero

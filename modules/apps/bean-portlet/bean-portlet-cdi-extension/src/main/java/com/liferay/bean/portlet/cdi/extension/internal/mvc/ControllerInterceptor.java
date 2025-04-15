@@ -12,6 +12,38 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.annotation.Priority;
+
+import jakarta.enterprise.event.Event;
+
+import jakarta.inject.Inject;
+
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
+
+import jakarta.mvc.View;
+import jakarta.mvc.event.MvcEvent;
+
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.BaseURL;
+import jakarta.portlet.MimeResponse;
+import jakarta.portlet.MutableRenderParameters;
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.RenderParameters;
+import jakarta.portlet.ResourceResponse;
+import jakarta.portlet.annotations.ActionMethod;
+import jakarta.portlet.annotations.DestroyMethod;
+import jakarta.portlet.annotations.EventMethod;
+import jakarta.portlet.annotations.InitMethod;
+import jakarta.portlet.annotations.RenderMethod;
+import jakarta.portlet.filter.RenderURLWrapper;
+import jakarta.portlet.filter.ResourceURLWrapper;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -19,38 +51,6 @@ import java.lang.reflect.Method;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import javax.annotation.Priority;
-
-import javax.enterprise.event.Event;
-
-import javax.inject.Inject;
-
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-
-import javax.mvc.View;
-import javax.mvc.event.MvcEvent;
-
-import javax.portlet.ActionResponse;
-import javax.portlet.BaseURL;
-import javax.portlet.MimeResponse;
-import javax.portlet.MutableRenderParameters;
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-import javax.portlet.RenderParameters;
-import javax.portlet.ResourceResponse;
-import javax.portlet.annotations.ActionMethod;
-import javax.portlet.annotations.DestroyMethod;
-import javax.portlet.annotations.EventMethod;
-import javax.portlet.annotations.InitMethod;
-import javax.portlet.annotations.RenderMethod;
-import javax.portlet.filter.RenderURLWrapper;
-import javax.portlet.filter.ResourceURLWrapper;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Neil Griffin

@@ -26,9 +26,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.HashMap;
+import jakarta.portlet.PortletPreferences;
 
-import javax.portlet.PortletPreferences;
+import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -129,7 +129,7 @@ public class RecentBloggersExportImportPortletPreferencesProcessorTest {
 	}
 
 	@Inject(
-		filter = "javax.portlet.name=" + RecentBloggersPortletKeys.RECENT_BLOGGERS
+		filter = "jakarta.portlet.name=" + RecentBloggersPortletKeys.RECENT_BLOGGERS
 	)
 	private ExportImportPortletPreferencesProcessor
 		_exportImportPortletPreferencesProcessor;

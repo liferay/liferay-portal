@@ -5,11 +5,11 @@
 
 package com.liferay.configuration.admin.menu;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
 import java.util.Dictionary;
 import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
 
 /**
  * @author Drew Brokke  Contributes a menu item to be displayed in the

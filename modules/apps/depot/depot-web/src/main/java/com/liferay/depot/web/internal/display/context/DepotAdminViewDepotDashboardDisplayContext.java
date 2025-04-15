@@ -29,16 +29,16 @@ import com.liferay.site.memberships.constants.SiteMembershipsPortletKeys;
 import com.liferay.staging.constants.StagingProcessesPortletKeys;
 import com.liferay.trash.constants.TrashPortletKeys;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Adolfo Pérez

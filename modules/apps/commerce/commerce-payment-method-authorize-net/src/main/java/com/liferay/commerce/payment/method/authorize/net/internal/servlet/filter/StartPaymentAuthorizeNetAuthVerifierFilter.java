@@ -8,7 +8,7 @@ package com.liferay.commerce.payment.method.authorize.net.internal.servlet.filte
 import com.liferay.commerce.payment.method.authorize.net.internal.constants.AuthorizeNetCommercePaymentMethodConstants;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.osgi.service.component.annotations.Component;
 

@@ -35,12 +35,12 @@ import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 import com.liferay.taglib.security.PermissionsURLTag;
 import com.liferay.translation.url.provider.TranslationURLProvider;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Víctor Galán

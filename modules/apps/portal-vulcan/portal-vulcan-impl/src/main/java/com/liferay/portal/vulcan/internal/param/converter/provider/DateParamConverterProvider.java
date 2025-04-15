@@ -7,14 +7,14 @@ package com.liferay.portal.vulcan.internal.param.converter.provider;
 
 import com.liferay.portal.vulcan.internal.param.converter.DateParamConverter;
 
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverterProvider;
+import jakarta.ws.rs.ext.Provider;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import java.util.Date;
-
-import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
-import javax.ws.rs.ext.Provider;
 
 /**
  * @author Ivica Cardic

@@ -8,12 +8,12 @@ package com.liferay.oauth2.provider.internal.test;
 import com.liferay.oauth2.provider.scope.RequiresNoScope;
 import com.liferay.oauth2.provider.scope.RequiresScope;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.core.Application;
+
 import java.util.Collections;
 import java.util.Set;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.core.Application;
 
 /**
  * @author Stian Sigvartsen

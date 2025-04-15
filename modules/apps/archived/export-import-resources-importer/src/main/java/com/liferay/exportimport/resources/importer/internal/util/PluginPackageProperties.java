@@ -13,12 +13,12 @@ import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import jakarta.servlet.ServletContext;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.Properties;
-
-import javax.servlet.ServletContext;
 
 /**
  * @author Michael C. Han

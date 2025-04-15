@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + TemplatePortletKeys.TEMPLATE,
+		"jakarta.portlet.name=" + TemplatePortletKeys.TEMPLATE,
 		"webdav.storage.token=template"
 	},
 	service = WebDAVStorage.class

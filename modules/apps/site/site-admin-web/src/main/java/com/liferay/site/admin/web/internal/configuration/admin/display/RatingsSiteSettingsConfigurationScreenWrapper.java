@@ -14,10 +14,10 @@ import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionValues;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

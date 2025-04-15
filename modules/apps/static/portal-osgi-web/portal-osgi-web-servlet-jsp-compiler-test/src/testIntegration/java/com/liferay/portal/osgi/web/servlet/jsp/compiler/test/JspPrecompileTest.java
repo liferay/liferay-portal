@@ -34,6 +34,10 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.util.PropsValues;
 
+import jakarta.portlet.Portlet;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,10 +58,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-
-import javax.portlet.Portlet;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.AfterClass;

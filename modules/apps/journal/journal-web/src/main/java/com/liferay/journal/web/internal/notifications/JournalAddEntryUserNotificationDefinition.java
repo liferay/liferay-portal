@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Eduardo García
  */
 @Component(
-	property = "javax.portlet.name=" + JournalPortletKeys.JOURNAL,
+	property = "jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
 	service = UserNotificationDefinition.class
 )
 public class JournalAddEntryUserNotificationDefinition

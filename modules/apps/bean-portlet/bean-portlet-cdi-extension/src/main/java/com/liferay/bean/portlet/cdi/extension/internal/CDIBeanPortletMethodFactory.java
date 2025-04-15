@@ -9,9 +9,9 @@ import com.liferay.bean.portlet.extension.BeanPortletMethod;
 import com.liferay.bean.portlet.extension.BeanPortletMethodFactory;
 import com.liferay.bean.portlet.extension.BeanPortletMethodType;
 
-import java.lang.reflect.Method;
+import jakarta.enterprise.inject.spi.BeanManager;
 
-import javax.enterprise.inject.spi.BeanManager;
+import java.lang.reflect.Method;
 
 /**
  * @author Neil Griffin

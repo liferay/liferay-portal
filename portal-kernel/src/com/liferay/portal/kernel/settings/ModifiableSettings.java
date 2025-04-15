@@ -5,11 +5,11 @@
 
 package com.liferay.portal.kernel.settings;
 
+import jakarta.portlet.ValidatorException;
+
 import java.io.IOException;
 
 import java.util.Collection;
-
-import javax.portlet.ValidatorException;
 
 /**
  * @author Iván Zaera

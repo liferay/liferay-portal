@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.servlet;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Brian Wing Shun Chan

@@ -5,13 +5,13 @@
 
 package com.liferay.shielded.container.internal.proxy;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import java.util.EventObject;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author Tina Tian

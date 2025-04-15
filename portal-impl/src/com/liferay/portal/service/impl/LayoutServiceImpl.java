@@ -63,6 +63,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.service.base.LayoutServiceBaseImpl;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -73,8 +75,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * Provides the remote service for accessing, adding, deleting, exporting,

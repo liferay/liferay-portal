@@ -112,7 +112,7 @@ public class PortalHibernateConfiguration extends LocalSessionFactoryBean {
 
 		properties.setProperty(
 			"hibernate.query.sql.jdbc_style_params_base", "true");
-		properties.setProperty("javax.persistence.validation.mode", "none");
+		properties.setProperty("jakarta.persistence.validation.mode", "none");
 
 		setHibernateProperties(properties);
 

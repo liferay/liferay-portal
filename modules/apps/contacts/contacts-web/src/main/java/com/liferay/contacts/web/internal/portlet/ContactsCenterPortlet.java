@@ -85,6 +85,15 @@ import com.liferay.social.kernel.model.SocialRequestConstants;
 import com.liferay.social.kernel.service.SocialRelationLocalService;
 import com.liferay.social.kernel.service.SocialRequestLocalService;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
+
 import java.io.InputStream;
 
 import java.net.URLEncoder;
@@ -95,15 +104,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.ResourceRequest;
-import javax.portlet.ResourceResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -124,18 +124,18 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.header-portlet-javascript=/js/legacy/main.js",
 		"com.liferay.portlet.icon=/icons/contacts_center.png",
-		"javax.portlet.display-name=Contacts Center",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.info.keywords=Contacts Center",
-		"javax.portlet.info.short-title=Contacts Center",
-		"javax.portlet.info.title=Contacts Center",
-		"javax.portlet.init-param.config-template=/configuration.jsp",
-		"javax.portlet.init-param.view-template=/view.jsp",
-		"javax.portlet.name=" + ContactsPortletKeys.CONTACTS_CENTER,
-		"javax.portlet.portlet-mode=text/html;config",
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,power-user,user",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Contacts Center",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.info.keywords=Contacts Center",
+		"jakarta.portlet.info.short-title=Contacts Center",
+		"jakarta.portlet.info.title=Contacts Center",
+		"jakarta.portlet.init-param.config-template=/configuration.jsp",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.name=" + ContactsPortletKeys.CONTACTS_CENTER,
+		"jakarta.portlet.portlet-mode=text/html;config",
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,power-user,user",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

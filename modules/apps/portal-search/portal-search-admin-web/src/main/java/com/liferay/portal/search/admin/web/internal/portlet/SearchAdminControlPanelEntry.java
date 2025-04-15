@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Modified;
  */
 @Component(
 	configurationPid = "com.liferay.portal.search.configuration.ReindexConfiguration",
-	property = "javax.portlet.name=" + SearchAdminPortletKeys.SEARCH_ADMIN,
+	property = "jakarta.portlet.name=" + SearchAdminPortletKeys.SEARCH_ADMIN,
 	service = ControlPanelEntry.class
 )
 public class SearchAdminControlPanelEntry extends BaseControlPanelEntry {

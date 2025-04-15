@@ -72,12 +72,12 @@ import com.liferay.portal.util.ThemeFactoryUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.template.test.util.TemplateTestUtil;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.portlet.PortletPreferences;
 
 import org.junit.After;
 import org.junit.Assert;

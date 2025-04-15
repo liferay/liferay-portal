@@ -48,16 +48,16 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.auth.session.AuthenticatedSessionManagerUtil;
 import com.liferay.portal.util.PropsValues;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletSession;
-import javax.portlet.PortletURL;
-import javax.portlet.WindowState;
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletSession;
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.WindowState;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,10 +68,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + LoginPortletKeys.CREATE_ACCOUNT,
-		"javax.portlet.name=" + LoginPortletKeys.FAST_LOGIN,
-		"javax.portlet.name=" + LoginPortletKeys.FORGOT_PASSWORD,
-		"javax.portlet.name=" + LoginPortletKeys.LOGIN,
+		"jakarta.portlet.name=" + LoginPortletKeys.CREATE_ACCOUNT,
+		"jakarta.portlet.name=" + LoginPortletKeys.FAST_LOGIN,
+		"jakarta.portlet.name=" + LoginPortletKeys.FORGOT_PASSWORD,
+		"jakarta.portlet.name=" + LoginPortletKeys.LOGIN,
 		"mvc.command.name=/login/login"
 	},
 	service = MVCActionCommand.class

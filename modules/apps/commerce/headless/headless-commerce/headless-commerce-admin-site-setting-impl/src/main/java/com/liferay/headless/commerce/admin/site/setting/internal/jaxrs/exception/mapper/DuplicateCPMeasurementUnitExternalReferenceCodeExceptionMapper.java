@@ -8,9 +8,9 @@ package com.liferay.headless.commerce.admin.site.setting.internal.jaxrs.exceptio
 import com.liferay.commerce.product.exception.DuplicateCPMeasurementUnitExternalReferenceCodeException;
 import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
 

@@ -26,8 +26,8 @@ import com.liferay.roles.admin.constants.RolesAdminPortletKeys;
 import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
 import com.liferay.roles.admin.web.internal.role.type.contributor.util.RoleTypeContributorRetrieverUtil;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + RolesAdminPortletKeys.ROLES_ADMIN,
+		"jakarta.portlet.name=" + RolesAdminPortletKeys.ROLES_ADMIN,
 		"path=/edit_role.jsp", "path=/edit_role_assignments.jsp",
 		"path=/edit_role_permissions.jsp"
 	},

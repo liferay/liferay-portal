@@ -15,10 +15,10 @@ import com.liferay.taglib.ui.IconHelpTag;
 import com.liferay.taglib.ui.MessageTag;
 import com.liferay.taglib.util.InlineUtil;
 
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspWriter;
 
 /**
  * @author Julio Camarero

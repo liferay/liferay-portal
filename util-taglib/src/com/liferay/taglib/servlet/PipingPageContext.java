@@ -5,10 +5,10 @@
 
 package com.liferay.taglib.servlet;
 
-import java.io.Writer;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
+import java.io.Writer;
 
 /**
  * @author Shuyang Zhou

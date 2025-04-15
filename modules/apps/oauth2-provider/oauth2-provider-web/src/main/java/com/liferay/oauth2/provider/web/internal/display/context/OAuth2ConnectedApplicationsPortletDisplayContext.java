@@ -12,7 +12,7 @@ import com.liferay.oauth2.provider.web.internal.AssignableScopes;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Tomas Polesovsky

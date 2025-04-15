@@ -7,7 +7,7 @@ package com.liferay.portal.kernel.security.permission.propagator;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
-import javax.portlet.ActionRequest;
+import jakarta.portlet.ActionRequest;
 
 /**
  * @author Hugo Huijser

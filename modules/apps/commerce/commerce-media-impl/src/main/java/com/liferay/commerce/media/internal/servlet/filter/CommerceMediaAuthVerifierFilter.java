@@ -8,7 +8,7 @@ package com.liferay.commerce.media.internal.servlet.filter;
 import com.liferay.commerce.media.constants.CommerceMediaConstants;
 import com.liferay.portal.servlet.filters.authverifier.AuthVerifierFilter;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.osgi.service.component.annotations.Component;
 

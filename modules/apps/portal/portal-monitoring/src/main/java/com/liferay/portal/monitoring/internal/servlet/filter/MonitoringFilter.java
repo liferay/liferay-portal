@@ -27,16 +27,16 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.monitoring.internal.configuration.MonitoringConfiguration;
 import com.liferay.portal.monitoring.internal.statistics.portal.PortalRequestDataSample;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

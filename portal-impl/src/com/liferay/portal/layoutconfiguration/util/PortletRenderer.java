@@ -15,15 +15,15 @@ import com.liferay.portal.kernel.portlet.render.PortletRenderUtil;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Shuyang Zhou
@@ -96,7 +96,7 @@ public class PortletRenderer {
 			String attributeName = enumeration.nextElement();
 
 			if (attributeName.contains(
-					"javax.portlet.faces.renderResponseOutput")) {
+					"jakarta.portlet.faces.renderResponseOutput")) {
 
 				headerRequestAttributes.put(
 					attributeName,

@@ -5,8 +5,8 @@
 
 package com.liferay.bean.portlet.spring.extension.internal.mvc;
 
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.springframework.context.ApplicationEvent;
 

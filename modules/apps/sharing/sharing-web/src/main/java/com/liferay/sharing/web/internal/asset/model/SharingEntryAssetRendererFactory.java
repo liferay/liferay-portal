@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Mikel Lorza
  */
 @Component(
-	property = "javax.portlet.name=" + SharingPortletKeys.SHARING,
+	property = "jakarta.portlet.name=" + SharingPortletKeys.SHARING,
 	service = AssetRendererFactory.class
 )
 public class SharingEntryAssetRendererFactory

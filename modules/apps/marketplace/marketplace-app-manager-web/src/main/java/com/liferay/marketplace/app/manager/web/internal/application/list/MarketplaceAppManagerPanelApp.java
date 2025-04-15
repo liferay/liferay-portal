@@ -56,7 +56,7 @@ public class MarketplaceAppManagerPanelApp extends BasePanelApp {
 	private Portal _portal;
 
 	@Reference(
-		target = "(javax.portlet.name=" + MarketplaceAppManagerPortletKeys.MARKETPLACE_APP_MANAGER + ")"
+		target = "(jakarta.portlet.name=" + MarketplaceAppManagerPortletKeys.MARKETPLACE_APP_MANAGER + ")"
 	)
 	private Portlet _portlet;
 

@@ -5,7 +5,7 @@
 
 package com.liferay.digital.signature.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author José Abelenda

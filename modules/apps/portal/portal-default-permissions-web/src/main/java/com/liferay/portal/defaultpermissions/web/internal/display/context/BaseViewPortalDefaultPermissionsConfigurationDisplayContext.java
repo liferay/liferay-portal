@@ -13,10 +13,10 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletURL;
+
 import java.util.List;
 import java.util.function.Predicate;
-
-import javax.portlet.PortletURL;
 
 /**
  * @author Stefano Motta

@@ -10,12 +10,12 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.workflow.kaleo.definition.NotificationReceptionType;
 
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+
 import java.io.UnsupportedEncodingException;
 
 import java.util.Objects;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 /**
  * @author Michael C. Han

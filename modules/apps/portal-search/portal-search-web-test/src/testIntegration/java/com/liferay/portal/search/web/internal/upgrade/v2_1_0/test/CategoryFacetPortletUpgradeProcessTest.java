@@ -92,7 +92,7 @@ public class CategoryFacetPortletUpgradeProcessTest {
 
 		_multiVMPool.clear();
 
-		javax.portlet.PortletPreferences jxPortletPreferences =
+		jakarta.portlet.PortletPreferences jxPortletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(
 				_portletPreferencesLocalService.getPortletPreferences(
 					_portletPreferences.getPortletPreferencesId()));

@@ -8,7 +8,7 @@ package com.liferay.trash.taglib.internal.servlet;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.trash.TrashHelper;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 /**
  * @author Michael Bradford

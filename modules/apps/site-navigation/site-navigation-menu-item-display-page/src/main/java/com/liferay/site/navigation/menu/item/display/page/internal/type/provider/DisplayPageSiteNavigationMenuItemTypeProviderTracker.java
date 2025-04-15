@@ -25,11 +25,11 @@ import com.liferay.site.navigation.menu.item.display.page.internal.type.DisplayP
 import com.liferay.site.navigation.menu.item.display.page.internal.type.DisplayPageTypeSiteNavigationMenuItemType;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.ServletContext;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

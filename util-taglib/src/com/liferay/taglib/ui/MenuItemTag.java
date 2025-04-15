@@ -8,7 +8,7 @@ package com.liferay.taglib.ui;
 import com.liferay.portal.kernel.servlet.taglib.ui.MenuItem;
 import com.liferay.taglib.util.IncludeTag;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Iván Zaera

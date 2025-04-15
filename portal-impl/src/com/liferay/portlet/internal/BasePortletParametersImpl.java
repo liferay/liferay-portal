@@ -5,15 +5,15 @@
 
 package com.liferay.portlet.internal;
 
+import jakarta.portlet.MutablePortletParameters;
+import jakarta.portlet.PortletParameters;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-
-import javax.portlet.MutablePortletParameters;
-import javax.portlet.PortletParameters;
 
 /**
  * @author Neil Griffin

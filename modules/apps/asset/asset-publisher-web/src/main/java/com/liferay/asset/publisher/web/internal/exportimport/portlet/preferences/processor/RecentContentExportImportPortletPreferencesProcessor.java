@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "javax.portlet.name=" + AssetPublisherPortletKeys.RECENT_CONTENT,
+	property = "jakarta.portlet.name=" + AssetPublisherPortletKeys.RECENT_CONTENT,
 	service = ExportImportPortletPreferencesProcessor.class
 )
 public class RecentContentExportImportPortletPreferencesProcessor

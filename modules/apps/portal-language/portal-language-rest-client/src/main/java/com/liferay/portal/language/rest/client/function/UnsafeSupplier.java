@@ -5,7 +5,7 @@
 
 package com.liferay.portal.language.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Thiago Buarque

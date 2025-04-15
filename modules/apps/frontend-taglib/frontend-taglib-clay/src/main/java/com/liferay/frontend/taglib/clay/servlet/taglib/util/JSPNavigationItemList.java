@@ -7,10 +7,10 @@ package com.liferay.frontend.taglib.clay.servlet.taglib.util;
 
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
-import javax.portlet.RenderResponse;
+import jakarta.portlet.RenderResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * @author Brian Wing Shun Chan

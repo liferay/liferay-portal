@@ -93,6 +93,8 @@ import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
 
+import jakarta.portlet.PortletPreferences;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -110,8 +112,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.portlet.PortletPreferences;
 
 /**
  * @author Ryan Park

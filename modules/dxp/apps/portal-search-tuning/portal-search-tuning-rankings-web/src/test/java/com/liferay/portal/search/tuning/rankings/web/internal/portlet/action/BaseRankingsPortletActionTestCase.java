@@ -17,13 +17,13 @@ import com.liferay.portal.search.tuning.rankings.web.internal.index.DuplicateQue
 import com.liferay.portal.search.tuning.rankings.web.internal.index.RankingImpl;
 import com.liferay.portal.search.tuning.rankings.web.internal.index.RankingPinBuilderFactoryImpl;
 
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 
 import org.mockito.Mockito;
 

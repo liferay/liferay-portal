@@ -8,7 +8,7 @@ package com.liferay.comment.web.internal.portlet;
 import com.liferay.comment.web.internal.constants.CommentPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 
-import javax.portlet.Portlet;
+import jakarta.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -20,14 +20,14 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.icon=/icons/comment.png",
-		"javax.portlet.display-name=Comments",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.name=" + CommentPortletKeys.COMMENT,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=guest",
-		"javax.portlet.security-role-ref=power-user",
-		"javax.portlet.security-role-ref=user", "javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Comments",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.name=" + CommentPortletKeys.COMMENT,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=guest",
+		"jakarta.portlet.security-role-ref=power-user",
+		"jakarta.portlet.security-role-ref=user", "jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

@@ -9,7 +9,7 @@ import com.liferay.headless.commerce.admin.inventory.client.json.BaseJSONParser;
 
 import java.util.Objects;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Alessio Antonio Rendina

@@ -18,10 +18,10 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.Date;
 import java.util.Properties;
-
-import javax.portlet.PortletRequest;
 
 /**
  * @author Iván Zaera Avellón

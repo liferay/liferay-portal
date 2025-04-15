@@ -8,9 +8,9 @@ package com.liferay.portal.vulcan.internal.jaxrs.context.provider;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.fields.FieldsQueryParam;
 
-import java.util.Set;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;

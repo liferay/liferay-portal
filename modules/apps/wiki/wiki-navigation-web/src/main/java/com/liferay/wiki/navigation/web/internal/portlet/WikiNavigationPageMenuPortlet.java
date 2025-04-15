@@ -11,12 +11,12 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.wiki.navigation.web.internal.constants.WikiNavigationPortletKeys;
 
-import java.io.IOException;
+import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
+import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,16 +33,16 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.instanceable=true",
 		"com.liferay.portlet.scopeable=true",
 		"com.liferay.portlet.use-default-template=true",
-		"javax.portlet.display-name=Page Menu",
-		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.template-path=/META-INF/resources/",
-		"javax.portlet.init-param.view-template=/page_menu/view.jsp",
-		"javax.portlet.name=" + WikiNavigationPortletKeys.PAGE_MENU,
-		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=administrator,guest,power-user,user",
-		"javax.portlet.supported-public-render-parameter=nodeId;http://www.liferay.com/public-render-parameters/wiki",
-		"javax.portlet.supported-public-render-parameter=title;http://www.liferay.com/public-render-parameters/wiki",
-		"javax.portlet.version=3.0"
+		"jakarta.portlet.display-name=Page Menu",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/page_menu/view.jsp",
+		"jakarta.portlet.name=" + WikiNavigationPortletKeys.PAGE_MENU,
+		"jakarta.portlet.resource-bundle=content.Language",
+		"jakarta.portlet.security-role-ref=administrator,guest,power-user,user",
+		"jakarta.portlet.supported-public-render-parameter=nodeId;http://www.liferay.com/public-render-parameters/wiki",
+		"jakarta.portlet.supported-public-render-parameter=title;http://www.liferay.com/public-render-parameters/wiki",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

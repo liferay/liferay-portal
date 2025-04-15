@@ -16,10 +16,10 @@ import com.liferay.portal.search.engine.ConnectionInformation;
 import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.web.internal.low.level.search.options.constants.LowLevelSearchOptionsPortletKeys;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Wade Cao
  */
 @Component(
-	property = "javax.portlet.name=" + LowLevelSearchOptionsPortletKeys.LOW_LEVEL_SEARCH_OPTIONS,
+	property = "jakarta.portlet.name=" + LowLevelSearchOptionsPortletKeys.LOW_LEVEL_SEARCH_OPTIONS,
 	service = ConfigurationAction.class
 )
 public class LowLevelSearchOptionsConfigurationAction

@@ -21,15 +21,15 @@ import com.liferay.portal.search.web.internal.modified.facet.display.context.bui
 import com.liferay.portal.search.web.internal.util.DateRangeFactoryUtil;
 import com.liferay.portlet.display.template.portlet.action.BaseConfigurationAction;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+import jakarta.portlet.PortletConfig;
+import jakarta.portlet.RenderRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.text.ParseException;
-
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.PortletConfig;
-import javax.portlet.RenderRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Lino Alves
  */
 @Component(
-	property = "javax.portlet.name=" + ModifiedFacetPortletKeys.MODIFIED_FACET,
+	property = "jakarta.portlet.name=" + ModifiedFacetPortletKeys.MODIFIED_FACET,
 	service = ConfigurationAction.class
 )
 public class ModifiedFacetPortletConfigurationAction

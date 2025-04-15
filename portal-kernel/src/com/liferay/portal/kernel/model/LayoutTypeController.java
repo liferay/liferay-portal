@@ -7,10 +7,10 @@ package com.liferay.portal.kernel.model;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
-import java.io.Serializable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 
 /**
  * @author Raymond Augé

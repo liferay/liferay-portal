@@ -9,11 +9,11 @@ import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import jakarta.portlet.ActionRequest;
+
 import java.math.BigDecimal;
 
 import java.util.Locale;
-
-import javax.portlet.ActionRequest;
 
 /**
  * @author Alessio Antonio Rendina

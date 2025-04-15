@@ -8,10 +8,10 @@ package com.liferay.info.item.renderer;
 import com.liferay.info.type.Keyed;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
-import java.util.Locale;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
  * @author Jorge Ferrer

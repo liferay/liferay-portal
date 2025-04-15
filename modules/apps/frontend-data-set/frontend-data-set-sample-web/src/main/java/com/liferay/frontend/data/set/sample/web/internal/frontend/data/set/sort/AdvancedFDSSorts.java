@@ -11,9 +11,9 @@ import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
 import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSNames;
 import com.liferay.frontend.data.set.sort.FDSSorts;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 

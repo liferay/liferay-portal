@@ -22,8 +22,8 @@ import com.liferay.taglib.security.PermissionsURLTag;
 import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPortletKeys;
 
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sergio González
  */
 @Component(
-	property = "javax.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
+	property = "jakarta.portlet.name=" + WikiPortletKeys.WIKI_ADMIN,
 	service = PortletConfigurationIcon.class
 )
 public class PermissionsPortletConfigurationIcon

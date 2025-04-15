@@ -14,11 +14,11 @@ import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portlet.PortletPreferencesImpl;
 import com.liferay.portlet.PreferencesValueUtil;
 
+import jakarta.portlet.ReadOnlyException;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-
-import javax.portlet.ReadOnlyException;
 
 /**
  * @author Brian Wing Shun Chan

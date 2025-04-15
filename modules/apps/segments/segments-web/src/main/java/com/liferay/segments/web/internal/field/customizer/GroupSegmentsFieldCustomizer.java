@@ -22,10 +22,10 @@ import com.liferay.segments.field.Field;
 import com.liferay.segments.field.customizer.SegmentsFieldCustomizer;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
 
+import jakarta.portlet.PortletRequest;
+
 import java.util.List;
 import java.util.Locale;
-
-import javax.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

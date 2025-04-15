@@ -12,10 +12,10 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.RenderRequest;
+
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.RenderRequest;
 
 /**
  * @author Eudaldo Alonso

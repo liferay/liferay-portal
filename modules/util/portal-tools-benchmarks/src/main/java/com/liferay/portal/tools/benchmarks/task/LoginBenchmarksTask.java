@@ -114,7 +114,7 @@ public class LoginBenchmarksTask implements BenchmarksTask {
 			},
 			_createURL(
 				"/home?", _P_P_ID_NAMESPACE,
-				"_javax.portlet.action=/login/login&", _P_P_ID_NAMESPACE,
+				"_jakarta.portlet.action=/login/login&", _P_P_ID_NAMESPACE,
 				"_mvcRenderCommandName=/login/login&p_p_id=", _P_P_ID,
 				"&p_p_lifecycle=1&p_p_mode=view&p_p_state=normal"));
 

@@ -8,7 +8,7 @@ package com.liferay.portal.reports.engine.console.web.internal.admin.search;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import javax.portlet.PortletRequest;
+import jakarta.portlet.PortletRequest;
 
 /**
  * @author Rafael Praxedes

@@ -7,7 +7,7 @@ package com.liferay.portal.vulcan.resource.locator;
 
 import com.liferay.portal.kernel.model.User;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Shuyang Zhou

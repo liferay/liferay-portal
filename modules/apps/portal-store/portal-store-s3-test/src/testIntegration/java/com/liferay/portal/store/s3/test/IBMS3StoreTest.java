@@ -16,7 +16,7 @@ import com.liferay.portal.store.test.util.BaseStoreTestCase;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 import org.junit.Assume;
 import org.junit.ClassRule;

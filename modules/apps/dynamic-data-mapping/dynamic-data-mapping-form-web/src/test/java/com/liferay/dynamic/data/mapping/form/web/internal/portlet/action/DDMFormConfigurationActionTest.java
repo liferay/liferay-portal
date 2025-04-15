@@ -17,10 +17,10 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.PortletConfig;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.portlet.PortletConfig;
 
 import org.junit.Assert;
 import org.junit.Before;

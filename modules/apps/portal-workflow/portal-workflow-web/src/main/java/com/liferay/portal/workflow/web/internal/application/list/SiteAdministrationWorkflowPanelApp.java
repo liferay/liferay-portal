@@ -37,7 +37,7 @@ public class SiteAdministrationWorkflowPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + WorkflowPortletKeys.SITE_ADMINISTRATION_WORKFLOW + ")"
+		target = "(jakarta.portlet.name=" + WorkflowPortletKeys.SITE_ADMINISTRATION_WORKFLOW + ")"
 	)
 	private Portlet _portlet;
 

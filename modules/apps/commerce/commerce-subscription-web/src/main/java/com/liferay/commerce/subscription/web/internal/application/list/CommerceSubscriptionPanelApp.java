@@ -38,7 +38,7 @@ public class CommerceSubscriptionPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + CPPortletKeys.COMMERCE_SUBSCRIPTION_ENTRY + ")"
+		target = "(jakarta.portlet.name=" + CPPortletKeys.COMMERCE_SUBSCRIPTION_ENTRY + ")"
 	)
 	private Portlet _portlet;
 

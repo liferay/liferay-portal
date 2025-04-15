@@ -44,16 +44,16 @@ import com.liferay.roles.admin.search.RoleSearch;
 import com.liferay.roles.admin.search.RoleSearchTerms;
 import com.liferay.site.search.GroupSearch;
 
+import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 
 /**
  * @author Cristina González

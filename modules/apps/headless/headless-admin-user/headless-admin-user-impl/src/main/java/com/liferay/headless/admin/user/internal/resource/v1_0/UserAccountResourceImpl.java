@@ -119,6 +119,13 @@ import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.user.associated.data.anonymizer.UADAnonymousUserProvider;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -128,13 +135,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

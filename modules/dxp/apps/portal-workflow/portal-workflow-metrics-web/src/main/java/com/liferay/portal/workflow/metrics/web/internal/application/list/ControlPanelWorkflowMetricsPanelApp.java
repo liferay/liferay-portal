@@ -52,7 +52,7 @@ public class ControlPanelWorkflowMetricsPanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(javax.portlet.name=" + WorkflowMetricsPortletKeys.WORKFLOW_METRICS + ")"
+		target = "(jakarta.portlet.name=" + WorkflowMetricsPortletKeys.WORKFLOW_METRICS + ")"
 	)
 	private Portlet _portlet;
 

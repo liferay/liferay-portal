@@ -5,8 +5,8 @@
 
 package com.liferay.portal.kernel.test.portlet;
 
-import javax.portlet.MutableResourceParameters;
-import javax.portlet.ResourceParameters;
+import jakarta.portlet.MutableResourceParameters;
+import jakarta.portlet.ResourceParameters;
 
 /**
  * @author Dante Wang

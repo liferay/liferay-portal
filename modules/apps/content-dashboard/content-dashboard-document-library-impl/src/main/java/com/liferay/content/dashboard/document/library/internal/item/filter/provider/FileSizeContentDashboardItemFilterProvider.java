@@ -12,7 +12,7 @@ import com.liferay.content.dashboard.item.filter.provider.ContentDashboardItemFi
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.Portal;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

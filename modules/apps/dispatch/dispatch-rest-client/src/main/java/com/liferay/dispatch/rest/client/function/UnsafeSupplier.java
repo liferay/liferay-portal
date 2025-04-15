@@ -5,7 +5,7 @@
 
 package com.liferay.dispatch.rest.client.function;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author Nilton Vieira

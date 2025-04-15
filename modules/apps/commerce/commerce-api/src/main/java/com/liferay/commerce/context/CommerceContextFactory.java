@@ -5,7 +5,7 @@
 
 package com.liferay.commerce.context;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Marco Leo

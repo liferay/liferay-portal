@@ -41,15 +41,15 @@ import com.liferay.roles.admin.search.ResourceActionRowChecker;
 import com.liferay.roles.admin.web.internal.group.type.contributor.util.GroupTypeContributorUtil;
 import com.liferay.taglib.search.ResultRow;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Mariano Álvaro Sáiz

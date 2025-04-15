@@ -12,6 +12,10 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.PortletRequest;
+
+import jakarta.servlet.http.HttpServletRequestWrapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,10 +26,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.portlet.PortletRequest;
-
-import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * @author Brian Wing Shun Chan

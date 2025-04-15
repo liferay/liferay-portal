@@ -7,7 +7,7 @@ package com.liferay.headless.commerce.delivery.cart.internal.jaxrs.exception.map
 
 import com.liferay.headless.commerce.core.exception.mapper.BaseOrderValidatorExceptionMapper;
 
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.osgi.service.component.annotations.Component;
 

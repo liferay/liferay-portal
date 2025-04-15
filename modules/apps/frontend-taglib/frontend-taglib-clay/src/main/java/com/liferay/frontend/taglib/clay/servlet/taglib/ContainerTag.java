@@ -8,9 +8,9 @@ package com.liferay.frontend.taglib.clay.servlet.taglib;
 import com.liferay.frontend.taglib.clay.internal.servlet.taglib.BaseContainerTag;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Set;
+import jakarta.servlet.jsp.JspException;
 
-import javax.servlet.jsp.JspException;
+import java.util.Set;
 
 /**
  * @author Chema Balsas
