@@ -64,7 +64,7 @@
 			<name>moduleServletContext</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>javax.servlet.ServletContext</type>
+			<type>jakarta.servlet.ServletContext</type>
 		</attribute>
 		<attribute>
 			<name>namespace</name>

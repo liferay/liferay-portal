@@ -254,7 +254,7 @@
 			<name>transitionPortletURL</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>javax.portlet.PortletURL</type>
+			<type>jakarta.portlet.PortletURL</type>
 		</attribute>
 		<attribute>
 			<name>version</name>

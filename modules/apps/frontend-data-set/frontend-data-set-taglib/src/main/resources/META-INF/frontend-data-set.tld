@@ -109,7 +109,7 @@
 			<name>portletURL</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>javax.portlet.PortletURL</type>
+			<type>jakarta.portlet.PortletURL</type>
 		</attribute>
 		<attribute>
 			<description></description>
@@ -282,7 +282,7 @@
 			<name>portletURL</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<type>javax.portlet.PortletURL</type>
+			<type>jakarta.portlet.PortletURL</type>
 		</attribute>
 		<attribute>
 			<description></description>
