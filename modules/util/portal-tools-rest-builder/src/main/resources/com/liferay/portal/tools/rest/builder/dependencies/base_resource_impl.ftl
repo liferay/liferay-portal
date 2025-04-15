@@ -70,6 +70,18 @@ import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.LocalDateTimeUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
+import jakarta.annotation.Generated;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.io.Serializable;
 
 import java.lang.reflect.Array;
@@ -85,25 +97,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Generated;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 /**
  * @author ${configYAML.author}
  * @generated
  */
 @Generated("")
 <#if configYAML.application??>
-	@javax.ws.rs.Path("/${openAPIYAML.info.version}")
+	@jakarta.ws.rs.Path("/${openAPIYAML.info.version}")
 </#if>
 public abstract class Base${schemaName}ResourceImpl
 	implements ${schemaName}Resource
@@ -321,7 +321,7 @@ public abstract class Base${schemaName}ResourceImpl
 				vulcanBatchEngineImportTaskResource.setContextUriInfo(contextUriInfo);
 				vulcanBatchEngineImportTaskResource.setContextUser(contextUser);
 
-				javax.ws.rs.core.Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.accepted();
+				jakarta.ws.rs.core.Response.ResponseBuilder responseBuilder = jakarta.ws.rs.core.Response.accepted();
 
 				return responseBuilder.entity(
 					vulcanBatchEngineImportTaskResource.deleteImportTask(${javaDataType}.class.getName(), callbackURL, object)
@@ -334,7 +334,7 @@ public abstract class Base${schemaName}ResourceImpl
 				vulcanBatchEngineExportTaskResource.setContextUser(contextUser);
 				vulcanBatchEngineExportTaskResource.setGroupLocalService(groupLocalService);
 
-				javax.ws.rs.core.Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.accepted();
+				jakarta.ws.rs.core.Response.ResponseBuilder responseBuilder = jakarta.ws.rs.core.Response.accepted();
 
 				return responseBuilder.entity(
 					vulcanBatchEngineExportTaskResource.postExportTask(${javaDataType}.class.getName(), callbackURL, contentType, fieldNames)
@@ -346,7 +346,7 @@ public abstract class Base${schemaName}ResourceImpl
 				vulcanBatchEngineImportTaskResource.setContextUriInfo(contextUriInfo);
 				vulcanBatchEngineImportTaskResource.setContextUser(contextUser);
 
-				javax.ws.rs.core.Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.accepted();
+				jakarta.ws.rs.core.Response.ResponseBuilder responseBuilder = jakarta.ws.rs.core.Response.accepted();
 
 				return responseBuilder.entity(
 					vulcanBatchEngineImportTaskResource.postImportTask(${javaDataType}.class.getName(), callbackURL, null, object)
@@ -358,7 +358,7 @@ public abstract class Base${schemaName}ResourceImpl
 				vulcanBatchEngineImportTaskResource.setContextUriInfo(contextUriInfo);
 				vulcanBatchEngineImportTaskResource.setContextUser(contextUser);
 
-				javax.ws.rs.core.Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.accepted();
+				jakarta.ws.rs.core.Response.ResponseBuilder responseBuilder = jakarta.ws.rs.core.Response.accepted();
 
 				return responseBuilder.entity(
 					vulcanBatchEngineImportTaskResource.putImportTask(${javaDataType}.class.getName(), callbackURL, object)
@@ -483,8 +483,8 @@ public abstract class Base${schemaName}ResourceImpl
 				return java.math.BigDecimal.ZERO;
 			<#elseif stringUtil.equals(javaMethodSignature.returnType, "java.util.Date")>
 				return new java.util.Date();
-			<#elseif stringUtil.equals(javaMethodSignature.returnType, "javax.ws.rs.core.Response")>
-				javax.ws.rs.core.Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.ok();
+			<#elseif stringUtil.equals(javaMethodSignature.returnType, "jakarta.ws.rs.core.Response")>
+				jakarta.ws.rs.core.Response.ResponseBuilder responseBuilder = jakarta.ws.rs.core.Response.ok();
 
 				return responseBuilder.build();
 			<#elseif stringUtil.equals(javaMethodSignature.returnType, "void")>

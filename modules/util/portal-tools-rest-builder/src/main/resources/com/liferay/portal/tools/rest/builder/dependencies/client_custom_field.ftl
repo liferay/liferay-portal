@@ -3,9 +3,9 @@ package ${configYAML.apiPackagePath}.client.custom.field;
 import ${configYAML.apiPackagePath}.client.function.UnsafeSupplier;
 import ${configYAML.apiPackagePath}.client.json.BaseJSONParser;
 
-import java.util.Objects;
+import jakarta.annotation.Generated;
 
-import javax.annotation.Generated;
+import java.util.Objects;
 
 /**
 * @author ${configYAML.author}

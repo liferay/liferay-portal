@@ -1,8 +1,8 @@
 package ${configYAML.apiPackagePath}.client.constant.${escapedVersion};
 
-import java.util.Objects;
+import jakarta.annotation.Generated;
 
-import javax.annotation.Generated;
+import java.util.Objects;
 
 /**
  * @author ${configYAML.author}

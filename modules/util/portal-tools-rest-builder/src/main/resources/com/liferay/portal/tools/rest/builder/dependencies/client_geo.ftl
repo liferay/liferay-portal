@@ -3,10 +3,10 @@ package ${configYAML.apiPackagePath}.client.custom.field;
 import ${configYAML.apiPackagePath}.client.function.UnsafeSupplier;
 import ${configYAML.apiPackagePath}.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Map;
 import java.util.Objects;
-
-import javax.annotation.Generated;
 
 /**
 * @author ${configYAML.author}

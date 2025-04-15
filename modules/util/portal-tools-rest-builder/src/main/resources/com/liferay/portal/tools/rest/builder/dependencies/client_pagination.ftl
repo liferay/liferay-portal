@@ -1,6 +1,6 @@
 package ${configYAML.apiPackagePath}.client.pagination;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * @author ${configYAML.author}
