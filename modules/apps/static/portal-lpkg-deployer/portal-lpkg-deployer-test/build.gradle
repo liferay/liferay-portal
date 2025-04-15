@@ -3,7 +3,7 @@ dependencies {
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testImplementation group: "commons-io", name: "commons-io", version: "2.15.1"
-	testImplementation group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
+	testImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation project(":apps:static:portal-lpkg-deployer:portal-lpkg-deployer-test-util")
 	testImplementation project(":core:petra:petra-lang")

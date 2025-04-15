@@ -27,8 +27,8 @@ classes {
 }
 
 dependencies {
+	api group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", transitive: false, version: "4.0.0"
 	api group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
-	api group: "javax.portlet", name: "portlet-api", transitive: false, version: "3.0.1"
 	compileInclude project(":apps:account:account-api")
 	compileInclude project(":apps:account:account-service")
 	compileInclude project(":apps:application-list:application-list-api")

@@ -2,20 +2,20 @@ dependencies {
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.2"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
-	compileOnly group: "com.fasterxml.jackson.jaxrs", name: "jackson-jaxrs-base", version: "2.18.2"
-	compileOnly group: "com.fasterxml.jackson.jaxrs", name: "jackson-jaxrs-json-provider", version: "2.18.2"
-	compileOnly group: "com.fasterxml.jackson.module", name: "jackson-module-jaxb-annotations", version: "2.18.2"
-	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "2.1.6.LIFERAY-PATCHED-2"
+	compileOnly group: "com.fasterxml.jackson.jakarta.rs", name: "jackson-jakarta-rs-base", version: "2.18.2"
+	compileOnly group: "com.fasterxml.jackson.jakarta.rs", name: "jackson-jakarta-rs-json-provider", version: "2.18.2"
+	compileOnly group: "com.fasterxml.jackson.module", name: "jackson-module-jakarta-xmlbind-annotations", version: "2.18.2"
+	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.osgi.service.jaxrs", version: "1.0.0.JAKARTA_LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 }
 
 deployDependencies {
 	from (configurations.compileOnly) {
-		include "jackson-jaxrs-base-*.jar"
-		include "jackson-jaxrs-json-provider-*.jar"
-		include "jackson-module-jaxb-annotations-*.jar"
+		include "jackson-jakarta-rs-base-*.jar"
+		include "jackson-jakarta-rs-json-provider-*.jar"
+		include "jackson-module-jakarta-xmlbind-annotations-*.jar"
 	}
 }

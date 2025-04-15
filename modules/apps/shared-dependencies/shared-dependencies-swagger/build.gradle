@@ -1,4 +1,4 @@
 dependencies {
-	compileInclude group: "io.swagger.core.v3", name: "swagger-annotations", version: "2.2.28"
-	compileInclude group: "io.swagger.core.v3", name: "swagger-models", version: "2.2.28"
+	compileInclude group: "io.swagger.core.v3", name: "swagger-annotations-jakarta", version: "2.2.28"
+	compileInclude group: "io.swagger.core.v3", name: "swagger-models-jakarta", version: "2.2.28"
 }

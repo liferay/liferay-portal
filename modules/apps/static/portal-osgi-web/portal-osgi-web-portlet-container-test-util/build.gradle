@@ -1,15 +1,15 @@
 dependencies {
+	compileOnly group: "com.liferay", name: "org.springframework.test", version: "5.3.39.JAKARTA_LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.springframework.web", version: "5.3.39.JAKARTA_LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
-	compileOnly group: "javax.portlet", name: "portlet-api", version: "3.0.1"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
-	compileOnly group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
 	compileOnly group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileOnly group: "org.apache.httpcomponents", name: "httpmime", version: "4.5.13"
-	compileOnly group: "org.springframework", name: "spring-test", version: "5.3.39"
-	compileOnly group: "org.springframework", name: "spring-web", version: "5.3.39"
 	compileOnly project(":core:petra:petra-memory")
 }
 

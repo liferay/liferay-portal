@@ -45,7 +45,7 @@ dependencies {
 	compileOnly group: "io.netty", name: "netty-transport-native-epoll", version: "4.1.119.Final"
 	compileOnly group: "io.netty", name: "netty-transport-native-kqueue", version: "4.1.119.Final"
 	compileOnly group: "io.netty", name: "netty-transport-native-unix-common", version: "4.1.119.Final"
-	compileOnly group: "javax.annotation", name: "javax.annotation-api", version: "1.3.2"
+	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "net.minidev", name: "accessors-smart", version: "2.4.9"
 	compileOnly group: "net.minidev", name: "json-smart", version: "2.4.10"
 	compileOnly group: "org.codehaus.woodstox", name: "stax2-api", version: "4.2.2"

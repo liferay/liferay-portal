@@ -1,3 +1,3 @@
 dependencies {
-	compileInclude group: "com.liferay", name: "org.mitre.dsmiley.http.proxy.servlet", version: "1.12.1.LIFERAY-PATCHED-1"
+	compileInclude group: "org.mitre.dsmiley.httpproxy", name: "smiley-http-proxy-servlet", version: "2.0"
 }

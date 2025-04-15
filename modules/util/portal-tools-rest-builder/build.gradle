@@ -29,9 +29,9 @@ dependencies {
 	compileOnly group: "com.liferay", name: "com.liferay.portal.tools.java.parser", version: "1.0.55"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"
-	compileOnly group: "javax.annotation", name: "javax.annotation-api", version: "1.3.2"
-	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.1"
-	compileOnly group: "javax.xml.bind", name: "jaxb-api", version: "2.3.0"
+	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
+	compileOnly group: "jakarta.xml.bind", name: "jakarta.xml.bind-api", version: "4.0.2"
 	compileOnly group: "org.apache.ant", name: "ant", transitive: false, version: "1.10.14"
 	compileOnly group: "org.apache.maven", name: "maven-plugin-api", transitive: false, version: "3.0.4"
 

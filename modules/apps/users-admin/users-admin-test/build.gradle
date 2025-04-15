@@ -1,6 +1,6 @@
 dependencies {
+	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "commons-lang", name: "commons-lang", version: "2.6"
-	testIntegrationImplementation group: "javax.portlet", name: "portlet-api", version: "3.0.1"
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-spi")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")

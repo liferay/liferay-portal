@@ -1,15 +1,15 @@
 dependencies {
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxws", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.frontend.simple", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.ws.policy", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.osgi.service.http.whiteboard", version: "1.1.1.JAKARTA_LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "javax.xml.ws", name: "jaxws-api", version: "2.3.1"
-	compileOnly group: "org.apache.cxf", name: "cxf-core", version: "3.5.11"
-	compileOnly group: "org.apache.cxf", name: "cxf-rt-frontend-jaxws", version: "3.5.11"
-	compileOnly group: "org.apache.cxf", name: "cxf-rt-frontend-simple", version: "3.5.11"
-	compileOnly group: "org.apache.cxf", name: "cxf-rt-ws-policy", version: "3.5.11"
+	compileOnly group: "jakarta.xml.ws", name: "jakarta.xml.ws-api", version: "3.0.1"
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.dependencymanager", version: "4.6.0"
 	compileOnly group: "org.apache.neethi", name: "neethi", version: "3.2.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.http.whiteboard", version: "1.1.1"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:portal-remote:portal-remote-soap-extender-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
@@ -23,9 +23,7 @@ dependencies {
 deployDependencies {
 	from configurations.compileOnly
 
-	include "cxf-rt-frontend-jaxws-*.jar"
-	include "cxf-rt-frontend-simple-*.jar"
-	include "cxf-rt-ws-policy-*.jar"
+	include "org.apache.cxf.rt.*.jar"
 	include "neethi-*.jar"
 
 }

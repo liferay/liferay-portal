@@ -1,5 +1,5 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "javax.xml.ws", name: "jaxws-api", version: "2.3.1"
+	compileOnly group: "jakarta.xml.ws", name: "jakarta.xml.ws-api", version: "3.0.1"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 }

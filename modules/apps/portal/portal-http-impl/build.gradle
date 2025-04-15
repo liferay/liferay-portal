@@ -2,7 +2,7 @@ dependencies {
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileOnly group: "org.apache.httpcomponents", name: "httpmime", version: "4.5.13"
@@ -12,5 +12,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-memory")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "javax.portlet", name: "portlet-api", version: "3.0.1"
+	testImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 }

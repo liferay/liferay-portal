@@ -1,10 +1,10 @@
 dependencies {
+	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxws", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay", name: "org.osgi.service.http.whiteboard", version: "1.1.1.JAKARTA_LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "org.apache.cxf", name: "cxf-core", version: "3.5.11"
-	testIntegrationImplementation group: "org.apache.cxf", name: "cxf-rt-frontend-jaxws", version: "3.5.11"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.http.whiteboard", version: "1.1.1"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

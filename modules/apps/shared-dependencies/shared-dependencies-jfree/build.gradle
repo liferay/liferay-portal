@@ -1,4 +1,4 @@
 dependencies {
+	compileInclude group: "com.liferay", name: "org.jfree.jfreechart", version: "1.0.19.JAKARTA_LIFERAY-PATCHED-1"
 	compileInclude group: "org.jfree", name: "jcommon", version: "1.0.24"
-	compileInclude group: "org.jfree", name: "jfreechart", version: "1.0.19"
 }

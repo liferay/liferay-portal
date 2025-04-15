@@ -10,7 +10,7 @@ dependencies {
 	compileOnly group: "net.bytebuddy", name: "byte-buddy", version: "1.15.11"
 	compileOnly group: "org.hibernate.common", name: "hibernate-commons-annotations", version: "5.1.2.Final"
 	compileOnly group: "org.jboss", name: "jandex", version: "2.2.3.Final"
-	compileOnly group: "org.jboss.logging", name: "jboss-logging", version: "3.4.3.Final"
+	compileOnly group: "org.jboss.logging", name: "jboss-logging", version: "3.6.1.Final"
 }
 
 deploy {

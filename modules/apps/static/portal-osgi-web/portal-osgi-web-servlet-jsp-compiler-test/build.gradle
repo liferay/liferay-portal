@@ -1,10 +1,10 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "org.eclipse.osgi", version: "3.13.0.LIFERAY-PATCHED-28"
+	testIntegrationImplementation group: "com.liferay", name: "org.osgi.service.http.whiteboard", version: "1.1.1.JAKARTA_LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "javax.portlet", name: "portlet-api", version: "3.0.1"
-	testIntegrationImplementation group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
+	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.http.whiteboard", version: "1.1.1"
 	testIntegrationImplementation group: "org.ow2.asm", name: "asm", version: "9.7"
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

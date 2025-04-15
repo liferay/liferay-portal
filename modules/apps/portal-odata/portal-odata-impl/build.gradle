@@ -5,8 +5,8 @@ dependencies {
 	compileInclude group: "org.apache.olingo", name: "odata-server-core", version: "4.9.0"
 	compileInclude group: "org.apache.olingo", name: "odata-server-core-ext", version: "4.9.0"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
+	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:portal-odata:portal-odata-api")
@@ -15,7 +15,7 @@ dependencies {
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "org.apache.cxf", name: "cxf-core", version: "3.5.11"
-	testImplementation group: "org.apache.cxf", name: "cxf-rt-frontend-jaxrs", version: "3.5.11"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.5.11.JAKARTA_LIFERAY-PATCHED-1"
 	testImplementation group: "org.assertj", name: "assertj-core", version: "3.10.0"
 }

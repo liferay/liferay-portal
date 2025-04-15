@@ -1,7 +1,7 @@
 dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
-	testIntegrationImplementation group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
-	testIntegrationImplementation group: "org.springframework", name: "spring-test", version: "5.3.39"
+	testIntegrationImplementation group: "com.liferay", name: "org.springframework.test", version: "5.3.39.JAKARTA_LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

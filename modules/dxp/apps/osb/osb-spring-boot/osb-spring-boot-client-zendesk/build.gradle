@@ -9,6 +9,6 @@ dependencies {
 	api group: "org.springframework.boot", name: "spring-boot", version: "2.7.18"
 	api group: "org.springframework.boot", name: "spring-boot-starter-web", version: "2.7.18"
 	api group: "org.springframework.boot", name: "spring-boot-starter-webflux", version: "2.7.18"
-	compileOnly group: "javax.annotation", name: "javax.annotation-api", version: "1.3.2"
+	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly project(":core:petra:petra-string")
 }

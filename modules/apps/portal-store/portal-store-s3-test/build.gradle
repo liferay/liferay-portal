@@ -30,7 +30,7 @@ buildIBMS3StoreTest {
 	filter {
 		String line ->
 
-		line.replace "import org.junit.Assume;", "import javax.annotation.Generated;\n\nimport org.junit.Assume;"
+		line.replace "import org.junit.Assume;", "import jakarta.annotation.Generated;\n\nimport org.junit.Assume;"
 	}
 
 	from new File("src/testIntegration/java/com/liferay/portal/store/s3/test/S3StoreTest.java")
@@ -51,7 +51,7 @@ compileJava {
 dependencies {
 	testIntegrationImplementation group: "com.amazonaws", name: "aws-java-sdk-s3", version: "1.12.719"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "javax.annotation", name: "javax.annotation-api", version: "1.3.2"
+	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-store:portal-store-s3")

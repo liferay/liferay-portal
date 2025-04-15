@@ -1,8 +1,8 @@
 dependencies {
+	testIntegrationImplementation group: "com.liferay", name: "org.osgi.service.http.whiteboard", version: "1.1.1.JAKARTA_LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay", name: "org.osgi.service.jaxrs", version: "1.0.0.JAKARTA_LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "org.apache.felix", name: "org.apache.felix.http.servlet-api", version: "1.1.2"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.http.whiteboard", version: "1.1.1"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
+	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

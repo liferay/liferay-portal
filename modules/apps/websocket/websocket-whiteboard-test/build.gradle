@@ -1,6 +1,7 @@
 dependencies {
-	testIntegrationImplementation group: "javax.websocket", name: "javax.websocket-api", version: "1.1"
-	testIntegrationImplementation group: "javax.xml.bind", name: "jaxb-api", version: "2.3.0"
+	testIntegrationImplementation group: "jakarta.websocket", name: "jakarta.websocket-api", version: "2.1.1"
+	testIntegrationImplementation group: "jakarta.websocket", name: "jakarta.websocket-client-api", version: "2.1.1"
+	testIntegrationImplementation group: "jakarta.xml.bind", name: "jakarta.xml.bind-api", version: "4.0.2"
 	testIntegrationImplementation group: "junit", name: "junit", version: "4.13.1"
 	testIntegrationImplementation group: "org.eclipse.jetty.websocket", name: "javax-websocket-client-impl", version: "9.3.10.v20160621"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"

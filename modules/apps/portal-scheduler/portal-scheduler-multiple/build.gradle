@@ -7,8 +7,8 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testImplementation group: "javax.portlet", name: "portlet-api", version: "3.0.1"
 	testImplementation project(":core:petra:petra-concurrent")
 	testImplementation project(":core:petra:petra-memory")
 	testImplementation project(":core:petra:petra-process")
