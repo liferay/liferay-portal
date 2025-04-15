@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -75,12 +75,12 @@ page import="com.liferay.staging.bar.web.internal.display.context.LayoutSetBranc
 page import="com.liferay.staging.bar.web.internal.display.context.StagingBarDisplayContext" %><%@
 page import="com.liferay.staging.constants.StagingProcessesWebKeys" %>
 
+<%@ page import="jakarta.portlet.PortletMode" %><%@
+page import="jakarta.portlet.PortletRequest" %>
+
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.List" %><%@
 page import="java.util.Objects" %>
-
-<%@ page import="javax.portlet.PortletMode" %><%@
-page import="javax.portlet.PortletRequest" %>
 
 <liferay-frontend:defineObjects />
 

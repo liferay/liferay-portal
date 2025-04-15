@@ -18,7 +18,7 @@ page import="com.liferay.portal.security.sso.openid.connect.configuration.OpenId
 page import="com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectConstants" %><%@
 page import="com.liferay.portal.settings.authentication.openid.connect.web.internal.constants.PortalSettingsOpenIdConnectConstants" %>
 
-<%@ page import="javax.portlet.ActionRequest" %>
+<%@ page import="jakarta.portlet.ActionRequest" %>
 
 <liferay-theme:defineObjects />
 

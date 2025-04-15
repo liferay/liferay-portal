@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/expando" prefix="liferay-expando" %><%@
@@ -32,12 +32,12 @@ page import="com.liferay.wiki.model.WikiPageDisplay" %><%@
 page import="com.liferay.wiki.service.WikiPageLocalServiceUtil" %><%@
 page import="com.liferay.wiki.web.internal.frontend.taglib.clay.servlet.taglib.WikiPageAttachmentHorizontalCard" %>
 
-<%@ page import="java.util.function.Supplier" %>
+<%@ page import="jakarta.portlet.PortletMode" %><%@
+page import="jakarta.portlet.PortletRequest" %><%@
+page import="jakarta.portlet.PortletURL" %><%@
+page import="jakarta.portlet.WindowState" %>
 
-<%@ page import="javax.portlet.PortletMode" %><%@
-page import="javax.portlet.PortletRequest" %><%@
-page import="javax.portlet.PortletURL" %><%@
-page import="javax.portlet.WindowState" %>
+<%@ page import="java.util.function.Supplier" %>
 
 <liferay-frontend:defineObjects />
 

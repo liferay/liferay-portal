@@ -141,7 +141,7 @@ boolean portletHubRequired = false;
 
 for (Portlet portlet : portletTreeSet) {
 	for (PortletDependency portletDependency : portlet.getPortletDependencies()) {
-		if (Objects.equals(portletDependency.getName(), "PortletHub") && Objects.equals(portletDependency.getScope(), "javax.portlet")) {
+		if (Objects.equals(portletDependency.getName(), "PortletHub") && Objects.equals(portletDependency.getScope(), "jakarta.portlet")) {
 			portletHubRequired = true;
 
 			break;

@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -36,9 +36,9 @@ page import="com.liferay.push.notifications.web.internal.security.permission.res
 page import="com.liferay.push.notifications.web.internal.util.PushNotificationsUtil" %><%@
 page import="com.liferay.push.notifications.web.internal.util.ResourceBundleLoaderProviderUtil" %>
 
-<%@ page import="java.util.ResourceBundle" %>
+<%@ page import="jakarta.portlet.PortletURL" %>
 
-<%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="java.util.ResourceBundle" %>
 
 <liferay-frontend:defineObjects />
 

@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -31,7 +31,7 @@ page import="com.liferay.site.navigation.menu.item.layout.internal.constants.Sit
 page import="com.liferay.site.navigation.menu.item.util.SiteNavigationMenuItemUtil" %><%@
 page import="com.liferay.site.navigation.model.SiteNavigationMenuItem" %>
 
-<%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="jakarta.portlet.PortletURL" %>
 
 <liferay-frontend:defineObjects />
 

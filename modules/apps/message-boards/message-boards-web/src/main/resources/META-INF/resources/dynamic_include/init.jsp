@@ -22,7 +22,7 @@ page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %>
 
-<%@ page import="javax.portlet.PortletResponse" %>
+<%@ page import="jakarta.portlet.PortletResponse" %>
 
 <liferay-frontend:defineObjects />
 

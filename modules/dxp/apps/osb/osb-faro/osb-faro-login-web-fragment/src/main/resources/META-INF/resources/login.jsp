@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ page import="javax.portlet.WindowState" %>
+<%@ page import="jakarta.portlet.WindowState" %>
 
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
 

@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -79,6 +79,10 @@ page import="com.liferay.server.admin.web.internal.image.ImageMagickUtil" %><%@
 page import="com.liferay.server.admin.web.internal.scripting.util.ServerScriptingUtil" %><%@
 page import="com.liferay.taglib.servlet.PipingServletResponseFactory" %>
 
+<%@ page import="jakarta.portlet.PortletPreferences" %><%@
+page import="jakarta.portlet.PortletRequest" %><%@
+page import="jakarta.portlet.PortletURL" %>
+
 <%@ page import="java.text.NumberFormat" %>
 
 <%@ page import="java.util.ArrayList" %><%@
@@ -90,10 +94,6 @@ page import="java.util.Objects" %><%@
 page import="java.util.Properties" %><%@
 page import="java.util.TreeMap" %><%@
 page import="java.util.function.Function" %>
-
-<%@ page import="javax.portlet.PortletPreferences" %><%@
-page import="javax.portlet.PortletRequest" %><%@
-page import="javax.portlet.PortletURL" %>
 
 <%@ page import="org.apache.logging.log4j.Level" %>
 

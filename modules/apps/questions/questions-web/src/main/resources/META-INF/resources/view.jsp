@@ -43,7 +43,7 @@
 			).put(
 				"imageBrowseURL", renderRequest.getAttribute(QuestionsWebKeys.IMAGE_BROWSE_URL)
 			).put(
-				"includeContextPath", renderRequest.getAttribute("javax.servlet.include.context_path")
+				"includeContextPath", renderRequest.getAttribute("jakarta.servlet.include.context_path")
 			).put(
 				"isContentReviewer", permissionChecker.isContentReviewer(themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId())
 			).put(

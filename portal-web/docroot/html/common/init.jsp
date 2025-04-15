@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
@@ -137,6 +137,19 @@ page import="com.liferay.taglib.search.SearchEntry" %><%@
 page import="com.liferay.taglib.search.TextSearchEntry" %><%@
 page import="com.liferay.taglib.util.OutputTag" %>
 
+<%@ page import="jakarta.portlet.MimeResponse" %><%@
+page import="jakarta.portlet.MutableRenderParameters" %><%@
+page import="jakarta.portlet.PortletConfig" %><%@
+page import="jakarta.portlet.PortletContext" %><%@
+page import="jakarta.portlet.PortletException" %><%@
+page import="jakarta.portlet.PortletMode" %><%@
+page import="jakarta.portlet.PortletPreferences" %><%@
+page import="jakarta.portlet.PortletRequest" %><%@
+page import="jakarta.portlet.PortletResponse" %><%@
+page import="jakarta.portlet.PortletURL" %><%@
+page import="jakarta.portlet.UnavailableException" %><%@
+page import="jakarta.portlet.WindowState" %>
+
 <%@ page import="java.text.DateFormat" %><%@
 page import="java.text.Format" %><%@
 page import="java.text.NumberFormat" %><%@
@@ -158,19 +171,6 @@ page import="java.util.ResourceBundle" %><%@
 page import="java.util.Set" %><%@
 page import="java.util.TimeZone" %><%@
 page import="java.util.TreeSet" %>
-
-<%@ page import="javax.portlet.MimeResponse" %><%@
-page import="javax.portlet.MutableRenderParameters" %><%@
-page import="javax.portlet.PortletConfig" %><%@
-page import="javax.portlet.PortletContext" %><%@
-page import="javax.portlet.PortletException" %><%@
-page import="javax.portlet.PortletMode" %><%@
-page import="javax.portlet.PortletPreferences" %><%@
-page import="javax.portlet.PortletRequest" %><%@
-page import="javax.portlet.PortletResponse" %><%@
-page import="javax.portlet.PortletURL" %><%@
-page import="javax.portlet.UnavailableException" %><%@
-page import="javax.portlet.WindowState" %>
 
 <liferay-theme:defineObjects />
 

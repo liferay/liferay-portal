@@ -103,10 +103,10 @@ else {
 				String name = StringPool.BLANK;
 
 				if (pluginType.equals("portlets")) {
-					name = MarketplaceAppManagerUtil.getSearchContainerFieldText(serviceReference.getProperty("javax.portlet.display-name"));
+					name = MarketplaceAppManagerUtil.getSearchContainerFieldText(serviceReference.getProperty("jakarta.portlet.display-name"));
 
-					String modulePortletDescription = MarketplaceAppManagerUtil.getSearchContainerFieldText(serviceReference.getProperty("javax.portlet.description"));
-					String modulePortletName = MarketplaceAppManagerUtil.getSearchContainerFieldText(serviceReference.getProperty("javax.portlet.name"));
+					String modulePortletDescription = MarketplaceAppManagerUtil.getSearchContainerFieldText(serviceReference.getProperty("jakarta.portlet.description"));
+					String modulePortletName = MarketplaceAppManagerUtil.getSearchContainerFieldText(serviceReference.getProperty("jakarta.portlet.name"));
 
 					if (Validator.isNotNull(modulePortletDescription)) {
 						description = modulePortletName + " - " + modulePortletDescription;

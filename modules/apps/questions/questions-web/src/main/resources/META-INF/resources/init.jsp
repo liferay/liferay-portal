@@ -33,7 +33,7 @@ page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.questions.web.internal.configuration.QuestionsConfiguration" %><%@
 page import="com.liferay.questions.web.internal.constants.QuestionsWebKeys" %>
 
-<%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="jakarta.portlet.PortletURL" %>
 
 <liferay-frontend:defineObjects />
 

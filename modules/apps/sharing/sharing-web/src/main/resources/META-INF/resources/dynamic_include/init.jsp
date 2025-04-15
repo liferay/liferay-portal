@@ -15,6 +15,6 @@ page import="com.liferay.portal.kernel.portlet.PortletProviderUtil" %><%@
 page import="com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder" %><%@
 page import="com.liferay.sharing.model.SharingEntry" %>
 
-<%@ page import="javax.portlet.PortletURL" %>
+<%@ page import="jakarta.portlet.PortletURL" %>
 
 <liferay-frontend:defineObjects />
