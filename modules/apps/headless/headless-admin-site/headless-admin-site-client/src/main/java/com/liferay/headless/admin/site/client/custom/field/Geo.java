@@ -8,9 +8,9 @@ package com.liferay.headless.admin.site.client.custom.field;
 import com.liferay.headless.admin.site.client.function.UnsafeSupplier;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Rubén Pulido

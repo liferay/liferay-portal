@@ -11,6 +11,8 @@ import com.liferay.scim.rest.client.dto.v1_0.QueryAttributes;
 import com.liferay.scim.rest.client.http.HttpInvoker;
 import com.liferay.scim.rest.client.problem.Problem;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.LinkedHashMap;
@@ -19,8 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Olivér Kecskeméty

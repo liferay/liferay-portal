@@ -7,9 +7,9 @@ package com.liferay.headless.commerce.admin.site.setting.client.permission;
 
 import com.liferay.headless.commerce.admin.site.setting.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Zoltán Takács

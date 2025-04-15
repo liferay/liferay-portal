@@ -8,13 +8,13 @@ package com.liferay.headless.commerce.admin.account.client.dto.v1_0;
 import com.liferay.headless.commerce.admin.account.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.admin.account.client.serdes.v1_0.AccountSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alessio Antonio Rendina

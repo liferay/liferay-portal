@@ -24,16 +24,16 @@ import com.liferay.scim.rest.dto.v1_0.Operation;
 import com.liferay.scim.rest.dto.v1_0.User;
 import com.liferay.scim.rest.resource.v1_0.SchemaResource;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Olivér Kecskeméty
@@ -82,7 +82,8 @@ public abstract class BaseSchemaResourceImpl implements SchemaResource {
 	@Override
 	public Object getV2SchemaById(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			String id)
 		throws Exception {
 

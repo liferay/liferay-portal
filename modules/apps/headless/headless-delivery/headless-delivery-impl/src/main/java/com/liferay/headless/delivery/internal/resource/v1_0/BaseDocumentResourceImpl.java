@@ -57,17 +57,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -78,6 +67,17 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Javier Gamarra
@@ -525,7 +525,9 @@ public abstract class BaseDocumentResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Document")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/asset-libraries/{assetLibraryId}/documents/permissions")
+	@jakarta.ws.rs.Path(
+		"/asset-libraries/{assetLibraryId}/documents/permissions"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Permission> getAssetLibraryDocumentPermissionsPage(
@@ -577,7 +579,9 @@ public abstract class BaseDocumentResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Document")}
 	)
 	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path("/asset-libraries/{assetLibraryId}/documents/permissions")
+	@jakarta.ws.rs.Path(
+		"/asset-libraries/{assetLibraryId}/documents/permissions"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
@@ -676,7 +680,9 @@ public abstract class BaseDocumentResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Document")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/asset-libraries/{assetLibraryId}/documents/rated-by-me")
+	@jakarta.ws.rs.Path(
+		"/asset-libraries/{assetLibraryId}/documents/rated-by-me"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Document> getAssetLibraryDocumentsRatedByMePage(

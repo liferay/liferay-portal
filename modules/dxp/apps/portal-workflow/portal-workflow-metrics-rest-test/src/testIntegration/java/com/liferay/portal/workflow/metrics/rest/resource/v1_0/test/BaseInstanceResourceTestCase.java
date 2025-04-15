@@ -44,6 +44,10 @@ import com.liferay.portal.workflow.metrics.rest.client.pagination.Pagination;
 import com.liferay.portal.workflow.metrics.rest.client.resource.v1_0.InstanceResource;
 import com.liferay.portal.workflow.metrics.rest.client.serdes.v1_0.InstanceSerDes;
 
+import jakarta.annotation.Generated;
+
+import jakarta.ws.rs.core.MultivaluedHashMap;
+
 import java.lang.reflect.Method;
 
 import java.text.Format;
@@ -58,10 +62,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import jakarta.annotation.Generated;
-
-import jakarta.ws.rs.core.MultivaluedHashMap;
 
 import org.junit.After;
 import org.junit.Assert;

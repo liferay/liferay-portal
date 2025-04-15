@@ -32,10 +32,10 @@ import com.liferay.search.experiences.rest.resource.v1_0.SearchResponseResource;
 import com.liferay.search.experiences.rest.resource.v1_0.SearchableAssetNameDisplayResource;
 import com.liferay.search.experiences.rest.resource.v1_0.SearchableAssetNameResource;
 
+import jakarta.annotation.Generated;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import jakarta.annotation.Generated;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentServiceObjects;

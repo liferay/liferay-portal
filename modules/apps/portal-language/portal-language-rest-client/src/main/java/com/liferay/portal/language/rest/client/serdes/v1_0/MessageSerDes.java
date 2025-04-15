@@ -8,13 +8,13 @@ package com.liferay.portal.language.rest.client.serdes.v1_0;
 import com.liferay.portal.language.rest.client.dto.v1_0.Message;
 import com.liferay.portal.language.rest.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Thiago Buarque

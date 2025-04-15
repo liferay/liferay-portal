@@ -7,11 +7,11 @@ package com.liferay.portal.tools.rest.builder.test.client.dto.v1_0;
 
 import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.ChildTestEntity3SerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alejandro Tardín

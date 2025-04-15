@@ -40,6 +40,10 @@ import com.liferay.saml.admin.rest.client.pagination.Page;
 import com.liferay.saml.admin.rest.client.resource.v1_0.SamlProviderResource;
 import com.liferay.saml.admin.rest.client.serdes.v1_0.SamlProviderSerDes;
 
+import jakarta.annotation.Generated;
+
+import jakarta.ws.rs.core.MultivaluedHashMap;
+
 import java.lang.reflect.Method;
 
 import java.text.Format;
@@ -54,10 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.annotation.Generated;
-
-import javax.ws.rs.core.MultivaluedHashMap;
 
 import org.junit.After;
 import org.junit.Assert;

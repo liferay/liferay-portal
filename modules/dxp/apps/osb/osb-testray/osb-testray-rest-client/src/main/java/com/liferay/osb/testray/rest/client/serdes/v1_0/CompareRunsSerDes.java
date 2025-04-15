@@ -8,13 +8,13 @@ package com.liferay.osb.testray.rest.client.serdes.v1_0;
 import com.liferay.osb.testray.rest.client.dto.v1_0.CompareRuns;
 import com.liferay.osb.testray.rest.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author José Abelenda

@@ -8,6 +8,8 @@ package com.liferay.search.experiences.rest.client.pagination;
 import com.liferay.search.experiences.rest.client.aggregation.Facet;
 import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,8 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Brian Wing Shun Chan

@@ -56,17 +56,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,6 +66,17 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Javier Gamarra
@@ -1304,7 +1304,8 @@ public abstract class BaseStructuredContentResourceImpl
 			@jakarta.ws.rs.PathParam("siteId")
 			Long siteId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("key")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("key")
 			String key)
 		throws Exception {
 
@@ -1358,7 +1359,8 @@ public abstract class BaseStructuredContentResourceImpl
 			@jakarta.ws.rs.PathParam("siteId")
 			Long siteId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("uuid")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("uuid")
 			String uuid)
 		throws Exception {
 
@@ -2328,7 +2330,9 @@ public abstract class BaseStructuredContentResourceImpl
 		}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/structured-contents/{structuredContentId}/permissions")
+	@jakarta.ws.rs.Path(
+		"/structured-contents/{structuredContentId}/permissions"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Permission> getStructuredContentPermissionsPage(
@@ -2385,7 +2389,9 @@ public abstract class BaseStructuredContentResourceImpl
 		}
 	)
 	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path("/structured-contents/{structuredContentId}/permissions")
+	@jakarta.ws.rs.Path(
+		"/structured-contents/{structuredContentId}/permissions"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
@@ -2623,7 +2629,9 @@ public abstract class BaseStructuredContentResourceImpl
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "StructuredContent")
 		}
 	)
-	@jakarta.ws.rs.Path("/structured-contents/{structuredContentId}/unsubscribe")
+	@jakarta.ws.rs.Path(
+		"/structured-contents/{structuredContentId}/unsubscribe"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override

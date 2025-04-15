@@ -8,6 +8,8 @@ package com.liferay.portal.tools.rest.builder.test.client.pagination;
 import com.liferay.portal.tools.rest.builder.test.client.aggregation.Facet;
 import com.liferay.portal.tools.rest.builder.test.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,8 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alejandro Tardín

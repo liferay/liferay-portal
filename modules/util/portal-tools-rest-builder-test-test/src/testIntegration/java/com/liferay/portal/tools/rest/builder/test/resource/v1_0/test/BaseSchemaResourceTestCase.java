@@ -40,6 +40,10 @@ import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.SchemaSerDe
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
+import jakarta.annotation.Generated;
+
+import jakarta.ws.rs.core.MultivaluedHashMap;
+
 import java.lang.reflect.Method;
 
 import java.text.Format;
@@ -54,10 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import jakarta.annotation.Generated;
-
-import jakarta.ws.rs.core.MultivaluedHashMap;
 
 import org.junit.After;
 import org.junit.Assert;

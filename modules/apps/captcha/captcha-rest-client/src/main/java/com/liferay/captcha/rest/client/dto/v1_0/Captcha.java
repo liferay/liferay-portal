@@ -8,11 +8,11 @@ package com.liferay.captcha.rest.client.dto.v1_0;
 import com.liferay.captcha.rest.client.function.UnsafeSupplier;
 import com.liferay.captcha.rest.client.serdes.v1_0.CaptchaSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Loc Pham

@@ -40,15 +40,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +50,15 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alessio Antonio Rendina
@@ -278,7 +278,9 @@ public abstract class BaseTermResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Term")}
 	)
 	@jakarta.ws.rs.DELETE
-	@jakarta.ws.rs.Path("/terms/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/terms/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public void deleteTermByExternalReferenceCode(
@@ -306,7 +308,9 @@ public abstract class BaseTermResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Term")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/terms/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/terms/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Term getTermByExternalReferenceCode(
@@ -337,7 +341,9 @@ public abstract class BaseTermResourceImpl
 	)
 	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
 	@jakarta.ws.rs.PATCH
-	@jakarta.ws.rs.Path("/terms/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/terms/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Term patchTermByExternalReferenceCode(
@@ -427,7 +433,9 @@ public abstract class BaseTermResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Term")}
 	)
 	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path("/terms/by-externalReferenceCode/{externalReferenceCode}")
+	@jakarta.ws.rs.Path(
+		"/terms/by-externalReferenceCode/{externalReferenceCode}"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
@@ -464,7 +472,8 @@ public abstract class BaseTermResourceImpl
 	@Override
 	public void deleteTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -535,7 +544,8 @@ public abstract class BaseTermResourceImpl
 	@Override
 	public Term getTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -565,7 +575,8 @@ public abstract class BaseTermResourceImpl
 	@Override
 	public Term patchTerm(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			Term term)
 		throws Exception {

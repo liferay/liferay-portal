@@ -8,9 +8,9 @@ package com.liferay.headless.commerce.admin.order.client.custom.field;
 import com.liferay.headless.commerce.admin.order.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.admin.order.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Alessio Antonio Rendina

@@ -37,15 +37,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,6 +45,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Andrea Sbarra
@@ -98,7 +98,9 @@ public abstract class BaseAttachmentResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Attachment")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/channels/{channelId}/products/{productId}/attachments")
+	@jakarta.ws.rs.Path(
+		"/channels/{channelId}/products/{productId}/attachments"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Attachment> getChannelProductAttachmentsPage(

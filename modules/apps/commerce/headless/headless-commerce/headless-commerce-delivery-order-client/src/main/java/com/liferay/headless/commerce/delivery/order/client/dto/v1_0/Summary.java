@@ -8,13 +8,13 @@ package com.liferay.headless.commerce.delivery.order.client.dto.v1_0;
 import com.liferay.headless.commerce.delivery.order.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.delivery.order.client.serdes.v1_0.SummarySerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.math.BigDecimal;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Andrea Sbarra

@@ -7,9 +7,9 @@ package com.liferay.headless.batch.engine.client.permission;
 
 import com.liferay.headless.batch.engine.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Ivica Cardic

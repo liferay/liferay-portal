@@ -7,9 +7,9 @@ package com.liferay.scim.rest.client.permission;
 
 import com.liferay.scim.rest.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Olivér Kecskeméty

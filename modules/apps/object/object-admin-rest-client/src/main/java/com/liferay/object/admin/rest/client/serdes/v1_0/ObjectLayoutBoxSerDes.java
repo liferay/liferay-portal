@@ -9,13 +9,13 @@ import com.liferay.object.admin.rest.client.dto.v1_0.ObjectLayoutBox;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectLayoutRow;
 import com.liferay.object.admin.rest.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

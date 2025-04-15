@@ -8,11 +8,11 @@ package com.liferay.scim.rest.client.dto.v1_0;
 import com.liferay.scim.rest.client.function.UnsafeSupplier;
 import com.liferay.scim.rest.client.serdes.v1_0.AuthenticationSchemeSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Olivér Kecskeméty

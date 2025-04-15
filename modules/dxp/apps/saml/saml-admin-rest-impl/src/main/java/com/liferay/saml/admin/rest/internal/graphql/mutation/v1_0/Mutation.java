@@ -17,8 +17,6 @@ import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.saml.admin.rest.dto.v1_0.SamlProvider;
 import com.liferay.saml.admin.rest.resource.v1_0.SamlProviderResource;
 
-import java.util.function.BiFunction;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +24,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.function.BiFunction;
 
 import org.osgi.service.component.ComponentServiceObjects;
 

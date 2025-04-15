@@ -10,6 +10,8 @@ import com.liferay.analytics.settings.rest.client.http.HttpInvoker;
 import com.liferay.analytics.settings.rest.client.problem.Problem;
 import com.liferay.analytics.settings.rest.client.serdes.v1_0.FieldSummarySerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.LinkedHashMap;
@@ -18,8 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Riccardo Ferrari

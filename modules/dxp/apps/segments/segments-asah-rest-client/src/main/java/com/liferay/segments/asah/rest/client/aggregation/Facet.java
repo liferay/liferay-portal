@@ -5,10 +5,10 @@
 
 package com.liferay.segments.asah.rest.client.aggregation;
 
+import jakarta.annotation.Generated;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

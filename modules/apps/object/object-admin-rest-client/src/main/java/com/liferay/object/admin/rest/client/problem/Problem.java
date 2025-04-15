@@ -7,9 +7,9 @@ package com.liferay.object.admin.rest.client.problem;
 
 import com.liferay.object.admin.rest.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Javier Gamarra

@@ -12,6 +12,8 @@ import com.liferay.digital.signature.rest.client.pagination.Pagination;
 import com.liferay.digital.signature.rest.client.problem.Problem;
 import com.liferay.digital.signature.rest.client.serdes.v1_0.DSEnvelopeSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.LinkedHashMap;
@@ -20,8 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author José Abelenda

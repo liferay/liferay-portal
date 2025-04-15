@@ -15,6 +15,8 @@ import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.serdes.v1_0.ContentPageSpecificationSerDes;
 import com.liferay.headless.admin.site.client.serdes.v1_0.UtilityPageSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -25,8 +27,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Rubén Pulido

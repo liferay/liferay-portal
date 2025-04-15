@@ -19,8 +19,6 @@ import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTa
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 
-import java.util.function.BiFunction;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +26,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.function.BiFunction;
 
 import org.osgi.service.component.ComponentServiceObjects;
 

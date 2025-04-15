@@ -9,6 +9,8 @@ import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.HistogramMetric;
 import com.liferay.portal.workflow.metrics.rest.client.http.HttpInvoker;
 import com.liferay.portal.workflow.metrics.rest.client.problem.Problem;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.text.DateFormat;
@@ -20,8 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Rafael Praxedes

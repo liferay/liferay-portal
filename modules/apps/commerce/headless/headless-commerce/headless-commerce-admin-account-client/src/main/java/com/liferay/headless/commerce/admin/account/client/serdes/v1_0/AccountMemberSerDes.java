@@ -9,13 +9,13 @@ import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountMember
 import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountRole;
 import com.liferay.headless.commerce.admin.account.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alessio Antonio Rendina

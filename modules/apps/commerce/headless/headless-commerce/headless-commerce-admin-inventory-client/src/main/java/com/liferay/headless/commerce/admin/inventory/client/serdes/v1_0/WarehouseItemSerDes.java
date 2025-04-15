@@ -8,6 +8,8 @@ package com.liferay.headless.commerce.admin.inventory.client.serdes.v1_0;
 import com.liferay.headless.commerce.admin.inventory.client.dto.v1_0.WarehouseItem;
 import com.liferay.headless.commerce.admin.inventory.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.math.BigDecimal;
 
 import java.text.DateFormat;
@@ -18,8 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alessio Antonio Rendina

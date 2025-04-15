@@ -12,6 +12,8 @@ import com.liferay.change.tracking.rest.client.pagination.Pagination;
 import com.liferay.change.tracking.rest.client.problem.Problem;
 import com.liferay.change.tracking.rest.client.serdes.v1_0.CTCollectionSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.text.DateFormat;
@@ -23,8 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author David Truong

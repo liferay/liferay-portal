@@ -40,15 +40,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +50,15 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Zoltán Takács
@@ -305,7 +305,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public void deleteAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -670,7 +671,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Page<Attachment> getProductIdAttachmentsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
@@ -701,7 +703,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Attachment postProductIdAttachment(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			Attachment attachment)
 		throws Exception {
@@ -776,7 +779,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Attachment postProductIdAttachmentByBase64(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AttachmentBase64 attachmentBase64)
 		throws Exception {
@@ -807,7 +811,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Attachment postProductIdAttachmentByUrl(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AttachmentUrl attachmentUrl)
 		throws Exception {
@@ -845,7 +850,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Page<Attachment> getProductIdImagesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
@@ -876,7 +882,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Attachment postProductIdImage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			Attachment attachment)
 		throws Exception {
@@ -907,7 +914,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Attachment postProductIdImageByBase64(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AttachmentBase64 attachmentBase64)
 		throws Exception {
@@ -938,7 +946,8 @@ public abstract class BaseAttachmentResourceImpl
 	@Override
 	public Attachment postProductIdImageByUrl(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			AttachmentUrl attachmentUrl)
 		throws Exception {

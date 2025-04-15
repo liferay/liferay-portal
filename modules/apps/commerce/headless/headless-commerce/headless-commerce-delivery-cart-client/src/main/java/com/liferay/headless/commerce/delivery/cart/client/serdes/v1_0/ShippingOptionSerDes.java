@@ -8,13 +8,13 @@ package com.liferay.headless.commerce.delivery.cart.client.serdes.v1_0;
 import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.ShippingOption;
 import com.liferay.headless.commerce.delivery.cart.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Andrea Sbarra

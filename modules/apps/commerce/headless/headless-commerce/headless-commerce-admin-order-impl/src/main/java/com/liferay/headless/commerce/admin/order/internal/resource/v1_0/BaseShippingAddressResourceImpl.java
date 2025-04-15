@@ -22,10 +22,6 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +29,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alessio Antonio Rendina
@@ -67,7 +67,8 @@ public abstract class BaseShippingAddressResourceImpl
 	@Override
 	public ShippingAddress getOrderItemShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -170,7 +171,8 @@ public abstract class BaseShippingAddressResourceImpl
 	@Override
 	public ShippingAddress getOrderIdShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -202,7 +204,8 @@ public abstract class BaseShippingAddressResourceImpl
 	@Override
 	public Response patchOrderIdShippingAddress(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			ShippingAddress shippingAddress)
 		throws Exception {

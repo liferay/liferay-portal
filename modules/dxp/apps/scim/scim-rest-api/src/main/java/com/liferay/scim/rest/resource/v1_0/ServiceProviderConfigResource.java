@@ -17,17 +17,17 @@ import com.liferay.scim.rest.dto.v1_0.Filter;
 import com.liferay.scim.rest.dto.v1_0.Sort;
 import com.liferay.scim.rest.dto.v1_0.User;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 

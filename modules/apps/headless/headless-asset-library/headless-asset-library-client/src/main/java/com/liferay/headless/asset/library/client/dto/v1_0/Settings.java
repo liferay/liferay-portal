@@ -8,11 +8,11 @@ package com.liferay.headless.asset.library.client.dto.v1_0;
 import com.liferay.headless.asset.library.client.function.UnsafeSupplier;
 import com.liferay.headless.asset.library.client.serdes.v1_0.SettingsSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Roberto Díaz

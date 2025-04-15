@@ -8,11 +8,11 @@ package com.liferay.headless.admin.workflow.client.dto.v1_0;
 import com.liferay.headless.admin.workflow.client.function.UnsafeSupplier;
 import com.liferay.headless.admin.workflow.client.serdes.v1_0.CreatorSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

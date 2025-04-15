@@ -22,16 +22,16 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Zoltán Takács
@@ -58,7 +58,9 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "OrderType")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/discount-order-types/{discountOrderTypeId}/order-type")
+	@jakarta.ws.rs.Path(
+		"/discount-order-types/{discountOrderTypeId}/order-type"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public OrderType getDiscountOrderTypeOrderType(

@@ -7,9 +7,9 @@ package com.liferay.headless.commerce.admin.order.client.problem;
 
 import com.liferay.headless.commerce.admin.order.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Alessio Antonio Rendina

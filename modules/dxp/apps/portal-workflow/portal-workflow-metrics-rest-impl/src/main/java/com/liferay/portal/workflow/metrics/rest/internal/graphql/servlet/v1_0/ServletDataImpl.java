@@ -44,10 +44,10 @@ import com.liferay.portal.workflow.metrics.rest.resource.v1_0.SLAResultResource;
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.TaskResource;
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.TimeRangeResource;
 
+import jakarta.annotation.Generated;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import jakarta.annotation.Generated;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentServiceObjects;

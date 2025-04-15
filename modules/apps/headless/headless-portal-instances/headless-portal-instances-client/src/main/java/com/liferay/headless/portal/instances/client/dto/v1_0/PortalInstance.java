@@ -8,11 +8,11 @@ package com.liferay.headless.portal.instances.client.dto.v1_0;
 import com.liferay.headless.portal.instances.client.function.UnsafeSupplier;
 import com.liferay.headless.portal.instances.client.serdes.v1_0.PortalInstanceSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Alberto Chaparro

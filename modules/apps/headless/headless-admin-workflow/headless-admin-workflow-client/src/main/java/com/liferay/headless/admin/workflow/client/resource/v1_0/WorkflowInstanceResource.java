@@ -14,6 +14,8 @@ import com.liferay.headless.admin.workflow.client.pagination.Pagination;
 import com.liferay.headless.admin.workflow.client.problem.Problem;
 import com.liferay.headless.admin.workflow.client.serdes.v1_0.WorkflowInstanceSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.LinkedHashMap;
@@ -22,8 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

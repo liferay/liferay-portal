@@ -8,12 +8,12 @@ package com.liferay.search.experiences.rest.client.dto.v1_0;
 import com.liferay.search.experiences.rest.client.function.UnsafeSupplier;
 import com.liferay.search.experiences.rest.client.serdes.v1_0.HitSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Map;
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Brian Wing Shun Chan

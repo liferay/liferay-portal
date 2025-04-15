@@ -7,9 +7,9 @@ package com.liferay.headless.commerce.delivery.catalog.client.permission;
 
 import com.liferay.headless.commerce.delivery.catalog.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Andrea Sbarra

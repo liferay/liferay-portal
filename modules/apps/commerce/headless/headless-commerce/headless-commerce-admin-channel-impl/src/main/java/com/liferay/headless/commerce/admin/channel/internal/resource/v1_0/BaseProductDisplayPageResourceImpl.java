@@ -39,15 +39,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,6 +49,15 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Andrea Sbarra
@@ -214,7 +214,8 @@ public abstract class BaseProductDisplayPageResourceImpl
 	@Override
 	public Page<ProductDisplayPage> getChannelIdProductDisplayPagesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
@@ -254,7 +255,8 @@ public abstract class BaseProductDisplayPageResourceImpl
 	@Override
 	public ProductDisplayPage postChannelIdProductDisplayPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			ProductDisplayPage productDisplayPage)
 		throws Exception {
@@ -286,7 +288,8 @@ public abstract class BaseProductDisplayPageResourceImpl
 	@Override
 	public void deleteProductDisplayPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 	}
@@ -361,7 +364,8 @@ public abstract class BaseProductDisplayPageResourceImpl
 	@Override
 	public ProductDisplayPage getProductDisplayPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
@@ -393,7 +397,8 @@ public abstract class BaseProductDisplayPageResourceImpl
 	@Override
 	public ProductDisplayPage patchProductDisplayPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull @jakarta.ws.rs.PathParam("id")
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("id")
 			Long id,
 			ProductDisplayPage productDisplayPage)
 		throws Exception {

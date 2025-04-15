@@ -7,9 +7,9 @@ package com.liferay.headless.admin.list.type.client.permission;
 
 import com.liferay.headless.admin.list.type.client.json.BaseJSONParser;
 
-import java.util.Objects;
-
 import jakarta.annotation.Generated;
+
+import java.util.Objects;
 
 /**
  * @author Gabriel Albuquerque

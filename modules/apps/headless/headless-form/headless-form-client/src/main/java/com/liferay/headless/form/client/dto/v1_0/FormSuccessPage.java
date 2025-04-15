@@ -8,12 +8,12 @@ package com.liferay.headless.form.client.dto.v1_0;
 import com.liferay.headless.form.client.function.UnsafeSupplier;
 import com.liferay.headless.form.client.serdes.v1_0.FormSuccessPageSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Map;
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

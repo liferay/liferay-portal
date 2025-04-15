@@ -8,12 +8,12 @@ package com.liferay.headless.commerce.admin.catalog.client.custom.field;
 import com.liferay.headless.commerce.admin.catalog.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.admin.catalog.client.json.BaseJSONParser;
 
+import jakarta.annotation.Generated;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

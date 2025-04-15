@@ -8,13 +8,13 @@ package com.liferay.change.tracking.rest.client.dto.v1_0;
 import com.liferay.change.tracking.rest.client.function.UnsafeSupplier;
 import com.liferay.change.tracking.rest.client.serdes.v1_0.CTProcessSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author David Truong

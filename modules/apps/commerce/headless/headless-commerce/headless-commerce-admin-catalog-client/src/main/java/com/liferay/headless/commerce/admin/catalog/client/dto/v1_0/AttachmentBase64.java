@@ -8,13 +8,13 @@ package com.liferay.headless.commerce.admin.catalog.client.dto.v1_0;
 import com.liferay.headless.commerce.admin.catalog.client.function.UnsafeSupplier;
 import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.AttachmentBase64SerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

@@ -9,6 +9,8 @@ import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.Address;
 import com.liferay.headless.commerce.delivery.cart.client.http.HttpInvoker;
 import com.liferay.headless.commerce.delivery.cart.client.problem.Problem;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.LinkedHashMap;
@@ -17,8 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Andrea Sbarra

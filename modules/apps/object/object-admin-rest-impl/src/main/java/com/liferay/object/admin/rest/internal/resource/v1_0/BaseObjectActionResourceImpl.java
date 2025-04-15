@@ -39,15 +39,6 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
-import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,6 +49,15 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.Serializable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Javier Gamarra
@@ -455,7 +455,9 @@ public abstract class BaseObjectActionResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ObjectAction")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/object-definitions/{objectDefinitionId}/object-actions")
+	@jakarta.ws.rs.Path(
+		"/object-definitions/{objectDefinitionId}/object-actions"
+	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<ObjectAction> getObjectDefinitionObjectActionsPage(
@@ -575,7 +577,9 @@ public abstract class BaseObjectActionResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ObjectAction")}
 	)
 	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path("/object-definitions/{objectDefinitionId}/object-actions")
+	@jakarta.ws.rs.Path(
+		"/object-definitions/{objectDefinitionId}/object-actions"
+	)
 	@jakarta.ws.rs.POST
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override

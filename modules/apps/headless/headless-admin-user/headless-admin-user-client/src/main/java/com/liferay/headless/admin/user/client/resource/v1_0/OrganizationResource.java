@@ -14,6 +14,8 @@ import com.liferay.headless.admin.user.client.problem.Problem;
 import com.liferay.headless.admin.user.client.serdes.v1_0.OrganizationSerDes;
 import com.liferay.headless.admin.user.client.serdes.v1_0.UserAccountSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -24,8 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Javier Gamarra

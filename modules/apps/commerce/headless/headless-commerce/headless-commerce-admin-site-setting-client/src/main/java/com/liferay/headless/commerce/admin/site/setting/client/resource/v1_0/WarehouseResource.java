@@ -12,6 +12,8 @@ import com.liferay.headless.commerce.admin.site.setting.client.pagination.Pagina
 import com.liferay.headless.commerce.admin.site.setting.client.problem.Problem;
 import com.liferay.headless.commerce.admin.site.setting.client.serdes.v1_0.WarehouseSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.net.URL;
 
 import java.util.LinkedHashMap;
@@ -20,8 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Zoltán Takács

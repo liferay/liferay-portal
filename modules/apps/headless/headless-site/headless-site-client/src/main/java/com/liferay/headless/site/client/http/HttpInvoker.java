@@ -5,6 +5,8 @@
 
 package com.liferay.headless.site.client.http;
 
+import jakarta.annotation.Generated;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,8 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Rubén Pulido

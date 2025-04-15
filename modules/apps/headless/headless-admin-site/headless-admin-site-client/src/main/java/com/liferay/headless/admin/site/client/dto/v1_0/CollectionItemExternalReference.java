@@ -8,11 +8,11 @@ package com.liferay.headless.admin.site.client.dto.v1_0;
 import com.liferay.headless.admin.site.client.function.UnsafeSupplier;
 import com.liferay.headless.admin.site.client.serdes.v1_0.CollectionItemExternalReferenceSerDes;
 
+import jakarta.annotation.Generated;
+
 import java.io.Serializable;
 
 import java.util.Objects;
-
-import jakarta.annotation.Generated;
 
 /**
  * @author Rubén Pulido

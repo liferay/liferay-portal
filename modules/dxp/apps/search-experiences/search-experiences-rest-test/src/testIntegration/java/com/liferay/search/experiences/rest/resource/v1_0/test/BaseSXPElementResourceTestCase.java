@@ -60,6 +60,16 @@ import com.liferay.search.experiences.rest.client.pagination.Pagination;
 import com.liferay.search.experiences.rest.client.resource.v1_0.SXPElementResource;
 import com.liferay.search.experiences.rest.client.serdes.v1_0.SXPElementSerDes;
 
+import jakarta.annotation.Generated;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.PathSegment;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.lang.reflect.Method;
 
 import java.net.URI;
@@ -77,16 +87,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import jakarta.annotation.Generated;
-
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.ws.rs.core.MultivaluedHashMap;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.PathSegment;
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.core.UriInfo;
 
 import org.junit.After;
 import org.junit.Assert;

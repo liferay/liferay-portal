@@ -17,9 +17,6 @@ import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.Map;
-import java.util.function.BiFunction;
-
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +25,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 
 import jakarta.ws.rs.core.UriInfo;
+
+import java.util.Map;
+import java.util.function.BiFunction;
 
 import org.osgi.service.component.ComponentServiceObjects;
 
