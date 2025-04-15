@@ -30,7 +30,6 @@ public class SpringBeanELResolver extends ELResolver {
 		return null;
 	}
 
-	@Override
 	public Iterator<FeatureDescriptor> getFeatureDescriptors(
 		ELContext elContext, Object base) {
 
