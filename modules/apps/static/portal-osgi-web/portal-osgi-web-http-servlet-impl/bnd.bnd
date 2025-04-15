@@ -9,7 +9,7 @@ Import-Package:\
 Provide-Capability:\
 	osgi.implementation;\
 		osgi.implementation="osgi.http";\
-		uses:="javax.servlet, javax.servlet.http, org.osgi.service.http.context, org.osgi.service.http.whiteboard";\
+		uses:="jakarta.servlet, jakarta.servlet.http, org.osgi.service.http.context, org.osgi.service.http.whiteboard";\
 		version:Version="1.0",\
 	osgi.service;\
 		objectClass:List<String>="org.osgi.service.http.runtime.HttpServiceRuntime";\

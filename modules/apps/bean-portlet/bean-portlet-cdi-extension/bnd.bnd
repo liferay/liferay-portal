@@ -4,11 +4,11 @@ Bundle-Version: 4.0.23
 Provide-Capability:\
 	osgi.cdi.extension;\
 		osgi.cdi.extension="${Bundle-SymbolicName}";\
-		uses:="javax.enterprise.context,javax.enterprise.event,javax.enterprise.inject.spi",\
+		uses:="jakarta.enterprise.context,jakarta.enterprise.event,jakarta.enterprise.inject.spi",\
 	osgi.serviceloader;\
 		osgi.cdi.extension="${Bundle-SymbolicName}";\
-		osgi.serviceloader="javax.enterprise.inject.spi.Extension";\
-		uses:="javax.enterprise.context,javax.enterprise.event,javax.enterprise.inject.spi"
+		osgi.serviceloader="jakarta.enterprise.inject.spi.Extension";\
+		uses:="jakarta.enterprise.context,jakarta.enterprise.event,jakarta.enterprise.inject.spi"
 Require-Capability:\
 	osgi.extender;\
 		filter:="(osgi.extender=osgi.serviceloader.registrar)";\

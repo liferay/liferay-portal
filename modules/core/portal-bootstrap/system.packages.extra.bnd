@@ -111,6 +111,8 @@ Export-Package:\
 	\
 	jakarta.persistence.*;version='3.1.0',\
 	\
+	jakarta.portlet.*;version='4.0',\
+	\
 	jakarta.servlet.jsp.jstl.*;version='3.0.2',\
 	jakarta.servlet.jsp.*;version='3.1',\
 	jakarta.servlet.*;version='6.0.0',\
@@ -137,8 +139,6 @@ Export-Package:\
 	jakarta.xml.ws.wsaddressing;version='3.0.1',\
 	\
 	java_cup.runtime.*;version='2.7.1',\
-	\
-	javax.portlet.*;version='4.0',\
 	\
 	javax.xml;version='1.4',\
 	javax.xml.crypto.*;version='1.4.5',\

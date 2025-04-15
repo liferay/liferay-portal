@@ -41,7 +41,7 @@ Provide-Capability:\
 		version:Version="${Bundle-Version}",\
 	osgi.extender;\
 		osgi.extender="jsp.taglib";\
-		uri="http://java.sun.com/jsp/jstl/core";\
+		uri="jakarta.tags.core";\
 		version:Version="${Bundle-Version}",\
 	osgi.extender;\
 		osgi.extender="jsp.taglib";\

@@ -3,6 +3,8 @@ Bundle-SymbolicName: com.liferay.portal.reports.engine.console.service
 Bundle-Version: 8.0.54
 DynamicImport-Package: *
 Import-Package:\
+	!javax.transaction.*,\
+	\
 	!net.sf.cglib.proxy.*,\
 	\
 	*

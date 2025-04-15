@@ -77,11 +77,9 @@ Import-Package:\
 -fixupmessages: Classes found in the wrong directory: ...;is:=ignore
 -includeresource:\
 	opensaml-core-*;lib:=true,\
-	opensaml-messaging-impl-*;lib:=true,\
 	opensaml-profile-api-*;lib:=true,\
 	opensaml-profile-impl-*;lib:=true,\
 	opensaml-saml-api-*;lib:=true,\
-	opensaml-saml-impl-*;lib:=true,\
 	opensaml-security-api-*;lib:=true,\
 	opensaml-security-impl-*;lib:=true,\
 	opensaml-soap-api-*;lib:=true,\
@@ -90,4 +88,6 @@ Import-Package:\
 	opensaml-storage-impl-*;lib:=true,\
 	opensaml-xmlsec-api-*;lib:=true,\
 	opensaml-xmlsec-impl-*;lib:=true,\
-	org.opensaml.messaging-*;lib:=true
+	org.opensaml.impl-*;lib:=true,\
+	org.opensaml.messaging-*;lib:=true,\
+	org.opensaml.messaging.impl-*;lib:=true

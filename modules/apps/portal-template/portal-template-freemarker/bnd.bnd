@@ -8,6 +8,10 @@ Import-Package:\
 	!com.sun.org.apache.xpath.internal.objects,\
 	!com.sun.tools.javadoc,\
 	\
+	!javax.el,\
+	\
+	!javax.servlet.*,\
+	\
 	!org.apache.crimson.jaxp,\
 	!org.apache.log,\
 	!org.apache.tools.ant.*,\
@@ -26,13 +30,9 @@ Import-Package:\
 	\
 	!org.zeroturnaround.javarebel,\
 	\
-	jakarta.el;resolution:=optional,\
+	jakarta.el,\
 	\
-	jakarta.servlet;resolution:=optional,\
-	jakarta.servlet.http;resolution:=optional,\
-	jakarta.servlet.jsp;resolution:=optional,\
-	jakarta.servlet.jsp.el;resolution:=optional,\
-	jakarta.servlet.jsp.tagext;resolution:=optional,\
+	jakarta.servlet.*,\
 	\
 	org.apache.taglibs.standard;version='[1.2.3,2.0)',\
 	org.apache.taglibs.standard.extra.spath;version='[1.2.3,2.0)',\
@@ -57,5 +57,5 @@ Import-Package:\
 	org.apache.taglibs.standard.tlv;version='[1.2.3,2.0)',\
 	\
 	*
--includeresource: @javax.servlet.jsp.jstl-[0-9.]*.jar!/META-INF/*.tld
+-includeresource: @jakarta.servlet.jsp.jstl-[0-9.]*.jar!/META-INF/*.tld
 -noee: true

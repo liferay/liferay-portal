@@ -2,6 +2,6 @@ Bundle-Name: Liferay Portal Remote CXF Common
 Bundle-SymbolicName: com.liferay.portal.remote.cxf.common
 Bundle-Version: 7.0.21
 Import-Package:\
-	javax.servlet.http,\
+	jakarta.servlet.http,\
 	\
 	*
