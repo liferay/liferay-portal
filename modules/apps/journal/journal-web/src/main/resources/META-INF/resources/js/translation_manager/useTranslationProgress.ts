@@ -40,10 +40,14 @@ export default function useTranslationProgress({
 						`[type="hidden"][data-field-name="${fieldName}"]`
 					)
 				)
-					.filter(
-						(input) =>
-							input.value || input.getAttribute('data-translated')
-					)
+					.filter((input) => {
+						const {value} = input;
+
+						return (
+							input.getAttribute('data-translated') === 'true' ||
+							value?.trim()
+						);
+					})
 					.map(
 						(input) =>
 							input.dataset.languageid as Liferay.Language.Locale
