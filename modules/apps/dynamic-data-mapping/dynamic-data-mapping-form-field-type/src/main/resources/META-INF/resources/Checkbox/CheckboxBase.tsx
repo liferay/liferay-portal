@@ -23,25 +23,22 @@ const Switcher: React.FC<ISwitcherProps> = ({
 }) => {
 	return (
 		<>
-			<label className="toggle-switch">
-				<ClayToggle
-					{...accessibleProps}
-					disabled={disabled}
-					name={name}
-					onToggle={(checked) => {
-						onChange({target: {value: checked}});
-					}}
-					toggled={checked}
-					value={String(checked)}
-				/>
+			<ClayToggle
+				{...accessibleProps}
+				disabled={disabled}
+				name={name}
+				onToggle={(checked) => {
+					onChange({target: {value: checked}});
+				}}
+				toggled={checked}
+				value={String(checked)}
+			/>
 
-				{showLabel && label}
+			{showLabel && label}
 
-				{required && (
-					<ClayIcon className="reference-mark" symbol="asterisk" />
-				)}
-			</label>
-
+			{required && (
+				<ClayIcon className="reference-mark" symbol="asterisk" />
+			)}
 			{checked && showMaximumRepetitionsInfo && (
 				<div className="ddm-info">
 					<span className="ddm-tooltip">
@@ -127,45 +124,47 @@ export default function CheckboxBase({
 }: IProps) {
 	return (
 		<>
-			<Toggle
-				accessibleProps={{
-					...(otherProps.tip && {
-						'aria-describedby': `${otherProps.id ?? name}_fieldHelp`,
-					}),
-					...(otherProps.errorMessage && {
-						'aria-errormessage': `${otherProps.id ?? name}_fieldError`,
-					}),
-					'aria-required': !!otherProps.required,
-				}}
-				checked={checked}
-				disabled={readOnly}
-				name={name}
-				showAsSwitcher={showAsSwitcher}
-				showLabel={showLabel}
-				showMaximumRepetitionsInfo={showMaximumRepetitionsInfo}
-				{...otherProps}
-			/>
+			<label className="toggle-switch" id={`${name}_fieldDetails`}>
+				<Toggle
+					accessibleProps={{
+						...(otherProps.tip && {
+							'aria-describedby': `${otherProps.id ?? name}_fieldHelp`,
+						}),
+						...(otherProps.errorMessage && {
+							'aria-errormessage': `${otherProps.id ?? name}_fieldError`,
+						}),
+						'aria-required': !!otherProps.required,
+					}}
+					checked={checked}
+					disabled={readOnly}
+					name={name}
+					showAsSwitcher={showAsSwitcher}
+					showLabel={showLabel}
+					showMaximumRepetitionsInfo={showMaximumRepetitionsInfo}
+					{...otherProps}
+				/>
 
-			<ClayInput name={name} type="hidden" value={`${checked}`} />
+				<ClayInput name={name} type="hidden" value={`${checked}`} />
 
-			{editOnlyInDefaultLanguage && showLabel && readOnly && (
-				<span
-					className="c-ml-2 text-4 text-secondary"
-					data-testid="tooltip"
-					tabIndex={0}
-					title={
-						isLocalizationSupported
-							? Liferay.Language.get(
-									'translation-is-disabled-for-this-field'
-								)
-							: Liferay.Language.get(
-									'this-field-does-not-support-translations'
-								)
-					}
-				>
-					<ClayIcon symbol="question-circle-full" />
-				</span>
-			)}
+				{editOnlyInDefaultLanguage && showLabel && readOnly && (
+					<span
+						className="c-ml-2 text-4 text-secondary"
+						data-testid="tooltip"
+						tabIndex={0}
+						title={
+							isLocalizationSupported
+								? Liferay.Language.get(
+										'translation-is-disabled-for-this-field'
+									)
+								: Liferay.Language.get(
+										'this-field-does-not-support-translations'
+									)
+						}
+					>
+						<ClayIcon symbol="question-circle-full" />
+					</span>
+				)}
+			</label>
 		</>
 	);
 }
