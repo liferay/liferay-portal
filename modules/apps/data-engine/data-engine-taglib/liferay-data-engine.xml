@@ -63,8 +63,8 @@
 			</attribute>
 			<attribute>
 				<name>moduleServletContext</name>
-				<inputType>javax.servlet.ServletContext</inputType>
-				<outputType>javax.servlet.ServletContext</outputType>
+				<inputType>jakarta.servlet.ServletContext</inputType>
+				<outputType>jakarta.servlet.ServletContext</outputType>
 				<required>false</required>
 			</attribute>
 			<attribute>

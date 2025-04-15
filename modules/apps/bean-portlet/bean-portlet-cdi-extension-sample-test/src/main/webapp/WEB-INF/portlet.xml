@@ -6,7 +6,7 @@
 		<display-name>Sample Bean Portlet</display-name>
 		<portlet-class>com.liferay.bean.portlet.cdi.extension.sample.test.portlet.HelloWorldFacesPortlet</portlet-class>
 		<init-param>
-			<name>javax.portlet.faces.defaultViewId.view</name>
+			<name>jakarta.portlet.faces.defaultViewId.view</name>
 			<value>/WEB-INF/views/view.xhtml</value>
 		</init-param>
 		<expiration-cache>0</expiration-cache>

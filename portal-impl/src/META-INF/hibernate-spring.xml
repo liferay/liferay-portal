@@ -45,7 +45,7 @@
 		<property name="dataSource" ref="liferayDataSource" />
 		<property name="hibernateProperties">
 			<props>
-				<prop key="javax.persistence.validation.mode">none</prop>
+				<prop key="jakarta.persistence.validation.mode">none</prop>
 			</props>
 		</property>
 		<property name="mvccEnabled" value="false" />
