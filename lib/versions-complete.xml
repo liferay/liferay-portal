@@ -123,6 +123,17 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.captcha.api.jar!nl.captcha.simplecaptcha.jar</file-name>
+				<version>1.1.1.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>com.liferay:nl.captcha.simplecaptcha</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.click.to.chat.web.jar!jjwt-api.jar</file-name>
 				<version>0.11.2</version>
 				<project-name>JJWT :: API</project-name>
@@ -207,14 +218,13 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.commerce.payment.method.authorize.net.jar!anet-java-sdk.jar</file-name>
-				<version>2.0.6</version>
-				<project-name>Authorize.Net Java SDK</project-name>
-				<project-url>http://developer.authorize.net</project-url>
+				<file-name>com.liferay.commerce.payment.method.authorize.net.jar!net.authorize.anet.java.sdk.jar</file-name>
+				<version>2.0.6.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>com.liferay:net.authorize.anet.java.sdk</project-name>
 				<licenses>
 					<license>
-						<license-name>SDK License Agreement</license-name>
-						<license-url>https://github.com/AuthorizeNet/sdk-java/blob/master/LICENSE.txt</license-url>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -742,18 +752,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!chemistry-opencmis-client-bindings.jar</file-name>
-				<version>0.14.0</version>
-				<project-name>OpenCMIS Client Bindings Implementation</project-name>
-				<project-url>https://chemistry.apache.org/java/chemistry-opencmis-client/chemistry-opencmis-client-bindings/</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!chemistry-opencmis-client-impl.jar</file-name>
 				<version>0.14.0</version>
 				<project-name>OpenCMIS Client Implementation</project-name>
@@ -766,150 +764,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!chemistry-opencmis-commons-api.jar</file-name>
-				<version>0.14.0</version>
-				<project-name>OpenCMIS Commons API</project-name>
-				<project-url>https://chemistry.apache.org/java/chemistry-opencmis-commons/chemistry-opencmis-commons-api/</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!chemistry-opencmis-commons-impl.jar</file-name>
-				<version>0.14.0</version>
-				<project-name>OpenCMIS Commons Implementation</project-name>
-				<project-url>https://chemistry.apache.org/java/chemistry-opencmis-commons/chemistry-opencmis-commons-impl/</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-core.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Core</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-bindings-soap.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime SOAP Binding</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-bindings-xml.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime XML Binding</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-databinding-jaxb.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime JAXB DataBinding</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-frontend-jaxws.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime JAX-WS Frontend</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-frontend-simple.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime Simple Frontend</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-transports-http.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime HTTP Transport</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-ws-addr.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime WS Addressing</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-ws-policy.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime WS Policy</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.document.library.repository.cmis.impl.jar!cxf-rt-wsdl.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF Runtime Core for WSDL</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!neethi.jar</file-name>
 				<version>3.1.1</version>
 				<project-name>Apache Neethi</project-name>
@@ -918,6 +772,162 @@
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
 						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.chemistry.opencmis.client.bindings.jar</file-name>
+				<version>0.14.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>OpenCMIS Client Bindings Implementation Jakarta</project-name>
+				<project-url>https://chemistry.apache.org/java/chemistry-opencmis-client/chemistry-opencmis-client-bindings/</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.chemistry.opencmis.commons.api.jar</file-name>
+				<version>0.14.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>OpenCMIS Commons API Jakarta</project-name>
+				<project-url>https://chemistry.apache.org/java/chemistry-opencmis-commons/chemistry-opencmis-commons-api/</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.chemistry.opencmis.commons.impl.jar</file-name>
+				<version>0.14.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>OpenCMIS Commons Implementation Jakarta</project-name>
+				<project-url>https://chemistry.apache.org/java/chemistry-opencmis-commons/chemistry-opencmis-commons-impl/</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.core.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Core Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.bindings.soap.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime SOAP Binding Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.bindings.xml.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime XML Binding Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.databinding.jaxb.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime JAXB DataBinding Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.frontend.jaxws.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime JAX-WS Frontend Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.frontend.simple.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime Simple Frontend Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.transports.http.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime HTTP Transport Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.ws.addr.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime WS Addressing Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.ws.policy.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime WS Policy Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.wsdl.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF Runtime Core for WSDL Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -977,18 +987,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.dynamic.data.mapping.data.provider.impl.jar!HdrHistogram.jar</file-name>
-				<version>2.1.9</version>
-				<project-name>HdrHistogram</project-name>
-				<project-url>http://hdrhistogram.github.io/HdrHistogram/</project-url>
-				<licenses>
-					<license>
-						<license-name>Public Domain, per Creative Commons CC0</license-name>
-						<license-url>http://creativecommons.org/publicdomain/zero/1.0/</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.dynamic.data.mapping.data.provider.impl.jar!archaius-core.jar</file-name>
 				<version>0.4.1</version>
 				<project-name>com.netflix.archaius:archaius-core</project-name>
@@ -1020,6 +1018,17 @@
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.dynamic.data.mapping.data.provider.impl.jar!org.hdrhistogram.jar</file-name>
+				<version>2.1.9.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>HdrHistogram Jakarta</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -1096,18 +1105,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.frontend.css.rtl.servlet.jar!annotations.jar</file-name>
-				<version>2.0.3</version>
-				<project-name>FindBugs-Annotations</project-name>
-				<project-url>http://findbugs.sourceforge.net/</project-url>
-				<licenses>
-					<license>
-						<license-name>GNU Lesser Public License</license-name>
-						<license-url>http://www.gnu.org/licenses/lgpl.html</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.frontend.css.rtl.servlet.jar!ph-commons.jar</file-name>
 				<version>8.6.0</version>
 				<project-name>ph-commons</project-name>
@@ -1167,14 +1164,14 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.glowroot.plugin.freemarker.jar!org.apache.felix.http.servlet-api.jar</file-name>
-				<version>1.1.2</version>
-				<project-name>Apache Felix Servlet API</project-name>
-				<project-url>http://www.apache.org/</project-url>
+				<file-name>com.liferay.glowroot.plugin.freemarker.jar!jakarta.servlet-api.jar</file-name>
+				<version>6.0.0</version>
+				<project-name>Jakarta Servlet</project-name>
+				<project-url>https://www.eclipse.org</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>GPL2 w/ CPE</license-name>
+						<license-url>https://www.gnu.org/software/classpath/license.html</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -1567,14 +1564,13 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.marketplace.store.web.jar!scribe.jar</file-name>
-				<version>1.3.6</version>
-				<project-name>Scribe OAuth Library</project-name>
-				<project-url>http://github.com/fernandezpablo85/scribe-java</project-url>
+				<file-name>com.liferay.marketplace.store.web.jar!org.scribe.jar</file-name>
+				<version>1.3.6.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>com.liferay:org.scribe</project-name>
 				<licenses>
 					<license>
-						<license-name>MIT</license-name>
-						<license-url>http://github.com/fernandezpablo85/scribe-java/blob/master/LICENSE.txt</license-url>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -1591,10 +1587,10 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.oauth.client.persistence.service.jar!jakarta.mail.jar</file-name>
-				<version>1.6.6</version>
+				<file-name>com.liferay.oauth.client.persistence.service.jar!jakarta.mail-api.jar</file-name>
+				<version>2.1.3</version>
 				<project-name>Jakarta Mail API</project-name>
-				<project-url>http://www.oracle.com</project-url>
+				<project-url>https://www.eclipse.org</project-url>
 				<licenses>
 					<license>
 						<license-name>GPL2 w/ CPE</license-name>
@@ -1603,14 +1599,14 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.oauth2.provider.rest.jar!javax.annotation-api.jar</file-name>
-				<version>1.3.2</version>
-				<project-name>javax.annotation API</project-name>
-				<project-url>https://javaee.github.io/glassfish</project-url>
+				<file-name>com.liferay.oauth2.provider.rest.jar!jakarta.annotation-api.jar</file-name>
+				<version>2.1.1</version>
+				<project-name>Jakarta Annotations API</project-name>
+				<project-url>https://www.eclipse.org</project-url>
 				<licenses>
 					<license>
-						<license-name>COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</license-name>
-						<license-url>https://opensource.org/licenses/CDDL-1.0</license-url>
+						<license-name>GPL2 w/ CPE</license-name>
+						<license-url>https://www.gnu.org/software/classpath/license.html</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -1662,14 +1658,24 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.ccpp.api.jar!ccpp.jar</file-name>
-				<version>1.0</version>
-				<project-name>CC/PP API</project-name>
-				<project-url>http://www.jcp.org/en/jsr/detail?id=188</project-url>
+				<file-name>com.liferay.portal.ccpp.api.jar!javax.ccpp.jar</file-name>
+				<version>1.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>com.liferay:javax.ccpp</project-name>
 				<licenses>
 					<license>
-						<license-name>Sun Microsystems, Inc. Binary Code License Agreement</license-name>
-						<license-url>http://java.sun.com/j2ee/ccpp</license-url>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.ccpp.impl.jar!javax.ccpp.ri.jar</file-name>
+				<version>1.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>com.liferay:javax.ccpp.ri</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -2209,7 +2215,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.osgi.web.http.servlet.impl.jar!org.eclipse.equinox.http.servlet.jar</file-name>
-				<version>1.2.2.v20211118-0920.LIFERAY-PATCHED-4</version>
+				<version>1.2.2.v20211118-0920.LIFERAY-PATCHED-4.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>com.liferay:org.eclipse.equinox.http.servlet</project-name>
 				<licenses>
 					<license>
@@ -2231,30 +2237,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.remote.rest.extender.jar!cxf-rt-rs-extension-providers.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF JAX-RS Extensions: Providers</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.remote.rest.extender.jar!cxf-rt-rs-json-basic.jar</file-name>
-				<version>3.5.11</version>
-				<project-name>Apache CXF JAX-RS Extensions: JSON Basic</project-name>
-				<project-url>https://cxf.apache.org</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.portal.remote.rest.extender.jar!jettison.jar</file-name>
 				<version>1.5.4</version>
 				<project-name>jettison</project-name>
@@ -2267,8 +2249,32 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.portal.remote.rest.extender.jar!org.apache.cxf.rt.rs.extension.providers.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF JAX-RS Extensions: Providers Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.remote.rest.extender.jar!org.apache.cxf.rt.rs.json.basic.jar</file-name>
+				<version>3.5.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache CXF JAX-RS Extensions: JSON Basic Jakarta</project-name>
+				<project-url>http://cxf.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.portal.scheduler.quartz.jar!org.quartz.jar</file-name>
-				<version>2.1.7.LIFERAY-PATCHED-1</version>
+				<version>2.1.7.LIFERAY-PATCHED-2</version>
 				<project-name>org.quartz</project-name>
 				<licenses>
 					<license>
@@ -2814,10 +2820,10 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.security.sso.openid.connect.impl.jar!jakarta.mail.jar</file-name>
-				<version>1.6.6</version>
+				<file-name>com.liferay.portal.security.sso.openid.connect.impl.jar!jakarta.mail-api.jar</file-name>
+				<version>2.1.3</version>
 				<project-name>Jakarta Mail API</project-name>
-				<project-url>http://www.oracle.com</project-url>
+				<project-url>https://www.eclipse.org</project-url>
 				<licenses>
 					<license>
 						<license-name>GPL2 w/ CPE</license-name>
@@ -3759,6 +3765,61 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.portal.vulcan.impl.jar!com.graphql.java.dataloader.jar</file-name>
+				<version>3.2.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>java-dataloader Jakarta</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.vulcan.impl.jar!com.graphql.java.extended.scalars.jar</file-name>
+				<version>19.1.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>graphql-java-extended-scalars Jakarta</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.vulcan.impl.jar!com.graphql.java.jar</file-name>
+				<version>19.11.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>graphql-java Jakarta</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.vulcan.impl.jar!com.graphql.java.kickstart.jar</file-name>
+				<version>14.0.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>graphql-java-kickstart Jakarta</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.vulcan.impl.jar!com.graphql.java.servlet.jar</file-name>
+				<version>14.0.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>graphql-java-servlet Jakarta</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.portal.vulcan.impl.jar!commons-lang3.jar</file-name>
 				<version>3.8</version>
 				<project-name>Apache Commons Lang</project-name>
@@ -3778,65 +3839,6 @@
 				<licenses>
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!graphql-java-extended-scalars.jar</file-name>
-				<version>19.1</version>
-				<project-name>graphql-java-extended-scalars</project-name>
-				<project-url>https://github.com/graphql-java/graphql-java-extended-scalars</project-url>
-				<licenses>
-					<license>
-						<license-name>MIT</license-name>
-						<license-url>https://github.com/graphql-java/graphql-java/blob/master/LICENSE.md</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!graphql-java-kickstart.jar</file-name>
-				<version>14.0.0</version>
-				<project-name>graphql-java-kickstart</project-name>
-				<project-url>https://github.com/graphql-java-kickstart/graphql-java-servlet</project-url>
-				<licenses>
-					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!graphql-java-servlet.jar</file-name>
-				<version>14.0.0</version>
-				<project-name>graphql-java-servlet</project-name>
-				<project-url>https://github.com/graphql-java-kickstart/graphql-java-servlet</project-url>
-				<licenses>
-					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!graphql-java.jar</file-name>
-				<version>19.11</version>
-				<project-name>graphql-java</project-name>
-				<project-url>https://github.com/graphql-java/graphql-java</project-url>
-				<licenses>
-					<license>
-						<license-name>MIT</license-name>
-						<license-url>https://github.com/graphql-java/graphql-java/blob/master/LICENSE.md</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!hibernate-validator.jar</file-name>
-				<version>6.2.5.Final</version>
-				<project-name>Hibernate Validator Engine</project-name>
-				<licenses>
-					<license>
-						<license-name>Apache License 2.0</license-name>
 						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
@@ -3890,10 +3892,10 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!jackson-jaxrs-xml-provider.jar</file-name>
+				<file-name>com.liferay.portal.vulcan.impl.jar!jackson-jakarta-rs-xml-provider.jar</file-name>
 				<version>2.18.2</version>
-				<project-name>Jackson-JAXRS: XML</project-name>
-				<project-url>https://github.com/FasterXML/jackson-jaxrs-providers/jackson-jaxrs-xml-provider</project-url>
+				<project-name>Jackson Jakarta-RS: XML</project-name>
+				<project-url>https://github.com/FasterXML/jackson-jakarta-rs-providers/jackson-jakarta-rs-xml-provider</project-url>
 				<licenses>
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
@@ -3902,22 +3904,10 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!jackson-module-jaxb-annotations.jar</file-name>
+				<file-name>com.liferay.portal.vulcan.impl.jar!jackson-module-jakarta-xmlbind-annotations.jar</file-name>
 				<version>2.18.2</version>
-				<project-name>Jackson module: Old JAXB Annotations (javax.xml.bind)</project-name>
+				<project-name>Jackson module: Jakarta XML Bind Annotations (jakarta.xml.bind)</project-name>
 				<project-url>https://github.com/FasterXML/jackson-modules-base</project-url>
-				<licenses>
-					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!java-dataloader.jar</file-name>
-				<version>3.2.0</version>
-				<project-name>java-dataloader</project-name>
-				<project-url>https://github.com/graphql-java/java-dataloader</project-url>
 				<licenses>
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
@@ -3934,6 +3924,17 @@
 					<license>
 						<license-name>MPL 1.1</license-name>
 						<license-url>http://www.mozilla.org/MPL/MPL-1.1.html</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.vulcan.impl.jar!org.hibernate.validator.jar</file-name>
+				<version>6.2.5.Final.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Hibernate Validator Engine Jakarta</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -3962,9 +3963,9 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!swagger-core.jar</file-name>
+				<file-name>com.liferay.portal.vulcan.impl.jar!swagger-core-jakarta.jar</file-name>
 				<version>2.2.28</version>
-				<project-name>swagger-core</project-name>
+				<project-name>swagger-core Jakarta</project-name>
 				<project-url>https://github.com/swagger-api/swagger-core/modules/swagger-core</project-url>
 				<licenses>
 					<license>
@@ -3974,9 +3975,9 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!swagger-integration.jar</file-name>
+				<file-name>com.liferay.portal.vulcan.impl.jar!swagger-integration-jakarta.jar</file-name>
 				<version>2.2.28</version>
-				<project-name>swagger-integration</project-name>
+				<project-name>swagger-integration Jakarta</project-name>
 				<project-url>https://github.com/swagger-api/swagger-core/modules/swagger-integration</project-url>
 				<licenses>
 					<license>
@@ -3986,9 +3987,9 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!swagger-jaxrs2.jar</file-name>
+				<file-name>com.liferay.portal.vulcan.impl.jar!swagger-jaxrs2-jakarta.jar</file-name>
 				<version>2.2.28</version>
-				<project-name>swagger-jaxrs2</project-name>
+				<project-name>swagger-jaxrs2 Jakarta</project-name>
 				<project-url>https://github.com/swagger-api/swagger-core/modules/swagger-jaxrs2</project-url>
 				<licenses>
 					<license>
@@ -4057,6 +4058,17 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.push.notifications.sender.sms.jar!com.twilio.sdk.twilio.jar</file-name>
+				<version>8.3.0.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>com.liferay:com.twilio.sdk.twilio</project-name>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.push.notifications.sender.sms.jar!jackson-datatype-jsr310.jar</file-name>
 				<version>2.18.2</version>
 				<project-name>Jackson datatype: JSR310</project-name>
@@ -4101,18 +4113,6 @@
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>http://www.apache.org/licenses/LICENSE-2.0</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.push.notifications.sender.sms.jar!twilio.jar</file-name>
-				<version>8.3.0</version>
-				<project-name>twilio</project-name>
-				<project-url>https://www.twilio.com</project-url>
-				<licenses>
-					<license>
-						<license-name>MIT License</license-name>
-						<license-url>http://www.opensource.org/licenses/mit-license.php</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -4225,18 +4225,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.shared.dependencies.apache.commons.jar!commons-fileupload.jar</file-name>
-				<version>1.5</version>
-				<project-name>Apache Commons FileUpload</project-name>
-				<project-url>https://commons.apache.org/proper/commons-fileupload/</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache-2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.shared.dependencies.apache.commons.jar!commons-io.jar</file-name>
 				<version>2.15.1</version>
 				<project-name>Apache Commons IO</project-name>
@@ -4269,6 +4257,18 @@
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.shared.dependencies.apache.commons.jar!org.apache.commons.fileupload.jar</file-name>
+				<version>1.5.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>Apache Commons FileUpload Jakarta</project-name>
+				<project-url>https://commons.apache.org/proper/commons-fileupload/</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -4738,18 +4738,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.shared.dependencies.guava.jar!jsr305.jar</file-name>
-				<version>3.0.2</version>
-				<project-name>FindBugs-jsr305</project-name>
-				<project-url>http://findbugs.sourceforge.net/</project-url>
-				<licenses>
-					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.shared.dependencies.guava.jar!listenablefuture.jar</file-name>
 				<version>9999.0-empty-to-avoid-conflict-with-guava</version>
 				<project-name>Guava ListenableFuture only</project-name>
@@ -5071,14 +5059,13 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.shared.dependencies.jfree.jar!jfreechart.jar</file-name>
-				<version>1.0.19</version>
-				<project-name>JFreeChart</project-name>
-				<project-url>http://www.jfree.org/jfreechart/</project-url>
+				<file-name>com.liferay.shared.dependencies.jfree.jar!org.jfree.jfreechart.jar</file-name>
+				<version>1.0.19.JAKARTA_LIFERAY-PATCHED-1</version>
+				<project-name>com.liferay:org.jfree.jfreechart</project-name>
 				<licenses>
 					<license>
-						<license-name>GNU Lesser General Public Licence</license-name>
-						<license-url>http://www.gnu.org/licenses/lgpl.txt</license-url>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -5655,13 +5642,14 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.shared.dependencies.smiley.http.proxy.servlet.jar!org.mitre.dsmiley.http.proxy.servlet.jar</file-name>
-				<version>1.12.1.LIFERAY-PATCHED-1</version>
-				<project-name>smiley-http-proxy-servlet</project-name>
+				<file-name>com.liferay.shared.dependencies.smiley.http.proxy.servlet.jar!smiley-http-proxy-servlet.jar</file-name>
+				<version>2.0</version>
+				<project-name>Smiley's HTTP Proxy Servlet</project-name>
+				<project-url>https://github.com/dsmiley/HTTP-Proxy-Servlet</project-url>
 				<licenses>
 					<license>
-						<license-name>LGPL 2.1</license-name>
-						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+						<license-name>The Apache Software License, Version 2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -5678,9 +5666,9 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.shared.dependencies.swagger.jar!swagger-annotations.jar</file-name>
+				<file-name>com.liferay.shared.dependencies.swagger.jar!swagger-annotations-jakarta.jar</file-name>
 				<version>2.2.28</version>
-				<project-name>swagger-annotations</project-name>
+				<project-name>swagger-annotations Jakarta</project-name>
 				<project-url>https://github.com/swagger-api/swagger-core/modules/swagger-annotations</project-url>
 				<licenses>
 					<license>
@@ -5690,9 +5678,9 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.shared.dependencies.swagger.jar!swagger-models.jar</file-name>
+				<file-name>com.liferay.shared.dependencies.swagger.jar!swagger-models-jakarta.jar</file-name>
 				<version>2.2.28</version>
-				<project-name>swagger-models</project-name>
+				<project-name>swagger-models Jakarta</project-name>
 				<project-url>https://github.com/swagger-api/swagger-core/modules/swagger-models</project-url>
 				<licenses>
 					<license>
@@ -6217,7 +6205,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/activation.jar</file-name>
-				<version>1.1.1</version>
+				<version>2.1.3</version>
 				<project-name>JavaBeans Activation Framework</project-name>
 				<project-url>http://java.sun.com/products/javabeans/jaf</project-url>
 				<licenses>
@@ -6229,7 +6217,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/alloy-taglib.jar</file-name>
-				<version>1.1.14</version>
+				<version>1.1.14.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Alloy TagLibs</project-name>
 				<project-url>https://github.com/liferay/alloy-taglibs</project-url>
 				<licenses>
@@ -6399,7 +6387,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/catalina-ha.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -6411,7 +6399,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/catalina.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -6747,7 +6735,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/jstl-api.jar</file-name>
-				<version>1.2.2</version>
+				<version>3.0.2</version>
 				<project-name>JSTL</project-name>
 				<project-url>https://jstl.dev.java.net</project-url>
 				<licenses>
@@ -6759,7 +6747,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/jstl-impl.jar</file-name>
-				<version>1.2.3</version>
+				<version>3.0.1</version>
 				<project-name>JSTL</project-name>
 				<project-url>https://jstl.dev.java.net</project-url>
 				<licenses>
@@ -6795,7 +6783,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/mail.jar</file-name>
-				<version>1.6.6</version>
+				<version>2.1.3</version>
 				<project-name>JavaMail</project-name>
 				<project-url>https://eclipse-ee4j.github.io/mail</project-url>
 				<licenses>
@@ -6951,7 +6939,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/portlet.jar</file-name>
-				<version>3.0.1</version>
+				<version>4.0.0</version>
 				<project-name>JSR 362 Portlet Specification 3.0</project-name>
 				<project-url>https://jcp.org/en/jsr/detail?id=362</project-url>
 				<licenses>
@@ -7097,7 +7085,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/spring-test.jar</file-name>
-				<version>5.3.39</version>
+				<version>5.3.39.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Spring</project-name>
 				<project-url>http://www.springframework.org</project-url>
 				<licenses>
@@ -7122,7 +7110,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-annotations-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7134,7 +7122,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7146,7 +7134,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-coyote.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7158,7 +7146,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-el-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7170,7 +7158,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-jasper-el.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7182,7 +7170,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-jasper.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7194,7 +7182,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-jsp-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7206,7 +7194,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-juli.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7218,7 +7206,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-servlet-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7230,7 +7218,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-tribes.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7242,7 +7230,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-util-scan.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7254,7 +7242,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-util.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7266,7 +7254,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/tomcat-websocket-api.jar</file-name>
-				<version>9.0.102</version>
+				<version>10.1.39</version>
 				<project-name>Tomcat</project-name>
 				<project-url>http://tomcat.apache.org</project-url>
 				<licenses>
@@ -7366,7 +7354,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/hibernate-core.jar</file-name>
-				<version>5.6.7.LIFERAY-PATCHED-2</version>
+				<version>5.6.7.LIFERAY-PATCHED-2.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Hibernate</project-name>
 				<project-url>http://www.hibernate.org</project-url>
 				<licenses>
@@ -7416,7 +7404,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jaxb-api.jar</file-name>
-				<version>2.3.0</version>
+				<version>4.0.2</version>
 				<project-name>JAXB-API</project-name>
 				<project-url>http://jaxb.java.net</project-url>
 				<licenses>
@@ -7427,8 +7415,20 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>lib/portal/jaxb-core.jar</file-name>
+				<version>4.0.5</version>
+				<project-name>Eclipse Implementation of JAXB</project-name>
+				<project-url>https://eclipse-ee4j.github.io/jaxb-ri/</project-url>
+				<licenses>
+					<license>
+						<license-name>Eclipse Distribution License - v 1.0</license-name>
+						<license-url>http://www.eclipse.org/org/documents/edl-v10.php</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>lib/portal/jaxb-runtime.jar</file-name>
-				<version>2.3.1.LIFERAY-PATCHED-2</version>
+				<version>4.0.5</version>
 				<project-name>Java Architecture for XML Binding</project-name>
 				<project-url>https://javaee.github.io/jaxb-v2</project-url>
 				<licenses>
@@ -7453,7 +7453,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jaxws-api.jar</file-name>
-				<version>2.3.1</version>
+				<version>3.0.1</version>
 				<project-name>JAX-WS (JSR 224) API</project-name>
 				<project-url>https://github.com/javaee/jax-ws-spec</project-url>
 				<licenses>
@@ -7516,7 +7516,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/jws-api.jar</file-name>
-				<version>1.1</version>
+				<version>3.0.0</version>
 				<project-name>Java EE Web Services Metadata API</project-name>
 				<project-url>http://glassfish.java.net</project-url>
 				<licenses>
@@ -7552,7 +7552,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/persistence.jar</file-name>
-				<version>2.2.1</version>
+				<version>3.1.0</version>
 				<project-name>Java Persistence</project-name>
 				<project-url>http://java.sun.com/javaee/overview/faq/persistence.jsp</project-url>
 				<licenses>
@@ -7577,7 +7577,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/soap-api.jar</file-name>
-				<version>1.4.0</version>
+				<version>3.0.2</version>
 				<project-name>SAAJ API</project-name>
 				<project-url>https://javaee.github.io/javaee-spec</project-url>
 				<licenses>
@@ -7665,7 +7665,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/spring-orm.jar</file-name>
-				<version>5.3.39.LIFERAY-PATCHED-1</version>
+				<version>5.3.39.LIFERAY-PATCHED-1.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Spring</project-name>
 				<project-url>http://www.springframework.org</project-url>
 				<licenses>
@@ -7691,7 +7691,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/spring-web.jar</file-name>
-				<version>5.3.39</version>
+				<version>5.3.39.JAKARTA_LIFERAY-PATCHED-1</version>
 				<project-name>Spring</project-name>
 				<project-url>http://www.springframework.org</project-url>
 				<licenses>
@@ -7716,12 +7716,22 @@
 			</library>
 			<library>
 				<file-name>lib/portal/transaction.jar</file-name>
-				<version>1.3</version>
+				<version>2.0.1</version>
 				<project-name>Project GlassFish Java Transaction API</project-name>
 				<project-url>http://jta-spec.java.net</project-url>
 				<licenses>
 					<license>CDDL 1.1</license>
 					<license-url>https://oss.oracle.com/licenses/CDDL-1.1</license-url>
+				</licenses>
+			</library>
+			<library>
+				<file-name>lib/portal/txw2.jar</file-name>
+				<version>4.0.5</version>
+				<project-name>Eclipse Implementation of JAXB</project-name>
+				<project-url>https://eclipse-ee4j.github.io/jaxb-ri/</project-url>
+				<licenses>
+					<license>Eclipse Distribution License - v 1.0</license>
+					<license-url>http://www.eclipse.org/org/documents/edl-v10.php</license-url>
 				</licenses>
 			</library>
 			<library>
