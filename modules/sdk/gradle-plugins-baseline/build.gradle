@@ -14,7 +14,7 @@ tasks.eclipse {
 }
 
 dependencies {
-	api group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.14"
+	api group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.15"
 	api group: "com.liferay", name: "com.liferay.gradle.util", version: "1.0.49"
 	compileOnly fileTree(builtBy: [rootProject.tasks.getByName("extractGradleApi" + gradleVersion.replace(".", ""))], dir: new File(rootProject.buildDir, "gradle-${gradleVersion}"))
 }

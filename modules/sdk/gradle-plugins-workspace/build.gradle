@@ -38,7 +38,7 @@ dependencies {
 	implementation group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "6.4.0"
 	implementation group: "com.bmuschko", name: "gradle-docker-plugin", version: "6.7.0"
 	implementation group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.1"
-	implementation group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.73"
+	implementation group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.74"
 	implementation group: "com.liferay", name: "com.liferay.gradle.plugins.poshi.runner", version: "4.0.22"
 	implementation group: "com.liferay", name: "com.liferay.gradle.plugins.target.platform", version: "4.0.1"
 	implementation group: "com.liferay", name: "com.liferay.gradle.plugins.theme.builder", version: "2.0.28"
@@ -52,7 +52,7 @@ dependencies {
 	implementation group: "de.undercouch", name: "gradle-download-task", version: "5.4.0"
 	implementation group: "net.saliman", name: "gradle-properties-plugin", version: "1.4.6"
 
-	runtimeOnly group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.14"
+	runtimeOnly group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.15"
 	runtimeOnly group: "net.java.dev.jna", name: "jna", version: "5.8.0"
 	runtimeOnly group: "org.ow2.asm", name: "asm", version: "9.7"
 }

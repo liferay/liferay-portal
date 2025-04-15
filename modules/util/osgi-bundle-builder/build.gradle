@@ -4,7 +4,7 @@ targetCompatibility = "1.8"
 dependencies {
 	compileInclude group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "6.4.0"
 	compileInclude group: "com.beust", name: "jcommander", version: "1.82"
-	compileInclude group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.14"
+	compileInclude group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.15"
 	compileInclude group: "com.liferay", name: "com.liferay.petra.string", version: "5.0.0"
 	compileInclude group: "org.slf4j", name: "slf4j-simple", version: "1.6.6"
 	compileOnly group: "org.slf4j", name: "slf4j-api", version: "1.7.26"

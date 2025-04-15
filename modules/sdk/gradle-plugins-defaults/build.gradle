@@ -16,7 +16,7 @@ tasks.eclipse {
 dependencies {
 	api group: "com.github.jk1", name: "gradle-license-report", version: "2.0"
 	api group: "com.gradle.publish", name: "plugin-publish-plugin", version: "0.11.0"
-	api group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.73"
+	api group: "com.liferay", name: "com.liferay.gradle.plugins", version: "16.0.74"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.app.javadoc.builder", version: "1.2.6"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.baseline", version: "7.0.5"
 	api group: "com.liferay", name: "com.liferay.gradle.plugins.cache", version: "1.0.19"

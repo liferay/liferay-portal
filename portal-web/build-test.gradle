@@ -9,7 +9,7 @@ import org.gradle.util.GUtil
 
 buildscript {
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "12.0.26"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "12.0.27"
 		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.maven.plugin.builder", version: "2.0.3"
 		classpath group: "de.undercouch", name: "gradle-download-task", version: "5.4.0"
 	}
