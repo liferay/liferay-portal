@@ -490,6 +490,9 @@ const Options = ({
 		else if (productOption.fieldType === FIELD_TYPE.date) {
 			Component = ProductOptionDate;
 		}
+		else if (productOption.fieldType === FIELD_TYPE.document_library) {
+			return;
+		}
 		else if (productOption.fieldType === FIELD_TYPE.numeric) {
 			Component = ProductOptionNumeric;
 		}
@@ -517,9 +520,6 @@ const Options = ({
 		}
 		else if (productOption.fieldType === FIELD_TYPE.text) {
 			Component = ProductOptionText;
-		}
-		else if (productOption.fieldType === FIELD_TYPE.document_library) {
-			return;
 		}
 
 		return <Component key={productOption.id} {...props} />;

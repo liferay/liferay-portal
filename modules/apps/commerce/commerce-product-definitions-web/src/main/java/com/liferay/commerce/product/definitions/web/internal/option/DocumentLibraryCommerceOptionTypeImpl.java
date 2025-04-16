@@ -85,7 +85,6 @@ public class DocumentLibraryCommerceOptionTypeImpl
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
-		DDMForm ddmForm = new DDMForm();
 		DDMFormField ddmFormField = new DDMFormField(
 			cpDefinitionOptionRel.getKey(),
 			cpDefinitionOptionRel.getCommerceOptionTypeKey());
@@ -103,8 +102,10 @@ public class DocumentLibraryCommerceOptionTypeImpl
 		ddmFormField.setName(cpDefinitionOptionRel.getKey());
 		ddmFormField.setRequired(cpDefinitionOptionRel.isRequired());
 
-		ddmForm.addDDMFormField(ddmFormField);
+		DDMForm ddmForm = new DDMForm();
+
 		ddmForm.addAvailableLocale(locale);
+		ddmForm.addDDMFormField(ddmFormField);
 		ddmForm.setDefaultLocale(locale);
 
 		DDMFormRenderingContext ddmFormRenderingContext =
