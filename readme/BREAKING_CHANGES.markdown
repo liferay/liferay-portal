@@ -1521,7 +1521,7 @@ The `AMImageConfiguration` property `imageMaxSize` has been deprecated since 7.2
 ## Changed default value of `virtual.hosts.valid.hosts` portal property
 
 - **Date:** 2023-June-2
-- **JIRA Ticket:** [LPS-184385](https://issues.liferay.com/browse/LPS-184385)
+- **JIRA Ticket:** [LPE-17758](https://liferay.atlassian.net/browse/LPE-17758)
 
 ### What changed?
 
