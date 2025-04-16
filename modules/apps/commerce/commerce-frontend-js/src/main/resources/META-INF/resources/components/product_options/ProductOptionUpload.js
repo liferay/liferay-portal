@@ -61,6 +61,7 @@ const ProductOptionUpload = ({
 
 			setSkuOptionsAtomState({
 				...skuOptionsAtomState,
+				namespace,
 				skuOptions: currentSkuOptions,
 			});
 		},
