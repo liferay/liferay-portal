@@ -42,8 +42,6 @@ test(
 
 		await journalPage.changeView('list');
 
-		await page.pause();
-
 		await expect(
 			page
 				.locator(
@@ -79,7 +77,6 @@ test(
 
 		await journalPage.changeView('table');
 
-		await page.pause();
 		await expect(page.getByRole('cell', {name: 'Title'})).toBeVisible();
 
 		await expect(
