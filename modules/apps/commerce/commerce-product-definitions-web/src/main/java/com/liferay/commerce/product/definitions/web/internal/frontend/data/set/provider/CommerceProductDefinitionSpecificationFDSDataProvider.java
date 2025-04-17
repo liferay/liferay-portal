@@ -72,7 +72,7 @@ public class CommerceProductDefinitionSpecificationFDSDataProvider
 						getCPDefinitionSpecificationOptionValueId(),
 					_getCPSpecificationOptionTitle(
 						cpSpecificationOption, languageId),
-					_getCPDefinitionSpecificationOptionValue(
+					_getLocalizedSpecificationOptionValue(
 						cpDefinitionSpecificationOptionValue, languageId),
 					_getCPOptionCategoryTitle(
 						cpDefinitionSpecificationOptionValue, languageId),
@@ -92,7 +92,7 @@ public class CommerceProductDefinitionSpecificationFDSDataProvider
 			getCPDefinitionSpecificationOptionValuesCount(cpDefinitionId, null);
 	}
 
-	private String _getCPDefinitionSpecificationOptionValue(
+	private String _getLocalizedSpecificationOptionValue(
 		CPDefinitionSpecificationOptionValue
 			cpDefinitionSpecificationOptionValue,
 		String languageId) {
