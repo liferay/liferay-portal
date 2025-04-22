@@ -216,6 +216,8 @@ public class PlacedOrderDTOConverter
 					commerceOrder::getShippingAddressId);
 				setPrintedNote(commerceOrder::getPrintedNote);
 				setPurchaseOrderNumber(commerceOrder::getPurchaseOrderNumber);
+				setRequestedDeliveryDate(
+					commerceOrder::getRequestedDeliveryDate);
 				setShippingMethod(
 					() -> {
 						CommerceShippingMethod commerceShippingMethod =
