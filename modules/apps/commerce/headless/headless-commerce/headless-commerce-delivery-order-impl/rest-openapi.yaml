@@ -198,6 +198,10 @@ components:
                     type: string
                 purchaseOrderNumber:
                     type: string
+                requestedDeliveryDate:
+                    format: date
+                    readOnly: true
+                    type: string
                 shipments:
                     $ref: "#/components/schemas/Shipment"
                     readOnly: true
