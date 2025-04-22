@@ -14,6 +14,7 @@ export {default as CategorizationToolbar} from './main/categorization/Categoriza
 export {default as ViewTags} from './main/categorization/tags/ViewTags';
 export {default as EditVocabulary} from './main/categorization/vocabularies/EditVocabulary';
 export {default as SpacesSticker} from './main/components/SpaceSticker';
+export {default as EditFolder} from './main/components/folders/EditFolder';
 export {default as ViewDashboard} from './main/dashboard/ViewDashboard';
 export {default as SpacesNavigation} from './main/spaces_navigation/SpacesNavigation';
 export {default as StructureBuilder} from './structure_builder/components/StructureBuilder';
