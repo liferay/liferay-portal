@@ -10,6 +10,7 @@ import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
 import java.io.IOException;
@@ -63,6 +64,9 @@ public class EditFolderFragmentRenderer extends BaseSectionFragmentRenderer {
 
 			componentTag.setProps(
 				HashMapBuilder.<String, Object>put(
+					"backURL",
+					ParamUtil.getString(httpServletRequest, "backURL")
+				).put(
 					"description", "description"
 				).put(
 					"name", "name"

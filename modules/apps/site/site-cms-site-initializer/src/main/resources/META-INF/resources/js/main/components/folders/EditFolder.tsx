@@ -9,6 +9,7 @@ import ClayMultiSelect from '@clayui/multi-select';
 import {Item} from '@clayui/multi-select/lib/types';
 import ClayToolbar from '@clayui/toolbar';
 import {useFormik} from 'formik';
+import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import {FieldText} from '../forms';
@@ -16,12 +17,18 @@ import FieldWrapper from '../forms/FieldWrapper';
 import {required, validate} from '../forms/validations';
 
 interface EditFolderProps {
+	backURL: string;
 	description?: string;
 	name: string;
 	space: string;
 }
 
-const EditFolder: React.FC<EditFolderProps> = ({description, name, space}) => {
+const EditFolder: React.FC<EditFolderProps> = ({
+	backURL,
+	description,
+	name,
+	space,
+}) => {
 	const spaceItems: Item[] = [{label: space, value: space}];
 
 	const {errors, handleChange, handleSubmit, values} = useFormik({
@@ -56,6 +63,7 @@ const EditFolder: React.FC<EditFolderProps> = ({description, name, space}) => {
 							borderless
 							displayType="secondary"
 							monospaced
+							onClick={() => navigate(backURL)}
 							size="sm"
 							symbol="angle-left"
 							title={Liferay.Language.get('back')}
@@ -72,6 +80,7 @@ const EditFolder: React.FC<EditFolderProps> = ({description, name, space}) => {
 						<ClayButton
 							borderless
 							displayType="secondary"
+							onClick={() => navigate(backURL)}
 							size="sm"
 						>
 							{Liferay.Language.get('cancel')}
