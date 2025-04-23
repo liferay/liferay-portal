@@ -31,6 +31,7 @@ export const FILTER_OPTIONS: IProps = {
 		'False Positive',
 		'Ignored',
 		'Threat Information',
+		'Not Exploitable'
 	],
 	[JiraEnum.SEVERITY]: ['Critical', 'High', 'Medium', 'Low', 'None'],
 };
