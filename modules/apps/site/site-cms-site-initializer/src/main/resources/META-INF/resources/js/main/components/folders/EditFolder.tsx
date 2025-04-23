@@ -4,8 +4,11 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayForm from '@clayui/form';
 import ClayToolbar from '@clayui/toolbar';
 import React from 'react';
+
+import {FieldText} from '../forms';
 
 interface EditFolderProps {
 	description?: string;
@@ -54,7 +57,37 @@ const EditFolder: React.FC<EditFolderProps> = ({description, name, space}) => {
 				</ClayToolbar.Nav>
 			</ClayToolbar>
 
-			Edit Folder Page {name} {description} {space}
+			<div className="container-fluid container-fluid-max-md mt-4">
+				<ClayForm>
+					<h3 className="font-weight-semi-bold mb-4 text-6">
+						{Liferay.Language.get('basic-info')}
+					</h3>
+
+					<FieldText
+						label={Liferay.Language.get('name')}
+						name="folderName"
+						required
+						type="input"
+						value={name}
+					/>
+
+					<FieldText
+						disabled
+						label={Liferay.Language.get('space')}
+						name="folderSpace"
+						required
+						type="input"
+						value={space}
+					/>
+
+					<FieldText
+						label={Liferay.Language.get('description')}
+						name="folderDescription"
+						type="textarea"
+						value={description}
+					/>
+				</ClayForm>
+			</div>
 		</div>
 	);
 };
