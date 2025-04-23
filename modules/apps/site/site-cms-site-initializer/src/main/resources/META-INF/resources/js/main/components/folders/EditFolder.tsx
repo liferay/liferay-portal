@@ -24,7 +24,7 @@ interface EditFolderProps {
 const EditFolder: React.FC<EditFolderProps> = ({description, name, space}) => {
 	const spaceItems: Item[] = [{label: space, value: space}];
 
-	const {errors, handleChange, values} = useFormik({
+	const {errors, handleChange, handleSubmit, values} = useFormik({
 		initialValues: {
 			folderDescription: description || '',
 			folderName: name,
@@ -41,6 +41,10 @@ const EditFolder: React.FC<EditFolderProps> = ({description, name, space}) => {
 				values
 			),
 	});
+
+	const handleOnSaveClick = () => {
+		handleSubmit();
+	};
 
 	return (
 		<div className="edit-folder">
@@ -75,7 +79,11 @@ const EditFolder: React.FC<EditFolderProps> = ({description, name, space}) => {
 					</ClayToolbar.Item>
 
 					<ClayToolbar.Item>
-						<ClayButton displayType="primary" size="sm">
+						<ClayButton
+							displayType="primary"
+							onClick={handleOnSaveClick}
+							size="sm"
+						>
 							{Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayToolbar.Item>
