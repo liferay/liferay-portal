@@ -25,7 +25,7 @@ import {InstanceListContext} from './InstanceListPageProvider.es';
 import {ModalContext} from './modal/ModalProvider.es';
 
 function Item({isAdmin, totalCount, ...instance}) {
-	const {userId} = useContext(AppContext);
+	const {baseResourceURL, userId} = useContext(AppContext);
 	const {
 		selectedItems = [],
 		setInstanceId,
@@ -189,7 +189,10 @@ function Item({isAdmin, totalCount, ...instance}) {
 					</ClayModal.Header>
 
 					<ClayModal.Body>
-						<WorkflowInstanceTracker workflowInstanceId={id} />
+						<WorkflowInstanceTracker
+							baseResourceURL={baseResourceURL}
+							workflowInstanceId={id}
+						/>
 					</ClayModal.Body>
 				</ClayModal>
 			)}
