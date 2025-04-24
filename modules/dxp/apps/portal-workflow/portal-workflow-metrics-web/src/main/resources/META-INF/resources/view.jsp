@@ -7,6 +7,8 @@
 
 <%@ include file="/init.jsp" %>
 
+<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" var="baseResourceURL" />
+
 <div>
 	<span aria-hidden="true" class="loading-animation"></span>
 
@@ -18,6 +20,8 @@
 		module="{Main} from portal-workflow-metrics-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
+				"baseResourceURL", String.valueOf(baseResourceURL)
+			).put(
 				"defaultDelta", PropsValues.SEARCH_CONTAINER_PAGE_DEFAULT_DELTA
 			).put(
 				"deltaValues", PropsValues.SEARCH_CONTAINER_PAGE_DELTA_VALUES
