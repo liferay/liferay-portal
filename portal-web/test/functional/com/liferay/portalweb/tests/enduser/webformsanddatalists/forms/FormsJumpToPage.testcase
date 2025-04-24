@@ -134,6 +134,7 @@ definition {
 	@priority = 4
 	test ViewFormRulesSummary {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -269,6 +270,7 @@ definition {
 	@priority = 5
 	test ViewPagesAfterJump {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -452,6 +454,7 @@ definition {
 	@priority = 4
 	test ViewRuleAfterLabelEdit {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -595,6 +598,7 @@ definition {
 	@priority = 3
 	test ViewRuleAfterOptionValueEdit {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -741,6 +745,7 @@ definition {
 	@priority = 4
 	test ViewRuleAfterPageNameChange {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

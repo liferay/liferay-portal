@@ -492,6 +492,7 @@ definition {
 	@priority = 5
 	test CanCheckoutProductWithPromotionPriceLowerThenPricelist {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Account and Buyer User are created") {
 			CommerceEntry.addAccountEntryUser(

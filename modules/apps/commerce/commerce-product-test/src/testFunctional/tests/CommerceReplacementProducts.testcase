@@ -319,6 +319,7 @@ definition {
 	@priority = 5
 	test DiscontinuedProductIsReplacedWhenImportedFromOrders {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			User.logoutPG();

@@ -93,6 +93,7 @@ definition {
 	@priority = 4
 	test CanCreateObjectEntryByScopeKey {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -126,6 +127,7 @@ definition {
 	@priority = 4
 	test CanCreateObjectEntryInVirtualInstance {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -160,6 +162,7 @@ definition {
 	@priority = 4
 	test CanIncludeObjectFieldInAPIExplorer {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -196,6 +199,7 @@ definition {
 	test CanScopeObjectByInstanceInExportTask {
 		property custom.properties = "feature.flag.COMMERCE-8087=true${line.separator}feature.flag.LPS-186620=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

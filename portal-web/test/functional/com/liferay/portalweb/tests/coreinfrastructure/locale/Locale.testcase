@@ -389,6 +389,7 @@ definition {
 	@priority = 4
 	test InstanceCreatedOnRestartPickUpNewCompanyLocale {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -678,6 +679,7 @@ definition {
 	test RestrictDefaultLocale {
 		property custom.properties = "company.default.locale=es_ES";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -947,6 +949,7 @@ definition {
 	@priority = 5
 	test ViewLocaleInNewVirtualInstance {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

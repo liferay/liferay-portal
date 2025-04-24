@@ -204,6 +204,7 @@ definition {
 	@priority = 5
 	test CanBeSubmittedWithARequiredField {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -317,6 +318,7 @@ definition {
 	@priority = 5
 	test CannotBeSubmittedWithoutARequiredField {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1135,6 +1137,7 @@ definition {
 	test CanRequireCAPTCHA {
 		property captcha.enabled = "true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1704,6 +1707,7 @@ definition {
 	@priority = 4
 	test SendEmailNotificationsSubmittingForm {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1959,6 +1963,7 @@ definition {
 	@priority = 5
 	test SuccessPageCanBeCustomized {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

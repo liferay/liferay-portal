@@ -31,6 +31,7 @@ definition {
 	test AddAndEditTranslatedFieldsWithOptions {
 		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		NavItem.gotoStructures();
 
@@ -1023,6 +1024,7 @@ definition {
 	test TranslationsRemainsUponSavingWebContent {
 		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		NavItem.gotoStructures();
 

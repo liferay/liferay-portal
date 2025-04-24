@@ -20,6 +20,7 @@ definition {
 	test ViewDroolsInAppManagerAfterUpgrade625 {
 		property data.archive.type = "data-archive-portal";
 		property database.types = "mariadb,mysql,postgresql";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "6.2.5";
 
 		ValidateDroolsUpgrade.viewDroolsAppManager();
@@ -29,6 +30,7 @@ definition {
 	test ViewDroolsInAppManagerAfterUpgrade704 {
 		property data.archive.type = "data-archive-portal";
 		property database.types = "mariadb,mysql,postgresql";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.0.4";
 
 		ValidateDroolsUpgrade.viewDroolsAppManager();
@@ -38,6 +40,7 @@ definition {
 	test ViewDroolsInAppManagerAfterUpgrade713 {
 		property data.archive.type = "data-archive-portal";
 		property database.types = "mariadb,mysql,postgresql";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.1.3";
 
 		ValidateDroolsUpgrade.viewDroolsAppManager();
@@ -46,6 +49,7 @@ definition {
 	@priority = 5
 	test ViewDroolsInAppManagerAfterUpgrade7110 {
 		property data.archive.type = "data-archive-portal";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.1.10";
 
 		ValidateDroolsUpgrade.viewDroolsAppManager();
@@ -54,6 +58,7 @@ definition {
 	@priority = 5
 	test ViewDroolsInAppManagerAfterUpgrade70106 {
 		property data.archive.type = "data-archive-portal";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.0.10.6";
 
 		ValidateDroolsUpgrade.viewDroolsAppManager();
@@ -63,6 +68,7 @@ definition {
 	test ViewDroolsInAppManagerAfterUpgrade621015 {
 		property data.archive.type = "data-archive-portal";
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "6.2.10.15";
 
 		ValidateDroolsUpgrade.viewDroolsAppManager();
@@ -72,6 +78,7 @@ definition {
 	test ViewDroolsInAppManagerAfterUpgrade621021 {
 		property data.archive.type = "data-archive-portal";
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "6.2.10.21";
 
 		ValidateDroolsUpgrade.viewDroolsAppManager();

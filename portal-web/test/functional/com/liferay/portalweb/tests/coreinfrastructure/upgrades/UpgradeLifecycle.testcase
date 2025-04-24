@@ -73,6 +73,7 @@ definition {
 		property custom.properties = "initial.system.check.enabled=false${line.separator}upgrade.database.auto.run=true";
 		property database.bare.enabled = "true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Pending upgrades are not found in the logs") {
 			AssertConsoleTextNotPresent(value1 = "Run the upgrade process or type upgrade:checkAll in the Gogo shell to get more information.");

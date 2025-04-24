@@ -474,6 +474,7 @@ definition {
 	@priority = 5
 	test CanAddReplacementProductToCart {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a diagram product is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(
@@ -856,6 +857,7 @@ definition {
 	@priority = 5
 	test VerifyAllPinTypeAndMappedProductInformation {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("And two Diagrams with the "Type" set to "Default", two images uploaded as "Diagram File", and three pins for "Diagram 1" and two mapped pins for "Diagram 2"") {
 			for (var num : list "1,2") {

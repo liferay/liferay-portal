@@ -81,6 +81,7 @@ definition {
 	@priority = 5
 	test CanAddOneToManyRelationWithNativeObject {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -286,6 +287,7 @@ definition {
 	@priority = 5
 	test CanCreateOneToManyForNativeObject {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -341,6 +343,7 @@ definition {
 	@priority = 5
 	test CanDeleteEntriesUsingCascadeDeletionType {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an object with self relationship and cascade deletion type") {
 			ObjectAdmin.addObjectViaAPI(
@@ -1340,6 +1343,7 @@ definition {
 	@priority = 5
 	test CannotRelateAnEntryWithItself {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1506,6 +1510,7 @@ definition {
 	@priority = 5
 	test CanRelateManyToManyCustomObjectEntryWithNativeObjectEntries {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1627,6 +1632,7 @@ definition {
 	@priority = 5
 	test CanRelateOneToManyCustomObjectEntryWithNativeObjectEntries {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1909,6 +1915,7 @@ definition {
 	test CanSeeRelatedEntriesOnTab {
 		property ci.retries.disabled = "true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

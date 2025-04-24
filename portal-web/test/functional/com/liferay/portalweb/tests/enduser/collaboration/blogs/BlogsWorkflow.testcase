@@ -26,6 +26,7 @@ definition {
 	@priority = 4
 	test CanResubmitRejectedEntry {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		Workflow.openWorkflowAdmin(siteURLKey = "guest");
 

@@ -132,6 +132,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateAdaptiveMedia {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -198,6 +199,7 @@ definition {
 		property app.server.types = "jboss,tomcat,weblogic,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -228,6 +230,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateComment {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -292,6 +295,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateKnowledgeBase {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -322,6 +326,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateMessageBoards {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -352,6 +357,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateNotifications {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -382,6 +388,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateQuestions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -412,6 +419,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateRatings {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -442,6 +450,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateSharing {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -472,6 +481,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateTranslation {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -502,6 +512,7 @@ definition {
 	@priority = 3
 	test CanDeactivateAndActivateWiki {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

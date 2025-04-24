@@ -29,6 +29,7 @@ definition {
 	@priority = 5
 	test ViewAndDeleteContentWithTitleAndAllFields {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Add a widget page") {
 			JSONLayout.addPublicLayout(

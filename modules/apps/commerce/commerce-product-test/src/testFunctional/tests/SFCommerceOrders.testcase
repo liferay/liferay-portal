@@ -655,6 +655,7 @@ definition {
 	@priority = 5
 	test CanSearchOrderIdInAccountSelector {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given Money Order is enbaled") {
 			CommerceChannels.openChannelsAdmin();
@@ -708,6 +709,7 @@ definition {
 	test CanSeeAPlacedOrderWithDeletedProduct {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a minium site with a buyer user and creating an order with a product") {
 			CommerceEntry.addAccountEntryUser(

@@ -1557,6 +1557,7 @@ definition {
 	test PaymentMethodEligibleForSpecificPaymentTerms {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -2243,6 +2244,7 @@ definition {
 	test ShippingOptionEligibleForAnyOrderType {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -2360,6 +2362,7 @@ definition {
 	test ShippingOptionEligibleForSpecificDeliveryTerms {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -2452,6 +2455,7 @@ definition {
 	test ShippingOptionEligibleForSpecificOrderType {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(

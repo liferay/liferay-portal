@@ -22,6 +22,7 @@ definition {
 	@priority = 3
 	test ActivateOfflinePaymentMethodsAndAddDescription {
 		property portal.acceptance = "false";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -65,6 +66,7 @@ definition {
 	@priority = 5
 	test AddEditAndDeleteOfflinePaymentMethod {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -130,6 +132,7 @@ definition {
 	@priority = 5
 	test AnOfflinePaymentMethodCanBeUsedForAnOrder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -194,6 +197,7 @@ definition {
 	@priority = 5
 	test AssertAndEditNewPaymentMethodInOrdersPage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

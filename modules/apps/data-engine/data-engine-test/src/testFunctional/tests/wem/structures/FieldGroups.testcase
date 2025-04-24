@@ -164,6 +164,7 @@ definition {
 	@priority = 3
 	test CheckIfFieldGroupDataPersists {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		DataEngine.addField(
 			fieldFieldLabel = "Text",
@@ -197,6 +198,7 @@ definition {
 	@priority = 5
 	test CreateEditAndDeleteFieldGroups {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		DataEngine.addField(
 			fieldFieldLabel = "Text",
@@ -584,6 +586,7 @@ definition {
 	@priority = 5
 	test DuplicateTwoLevelFieldGroups {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		DataEngine.addField(
 			fieldFieldLabel = "Text 1",

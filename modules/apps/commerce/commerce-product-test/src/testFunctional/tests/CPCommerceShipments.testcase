@@ -22,6 +22,7 @@ definition {
 	@priority = 5
 	test AddItemsToShipment {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -327,6 +328,7 @@ definition {
 	@priority = 5
 	test AssertShippedShipmentNotDeletable {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -849,6 +851,7 @@ definition {
 	@priority = 5
 	test CanEditShipmentCustomFields {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -1495,6 +1498,7 @@ definition {
 	@priority = 5
 	test CanNotUseTheSameERCForDifferentShipments {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -1749,6 +1753,7 @@ definition {
 	@priority = 5
 	test CanViewShipmentItemsDifferentShippingMethodsInfoMessage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with an account") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -2221,6 +2226,7 @@ definition {
 	@priority = 5
 	test ExecuteShipmentWorkflow {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -2615,6 +2621,7 @@ definition {
 	@priority = 5
 	test UpdateShipmentAddress {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -2764,6 +2771,7 @@ definition {
 	@priority = 5
 	test UpdateShipmentItems {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -3028,6 +3036,7 @@ definition {
 	@priority = 5
 	test ViewOrderShipmentAmountIsCorrect {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -3114,6 +3123,7 @@ definition {
 	@priority = 5
 	test ViewOrderShipmentDiscountAmountIsCorrect {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 

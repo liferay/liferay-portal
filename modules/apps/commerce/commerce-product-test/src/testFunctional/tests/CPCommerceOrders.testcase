@@ -305,6 +305,7 @@ definition {
 	test AssertBillingAddressIsNotVisibleToBuyerUserWithoutPermission {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -406,6 +407,7 @@ definition {
 	test AssertBillingAddressIsVisibleToBuyerUserWithPermission {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -466,6 +468,7 @@ definition {
 	test AssertDefaultBillingAddressIsNotVisibleToBuyerUserWithoutPermission {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -840,6 +843,7 @@ definition {
 	test CanButtonRetryPaymentDisappearIfThePaymentMethodIsDisabled {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -1197,6 +1201,7 @@ definition {
 	test CanEditAddressOfAnOpenOrderWithAddressAlreadySet {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -1284,6 +1289,7 @@ definition {
 	@priority = 5
 	test CanEditOrderMeasurementUnit {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a minium site created") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -1703,6 +1709,7 @@ definition {
 	test CanRetryAnIncompletePaymentWithAnOpenOrder {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -2729,6 +2736,7 @@ definition {
 	test CanViewOrdersOnlyWhenGivenViewPermissions {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a business account and Money Order enabled is created") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -3132,6 +3140,7 @@ definition {
 	@priority = 5
 	test EditOrderCheckingOutViaOrderDetails {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -3451,6 +3460,7 @@ definition {
 	@priority = 5
 	test FulfillOrderWithBuyerOrderApprovalWorkflowActive {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -3573,6 +3583,7 @@ definition {
 	@priority = 5
 	test FulfillOrderWithSellerOrderAcceptanceWorkflowActive {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 

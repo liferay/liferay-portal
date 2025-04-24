@@ -430,6 +430,7 @@ definition {
 	@priority = 5
 	test FilterAndOrderAssetsByField {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Add a Language Selector to page") {
 			JSONLayout.addWidgetToPublicLayout(

@@ -115,6 +115,7 @@ definition {
 	@priority = 5
 	test CanAddAndRemoveTagsForAttachments {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium Site") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -286,6 +287,7 @@ definition {
 	@priority = 5
 	test CanAddAndRemoveTagsForImages {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium Site") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -555,6 +557,7 @@ definition {
 	test CanProductDetailsUseAdaptiveMedia {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site is created") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -664,6 +667,7 @@ definition {
 	test CanViewImagesCorrectlyByUsingTheShoppingExperienceImageGalleryToggle {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium Site") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");

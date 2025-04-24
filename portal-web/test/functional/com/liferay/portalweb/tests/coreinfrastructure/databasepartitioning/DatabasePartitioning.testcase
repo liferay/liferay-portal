@@ -29,6 +29,7 @@ definition {
 		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property minimum.slave.ram = "24";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property remote.elasticsearch.enabled = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -85,6 +86,7 @@ definition {
 		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property minimum.slave.ram = "24";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property remote.elasticsearch.enabled = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -154,6 +156,7 @@ definition {
 	test CanDeleteCompany {
 		property custom.properties = "database.partition.schema.name.prefix=ltest_${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

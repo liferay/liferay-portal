@@ -450,6 +450,7 @@ definition {
 	@priority = 5
 	test UsersWithManagePaymentMethodsPermissionCanEditSelectedPaymentMethod {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given multiple active payment methods") {
 			CommerceChannels.openChannelsAdmin();

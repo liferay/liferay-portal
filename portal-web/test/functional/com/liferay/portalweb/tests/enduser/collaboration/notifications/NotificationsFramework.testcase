@@ -277,6 +277,8 @@ definition {
 	@description = "This ensures that a user can mark all selected notifications as read via the management bar no matter if they are all in the same state or not."
 	@priority = 4
 	test CanMarkNotificationsWithDifferentStatesAsRead {
+		property portal.acceptance.quarantine = "true";
+
 		Workflow.openWorkflowAdmin(siteURLKey = "guest");
 
 		Workflow.configureWorkflow(

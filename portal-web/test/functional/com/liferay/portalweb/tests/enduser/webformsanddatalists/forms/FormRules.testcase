@@ -96,6 +96,7 @@ definition {
 	@priority = 2
 	test AreDuplicatedWhenTheFormIsDuplicated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -262,6 +263,7 @@ definition {
 	@priority = 5
 	test CanBeCreated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -302,6 +304,7 @@ definition {
 	@priority = 2
 	test CanBeCreatedUsingAFieldWithAPredefinedValue {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -389,6 +392,7 @@ definition {
 	@priority = 5
 	test CanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -433,6 +437,7 @@ definition {
 	@priority = 5
 	test CanBeEdited {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -565,6 +570,7 @@ definition {
 	@priority = 4
 	test CanUseRuleOnMultipleSelectionField {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1060,6 +1066,7 @@ definition {
 	@priority = 5
 	test SyncBetweenFormAndRuleBuilder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

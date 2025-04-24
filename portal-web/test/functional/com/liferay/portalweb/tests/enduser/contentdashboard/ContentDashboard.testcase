@@ -1767,6 +1767,7 @@ definition {
 	@uitest
 	test ClickTitleApprovedDPTWithNoPermissions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1856,6 +1857,7 @@ definition {
 	@uitest
 	test ClickTitleApprovedDPTWithPermissions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -3808,6 +3810,7 @@ definition {
 	@priority = 5
 	test FilterByAuthor {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Create a Web Content") {
 			JSONWebcontent.addWebContent(
@@ -4219,6 +4222,7 @@ definition {
 	@priority = 4
 	test FilterByDuplicatedMimeType {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -4294,6 +4298,7 @@ definition {
 	@priority = 5
 	test FilterByMultipleTags {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Create a Web Content with 2 tags") {
 			JSONWebcontent.addWebContent(
@@ -4434,6 +4439,7 @@ definition {
 	test FilterByStatusExpiredDocument {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -6314,6 +6320,7 @@ definition {
 	test ShowAllContentsCreatedByUsers {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Create and configure second user") {
 			JSONUser.addUser(
@@ -6391,6 +6398,7 @@ definition {
 	test ShowOnlyContentCreatedByUser {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Create and configure second user") {
 			JSONUser.addUser(

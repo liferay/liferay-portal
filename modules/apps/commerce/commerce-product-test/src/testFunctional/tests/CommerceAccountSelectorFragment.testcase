@@ -55,6 +55,7 @@ definition {
 	@priority = 5
 	test CanMiniCartFragmentUpdateFollowingAccountSelectorChanges {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an order is created for Commerce Account 1(U-Joint x 3)") {
 			var firstAccountOrderId = CommerceJSONOrdersAPI._addCommerceOrder(
@@ -192,6 +193,7 @@ definition {
 	@priority = 5
 	test CanUseAccountSelectorFragment {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a public page is added with the Account Selector fragment") {
 			JSONLayout.addPublicLayout(

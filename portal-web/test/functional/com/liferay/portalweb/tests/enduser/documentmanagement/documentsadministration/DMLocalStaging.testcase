@@ -44,6 +44,7 @@ definition {
 	@refactordone
 	test CanDeleteDocumentWithCustomType {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		DMNavigator.gotoDocumentType();
 
@@ -98,6 +99,7 @@ definition {
 	@refactordone
 	test CanEditDocumentWithCustomType {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		DMNavigator.gotoDocumentType();
 
@@ -1032,6 +1034,7 @@ definition {
 	@refactordone
 	test CanPublishSubfolderWithDocumentsViaSAP {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1211,6 +1214,7 @@ definition {
 	@priority = 4
 	test CanPublishWidgetConfiguration {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONFolder.addFolder(
 			dmFolderDescription = "DM Folder Description",
@@ -1977,6 +1981,7 @@ definition {
 	@refactordone
 	test CanViewRepublishedDocumentInfo {
 		property custom.properties = "dl.actions.visible=true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONAssettag.addTag(
 			groupName = "Site Name (Staging)",
@@ -2332,6 +2337,7 @@ definition {
 	@refactordone
 	test ViewWebContentWithRepublishedImage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONLayout.addWidgetToPublicLayout(
 			column = 1,

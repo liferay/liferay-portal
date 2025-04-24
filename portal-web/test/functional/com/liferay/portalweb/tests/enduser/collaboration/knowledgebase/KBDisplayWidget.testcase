@@ -611,6 +611,7 @@ definition {
 	@refactordone
 	test CanViewCustomFriendlyURL {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var portalURL = PropsUtil.get("portal.url");
 

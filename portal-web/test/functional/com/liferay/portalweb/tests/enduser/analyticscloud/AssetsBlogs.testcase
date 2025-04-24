@@ -788,6 +788,7 @@ definition {
 	test ViewAllBlogsShownInAssetList {
 		property analytics.cloud.acceptance = "true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.release = "true";
 
 		ACUtils.createBlogsAndAddToPage(entryTitle = "Test 2");

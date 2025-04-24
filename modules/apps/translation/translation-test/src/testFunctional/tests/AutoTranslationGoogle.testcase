@@ -37,6 +37,7 @@ definition {
 	@priority = 5
 	test CannotSaveWhenConfigurationIsInvalid {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -629,6 +630,7 @@ definition {
 	@priority = 5
 	test CanTranslateWCToJapaneseWithGoogle {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

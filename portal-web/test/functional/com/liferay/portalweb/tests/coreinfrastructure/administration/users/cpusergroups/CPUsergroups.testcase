@@ -211,6 +211,7 @@ definition {
 	@priority = 4
 	test SearchCurrentMembersAssignedToUserGroup {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -254,6 +255,7 @@ definition {
 		property app.server.types = "jboss,tomcat,weblogic,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 
 		UserGroup.openUserGroupsAdmin();

@@ -30,6 +30,7 @@ definition {
 	@priority = 5
 	test BulkRestoreMultipleAssetsFromRecycleBin {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Add a Web Content Article, Blogs Entry and Document") {
 			JSONWebcontent.addWebContent(
@@ -483,6 +484,7 @@ definition {
 	@priority = 5
 	test RenameBulkRestoreDocumentsAutomaticallyWhenDocumentNamesAlreadyExistInTheDestination {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 
 		task ("Add multiple document entries") {

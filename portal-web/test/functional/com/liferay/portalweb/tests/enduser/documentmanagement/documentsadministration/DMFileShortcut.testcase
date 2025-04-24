@@ -98,6 +98,8 @@ definition {
 	@description = "This test ensures that a file shortcut's tags can be copied from a parent to child site."
 	@priority = 4
 	test CanCopyTagFromDepotToConnectedSite {
+		property portal.acceptance.quarantine = "true";
+
 		HeadlessSite.addSite(siteName = "Site Name 2");
 
 		JSONDepot.addDepot(

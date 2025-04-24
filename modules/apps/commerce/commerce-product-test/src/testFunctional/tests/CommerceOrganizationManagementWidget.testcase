@@ -932,6 +932,7 @@ definition {
 	@priority = 5
 	test CanUserEditAccountDetailsFromOrganizationManagementChart {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an organization is created and the account is linked to it") {
 			JSONOrganization.addOrganization(
@@ -1006,6 +1007,7 @@ definition {
 	@priority = 5
 	test CanUserEditUserInformationFromOrganizationManagementChart {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a second account with a new user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -1372,6 +1374,7 @@ definition {
 	@priority = 5
 	test CanUserViewActionOptionsForUserInOrganizationManagementChart {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a second account with a new user is created") {
 			CommerceEntry.addAccountEntryUser(

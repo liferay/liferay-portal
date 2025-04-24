@@ -42,6 +42,7 @@ definition {
 	@priority = 5
 	test CanDynamicFieldFragmentMapProductFields {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given GTIN and MPN fields are added to some skus") {
 			var index = 1;

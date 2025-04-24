@@ -21,6 +21,7 @@ definition {
 	@priority = 5
 	test CanAddRefundReason {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -67,6 +68,7 @@ definition {
 	@priority = 5
 	test CancelPayment {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -166,6 +168,7 @@ definition {
 	@priority = 5
 	test CanDeleteRefundReason {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -205,6 +208,7 @@ definition {
 	@priority = 5
 	test CanEditRefundReason {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -343,6 +347,7 @@ definition {
 	@priority = 5
 	test MoneyOrderCheckout {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

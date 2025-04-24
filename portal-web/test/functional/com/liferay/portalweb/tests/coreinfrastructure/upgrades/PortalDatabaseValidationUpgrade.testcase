@@ -16,6 +16,7 @@ definition {
 		property database.partition.enabled = "true";
 		property database.types = "mysql,postgresql";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.smoke.upgrades = "false";
 		property skip.start.app.server = "true";
 		property testcase.url = "file:///opt/dev/projects/github/liferay-portal/";

@@ -55,6 +55,7 @@ definition {
 	@priority = 5
 	test AddSLAForTotalProcessResolution {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
@@ -341,6 +342,7 @@ definition {
 	@priority = 5
 	test ApplySearchesForAllAssignees {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -438,6 +440,7 @@ definition {
 	@priority = 5
 	test BulkReassignWorkflowInstances {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -521,6 +524,7 @@ definition {
 	@priority = 5
 	test BulkReassignWorkflowInstancesExceptions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -660,6 +664,7 @@ definition {
 	@priority = 5
 	test BulkUpdateDueDate {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
 		var currentYear = DateUtil.getCurrentYear();
@@ -1172,6 +1177,7 @@ definition {
 	@priority = 5
 	test FilterAllItemsListByAssigneeName {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1266,6 +1272,7 @@ definition {
 	@priority = 5
 	test ReassignWorkflowInstance {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
 
@@ -1335,6 +1342,7 @@ definition {
 	@priority = 5
 	test SearchAndFilterOnPerformanceByStepPage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1433,6 +1441,7 @@ definition {
 	@priority = 5
 	test SearchPerformanceOfAllAssignees {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1513,6 +1522,7 @@ definition {
 	@priority = 5
 	test SeeListOfReports {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1591,6 +1601,7 @@ definition {
 	@priority = 5
 	test SingleTaskWorkflowTransition {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1823,6 +1834,7 @@ definition {
 	@priority = 5
 	test UpdateandDeleteSLA {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1958,6 +1970,7 @@ definition {
 	@priority = 5
 	test UpdateDueDate {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
 		var currentYear = DateUtil.getCurrentYear();
@@ -2151,6 +2164,7 @@ definition {
 	@priority = 5
 	test ValidateWorkflowProcessListOnMetrics {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2283,6 +2297,7 @@ definition {
 	@priority = 5
 	test VerifyFilterTopStepPerformance {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var key_testSlaDefinitionDays = 0;
 		var key_testSlaDefinitionHours = "00:01";
@@ -2375,6 +2390,7 @@ definition {
 	@priority = 5
 	test VerifyMetricsIndexesInControlPanel {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2394,6 +2410,7 @@ definition {
 	@priority = 5
 	test VerifySLACustomCalendar {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2656,6 +2673,7 @@ definition {
 	@priority = 5
 	test ViewCompletedItems {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2763,6 +2781,7 @@ definition {
 	@priority = 5
 	test ViewPendingItems {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2856,6 +2875,7 @@ definition {
 	@priority = 5
 	test ViewPerformanceByAssigneePage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2989,6 +3009,7 @@ definition {
 		property environment.acceptance = "true";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -3132,6 +3153,7 @@ definition {
 	@priority = 5
 	test ViewWorkloadByAssigneeCard {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

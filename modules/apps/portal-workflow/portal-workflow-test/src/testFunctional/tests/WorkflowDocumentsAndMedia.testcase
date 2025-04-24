@@ -557,6 +557,7 @@ definition {
 	test SaveAsDraftAndViewCategories {
 		property custom.properties = "dl.file.entry.drafts.enabled=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
 

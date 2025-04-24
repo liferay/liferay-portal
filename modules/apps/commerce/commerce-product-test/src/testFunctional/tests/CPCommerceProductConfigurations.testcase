@@ -24,6 +24,7 @@ definition {
 	@priority = 5
 	test CanAddToCartAllowedQuantitiesWhenOrderItemQuantityIsHigherThanStockQuantityAndBackOrderIsEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -121,6 +122,7 @@ definition {
 	@priority = 5
 	test CanAddToCartAllowedQuantitiesWhenOrderItemQuantityIsLowerThanStockQuantityAndBackOrderIsEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -309,6 +311,7 @@ definition {
 	@priority = 5
 	test CanAddToCartMaximumProductQuantityWhenOrderItemQuantityIsLowerThanStockQuantityAndBackOrderIsEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -477,6 +480,7 @@ definition {
 	@priority = 5
 	test CanAddToCartMinimumProductQuantityWhenOrderItemQuantityIsLowerThanStockQuantityAndBackOrderIsEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -645,6 +649,7 @@ definition {
 	@priority = 5
 	test CanAddToCartMultipleProductQuantityWhenOrderItemQuantityIsLowerThanStockQuantityAndBackOrderIsEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -783,6 +788,7 @@ definition {
 	@priority = 5
 	test CanLocaleBePrependedForProductOnSiteMapPage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1061,6 +1067,7 @@ definition {
 	test CanLocaleBePrependedForProductOnSiteMapPageWhenVirtualHostIsEnabled {
 		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1594,6 +1601,7 @@ definition {
 	@priority = 5
 	test CannotAddToCartMinimumProductQuantityWhenStockQuantityIsLessAndBackOrderIsDisabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -1841,6 +1849,7 @@ definition {
 	@priority = 5
 	test CanOnlyPlaceOrderWhenStockIsAvailable {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(

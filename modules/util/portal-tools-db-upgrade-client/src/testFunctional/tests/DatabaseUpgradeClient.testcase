@@ -80,6 +80,7 @@ definition {
 	@priority = 5
 	test CheckUpgradeClientGogoShellHelpOutput {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "check-upgrade-client-gogoshell-help-output");
 	}

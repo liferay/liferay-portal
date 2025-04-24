@@ -61,6 +61,7 @@ definition {
 	test ViewPortalSmokeArchiveAutoUpgrade7413 {
 		property data.archive.type = "data-archive-portal";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.4.13";
 		property test.run.environment = "EE";
 
@@ -71,6 +72,7 @@ definition {
 	test ViewPortalSmokeArchiveAutoUpgrade70106 {
 		property data.archive.type = "data-archive-portal";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.0.10.6";
 
 		ValidateSmokeUpgrade.viewUpgrade();
@@ -88,6 +90,7 @@ definition {
 	test ViewPortalSmokeArchiveAutoUpgrade621021 {
 		property data.archive.type = "data-archive-portal";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "6.2.10.21";
 
 		ValidateSmokeUpgrade.viewUpgrade();

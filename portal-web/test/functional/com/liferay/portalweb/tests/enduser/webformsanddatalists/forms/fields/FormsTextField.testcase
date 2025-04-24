@@ -220,6 +220,7 @@ definition {
 	@priority = 5
 	test CanBeCreated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -242,6 +243,7 @@ definition {
 	@priority = 5
 	test CanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -285,6 +287,7 @@ definition {
 	@priority = 5
 	test CanBeDuplicated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -323,6 +326,7 @@ definition {
 	@priority = 5
 	test CanBeRequired {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -382,6 +386,7 @@ definition {
 	@priority = 5
 	test CanBeSetAsRepeatable {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -440,6 +445,7 @@ definition {
 	@priority = 3
 	test CanBeSetToMultipleLines {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -561,6 +567,7 @@ definition {
 	@priority = 4
 	test CanBeValidatedUsingTheDoesNotContainOption {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1176,6 +1183,7 @@ definition {
 	@priority = 5
 	test LabelCanBeHidden {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 

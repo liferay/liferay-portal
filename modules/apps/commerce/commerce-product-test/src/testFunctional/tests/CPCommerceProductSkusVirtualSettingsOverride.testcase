@@ -749,6 +749,7 @@ definition {
 	@priority = 5
 	test CanViewSingleSkuVirtualProductDetailPageWithSKUOverrideEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var sampleFileName = "Commerce_White.jpg";
 

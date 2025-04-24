@@ -30,6 +30,7 @@ definition {
 	@description = "This ensures that all languages hreflang tag will be displayed after disabling OTH from SEO settings."
 	@priority = 4
 	test CanViewAllHreflangTagsAfterDisabling {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -94,6 +95,7 @@ definition {
 	@description = "This ensures that only translated page hreflang is tag displayed when a user accesses an untranslated content page."
 	@priority = 5
 	test CanViewTranslatedLanguageHreflangTagOnContentPage {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -147,6 +149,7 @@ definition {
 	@description = "This ensures that only translated page hreflang tag is displayed when a user accesses an untranslated display page."
 	@priority = 5
 	test CanViewTranslatedLanguageHreflangTagOnDisplayPage {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -227,6 +230,7 @@ definition {
 	@description = "This ensures that only translated page hreflang tag is displayed when a user accesses an untranslated widget page."
 	@priority = 5
 	test CanViewTranslatedLanguageHreflangTagOnWidgetPage {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

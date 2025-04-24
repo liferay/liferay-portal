@@ -74,6 +74,7 @@ definition {
 	@refactordone
 	test CanAddBlogEntryWithEmbeddedVideo {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -106,6 +107,7 @@ definition {
 	@refactordone
 	test CanAddKBArticleWithEmbeddedVideo {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -337,6 +339,7 @@ definition {
 	@refactordone
 	test CanImportExportedKBWithEmbeddedVideo {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -450,6 +453,7 @@ definition {
 	@priority = 4
 	test PreviewRemainsAfterDisablingFFmpeg {
 		property portal.acceptance = "quarantine";
+		property portal.acceptance.quarantine = "true";
 		property portal.release = "quarantine";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

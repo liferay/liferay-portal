@@ -279,6 +279,8 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CannotAddEntryWhenRegRoleHasNoPermissions {
+		property portal.acceptance.quarantine = "true";
+
 		Permissions.setUpRegRoleLoginUserPG(
 			pageName = "Blogs Page",
 			portletName = "Blogs",
@@ -633,6 +635,7 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CannotDeleteEntryWhenOrgRoleHasNoPermissions {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -809,6 +812,8 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CannotDeleteEntryWhenRegRoleHasNoPermissions {
+		property portal.acceptance.quarantine = "true";
+
 		Permissions.setUpRegRoleLoginUserPG(
 			pageName = "Blogs Page",
 			portletName = "Blogs",
@@ -1110,6 +1115,7 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CannotEditEntryWhenOwnerHasNoPermissions {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1425,6 +1431,7 @@ definition {
 	@refactorneeded
 	test CannotSubscribeToEntryWhenRegRoleHasNoPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1620,6 +1627,8 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CannotViewEntryAfterOwnerRoleInlinePermissionsAreRemoved {
+		property portal.acceptance.quarantine = "true";
+
 		Permissions.setUpRegRoleLoginUserPG(
 			pageName = "Blogs Page",
 			portletName = "Blogs",
@@ -1701,6 +1710,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CannotViewEntryAsGuestWhenPermissionsAreRemoved {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1742,6 +1752,8 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CannotViewEntryWhenRegRoleHasNoPermissions {
+		property portal.acceptance.quarantine = "true";
+
 		Permissions.setUpRegRoleLoginUserPG(
 			pageName = "Blogs Page",
 			portletName = "Blogs",

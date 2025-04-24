@@ -330,6 +330,7 @@ definition {
 	@priority = 5
 	test CanVerifyIncludedAndExcludedOptionValuesAreDisabledWithReasonMessageWithoutSKUContributor {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an access token is generated to enable Show Unselectable Options from Instance Settings") {
 			var companyId = JSONCompany.getCompanyId();
@@ -1522,6 +1523,7 @@ definition {
 	@priority = 5
 	test CanVerifyProductsLimitRule {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an access token is generated to enable Show Unselectable Options from Instance Settings") {
 			var companyId = JSONCompany.getCompanyId();

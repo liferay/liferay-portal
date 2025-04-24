@@ -566,6 +566,7 @@ definition {
 	@priority = 5
 	test ConsumeBookedQuantitiesFromMultipleWarehouses {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -741,6 +742,7 @@ definition {
 	@priority = 5
 	test ConsumeQuantitiesFromMultipleWarehouses {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 

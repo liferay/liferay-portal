@@ -14,6 +14,7 @@ definition {
 	@priority = 3
 	test SendRedirectWorksWithNonRootContext {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.context = "liferay";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.liferay.virtual.instance = "false";
@@ -111,6 +112,7 @@ definition {
 	@priority = 5
 	test Smoke {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.context = "liferay";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.assert.warning.exceptions = "true";
@@ -126,6 +128,7 @@ definition {
 	@priority = 5
 	test VisitGlowrootWithNonRootContext {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.context = "liferay";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.liferay.virtual.instance = "false";

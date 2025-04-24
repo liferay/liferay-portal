@@ -57,6 +57,7 @@ definition {
 	@priority = 5
 	test CanBuyerRoleViewAddressesWithPermission {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the buyer role doesn't have permission to view addresses") {
 			Permissions.removePermissionViaAPI(

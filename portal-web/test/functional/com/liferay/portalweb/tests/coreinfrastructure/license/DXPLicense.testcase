@@ -66,6 +66,7 @@ definition {
 	test TermsOfUseNotShownAfterDimissedWithNonRootContext {
 		property custom.properties = "enterprise.product.notification.enabled=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.context = "liferay";
 		property skip.clean-app-server-deploy-dir = "true";
 		property test.liferay.virtual.instance = "false";

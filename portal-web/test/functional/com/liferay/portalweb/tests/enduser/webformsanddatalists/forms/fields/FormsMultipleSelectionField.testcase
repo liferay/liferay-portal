@@ -36,6 +36,7 @@ definition {
 	@priority = 5
 	test CanBeCreated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -60,6 +61,7 @@ definition {
 	@priority = 5
 	test CanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -93,6 +95,8 @@ definition {
 	@description = "Verify that a Multiple Selection Field can be duplicated"
 	@priority = 5
 	test CanBeDuplicated {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -151,6 +155,7 @@ definition {
 	@priority = 5
 	test CanBeEdited {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -189,6 +194,7 @@ definition {
 	@priority = 5
 	test CanBeRequired {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -452,6 +458,7 @@ definition {
 	@priority = 5
 	test LabelCanBeHidden {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -490,6 +497,7 @@ definition {
 	@priority = 3
 	test LabelCanBeHiddenWithSwitchEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -581,6 +589,7 @@ definition {
 	@priority = 5
 	test OptionsCanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -764,6 +773,7 @@ definition {
 	@priority = 3
 	test OptionsCanBeReordered {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

@@ -311,6 +311,7 @@ definition {
 	@priority = 5
 	test CanDeletePriceListsOnProductSKU {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site is created") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");

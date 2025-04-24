@@ -381,6 +381,7 @@ definition {
 	@priority = 5
 	test EscapeUrlRedirectWithGroovyScript {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -405,6 +406,7 @@ out.println(PortalUtil.escapeRedirect("/"));
 	@priority = 5
 	test NoPermissionFromUnauthorizedURLAsPowerUser {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

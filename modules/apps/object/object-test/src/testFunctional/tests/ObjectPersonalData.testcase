@@ -117,6 +117,7 @@ definition {
 	test CanDeleteObjectEntries {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a custom object in a M:M relationship with itself") {
 			ObjectAdmin.addObjectViaAPI(
@@ -268,6 +269,7 @@ definition {
 	test CanExportObjectEntries {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a custom object") {
 			ObjectAdmin.addObjectViaAPI(

@@ -612,6 +612,7 @@ definition {
 	test VisitorBehaviorCardShowsExpectedAmountOfViews {
 		property analytics.cloud.acceptance = "true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.release = "true";
 		property test.run.type = "single";
 

@@ -18,6 +18,7 @@ definition {
 	test AddAndViewStructureAndTemplateWithPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Test Site Name",

@@ -41,6 +41,7 @@ definition {
 	@priority = 5
 	test AssertCheckoutStepsNotShownWithoutPermissions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";
@@ -136,6 +137,7 @@ definition {
 	@priority = 5
 	test AssertDeliveryTermsNotEditableWithoutPermissions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";
@@ -259,6 +261,7 @@ definition {
 	@priority = 5
 	test AssertPaymentTermsNotEditableWithoutPermissions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";

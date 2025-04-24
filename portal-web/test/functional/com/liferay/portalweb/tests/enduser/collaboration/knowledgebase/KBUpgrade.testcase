@@ -45,6 +45,7 @@ definition {
 	test ViewKBArticleArchive73101 {
 		property data.archive.type = "data-archive-collaboration";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.3.10.1";
 
 		ValidateKnowledgeBaseUpgrade.viewAndAddKBArticle();

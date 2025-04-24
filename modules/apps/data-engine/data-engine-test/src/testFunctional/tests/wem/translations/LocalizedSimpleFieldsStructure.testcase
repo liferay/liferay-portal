@@ -186,6 +186,7 @@ definition {
 	@priority = 5
 	test CreateEditAndDeleteLocalizedStructure {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
@@ -498,6 +499,7 @@ definition {
 	@priority = 5
 	test EditAndDeleteWithDifferentInstanceLanguage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		PortalSettings.openInstanceSettingsAdmin();
 
@@ -694,6 +696,7 @@ definition {
 	@priority = 5
 	test TranslateStructureWithAllFields {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 

@@ -138,6 +138,7 @@ definition {
 	test ViewPortalConfigurationAfterUpgrade7413 {
 		property data.archive.type = "data-archive-portal-settings";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.stable = "false";
 		property portal.version = "7.4.13";
 		property test.run.environment = "EE";
@@ -151,6 +152,7 @@ definition {
 	test ViewPortalConfigurationAfterUpgrade70106 {
 		property data.archive.type = "data-archive-portal-settings";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "7.0.10.6";
 
 		ValidateInstanceSettingsUpgrade.viewInstanceSettings();
@@ -182,6 +184,7 @@ definition {
 		property data.archive.type = "data-archive-portal-settings";
 		property database.types = "db2,mysql,oracle,postgresql";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.version = "6.2.10.21";
 
 		ValidateInstanceSettingsUpgrade.viewInstanceSettings();

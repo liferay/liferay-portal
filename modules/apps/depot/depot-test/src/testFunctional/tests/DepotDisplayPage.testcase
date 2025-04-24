@@ -547,6 +547,7 @@ definition {
 	@refactordone
 	test CanViewCustomizeWCFromConnectedSite {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var portalURL = PropsUtil.get("portal.url");
 

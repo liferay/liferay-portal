@@ -199,6 +199,7 @@ definition {
 	@uitest
 	test ViewProductMenuWhenDisableApplicationsMenuInDefaultInstance {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

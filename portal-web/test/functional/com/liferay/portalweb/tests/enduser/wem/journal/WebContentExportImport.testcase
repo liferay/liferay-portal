@@ -630,6 +630,7 @@ definition {
 	@priority = 5
 	test ImportAndUseGlobalStructureAndTemplate {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		HeadlessSite.addSite(siteName = "Site Name 2");
 

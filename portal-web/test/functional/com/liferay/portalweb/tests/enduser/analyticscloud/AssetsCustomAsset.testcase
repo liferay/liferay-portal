@@ -132,6 +132,7 @@ definition {
 	test CanCreateMultipleCustomAssetReport {
 		property analytics.cloud.acceptance = "true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.release = "true";
 
 		task ("Sign in as new user") {

@@ -298,6 +298,7 @@ definition {
 	@priority = 5
 	test CanUploadValidCSVOrderFile {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the warehouse quantity for ABS Sensor is set to 0") {
 			CommerceProducts.openProductsAdmin();

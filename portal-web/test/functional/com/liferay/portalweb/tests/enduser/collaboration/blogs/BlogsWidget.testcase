@@ -190,6 +190,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CannotViewAsGuestInAPWhenPermissionsAreRemoved {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -260,6 +261,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewBlogWithAbstractDisplay {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -305,6 +307,7 @@ definition {
 	@description = "This is a test for LPS-136809. It checks that a Blog entry can be viewed with the Menu Display configured."
 	@priority = 3
 	test CanViewBlogWithCardDisplay {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -361,6 +364,7 @@ definition {
 	@refactorneeded
 	test CanViewBlogWithFutureDisplayDateViaBlogsAggregator {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
+		property portal.acceptance.quarantine = "true";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -517,6 +521,7 @@ definition {
 	@refactordone
 	@uittest
 	test CanViewEntryInAP {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

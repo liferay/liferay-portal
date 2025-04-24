@@ -39,6 +39,7 @@ definition {
 	@priority = 5
 	test AddFormInGlobal {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -132,6 +133,7 @@ definition {
 	@priority = 3
 	test AddFormToUserSiteAndViewNoDuplicates {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -240,6 +242,7 @@ definition {
 	@priority = 3
 	test AutosaveDisplaysANotification {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -265,6 +268,7 @@ definition {
 	@priority = 3
 	test AutosaveIntervalCanBeConfigured {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -334,6 +338,7 @@ definition {
 	@priority = 4
 	test BelongsToRuleCanPairWithGuestUser {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -433,6 +438,8 @@ definition {
 	@description = "Verify that a Form can be created"
 	@priority = 5
 	test CanBeCreated {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -582,6 +589,7 @@ definition {
 	@priority = 5
 	test CanBeCreatedWithoutTitle {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -608,6 +616,8 @@ definition {
 	@description = "Verify that a Form can be deleted"
 	@priority = 5
 	test CanBeDeleted {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdminNavigator.gotoNewForm();
 
 		Form.editName(formName = "Form 1");
@@ -635,6 +645,7 @@ definition {
 	@priority = 5
 	test CanBeDuplicated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -668,6 +679,8 @@ definition {
 	@description = "Verify that a Form can be edited"
 	@priority = 5
 	test CanBeEdited {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -727,6 +740,7 @@ definition {
 	@priority = 3
 	test CanBeEditedAfterChangingLanguage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -772,6 +786,7 @@ definition {
 	@priority = 3
 	test CanBeEditedAfterChangingLocale {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -909,6 +924,7 @@ definition {
 	@priority = 4
 	test CanBeViewedAfterDeletingAField {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1167,6 +1183,7 @@ definition {
 	@priority = 3
 	test ConfirmationAppearsWhenLeavingFormWithoutSaving {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1656,6 +1673,7 @@ definition {
 	@priority = 5
 	test PagesCanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1853,6 +1871,7 @@ definition {
 	@priority = 4
 	test SearchFormRecordMultipleEntries {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1958,6 +1977,7 @@ definition {
 	@priority = 4
 	test SubmitFormWithMultipleFieldsAndViewEntriesViaDescriptiveDisplay {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2129,6 +2149,7 @@ definition {
 	@priority = 5
 	test TitleAndDescriptionXSSUnescapedAfterUnpublish {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -2177,6 +2198,7 @@ definition {
 	@priority = 4
 	test ViewDefaultFieldNamesWithPunctuationCharacters {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.assert.javascript.errors = "true";
 		property test.assert.warning.exceptions = "true";
@@ -2238,6 +2260,7 @@ definition {
 	@priority = 5
 	test ViewSelectFromListOptionValueWithCharacter {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

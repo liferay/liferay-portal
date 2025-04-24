@@ -22,6 +22,7 @@ definition {
 	@priority = 5
 	test CanAssertCustomerOrderReflectsSupplierOrderChanges {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -1132,6 +1133,7 @@ definition {
 	@priority = 5
 	test CanSupplierAddPriceListBulkPricingEntry {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -1239,6 +1241,7 @@ definition {
 	@priority = 5
 	test CanSupplierAddPriceListTieredPricingEntry {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -1346,6 +1349,7 @@ definition {
 	@priority = 5
 	test CanSupplierAddPromotionBulkPricingEntry {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -2117,6 +2121,7 @@ definition {
 	@priority = 5
 	test CanSupplierManageFullWorkflowOfAnOrder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user is created") {
 			CommerceEntry.addAccountEntryUser(
@@ -3143,6 +3148,7 @@ definition {
 	@priority = 5
 	test CanSupplierUserManageDiscountsInPriceListsAndPromotions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Supplier account with a supplier user") {
 			JSONAccountEntry.addAccountEntry(

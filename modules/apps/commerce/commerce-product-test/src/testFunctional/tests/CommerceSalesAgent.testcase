@@ -46,6 +46,7 @@ definition {
 	@priority = 5
 	test CanAddNewUserToAccountAsSalesAgent {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("And the admin creates an account called Commerce Account") {
 			JSONAccountEntry.addAccountEntry(
@@ -103,6 +104,7 @@ definition {
 	@priority = 5
 	test CanCheckoutOrdersAsSalesAgent {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given 2 accounts are created") {
 			for (var account : list "A,B") {
@@ -718,6 +720,7 @@ definition {
 	@priority = 5
 	test CanSalesAgentWithPermissionViewChannelDefaults {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the Sales Agent has Update and View Channel Defaults permissions for Account Entry") {
 			for (var permissions : list "UPDATE,VIEW_CHANNEL_DEFAULTS") {

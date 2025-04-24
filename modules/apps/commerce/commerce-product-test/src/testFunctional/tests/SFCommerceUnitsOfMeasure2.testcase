@@ -18,6 +18,7 @@ definition {
 	@priority = 5
 	test CanAddToCartFragmentHandleMultipleSkusUOM {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");

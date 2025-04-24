@@ -2066,6 +2066,7 @@ definition {
 	@priority = 5
 	test CanViewSingleSkuGroupedProductDetailPage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var groupedProductEntryNames = "ABS Sensor,Brake Pads,Cams";
 

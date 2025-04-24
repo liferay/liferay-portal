@@ -20,6 +20,7 @@ definition {
 	@priority = 5
 	test CookiesConsentPanelAcceptsOnlySelectedCookies {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -46,6 +47,7 @@ definition {
 	@priority = 5
 	test CookiesConsentPanelCouldBeAddedToASitePage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -62,6 +64,7 @@ definition {
 	@priority = 5
 	test CookiesConsentPanelCouldBeEnabledAndCustomized {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -82,6 +85,7 @@ definition {
 	@priority = 5
 	test CookiesConsentPanelCouldBeEnabledAndCustomizedOnASitePage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -160,6 +164,7 @@ definition {
 	@priority = 5
 	test CookiesConsentPanelCouldSaveCookieSettingsViaPortletAtSiteLevel {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -231,6 +236,7 @@ definition {
 	@priority = 5
 	test CookiesConsentPanelCouldSaveCookieSettingsWhenItsOnASitePage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -251,6 +257,7 @@ definition {
 	@priority = 5
 	test CookiesConsentPanelDeclineAllSelected {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

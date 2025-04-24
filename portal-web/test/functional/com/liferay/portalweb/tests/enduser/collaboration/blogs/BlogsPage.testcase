@@ -59,6 +59,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test AbstractDescriptionPersistsWhenTypingInContentField {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -169,6 +170,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanDisplayViewCountForEntry {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -485,6 +487,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanSubscribeToComment {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -561,6 +564,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanViewAbstractDisplayingFirst400Characters {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -590,6 +594,7 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CanViewEntriesOnMultiplePagesWithDifferentScopes {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -683,6 +688,7 @@ definition {
 	@description = "This is a test for LPS-94990. It checks that a blog entry can be viewed when using a display page template."
 	@priority = 5
 	test CanViewEntryUsingDisplayPageTemplate {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -765,6 +771,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanViewReadingTime {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

@@ -399,6 +399,7 @@ definition {
 	@priority = 5
 	test CanCreateFilterByRelationshipColumnFromSystemObject {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a system object related to another custom object, in a One-to-Many relationship") {
 			ObjectAdmin.addObjectViaAPI(
@@ -2084,6 +2085,7 @@ definition {
 	@priority = 5
 	test CanSeeRenamedColumnOnViewBuilder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 152068",

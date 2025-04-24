@@ -270,6 +270,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanViewWebsiteNotificationForUpdatedThreadInCategory {
+		property portal.acceptance.quarantine = "true";
+
 		JSONMBMessage.addCategory(
 			categoryDescription = "MB Category Description",
 			categoryName = "MB Category Name",
@@ -441,6 +443,7 @@ definition {
 	@refactorneeded
 	test ViewMBThreadAndReplyThreadInGmail {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}mail.session.mail.smtp.auth=true${line.separator}mail.session.mail.store.protocol=pop3${line.separator}mail.session.mail.transport.protocol=smtp${line.separator}message.boards.message.formats.default=html${line.separator}pop.server.notifications.enabled=true${line.separator}pop.server.subdomain=";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

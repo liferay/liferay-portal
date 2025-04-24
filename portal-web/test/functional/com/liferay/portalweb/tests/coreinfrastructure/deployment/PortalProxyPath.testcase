@@ -17,6 +17,7 @@ definition {
 	test ProxyPathRedirect {
 		property custom.properties = "web.server.forwarded.port.enabled=true${line.separator}web.server.host=localhost${line.separator}web.server.protocol=http";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -39,6 +40,7 @@ definition {
 	@priority = 5
 	test Smoke {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

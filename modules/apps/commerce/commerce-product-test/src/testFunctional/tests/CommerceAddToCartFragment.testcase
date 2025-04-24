@@ -191,6 +191,7 @@ definition {
 	@priority = 5
 	test CanUseAddToCartFragment {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the AddToCart fragment is deployed on the page") {
 			DisplayPageTemplate.addFragment(

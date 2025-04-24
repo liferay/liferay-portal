@@ -185,6 +185,7 @@ definition {
 	@priority = 5
 	test CanAddNewUserToAccountAsChannelAccountManager {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a business account is created") {
 			JSONAccountEntry.addAccountEntry(
@@ -927,6 +928,7 @@ definition {
 	@priority = 5
 	test CanSalesAgentViewProductDetailsPage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given 2 accounts are created") {
 			for (var account : list "A,B") {

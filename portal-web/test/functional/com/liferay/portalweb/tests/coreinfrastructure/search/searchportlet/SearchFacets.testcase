@@ -349,6 +349,7 @@ definition {
 	@priority = 3
 	test AssertCategoryFacetTermsWithDifferentDisplayTemplates {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONCategory.addVocabulary(
 			groupName = "Guest",

@@ -911,6 +911,7 @@ definition {
 	@priority = 5
 	test DeactivateCommerceAccountAdminLogOut {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -985,6 +986,7 @@ definition {
 	@priority = 5
 	test FragmentsCanBeDragAndDroppedToMiniumSitePage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1269,6 +1271,7 @@ definition {
 	@priority = 5
 	test MiniumSiteFullFlowCheckingOutViaOrderDetails {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1406,6 +1409,7 @@ definition {
 	@priority = 5
 	test SpeedwellSiteFullFlow {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Speedwell");
 

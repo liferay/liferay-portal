@@ -1590,6 +1590,7 @@ definition {
 	@priority = 5
 	test CompleteProcessAndViewNotifications {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -3751,6 +3752,7 @@ definition {
 
 	@priority = 4
 	test UpdateDueDate {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

@@ -410,6 +410,7 @@ definition {
 	@priority = 5
 	test CannotBuyerEditOnThePlacedOrder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new bundled product with an option (two values) and Static Price Type is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(

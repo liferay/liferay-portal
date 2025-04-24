@@ -135,6 +135,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanApproveEntryFromPartiallyImportedZip {
+		property portal.acceptance.quarantine = "true";
+
 		JSONWebcontent.addWebContent(
 			content = "WebContent",
 			description = "Description",
@@ -525,6 +527,8 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanRejectandResubmitImportToDraftWebContent {
+		property portal.acceptance.quarantine = "true";
+
 		JSONWebcontent.addWebContent(
 			content = "WebContent",
 			description = "Description",
@@ -786,6 +790,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanResubmitImportedEntryFromZipFile {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -930,6 +935,7 @@ definition {
 	@refactordone
 	test CanResubmitRejectedEntries {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance.quarantine = "true";
 
 		JSONWebcontent.addWebContent(
 			content = "WC WebContent Content",

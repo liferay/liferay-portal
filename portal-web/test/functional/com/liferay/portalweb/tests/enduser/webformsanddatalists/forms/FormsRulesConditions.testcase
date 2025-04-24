@@ -40,6 +40,7 @@ definition {
 	@priority = 5
 	test CanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -117,6 +118,7 @@ definition {
 	@priority = 5
 	test CanBeEdited {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -745,6 +747,7 @@ definition {
 	@priority = 4
 	test CanCreateAnIsNotEmptyRule {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -895,6 +898,7 @@ definition {
 	@priority = 4
 	test CanCreateAnUserBelongsToRule {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1043,6 +1047,7 @@ definition {
 	@priority = 5
 	test CanCreateMultipleConditionsUsingAND {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

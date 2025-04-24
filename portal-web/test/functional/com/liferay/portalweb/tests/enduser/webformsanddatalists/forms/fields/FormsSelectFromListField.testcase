@@ -81,6 +81,7 @@ definition {
 	@priority = 5
 	test CanAllowMultipleSelections {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -149,6 +150,7 @@ definition {
 	@priority = 5
 	test CanBeCreated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -179,6 +181,8 @@ definition {
 	@description = "Verify that a Select From List Field can be deleted"
 	@priority = 5
 	test CanBeDeleted {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -214,6 +218,8 @@ definition {
 	@description = "Verify that a Select From List Field can be duplicated"
 	@priority = 5
 	test CanBeDuplicated {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -249,6 +255,7 @@ definition {
 	@priority = 5
 	test CanBeEdited {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -296,6 +303,7 @@ definition {
 	@priority = 5
 	test CanBeRequired {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -336,6 +344,7 @@ definition {
 	@priority = 5
 	test CanBeSetAsRepeatable {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -479,6 +488,7 @@ definition {
 	@priority = 5
 	test CanCreateListUsingAutofill {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1074,6 +1084,8 @@ definition {
 	@description = "Veriy that the Field Label can be hidden"
 	@priority = 5
 	test LabelCanBeHidden {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form1");
@@ -1148,6 +1160,7 @@ definition {
 	@priority = 3
 	test OptionsCanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

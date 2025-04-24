@@ -538,6 +538,7 @@ definition {
 	@priority = 5
 	test CanEditWarehouseAndInventoryEntriesWithViewAndUpdateSpecificWarehousePermissions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the Operations Manager has view and update specific warehouse permissions for Italy") {
 			CommerceNavigator.goToWarehousesAdmin();
@@ -879,6 +880,7 @@ definition {
 	@priority = 5
 	test CanFullyManageInventoryWithManageInventoryPermission {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("When the Operations Manager navigates to Inventory page") {
 			User.logoutAndLoginPG(
@@ -1263,6 +1265,7 @@ definition {
 	@priority = 5
 	test CannotEditWarehouseAndInventoryEntriesWithViewSpecificWarehousePermission {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the Operations Manager has view specific warehouse permission for Italy") {
 			CommerceNavigator.goToWarehousesAdmin();

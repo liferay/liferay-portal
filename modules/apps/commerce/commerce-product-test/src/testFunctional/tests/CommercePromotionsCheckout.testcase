@@ -18,6 +18,7 @@ definition {
 	@priority = 5
 	test CanCheckoutProductWithBulkPriceAndPromotionTierPrice {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Account and Buyer User are created") {
 			CommerceEntry.addAccountEntryUser(
@@ -198,6 +199,7 @@ definition {
 	@priority = 5
 	test CanCheckoutProductWithBulkPriceOnPromotionAndPriceList {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Account and Buyer User are created") {
 			CommerceEntry.addAccountEntryUser(

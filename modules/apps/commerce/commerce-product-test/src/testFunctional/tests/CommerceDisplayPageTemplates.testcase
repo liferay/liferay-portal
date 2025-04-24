@@ -37,6 +37,7 @@ definition {
 	@priority = 5
 	test CanAddProductSpecificationsCollectionDisplay {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("When a new Commerce Product type Display Page Template is created") {
 			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
@@ -422,6 +423,7 @@ definition {
 	@priority = 5
 	test CanDisplayRelatedDiagramsWithDiagramCardListItemStyle {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.run.environment = "EE";
 
 		task ("Given a diagram product is created and 2 products are pinned to it") {
@@ -549,6 +551,7 @@ definition {
 		property osgi.module.configuration.file.names = "com.liferay.commerce.product.configuration.CPDefinitionLinkTypeConfiguration_custom-relation.config";
 		property osgi.module.configurations = "type=\"Custom-Relation\"";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the admin establishes all the possible relations between 'ABS Sensor' and other products") {
 			CommerceJSONProductsAPI._patchCommerceProductRelations(
@@ -645,6 +648,7 @@ definition {
 	@priority = 5
 	test CanMapBasicInformationFieldsToFragments {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new Commerce Product type display page template with fragment created and mapped with the Basic Information fields") {
 			CommerceDisplayPageTemplates.addMappedDisplayPageTemplateEntry(
@@ -692,6 +696,7 @@ definition {
 	@priority = 5
 	test CanMapCategoriesFromDifferentVocabularies {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new vocabulary is added with some categories added inside of it (from the Global site administration panel)") {
 			Category.openCategoriesAdmin(siteURLKey = "global");
@@ -860,6 +865,7 @@ definition {
 	@priority = 5
 	test CanMapPaymentSubscriptionFieldsToFragments {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var productName = "U-Joint";
 
@@ -913,6 +919,7 @@ definition {
 	@priority = 5
 	test CanMapProductAttachmentsToACollectionDisplayFragment {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var fileName1 = "Document_1.pdf";
 		var fileName2 = "Commerce_Black.jpg";
@@ -992,6 +999,7 @@ definition {
 	@priority = 5
 	test CanMapProductCustomFieldsToFragments {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// Important note, this test need to be updated after the COMMERCE-9692 is fixed
 
@@ -1199,6 +1207,7 @@ definition {
 		property osgi.module.configuration.file.names = "com.liferay.commerce.product.configuration.CPDefinitionLinkTypeConfiguration_custom-relation.config";
 		property osgi.module.configurations = "type=\"Custom-Relation\"";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the admin establishes all the possible relations between 'ABS Sensor' and other products") {
 			CommerceJSONProductsAPI._patchCommerceProductRelations(
@@ -1314,6 +1323,7 @@ definition {
 	@priority = 5
 	test CanMapShippingFieldsToFragments {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new Commerce Product type display page template with fragment created and mapped with the Shipping related fields") {
 			CommerceDisplayPageTemplates.addMappedDisplayPageTemplateEntry(
@@ -1445,6 +1455,7 @@ definition {
 	@priority = 4
 	test CanSpecificProductDPTOverrideDefaultDPT {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Product type display page template with fragments is created and mapped with fields") {
 			CommerceDisplayPageTemplates.addMappedDisplayPageTemplateEntry(
@@ -1580,6 +1591,7 @@ definition {
 	@priority = 4
 	test CanSpecificProductViewDPTSet {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new Commerce Product type display page template with fragments created with mapped fields") {
 			CommerceDisplayPageTemplates.addMappedDisplayPageTemplateEntry(

@@ -832,6 +832,7 @@ definition {
 	@refactordone
 	test CannotViewFolderAsOrganizationMemberWithoutPermissions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",

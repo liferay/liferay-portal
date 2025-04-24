@@ -28,6 +28,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test AbstractDescriptionPersistsWhenTypingInContentField {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -591,6 +592,7 @@ definition {
 	@refactordone
 	test CanChangeAScheduledEntryToThePresentAndPublish {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -797,6 +799,7 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CanEditCustomAbstract {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1451,6 +1454,7 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CanViewDefaultAbstract {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

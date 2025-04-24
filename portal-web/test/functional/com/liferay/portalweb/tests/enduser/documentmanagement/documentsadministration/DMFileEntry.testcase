@@ -1143,6 +1143,7 @@ definition {
 	@refactordone
 	test CanDownloadMultipleFilesSimultaneously {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		HeadlessSite.addSite(siteName = "Site_1");
 
@@ -2322,6 +2323,7 @@ definition {
 	@refactordone
 	test CannotPreviewFileThatExceedsLimit {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

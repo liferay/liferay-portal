@@ -163,6 +163,7 @@ definition {
 	test ViewPortalSmokeArchiveAndValidateSchema7413 {
 		property data.archive.type = "data-archive-portal";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.smoke.upgrades = "true";
 		property portal.version = "7.4.13";
 		property test.assert.warning.exceptions = "true";
@@ -197,6 +198,7 @@ definition {
 	test ViewPortalSmokeArchiveAndValidateSchema70106 {
 		property data.archive.type = "data-archive-portal";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.smoke.upgrades = "true";
 		property portal.upstream = "true";
 		property portal.version = "7.0.10.6";

@@ -2694,6 +2694,7 @@ definition {
 	@priority = 3
 	test StagingMultipleDM {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2751,6 +2752,7 @@ definition {
 	@priority = 3
 	test StagingOnlyApprovedPublishToLive {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

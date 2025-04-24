@@ -275,6 +275,7 @@ definition {
 	@priority = 5
 	test EditStructureKey {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -353,6 +354,7 @@ definition {
 	@priority = 5
 	test OverrideStructureKeyAfterImportStructure {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

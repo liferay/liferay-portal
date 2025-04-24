@@ -468,6 +468,7 @@ definition {
 	@priority = 5
 	test ViewMappedContentInDisplayPageTemplate {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var baseURL = PropsUtil.get("portal.url");
 
@@ -603,6 +604,7 @@ definition {
 	@priority = 5
 	test ViewMappedContentOfPreviewCategoryItem {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Add a vocabulary") {
 			JSONCategory.addVocabulary(

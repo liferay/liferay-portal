@@ -138,6 +138,7 @@ definition {
 	test CanSearchProductAccountGroup {
 		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given account groups are created") {
 			for (var index : list "1,2,3") {
@@ -229,6 +230,7 @@ definition {
 	@priority = 5
 	test RemoveAChannelFilter {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

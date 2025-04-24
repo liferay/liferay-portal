@@ -266,6 +266,7 @@ definition {
 	@priority = 5
 	test CanCreateUserNotificationTemplate {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the user navigates to Notifications Templates in the Control Panel") {
 			ApplicationsMenu.gotoPortlet(
@@ -743,6 +744,7 @@ definition {
 	test CanSendEmailViaActionDelete {
 		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";
@@ -839,6 +841,7 @@ definition {
 	test CanSendEmailViaActionStandalone {
 		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";
@@ -922,6 +925,7 @@ definition {
 	test CanSendEmailViaActionUpdate {
 		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";
@@ -1000,6 +1004,7 @@ definition {
 	test CanSendEmailWithTermsFromRelatedCustomObjects {
 		property custom.properties = "feature.flag.LPS-165849=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.smtp.server.enabled = "true";
 
 		task ("Given Custom Object A and Custom Object B with text fields") {

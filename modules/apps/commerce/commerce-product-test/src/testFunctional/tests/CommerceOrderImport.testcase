@@ -515,6 +515,7 @@ definition {
 	@priority = 5
 	test ImportFromOrder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a completed order") {
 			FrontStore.addInitializerProductToCart(
@@ -659,6 +660,7 @@ definition {
 	@priority = 5
 	test ValidateCSVWithInvalidRequestedDeliveryDate {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given an empty order") {
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
@@ -705,6 +707,7 @@ definition {
 	@priority = 5
 	test VerifyIfAllOrdersArePresent {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given 3 completed orders") {
 			for (var product : list "U-Joint:24,Mount:3,Torque Converters:34") {

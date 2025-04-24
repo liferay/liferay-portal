@@ -26,6 +26,7 @@ definition {
 	@priority = 5
 	test AddDisplayPageTypeNavigationMenuItems {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var groupId = JSONGroupSetter.setGroupId(
 			groupName = "Test Site Name (Staging)",

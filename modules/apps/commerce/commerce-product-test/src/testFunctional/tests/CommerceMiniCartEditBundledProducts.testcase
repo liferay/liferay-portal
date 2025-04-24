@@ -31,6 +31,7 @@ definition {
 	@priority = 5
 	test CanAssertAllTypesOfOptionsWorkWithProductOptions {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new bundled product with all types of options is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(
@@ -287,6 +288,7 @@ definition {
 		property osgi.module.configuration.file.names = "com.liferay.commerce.configuration.CommercePriceConfiguration.config";
 		property osgi.module.configurations = "displayDiscountLevels=B\"true\"";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new bundled product with an option(five values) and Dynamic Price Type is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(
@@ -557,6 +559,7 @@ definition {
 	@priority = 5
 	test CanAssertBundledProductShownLinkedSkusInMiniCartItems {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new bundled product with an option(two values) and Static Price Type is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(
@@ -973,6 +976,7 @@ definition {
 	test CanBundledProductSkusWorkWithDecimalQuantity {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new bundled product with an option(two values) and Dynamic Price Type is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(
@@ -1110,6 +1114,7 @@ definition {
 	@priority = 5
 	test CannotEditProductOptionsWhenStockIsZeroAndBackOrderIsDisabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new bundled product with an option(two values) and Static Price Type is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(
@@ -1233,6 +1238,7 @@ definition {
 	@priority = 5
 	test CanVerifyEditBundledProductPanelWorksWithBasicPriceInMiniCart {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new bundled product with an option(two values) and Static Price Type is created") {
 			CommerceJSONProductsAPI._addCommerceProduct(

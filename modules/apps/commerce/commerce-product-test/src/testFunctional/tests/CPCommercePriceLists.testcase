@@ -691,6 +691,7 @@ definition {
 	@priority = 5
 	test AssertPriceListCanBeAssociatedWithAccountAndAccountGroup {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 
 		for (var entryNumber : list "1,2") {

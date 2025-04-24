@@ -2503,6 +2503,7 @@ definition {
 	@priority = 5
 	test CanOnlySeeEntriesFromAccount {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Add Accounts and Users related itself (via API)") {
 			JSONAccountEntry.addAccountEntry(

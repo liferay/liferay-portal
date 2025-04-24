@@ -386,6 +386,7 @@ definition {
 	@priority = 5
 	test CanUseProductCardFragment {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given Product Card fragment is deployed on the DPT") {
 			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "minium");

@@ -153,6 +153,7 @@ definition {
 	@priority = 5
 	test CanBeCreated {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -177,6 +178,7 @@ definition {
 	@priority = 5
 	test CanBeDeleted {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -210,6 +212,8 @@ definition {
 	@description = "Verify that a Date Field can be duplicated"
 	@priority = 5
 	test CanBeDuplicated {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -255,6 +259,7 @@ definition {
 	@priority = 5
 	test CanBeEdited {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 
@@ -293,6 +298,7 @@ definition {
 	@priority = 4
 	test CanBeRequired {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -376,6 +382,8 @@ definition {
 	@description = "Verify that a Date Field can be Repeatable"
 	@priority = 5
 	test CanBeSetAsRepeatable {
+		property portal.acceptance.quarantine = "true";
+
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -1218,6 +1226,7 @@ definition {
 	@priority = 5
 	test LabelCanBeHidden {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		FormsAdmin.addForm();
 

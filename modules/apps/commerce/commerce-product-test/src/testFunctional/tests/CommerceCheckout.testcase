@@ -599,6 +599,7 @@ definition {
 	@priority = 5
 	test DeleteOrderAndCheckoutNewOrder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 

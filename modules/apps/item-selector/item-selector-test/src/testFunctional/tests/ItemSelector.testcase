@@ -39,6 +39,7 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanAddBlogsImageViaURL {
+		property portal.acceptance.quarantine = "true";
 		property portal.release = "quarantine";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -597,6 +598,7 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanPreviewFacebookVideo {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -700,6 +702,7 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanPreviewTwitchVideo {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1006,6 +1009,7 @@ definition {
 	test HorizontalNavItemsShowsWhenNotMoreThan5Items {
 		property osgi.module.configuration.file.names = "com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config";
 		property osgi.module.configurations = "blacklistBundleSymbolicNames=[\"com.liferay.document.library.item.selector.web\" ]";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1378,6 +1382,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test FilePaginationForFilteredResultsDisplaysCorrectCount {
+		property portal.acceptance.quarantine = "true";
+
 		HeadlessSite.addSite(siteName = "Site Name");
 
 		JSONDepot.addDepot(
@@ -1540,6 +1546,7 @@ definition {
 	@description = "The user should see vertical nav items when more than 5 nav items appear on item selector modal."
 	@priority = 4
 	test VerticalNavItemsShowsWhenMoreThan5Items {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

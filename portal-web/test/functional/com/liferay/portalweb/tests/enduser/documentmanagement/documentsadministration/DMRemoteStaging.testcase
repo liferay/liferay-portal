@@ -54,6 +54,7 @@ definition {
 	@priority = 5
 	test AllActionsAreAvailableInRepository {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -74,6 +75,7 @@ definition {
 	@refactordone
 	test CanDeleteDocumentWithCustomType {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -263,6 +265,7 @@ definition {
 	@refactordone
 	test CanEditAndRepublishDocumentWithCustomTypeAndSet {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -377,6 +380,7 @@ definition {
 	@refactordone
 	test CanEditAndRepublishImageWithWebContent {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -621,6 +625,7 @@ definition {
 	@refactordone
 	test CanEditDocumentWithCustomType {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -730,6 +735,7 @@ definition {
 	test CanRepublishDocumentAfterCheckout {
 		property custom.properties = "auth.verifier.TunnelAuthVerifier.hosts.allowed=${line.separator}dl.actions.visible=true${line.separator}jsonws.web.service.paths.excludes=${line.separator}tunneling.servlet.shared.secret=1234567890123456";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1644,6 +1650,7 @@ definition {
 	@refactordone
 	test CanViewRepublishedDocumentInfo {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1775,6 +1782,7 @@ definition {
 	@refactorneeded
 	test CanViewWebContentWithDeletedImage {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

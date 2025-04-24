@@ -48,6 +48,8 @@ definition {
 	@description = "This ensures that a translated zip file contains multiple web contents with multiple available languages can be exported."
 	@priority = 5
 	test CanExportMultipleWCsWithMultipleLanguages {
+		property portal.acceptance.quarantine = "true";
+
 		for (var i : list "1,2,3") {
 			JSONWebcontent.addWebContent(
 				content = "Web Content${i}",

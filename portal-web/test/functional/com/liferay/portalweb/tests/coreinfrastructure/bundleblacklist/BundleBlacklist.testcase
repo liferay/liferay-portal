@@ -32,6 +32,7 @@ definition {
 	test BlacklistModuleBundleSymbolicName {
 		property osgi.modules.includes = "frontend-taglib-clay-sample-web";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -84,6 +85,7 @@ definition {
 	@priority = 5
 	test BlacklistModuleLPKG {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property portal.release = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

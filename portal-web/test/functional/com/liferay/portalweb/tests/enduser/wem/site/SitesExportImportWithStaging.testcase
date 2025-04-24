@@ -201,6 +201,7 @@ definition {
 	@priority = 5
 	test ImportLiveSiteToStagingSite {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property timeout.explicit.wait = "30";
 
 		task ("Export the first site") {

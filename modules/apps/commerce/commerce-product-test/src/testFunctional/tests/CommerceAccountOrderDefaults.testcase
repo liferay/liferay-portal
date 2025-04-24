@@ -1626,6 +1626,7 @@ definition {
 	@priority = 5
 	test CanSetDefaultAddressFromDetailsTab {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given 2 Minium sites and a buyer user is associated with both sites, and 3 addresses: one billing, one shipping and one shipping and billing for the account") {
 			Account.openAccountsAdmin();
@@ -2960,6 +2961,7 @@ definition {
 	@priority = 5
 	test DefaultPaymentTermCanOverrideOtherEligibilities {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new Test Channel with an active Shipping method") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(
@@ -3075,6 +3077,7 @@ definition {
 	@priority = 5
 	test DefaultPriceListCanOverrideOtherEligibilities {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a second site and account with a user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(
@@ -3261,6 +3264,7 @@ definition {
 	@priority = 5
 	test DeliveryEligibilityRulesCanPersistAtCheckout {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new Test Channel with an active Shipping method") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(
@@ -3372,6 +3376,7 @@ definition {
 	@priority = 5
 	test PaymentEligibilityRulesCanPersistAtCheckout {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a new Test Channel with an active Shipping method") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(

@@ -653,6 +653,7 @@ definition {
 	test CanSetPortalPropertyViaEnvironmentVariable {
 		property custom.system.properties = "company-id-properties=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -691,6 +692,7 @@ definition {
 	@priority = 5
 	test CanSetPortalPropertyViaJVM {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -967,6 +969,7 @@ definition {
 	@priority = 3
 	test ChangeDefaultCompanyToDifferentInstance {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1111,6 +1114,7 @@ definition {
 	@priority = 4
 	test ExportedFactoryConfigurationCanBeImported {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

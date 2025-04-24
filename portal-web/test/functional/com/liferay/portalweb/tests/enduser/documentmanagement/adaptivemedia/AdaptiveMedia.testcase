@@ -427,6 +427,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test ImageMustBeReadaptedForUpdatedResolutionToTakeEffect {
+		property portal.acceptance.quarantine = "true";
+
 		AdaptiveMedia.openToAddImageResolution();
 
 		AdaptiveMedia.addImageResolution(
@@ -479,6 +481,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test ImageResolutionIsScopedToInstance {
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

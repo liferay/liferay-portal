@@ -118,6 +118,7 @@ definition {
 	@priority = 5
 	test CanAssertOrderItemsAreSplitInPlacedOrders {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the admin enables the toggle 'Show Separate Order Items' for Minium Portal channel") {
 			CommerceChannels.openChannelsAdmin();
@@ -227,6 +228,7 @@ definition {
 	@priority = 5
 	test CanAssertOrderItemsAreSplitInShipments {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the admin enables the toggle 'Show Separate Order Items' for Minium Portal channel") {
 			CommerceChannels.openChannelsAdmin();
@@ -563,6 +565,7 @@ definition {
 	@priority = 5
 	test CanVerifyOrderItemsAreSplitOnTheMiniCart {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("When the buyer logs in and clicks 2 times on the 'Add to cart' button for MIN55861") {
 			User.logoutPG();

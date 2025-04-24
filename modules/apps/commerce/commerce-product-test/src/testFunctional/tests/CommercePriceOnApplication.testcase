@@ -2361,6 +2361,7 @@ definition {
 	@priority = 5
 	test CanViewPriceOnApplicationLabelOnStoreFront {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given the admin navigates to a product's sku details") {
 			CommerceProducts.openProductsAdmin();

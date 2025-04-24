@@ -26,6 +26,7 @@ definition {
 	@priority = 4
 	test AddUserInheritedRolesAsSAMLAttributeStatements {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -391,6 +392,7 @@ definition {
 		property apacheds.enabled = "true";
 		property app.server.bundles.size = "0";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -431,6 +433,7 @@ definition {
 	@priority = 4
 	test AssertInstanceAdminCannotConfigureIdPWhenDisableIdPRole {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1696,6 +1699,7 @@ definition {
 	test ConfigureSAMLToImportUsersFromLDAP {
 		property apacheds.enabled = "true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2008,6 +2012,7 @@ definition {
 	test CreateAndSyncUserAfterSAMLSetupWithMatchingScreenNameAttribute {
 		property app.server.bundles.size = "0";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2428,6 +2433,7 @@ definition {
 	@priority = 4
 	test ImportEncryptionCertificateFromPKCS12KeystoreFile {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2662,6 +2668,7 @@ definition {
 	@priority = 4
 	test ImportSigningCertificateFromPKCS12KeystoreFile {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -3558,6 +3565,7 @@ definition {
 	@priority = 4
 	test ValidateVulnerabilitiesXMLAttacks {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -3629,6 +3637,7 @@ definition {
 	@priority = 4
 	test ViewIdPInitiatedSSO {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -4615,6 +4624,7 @@ definition {
 	test ViewSPInitiatedSSOWithSAMLAttributeUUIDUsedForUserMatching {
 		property app.server.bundles.size = "0";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -4730,6 +4740,7 @@ definition {
 	test ViewSPInitiatedSSOWithSAMLAttributeUUIDUsedForUserMatchingMultipleSP {
 		property app.server.bundles.size = "0";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

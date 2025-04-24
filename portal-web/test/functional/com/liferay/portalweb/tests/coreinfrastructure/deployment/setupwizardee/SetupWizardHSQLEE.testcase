@@ -62,6 +62,7 @@ definition {
 	test HSQLtoOracle {
 		property database.types = "oracle";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -112,6 +113,7 @@ definition {
 	test HSQLtoSQLServer {
 		property database.types = "sqlserver";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

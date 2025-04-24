@@ -236,6 +236,7 @@ definition {
 		property environment.acceptance = "true";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		Open(value1 = "http://www.standards-schmandards.com/exhibits/wysiwyg/sampledoc.htm");
 

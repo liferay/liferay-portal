@@ -447,6 +447,7 @@ definition {
 	test CanExpireAnArticle {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1211,6 +1212,7 @@ definition {
 	test CanReviewArticleWhenReviewDateIsReached {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1510,6 +1512,7 @@ definition {
 	@priority = 4
 	test CanViewEntryInfo {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
+		property portal.acceptance.quarantine = "true";
 
 		JSONKnowledgeBase.addkBArticle(
 			groupName = "Guest",

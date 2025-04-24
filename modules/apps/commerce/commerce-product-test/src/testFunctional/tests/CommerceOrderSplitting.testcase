@@ -570,6 +570,7 @@ definition {
 	@priority = 5
 	test CanAssertStoreFrontSplitOrderShipmentStatuses {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -2299,6 +2300,7 @@ definition {
 	@priority = 5
 	test CanSeeUpdatedSupplierShippedQuantityOnTheCustomerOrder {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -2676,6 +2678,7 @@ definition {
 	@priority = 5
 	test CanTheOrderBeSplitOnlyOnce {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -3080,6 +3083,7 @@ definition {
 	@priority = 5
 	test CanTheOrderSplitIsAppliedCorrectly {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Minium site with a buyer user") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");

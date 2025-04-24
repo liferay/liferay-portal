@@ -20,6 +20,7 @@ definition {
 	@priority = 5
 	test CookiesBannerAcceptAllSelected {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -36,6 +37,7 @@ definition {
 	@priority = 5
 	test CookiesBannerCouldBeEnabledAndCustomized {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -60,6 +62,7 @@ definition {
 	@priority = 5
 	test CookiesBannerCouldBeEnabledAndCustomizedViaOSGIFile {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -104,6 +107,7 @@ definition {
 	@priority = 5
 	test CookiesBannerDeclineAllSelected {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -120,6 +124,7 @@ definition {
 	@priority = 5
 	test PrivacyPolicyLinksCanBeConfiguredFromALocalSite {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

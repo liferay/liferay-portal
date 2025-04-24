@@ -68,6 +68,7 @@ definition {
 	@priority = 5
 	test CanActivateAnInactiveRegion {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -234,6 +235,7 @@ definition {
 	@priority = 5
 	test CanDeleteCountry {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -270,6 +272,7 @@ definition {
 	@priority = 5
 	test CanDeleteRegion {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -347,6 +350,7 @@ definition {
 	@priority = 5
 	test CannotAddExistingRegionCode {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

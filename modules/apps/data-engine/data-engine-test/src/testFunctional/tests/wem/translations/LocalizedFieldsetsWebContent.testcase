@@ -313,6 +313,7 @@ definition {
 	test CreateEditAndDeleteLocalizedFieldset {
 		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		var newStructureName = "WC Structure Name";
 

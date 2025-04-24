@@ -748,6 +748,7 @@ definition {
 	@priority = 5
 	test TranslateStructureWithFieldsetAndNested {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 

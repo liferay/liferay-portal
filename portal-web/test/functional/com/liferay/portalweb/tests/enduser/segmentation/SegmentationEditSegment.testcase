@@ -149,6 +149,7 @@ definition {
 	@uitest
 	test CanEditSegmentIfHaveASelectInput {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Go to segments portlet") {
 			Segmentation.openSegmentsAdmin(siteURLKey = "test-site-name");

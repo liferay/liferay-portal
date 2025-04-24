@@ -1847,6 +1847,7 @@ definition {
 	@priority = 5
 	test ViewCategorizationSettingsAfterDeleteCategoryOfWebContent {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2822,6 +2823,7 @@ definition {
 	@priority = 5
 	test ViewWebContentArticleUsages {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Add a Web Content article") {
 			JSONWebcontent.addWebContent(

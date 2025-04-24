@@ -461,6 +461,7 @@ definition {
 	@priority = 4
 	test CanResubmitImportedEntryFromZip {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -628,6 +629,7 @@ definition {
 	@priority = 5
 	test CanResubmitRejectedImportedTranslation {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",

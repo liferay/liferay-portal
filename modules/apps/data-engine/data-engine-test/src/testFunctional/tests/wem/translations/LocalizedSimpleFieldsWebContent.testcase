@@ -31,6 +31,7 @@ definition {
 	test AddAndEditTranslatedFieldsWithOptions {
 		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		NavItem.gotoStructures();
 
@@ -658,6 +659,7 @@ definition {
 	test CreateEditAndDeleteLocalizedWebContent {
 		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		NavItem.gotoStructures();
 
@@ -970,6 +972,7 @@ definition {
 	test DuplicateAndEditTranslatedFieldsWithOptions {
 		property custom.properties = "feature.flag.LPD-11228=true";
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		NavItem.gotoStructures();
 

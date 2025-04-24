@@ -309,6 +309,7 @@ definition {
 	@priority = 5
 	test AssertProductCanBeAddedToCartIfBackOrderIsEnabled {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		// TODO Review
 
@@ -422,6 +423,7 @@ definition {
 	@priority = 5
 	test AssertProductCannotBeAddedToCartIfProductIsNotPurchasable {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -917,6 +919,7 @@ definition {
 	@priority = 5
 	test CanAddToCartSingleSkuDynamicPriceBundledProductFromProductCard {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -1034,6 +1037,7 @@ definition {
 	@priority = 5
 	test CanAddToCartSingleSkuStaticPriceBundledProductFromProductCard {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -1149,6 +1153,7 @@ definition {
 	@priority = 5
 	test CannotAddToCartMultipleSkuDynamicPriceBundledProductFromProductCard {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
@@ -1273,6 +1278,7 @@ definition {
 	@priority = 5
 	test CannotAddToCartMultipleSkuStaticPriceBundledProductFromProductCard {
 		property portal.acceptance = "true";
+		property portal.acceptance.quarantine = "true";
 
 		task ("Given a Commerce Account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
