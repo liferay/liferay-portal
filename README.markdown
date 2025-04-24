@@ -13,6 +13,6 @@ translations, or other contributions that helped to improve this release.
 
 ## License
 
-`SPDX-License-Identifier: (LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06`
+`SPDX-License-Identifier: (LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06)`
 
 See `LICENSING.markdown` file for details.
