@@ -1,0 +1,45 @@
+@import 'atlas-variables';
+
+.lfr-objects__model-builder-right-sidebar-section {
+	.lfr-objects__workflow {
+		&-buttons {
+			display: flex;
+			gap: 0.5rem;
+		}
+
+		&-input {
+			margin-bottom: 1rem;
+		}
+
+		&-process-builder-button {
+			align-items: center;
+			display: flex;
+			font-size: smaller;
+			gap: 5px;
+			height: 2.5rem;
+		}
+	}
+}
+
+.lfr-objects__object-definition-details-section {
+	.lfr-objects__workflow {
+		&-buttons {
+			display: flex;
+			gap: 0.5rem;
+			min-width: 50%;
+		}
+
+		&-details-section {
+			display: flex;
+			gap: 0.5rem;
+		}
+
+		&-process-builder-button {
+			align-items: center;
+			display: flex;
+			font-size: smaller;
+			gap: 10px;
+			height: 2.5rem;
+		}
+	}
+}
