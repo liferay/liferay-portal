@@ -27,7 +27,7 @@ import {ModalAddObjectDefinition} from '../ViewObjectDefinitions/ModalAddObjectD
 import {ModalDeleteObjectDefinition} from '../ViewObjectDefinitions/ModalDeleteObjectDefinition';
 import {ModalEditObjectFolder} from '../ViewObjectDefinitions/ModalEditObjectFolder';
 import {
-	getDbTableName,
+	getObjectDefinitionInfo,
 	getUpdatedModelBuilderStructurePayload,
 } from '../ViewObjectDefinitions/objectDefinitionUtil';
 import Diagram from './Diagram/Diagram';
@@ -281,17 +281,15 @@ export default function EditObjectFolder({
 						selectedObjectFolder.externalReferenceCode
 					}
 					onAfterSubmit={async (newObjectDefinition) => {
-						const dbTableName = await getDbTableName({
-							baseResourceURL,
-							objectDefinitionId: newObjectDefinition.id,
-						} as {
-							baseResourceURL: string;
-							objectDefinitionId: number;
-						});
+						const objectDefinitionInfo =
+							await getObjectDefinitionInfo({
+								baseResourceURL,
+								objectDefinitionId: newObjectDefinition.id,
+							});
 
 						dispatch({
 							payload: {
-								dbTableName,
+								dbTableName: objectDefinitionInfo.tableName,
 								dispatch,
 								elements,
 								leftSidebarItems,

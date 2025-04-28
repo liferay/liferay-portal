@@ -161,7 +161,7 @@ export async function deleteRelationship(
 	}
 }
 
-export async function getDbTableName({
+export async function getObjectDefinitionInfo({
 	baseResourceURL,
 	objectDefinitionId,
 }: {
@@ -175,9 +175,10 @@ export async function getDbTableName({
 
 	const objectDefinitionInfoResponse = await API.fetchJSON<{
 		tableName: string;
+		workflowDefinitionTitle: string;
 	}>(objectDefinitionInfoURL);
 
-	return objectDefinitionInfoResponse.tableName;
+	return objectDefinitionInfoResponse;
 }
 
 export function getObjectDefinitionNodeActions({
@@ -529,15 +530,16 @@ export async function getUpdatedModelBuilderStructurePayload(
 										objectDefinition.externalReferenceCode
 								);
 
-							const dbTableName = await getDbTableName({
-								baseResourceURL,
-								objectDefinitionId: objectDefinition.id,
-							});
+							const objectDefinitionInfo =
+								await getObjectDefinitionInfo({
+									baseResourceURL,
+									objectDefinitionId: objectDefinition.id,
+								});
 
 							if (objectFolderItem) {
 								objectFolderWithObjectDefinitions.push({
 									...objectDefinition,
-									dbTableName,
+									dbTableName: objectDefinitionInfo.tableName,
 									hasObjectDefinitionDeleteResourcePermission:
 										!!objectDefinition.actions.delete,
 									hasObjectDefinitionManagePermissionsResourcePermission:
