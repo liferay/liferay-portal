@@ -1,0 +1,714 @@
+{
+	"$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+	"appliesTo": [
+		"bpmn:Task"
+	],
+	"category": {
+		"id": "connectors",
+		"name": "Connectors"
+	},
+	"description": "Invoke Liferay REST API.",
+	"elementType": {
+		"value": "bpmn:ServiceTask"
+	},
+	"engines": {
+		"camunda": "^8.3"
+	},
+	"groups": [
+		{
+			"id": "authentication",
+			"label": "Authentication"
+		},
+		{
+			"id": "endpoint",
+			"label": "HTTP Endpoint"
+		},
+		{
+			"id": "timeout",
+			"label": "Connection Timeout"
+		},
+		{
+			"id": "payload",
+			"label": "Payload"
+		},
+		{
+			"id": "output",
+			"label": "Output Mapping"
+		},
+		{
+			"id": "error",
+			"label": "Error Handling"
+		},
+		{
+			"id": "retries",
+			"label": "Retries"
+		}
+	],
+	"icon": {
+		"contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDk2IDk2Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzBiNWZmZjt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNzEsMjFIMjVjLTIuMjA5MiwwLTQsMS43OTA4LTQsNHY0NmMwLDIuMjA5MSwxLjc5MDgsNCw0LDRoNDZjMi4yMDksMCw0LTEuNzkwOSw0LTRWMjVjMC0yLjIwOTItMS43OTEtNC00LTRaTTM3LDU2YzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMC0xMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTAtMTBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2Wm0xMCwzMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTAtMjBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2Wm0wLTEwYzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMTAsMzBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2Wm0wLTEwYzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMC0yMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTEwLDMwYzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMC0xMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTAtMTBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2WiIvPjwvc3ZnPg=="
+	},
+	"id": "cddb82b6-1f10-447e-a582-a18d246dd516",
+	"name": "Liferay Outbound Connector",
+	"properties": [
+		{
+			"binding": {
+				"property": "type",
+				"type": "zeebe:taskDefinition"
+			},
+			"type": "Hidden",
+			"value": "io.camunda:http-json:1"
+		},
+		{
+			"binding": {
+				"name": "authentication.type",
+				"type": "zeebe:input"
+			},
+			"choices": [
+				{
+					"name": "None",
+					"value": "noAuth"
+				},
+				{
+					"name": "Basic",
+					"value": "basic"
+				},
+				{
+					"name": "OAuth 2.0",
+					"value": "oauth-client-credentials-flow"
+				}
+			],
+			"description": "Choose the authentication type. Select 'None' if no authentication is necessary.",
+			"group": "authentication",
+			"id": "authentication.type",
+			"label": "Type",
+			"type": "Dropdown",
+			"value": "noAuth"
+		},
+		{
+			"binding": {
+				"name": "authentication.username",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "basic",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"feel": "optional",
+			"group": "authentication",
+			"id": "authentication.username",
+			"label": "Username",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "authentication.password",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "basic",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"feel": "optional",
+			"group": "authentication",
+			"id": "authentication.password",
+			"label": "Password",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "authentication.oauthTokenEndpoint",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "oauth-client-credentials-flow",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true,
+				"pattern": {
+					"message": "Must be a HTTP(s) URL",
+					"value": "^(=|(http://|https://|secrets|\\{\\{).*$)"
+				}
+			},
+			"description": "The OAuth token endpoint.",
+			"feel": "optional",
+			"group": "authentication",
+			"id": "authentication.oauthTokenEndpoint",
+			"label": "OAuth 2.0 Token Endpoint",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "authentication.clientId",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "oauth-client-credentials-flow",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"description": "Your application's client ID from the OAuth client.",
+			"feel": "optional",
+			"group": "authentication",
+			"id": "authentication.clientId",
+			"label": "Client ID",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "authentication.clientSecret",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "oauth-client-credentials-flow",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"description": "Your application's client secret from the OAuth client.",
+			"feel": "optional",
+			"group": "authentication",
+			"id": "authentication.clientSecret",
+			"label": "Client Secret",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "authentication.audience",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "oauth-client-credentials-flow",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"description": "The unique identifier of the target API you want to access.",
+			"feel": "optional",
+			"group": "authentication",
+			"id": "authentication.audience",
+			"label": "Audience",
+			"optional": true,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "authentication.clientAuthentication",
+				"type": "zeebe:input"
+			},
+			"choices": [
+				{
+					"name": "Send client credentials in body",
+					"value": "credentialsBody"
+				},
+				{
+					"name": "Send as Basic Auth header",
+					"value": "basicAuthHeader"
+				}
+			],
+			"condition": {
+				"equals": "oauth-client-credentials-flow",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"description": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body.",
+			"group": "authentication",
+			"id": "authentication.clientAuthentication",
+			"label": "Client Authentication",
+			"optional": false,
+			"type": "Dropdown"
+		},
+		{
+			"binding": {
+				"name": "authentication.scopes",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "oauth-client-credentials-flow",
+				"property": "authentication.type",
+				"type": "simple"
+			},
+			"description": "The scopes which you want to request authorization for (e.g.read:contacts).",
+			"feel": "optional",
+			"group": "authentication",
+			"id": "authentication.scopes",
+			"label": "Scopes",
+			"optional": true,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "type",
+				"type": "zeebe:input"
+			},
+			"choices": [
+				{
+					"name": "Custom Objects",
+					"value": "customObjects"
+				},
+				{
+					"name": "Other",
+					"value": "other"
+				}
+			],
+			"constraints": {
+				"notEmpty": true
+			},
+			"group": "endpoint",
+			"id": "modelType",
+			"label": "Model Type",
+			"optional": false,
+			"type": "Dropdown",
+			"value": "customObjects"
+		},
+		{
+			"binding": {
+				"name": "baseUrl",
+				"type": "zeebe:input"
+			},
+			"constraints": {
+				"notEmpty": true,
+				"pattern": {
+					"message": "Must be a HTTP(s) URL",
+					"value": "^(=|(http://|https://|secrets|\\{\\{).*$)"
+				}
+			},
+			"feel": "optional",
+			"group": "endpoint",
+			"id": "baseUrl",
+			"label": "Base URL",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "operationType",
+				"type": "zeebe:input"
+			},
+			"choices": [
+				{
+					"name": "Get object",
+					"value": "GET_object"
+				},
+				{
+					"name": "Get objects",
+					"value": "GET_objects"
+				},
+				{
+					"name": "Create object",
+					"value": "POST_object"
+				},
+				{
+					"name": "Update object",
+					"value": "PUT_object"
+				},
+				{
+					"name": "Update object fields",
+					"value": "PATCH_object"
+				},
+				{
+					"name": "Delete object",
+					"value": "DELETE_object"
+				}
+			],
+			"condition": {
+				"equals": "customObjects",
+				"property": "modelType",
+				"type": "simple"
+			},
+			"description": "Choose the kind of operation you want to perform.",
+			"group": "endpoint",
+			"id": "operationType",
+			"label": "Operation Type",
+			"type": "Dropdown"
+		},
+		{
+			"binding": {
+				"name": "method",
+				"type": "zeebe:input"
+			},
+			"id": "operationMethod",
+			"optional": false,
+			"type": "Hidden",
+			"value": "=split(operationType, \"_\")[1]"
+		},
+		{
+			"binding": {
+				"name": "externalReferenceCode",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"oneOf": [
+					"GET_object",
+					"PUT_object",
+					"PATCH_object",
+					"DELETE_object"
+				],
+				"property": "operationType",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"feel": "optional",
+			"group": "endpoint",
+			"id": "externalReferenceCode",
+			"label": "External Reference Code",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "path",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "other",
+				"property": "modelType",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"feel": "optional",
+			"group": "endpoint",
+			"id": "path",
+			"label": "Path",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "method",
+				"type": "zeebe:input"
+			},
+			"choices": [
+				{
+					"name": "POST",
+					"value": "POST"
+				},
+				{
+					"name": "GET",
+					"value": "GET"
+				},
+				{
+					"name": "DELETE",
+					"value": "DELETE"
+				},
+				{
+					"name": "PATCH",
+					"value": "PATCH"
+				},
+				{
+					"name": "PUT",
+					"value": "PUT"
+				}
+			],
+			"condition": {
+				"equals": "other",
+				"property": "modelType",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"group": "endpoint",
+			"id": "httpMethod",
+			"label": "Method",
+			"optional": false,
+			"type": "Dropdown",
+			"value": "GET"
+		},
+		{
+			"binding": {
+				"name": "url",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "customObjects",
+				"property": "modelType"
+			},
+			"group": "endpoint",
+			"label": "URL",
+			"type": "Hidden",
+			"value": "=baseUrl + string(if operationType = \"GET_objects\" or operationType = \"POST_object\" then \"/\" else \"/by-external-reference-code/\" + externalReferenceCode)"
+		},
+		{
+			"binding": {
+				"name": "url",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "other",
+				"property": "modelType"
+			},
+			"group": "endpoint",
+			"label": "URL",
+			"type": "Hidden",
+			"value": "=baseUrl + path"
+		},
+		{
+			"binding": {
+				"name": "headers",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "other",
+				"property": "modelType",
+				"type": "simple"
+			},
+			"description": "Map of HTTP headers to add to the request.",
+			"feel": "required",
+			"group": "endpoint",
+			"id": "headers",
+			"label": "Headers",
+			"optional": true,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "queryParameters",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "GET",
+				"property": "operationType",
+				"type": "simple"
+			},
+			"description": "Map of query parameters to add to the request URL.",
+			"feel": "required",
+			"group": "endpoint",
+			"id": "queryParameters",
+			"label": "Query Parameters",
+			"optional": true,
+			"type": "String",
+			"value": "={\n\t\"fields\": \"string\",\n\t\"nestedFields\": \"string\",\n\t\"restrictFields\": \"string\"\n}"
+		},
+		{
+			"binding": {
+				"name": "queryParameters",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"equals": "other",
+				"property": "modelType",
+				"type": "simple"
+			},
+			"description": "Map of query parameters to add to the request URL.",
+			"feel": "required",
+			"group": "endpoint",
+			"id": "queryParameters",
+			"label": "Query Parameters",
+			"optional": true,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "storeResponse",
+				"type": "zeebe:input"
+			},
+			"description": "Store the response as a document in the document store.",
+			"feel": "static",
+			"group": "endpoint",
+			"id": "storeResponse",
+			"label": "Store Response",
+			"optional": false,
+			"type": "Boolean",
+			"value": false
+		},
+		{
+			"binding": {
+				"name": "skipEncoding",
+				"type": "zeebe:input"
+			},
+			"description": "Skip the default URL decoding and encoding behavior.",
+			"group": "endpoint",
+			"id": "skipEncoding",
+			"label": "Skip URL Encoding",
+			"optional": true,
+			"type": "Hidden"
+		},
+		{
+			"binding": {
+				"name": "connectionTimeoutInSeconds",
+				"type": "zeebe:input"
+			},
+			"constraints": {
+				"notEmpty": true,
+				"pattern": {
+					"message": "Must be a number",
+					"value": "^\\d+$"
+				}
+			},
+			"description": "Defines the connection timeout in seconds, or 0 for an infinite timeout.",
+			"feel": "static",
+			"group": "timeout",
+			"id": "connectionTimeoutInSeconds",
+			"label": "Connection Timeout in Seconds",
+			"optional": false,
+			"type": "Number",
+			"value": 20
+		},
+		{
+			"binding": {
+				"name": "readTimeoutInSeconds",
+				"type": "zeebe:input"
+			},
+			"constraints": {
+				"notEmpty": true,
+				"pattern": {
+					"message": "Must be a number",
+					"value": "^\\d+$"
+				}
+			},
+			"description": "Timeout in seconds to read data from an established connection or 0 for an infinite timeout.",
+			"feel": "static",
+			"group": "timeout",
+			"id": "readTimeoutInSeconds",
+			"label": "Read Timeout in Seconds",
+			"optional": false,
+			"type": "Number",
+			"value": 20
+		},
+		{
+			"binding": {
+				"name": "body",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"oneOf": [
+					"POST_object",
+					"PUT_object",
+					"PATCH_object"
+				],
+				"property": "operationType",
+				"type": "simple"
+			},
+			"description": "Payload to send with the request.",
+			"feel": "optional",
+			"group": "payload",
+			"id": "operationBody",
+			"label": "Operation Body",
+			"optional": true,
+			"type": "Text"
+		},
+		{
+			"binding": {
+				"name": "body",
+				"type": "zeebe:input"
+			},
+			"condition": {
+				"oneOf": [
+					"POST",
+					"PUT",
+					"PATCH"
+				],
+				"property": "httpMethod",
+				"type": "simple"
+			},
+			"description": "Payload to send with the request.",
+			"feel": "optional",
+			"group": "payload",
+			"id": "body",
+			"label": "Request Body",
+			"optional": true,
+			"type": "Text"
+		},
+		{
+			"binding": {
+				"name": "ignoreNullValues",
+				"type": "zeebe:input"
+			},
+			"feel": "static",
+			"group": "payload",
+			"id": "ignoreNullValues",
+			"label": "Ignore Null Values",
+			"optional": false,
+			"tooltip": "Null values will not be sent",
+			"type": "Boolean",
+			"value": false
+		},
+		{
+			"binding": {
+				"key": "resultVariable",
+				"type": "zeebe:taskHeader"
+			},
+			"description": "Name of variable to store the response in.",
+			"group": "output",
+			"id": "resultVariable",
+			"label": "Result Variable",
+			"type": "String"
+		},
+		{
+			"binding": {
+				"key": "resultExpression",
+				"type": "zeebe:taskHeader"
+			},
+			"description": "Expression to map the response into process variables.",
+			"feel": "required",
+			"group": "output",
+			"id": "resultExpression",
+			"label": "Result Expression",
+			"type": "Text"
+		},
+		{
+			"binding": {
+				"key": "errorExpression",
+				"type": "zeebe:taskHeader"
+			},
+			"description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+			"feel": "required",
+			"group": "error",
+			"id": "errorExpression",
+			"label": "Error Expression",
+			"type": "Text"
+		},
+		{
+			"binding": {
+				"property": "retries",
+				"type": "zeebe:taskDefinition"
+			},
+			"description": "Number of retries.",
+			"feel": "optional",
+			"group": "retries",
+			"id": "retryCount",
+			"label": "Retries",
+			"type": "String",
+			"value": "3"
+		},
+		{
+			"binding": {
+				"key": "retryBackoff",
+				"type": "zeebe:taskHeader"
+			},
+			"description": "ISO-8601 duration to wait between retries.",
+			"group": "retries",
+			"id": "retryBackoff",
+			"label": "Retry Backoff",
+			"type": "String",
+			"value": "PT0S"
+		}
+	],
+	"version": 1
+}

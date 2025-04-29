@@ -1,0 +1,300 @@
+{
+	"$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+	"appliesTo": [
+		"bpmn:IntermediateCatchEvent",
+		"bpmn:IntermediateThrowEvent"
+	],
+	"category": {
+		"id": "connectors",
+		"name": "Connectors"
+	},
+	"description": "Receive events from Liferay.",
+	"elementType": {
+		"eventDefinition": "bpmn:MessageEventDefinition",
+		"value": "bpmn:IntermediateCatchEvent"
+	},
+	"engines": {
+		"camunda": "^8.3"
+	},
+	"groups": [
+		{
+			"id": "endpoint",
+			"label": "Webhook Configuration"
+		},
+		{
+			"id": "authentication",
+			"label": "Authentication"
+		},
+		{
+			"id": "authorization",
+			"label": "Authorization"
+		},
+		{
+			"id": "webhookResponse",
+			"label": "Webhook response"
+		},
+		{
+			"id": "activation",
+			"label": "Activation"
+		},
+		{
+			"id": "correlation",
+			"label": "Correlation",
+			"tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+		},
+		{
+			"id": "output",
+			"label": "Output Mapping"
+		}
+	],
+	"icon": {
+		"contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDk2IDk2Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzBiNWZmZjt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNzEsMjFIMjVjLTIuMjA5MiwwLTQsMS43OTA4LTQsNHY0NmMwLDIuMjA5MSwxLjc5MDgsNCw0LDRoNDZjMi4yMDksMCw0LTEuNzkwOSw0LTRWMjVjMC0yLjIwOTItMS43OTEtNC00LTRaTTM3LDU2YzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMC0xMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTAtMTBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2Wm0xMCwzMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTAtMjBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2Wm0wLTEwYzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMTAsMzBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2Wm0wLTEwYzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMC0yMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTEwLDMwYzAsLjU1MjItLjQ0NzgsMS0xLDFoLTZjLS41NTIyLDAtMS0uNDQ3OC0xLTF2LTZjMC0uNTUyMiwuNDQ3OC0xLDEtMWg2Yy41NTIyLDAsMSwuNDQ3OCwxLDF2NlptMC0xMGMwLC41NTIyLS40NDc4LDEtMSwxaC02Yy0uNTUyMiwwLTEtLjQ0NzgtMS0xdi02YzAtLjU1MjIsLjQ0NzgtMSwxLTFoNmMuNTUyMiwwLDEsLjQ0NzgsMSwxdjZabTAtMTBjMCwuNTUyMi0uNDQ3OCwxLTEsMWgtNmMtLjU1MjIsMC0xLS40NDc4LTEtMXYtNmMwLS41NTIyLC40NDc4LTEsMS0xaDZjLjU1MjIsMCwxLC40NDc4LDEsMXY2WiIvPjwvc3ZnPg=="
+	},
+	"id": "io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1",
+	"metadata": {
+		"keywords": [
+		]
+	},
+	"name": "Webhook Intermediate Event Connector",
+	"properties": [
+		{
+			"binding": {
+				"name": "inbound.type",
+				"type": "zeebe:property"
+			},
+			"type": "Hidden",
+			"value": "io.camunda:webhook:1"
+		},
+		{
+			"binding": {
+				"name": "inbound.method",
+				"type": "zeebe:property"
+			},
+			"description": "Select HTTP method.",
+			"group": "endpoint",
+			"id": "inbound.method",
+			"label": "Webhook Method",
+			"optional": false,
+			"type": "Hidden",
+			"value": "any"
+		},
+		{
+			"binding": {
+				"name": "inbound.context",
+				"type": "zeebe:property"
+			},
+			"constraints": {
+				"notEmpty": true,
+				"pattern": {
+					"message": "can only contain letters, numbers, or single underscores/hyphens and cannot begin or end with an underscore/hyphen",
+					"value": "^[a-zA-Z0-9]+([-_][a-zA-Z0-9]+)*$"
+				}
+			},
+			"description": "The webhook ID is a part of the URL.",
+			"group": "endpoint",
+			"id": "inbound.context",
+			"label": "Webhook ID",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "inbound.auth.type",
+				"type": "zeebe:property"
+			},
+			"choices": [
+				{
+					"name": "None",
+					"value": "NONE"
+				},
+				{
+					"name": "Secret",
+					"value": "APIKEY"
+				}
+			],
+			"description": "Choose the authorization type.",
+			"group": "authorization",
+			"id": "inbound.auth.type",
+			"label": "Authorization Type",
+			"type": "Dropdown",
+			"value": "NONE"
+		},
+		{
+			"binding": {
+				"name": "inbound.auth.apiKey",
+				"type": "zeebe:property"
+			},
+			"condition": {
+				"equals": "APIKEY",
+				"property": "inbound.auth.type",
+				"type": "simple"
+			},
+			"description": "Expected secret.",
+			"feel": "optional",
+			"group": "authorization",
+			"id": "inbound.auth.apiKey",
+			"label": "Secret",
+			"optional": false,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "inbound.auth.apiKeyLocator",
+				"type": "zeebe:property"
+			},
+			"condition": {
+				"equals": "APIKEY",
+				"property": "inbound.auth.type",
+				"type": "simple"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/liferay/#how-to-configure-secret'>See documentation</a>.",
+			"feel": "required",
+			"group": "authorization",
+			"id": "inbound.auth.apiKeyLocator",
+			"label": "Secret Locator",
+			"optional": false,
+			"type": "String",
+			"value": "=get value(request.headers, \"x-api-key\")"
+		},
+		{
+			"binding": {
+				"name": "inbound.responseExpression",
+				"type": "zeebe:property"
+			},
+			"description": "Expression used to generate the HTTP response.",
+			"feel": "required",
+			"group": "webhookResponse",
+			"id": "inbound.responseExpression",
+			"label": "Response Expression",
+			"optional": true,
+			"type": "Text"
+		},
+		{
+			"binding": {
+				"name": "activationCondition",
+				"type": "zeebe:property"
+			},
+			"description": "Condition under which the Connector triggers. Leave empty to catch all events.",
+			"feel": "required",
+			"group": "activation",
+			"id": "activationCondition",
+			"label": "Activation Condition",
+			"optional": true,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "consumeUnmatchedEvents",
+				"type": "zeebe:property"
+			},
+			"group": "activation",
+			"id": "consumeUnmatchedEvents",
+			"label": "Consume Unmatched Events",
+			"tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response",
+			"type": "Boolean",
+			"value": true
+		},
+		{
+			"binding": {
+				"name": "correlationKey",
+				"type": "bpmn:Message#zeebe:subscription#property"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"description": "Sets up the correlation key from process variables.",
+			"feel": "required",
+			"group": "correlation",
+			"id": "correlationKeyProcess",
+			"label": "Correlation Key (Process)",
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "correlationKeyExpression",
+				"type": "zeebe:property"
+			},
+			"constraints": {
+				"notEmpty": true
+			},
+			"description": "Extracts the correlation key from the incoming message payload.",
+			"feel": "required",
+			"group": "correlation",
+			"id": "correlationKeyPayload",
+			"label": "Correlation Key (Payload)",
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "messageIdExpression",
+				"type": "zeebe:property"
+			},
+			"description": "Expression to extract unique identifier of a message.",
+			"feel": "required",
+			"group": "correlation",
+			"id": "messageIdExpression",
+			"label": "Message ID Expression",
+			"optional": true,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "messageTtl",
+				"type": "zeebe:property"
+			},
+			"constraints": {
+				"notEmpty": false,
+				"pattern": {
+					"message": "must be an ISO-8601 duration",
+					"value": "^(PT.*|)$"
+				}
+			},
+			"description": "Time-to-live for the message in the broker (ISO-8601 duration).",
+			"feel": "optional",
+			"group": "correlation",
+			"id": "messageTtl",
+			"label": "Message TTL",
+			"optional": true,
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "name",
+				"type": "bpmn:Message#property"
+			},
+			"generatedValue": {
+				"type": "uuid"
+			},
+			"group": "correlation",
+			"id": "messageNameUuid",
+			"type": "Hidden"
+		},
+		{
+			"binding": {
+				"name": "resultVariable",
+				"type": "zeebe:property"
+			},
+			"description": "Name of variable to store the response in.",
+			"group": "output",
+			"id": "resultVariable",
+			"label": "Result Variable",
+			"type": "String"
+		},
+		{
+			"binding": {
+				"name": "resultExpression",
+				"type": "zeebe:property"
+			},
+			"description": "Expression to map the response into process variables.",
+			"feel": "required",
+			"group": "output",
+			"id": "resultExpression",
+			"label": "Result Expression",
+			"type": "Text"
+		}
+	],
+	"version": 1
+}
