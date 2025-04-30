@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>API Fetch</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src='main.js'></script>
+</head>
+
+<body>
+    <form action="" id="form1">
+
+        <label for="headline">Headline</label>
+        <input type="text" id="headline">
+
+        <label for="articleBody">ArticleBody</label>
+        <input type="text" id="articleBody">
+
+        <button onclick="ActionButtonPOST()" type="button">POST</button>
+
+        <br>
+
+        <label for="externalReference">External Reference</label>
+        <input type="text" id="externalReference">
+
+        <button onclick="ActionButtonDELETE()" type="button">DELETE</button>
+
+        <br>
+
+        <label for="externalReferenceForPUT">External Reference</label>
+        <input type="text" id="externalReferenceForPUT">
+
+        <label for="headlineForPUT">Headline</label>
+        <input type="text" id="headlineForPUT">
+
+        <label for="articleBodyForPUT">Article</label>
+        <input type="text" id="articleBodyForPUT">
+
+        <button onclick="ActionButtonPUT()" type="button">PUT</button>
+
+        <br>
+
+        <button onclick="ActionButtonGETAll()" type="button">GET ALL</button>
+
+        <br>
+
+        <label for="postId">Post your Id</label>
+        <input type="text" id="postId">
+
+        <button onclick="ActionButtonGETId()" type="button">GET ID</button>
+
+        <aside id="responseContainer">
+            <p>Os dados aparecerao aqui.</p>
+        </aside>
+
+    </form>
+</body>
+
+</html>
