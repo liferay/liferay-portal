@@ -21,7 +21,7 @@ export default function useAccountsSyncBusinessEvents(
 			filterQuery += ` and id ne '${businessEvent.id || ''}'`;
 		}
 
-		filterQuery += `&sort=dateModified:asc`;
+		filterQuery += `&sort=targetGoLiveDateTime:asc`;
 
 		return filterQuery;
 	}, [

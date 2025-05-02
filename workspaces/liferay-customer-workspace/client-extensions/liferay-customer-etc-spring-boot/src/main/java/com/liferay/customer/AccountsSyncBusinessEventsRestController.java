@@ -283,7 +283,7 @@ public class AccountsSyncBusinessEventsRestController
 					"eventStatus ne 'canceled' and eventStatus ne 'completed' ",
 					"and r_accountEntryToBusinessEvents_accountEntryERC eq '",
 					externalReferenceCode, "'"),
-				page, 500, "dateModified:asc");
+				page, 500, "targetGoLiveDateTime:asc");
 
 			_updateZendeskTickets(
 				_fetchZendeskOrganizationId(externalReferenceCode),
