@@ -5,7 +5,9 @@ liferay-customer-etc-spring-boot-oahs:
     .serviceScheme: http
     name: Liferay Customer Etc Spring Boot OAuth Application Headless Server
     scopes:
+        -   Liferay.Headless.Admin.List.Type.everything.read
         -   c_businessevent.everything.read
+        -   c_businesseventversion.everything
     type: oAuthApplicationHeadlessServer
 liferay-customer-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
