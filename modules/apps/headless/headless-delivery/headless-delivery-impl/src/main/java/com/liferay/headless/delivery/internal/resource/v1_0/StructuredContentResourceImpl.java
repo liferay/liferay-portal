@@ -23,6 +23,7 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.Field;
 import com.liferay.dynamic.data.mapping.storage.Fields;
+import com.liferay.dynamic.data.mapping.storage.constants.FieldConstants;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesToFieldsConverter;
 import com.liferay.dynamic.data.mapping.util.DDMIndexer;
@@ -34,6 +35,7 @@ import com.liferay.headless.common.spi.odata.entity.EntityFieldsUtil;
 import com.liferay.headless.common.spi.resource.SPIRatingResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.headless.delivery.dto.v1_0.ContentField;
+import com.liferay.headless.delivery.dto.v1_0.ContentFieldValue;
 import com.liferay.headless.delivery.dto.v1_0.Rating;
 import com.liferay.headless.delivery.dto.v1_0.RelatedContent;
 import com.liferay.headless.delivery.dto.v1_0.StructuredContent;
@@ -93,6 +95,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -119,6 +122,8 @@ import com.liferay.portal.vulcan.util.LocalDateTimeUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
+
+import java.io.Serializable;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -862,6 +867,51 @@ public class StructuredContentResourceImpl
 					structuredContent)));
 	}
 
+	private boolean _containsI18nMap(ContentField[] contentFields) {
+		if (ArrayUtil.isEmpty(contentFields)) {
+			return false;
+		}
+
+		for (ContentField contentField : contentFields) {
+			if (MapUtil.isNotEmpty(contentField.getContentFieldValue_i18n())) {
+				return true;
+			}
+
+			ContentField[] nestedFields = contentField.getNestedContentFields();
+
+			if (ArrayUtil.isNotEmpty(nestedFields) &&
+				_containsI18nMap(nestedFields)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private Fields _createFieldsWithI18n(
+			Set<Locale> availableLocales, ContentField[] contentFields,
+			DDMStructure ddmStructure, JournalArticle journalArticle,
+			Locale preferredLocale)
+		throws Exception {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		DDMFormValues ddmFormValues = DDMFormValuesUtil.toDDMFormValues(
+			availableLocales, contentFields, ddmStructure.getDDMForm(),
+			_dlAppService, journalArticle.getGroupId(), _journalArticleService,
+			_layoutLocalService, preferredLocale,
+			_getRootDDMFormFields(ddmStructure));
+
+		serviceContext.setAttribute(
+			"ddmFormValues",
+			DDMFormValuesUtil.getContent(
+				_jsonDDMFormValuesSerializer, ddmStructure.getDDMForm(),
+				ddmFormValues.getDDMFormFieldValues()));
+
+		return _ddm.getFields(ddmStructure.getStructureId(), serviceContext);
+	}
+
 	private ServiceContext _createServiceContext(
 			Long[] assetCategoryIds, long[] assetLinkEntryIds,
 			double assetPriority, String[] assetTagNames, long groupId,
@@ -1147,28 +1197,64 @@ public class StructuredContentResourceImpl
 			sorts, this::_toStructuredContent);
 	}
 
+	private void _populateContentFieldMap(
+		ContentField[] contentFields,
+		Map<String, List<ContentField>> contentFieldMap) {
+
+		if (ArrayUtil.isEmpty(contentFields)) {
+			return;
+		}
+
+		for (ContentField contentField : contentFields) {
+			if (contentField.getContentFieldValue() != null) {
+				contentFieldMap.computeIfAbsent(
+					contentField.getName(), key -> new ArrayList<>()
+				).add(
+					contentField
+				);
+			}
+
+			_populateContentFieldMap(
+				contentField.getNestedContentFields(), contentFieldMap);
+		}
+	}
+
 	private Fields _toFields(
 			Set<Locale> availableLocales, ContentField[] contentFields,
 			JournalArticle journalArticle)
 		throws Exception {
 
+		if (ArrayUtil.isEmpty(contentFields)) {
+			return _ddmFormValuesToFieldsConverter.convert(
+				journalArticle.getDDMStructure(),
+				journalArticle.getDDMFormValues());
+		}
+
 		DDMStructure ddmStructure = journalArticle.getDDMStructure();
+		Locale preferredLocale = contextAcceptLanguage.getPreferredLocale();
 
-		ServiceContext serviceContext = new ServiceContext();
+		if (_containsI18nMap(contentFields)) {
+			return _createFieldsWithI18n(
+				availableLocales, contentFields, ddmStructure, journalArticle,
+				preferredLocale);
+		}
 
-		DDMFormValues ddmFormValues = DDMFormValuesUtil.toDDMFormValues(
-			availableLocales, contentFields, ddmStructure.getDDMForm(),
-			_dlAppService, journalArticle.getGroupId(), _journalArticleService,
-			_layoutLocalService, contextAcceptLanguage.getPreferredLocale(),
-			_getRootDDMFormFields(ddmStructure));
+		Fields fields = _ddmFormValuesToFieldsConverter.convert(
+			ddmStructure, journalArticle.getDDMFormValues());
 
-		serviceContext.setAttribute(
-			"ddmFormValues",
-			DDMFormValuesUtil.getContent(
-				_jsonDDMFormValuesSerializer, ddmStructure.getDDMForm(),
-				ddmFormValues.getDDMFormFieldValues()));
+		Map<String, List<ContentField>> contentFieldMap = new HashMap<>();
 
-		return _ddm.getFields(ddmStructure.getStructureId(), serviceContext);
+		_populateContentFieldMap(contentFields, contentFieldMap);
+
+		if (MapUtil.isNotEmpty(contentFieldMap)) {
+			_updatePreferredLocaleValues(
+				contentFieldMap, fields, preferredLocale);
+		}
+
+		_ddmFormValuesValidator.validate(
+			_fieldsToDDMFormValuesConverter.convert(ddmStructure, fields));
+
+		return fields;
 	}
 
 	private Fields _toPatchedFields(
@@ -1347,6 +1433,46 @@ public class StructuredContentResourceImpl
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 				contextUser),
 			journalArticle);
+	}
+
+	private void _updatePreferredLocaleValues(
+			Map<String, List<ContentField>> contentFieldMap, Fields fields,
+			Locale preferredLocale)
+		throws Exception {
+
+		for (Map.Entry<String, List<ContentField>> entry :
+				contentFieldMap.entrySet()) {
+
+			List<ContentField> contentFields = entry.getValue();
+			Field field = fields.get(entry.getKey());
+
+			if (contentFields.isEmpty() || (field == null)) {
+				continue;
+			}
+
+			List<Serializable> valueList = new ArrayList<>(
+				contentFields.size());
+
+			for (ContentField contentField : contentFields) {
+				ContentFieldValue contentFieldValue =
+					contentField.getContentFieldValue();
+
+				if ((contentFieldValue == null) ||
+					(contentFieldValue.getData() == null)) {
+
+					continue;
+				}
+
+				valueList.add(
+					FieldConstants.getSerializable(
+						preferredLocale, LocaleUtil.ROOT, field.getDataType(),
+						contentFieldValue.getData()));
+			}
+
+			if (ListUtil.isNotEmpty(valueList)) {
+				field.setValues(preferredLocale, valueList);
+			}
+		}
 	}
 
 	private StructuredContent _updateStructuredContent(
