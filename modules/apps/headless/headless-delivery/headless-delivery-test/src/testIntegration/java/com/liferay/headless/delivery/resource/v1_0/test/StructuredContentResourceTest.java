@@ -712,6 +712,62 @@ public class StructuredContentResourceTest
 	}
 
 	@Override
+	@Test
+	public void testPutStructuredContent() throws Exception {
+		super.testPutStructuredContent();
+
+		Locale locale = LocaleUtil.getDefault();
+
+		StructuredContent randomLocalizedStructuredContent =
+			_randomStructuredContent(locale);
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.postSiteStructuredContent(
+				testGetSiteStructuredContentsPage_getSiteId(),
+				randomLocalizedStructuredContent);
+
+		Map<String, ContentFieldValue> contentFieldValues = HashMapBuilder.put(
+			"en-US",
+			(ContentFieldValue)new ContentFieldValue() {
+
+				{
+					data = RandomTestUtil.randomString(10);
+				}
+			}
+		).put(
+			"es-ES",
+			(ContentFieldValue)new ContentFieldValue() {
+
+				{
+					data = RandomTestUtil.randomString(10);
+				}
+			}
+		).build();
+
+		String w3cLanguageId = LocaleUtil.toW3cLanguageId(locale);
+
+		randomLocalizedStructuredContent.setContentFields(
+			new ContentField[] {
+				new ContentField() {
+					{
+						contentFieldValue = contentFieldValues.get(
+							w3cLanguageId);
+						contentFieldValue_i18n = contentFieldValues;
+						name = "MyText";
+					}
+				}
+			});
+
+		StructuredContent putStructuredContent =
+			structuredContentResource.putStructuredContent(
+				postStructuredContent.getId(),
+				randomLocalizedStructuredContent);
+
+		assertEquals(randomLocalizedStructuredContent, putStructuredContent);
+		assertValid(putStructuredContent);
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
 			"contentStructureId", "description", "priority", "title"
