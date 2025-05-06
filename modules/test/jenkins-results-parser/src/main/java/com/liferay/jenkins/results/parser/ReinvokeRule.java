@@ -8,6 +8,8 @@ package com.liferay.jenkins.results.parser;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -18,6 +20,15 @@ import java.util.regex.Pattern;
  * @author Peter Yoo
  */
 public class ReinvokeRule {
+
+	@Override
+	private int compareTo(ReinvokeRule reinvokeRule) {
+		if (_priority == testClass._priority) {
+			return name.compareTo(reinvokeRule.getName());
+		}
+
+		return Integer.compare(priority, reinvokeRule.getPriority());
+	}
 
 	public static List<ReinvokeRule> getReinvokeRules() {
 		if (_reinvokeRules != null) {
@@ -47,6 +58,8 @@ public class ReinvokeRule {
 					new ReinvokeRule(
 						buildProperties.getProperty(propertyName), ruleName));
 			}
+
+			Collections.sort(_reinvokeRules);
 		}
 
 		return new ArrayList<>(_reinvokeRules);
@@ -295,7 +308,9 @@ public class ReinvokeRule {
 			}
 
 			if (name.equals("priority")) {
-				priority = Integer.parseInt(value);
+				if (JenkinsResultsParserUtil.isInteger(value)) {
+					priority = Integer.parseInt(value);
+				}
 
 				continue;
 			}
