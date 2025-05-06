@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.service.WorkflowDefinitionLinkService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -115,7 +116,7 @@ public class WorkflowDefinitionLinkResourceImpl
 		return _toWorkflowDefinitionLink(
 			_workflowDefinitionLinkService.addWorkflowDefinitionLink(
 				contextUser.getUserId(), contextCompany.getCompanyId(),
-				GetterUtil.getLong(workflowDefinitionLink.getGroupId()),
+				_getGroupId(workflowDefinitionLink),
 				workflowDefinitionLink.getClassName(), 0, 0,
 				workflowDefinition.getName(), workflowDefinition.getVersion()));
 	}
@@ -133,7 +134,7 @@ public class WorkflowDefinitionLinkResourceImpl
 		return _toWorkflowDefinitionLink(
 			_workflowDefinitionLinkService.addWorkflowDefinitionLink(
 				contextUser.getUserId(), contextCompany.getCompanyId(),
-				GetterUtil.getLong(workflowDefinitionLink.getGroupId()),
+				_getGroupId(workflowDefinitionLink),
 				workflowDefinitionLink.getClassName(), 0, 0,
 				workflowDefinition.getName(), workflowDefinition.getVersion()));
 	}
@@ -149,10 +150,34 @@ public class WorkflowDefinitionLinkResourceImpl
 			_workflowDefinitionLinkService.updateWorkflowDefinitionLink(
 				externalReferenceCode, contextUser.getUserId(),
 				contextCompany.getCompanyId(),
-				GetterUtil.getLong(workflowDefinitionLink.getGroupId()),
+				_getGroupId(workflowDefinitionLink),
 				workflowDefinitionLink.getClassName(), 0, 0,
 				workflowDefinitionLink.getWorkflowDefinitionName(),
 				workflowDefinitionLink.getWorkflowDefinitionVersion()));
+	}
+
+	private long _getGroupId(WorkflowDefinitionLink workflowDefinitionLink)
+		throws Exception {
+
+		long groupId = GetterUtil.getLong(workflowDefinitionLink.getGroupId());
+
+		if (groupId != 0) {
+			return groupId;
+		}
+
+		if (Validator.isNotNull(
+				workflowDefinitionLink.getGroupExternalReferenceCode())) {
+
+			Group group = _groupService.fetchGroupByExternalReferenceCode(
+				workflowDefinitionLink.getGroupExternalReferenceCode(),
+				contextCompany.getCompanyId());
+
+			if (group != null) {
+				return group.getGroupId();
+			}
+		}
+
+		return groupId;
 	}
 
 	private WorkflowDefinitionLink _toWorkflowDefinitionLink(
