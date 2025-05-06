@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -20,15 +19,6 @@ import java.util.regex.Pattern;
  * @author Peter Yoo
  */
 public class ReinvokeRule implements Comparable<ReinvokeRule> {
-
-	@Override
-	public int compareTo(ReinvokeRule reinvokeRule) {
-		if (priority == reinvokeRule.getPriority()) {
-			return name.compareTo(reinvokeRule.getName());
-		}
-
-		return Integer.compare(priority, reinvokeRule.getPriority());
-	}
 
 	public static List<ReinvokeRule> getReinvokeRules() {
 		if (_reinvokeRules != null) {
@@ -63,6 +53,15 @@ public class ReinvokeRule implements Comparable<ReinvokeRule> {
 		}
 
 		return new ArrayList<>(_reinvokeRules);
+	}
+
+	@Override
+	public int compareTo(ReinvokeRule reinvokeRule) {
+		if (priority == reinvokeRule.getPriority()) {
+			return name.compareTo(reinvokeRule.getName());
+		}
+
+		return Integer.compare(priority, reinvokeRule.getPriority());
 	}
 
 	@Override
