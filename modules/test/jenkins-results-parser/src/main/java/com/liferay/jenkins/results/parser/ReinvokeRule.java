@@ -19,11 +19,11 @@ import java.util.regex.Pattern;
 /**
  * @author Peter Yoo
  */
-public class ReinvokeRule {
+public class ReinvokeRule implements Comparable<ReinvokeRule> {
 
 	@Override
-	private int compareTo(ReinvokeRule reinvokeRule) {
-		if (_priority == testClass._priority) {
+	public int compareTo(ReinvokeRule reinvokeRule) {
+		if (priority == reinvokeRule.getPriority()) {
 			return name.compareTo(reinvokeRule.getName());
 		}
 
@@ -116,7 +116,7 @@ public class ReinvokeRule {
 		return notificationRecipients;
 	}
 
-	public String getPriority() {
+	public int getPriority() {
 		return priority;
 	}
 
@@ -274,7 +274,7 @@ public class ReinvokeRule {
 	protected Integer maximumInvocationCount;
 	protected String name;
 	protected String notificationRecipients;
-	protected Integer priority;
+	protected Integer priority = 5;
 	protected String reinvokeBuildPriority;
 	protected Pattern testSuiteNamePattern;
 	protected Pattern topLevelBuildJobNamePattern;
