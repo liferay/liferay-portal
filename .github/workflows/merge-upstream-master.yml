@@ -8,25 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          repository: peterrichards-lr/liferay-portal
-          token: ${{ github.token }}
-      - name: Configure git
-        run: |
-          git config --global user.name "CI Bot"
-          git config --global user.email "noreply@liferay.com"
-          git config --global http.postBuffer 1048576000
-          git remote add upstream https://github.com/liferay/liferay-portal.git
-        shell: bash
-      - name: Fetch upstream and checkout master
-        run: |
-          git fetch upstream
-          git checkout master
-        shell: bash
-      - name: Merge upstream and puch to origin
-        run: |
-          git merge --no-edit upstream/master
-          git push origin master
-        shell: bash
+      - name: Sync Fork
+        run: gh repo sync $OWNER/$REPO -b $BRANCH-NAME
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: peterrichards-lr
+          REPO: liferay-portal
+          BRANCH_NAME: master
