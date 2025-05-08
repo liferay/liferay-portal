@@ -2,14 +2,26 @@ name: Merge upstream master
 on:
   schedule:
     - cron: "0 0 * * 0"
+  workflow_dispatch:
 jobs:
   merge:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Merge upstream
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: peterrichards-lr/liferay-portal
+          token: ${{ github.token }}
+      - name: Configure git
+        run: |
+          git config --global user.name "CI Bot"
+          git config --global user.email "noreply@liferay.com"
+          git remote add upstream https://github.com/liferay/liferay-portal.git
+        shell: bash
+      - name: Fetch and Merge upstream
         run: |
           git fetch upstream
           git checkout master
           git merge --no-edit upstream/master
           git push origin master
+        shell: bash
