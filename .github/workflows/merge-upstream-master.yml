@@ -6,6 +6,7 @@ on:
 jobs:
   merge:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -16,12 +17,16 @@ jobs:
         run: |
           git config --global user.name "CI Bot"
           git config --global user.email "noreply@liferay.com"
+          git config --global http.postBuffer 1048576000
           git remote add upstream https://github.com/liferay/liferay-portal.git
         shell: bash
-      - name: Fetch and Merge upstream
+      - name: Fetch upstream and checkout master
         run: |
           git fetch upstream
           git checkout master
+        shell: bash
+      - name: Merge upstream and puch to origin
+        run: |
           git merge --no-edit upstream/master
           git push origin master
         shell: bash
