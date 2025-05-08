@@ -8,9 +8,9 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+import PicklistService from '../../../../../src/main/resources/META-INF/resources/js/services/PicklistService';
 import PicklistBuilderManagementBar from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/components/picklist_builder/PicklistBuilderManagementBar';
 import {State} from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/PicklistBuilderContext';
-import PicklistService from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/services/PicklistService';
 import {
 	MockCacheProvider,
 	broadcastRefMock,

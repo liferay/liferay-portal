@@ -8,9 +8,9 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+import StructureService from '../../../../src/main/resources/META-INF/resources/js/services/StructureService';
 import StructureBuilderManagementBar from '../../../../src/main/resources/META-INF/resources/js/structure_builder/components/StructureBuilderManagementBar';
 import {State} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
-import StructureService from '../../../../src/main/resources/META-INF/resources/js/structure_builder/services/StructureService';
 import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import {MockStateProvider} from '../mocks/MockStateProvider';
