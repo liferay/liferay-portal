@@ -14,8 +14,8 @@ import React, {
 	useState,
 } from 'react';
 
-import PicklistService from '../services/PicklistService';
-import SpaceService from '../services/SpaceService';
+import PicklistService from '../../services/PicklistService';
+import SpaceService from '../../services/SpaceService';
 import {Picklist} from '../types/Picklist';
 import {Space} from '../types/Space';
 

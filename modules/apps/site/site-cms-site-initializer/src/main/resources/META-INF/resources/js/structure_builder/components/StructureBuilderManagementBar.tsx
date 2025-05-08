@@ -18,7 +18,7 @@ import selectStructureLocalizedLabel from '../selectors/selectStructureLocalized
 import selectStructureName from '../selectors/selectStructureName';
 import selectStructureSpaces from '../selectors/selectStructureSpaces';
 import selectStructureStatus from '../selectors/selectStructureStatus';
-import StructureService from '../services/StructureService';
+import StructureService from '../../services/StructureService';
 import {useValidate} from '../utils/validation';
 import AsyncButton from './AsyncButton';
 import ManagementBar from './ManagementBar';

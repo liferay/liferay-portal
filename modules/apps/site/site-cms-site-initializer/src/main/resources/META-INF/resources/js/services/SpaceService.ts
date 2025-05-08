@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {State} from '../contexts/StateContext';
-import {Space} from '../types/Space';
+import {State} from '../structure_builder/contexts/StateContext';
+import {Space} from '../structure_builder/types/Space';
 import ApiHelper from './ApiHelper';
 
 async function addSpace({name}: {name: State['name']}) {

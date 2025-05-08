@@ -4,7 +4,7 @@
  */
 
 import {patch} from '../services/api';
-import ApiHelper from '../structure_builder/services/ApiHelper';
+import ApiHelper from './ApiHelper';
 
 export type TFolder = {
 	description: string;

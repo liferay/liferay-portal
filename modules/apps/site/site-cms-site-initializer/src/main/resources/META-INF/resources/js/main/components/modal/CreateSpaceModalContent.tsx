@@ -9,7 +9,7 @@ import {useFormik} from 'formik';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
-import SpaceService from '../../../structure_builder/services/SpaceService';
+import SpaceService from '../../../services/SpaceService';
 import {SpaceData} from '../../FDSPropsTransformer/actions/createSpaceAction';
 import {FieldText} from '../forms';
 import {required, validate} from '../forms/validations';

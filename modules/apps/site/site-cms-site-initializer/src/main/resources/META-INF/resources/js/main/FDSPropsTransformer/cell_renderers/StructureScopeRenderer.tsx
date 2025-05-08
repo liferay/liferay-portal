@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import SpaceService from '../../../structure_builder/services/SpaceService';
+import SpaceService from '../../../services/SpaceService';
 import SpaceSticker from '../../components/SpaceSticker';
 
 const {useEffect, useState} = React;
