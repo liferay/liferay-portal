@@ -9,7 +9,7 @@ import ClayModal from '@clayui/modal';
 import {openToast} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
-import {postFormData} from '../../../services/api';
+import {postFormData} from '../../../services/ApiHelper';
 import {FieldFile} from '../forms';
 
 const JSON_EXTENSION = '.json';

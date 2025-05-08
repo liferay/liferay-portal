@@ -6,7 +6,7 @@
 import {openModal} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 
-import {fetchJSON} from '../../../services/api';
+import {fetchJSON} from '../../../services/ApiHelper';
 import DeleteStructureModalContent from '../../components/modal/DeleteStructureModalContent';
 import {executeAsyncItemAction} from '../utils/executeAsyncItemAction';
 

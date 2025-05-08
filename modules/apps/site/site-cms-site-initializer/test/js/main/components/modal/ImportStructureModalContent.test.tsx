@@ -8,14 +8,14 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import ImportStructureModalContent from '../../../../../src/main/resources/META-INF/resources/js/main/components/modal/ImportStructureModalContent';
-import * as api from '../../../../../src/main/resources/META-INF/resources/js/services/api';
+import * as ApiHelper from '../../../../../src/main/resources/META-INF/resources/js/services/ApiHelper';
 
 jest.mock(
-	'../../../../../src/main/resources/META-INF/resources/js/services/api'
+	'../../../../../src/main/resources/META-INF/resources/js/services/ApiHelper'
 );
 
-const mockPostFormData = api.postFormData as jest.MockedFunction<
-	typeof api.postFormData
+const mockPostFormData = ApiHelper.postFormData as jest.MockedFunction<
+	typeof ApiHelper.postFormData
 >;
 
 const mockCloseModal = jest.fn();
