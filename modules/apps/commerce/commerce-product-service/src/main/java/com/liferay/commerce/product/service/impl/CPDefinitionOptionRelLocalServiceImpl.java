@@ -1042,6 +1042,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	private void _reindexCPDefinition(long cpDefinitionId)
 		throws PortalException {
 
+		if (BatchEngineImportTaskThreadLocal.isEnabled()) {
+			return;
+		}
+
 		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			CPDefinition.class);
 
