@@ -1,0 +1,15 @@
+name: Merge upstream master
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge upstream
+        run: |
+          git fetch upstream
+          git checkout master
+          git merge --no-edit upstream/master
+          git push origin master
