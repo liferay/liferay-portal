@@ -8,6 +8,7 @@ import {openConfirmModal} from '@liferay/layout-js-components-web';
 import {ManagementToolbar, openToast} from 'frontend-js-components-web';
 import React from 'react';
 
+import StructureService from '../../services/StructureService';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectHistory from '../selectors/selectHistory';
 import selectStructureERC from '../selectors/selectStructureERC';
@@ -18,7 +19,6 @@ import selectStructureLocalizedLabel from '../selectors/selectStructureLocalized
 import selectStructureName from '../selectors/selectStructureName';
 import selectStructureSpaces from '../selectors/selectStructureSpaces';
 import selectStructureStatus from '../selectors/selectStructureStatus';
-import StructureService from '../../services/StructureService';
 import {useValidate} from '../utils/validation';
 import AsyncButton from './AsyncButton';
 import ManagementBar from './ManagementBar';

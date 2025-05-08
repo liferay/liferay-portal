@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Options, State} from '../structure_builder/contexts/PicklistBuilderContext';
+import {
+	Options,
+	State,
+} from '../structure_builder/contexts/PicklistBuilderContext';
 import {Picklist} from '../structure_builder/types/Picklist';
 import normalizeOptions from '../structure_builder/utils/normalizeOptions';
 import ApiHelper from './ApiHelper';
