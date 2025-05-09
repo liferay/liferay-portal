@@ -132,24 +132,4 @@ async function patch(data: any, url: string) {
 	);
 }
 
-export async function postScopeScopeKeyObjectEntryFolder(
-	scopeKey: string,
-	title: string,
-	parentObjectEntryFolderExternalReferenceCode: string
-) {
-	return await handleRequest(() =>
-		fetch(
-			`/o/headless-object/v1.0/scopes/${scopeKey}/object-entry-folders`,
-			{
-				body: JSON.stringify({
-					parentObjectEntryFolderExternalReferenceCode,
-					title,
-				}),
-				headers: HEADERS,
-				method: 'POST',
-			}
-		)
-	);
-}
-
 export default {get, patch, post, postFormData, put};
