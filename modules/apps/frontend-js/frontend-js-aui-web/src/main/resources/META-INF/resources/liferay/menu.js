@@ -122,7 +122,9 @@ AUI.add(
 					);
 
 					if (overlay) {
-						overlay.hide();
+						overlay.destroy();
+
+						instance._overlayMap.clear();
 					}
 
 					instance._activeMenu = null;
