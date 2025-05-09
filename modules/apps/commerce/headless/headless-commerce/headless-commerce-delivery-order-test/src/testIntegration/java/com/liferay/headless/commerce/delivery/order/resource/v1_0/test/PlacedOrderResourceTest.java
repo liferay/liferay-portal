@@ -40,11 +40,14 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
+
+import java.text.DateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -452,6 +455,7 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 		commerceOrder.setName(RandomTestUtil.randomString() + StringPool.AT);
 		commerceOrder.setPurchaseOrderNumber(
 			RandomTestUtil.randomString() + StringPool.AMPERSAND);
+		commerceOrder.setRequestedDeliveryDate(RandomTestUtil.nextDate());
 
 		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
 			commerceOrder);
@@ -493,6 +497,18 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 			String.format(
 				"(purchaseOrderNumber eq '%s')",
 				commerceOrder.getPurchaseOrderNumber()),
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		page = placedOrderResource.getChannelPlacedOrdersPage(
+			_commerceChannel.getCommerceChannelId(), null,
+			String.format(
+				"(requestedDeliveryDate eq %s)",
+				dateFormat.format(commerceOrder.getRequestedDeliveryDate())),
 			Pagination.of(1, 10), null);
 
 		Assert.assertEquals(1, page.getTotalCount());
