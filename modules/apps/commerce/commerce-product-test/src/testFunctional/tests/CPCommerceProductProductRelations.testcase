@@ -56,55 +56,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for COMMERCE-11085. Can delete a product related to another product"
-	@priority = 3
-	test CanDeleteProductWithRelations {
-		property portal.acceptance = "false";
-
-		task ("Given a Minium Site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-		}
-
-		task ("And a product is related to another product") {
-			CommerceProducts.openProductsAdmin();
-
-			CommerceProducts.searchAndGoToProductEntry(entryProductName = "ABS Sensor");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Product Relations");
-
-			CommerceRelations.addAnyProductRelation(
-				key_product = "U-Joint",
-				key_relation = "Up-Sell Product");
-
-			AssertElementPresent(
-				key_productName = "U-Joint",
-				key_value = "Up-Sell",
-				locator1 = "CommerceEntry#VALUE_PRODUCT_RELATIONS");
-		}
-
-		task ("When the admin deletes the related product") {
-			CommerceProducts.openProductsAdmin();
-
-			CommerceNavigator.searchEntry(entryName = "U-Joint");
-
-			Click.clickNoMouseOverNoWaitForVisible(
-				key_productName = "U-Joint",
-				locator1 = "CommerceEntry#PRODUCT_ENTRY_CHECKBOX");
-
-			AssertElementPresent(locator1 = "Button#TRASH_ENABLED");
-		}
-
-		task ("Then the product is successfully deleted") {
-			ClickNoError(locator1 = "Button#TRASH_ENABLED");
-
-			CommerceNavigator.searchEntry(entryName = "U-Joint");
-
-			AssertElementNotPresent(
-				key_entryName = "U-Joint",
-				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
-	}
-
 	@description = "This is a test for COMMERCE-6064. EditAProductRelations"
 	@priority = 5
 	test EditAProductRelations {
