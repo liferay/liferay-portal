@@ -214,16 +214,6 @@
 				"name": "authentication.clientAuthentication",
 				"type": "zeebe:input"
 			},
-			"choices": [
-				{
-					"name": "Send client credentials in body",
-					"value": "credentialsBody"
-				},
-				{
-					"name": "Send as Basic Auth header",
-					"value": "basicAuthHeader"
-				}
-			],
 			"condition": {
 				"equals": "oauth-client-credentials-flow",
 				"property": "authentication.type",
@@ -237,7 +227,8 @@
 			"id": "authentication.clientAuthentication",
 			"label": "Client Authentication",
 			"optional": false,
-			"type": "Dropdown"
+			"type": "Hidden",
+			"value": "credentialsBody"
 		},
 		{
 			"binding": {
@@ -348,6 +339,16 @@
 				"name": "method",
 				"type": "zeebe:input"
 			},
+			"condition": {
+				"oneOf": [
+					"GET_object",
+					"PUT_object",
+					"PATCH_object",
+					"DELETE_object"
+				],
+				"property": "operationType",
+				"type": "simple"
+			},
 			"id": "operationMethod",
 			"optional": false,
 			"type": "Hidden",
@@ -434,7 +435,7 @@
 				"notEmpty": true
 			},
 			"group": "endpoint",
-			"id": "httpMethod",
+			"id": "method",
 			"label": "Method",
 			"optional": false,
 			"type": "Dropdown",
@@ -624,7 +625,7 @@
 					"PUT",
 					"PATCH"
 				],
-				"property": "httpMethod",
+				"property": "method",
 				"type": "simple"
 			},
 			"description": "Payload to send with the request.",
@@ -654,7 +655,7 @@
 				"key": "resultVariable",
 				"type": "zeebe:taskHeader"
 			},
-			"description": "Name of variable to store the response in.",
+			"description": "Set the name of the variable that stores the response.",
 			"group": "output",
 			"id": "resultVariable",
 			"label": "Result Variable",
@@ -665,7 +666,7 @@
 				"key": "resultExpression",
 				"type": "zeebe:taskHeader"
 			},
-			"description": "Expression to map the response into process variables.",
+			"description": "Enter an expression to map the response into process variables.bles.",
 			"feel": "required",
 			"group": "output",
 			"id": "resultExpression",

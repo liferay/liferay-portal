@@ -40,7 +40,7 @@
 		{
 			"id": "correlation",
 			"label": "Correlation",
-			"tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+			"tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">in the Camunda documentation</a>."
 		},
 		{
 			"id": "output",
@@ -70,7 +70,7 @@
 				"name": "inbound.method",
 				"type": "zeebe:property"
 			},
-			"description": "Select HTTP method.",
+			"description": "Select an HTTP method.",
 			"group": "endpoint",
 			"id": "inbound.method",
 			"label": "Webhook Method",
@@ -90,7 +90,7 @@
 					"value": "^[a-zA-Z0-9]+([-_][a-zA-Z0-9]+)*$"
 				}
 			},
-			"description": "The webhook ID is a part of the URL.",
+			"description": "The webhook ID is part of the URL.",
 			"group": "endpoint",
 			"id": "inbound.context",
 			"label": "Webhook ID",
@@ -129,7 +129,7 @@
 				"property": "inbound.auth.type",
 				"type": "simple"
 			},
-			"description": "Expected secret.",
+			"description": "Enter the expected secret.",
 			"feel": "optional",
 			"group": "authorization",
 			"id": "inbound.auth.apiKey",
@@ -150,7 +150,7 @@
 			"constraints": {
 				"notEmpty": true
 			},
-			"description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/liferay/#how-to-configure-secret'>See documentation</a>.",
+			"description": "A FEEL expression that extracts a secret from the request.",
 			"feel": "required",
 			"group": "authorization",
 			"id": "inbound.auth.apiKeyLocator",
@@ -164,7 +164,7 @@
 				"name": "inbound.responseExpression",
 				"type": "zeebe:property"
 			},
-			"description": "Expression used to generate the HTTP response.",
+			"description": "Enter the expression used to generate the HTTP response.",
 			"feel": "required",
 			"group": "webhookResponse",
 			"id": "inbound.responseExpression",
@@ -177,7 +177,7 @@
 				"name": "activationCondition",
 				"type": "zeebe:property"
 			},
-			"description": "Condition under which the Connector triggers. Leave empty to catch all events.",
+			"description": "Enter the condition to trigger the connector. Leave this empty to catch all events. triggers. Leave empty to catch all events.",
 			"feel": "required",
 			"group": "activation",
 			"id": "activationCondition",
@@ -193,7 +193,7 @@
 			"group": "activation",
 			"id": "consumeUnmatchedEvents",
 			"label": "Consume Unmatched Events",
-			"tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response",
+			"tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response.",
 			"type": "Boolean",
 			"value": true
 		},
@@ -205,7 +205,7 @@
 			"constraints": {
 				"notEmpty": true
 			},
-			"description": "Sets up the correlation key from process variables.",
+			"description": "Use process variables to set the correlation key expression.",
 			"feel": "required",
 			"group": "correlation",
 			"id": "correlationKeyProcess",
@@ -232,7 +232,7 @@
 				"name": "messageIdExpression",
 				"type": "zeebe:property"
 			},
-			"description": "Expression to extract unique identifier of a message.",
+			"description": "EEnter an expression to extract the unique identifier of a message. message.",
 			"feel": "required",
 			"group": "correlation",
 			"id": "messageIdExpression",
@@ -252,11 +252,11 @@
 					"value": "^(PT.*|)$"
 				}
 			},
-			"description": "Time-to-live for the message in the broker (ISO-8601 duration).",
+			"description": "Set the lifespan (time-to-live) of the broker message as an ISO-8601 duration.-8601 duration).",
 			"feel": "optional",
 			"group": "correlation",
 			"id": "messageTtl",
-			"label": "Message TTL",
+			"label": "Message Lifespan (Time-To-Live)",
 			"optional": true,
 			"type": "String"
 		},
@@ -277,7 +277,7 @@
 				"name": "resultVariable",
 				"type": "zeebe:property"
 			},
-			"description": "Name of variable to store the response in.",
+			"description": "Set the name of the variable that stores the response.",
 			"group": "output",
 			"id": "resultVariable",
 			"label": "Result Variable",
@@ -288,7 +288,7 @@
 				"name": "resultExpression",
 				"type": "zeebe:property"
 			},
-			"description": "Expression to map the response into process variables.",
+			"description": "Enter an expression to map the response into process variables.bles.",
 			"feel": "required",
 			"group": "output",
 			"id": "resultExpression",
