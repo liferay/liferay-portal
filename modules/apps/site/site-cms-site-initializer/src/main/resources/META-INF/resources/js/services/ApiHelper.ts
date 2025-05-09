@@ -29,8 +29,7 @@ type RequestHandlerResult<T> = {
 };
 
 export async function handleRequest<T>(
-	fetcher: () => Promise<Response>,
-	{returnValue = false}: {returnValue?: boolean} = {}
+	fetcher: () => Promise<Response>
 ): Promise<RequestHandlerResult<T>> {
 	try {
 		const response = await fetcher();
@@ -58,11 +57,7 @@ export async function handleRequest<T>(
 			throw new Error(errorMessage);
 		}
 
-		let data: T | undefined;
-
-		if (returnValue) {
-			data = await response.json();
-		}
+		const data = await response.json();
 
 		return {
 			data,
@@ -99,35 +94,23 @@ async function get(url: string) {
 }
 
 async function post<T>(url: string, data?: T) {
-	const response = await fetch(url, {
-		body: JSON.stringify(data),
-		headers: HEADERS,
-		method: 'POST',
-	});
-
-	if (response.ok) {
-		return await response.json();
-	}
-
-	const {title} = await response.json();
-
-	throw new Error(title);
+	return handleRequest(() =>
+		fetch(url, {
+			body: JSON.stringify(data),
+			headers: HEADERS,
+			method: 'POST',
+		})
+	);
 }
 
 async function put<T>(url: string, data?: T) {
-	const response = await fetch(url, {
-		body: JSON.stringify(data),
-		headers: HEADERS,
-		method: 'PUT',
-	});
-
-	if (response.ok) {
-		return await response.json();
-	}
-
-	const {title} = await response.json();
-
-	throw new Error(title);
+	return handleRequest(() =>
+		fetch(url, {
+			body: JSON.stringify(data),
+			headers: HEADERS,
+			method: 'PUT',
+		})
+	);
 }
 
 async function postFormData(formData: FormData, url: string) {
