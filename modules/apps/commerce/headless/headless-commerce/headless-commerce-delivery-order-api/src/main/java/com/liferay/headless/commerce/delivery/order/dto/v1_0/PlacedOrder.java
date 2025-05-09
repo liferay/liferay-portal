@@ -1475,6 +1475,47 @@ public class PlacedOrder implements Serializable {
 	private Supplier<String> _purchaseOrderNumberSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Date getRequestedDeliveryDate() {
+		if (_requestedDeliveryDateSupplier != null) {
+			requestedDeliveryDate = _requestedDeliveryDateSupplier.get();
+
+			_requestedDeliveryDateSupplier = null;
+		}
+
+		return requestedDeliveryDate;
+	}
+
+	public void setRequestedDeliveryDate(Date requestedDeliveryDate) {
+		this.requestedDeliveryDate = requestedDeliveryDate;
+
+		_requestedDeliveryDateSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRequestedDeliveryDate(
+		UnsafeSupplier<Date, Exception> requestedDeliveryDateUnsafeSupplier) {
+
+		_requestedDeliveryDateSupplier = () -> {
+			try {
+				return requestedDeliveryDateUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date requestedDeliveryDate;
+
+	@JsonIgnore
+	private Supplier<Date> _requestedDeliveryDateSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
 	public Shipment getShipments() {
 		if (_shipmentsSupplier != null) {
@@ -2400,6 +2441,22 @@ public class PlacedOrder implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(purchaseOrderNumber));
+
+			sb.append("\"");
+		}
+
+		Date requestedDeliveryDate = getRequestedDeliveryDate();
+
+		if (requestedDeliveryDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"requestedDeliveryDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(requestedDeliveryDate));
 
 			sb.append("\"");
 		}

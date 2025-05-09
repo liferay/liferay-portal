@@ -761,6 +761,27 @@ public class PlacedOrder implements Cloneable, Serializable {
 
 	protected String purchaseOrderNumber;
 
+	public Date getRequestedDeliveryDate() {
+		return requestedDeliveryDate;
+	}
+
+	public void setRequestedDeliveryDate(Date requestedDeliveryDate) {
+		this.requestedDeliveryDate = requestedDeliveryDate;
+	}
+
+	public void setRequestedDeliveryDate(
+		UnsafeSupplier<Date, Exception> requestedDeliveryDateUnsafeSupplier) {
+
+		try {
+			requestedDeliveryDate = requestedDeliveryDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date requestedDeliveryDate;
+
 	public Shipment getShipments() {
 		return shipments;
 	}
