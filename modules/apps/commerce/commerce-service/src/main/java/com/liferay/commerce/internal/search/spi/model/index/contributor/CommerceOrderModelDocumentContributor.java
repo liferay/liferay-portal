@@ -128,6 +128,10 @@ public class CommerceOrderModelDocumentContributor
 			document.addKeyword("orderStatus", commerceOrder.getOrderStatus());
 			document.addKeyword(
 				"purchaseOrderNumber", commerceOrder.getPurchaseOrderNumber());
+			document.addDate(
+				"requestedDeliveryDate", commerceOrder.getRequestedDeliveryDate());
+			document.addDateSortable(
+				"requestedDeliveryDate", commerceOrder.getRequestedDeliveryDate());
 			document.addKeyword(
 				"sku", _getCommerceOrderItemSKUs(commerceOrder));
 			document.addNumber("total", commerceOrder.getTotal());

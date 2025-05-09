@@ -39,6 +39,10 @@ public class PlacedOrderEntityModel implements EntityModel {
 			new DateTimeEntityField(
 				"orderDate", locale -> Field.getSortableFieldName("orderDate"),
 				locale -> "orderDate"),
+			new DateTimeEntityField(
+				"requestedDeliveryDate",
+				locale -> Field.getSortableFieldName("requestedDeliveryDate"),
+				locale -> "requestedDeliveryDate"),
 			new IntegerEntityField(
 				"id",
 				locale -> Field.getSortableFieldName(Field.ENTRY_CLASS_PK)),
