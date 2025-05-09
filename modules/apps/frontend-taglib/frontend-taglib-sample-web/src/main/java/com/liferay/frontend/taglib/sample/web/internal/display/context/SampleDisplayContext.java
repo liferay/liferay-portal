@@ -42,6 +42,13 @@ public class SampleDisplayContext {
 				"Fieldset"
 			).build(),
 			NavigationItemBuilder.setActive(
+				navigation.equals("icon-menu")
+			).setHref(
+				_renderResponse.createRenderURL(), "navigation", "icon-menu"
+			).setLabel(
+				"Icon Menu"
+			).build(),
+			NavigationItemBuilder.setActive(
 				navigation.equals("input-localized")
 			).setHref(
 				_renderResponse.createRenderURL(), "navigation",
