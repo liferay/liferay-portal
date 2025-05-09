@@ -8,7 +8,7 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import ImportStructureModalContent from '../../../../../src/main/resources/META-INF/resources/js/main/components/modal/ImportStructureModalContent';
-import * as ApiHelper from '../../../../../src/main/resources/META-INF/resources/js/services/ApiHelper';
+import ApiHelper from '../../../../../src/main/resources/META-INF/resources/js/services/ApiHelper';
 
 jest.mock(
 	'../../../../../src/main/resources/META-INF/resources/js/services/ApiHelper'
