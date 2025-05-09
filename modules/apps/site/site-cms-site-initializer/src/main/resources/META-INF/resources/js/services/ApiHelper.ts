@@ -72,12 +72,6 @@ export async function handleRequest<T>(
 	}
 }
 
-export async function fetchJSON<T>(input: RequestInfo, init?: RequestInit) {
-	const result = await fetch(input, {headers: HEADERS, method: 'GET', ...init});
-
-	return (await result.json()) as T;
-}
-
 async function get(url: string) {
 	const response = await fetch(url, {
 		headers: HEADERS,
