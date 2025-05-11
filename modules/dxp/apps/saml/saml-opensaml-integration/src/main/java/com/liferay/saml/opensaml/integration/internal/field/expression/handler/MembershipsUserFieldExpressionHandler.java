@@ -5,12 +5,14 @@
 
 package com.liferay.saml.opensaml.integration.internal.field.expression.handler;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -74,12 +76,29 @@ public class MembershipsUserFieldExpressionHandler
 					UserGroup userGroup = _userGroupLocalService.fetchUserGroup(
 						user.getCompanyId(), value);
 
-					if (userGroup != null) {
-						userGroupIds.add(userGroup.getUserGroupId());
+					if (userGroup == null) {
+						try {
+							userGroup = _userGroupLocalService.addUserGroup(
+								StringPool.BLANK,
+								_userLocalService.getGuestUserId(
+									user.getCompanyId()),
+								user.getCompanyId(), value, StringPool.BLANK,
+								null);
+						}
+						catch (PortalException portalException) {
+							if (_log.isWarnEnabled()) {
+								_log.warn(
+									"Unable to create user group",
+									portalException);
+							}
+						}
 					}
-					else if (_log.isWarnEnabled()) {
-						_log.warn("Ignored unknown user group: " + value);
+
+					if (userGroup == null) {
+						continue;
 					}
+
+					userGroupIds.add(userGroup.getUserGroupId());
 				}
 			});
 	}
@@ -133,6 +152,9 @@ public class MembershipsUserFieldExpressionHandler
 
 	@Reference
 	private UserGroupLocalService _userGroupLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 	private final List<String> _validFieldExpressions =
 		Collections.unmodifiableList(Arrays.asList("userGroups"));

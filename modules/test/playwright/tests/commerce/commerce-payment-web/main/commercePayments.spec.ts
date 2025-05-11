@@ -30,8 +30,6 @@ test('LPD-5742 Can view payments list admin page', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']

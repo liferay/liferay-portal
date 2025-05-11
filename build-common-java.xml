@@ -125,6 +125,30 @@
 				<bnd-invoker output="${jar.file}.jar" />
 
 				<if>
+					<or>
+						<equals arg1="${jar.file}" arg2="portal-test" />
+						<equals arg1="${jar.file}" arg2="util-taglib" />
+					</or>
+					<then>
+
+						<!-- Temporary workaround for LPD-55207 -->
+
+						<unjar
+							dest="temp-unjar"
+							src="${jar.file}.jar"
+						/>
+
+						<jar
+							basedir="temp-unjar"
+							destfile="${jar.file}.jar"
+							manifest="temp-unjar/META-INF/MANIFEST.MF"
+						/>
+
+						<delete dir="temp-unjar" />
+					</then>
+				</if>
+
+				<if>
 					<not>
 						<equals arg1="${baseline.jar.report.level}" arg2="off" />
 					</not>

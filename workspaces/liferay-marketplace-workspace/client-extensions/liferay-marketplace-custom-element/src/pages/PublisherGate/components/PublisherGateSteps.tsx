@@ -87,19 +87,21 @@ const PublisherGateSteps = () => {
 					<div className="mt-8">
 						<PublisherSummaryContent
 							title={i18n.translate('request-details')}
-							userInfo={{
-								...userInfo,
-								phone: {
-									code: userInfo?.phone?.code as string,
-									flag: userInfo?.phone?.flag as string,
-								},
-								publisherType: userInfo.publisherType.map(
-									(type) =>
-										data?.listTypeEntries.find(
-											({key}) => type === key
-										)?.name || type
-								),
-							}}
+							userInfo={
+								{
+									...userInfo,
+									phone: {
+										code: userInfo?.phone?.code as string,
+										flag: userInfo?.phone?.flag as string,
+									},
+									publisherType: userInfo.publisherType.map(
+										(type) =>
+											data?.listTypeEntries.find(
+												({key}) => type === key
+											)?.name || type
+									),
+								} as any
+							}
 						/>
 					</div>
 				</PublisherGateSummary>

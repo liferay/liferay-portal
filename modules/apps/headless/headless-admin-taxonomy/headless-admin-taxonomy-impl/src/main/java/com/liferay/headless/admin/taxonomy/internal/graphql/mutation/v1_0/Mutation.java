@@ -337,6 +337,21 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean updateKeywordMerge(
+			@GraphQLName("toKeywordId") Long toKeywordId,
+			@GraphQLName("fromKeywordIds") Long[] fromKeywordIds)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_keywordResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			keywordResource -> keywordResource.putKeywordMerge(
+				toKeywordId, fromKeywordIds));
+
+		return true;
+	}
+
+	@GraphQLField
 	public boolean updateKeywordSubscribe(
 			@GraphQLName("keywordId") Long keywordId)
 		throws Exception {

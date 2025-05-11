@@ -87,8 +87,6 @@ test('LPD-25831 Placed orders widget configuration to display full addresses and
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -189,8 +187,6 @@ test('LPD-26643 Reorder from placed orders details page', async ({
 		name: 'admin',
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const {channel, site} = await miniumSetUp(apiHelpers);
 
@@ -344,8 +340,6 @@ test('LPD-32095 A user can search orders by account name', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account1.id,
 		[userAccount.emailAddress]
@@ -369,8 +363,6 @@ test('LPD-32095 A user can search orders by account name', async ({
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account2.id,
@@ -473,8 +465,6 @@ test('LPD-33783 Placed orders table displays correct fields', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessCommerceAdminOrder.postOrder({
 		accountId: account.id,
 		channelId: channel.id,
@@ -538,8 +528,6 @@ test('LPD-33658 Assert date and time are displayed as order date', async ({
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
@@ -669,8 +657,6 @@ test('LPD-33658 Global Settings for order date configuration', async ({
 			name: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
@@ -841,8 +827,6 @@ test('LPD-41952 Reorder from placed orders details page with different currency 
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		[userAccount.emailAddress]
@@ -998,8 +982,6 @@ test('LPD-41398 Local date format', async ({
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -1208,8 +1190,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 

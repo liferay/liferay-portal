@@ -84,8 +84,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 				catalogId: catalog.id,

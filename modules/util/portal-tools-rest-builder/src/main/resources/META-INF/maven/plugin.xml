@@ -7,7 +7,7 @@
 	<description/>
 	<groupId>com.liferay</groupId>
 	<artifactId>com.liferay.portal.tools.rest.builder</artifactId>
-	<version>1.0.412</version>
+	<version>1.0.414</version>
 	<goalPrefix>rest-builder</goalPrefix>
 	<isolatedRealm>false</isolatedRealm>
 	<inheritedByDefault>true</inheritedByDefault>
@@ -211,7 +211,7 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<type>jar</type>
-			<version>2.15.1</version>
+			<version>2.19.0</version>
 		</dependency>
 	</dependencies>
 </plugin>

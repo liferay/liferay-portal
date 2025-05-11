@@ -29,8 +29,6 @@ test('LPD-25206 Admin product page shows correct account groups for admin and ac
 		type: 'supplier',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['demo.unprivileged@liferay.com']

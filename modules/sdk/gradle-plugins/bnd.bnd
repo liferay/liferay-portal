@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Gradle Plugins
 Bundle-SymbolicName: com.liferay.gradle.plugins
-Bundle-Version: 16.0.89
+Bundle-Version: 16.0.91
 Export-Package:\
 	com.liferay.gradle.plugins,\
 	com.liferay.gradle.plugins.extensions,\

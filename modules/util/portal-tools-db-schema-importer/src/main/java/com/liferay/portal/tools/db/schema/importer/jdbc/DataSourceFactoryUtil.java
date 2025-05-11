@@ -31,7 +31,10 @@ public class DataSourceFactoryUtil {
 
 		String driverClassName = "com.mysql.cj.jdbc.Driver";
 
-		if (jdbcURL.contains("mariadb")) {
+		if (jdbcURL.contains("db2")) {
+			driverClassName = "com.ibm.db2.jcc.DB2Driver";
+		}
+		else if (jdbcURL.contains("mariadb")) {
 			driverClassName = "org.mariadb.jdbc.Driver";
 		}
 		else if (jdbcURL.contains("oracle")) {
@@ -80,8 +83,9 @@ public class DataSourceFactoryUtil {
 	}
 
 	public static boolean isValidSourceDatabase(String jdbcURL) {
-		if (jdbcURL.contains("mariadb") || jdbcURL.contains("mysql") ||
-			jdbcURL.contains("oracle") || jdbcURL.contains("sqlserver")) {
+		if (jdbcURL.contains("db2") || jdbcURL.contains("mariadb") ||
+			jdbcURL.contains("mysql") || jdbcURL.contains("oracle") ||
+			jdbcURL.contains("sqlserver")) {
 
 			return true;
 		}

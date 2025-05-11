@@ -10,7 +10,7 @@ export enum LicenseType {
 	PERPETUAL = 'perpetual',
 }
 
-export enum ProductCategoies {
+export enum ProductCategories {
 	MARKETPLACE_APP_CATEGORY = 'marketplace-app-category',
 	MARKETPLACE_APP_TAGS = 'marketplace-app-tags',
 	MARKETPLACE_LIFERAY_VERSION = 'marketplace-liferay-version',
@@ -165,4 +165,10 @@ export const ProductWorkflowStatusLabel = {
 	[ProductWorkflowStatusCode.APPROVED]: i18n.translate('approved'),
 	[ProductWorkflowStatusCode.DRAFT]: i18n.translate('draft'),
 	[ProductWorkflowStatusCode.PENDING]: i18n.translate('under-review'),
+};
+
+export const ProductWorkflowDisplayType = {
+	[ProductWorkflowStatusCode.APPROVED]: 'success',
+	[ProductWorkflowStatusCode.DRAFT]: 'secondary',
+	[ProductWorkflowStatusCode.PENDING]: 'warn',
 };

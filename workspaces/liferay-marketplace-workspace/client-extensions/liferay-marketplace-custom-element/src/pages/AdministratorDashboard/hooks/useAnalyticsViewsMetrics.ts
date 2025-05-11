@@ -6,7 +6,6 @@
 import useSWR from 'swr';
 
 import analyticsOAuth2 from '../../../services/oauth/Analytics';
-import {colors} from '../mock';
 
 const useAnalyticsViewsMetrics = () => {
 	const {data: analyticsViewsResponse = [], ...swr} = useSWR<
@@ -44,21 +43,7 @@ const useAnalyticsViewsMetrics = () => {
 
 	return {
 		...swr,
-		data: {
-			colors: {
-				'Total Views': colors.color1,
-				'Unique Visitors': colors.color2,
-			},
-			columns: [
-				['x', ...viewsMetrics?.map((page) => page.title)],
-				['Total Views', ...viewsMetrics?.map((page) => page.views)],
-				[
-					'Unique Visitors',
-					...viewsMetrics?.map((page) => page.visitor),
-				],
-			],
-			viewsMetrics,
-		},
+
 		visitorsMetric:
 			viewsMetricResult?.results
 				?.map(

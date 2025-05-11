@@ -11,7 +11,7 @@ import useSWR from 'swr';
 
 import {useMarketplaceContext} from '../../../../../../context/MarketplaceContext';
 import {
-	ProductCategoies,
+	ProductCategories,
 	ProductSpecificationKey,
 } from '../../../../../../enums/Product';
 import useGetProductByOrderId from '../../../../../../hooks/useGetProductByOrderId';
@@ -77,7 +77,7 @@ const Download = () => {
 					'Liferay Portal ' +
 						getProductCategoriesByVocabularyName(
 							outletContext?.product?.categories || [],
-							ProductCategoies.MARKETPLACE_LIFERAY_VERSION
+							ProductCategories.MARKETPLACE_LIFERAY_VERSION
 						)
 							.map((versionName) => versionName)
 							.join(', '),

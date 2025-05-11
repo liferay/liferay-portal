@@ -34,8 +34,6 @@ export async function initAccountAdministrator(apiHelpers: DataApiHelpers) {
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const userAccountAdmin =
 		await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -67,8 +65,6 @@ export async function initAccountManager(apiHelpers: DataApiHelpers) {
 	const organization = await apiHelpers.headlessAdminUser.postOrganization();
 
 	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignAccountToOrganization(
 		account.id,

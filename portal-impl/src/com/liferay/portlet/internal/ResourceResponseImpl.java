@@ -49,6 +49,10 @@ public class ResourceResponseImpl
 
 	@Override
 	public void addProperty(Cookie cookie) {
+		if (cookie == null) {
+			throw new IllegalArgumentException();
+		}
+
 		if (!(isCalledFlushBuffer() || isCommitted())) {
 			CookiesManagerUtil.addCookie(
 				cookie, getHttpServletRequest(), httpServletResponse);

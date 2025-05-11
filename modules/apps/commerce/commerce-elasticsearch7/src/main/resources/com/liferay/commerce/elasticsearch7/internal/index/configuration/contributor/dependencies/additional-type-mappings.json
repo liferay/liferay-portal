@@ -171,6 +171,9 @@
 		"specificationOptionsNames": {
 			"type": "keyword"
 		},
+		"specificationOptionsValuesNames": {
+			"type": "keyword"
+		},
 		"targetType": {
 			"type": "keyword"
 		}

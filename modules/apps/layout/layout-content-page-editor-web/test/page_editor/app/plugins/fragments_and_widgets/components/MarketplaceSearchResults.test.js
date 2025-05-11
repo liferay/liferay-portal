@@ -71,17 +71,13 @@ jest.mock('@liferay/layout-js-components-web', () => {
 	};
 });
 
-const mockConfig = {
-	fragmentPortletNamespace: 'mockNamespace',
-	fragmentsImportURL: '/mockImportURL',
-};
-
 jest.mock(
 	'../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/index',
 	() => ({
 		config: {
 			fragmentPortletNamespace: 'mockNamespace',
 			fragmentsImportURL: '/mockImportURL',
+			portletNamespace: 'testPortlet',
 		},
 	})
 );
@@ -453,9 +449,15 @@ describe('MarketplaceSearchResults', () => {
 			require('@liferay/layout-js-components-web').MarketplaceModal
 		).toHaveBeenCalledWith(
 			expect.objectContaining({
-				fragmentPortletNamespace: mockConfig.fragmentPortletNamespace,
-				fragmentsImportURL: mockConfig.fragmentsImportURL,
+				children: expect.anything(),
+				fragmentPortletNamespace: 'mockNamespace',
+				fragmentsImportURL: '/mockImportURL',
 				hideBackButton: true,
+				permissions: {
+					installFreeApps: true,
+					purchaseAndInstallPaidApps: true,
+				},
+				portletNamespace: 'testPortlet',
 				trigger: null,
 			}),
 			expect.anything()

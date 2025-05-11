@@ -6,7 +6,7 @@
 import {Option, Picker} from '@clayui/core';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import classNames from 'classnames';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {CacheStatus} from '../contexts/CacheContext';
 
@@ -27,15 +27,23 @@ type Props = {
 const Trigger = React.forwardRef(
 	(
 		{
+			open,
 			status,
 			value,
 			...otherProps
 		}: {
+			open: boolean;
 			status: CacheStatus;
 			value: string;
 		},
 		ref: React.Ref<HTMLButtonElement>
 	) => {
+		useEffect(() => {
+			if (open && status === 'saved') {
+				(ref as React.RefObject<HTMLButtonElement>).current?.focus();
+			}
+		});
+
 		return (
 			<button
 				{...otherProps}
@@ -99,6 +107,7 @@ export default function AsyncPicker({
 					onSelectionChange(selectedKey);
 				}
 			}}
+			open={active}
 			placeholder={placeholder}
 			selectedKey={selectedKey ? String(selectedKey) : ''}
 			status={status}

@@ -1,0 +1,58 @@
+.cms-dashboard {
+	&__base-card {
+		&:after {
+			margin: 0;
+		}
+
+		&__header {
+			min-height: 32px;
+		}
+	}
+
+	&__content-and-files-card {
+		&__breakdown {
+			flex: 1 1 160px;
+			max-width: 245px;
+			min-width: 160px;
+		}
+	}
+
+	&__inventory-analysis {
+		&__bar-chart {
+			background-color: #e2e4ea;
+			border-radius: 8px;
+			height: 42px;
+			overflow: hidden;
+			position: relative;
+			width: 100%;
+
+			&__bar {
+				background-color: #338fff;
+				border-radius: 8px;
+				height: 100%;
+				left: 0;
+				position: absolute;
+				top: 0;
+			}
+
+			&__value {
+				align-items: center;
+				bottom: 0;
+				display: flex;
+				margin: auto;
+				position: absolute;
+				right: 24px;
+				top: 0;
+			}
+		}
+
+		.table-responsive {
+			margin: 0 -16px;
+			width: calc(100% + 32px);
+		}
+
+		.table td {
+			border-width: 0;
+		}
+	}
+}

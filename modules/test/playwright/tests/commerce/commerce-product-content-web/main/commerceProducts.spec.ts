@@ -259,8 +259,6 @@ test('COMMERCE-12809 As a buyer, I want to be able to verify the included and ex
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
 			['test@liferay.com']
@@ -321,8 +319,6 @@ test('COMMERCE-8153 Verify the visibility rules', async ({
 		['test@liferay.com']
 	);
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: 'Account2',
 		type: 'person',
@@ -332,8 +328,6 @@ test('COMMERCE-8153 Verify the visibility rules', async ({
 		account2.id,
 		['test@liferay.com']
 	);
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	const accountGroup = await apiHelpers.headlessAdminUser.postAccountGroup({
 		name: getRandomString(),
@@ -501,8 +495,6 @@ test('LPD-33807 Mapped product add to cart', async ({
 		account.id,
 		['test@liferay.com']
 	);
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const site = await apiHelpers.headlessSite.createSite({
 		name: getRandomString(),
@@ -739,8 +731,6 @@ test('COMMERCE-12805 As a buyer, I want to be able to verify the included and ex
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
 			['test@liferay.com']
@@ -783,7 +773,6 @@ test('LPD-33075 Verify buyers can view the SKU of a product on the product card 
 		name: getRandomString(),
 		type: 'business',
 	});
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -874,8 +863,6 @@ test('LPD-3424 Can click AddToButton button multiple times on Diagram Product Di
 		['test@liferay.com']
 	);
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	await apiHelpers.headlessCommerceAdminChannel.postChannel({
 		name: getRandomString(),
 		siteGroupId: site.id,
@@ -954,12 +941,10 @@ test('LPD-37780 Friendly URLs history for products', async ({
 		title: getRandomString(),
 	});
 
-	const account = await apiHelpers.headlessAdminUser.postAccount({
+	await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
 		type: 'person',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessCommerceAdminChannel.postChannel({
 		name: getRandomString(),

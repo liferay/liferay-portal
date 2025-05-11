@@ -110,10 +110,6 @@ test.describe('Manage root model elements through View Object Entries', () => {
 
 			const account2 = await apiHelpers.headlessAdminUser.postAccount();
 
-			apiHelpers.data.push({id: account1.id, type: 'account'});
-
-			apiHelpers.data.push({id: account2.id, type: 'account'});
-
 			const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
 			const user2 = await apiHelpers.headlessAdminUser.postUserAccount();

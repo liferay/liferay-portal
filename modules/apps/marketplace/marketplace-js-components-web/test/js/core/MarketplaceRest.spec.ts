@@ -82,6 +82,13 @@ describe('MarketplaceRest', () => {
 			getItem: getItemFn,
 			setItem: setItemFn,
 		};
+
+		Object.defineProperty(globalThis, 'window', {
+			value: {
+				location: new URL('http://localhost:8080/web/guest/home'),
+			},
+			writable: true,
+		});
 	});
 
 	it('fetch marketplace token without cache', async () => {
@@ -190,12 +197,50 @@ describe('MarketplaceRest', () => {
 		expect(fetchParams.method).toBe('POST');
 	});
 
-	it('fetch base resource url', async () => {
-		const baseURL = MarketplaceRest.getBaseResourceURL();
+	describe('getBaseResourceURL', () => {
+		it('returns the instance settings URL when portletId is not provided', () => {
+			const baseURL = MarketplaceRest.getBaseResourceURL();
 
-		expect(baseURL).toBe(
-			`/group/guest/~/control_panel/manage?p_p_id=${globalThis.Liferay.PortletKeys.INSTANCE_SETTINGS}`
-		);
+			expect(baseURL).toBe(
+				`/group/guest/~/control_panel/manage?p_p_id=${globalThis.Liferay.PortletKeys.INSTANCE_SETTINGS}`
+			);
+		});
+
+		it('appends the portletId to the current URL when p_p_id is not present', () => {
+			const portletId = 'com_liferay_test_TestPortlet_INSTANCE_abc';
+			const baseURL = MarketplaceRest.getBaseResourceURL(portletId);
+
+			expect(baseURL).toBe(
+				'http://localhost:8080/web/guest/home?p_p_id=com_liferay_test_TestPortlet_INSTANCE_abc'
+			);
+		});
+
+		it('appends the cleaned portletId to the current URL when p_p_id is not present and portletId has leading/trailing underscores', () => {
+			const portletId = '_com_liferay_test_TestPortlet_INSTANCE_abc_';
+			const baseURL = MarketplaceRest.getBaseResourceURL(portletId);
+
+			expect(baseURL).toBe(
+				'http://localhost:8080/web/guest/home?p_p_id=com_liferay_test_TestPortlet_INSTANCE_abc'
+			);
+		});
+
+		it('does not modify the URL if p_p_id is already present', () => {
+			Object.defineProperty(globalThis, 'window', {
+				value: {
+					location: new URL(
+						'http://localhost:8080/web/guest/home?p_p_id=existing_portlet'
+					),
+				},
+				writable: true,
+			});
+
+			const portletId = 'com_liferay_test_TestPortlet_INSTANCE_abc';
+			const baseURL = MarketplaceRest.getBaseResourceURL(portletId);
+
+			expect(baseURL).toBe(
+				'http://localhost:8080/web/guest/home?p_p_id=existing_portlet'
+			);
+		});
 	});
 
 	it('fetch Marketplace without guest operation', async () => {

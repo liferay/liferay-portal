@@ -465,8 +465,6 @@ test(
 	async ({accountsPage, apiHelpers, page, site}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const companyId = await page.evaluate(() => {
 			return Liferay.ThemeDisplay.getCompanyId();
 		});

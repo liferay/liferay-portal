@@ -26,7 +26,7 @@ public interface PortletTCKBridgeConfiguration {
 	public String configFile();
 
 	@Meta.AD(
-		deflt = "action_tr0_cookie|action_tr2_cookie|action_tr3_cookie|event_tr0_cookie|event_tr1_cookie|event_tr2_cookie|header_tr2_cookie|header_tr3_cookie",
+		deflt = "action_tr0_cookie|action_tr1_cookie|action_tr2_cookie|action_tr3_cookie|event_tr0_cookie|event_tr1_cookie|event_tr2_cookie|header_tr0_cookie|header_tr1_cookie|header_tr2_cookie|header_tr3_cookie|render_tr0_cookie|render_tr1_cookie|render_tr2_cookie|render_tr3_cookie|resource_tr0_cookie|resource_tr1_cookie|resource_tr2_cookie|tr4_cookie",
 		required = false
 	)
 	public String[] cookieNames();

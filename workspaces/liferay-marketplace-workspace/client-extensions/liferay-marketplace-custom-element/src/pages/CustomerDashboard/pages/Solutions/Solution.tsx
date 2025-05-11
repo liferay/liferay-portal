@@ -20,8 +20,8 @@ import {
 } from '../../../../enums/Order';
 import i18n from '../../../../i18n';
 import analyticsOAuth2 from '../../../../services/oauth/Analytics';
+import {formatDate} from '../../../../utils/date';
 import {removeHTMLTags} from '../../../../utils/string';
-import {formatDate} from '../../../PublisherDashboard/PublisherDashboardPageUtil';
 import TrialAlert from '../../components/Solution/TrialAlert';
 
 const NEXT_TO_EXPIRE_LEFT_DAYS = 2;

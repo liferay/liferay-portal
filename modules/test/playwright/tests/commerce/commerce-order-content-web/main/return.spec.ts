@@ -374,8 +374,6 @@ test('LPD-41539 Buyer users are missing permissions to view refunds', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
@@ -584,8 +582,6 @@ test('LPD-41539 Returns Manager users are missing permissions to manage refunds'
 		name: 'Account Business',
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(

@@ -80,7 +80,7 @@ export default function ListTypeTable({
 	) : null;
 }
 
-function getDataSetProps(
+export function getDataSetProps(
 	fireModal: (modalProps: IModalState) => void,
 	pickListId: number,
 	readOnly: boolean,

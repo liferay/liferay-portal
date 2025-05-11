@@ -512,11 +512,15 @@ test(
 
 		await waitForAlert(newPage, 'Success:Plants was saved successfully.');
 
-		// Try to select the new picklist in the structure builder
+		// Check the new picklist in the structure builder opening the picker by keyboard
 
-		await structureBuilderPage.changeFieldSettings({
-			picklist: 'Plants',
-		});
+		const picklistPicker = page.getByLabel('Picklist');
+
+		await picklistPicker.press('Enter');
+
+		await expect(picklistPicker).toBeFocused();
+
+		await expect(page.getByRole('option', {name: 'Plants'})).toBeAttached();
 
 		// Delete picklist
 

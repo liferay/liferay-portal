@@ -1,6 +1,10 @@
 sourceCompatibility = "17"
 targetCompatibility = "17"
 
+configurations.all {
+	exclude group: "com.liferay", module: "org.springframework.test"
+}
+
 dependencies {
 	api group: "org.springframework.boot", name: "spring-boot-starter-oauth2-client", version: "3.4.2"
 	api group: "org.springframework.boot", name: "spring-boot-starter-oauth2-resource-server", version: "3.4.2"
@@ -17,5 +21,6 @@ dependencies {
 	testImplementation group: "org.mock-server", name: "mockserver-client-java", version: "3.12"
 	testImplementation group: "org.mock-server", name: "mockserver-netty", version: "3.12"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "5.15.2"
+	testImplementation group: "org.springframework", name: "spring-test", version: "5.3.39"
 	testImplementation group: "org.springframework.boot", name: "spring-boot-test-autoconfigure", version: "3.4.2"
 }

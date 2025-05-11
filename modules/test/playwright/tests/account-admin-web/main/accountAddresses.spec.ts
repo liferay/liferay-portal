@@ -53,15 +53,10 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		let address = {
 			city: getRandomString(),
@@ -142,8 +137,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const addresses: {name: string}[] = [];
 
 		for (let i = 0; i < 21; i++) {
@@ -208,8 +201,6 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		let address = {
 			city: getRandomString(),
@@ -305,8 +296,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const address = {
 			name: getRandomString(),
 		};
@@ -351,8 +340,6 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const addresses = [
 			{
@@ -429,8 +416,6 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		let address = {
 			city: getRandomString(),
@@ -567,8 +552,6 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const addresses = [
 			{
@@ -714,8 +697,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const addresses = [
 			{
 				name: getRandomString(),
@@ -804,8 +785,6 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const addresses = [
 			{
@@ -908,8 +887,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const addresses = [
 			{
 				name: getRandomString(),
@@ -1006,8 +983,6 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		let address = {
 			city: getRandomString(),
@@ -1126,8 +1101,6 @@ testWithAddressSubtypeEnabled(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const {
 			billingAndShippingListTypeDefinition,
@@ -1315,8 +1288,6 @@ test(
 			description: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await accountsPage.goto();
 

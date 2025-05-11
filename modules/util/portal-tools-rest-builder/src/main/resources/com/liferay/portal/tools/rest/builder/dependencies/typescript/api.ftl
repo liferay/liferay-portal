@@ -126,12 +126,12 @@ export class ${className} {
 							<#if stringUtil.equals(bodyParameter.dataType, "File")>
 								formData.append("${bodyParameter.name}", requestBody.parameters.${bodyParameter.name});
 							<#else>
-								formData.append("${bodyParameter.name}", JSON.stringify(ObjectSerializer.serialize(requestBody.parameters.${bodyParameter.name}, "${bodyParameter.dataType}")));
+								formData.append("${bodyParameter.name}", JSON.stringify(ObjectSerializer.serialize(${bodyParameter.name}, "${bodyParameter.dataType}")));
 							</#if>
 						</#list>
 						body = formData;
 					<#else>
-						body = JSON.stringify(ObjectSerializer.serialize(requestBody.parameters.${operationData.bodyParameters[firstRequestBodyContentType][0].name}, "${operationData.bodyParameters[firstRequestBodyContentType][0].dataType}"));
+						body = JSON.stringify(ObjectSerializer.serialize(${operationData.bodyParameters[firstRequestBodyContentType][0].name}, "${operationData.bodyParameters[firstRequestBodyContentType][0].dataType}"));
 					</#if>
 				</#if>
 			</#if>

@@ -42,8 +42,6 @@ test('LPD-34906 Verify wishlist visibility rules', async ({
 		['test@liferay.com']
 	);
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: 'Account2',
 		type: 'business',
@@ -53,8 +51,6 @@ test('LPD-34906 Verify wishlist visibility rules', async ({
 		account2.id,
 		['test@liferay.com']
 	);
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	const accountGroup = await apiHelpers.headlessAdminUser.postAccountGroup({
 		name: getRandomString(),

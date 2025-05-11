@@ -6,17 +6,18 @@
 import {Locator, Page} from '@playwright/test';
 
 export class DataSetPage {
+	readonly activeViewSelector: Locator;
+	readonly page: Page;
 	readonly table: {
 		bodyRows: Locator;
 		container: Locator;
 		headRow: Locator;
 	};
 
-	readonly page: Page;
-
 	constructor(page: Page) {
-		const tableContainer = page.locator('.fds table');
+		this.activeViewSelector = page.getByLabel('Show View Options');
 
+		const tableContainer = page.locator('.fds table');
 		this.table = {
 			bodyRows: tableContainer.locator('tbody tr'),
 			container: tableContainer,
@@ -49,5 +50,17 @@ export class DataSetPage {
 		});
 		await dropdownMenuActionItem.waitFor();
 		await dropdownMenuActionItem.click();
+	}
+
+	async changeVisualizationMode(visualizationMode: 'Cards' | 'Table') {
+		await this.activeViewSelector.waitFor({
+			state: 'visible',
+		});
+		await this.activeViewSelector.click();
+
+		await this.page
+			.getByRole('listbox')
+			.getByRole('option', {name: visualizationMode})
+			.click();
 	}
 }

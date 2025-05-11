@@ -21,6 +21,7 @@ interface MarketplacePresentationModalProps {
 	heading: string;
 	onCloseModal: () => void;
 	permissions: AppsPermissions;
+	portletNamespace: string;
 }
 
 export default function MarketplacePresentationModal({
@@ -28,6 +29,7 @@ export default function MarketplacePresentationModal({
 	heading,
 	onCloseModal,
 	permissions,
+	portletNamespace,
 	...marketplaceViewProps
 }: MarketplacePresentationModalProps &
 	ComponentProps<typeof MarketplaceViews>) {
@@ -43,6 +45,7 @@ export default function MarketplacePresentationModal({
 		<MarketplaceModal
 			openOnRender={true}
 			permissions={permissions}
+			portletNamespace={portletNamespace}
 			trigger={null}
 			{...marketplaceViewProps}
 		/>

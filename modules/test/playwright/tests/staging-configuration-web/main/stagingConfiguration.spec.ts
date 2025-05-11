@@ -3,27 +3,38 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
+import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {portletConfigurationPermissionsPageTest} from '../../../fixtures/portletConfigurationPermissionsPagesTest';
+import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
+import {uiElementsPageTest} from '../../../fixtures/uiElementsTest';
 import {webContentDisplayPageTest} from '../../../fixtures/webContentDisplayPageTest';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {stagingPageTest} from '../../export-import-web/main/fixtures/stagingPageTest';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import {stagingConfigurationPageTest} from './fixtures/stagingConfigurationPageTest';
 
 export const test = mergeTests(
 	applicationsMenuPageTest,
-	apiHelpersTest,
+	dataApiHelpersTest,
 	loginTest(),
 	pageViewModePagesTest,
-	stagingConfigurationPageTest
+	pagesAdminPagesTest,
+	productMenuPageTest,
+	pageEditorPagesTest,
+	stagingConfigurationPageTest,
+	webContentDisplayPageTest,
+	uiElementsPageTest,
+	journalPagesTest
 );
 
 export const testFlagsEnabled = mergeTests(
@@ -60,6 +71,73 @@ test('Check if local staging can be enabled', async ({
 
 	await stagingConfigurationPage.enableLocalStaging({});
 });
+
+test(
+	'Validate friendlyURL with special characters',
+	{tag: ['@LPS-89116']},
+	async ({
+		apiHelpers,
+		applicationsMenuPage,
+		journalPage,
+		page,
+		pagesAdminPage,
+		productMenuPage,
+		stagingConfigurationPage,
+	}) => {
+		const site = await apiHelpers.headlessSite.createSite({
+			name: getRandomString(),
+		});
+
+		apiHelpers.data.push({id: site.id, type: 'site'});
+
+		await applicationsMenuPage.goToSite(site.name);
+		await productMenuPage.goToPages();
+
+		await pagesAdminPage.createNewPage({
+			name: getRandomString(),
+		});
+
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const webContentName = 'Special Char aŐb';
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			content: 'Web Content Content',
+			ddmStructureId: basicWebContentStructureId,
+			groupId: site.id,
+			titleMap: {en_US: webContentName},
+		});
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page.getByRole('link', {
+				exact: true,
+				name: webContentName,
+			})
+		).toBeVisible();
+
+		await page.getByRole('link', {name: webContentName}).click();
+
+		await expect(
+			page.getByLabel('Friendly URL', {exact: true})
+		).toHaveValue('special-char-aőb');
+
+		await apiHelpers.jsonWebServicesJournal.addWebContentDetailed({
+			content: 'Web Content Content2',
+			ddmStructureId: basicWebContentStructureId,
+			friendlyURLMap: {en_US: 'special-char-a-c5-90b'},
+			groupId: site.id,
+			titleMap: {en_US: 'Web Content Title'},
+		});
+
+		await stagingConfigurationPage.gotoStagingConfiguration(
+			site.friendlyUrlPath
+		);
+
+		await stagingConfigurationPage.enableLocalStaging({});
+	}
+);
 
 testFlagsEnabled(
 	'Check if local staging with page-scoped Web Content can be enabled',

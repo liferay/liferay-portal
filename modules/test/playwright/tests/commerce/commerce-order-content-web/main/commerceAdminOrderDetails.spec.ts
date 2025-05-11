@@ -46,8 +46,6 @@ test('LPD-15231 Escape account name on admin order details page', async ({
 		name: '<img src="x" onError="alert(document.location)">',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -138,8 +136,6 @@ test('LPD-26244 Split order items are shown on admin order details page when sho
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -229,8 +225,6 @@ test('COMMERCE-11888. As a supplier user, I can edit the order details, payments
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: accountBusiness.id, type: 'account'});
-
 	const phoneNumber = '12345';
 
 	const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
@@ -242,8 +236,6 @@ test('COMMERCE-11888. As a supplier user, I can edit the order details, payments
 		name: 'Account Supplier',
 		type: 'supplier',
 	});
-
-	apiHelpers.data.push({id: accountSupplier.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		accountSupplier.id,
@@ -621,8 +613,6 @@ test('LPD-30856 Can update order status by deleting unshipped items', async ({
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,

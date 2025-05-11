@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.lang.reflect.Array;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -230,59 +232,51 @@ public class SimpleCaptchaImpl implements Captcha {
 			simpleCaptcha.getImage());
 	}
 
-	protected void activate() {
-		initBackgroundProducers();
-		initGimpyRenderers();
-		initNoiseProducers();
-		initTextProducers();
-		initWordRenderers();
+	protected BackgroundProducer getBackgroundProducer(
+		CaptchaConfiguration captchaConfiguration) {
+
+		return _getInstance(
+			captchaConfiguration.simpleCaptchaBackgroundProducers(),
+			BackgroundProducer.class);
 	}
 
-	protected BackgroundProducer getBackgroundProducer() {
-		if (_backgroundProducers.length == 1) {
-			return _backgroundProducers[0];
-		}
+	protected GimpyRenderer getGimpyRenderer(
+		CaptchaConfiguration captchaConfiguration) {
 
-		int pos = RandomUtil.nextInt(_backgroundProducers.length);
-
-		return _backgroundProducers[pos];
+		return _getInstance(
+			captchaConfiguration.simpleCaptchaGimpyRenderers(),
+			GimpyRenderer.class);
 	}
 
-	protected GimpyRenderer getGimpyRenderer() {
-		if (_gimpyRenderers.length == 1) {
-			return _gimpyRenderers[0];
-		}
-
-		int pos = RandomUtil.nextInt(_gimpyRenderers.length);
-
-		return _gimpyRenderers[pos];
-	}
-
-	protected int getHeight() {
-		CaptchaConfiguration captchaConfiguration =
-			captchaProvider.getCaptchaConfiguration();
-
+	protected int getHeight(CaptchaConfiguration captchaConfiguration) {
 		return captchaConfiguration.simpleCaptchaHeight();
 	}
 
-	protected NoiseProducer getNoiseProducer() {
-		if (_noiseProducers.length == 1) {
-			return _noiseProducers[0];
-		}
+	protected NoiseProducer getNoiseProducer(
+		CaptchaConfiguration captchaConfiguration) {
 
-		int pos = RandomUtil.nextInt(_noiseProducers.length);
-
-		return _noiseProducers[pos];
+		return _getInstance(
+			captchaConfiguration.simpleCaptchaNoiseProducers(),
+			NoiseProducer.class);
 	}
 
 	protected nl.captcha.Captcha getSimpleCaptcha() {
-		nl.captcha.Captcha.Builder captchaBuilder =
-			new nl.captcha.Captcha.Builder(getWidth(), getHeight());
+		CaptchaConfiguration captchaConfiguration =
+			captchaProvider.getCaptchaConfiguration();
 
-		captchaBuilder.addText(getTextProducer(), getWordRenderer());
-		captchaBuilder.addBackground(getBackgroundProducer());
-		captchaBuilder.gimp(getGimpyRenderer());
-		captchaBuilder.addNoise(getNoiseProducer());
+		nl.captcha.Captcha.Builder captchaBuilder =
+			new nl.captcha.Captcha.Builder(
+				getWidth(captchaConfiguration),
+				getHeight(captchaConfiguration));
+
+		captchaBuilder.addText(
+			getTextProducer(captchaConfiguration),
+			getWordRenderer(captchaConfiguration));
+		captchaBuilder.addBackground(
+			getBackgroundProducer(captchaConfiguration));
+		captchaBuilder.gimp(getGimpyRenderer(captchaConfiguration));
+		captchaBuilder.addNoise(getNoiseProducer(captchaConfiguration));
+
 		captchaBuilder.addBorder();
 
 		return captchaBuilder.build();
@@ -292,31 +286,24 @@ public class SimpleCaptchaImpl implements Captcha {
 		return _TAGLIB_PATH;
 	}
 
-	protected TextProducer getTextProducer() {
-		if (_textProducers.length == 1) {
-			return _textProducers[0];
-		}
+	protected TextProducer getTextProducer(
+		CaptchaConfiguration captchaConfiguration) {
 
-		int pos = RandomUtil.nextInt(_textProducers.length);
-
-		return _textProducers[pos];
+		return _getInstance(
+			captchaConfiguration.simpleCaptchaTextProducers(),
+			TextProducer.class);
 	}
 
-	protected int getWidth() {
-		CaptchaConfiguration captchaConfiguration =
-			captchaProvider.getCaptchaConfiguration();
-
+	protected int getWidth(CaptchaConfiguration captchaConfiguration) {
 		return captchaConfiguration.simpleCaptchaWidth();
 	}
 
-	protected WordRenderer getWordRenderer() {
-		if (_wordRenderers.length == 1) {
-			return _wordRenderers[0];
-		}
+	protected WordRenderer getWordRenderer(
+		CaptchaConfiguration captchaConfiguration) {
 
-		int pos = RandomUtil.nextInt(_wordRenderers.length);
-
-		return _wordRenderers[pos];
+		return _getInstance(
+			captchaConfiguration.simpleCaptchaWordRenderers(),
+			WordRenderer.class);
 	}
 
 	protected void incrementCounter(HttpServletRequest httpServletRequest) {
@@ -350,93 +337,6 @@ public class SimpleCaptchaImpl implements Captcha {
 
 	protected void incrementCounter(PortletRequest portletRequest) {
 		incrementCounter(portal.getHttpServletRequest(portletRequest));
-	}
-
-	protected void initBackgroundProducers() {
-		CaptchaConfiguration captchaConfiguration =
-			captchaProvider.getCaptchaConfiguration();
-
-		String[] backgroundProducerClassNames =
-			captchaConfiguration.simpleCaptchaBackgroundProducers();
-
-		_backgroundProducers =
-			new BackgroundProducer[backgroundProducerClassNames.length];
-
-		for (int i = 0; i < backgroundProducerClassNames.length; i++) {
-			String backgroundProducerClassName =
-				backgroundProducerClassNames[i];
-
-			_backgroundProducers[i] = (BackgroundProducer)_getInstance(
-				backgroundProducerClassName);
-		}
-	}
-
-	protected void initGimpyRenderers() {
-		CaptchaConfiguration captchaConfiguration =
-			captchaProvider.getCaptchaConfiguration();
-
-		String[] gimpyRendererClassNames =
-			captchaConfiguration.simpleCaptchaGimpyRenderers();
-
-		_gimpyRenderers = new GimpyRenderer[gimpyRendererClassNames.length];
-
-		for (int i = 0; i < gimpyRendererClassNames.length; i++) {
-			String gimpyRendererClassName = gimpyRendererClassNames[i];
-
-			_gimpyRenderers[i] = (GimpyRenderer)_getInstance(
-				gimpyRendererClassName);
-		}
-	}
-
-	protected void initNoiseProducers() {
-		CaptchaConfiguration captchaConfiguration =
-			captchaProvider.getCaptchaConfiguration();
-
-		String[] noiseProducerClassNames =
-			captchaConfiguration.simpleCaptchaNoiseProducers();
-
-		_noiseProducers = new NoiseProducer[noiseProducerClassNames.length];
-
-		for (int i = 0; i < noiseProducerClassNames.length; i++) {
-			String noiseProducerClassName = noiseProducerClassNames[i];
-
-			_noiseProducers[i] = (NoiseProducer)_getInstance(
-				noiseProducerClassName);
-		}
-	}
-
-	protected void initTextProducers() {
-		CaptchaConfiguration captchaConfiguration =
-			captchaProvider.getCaptchaConfiguration();
-
-		String[] textProducerClassNames =
-			captchaConfiguration.simpleCaptchaTextProducers();
-
-		_textProducers = new TextProducer[textProducerClassNames.length];
-
-		for (int i = 0; i < textProducerClassNames.length; i++) {
-			String textProducerClassName = textProducerClassNames[i];
-
-			_textProducers[i] = (TextProducer)_getInstance(
-				textProducerClassName);
-		}
-	}
-
-	protected void initWordRenderers() {
-		CaptchaConfiguration captchaConfiguration =
-			captchaProvider.getCaptchaConfiguration();
-
-		String[] wordRendererClassNames =
-			captchaConfiguration.simpleCaptchaWordRenderers();
-
-		_wordRenderers = new WordRenderer[wordRendererClassNames.length];
-
-		for (int i = 0; i < wordRendererClassNames.length; i++) {
-			String wordRendererClassName = wordRendererClassNames[i];
-
-			_wordRenderers[i] = (WordRenderer)_getInstance(
-				wordRendererClassName);
-		}
 	}
 
 	protected boolean validateChallenge(HttpServletRequest httpServletRequest)
@@ -530,6 +430,22 @@ public class SimpleCaptchaImpl implements Captcha {
 		return instance;
 	}
 
+	private <T> T _getInstance(String[] classNames, Class<T> clazz) {
+		T[] array = (T[])Array.newInstance(clazz, classNames.length);
+
+		for (int i = 0; i < classNames.length; i++) {
+			array[i] = (T)_getInstance(classNames[i]);
+		}
+
+		if (array.length == 1) {
+			return array[0];
+		}
+
+		int pos = RandomUtil.nextInt(array.length);
+
+		return array[pos];
+	}
+
 	private Class<?> _loadClass(String className) throws Exception {
 		Class<?> clazz = getClass();
 
@@ -546,11 +462,6 @@ public class SimpleCaptchaImpl implements Captcha {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SimpleCaptchaImpl.class);
 
-	private BackgroundProducer[] _backgroundProducers;
-	private GimpyRenderer[] _gimpyRenderers;
 	private final Map<String, Object> _instances = new ConcurrentHashMap<>();
-	private NoiseProducer[] _noiseProducers;
-	private TextProducer[] _textProducers;
-	private WordRenderer[] _wordRenderers;
 
 }

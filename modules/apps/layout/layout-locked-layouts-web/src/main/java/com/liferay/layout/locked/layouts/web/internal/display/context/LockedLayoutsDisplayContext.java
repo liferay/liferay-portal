@@ -136,6 +136,7 @@ public class LockedLayoutsDisplayContext {
 							).setActionName(
 								() -> {
 									if (FeatureFlagManagerUtil.isEnabled(
+											_themeDisplay.getCompanyId(),
 											"LPD-11003")) {
 
 										return "/locked_items/unlock_layouts";

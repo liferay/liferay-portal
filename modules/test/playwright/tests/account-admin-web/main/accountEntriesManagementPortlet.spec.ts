@@ -71,15 +71,10 @@ test('LPD-28846 user can change selected accounts', async ({
 		name: 'account' + getRandomInt(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
-	const account2 = await apiHelpers.headlessAdminUser.postAccount({
+	await apiHelpers.headlessAdminUser.postAccount({
 		name: 'account' + getRandomInt(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	const user = await apiHelpers.headlessAdminUser.postUserAccount();
 

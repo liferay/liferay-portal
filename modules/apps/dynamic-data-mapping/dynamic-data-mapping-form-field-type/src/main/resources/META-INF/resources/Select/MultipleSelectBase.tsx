@@ -97,7 +97,6 @@ const MultipleSelectBase = ({
 						>
 							<div className="auto autofit-row-center fit-row">
 								<ClayCheckbox
-									aria-label={item.label}
 									checked={values?.includes(item.value)!}
 									data-itemValue={item.value}
 									data-option-reference={item.reference}

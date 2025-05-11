@@ -110,6 +110,9 @@ public class CommerceDiscountV2Test {
 			_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 				_group.getCompanyId());
 		}
+
+		_commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_group.getGroupId(), _commerceCurrency.getCode());
 	}
 
 	@After
@@ -176,7 +179,8 @@ public class CommerceDiscountV2Test {
 			commerceDiscount, accountGroup);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -255,7 +259,8 @@ public class CommerceDiscountV2Test {
 				cpDefinition.getCPDefinitionId());
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -391,7 +396,8 @@ public class CommerceDiscountV2Test {
 				assetCategory2.getCategoryId());
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice1 =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -561,7 +567,8 @@ public class CommerceDiscountV2Test {
 				cpInstance.getCPInstanceId());
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -758,7 +765,8 @@ public class CommerceDiscountV2Test {
 			assetCategory2.getCategoryId());
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice1 =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -913,7 +921,8 @@ public class CommerceDiscountV2Test {
 		_commerceDiscountLocalService.updateCommerceDiscount(commerceDiscount);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -1140,7 +1149,8 @@ public class CommerceDiscountV2Test {
 			BigDecimal.valueOf(10), BigDecimal.valueOf(10), true, true);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		BigDecimal quantity = BigDecimal.TEN;
 
@@ -1217,7 +1227,8 @@ public class CommerceDiscountV2Test {
 			BigDecimal.valueOf(5), BigDecimal.valueOf(10), true, true);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		BigDecimal quantity = BigDecimal.TEN;
 
@@ -1315,7 +1326,8 @@ public class CommerceDiscountV2Test {
 			cpDefinition.getCPDefinitionId());
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -1401,7 +1413,8 @@ public class CommerceDiscountV2Test {
 				BigDecimal.valueOf(0), BigDecimal.valueOf(5), true, true);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -1460,7 +1473,8 @@ public class CommerceDiscountV2Test {
 			BigDecimal.valueOf(5), true, true);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -1520,7 +1534,8 @@ public class CommerceDiscountV2Test {
 			BigDecimal.valueOf(1), BigDecimal.valueOf(5), true, true);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceDiscountTestUtil.addFixedCommerceDiscount(
 			_group.getGroupId(), 10, CommerceDiscountConstants.TARGET_PRODUCTS,
@@ -1612,7 +1627,8 @@ public class CommerceDiscountV2Test {
 			BigDecimal.valueOf(0), true, true);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceDiscountTestUtil.addFixedCommerceDiscount(
 			_group.getGroupId(), 5, CommerceDiscountConstants.TARGET_PRODUCTS,
@@ -1718,7 +1734,8 @@ public class CommerceDiscountV2Test {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -1762,6 +1779,9 @@ public class CommerceDiscountV2Test {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@DeleteAfterTestRun
+	private CommerceChannel _commerceChannel;
 
 	private CommerceCurrency _commerceCurrency;
 

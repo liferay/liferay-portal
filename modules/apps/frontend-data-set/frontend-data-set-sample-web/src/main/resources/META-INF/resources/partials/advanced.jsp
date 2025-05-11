@@ -18,10 +18,7 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 		).build()
 	%>'
 	apiURL="<%= fdsSampleDisplayContext.getAPIURL() %>"
-	bulkActionDropdownItems="<%= fdsSampleDisplayContext.getBulkActionDropdownItems() %>"
 	customViewsEnabled="<%= true %>"
-	fdsActionDropdownItems="<%= fdsSampleDisplayContext.getFDSActionDropdownItems() %>"
-	fdsSortItemList="<%= fdsSampleDisplayContext.getFDSSortItemList() %>"
 	formId="fm"
 	id="<%= FDSSampleFDSNames.ADVANCED %>"
 	itemsPerPage="<%= 10 %>"

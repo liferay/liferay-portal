@@ -619,8 +619,6 @@ test('LPD-45736 Order items are split on the mini cart with quick add to cart wh
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const {channel, site} = await miniumSetUp(apiHelpers);
 
 	await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
@@ -687,8 +685,6 @@ test('COMMERCE-6348. As a buyer, I want the first selectable quantity of a cart 
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -864,8 +860,6 @@ test('COMMERCE-12370. As a buyer I can add to cart a SKU with single UOM', async
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(

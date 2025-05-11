@@ -12,7 +12,7 @@ import {DashboardEmptyTable} from '../../../components/DashboardTable/DashboardE
 import OrderStatus from '../../../components/OrderStatus';
 import Table from '../../../components/Table/Table';
 import {Analytics} from '../../../core/Analytics';
-import MarketplaceDeliveryOrder from '../../../entity/DeliveryOrder';
+import MarketplaceDeliveryOrder from '../../../entity/MarketplaceDeliveryOrder';
 import {OrderTypes, orderTypeLabel} from '../../../enums/Order';
 import {ProductImageFallbackCategories} from '../../../enums/Product';
 import i18n from '../../../i18n';

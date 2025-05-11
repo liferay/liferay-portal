@@ -109,6 +109,7 @@ public class CommerceDiscountTargetGrossV2Test {
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), _commerceCurrency.getCode());
 
+		_commerceChannel.setPriceDisplayType("tax-included");
 		_commerceChannel.setDiscountsTargetNetPrice(false);
 
 		_commerceChannel = _commerceChannelLocalService.updateCommerceChannel(

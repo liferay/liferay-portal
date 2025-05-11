@@ -3968,7 +3968,7 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-180198 TC-1 and TC-4: The user could be assigned to an existing user group at Portal, during login using Okta as SAML IDP (AC-1), and the missing user group is not created at Portal."
+	@description = "This is a use case for LPS-180198 TC-1 and TC-4: The user could be assigned to an existing user group at Portal, during login using Okta as SAML IDP (AC-1), and the missing user group is created at Portal."
 	@priority = 4
 	test ViewSPInitiatedSSOWithOktaAndUserGroups {
 		property app.server.types = "jboss,tomcat,wildfly";
@@ -4015,9 +4015,7 @@ definition {
 				userPassword = ${userPassword});
 		}
 
-		task ("Then: User logged in succesfully and assigned to the existing user group only with matching name at Portal") {
-			WaitForConsoleTextPresent(value1 = "Ignored unknown user group: Okta-UserGroup 2");
-
+		task ("Then: User logged in successfully and assigned to the existing user group with matching name at Portal, and new user group is created") {
 			User.viewLoggedInPG();
 
 			MyAccount.openMyAccountAdmin();
@@ -4026,147 +4024,7 @@ definition {
 
 			AssertTextPresent(value1 = "Okta-UserGroup 1");
 
-			AssertTextNotPresent(value1 = "Okta-UserGroup 2");
-		}
-	}
-
-	@description = "This is a use case for LPS-180198 TC-5: Verify the user group could be assigned even if it's not present at first time login from Okta."
-	@priority = 4
-	test ViewSPInitiatedSSOWithOktaUserGroupCanBeAssignedLater {
-		property app.server.types = "jboss,tomcat,wildfly";
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-		property database.types = "hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
-		property portal.release = "false";
-		property portal.ssl.enabled = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		var userPassword = PropsUtil.get("openid.provider.okta.test.account.password");
-
-		task ("Given: Setup SAML connection with Okta as Identity Probider") {
-			SAML.setupSP(
-				samlEntityId = "SP1",
-				spURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com");
-
-			SAML.addIDPConfigurationsToServiceProvider(
-				idpAttributeMapping = "UUID,emailAddress,firstName,lastName,screenName",
-				idpEntityId = "http://www.okta.com/exka0uuf1q7RZCdmV5d7",
-				idpMetadataURLRaw = "https://dev-68908313.okta.com/app/exka0uuf1q7RZCdmV5d7/sso/saml/metadata",
-				idpUserMembershipsAttributeMapping = "userGroups",
-				idpUserMembershipsAttributeMappingText = "userGroup",
-				nameIdentifierFormat = "Email Address",
-				spURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com",
-				userResolution = "dynamic");
-
-			SAML.enableSPRoles(
-				samlEntityId = "SP1",
-				spURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com");
-		}
-
-		task ("When: User logs in with multiline User Group value in SAML assertion, but the user groups are not exists at Portal") {
-			SAML.accountSignInOkta(
-				specificURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com",
-				userPassword = ${userPassword});
-
-			WaitForConsoleTextPresent(value1 = "Ignored unknown user group: Okta-UserGroup 2");
-
-			User.viewLoggedInPG();
-
-			MyAccount.openMyAccountAdmin();
-
-			UserNavigator.gotoMemberships();
-
-			AssertTextNotPresent(value1 = "Okta-UserGroup 1");
-
-			AssertTextNotPresent(value1 = "Okta-UserGroup 2");
-
-			User.logoutPG();
-		}
-
-		task ("Then: We can add the user group to Portal later, and the same user will be assigned to it during his second login") {
-			JSONUserGroup.addUserGroup(
-				userGroupDescription = "Okta User Group Description",
-				userGroupName = "Okta-UserGroup 1");
-
-			Navigator.openURL();
-
-			AssertClick(
-				locator1 = "UserBar#USER_SIGN_IN",
-				value1 = "Sign In");
-
-			User.viewLoggedInPG();
-
-			MyAccount.openMyAccountAdmin();
-
-			UserNavigator.gotoMemberships();
-
-			AssertTextPresent(value1 = "Okta-UserGroup 1");
-
-			AssertTextNotPresent(value1 = "Okta-UserGroup 2");
-		}
-	}
-
-	@description = "This is a use case for LPS-180198 TC-3: The user's non-existing user group at Portal is not created when logging in using Okta as SAML IDP."
-	@priority = 4
-	test ViewSPInitiatedSSOWithOktaUserGroupsAreNotCreatedDuringLogin {
-		property app.server.types = "jboss,tomcat,wildfly";
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-		property database.types = "hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
-		property portal.release = "false";
-		property portal.ssl.enabled = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		var userPassword = PropsUtil.get("openid.provider.okta.test.account.password");
-
-		task ("Given: Setup SAML connection with Okta as Identity Probider") {
-			SAML.setupSP(
-				samlEntityId = "SP1",
-				spURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com");
-
-			SAML.addIDPConfigurationsToServiceProvider(
-				idpAttributeMapping = "UUID,emailAddress,firstName,lastName,screenName",
-				idpEntityId = "http://www.okta.com/exka0uuf1q7RZCdmV5d7",
-				idpMetadataURLRaw = "https://dev-68908313.okta.com/app/exka0uuf1q7RZCdmV5d7/sso/saml/metadata",
-				idpUserMembershipsAttributeMapping = "userGroups",
-				idpUserMembershipsAttributeMappingText = "userGroup",
-				nameIdentifierFormat = "Email Address",
-				spURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com",
-				userResolution = "dynamic");
-
-			SAML.enableSPRoles(
-				samlEntityId = "SP1",
-				spURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com");
-		}
-
-		task ("When: User logs in with multiline User Group value in SAML assertion") {
-			SAML.accountSignInOkta(
-				specificURL = "https://localhost:8443",
-				userEmailAddress = "test@liferay.com",
-				userPassword = ${userPassword});
-		}
-
-		task ("Then: User logged in succesfully but not assigned to any user group as they are not exists at Portal") {
-			WaitForConsoleTextPresent(value1 = "Ignored unknown user group: Okta-UserGroup 1");
-
-			WaitForConsoleTextPresent(value1 = "Ignored unknown user group: Okta-UserGroup 2");
-
-			User.viewLoggedInPG();
-
-			MyAccount.openMyAccountAdmin();
-
-			UserNavigator.gotoMemberships();
-
-			AssertTextNotPresent(value1 = "Okta-UserGroup 1");
-
-			AssertTextNotPresent(value1 = "Okta-UserGroup 2");
+			AssertTextPresent(value1 = "Okta-UserGroup 2");
 		}
 	}
 

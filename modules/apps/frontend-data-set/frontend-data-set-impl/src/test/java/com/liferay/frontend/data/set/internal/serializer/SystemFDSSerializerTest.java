@@ -26,6 +26,7 @@ import com.liferay.frontend.data.set.internal.filter.FDSFilterRegistryImpl;
 import com.liferay.frontend.data.set.internal.filter.SelectionFDSFilterContextContributor;
 import com.liferay.frontend.data.set.internal.url.FDSAPIURLResolverRegistryImpl;
 import com.liferay.frontend.data.set.internal.view.cards.CardsFDSViewContextContributor;
+import com.liferay.frontend.data.set.internal.view.cards.FDSCardSchemaBuilderImpl;
 import com.liferay.frontend.data.set.internal.view.list.ListFDSViewContextContributor;
 import com.liferay.frontend.data.set.internal.view.table.FDSTableSchemaBuilderImpl;
 import com.liferay.frontend.data.set.internal.view.table.TableFDSViewContextContributor;
@@ -39,6 +40,8 @@ import com.liferay.frontend.data.set.url.FDSAPIURLResolver;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.FDSViewContextContributor;
 import com.liferay.frontend.data.set.view.cards.BaseCardsFDSView;
+import com.liferay.frontend.data.set.view.cards.FDSCardSchema;
+import com.liferay.frontend.data.set.view.cards.FDSCardSchemaBuilder;
 import com.liferay.frontend.data.set.view.list.BaseListFDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
@@ -1187,6 +1190,24 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 			}
 
 			@Override
+			public FDSCardSchema getFDSCardSchema(Locale locale) {
+				FDSCardSchemaBuilder fdsCardSchemaBuilder =
+					new FDSCardSchemaBuilderImpl();
+
+				return fdsCardSchemaBuilder.add(
+					DISPLAY_TYPE_KEYS[0], DISPLAY_TYPE_VALUES[0]
+				).add(
+					DISPLAY_TYPE_KEYS[1],
+					HashMapBuilder.put(
+						DISPLAY_TYPE_KEYS[2], DISPLAY_TYPE_VALUES[1]
+					).put(
+						DISPLAY_TYPE_KEYS[3], DISPLAY_TYPE_VALUES[2]
+					).build(),
+					DISPLAY_TYPE_VALUES[3]
+				).build();
+			}
+
+			@Override
 			public String getImage() {
 				return IMAGES[0];
 			}
@@ -1238,6 +1259,26 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 						"description", DESCRIPTIONS[0]
 					).put(
 						"image", IMAGES[0]
+					).put(
+						"labels",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"displayType", DISPLAY_TYPE_KEYS[0]
+							).put(
+								"value", DISPLAY_TYPE_VALUES[0]
+							),
+							JSONUtil.put(
+								"displayTypeKey", DISPLAY_TYPE_KEYS[1]
+							).put(
+								"displayTypeValues",
+								JSONUtil.put(
+									DISPLAY_TYPE_KEYS[2], DISPLAY_TYPE_VALUES[1]
+								).put(
+									DISPLAY_TYPE_KEYS[3], DISPLAY_TYPE_VALUES[2]
+								)
+							).put(
+								"value", DISPLAY_TYPE_VALUES[3]
+							))
 					).put(
 						"link", LINK
 					).put(

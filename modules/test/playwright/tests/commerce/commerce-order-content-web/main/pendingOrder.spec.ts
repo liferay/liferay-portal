@@ -87,8 +87,6 @@ test('LPD-13627 Edit pending order item with UOM', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -160,8 +158,6 @@ test('LPD-13627 Edit pending order item without UOM', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -209,8 +205,6 @@ test('LPD-4174 Sales agent can receive email notifications for new orders placed
 		name: 'Sales agent can receive email notifications account',
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
@@ -342,8 +336,6 @@ test('COMMERCE-7697 Verify user can download CSV template', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -389,8 +381,6 @@ test('LPD-28683 When clicking on order item without visibility the user is not r
 		name: 'admin',
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const {site} = await miniumSetUp(apiHelpers);
 
@@ -506,8 +496,6 @@ test('LPD-26906 As a buyer, I can edit product options from the pending orders p
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const {site} = await miniumSetUp(apiHelpers);
 
@@ -742,8 +730,6 @@ test('LPD-3259 As a buyer with approval workflow, when I click review order in m
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
@@ -857,8 +843,6 @@ test('LPD-33783 Pending orders table displays correct fields', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessCommerceAdminOrder.postOrder({
 		accountId: account.id,
 		channelId: channel.id,
@@ -910,8 +894,6 @@ test('LPD-3440 As a order manager with buyer approval workflow, I can approve or
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -1027,8 +1009,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 

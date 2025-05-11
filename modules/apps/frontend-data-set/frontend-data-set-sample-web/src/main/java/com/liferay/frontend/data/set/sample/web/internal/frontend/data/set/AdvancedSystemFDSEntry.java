@@ -20,6 +20,11 @@ import org.osgi.service.component.annotations.Component;
 public class AdvancedSystemFDSEntry implements SystemFDSEntry {
 
 	@Override
+	public String getAdditionalAPIURLParameters() {
+		return "sort=title:asc";
+	}
+
+	@Override
 	public String getDescription() {
 		return "This is the \"Advanced\" sample of a frontend data set.";
 	}

@@ -145,11 +145,15 @@ test('The user can choose which languages will be available to site via language
 
 	await leftSelector.selectOption(allOptions);
 
-	await configurationIFrame.getByLabel('Transfer Item Left to Right').click();
+	await configurationIFrame
+		.getByLabel('Move selected items from Current to Available.')
+		.click();
 
 	await rightSelector.selectOption(['de_DE', 'en_US', 'es_ES']);
 
-	await configurationIFrame.getByLabel('Transfer Item Right to Left').click();
+	await configurationIFrame
+		.getByLabel('Move selected items from Available to Current.')
+		.click();
 
 	await configurationIFrame.getByRole('button', {name: 'Save'}).click();
 

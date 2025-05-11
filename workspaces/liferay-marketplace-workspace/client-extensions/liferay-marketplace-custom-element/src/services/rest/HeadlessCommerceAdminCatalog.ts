@@ -4,6 +4,7 @@
  */
 
 import {UploadedImage} from '../../components/FileList/FileList';
+import {MarketplaceProduct} from '../../entity/MarketplaceProduct';
 import {axios} from '../../utils/axios';
 import fetcher from '../fetcher';
 
@@ -171,9 +172,17 @@ export default class HeadlessCommerceAdminCatalog {
 	}
 
 	static async getProducts(searchParams = new URLSearchParams()) {
-		return fetcher(
+		const response = await fetcher<APIResponse<Product>>(
 			`/o/headless-commerce-admin-catalog/v1.0/products?${searchParams.toString()}`
 		);
+
+		return {
+			...response,
+			items: response.items.map((item) => ({
+				...item,
+				__marketplaceProduct: new MarketplaceProduct(item),
+			})),
+		};
 	}
 
 	static async getProductOptions(productId: number) {

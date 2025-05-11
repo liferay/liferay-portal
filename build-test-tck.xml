@@ -5,6 +5,35 @@
 
 	<fail message="Please set the property ${tck.home}." unless="tck.home" />
 
+	<macrodef name="prepare-chrome-driver">
+		<sequential>
+			<property name="tck.chrome.driver.zip" value="chromedriver_linux64.zip" />
+			<property name="tck.chrome.driver.version" value="100.0.4896.60" />
+
+			<mirrors-get
+				dest="tools/selenium/${tck.chrome.driver.zip}"
+				src="https://chromedriver.storage.googleapis.com/${tck.chrome.driver.version}/${tck.chrome.driver.zip}"
+			/>
+
+			<stop-chrome-driver />
+
+			<unzip
+				dest="tools/selenium"
+				src="tools/selenium/${tck.chrome.driver.zip}"
+			/>
+
+			<if>
+				<os family="unix" />
+				<then>
+					<chmod
+						file="tools/selenium/chromedriver"
+						perm="a+x"
+					/>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<target name="clean-up-tck">
 		<exec dir="${tck.home}/.." executable="git" failonerror="false">
 			<arg value="apply" />
@@ -40,8 +69,10 @@
 
 		<echo append="true" file="${app.server.classes.portal.dir}/portal-ext.properties"><![CDATA[
 			browser.launcher.url=
+			enterprise.product.notification.enabled=false
 			javascript.single.page.application.enabled=false
 			module.framework.auto.deploy.interval=2000
+			passwords.default.policy.change.required=false
 			setup.wizard.enabled=false
 			terms.of.use.required=false
 			theme.portlet.decorate.default=false
@@ -173,18 +204,31 @@
 			</else>
 		</if>
 
-		<prepare-chrome-driver />
+		<if>
+			<isset property="env.JENKINS_HOME" />
+			<then>
+				<stop-docker-browser />
 
-		<propertycopy from="browser.${browser.type[tck]}.version" name="tck.browser.version" silent="true" />
+				<start-docker-browser />
 
-		<propertycopy from="browser.${browser.type[tck]}.bin.file[86.0]" name="tck.browser.bin.file" silent="true" />
+				<get-browser-property property.name="browser.host" />
 
-		<propertycopy from="selenium.${browser.type[tck]}.driver.executable" name="tck.selenium.browser.driver.executable" silent="true" />
+				<var name="chrome.properties" value="-Dtest.browser.webDriver.url=http://${browser.host}:4444" />
+			</then>
+			<else>
+				<prepare-chrome-driver />
+
+				<propertycopy from="browser.${browser.type[tck]}.version" name="tck.browser.version" silent="true" />
+				<propertycopy from="browser.${browser.type[tck]}.bin.file[${tck.browser.version}]" name="tck.browser.bin.file" silent="true" />
+
+				<var name="chrome.properties" value="-Dtest.browser.binary=${tck.browser.bin.file} -Dtest.browser.webDriver=${project.dir}/tools/tck/../selenium/chromedriver" />
+			</else>
+		</if>
 
 		<exec dir="${tck.home}" executable="mvn" failonerror="true">
 			<env key="JAVA_HOME" value="${java.jdk.home}" />
 			<env key="JAVA_OPTS" value="${java.jdk.opts}" />
-			<arg line="-Pliferay,run-tck -Djava.awt.headless=true ${tck.properties} -Dtest.browser=${browser.type[tck]} -Dtest.browser.binary=${tck.browser.bin.file} -Dtest.browser.webDriver=${project.dir}/tools/tck/../${selenium.executable.dir.name}${tck.selenium.browser.driver.executable} -Dtest.list.file=${tck.tests.xml} -Dtest.server.login.url=${tck.login.url} test" />
+			<arg line="-Pliferay,run-tck -Djava.awt.headless=true ${tck.properties} -Dtest.browser=${browser.type[tck]} ${chrome.properties} -Dtest.list.file=${tck.tests.xml} -Dtest.server.login.url=${tck.login.url} test" />
 		</exec>
 
 		<if>

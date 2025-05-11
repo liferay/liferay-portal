@@ -1127,7 +1127,7 @@ app.server.type=@{app.server.type}]]></echo>
 			<antcall inheritAll="false" target="setup-yarn" />
 
 			<execute>
-				tar --extract --verbose --gzip --file=liferay-portal-source.tar.gz
+				tar --extract --gzip --file=liferay-portal-source.tar.gz
 			</execute>
 
 			<local name="bundle.src.file.name" />
@@ -1140,7 +1140,7 @@ app.server.type=@{app.server.type}]]></echo>
 				<available file="${bundle.src.file.name}" />
 				<then>
 					<execute>
-						tar --extract --verbose --gzip --file=${bundle.src.file.name}
+						tar --extract --gzip --file=${bundle.src.file.name}
 					</execute>
 
 					<chmod
@@ -7769,7 +7769,7 @@ information. Make sure to commit in all format-javadoc results.
 						</condition>
 
 						<execute>
-							tar --extract --verbose --gzip --file=${bundle.src.file.name}
+							tar --extract --gzip --file=${bundle.src.file.name}
 						</execute>
 
 						<antcall inheritAll="false" target="compile" />

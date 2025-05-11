@@ -31,6 +31,8 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"javax.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 		"javax.portlet.name=com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet",
+		"javax.portlet.name=com_liferay_fragment_web_portlet_FragmentPortlet",
+		"javax.portlet.name=com_liferay_layout_content_page_editor_web_internal_portlet_ContentPageEditorPortlet",
 		"mvc.command.name=/marketplace_settings/get_authorization"
 	},
 	service = MVCResourceCommand.class

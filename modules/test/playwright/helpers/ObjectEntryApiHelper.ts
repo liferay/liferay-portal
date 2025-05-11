@@ -13,6 +13,12 @@ export class ObjectEntryApiHelper {
 		this.apiHelpers = apiHelpers;
 	}
 
+	async deleteObjectEntry(applicationName: string, objectEntryId: string) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${applicationName}/${objectEntryId}`
+		);
+	}
+
 	async deleteObjectEntryByExternalReferenceCode(
 		applicationName: string,
 		scopeKey: string,

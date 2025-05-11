@@ -18,8 +18,6 @@ import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -97,9 +95,11 @@ public class ObjectEntrySearchUtil {
 				).from(
 					DLFileEntryTable.INSTANCE
 				).where(
-					DLFileEntryTable.INSTANCE.title.like(
-						StringBundler.concat(
-							StringPool.PERCENT, search, StringPool.PERCENT))
+					DSLFunctionFactoryUtil.lower(
+						DLFileEntryTable.INSTANCE.title
+					).like(
+						StringUtil.quote(StringUtil.toLowerCase(search), "%")
+					)
 				));
 		}
 

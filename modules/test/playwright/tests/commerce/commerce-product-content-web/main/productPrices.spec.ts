@@ -33,8 +33,6 @@ test('LPD-29583 Check discount on products with UOM', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -210,8 +208,6 @@ test('LPD-35633 Check discount on products with minOrderQuantity greater than 1'
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,

@@ -798,9 +798,6 @@ public class CompanyPersistenceImpl
 				CompanyModelImpl cachedCompanyModelImpl =
 					(CompanyModelImpl)cachedCompany;
 
-				companyModelImpl.setCompanySecurityBag(
-					cachedCompanyModelImpl.getCompanySecurityBag());
-
 				companyModelImpl.setGroupId(
 					cachedCompanyModelImpl.getGroupId());
 

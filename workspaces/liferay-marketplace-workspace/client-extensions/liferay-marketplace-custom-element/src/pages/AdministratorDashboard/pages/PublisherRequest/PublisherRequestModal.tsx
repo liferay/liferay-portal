@@ -6,7 +6,7 @@
 import ClayButton from '@clayui/button';
 import {useModal} from '@clayui/modal';
 import {Status} from '@clayui/modal/lib/types';
-import {KeyedMutator, mutate} from 'swr';
+import {KeyedMutator} from 'swr';
 
 import Modal from '../../../../components/Modal';
 import i18n from '../../../../i18n';
@@ -14,7 +14,7 @@ import {Liferay} from '../../../../liferay/liferay';
 import fetcher from '../../../../services/fetcher';
 import PublisherSummaryContent from '../../../PublisherGate/components/PublisherSummaryContent';
 
-export const STATUS = {
+export const PublisherStatusDisplayType = {
 	completed: 'success',
 	inProgress: 'info',
 	open: 'secondary',
@@ -22,11 +22,12 @@ export const STATUS = {
 };
 
 type PublisherRequestModalProps = ReturnType<typeof useModal> & {
-	mutate: KeyedMutator<any>;
+	mutate: KeyedMutator<APIResponse>;
 	selectedRequest?: PublisherRequestInfo;
 };
 
 const PublisherRequestModal: React.FC<PublisherRequestModalProps> = ({
+	mutate,
 	observer,
 	onOpenChange,
 	open,
@@ -35,8 +36,9 @@ const PublisherRequestModal: React.FC<PublisherRequestModalProps> = ({
 	const showModalButtons =
 		(selectedRequest?.requestStatus?.key ?? 'open') === 'open';
 
-	const selectedRequestStatus = STATUS[
-		selectedRequest?.requestStatus?.key as keyof typeof STATUS
+	const selectedRequestStatus = PublisherStatusDisplayType[
+		selectedRequest?.requestStatus
+			?.key as keyof typeof PublisherStatusDisplayType
 	] as Status;
 
 	const onUpdateRequestStatus = async (status: 'completed' | 'rejected') => {
@@ -47,7 +49,7 @@ const PublisherRequestModal: React.FC<PublisherRequestModalProps> = ({
 			}
 		);
 
-		mutate((items) => items, {}, {revalidate: true});
+		mutate((items) => items, {revalidate: true});
 
 		Liferay.Util.openToast({
 			message: i18n.translate('your-request-completed-successfully'),
@@ -88,14 +90,18 @@ const PublisherRequestModal: React.FC<PublisherRequestModalProps> = ({
 			visible={open}
 		>
 			<PublisherSummaryContent
-				userInfo={{
-					...selectedRequest,
-					publisherType: Array.isArray(selectedRequest?.publisherType)
-						? (selectedRequest?.publisherType as any[])?.map(
-								({name}) => name
-							)
-						: ['App Publisher'],
-				}}
+				userInfo={
+					{
+						...selectedRequest,
+						publisherType: Array.isArray(
+							selectedRequest?.publisherType
+						)
+							? (selectedRequest?.publisherType as any[])?.map(
+									({name}) => name
+								)
+							: ['App Publisher'],
+					} as any
+				}
 			/>
 		</Modal>
 	);

@@ -29,7 +29,9 @@ export default function MarketplaceSearchResults({
 }: {
 	searchValue: string;
 }) {
-	const baseResourceURL = MarketplaceRest.getBaseResourceURL();
+	const baseResourceURL = MarketplaceRest.getBaseResourceURL(
+		config.portletNamespace
+	);
 
 	const marketplaceConfiguration =
 		useMarketplaceConfiguration(baseResourceURL);
@@ -65,7 +67,9 @@ export default function MarketplaceSearchResults({
 }
 
 function SearchResultsPanel({searchValue}: {searchValue: string}) {
-	const baseResourceURL = MarketplaceRest.getBaseResourceURL();
+	const baseResourceURL = MarketplaceRest.getBaseResourceURL(
+		config.portletNamespace
+	);
 
 	const marketplaceConfiguration =
 		useMarketplaceConfiguration(baseResourceURL);
@@ -192,6 +196,7 @@ function SearchResults({
 						purchaseAndInstallPaidApps:
 							permissions.PURCHASE_AND_INSTALL_PAID_APPS_MARKETPLACE,
 					}}
+					portletNamespace={config.portletNamespace}
 					trigger={null}
 				>
 					<ul

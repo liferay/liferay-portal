@@ -13,13 +13,17 @@
 		background-color: #e6edfb;
 	}
 
+	&-text {
+		color: #272833;
+		text-decoration: none;
+	}
+
 	&:hover {
 		background-color: #e6edfb;
 	}
 
 	&-icon {
 		filter: saturate(0%);
-		height: 1.5rem;
 		margin-right: 0.625rem;
 		transition: filter 0.3s;
 		width: 1.5rem;

@@ -101,6 +101,7 @@ describe('MarketplaceButton', () => {
 						mockProps.fragmentPortletNamespace,
 					fragmentsImportURL: mockProps.fragmentsImportURL,
 					heading: mockProps.heading,
+					portletNamespace: mockProps.portletNamespace,
 				},
 			});
 		});

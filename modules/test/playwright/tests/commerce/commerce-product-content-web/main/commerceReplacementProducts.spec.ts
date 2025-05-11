@@ -35,8 +35,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		userData[user.alternateName] = {

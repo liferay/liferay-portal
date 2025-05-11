@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -79,7 +80,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
+import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -941,6 +944,23 @@ public class JournalManagementToolbarDisplayContext
 				assetTagsItemSelectorCriterion));
 	}
 
+	private PortletURL _getControlPanelPortletURL(
+		PortletRequest portletRequest) {
+
+		PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
+			portletRequest, _themeDisplay.getScopeGroup(),
+			JournalPortletKeys.JOURNAL, 0, 0, PortletRequest.RENDER_PHASE);
+
+		try {
+			portletURL.setWindowState(portletRequest.getWindowState());
+		}
+		catch (WindowStateException windowStateException) {
+			_log.error(windowStateException);
+		}
+
+		return portletURL;
+	}
+
 	private CreationMenu _getCreationMenu() throws PortalException {
 		return new CreationMenu() {
 			{
@@ -986,47 +1006,50 @@ public class JournalManagementToolbarDisplayContext
 					Collections.sort(
 						ddmStructures, _getDDMStructureOrderByComparator());
 
+					PortletRequest portletRequest =
+						(PortletRequest)httpServletRequest.getAttribute(
+							JavaConstants.JAVAX_PORTLET_REQUEST);
+
+					PortletURL controlPanelPortletURL =
+						_getControlPanelPortletURL(portletRequest);
+
 					for (DDMStructure ddmStructure : ddmStructures) {
-						PortletURL portletURL =
-							PortletURLBuilder.createRenderURL(
-								liferayPortletResponse
-							).setMVCRenderCommandName(
-								"/journal/edit_article"
-							).setRedirect(
-								() -> {
-									if (_journalDisplayContext.
-											isFilterApplied() ||
-										_journalDisplayContext.isSearch()) {
+						PortletURL portletURL = PortletURLBuilder.create(
+							controlPanelPortletURL
+						).setMVCRenderCommandName(
+							"/journal/edit_article"
+						).setRedirect(
+							() -> {
+								if (_journalDisplayContext.isFilterApplied() ||
+									_journalDisplayContext.isSearch()) {
 
-										return PortletURLBuilder.
-											createRenderURL(
-												liferayPortletResponse
-											).buildString();
-									}
-
-									return PortalUtil.getCurrentURL(
-										httpServletRequest);
+									return PortletURLBuilder.createRenderURL(
+										liferayPortletResponse
+									).buildString();
 								}
-							).setBackURL(
-								_themeDisplay.getURLCurrent()
-							).setParameter(
-								"backURLTitle",
-								() -> {
-									PortletDisplay portletDisplay =
-										_themeDisplay.getPortletDisplay();
 
-									return portletDisplay.
-										getPortletDisplayName();
-								}
-							).setParameter(
-								"ddmStructureId", ddmStructure.getStructureId()
-							).setParameter(
-								"folderId", _journalDisplayContext.getFolderId()
-							).setParameter(
-								"groupId", _themeDisplay.getScopeGroupId()
-							).setParameter(
-								"showSelectFolder", false
-							).buildPortletURL();
+								return PortalUtil.getCurrentURL(
+									httpServletRequest);
+							}
+						).setBackURL(
+							_themeDisplay.getURLCurrent()
+						).setParameter(
+							"backURLTitle",
+							() -> {
+								PortletDisplay portletDisplay =
+									_themeDisplay.getPortletDisplay();
+
+								return portletDisplay.getPortletDisplayName();
+							}
+						).setParameter(
+							"ddmStructureId", ddmStructure.getStructureId()
+						).setParameter(
+							"folderId", _journalDisplayContext.getFolderId()
+						).setParameter(
+							"groupId", _themeDisplay.getScopeGroupId()
+						).setParameter(
+							"showSelectFolder", false
+						).buildPortletURL();
 
 						UnsafeConsumer<DropdownItem, Exception> unsafeConsumer =
 							dropdownItem -> {

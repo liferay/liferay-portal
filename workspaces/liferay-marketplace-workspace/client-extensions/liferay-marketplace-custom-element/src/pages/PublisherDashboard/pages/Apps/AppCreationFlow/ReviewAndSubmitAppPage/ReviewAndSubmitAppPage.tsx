@@ -21,7 +21,7 @@ import {App, supportAndHelpMap} from './ReviewAndSubmitAppPageUtil';
 import './ReviewAndSubmitAppPage.scss';
 import {useMarketplaceContext} from '../../../../../../context/MarketplaceContext';
 import {
-	ProductCategoies,
+	ProductCategories,
 	ProductSpecificationKey,
 } from '../../../../../../enums/Product';
 import {Liferay} from '../../../../../../liferay/liferay';
@@ -71,12 +71,12 @@ export function ReviewAndSubmitAppPage({
 
 			const productCategories = getProductCategoriesByVocabularyName(
 				categories,
-				ProductCategoies.MARKETPLACE_APP_CATEGORY
+				ProductCategories.MARKETPLACE_APP_CATEGORY
 			);
 
 			const productTags = getProductCategoriesByVocabularyName(
 				categories,
-				ProductCategoies.MARKETPLACE_APP_TAGS
+				ProductCategories.MARKETPLACE_APP_TAGS
 			);
 
 			const isCloud =

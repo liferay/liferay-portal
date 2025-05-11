@@ -7,12 +7,72 @@ import {Text} from '@clayui/core';
 import ClayLayout from '@clayui/layout';
 import React from 'react';
 
+import {ViewDashboardContextProvider} from './ViewDashboardContext';
+import {ContentCard} from './components/ContentCard';
+import {FilesCard} from './components/FilesCard';
+import {InventoryAnalysisCard} from './components/InventoryAnalysisCard';
+import {LanguagesDropdown} from './components/LanguagesDropdown';
+import {SectionHeader} from './components/SectionHeader';
+import {SpacesDropdown} from './components/SpacesDropdown';
+
+import '../../../css/dashboard/Dashboard.scss';
+
 export default function ViewDashboard() {
 	return (
-		<ClayLayout.Container fluid>
-			<Text size={1} weight="bold">
-				{Liferay.Language.get('dashboard')}
-			</Text>
-		</ClayLayout.Container>
+		<ViewDashboardContextProvider>
+			<ClayLayout.Container className="p-5" fluid>
+				<ClayLayout.Row className="mb-5">
+					<ClayLayout.Col size={12}>
+						<Text size={7} weight="bold">
+							{Liferay.Language.get('dashboard')}
+						</Text>
+					</ClayLayout.Col>
+				</ClayLayout.Row>
+
+				<ClayLayout.Row className="mb-4">
+					<ClayLayout.Col size={12}>
+						<div className="d-flex">
+							<SpacesDropdown className="mr-3" />
+
+							<LanguagesDropdown />
+						</div>
+					</ClayLayout.Col>
+				</ClayLayout.Row>
+
+				<ClayLayout.Row className="mb-2">
+					<ClayLayout.Col size={12}>
+						<SectionHeader
+							icon="plus-squares"
+							title={Liferay.Language.get('what-is-new')}
+						/>
+					</ClayLayout.Col>
+				</ClayLayout.Row>
+
+				<ClayLayout.Row className="mb-4">
+					<ClayLayout.Col className="mb-3" lg={12} xl={6}>
+						<ContentCard />
+					</ClayLayout.Col>
+
+					<ClayLayout.Col className="mb-3" lg={12} xl={6}>
+						<FilesCard />
+					</ClayLayout.Col>
+				</ClayLayout.Row>
+
+				<ClayLayout.Row className="mb-2">
+					<ClayLayout.Col size={12}>
+						<SectionHeader
+							icon="diagram"
+							title={Liferay.Language.get('assets-distributions')}
+						/>
+					</ClayLayout.Col>
+				</ClayLayout.Row>
+
+				<ClayLayout.Row>
+					<ClayLayout.Col size={12}>
+						<InventoryAnalysisCard />
+					</ClayLayout.Col>
+				</ClayLayout.Row>
+			</ClayLayout.Container>
+		</ViewDashboardContextProvider>
 	);
 }

@@ -3645,6 +3645,11 @@ public class DefaultObjectEntryManagerImplTest
 				"search", fileEntry.getTitle()
 			).build(),
 			childObjectEntry1);
+		testGetObjectEntries(
+			HashMapBuilder.put(
+				"search", StringUtil.toLowerCase(fileEntry.getTitle())
+			).build(),
+			childObjectEntry1);
 
 		// "Starts with" expression
 

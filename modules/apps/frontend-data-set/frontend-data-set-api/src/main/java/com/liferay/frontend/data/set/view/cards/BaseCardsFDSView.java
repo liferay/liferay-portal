@@ -9,6 +9,8 @@ import com.liferay.frontend.data.set.constants.FDSConstants;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.petra.string.StringPool;
 
+import java.util.Locale;
+
 /**
  * @author Bruno Basto
  */
@@ -20,6 +22,8 @@ public abstract class BaseCardsFDSView implements FDSView {
 	}
 
 	public abstract String getDescription();
+
+	public abstract FDSCardSchema getFDSCardSchema(Locale locale);
 
 	public String getImage() {
 		return StringPool.BLANK;

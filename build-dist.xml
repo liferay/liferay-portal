@@ -1000,11 +1000,6 @@ export JDK_JAVA_OPTIONS]]>
 				<include name="*.sh" />
 			</fileset>
 		</chmod>
-
-		<antcall target="set-up-jakarta-ee-transformer-agent">
-			<param name="app.server.type" value="jboss" />
-			<param name="app.server.version" value="${app.server.jboss.version}" />
-		</antcall>
 	</target>
 
 	<target name="unzip-tomcat">
@@ -1157,11 +1152,6 @@ org.apache.level=WARNING]]>
 				<include name="*.sh" />
 			</fileset>
 		</chmod>
-
-		<antcall target="set-up-jakarta-ee-transformer-agent">
-			<param name="app.server.type" value="tomcat" />
-			<param name="app.server.version" value="${app.server.tomcat.version}" />
-		</antcall>
 
 		<antcall target="unzip-glowroot" />
 	</target>
@@ -2004,11 +1994,6 @@ set "JDK_JAVA_OPTIONS=%JDK_JAVA_OPTIONS% ${app.server.wildfly.jdk.java.options}"
 				<include name="*.sh" />
 			</fileset>
 		</chmod>
-
-		<antcall target="set-up-jakarta-ee-transformer-agent">
-			<param name="app.server.type" value="wildfly" />
-			<param name="app.server.version" value="${app.server.wildfly.version}" />
-		</antcall>
 	</target>
 
 	<target name="update-plugins-includes">

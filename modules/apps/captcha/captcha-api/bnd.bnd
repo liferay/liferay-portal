@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Captcha API
 Bundle-SymbolicName: com.liferay.captcha.api
-Bundle-Version: 9.0.1
+Bundle-Version: 10.0.0
 Export-Package:\
 	com.liferay.captcha.configuration,\
 	com.liferay.captcha.provider,\

@@ -157,8 +157,6 @@ test('LPD-26142 A Sales Agent can manage channel defaults', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account1.id,
 		[user.emailAddress]
@@ -170,8 +168,6 @@ test('LPD-26142 A Sales Agent can manage channel defaults', async ({
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	const deliveryTerm = await apiHelpers.headlessCommerceAdminOrder.postTerm({
 		type: 'delivery-terms',
@@ -403,16 +399,12 @@ test('LPD-28220 Can user with account manager role view and manage channel defau
 
 	accounts.push(account1);
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
 		type: 'business',
 	});
 
 	accounts.push(account2);
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignAccountToOrganization(
 		account1.id,

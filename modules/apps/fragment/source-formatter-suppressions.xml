@@ -2,10 +2,6 @@
 
 <suppressions>
 	<source-check>
-		<suppress checks="CSPTagIllegalAttributesCheck" files="fragment-test/src/testIntegration/resources/com/liferay/fragment/dependencies/fragments/fragments/card/index\.html" />
-		<suppress checks="CSPTagIllegalAttributesCheck" files="fragment-test/src/testIntegration/resources/com/liferay/fragment/dependencies/fragments/fragments/image/index\.html" />
-		<suppress checks="CSPTagIllegalAttributesCheck" files="fragment-test/src/testIntegration/resources/com/liferay/fragment/dependencies/fragments/render/simple\.html" />
-		<suppress checks="CSPTagIllegalAttributesCheck" files="fragment-test/src/testIntegration/resources/com/liferay/fragment/dependencies/fragments-with-folder-resources/fragments/index\.html" />
 		<suppress checks="IllegalImportsCheck" files="fragment-api/src/main/java/com/liferay/fragment/processor/DefaultEditableValuesFragmentEntryProcessor.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-api/src/main/java/com/liferay/fragment/processor/DocumentFragmentEntryProcessor.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-api/src/main/java/com/liferay/fragment/processor/DocumentFragmentEntryValidator.java" />

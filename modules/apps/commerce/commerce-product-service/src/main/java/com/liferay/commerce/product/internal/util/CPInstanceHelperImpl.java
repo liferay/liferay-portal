@@ -7,12 +7,12 @@ package com.liferay.commerce.product.internal.util;
 
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.adaptive.media.image.html.AMImageHTMLTagFactory;
+import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextThreadLocal;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.media.CommerceMediaProvider;
 import com.liferay.commerce.media.CommerceMediaResolver;
-import com.liferay.commerce.price.CommerceProductPrice;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
@@ -123,13 +123,13 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 	@Override
 	public BigDecimal fetchCPInstanceUnitPrice(CPInstance cpInstance) {
 		try {
-			CommerceProductPrice commerceProductPrice =
-				_commerceProductPriceCalculation.getCommerceProductPrice(
-					cpInstance.getCPInstanceId(), BigDecimal.ONE,
-					StringPool.BLANK, CommerceContextThreadLocal.get());
+			CommerceContext commerceContext = CommerceContextThreadLocal.get();
 
 			CommerceMoney unitPriceCommerceMoney =
-				commerceProductPrice.getUnitPrice();
+				_commerceProductPriceCalculation.getUnitPrice(
+					cpInstance.getCPInstanceId(), BigDecimal.ONE,
+					commerceContext.getCommerceCurrency(), false,
+					StringPool.BLANK, commerceContext);
 
 			if (!unitPriceCommerceMoney.isEmpty()) {
 				return unitPriceCommerceMoney.getPrice();
@@ -145,13 +145,13 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 	@Override
 	public BigDecimal fetchCPInstanceUnitPromoPrice(CPInstance cpInstance) {
 		try {
-			CommerceProductPrice commerceProductPrice =
-				_commerceProductPriceCalculation.getCommerceProductPrice(
-					cpInstance.getCPInstanceId(), BigDecimal.ONE,
-					StringPool.BLANK, CommerceContextThreadLocal.get());
+			CommerceContext commerceContext = CommerceContextThreadLocal.get();
 
 			CommerceMoney unitPromoPriceCommerceMoney =
-				commerceProductPrice.getUnitPromoPrice();
+				_commerceProductPriceCalculation.getPromoPrice(
+					cpInstance.getCPInstanceId(), BigDecimal.ONE,
+					commerceContext.getCommerceCurrency(), true,
+					StringPool.BLANK, commerceContext);
 
 			if (!unitPromoPriceCommerceMoney.isEmpty()) {
 				return unitPromoPriceCommerceMoney.getPrice();

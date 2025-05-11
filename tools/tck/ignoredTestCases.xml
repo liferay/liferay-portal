@@ -3,6 +3,152 @@
 
 <properties>
 
+	<!-- Failures related to friendly-url / PLUTO-683 -->
+
+	<entry key="V2URLTests_BaseURL_ApiRenderResurl_setParameters1"></entry>
+	<entry key="V2URLTests_BaseURL_ApiRenderResurl_setParameters5"></entry>
+	<entry key="V2URLTests_BaseURL_ApiRenderResurl_setParameters6"></entry>
+	<entry key="V2URLTests_BaseURL_ApiRenderResurl_setParameters7"></entry>
+	<entry key="V2URLTests_BaseURL_ApiRenderResurl_setParameters8"></entry>
+	<entry key="V2URLTests_PortletURLGenerationListener_ApiRenderResurl_filterResourceURL3"></entry>
+
+	<!-- https://liferay.atlassian.net/browse/LPD-55203 -->
+
+	<entry key="V2URLTests_BaseURL_ApiRenderActurl_setSecure2"></entry>
+	<entry key="V2URLTests_BaseURL_ApiRenderRenurl_setSecure2"></entry>
+	<entry key="V2URLTests_BaseURL_ApiRenderResurl_setSecure2"></entry>
+
+	<!-- https://liferay.atlassian.net/browse/LPD-53826 -->
+
+	<entry key="V3PortletHubTests_SPEC_23_JSAction_Action1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSAction_Action2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSAction_Action3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSAction_Action4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSAction_Action5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSAction_Action6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSAction_Action7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_action8"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_actionA"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_addEventListener8"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_createResourceUrl1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_createResourceUrl2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_createResourceUrl3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_removeEventListener1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_removeEventListener2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_removeEventListener3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_removeEventListener4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_removeEventListener5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderState9"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderStateA"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_setRenderStateB"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_startPartialAction1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_startPartialAction2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_startPartialAction3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSExc_startPartialAction4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSListener_onStateChange1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSListener_onStateChange2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSListener_onStateChange3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSPA_startPartialAction1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSPA_startPartialAction2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSPA_startPartialAction3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSPA_startPartialAction4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSPA_startPartialAction5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSPA_startPartialAction6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSPA_startPartialAction7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_Parameters1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_Parameters2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_Parameters3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_State1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_State2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_State3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_clone7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getPortletMode"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getPortletMode1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValue"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValue1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValue2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValue3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValue4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValue5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValue6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValues"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValues1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValues2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValues3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getValues4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getWindowState"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_getWindowState1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_parameters"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_portletMode"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_remove"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_remove1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_remove2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setPortletMode"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setPortletMode1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setPortletMode2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setValue"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setValue1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setValue2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setValue3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setValue4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setValue5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setWindowState"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setWindowState1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_setWindowState2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JSState_windowState"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants8"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_Constants9"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit1"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit2"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit3"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit4"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit5"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit6"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit7"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit8"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInit9"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInitA"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInitB"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInitC"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_PortletInitD"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_register8"></entry>
+	<entry key="V3PortletHubTests_SPEC_23_JS_register9"></entry>
+
 	<!-- https://issues.liferay.com/browse/LPS-92490 -->
 
 	<entry key="V2AddlPortletTests_SPEC2_13_ResourceServing_resourceURLs7"></entry>

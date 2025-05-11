@@ -63,8 +63,6 @@ test('LPD-44010 Check no delete dropdown in order admin page without delete perm
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -232,8 +230,6 @@ test('LPD-45268 Notes tab should not be visible if user does not have required p
 	const sku = productSkus[0];
 
 	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
 		account.id,
@@ -460,8 +456,6 @@ test('LPD-47793 Notes should be visible using their respective permissions in th
 	const sku = productSkus[0];
 
 	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
 		account.id,

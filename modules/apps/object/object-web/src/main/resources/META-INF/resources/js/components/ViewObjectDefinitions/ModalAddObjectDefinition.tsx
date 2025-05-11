@@ -17,11 +17,7 @@ import {
 	openToast,
 	useForm,
 } from '@liferay/object-js-components-web';
-import {
-	FeatureIndicator,
-	LearnMessage,
-	LearnResourcesContext,
-} from 'frontend-js-components-web';
+import {LearnMessage, LearnResourcesContext} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
@@ -229,16 +225,6 @@ export function ModalAddObjectDefinition({
 											'object-definition-storage-type-tooltip'
 										)}
 									/>
-
-									<div className="lfr__object-web-modal-add-object-definition-storage-type-beta">
-										<FeatureIndicator
-											interactive
-											learnResourceContext={
-												learnResourceContext
-											}
-											type="beta"
-										/>
-									</div>
 								</div>
 
 								{showProxyWarning && (

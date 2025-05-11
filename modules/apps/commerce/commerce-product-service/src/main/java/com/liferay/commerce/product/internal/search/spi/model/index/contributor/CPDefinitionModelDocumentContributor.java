@@ -258,7 +258,7 @@ public class CPDefinitionModelDocumentContributor
 							CPDefinitionSpecificationOptionValue.
 								getCPSpecificationOption()),
 					String.class));
-			document.addText(
+			document.addKeyword(
 				CPField.SPECIFICATION_VALUES_NAMES,
 				TransformUtil.transformToArray(
 					_getFilteredCPDefinitionSpecificationOptionValues(

@@ -79,8 +79,6 @@ test('LPD-27036 Cart shows decimal quantities', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -154,8 +152,6 @@ test('LPD-29864 Cart updates when order is open', async ({apiHelpers}) => {
 		name: 'Cart Account',
 		type: 'person',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,

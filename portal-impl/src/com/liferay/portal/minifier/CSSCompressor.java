@@ -63,6 +63,8 @@ public class CSSCompressor {
 
 		css = _removeUnneededLeadingSpaces(css);
 
+		css = _restoreContainerQuerySpaces(css);
+
 		css = _retainSpaceForSpecialIE6Cases(css);
 
 		css = _removeWhitespaceAfterPreservedComments(css);
@@ -631,6 +633,26 @@ public class CSSCompressor {
 		return sb.toString();
 	}
 
+	private String _restoreContainerQuerySpaces(String css) {
+		StringBuffer sb = new StringBuffer();
+
+		Matcher matcher = _restoreContainerQuerySpacesPattern.matcher(css);
+
+		while (matcher.find()) {
+			String group = matcher.group();
+
+			group = group.substring(0, group.length() - 1);
+
+			group += " (";
+
+			matcher.appendReplacement(sb, group);
+		}
+
+		matcher.appendTail(sb);
+
+		return sb.toString();
+	}
+
 	private String _restorePreservedTokens(
 		String css, List<String> preservedTokens) {
 
@@ -855,6 +877,8 @@ public class CSSCompressor {
 	private static final Pattern _replaceBorderNonePattern = Pattern.compile(
 		"(?i)(border|border-top|border-right|border-bottom|border-left|" +
 			"outline|background):none(;|})");
+	private static final Pattern _restoreContainerQuerySpacesPattern =
+		Pattern.compile("@container\\s+([^\\s(]+\\()");
 	private static final Pattern _restoreSomeMultipleZeroesPattern =
 		Pattern.compile(
 			StringBundler.concat(

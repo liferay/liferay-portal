@@ -30,7 +30,8 @@ import SubmitApp from './pages/NewAppFlow/pages/Submit';
 import Support from './pages/NewAppFlow/pages/Support';
 import Version from './pages/NewAppFlow/pages/Version';
 import Solutions from './pages/Solutions';
-import PublishSolutionOutlet from './pages/Solutions/NewSolutionFlow/PublishSolutionOutlet';
+import SolutionsDetails from './pages/Solutions/Solution';
+import PublishSolutionOutlet from './pages/Solutions/SolutionForm/PublishSolutionOutlet';
 import {
 	CompanyProfile,
 	ContactUs,
@@ -39,8 +40,7 @@ import {
 	Header,
 	Profile,
 	Submit,
-} from './pages/Solutions/NewSolutionFlow/pages';
-import SolutionsDetails from './pages/Solutions/Solution';
+} from './pages/Solutions/SolutionForm/pages';
 
 const PublisherDashboardRouter = () => {
 	const {accountId} = Liferay.CommerceContext.account || {};

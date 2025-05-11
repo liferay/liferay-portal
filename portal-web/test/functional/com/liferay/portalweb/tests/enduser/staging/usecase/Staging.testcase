@@ -3282,40 +3282,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-89116."
-	@priority = 3
-	test ValidateFriendlyURLWithSpecialCharacters {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		WebContentNavigator.gotoAddCP();
-
-		WebContent.addCP(
-			webContentContent = "Web Content Content",
-			webContentTitle = '''Special Char aŐb''');
-
-		WebContent.publishWithPermissions();
-
-		WebContent.viewTitle(webContentTitle = '''Special Char aŐb''');
-
-		WebContentNavigator.gotoEditCP(webContentTitle = '''Special Char aŐb''');
-
-		WebContent.viewFriendlyURLCP(friendlyURL = '''special-char-aőb''');
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		WebContentNavigator.gotoAddCP();
-
-		WebContent.addWithFriendlyURL(
-			friendlyURL = "special-char-a-c5-90b",
-			webContentContent = "Web Content Content2",
-			webContentTitle = "Web Content Title");
-
-		JSONStaging.enableLocalStaging(groupName = "Site Name");
-	}
-
 	@priority = 3
 	test ViewHistoryVersionWithDeletedUser {
 		property test.liferay.virtual.instance = "false";

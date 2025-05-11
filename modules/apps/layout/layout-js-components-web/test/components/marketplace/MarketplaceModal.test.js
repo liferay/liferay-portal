@@ -87,6 +87,7 @@ const mockProps = {
 		purchaseAndInstallPaidApps: true,
 		viewApps: true,
 	},
+	portletNamespace: 'testPortlet',
 	trigger: <button data-testid="custom-trigger">Custom Trigger</button>,
 };
 
@@ -251,5 +252,14 @@ describe('MarketplaceModal', () => {
 				settings: {productFilter: 'fragments'},
 			})
 		);
+	});
+
+	it('calls getBaseResourceURL with the correct portletNamespace', () => {
+		renderComponent();
+
+		expect(
+			require('@liferay/marketplace-js-components-web').MarketplaceRest
+				.getBaseResourceURL
+		).toHaveBeenCalledWith(mockProps.portletNamespace);
 	});
 });

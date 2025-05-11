@@ -533,7 +533,7 @@ export async function postCartByChannelId({
 		}
 	);
 
-	return (await cartResponse.json()) as PostCartResponse;
+	return (await cartResponse.json()) as Cart;
 }
 
 export async function postCheckoutCart({
@@ -552,7 +552,7 @@ export async function postCheckoutCart({
 		}
 	);
 
-	return (await response.json()) as PostCheckoutCartResponse;
+	return (await response.json()) as Cart;
 }
 
 export async function postOptionValue(optionBody: any, optionId: number) {

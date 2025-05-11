@@ -478,7 +478,7 @@ export class TestEntityAPI {
 		}> {
 				let body;
 						const formData = new FormData();
-								formData.append("testEntities", JSON.stringify(ObjectSerializer.serialize(requestBody.parameters.testEntities, "Array<TestEntity>")));
+								formData.append("testEntities", JSON.stringify(ObjectSerializer.serialize(testEntities, "Array<TestEntity>")));
 						body = formData;
 
 			const path = this._basePath + "/test/v1.0/test-entities/multipart/bulk"

@@ -10,15 +10,25 @@ import i18n from '../../i18n';
 
 export const dashboardNavigationItems = [
 	{
-		itemTitle: i18n.translate('dashboard'),
+		itemTitle: i18n.translate('summary'),
 		items: [],
 		path: '/',
 		symbol: 'polls',
 	},
 	{
+		itemTitle: i18n.translate('orders'),
+		path: '/orders',
+		symbol: 'order-form',
+	},
+	{
 		itemTitle: i18n.translate('apps'),
 		path: '/apps',
-		symbol: 'grid',
+		symbol: 'slideshow',
+	},
+	{
+		itemTitle: i18n.translate('solutions'),
+		path: '/solutions',
+		symbol: 'edit-layout',
 	},
 	{
 		itemTitle: i18n.translate('trials'),

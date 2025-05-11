@@ -30,6 +30,7 @@ import com.liferay.journal.web.internal.item.selector.JournalArticleTranslations
 import com.liferay.journal.web.internal.portlet.JournalPortlet;
 import com.liferay.journal.web.internal.security.permission.resource.JournalArticlePermission;
 import com.liferay.journal.web.internal.security.permission.resource.JournalFolderPermission;
+import com.liferay.journal.web.internal.util.JournalPortletUtil;
 import com.liferay.journal.web.internal.util.JournalUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
@@ -580,25 +581,9 @@ public class JournalArticleActionDropdownItemsProvider {
 
 		return dropdownItem -> {
 			dropdownItem.setHref(
-				PortletURLBuilder.createRenderURL(
-					_liferayPortletResponse
-				).setMVCRenderCommandName(
-					"/journal/edit_article"
-				).setRedirect(
-					_getRedirect()
-				).setParameter(
-					"articleId", _article.getArticleId()
-				).setParameter(
-					"backURLTitle", portletDisplay.getPortletDisplayName()
-				).setParameter(
-					"folderId", _article.getFolderId()
-				).setParameter(
-					"groupId", _article.getGroupId()
-				).setParameter(
-					"referringPortletResource", _getReferringPortletResource()
-				).setParameter(
-					"version", _article.getVersion()
-				).buildString());
+				JournalPortletUtil.getEditArticlePortletURL(
+					_article, _httpServletRequest, portletDisplay,
+					_getRedirect(), _getReferringPortletResource()));
 			dropdownItem.setIcon("pencil");
 
 			String label = "edit";

@@ -14,6 +14,7 @@
 	export {ERCAssetLibraryTestEntityAPI} from './apis/ERCAssetLibraryTestEntityAPI';
 	export {ERCSiteTestEntityAPI} from './apis/ERCSiteTestEntityAPI';
 	export {FilterAPI} from './apis/FilterAPI';
+	export {MultipartTestEntityAPI} from './apis/MultipartTestEntityAPI';
 	export {SchemaAPI} from './apis/SchemaAPI';
 	export {SiteTestEntityAPI} from './apis/SiteTestEntityAPI';
 	export {SortAPI} from './apis/SortAPI';
@@ -33,6 +34,7 @@
 	export {FacetValue} from './models/FacetValue';
 	export {Filter} from './models/Filter';
 	export {JSONMapAttributeTestEntity} from './models/JSONMapAttributeTestEntity';
+	export {MultipartTestEntity} from './models/MultipartTestEntity';
 	export {NestedArrayItemsTestEntity} from './models/NestedArrayItemsTestEntity';
 	export {NestedTestEntity} from './models/NestedTestEntity';
 	export {PageCompanyTestEntity} from './models/PageCompanyTestEntity';

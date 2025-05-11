@@ -686,16 +686,18 @@ public class ObjectEntryDTOConverter
 				return scope;
 			});
 		fileEntry.setThumbnailURL(
-			() -> {
-				String thumbnailURL = _dlURLHelper.getThumbnailSrc(
-					new LiferayFileEntry(dlFileEntry), null);
+			() -> NestedFieldsSupplier.supply(
+				objectFieldName + ".thumbnailURL",
+				fieldName -> {
+					String thumbnailURL = _dlURLHelper.getThumbnailSrc(
+						new LiferayFileEntry(dlFileEntry), null);
 
-				if (Validator.isNull(thumbnailURL)) {
-					return null;
-				}
+					if (Validator.isNull(thumbnailURL)) {
+						return null;
+					}
 
-				return thumbnailURL;
-			});
+					return thumbnailURL;
+				}));
 
 		return fileEntry;
 	}

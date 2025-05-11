@@ -37,8 +37,6 @@ test('LPD-47225 Can add and remove an organizations to an account', async ({
 
 	const account = await apiHelpers.headlessAdminUser.postAccount();
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const organization1 = await apiHelpers.headlessAdminUser.postOrganization();
 	const organization2 = await apiHelpers.headlessAdminUser.postOrganization();
 
@@ -90,8 +88,6 @@ test('LPD-47225 Can add and remove organizations to an account in bulk', async (
 	page.on('dialog', (dialog) => dialog.accept());
 
 	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const organizations = [];
 
@@ -157,8 +153,6 @@ test('LPD-47225 Can search assigned organizations', async ({
 	apiHelpers,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const organization1 = await apiHelpers.headlessAdminUser.postOrganization();
 	const organization2 = await apiHelpers.headlessAdminUser.postOrganization();
@@ -230,8 +224,6 @@ test('LPD-47225 Can search organizations during assignment', async ({
 	apiHelpers,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const organization1 = await apiHelpers.headlessAdminUser.postOrganization();
 	const organization2 = await apiHelpers.headlessAdminUser.postOrganization();
@@ -320,8 +312,6 @@ test('LPD-47225 Can paginate organizations during assignment', async ({
 	apiHelpers,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount();
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const organizations = [];
 

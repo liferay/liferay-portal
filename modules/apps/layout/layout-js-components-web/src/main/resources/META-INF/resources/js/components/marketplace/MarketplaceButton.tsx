@@ -42,6 +42,7 @@ function MarketplaceButton({
 				body,
 				heading,
 				permissions,
+				portletNamespace,
 				...marketplaceViewProps,
 			},
 		});
@@ -57,6 +58,7 @@ function MarketplaceButton({
 		return (
 			<MarketplaceModal
 				permissions={permissions}
+				portletNamespace={portletNamespace}
 				{...marketplaceViewProps}
 			/>
 		);

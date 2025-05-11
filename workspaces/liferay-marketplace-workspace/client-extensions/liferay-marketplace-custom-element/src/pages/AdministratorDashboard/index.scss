@@ -16,6 +16,10 @@
 			background: #f0f5ff;
 			border: 2px solid #80acff;
 		}
+
+		&-expanded {
+			max-width: unset;
+		}
 	}
 }
 
@@ -23,7 +27,6 @@
 	&-container {
 		box-sizing: border-box;
 		gap: 16px;
-		max-width: 1146px;
 	}
 
 	&-card {

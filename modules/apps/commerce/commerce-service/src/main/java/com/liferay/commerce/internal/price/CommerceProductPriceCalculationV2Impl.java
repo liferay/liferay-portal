@@ -178,8 +178,12 @@ public class CommerceProductPriceCalculationV2Impl
 
 		CommerceDiscountValue commerceDiscountValue;
 
-		BigDecimal finalPriceWithTaxAmount = getConvertedPrice(
-			cpInstanceId, finalPrice, false, commerceContext);
+		BigDecimal finalPriceWithTaxAmount = null;
+
+		if (commerceProductPriceRequest.isCalculateTax()) {
+			finalPriceWithTaxAmount = getConvertedPrice(
+				cpInstanceId, finalPrice, false, commerceContext);
+		}
 
 		boolean discountsTargetNetPrice = true;
 
@@ -211,23 +215,27 @@ public class CommerceProductPriceCalculationV2Impl
 					discountAmountCommerceMoney.getPrice());
 			}
 
-			finalPriceWithTaxAmount = getConvertedPrice(
-				cpInstanceId, finalPrice, false, commerceContext);
+			if (commerceProductPriceRequest.isCalculateTax()) {
+				finalPriceWithTaxAmount = getConvertedPrice(
+					cpInstanceId, finalPrice, false, commerceContext);
+			}
 		}
 		else {
 			commerceDiscountValue = _getCommerceDiscountValue(
 				cpInstanceId, commercePriceListId, baseQuantity,
 				finalPriceWithTaxAmount, unitOfMeasureKey, commerceContext);
 
-			finalPriceWithTaxAmount = finalPriceWithTaxAmount.multiply(
-				baseQuantity);
+			if (commerceProductPriceRequest.isCalculateTax()) {
+				finalPriceWithTaxAmount = finalPriceWithTaxAmount.multiply(
+					baseQuantity);
 
-			if (commerceDiscountValue != null) {
-				CommerceMoney discountAmountCommerceMoney =
-					commerceDiscountValue.getDiscountAmount();
+				if (commerceDiscountValue != null) {
+					CommerceMoney discountAmountCommerceMoney =
+						commerceDiscountValue.getDiscountAmount();
 
-				finalPriceWithTaxAmount = finalPriceWithTaxAmount.subtract(
-					discountAmountCommerceMoney.getPrice());
+					finalPriceWithTaxAmount = finalPriceWithTaxAmount.subtract(
+						discountAmountCommerceMoney.getPrice());
+				}
 			}
 
 			finalPrice = getConvertedPrice(
@@ -330,6 +338,8 @@ public class CommerceProductPriceCalculationV2Impl
 		CommerceProductPriceRequest commerceProductPriceRequest =
 			new CommerceProductPriceRequest();
 
+		commerceProductPriceRequest.setCalculateTax(
+			_isTaxIncludedInPrice(commerceContext.getCommerceChannelId()));
 		commerceProductPriceRequest.setCommerceContext(commerceContext);
 		commerceProductPriceRequest.setCommerceOptionValues(
 			Collections.emptyList());
@@ -1454,6 +1464,18 @@ public class CommerceProductPriceCalculationV2Impl
 		}
 
 		return false;
+	}
+
+	private boolean _isTaxIncludedInPrice(long commerceChannelId)
+		throws PortalException {
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(commerceChannelId);
+
+		String priceDisplayType = commerceChannel.getPriceDisplayType();
+
+		return priceDisplayType.equals(
+			CommercePricingConstants.TAX_INCLUDED_IN_PRICE);
 	}
 
 	private static final BigDecimal _ONE_HUNDRED = BigDecimal.valueOf(100);

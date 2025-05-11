@@ -14,6 +14,7 @@ export const PORTLET_URLS = {
 	categoriesAdmin: '/~/control_panel/manage/-/categories_admin/vocabularies',
 	cmsCategories: 'web/cms/categorization/view_categories',
 	cmsEditCategory: 'web/cms/categorization/edit_category',
+	cmsFiles: 'web/cms/files',
 	cmsNewCategory: 'web/cms/categorization/new_category',
 	cmsNewVocabulary: 'web/cms/categorization/new_vocabulary',
 	cmsPicklistBuilder: 'web/cms/picklist-builder',

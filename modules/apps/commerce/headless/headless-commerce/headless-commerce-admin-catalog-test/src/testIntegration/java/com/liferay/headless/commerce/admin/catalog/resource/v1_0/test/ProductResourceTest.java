@@ -481,7 +481,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 							specificationKey = _cpSpecificationOption.getKey();
 							value = LanguageUtils.getLanguageIdMap(
 								HashMapBuilder.put(
-									LocaleUtil.getDefault(), "test"
+									LocaleUtil.getDefault(),
+									"test specification"
 								).build());
 						}
 					}
@@ -600,6 +601,25 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		page = productResource.getProductsPage(
 			null, "(specificationValues/any(x:contains(x, 'test')))",
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+		assertContains(product2, (List<Product>)page.getItems());
+		assertValid(page, testGetProductsPage_getExpectedActions());
+
+		page = productResource.getProductsPage(
+			null, "(specificationValues/any(x:contains(x, 'specification')))",
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+		assertContains(product2, (List<Product>)page.getItems());
+		assertValid(page, testGetProductsPage_getExpectedActions());
+
+		page = productResource.getProductsPage(
+			null,
+			"(specificationValues/any(x:contains(x, 'test specification')))",
 			Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 1, page.getTotalCount());

@@ -632,7 +632,6 @@ test(`LPD-29993 Users can view and download a product's attachments`, async ({
 		name: 'admin',
 		type: 'business',
 	});
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -761,7 +760,6 @@ test('LPD-39598 Can view SKU UOM discount is applied on product details page', a
 		name: getRandomString(),
 		type: 'business',
 	});
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -975,8 +973,6 @@ test('COMMERCE-6364. As a buyer, I want the first selectable quantity of a produ
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(

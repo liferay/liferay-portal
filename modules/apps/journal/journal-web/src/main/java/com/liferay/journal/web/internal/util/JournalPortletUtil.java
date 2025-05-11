@@ -6,6 +6,7 @@
 package com.liferay.journal.web.internal.util;
 
 import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
@@ -21,14 +22,19 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryBuilder;
 import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryListBuilder;
@@ -37,6 +43,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
+import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -110,6 +118,32 @@ public class JournalPortletUtil {
 		}
 
 		return orderByComparator;
+	}
+
+	public static String getEditArticlePortletURL(
+		JournalArticle article, HttpServletRequest httpServletRequest,
+		PortletDisplay portletDisplay, String redirect,
+		String referringPortletResource) {
+
+		return PortletURLBuilder.create(
+			_getPortletURL(httpServletRequest)
+		).setMVCRenderCommandName(
+			"/journal/edit_article"
+		).setRedirect(
+			redirect
+		).setParameter(
+			"articleId", article.getArticleId()
+		).setParameter(
+			"backURLTitle", portletDisplay.getPortletDisplayName()
+		).setParameter(
+			"folderId", article.getFolderId()
+		).setParameter(
+			"groupId", article.getGroupId()
+		).setParameter(
+			"referringPortletResource", referringPortletResource
+		).setParameter(
+			"version", article.getVersion()
+		).buildString();
 	}
 
 	public static List<BreadcrumbEntry> getPortletBreadcrumbEntries(
@@ -222,5 +256,33 @@ public class JournalPortletUtil {
 
 		return 0;
 	}
+
+	private static PortletURL _getPortletURL(
+		HttpServletRequest httpServletRequest) {
+
+		PortletRequest portletRequest =
+			(PortletRequest)httpServletRequest.getAttribute(
+				JavaConstants.JAVAX_PORTLET_REQUEST);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
+			portletRequest, themeDisplay.getScopeGroup(),
+			JournalPortletKeys.JOURNAL, 0, 0, PortletRequest.RENDER_PHASE);
+
+		try {
+			portletURL.setWindowState(portletRequest.getWindowState());
+		}
+		catch (WindowStateException windowStateException) {
+			_log.error(windowStateException);
+		}
+
+		return portletURL;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JournalPortletUtil.class);
 
 }

@@ -77,7 +77,6 @@ test(
 		for (const item of data) {
 			const account = await apiHelpers.headlessAdminUser.postAccount();
 			accounts.push(account);
-			apiHelpers.data.push({id: account.id, type: 'account'});
 
 			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 				account.id,
@@ -171,8 +170,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			name: `Acc${getRandomInt()}`,
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account.id,
@@ -409,8 +406,6 @@ test(
 			name: `Acc${getRandomInt()}`,
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const organization =
 			await apiHelpers.headlessAdminUser.postOrganization({
 				name: `Org${getRandomInt()}`,
@@ -611,8 +606,6 @@ test(
 			name: 'AccountA',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account1.id,
 			organization1.id
@@ -625,8 +618,6 @@ test(
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			name: 'AccountA',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account2.id,
@@ -714,8 +705,6 @@ test(
 			name: 'Account A',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account1.id,
 			organization1.id
@@ -729,8 +718,6 @@ test(
 			name: 'Account B',
 		});
 
-		apiHelpers.data.push({id: account2.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account2.id,
 			organization1.id
@@ -739,8 +726,6 @@ test(
 		const account3 = await apiHelpers.headlessAdminUser.postAccount({
 			name: 'Account C',
 		});
-
-		apiHelpers.data.push({id: account3.id, type: 'account'});
 
 		await usersAndOrganizationsPage.goToOrganizationChart();
 
@@ -890,8 +875,6 @@ test(
 			name: 'Account A',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account1.id,
 			organization1.id
@@ -900,8 +883,6 @@ test(
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			name: 'Account B',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account2.id,
@@ -1001,8 +982,6 @@ test(
 			name: `Acc${getRandomInt()}`,
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account.id,
 			organization.id
@@ -1091,8 +1070,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			name: `Acc${getRandomInt()}`,
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account.id,
@@ -1184,8 +1161,6 @@ test(
 			name: `Acc${getRandomInt()}`,
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account.id,
 			organization.id
@@ -1253,8 +1228,6 @@ test(
 			name: `Acc${getRandomInt()}`,
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account.id,
 			organization.id
@@ -1318,8 +1291,6 @@ test(
 			name: 'Account A',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account1.id,
 			organization1.id
@@ -1328,8 +1299,6 @@ test(
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			name: 'Account B',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account2.id,
@@ -1421,8 +1390,6 @@ test(
 			name: 'Account A',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account1.id,
 			organization1.id
@@ -1435,8 +1402,6 @@ test(
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			name: 'Account B',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.postAccountOrganization(
 			account2.id,

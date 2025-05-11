@@ -16,6 +16,7 @@
 	import {FacetValue} from '../models/FacetValue';
 	import {Filter} from '../models/Filter';
 	import {JSONMapAttributeTestEntity} from '../models/JSONMapAttributeTestEntity';
+	import {MultipartTestEntity} from '../models/MultipartTestEntity';
 	import {NestedArrayItemsTestEntity} from '../models/NestedArrayItemsTestEntity';
 	import {NestedTestEntity} from '../models/NestedTestEntity';
 	import {PageCompanyTestEntity} from '../models/PageCompanyTestEntity';
@@ -83,6 +84,7 @@ const typeMap: {[index: string]: any} = {
 	FacetValue,
 	Filter,
 	JSONMapAttributeTestEntity,
+	MultipartTestEntity,
 	NestedArrayItemsTestEntity,
 	NestedTestEntity,
 	PageCompanyTestEntity,

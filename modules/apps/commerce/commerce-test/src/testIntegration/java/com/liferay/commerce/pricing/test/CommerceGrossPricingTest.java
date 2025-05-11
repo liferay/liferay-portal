@@ -41,6 +41,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodLocalService;
@@ -127,6 +128,11 @@ public class CommerceGrossPricingTest {
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), _commerceCurrency.getCode());
+
+		_commerceChannel.setPriceDisplayType("tax-included");
+
+		_commerceChannel = _commerceChannelLocalService.updateCommerceChannel(
+			_commerceChannel);
 
 		_rate = 22;
 
@@ -1875,6 +1881,10 @@ public class CommerceGrossPricingTest {
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	private CommerceChannel _commerceChannel;
+
+	@Inject
+	private CommerceChannelLocalService _commerceChannelLocalService;
+
 	private CommerceCurrency _commerceCurrency;
 
 	@Inject

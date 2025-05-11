@@ -49,12 +49,7 @@ test(
 		page.on('dialog', (dialog) => dialog.accept());
 
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -145,8 +140,6 @@ test(
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const users = [];
 
 		for (let i = 0; i < 5; i++) {
@@ -206,8 +199,6 @@ test(
 		apiHelpers,
 	}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
@@ -278,8 +269,6 @@ test(
 	}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -347,8 +336,6 @@ test(
 	}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const users = [];
 
 		for (let i = 1; i <= 21; i++) {
@@ -407,8 +394,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -464,8 +449,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
@@ -546,8 +529,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -616,12 +597,7 @@ test(
 		apiHelpers,
 	}) => {
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount({
 			emailAddress: `A${getRandomString()}@liferay.com`,
@@ -785,8 +761,6 @@ test(
 		page,
 	}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await emailDomainsInstanceSettingsPage.enableEmailDomainValidation(
 			true,
@@ -1446,8 +1420,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -1502,8 +1474,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -1699,8 +1669,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await accountUsersPage.goto();
 
 		await accountUsersPage.usersTable.newButton.click();
@@ -1805,8 +1773,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const users: Array<TUserAccount> = [];
 
 		for (let i = 1; i <= 21; i++) {
@@ -1872,8 +1838,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -1884,8 +1848,6 @@ test(
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2066,8 +2028,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -2159,8 +2119,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -2171,8 +2129,6 @@ test(
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await accountUsersPage.goto();
 
@@ -2194,8 +2150,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2278,8 +2232,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2373,8 +2325,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2473,8 +2423,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -2509,8 +2457,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await accountUsersPage.goto();
 
@@ -2572,8 +2518,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -2584,8 +2528,6 @@ test(
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await accountUsersPage.goto();
 
@@ -2632,8 +2574,6 @@ test(
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2711,8 +2651,6 @@ test(
 				name: `${String(i).padStart(2, '0')}_${getRandomString()}`,
 				type: 'business',
 			});
-
-			apiHelpers.data.push({id: account.id, type: 'account'});
 
 			if (i < 23) {
 				await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(

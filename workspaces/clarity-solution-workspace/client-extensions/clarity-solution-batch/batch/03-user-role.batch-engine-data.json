@@ -1,0 +1,26 @@
+{
+	"configuration": {
+		"className": "com.liferay.headless.admin.user.dto.v1_0.Role",
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"onErrorFail": "false",
+			"taskItemDelegateName": "DEFAULT",
+			"updateStrategy": "UPDATE"
+		}
+	},
+	"items": [
+		{
+			"description": "U3A2 Business Development Managers are responsible for the final review and approval of distributor applications.",
+			"externalReferenceCode": "U3A2_BUSINESS_DEVELOPMENT_MANAGER",
+			"name": "U3A2 Business Development Manager",
+			"roleType": "regular"
+		},
+		{
+			"description": "U3A2 Business Development Specialists are responsible for identifying and assessing growth opportunities for Clarity. This includes evaluating distributor applications, filling out evaluations, and making recommendations based on whether the applicant aligns with the company's goals and has the distribution capacity to further Clarity's market penetration goals.",
+			"externalReferenceCode": "U3A2_BUSINESS_DEVELOPMENT_SPECIALIST",
+			"name": "U3A2 Business Development Specialist",
+			"roleType": "regular"
+		}
+	]
+}

@@ -62,15 +62,10 @@ test('LPD-44889 Can view account roles with permissions', async ({
 		name: 'Account1',
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: 'Account2',
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account1.id,

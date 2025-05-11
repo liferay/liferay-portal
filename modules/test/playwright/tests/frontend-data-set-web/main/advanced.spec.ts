@@ -1082,6 +1082,9 @@ test(
 	'Check Select All behavior',
 	{tag: '@LPD-52063'},
 	async ({fdsSamplePage, page}) => {
+		const bulkActionsButton = page
+			.locator('.bulk-actions')
+			.getByLabel('Actions');
 		const itemsSelectorCheckbox = page.locator(
 			'input[name="items-selector"]'
 		);
@@ -1105,7 +1108,7 @@ test(
 			await itemsSelectorCheckbox.click();
 
 			await expect(
-				page.getByText('10 of 75 Items Selected')
+				page.getByText('20 of 75 Items Selected')
 			).toBeVisible();
 
 			await page.getByText('Select All').click();
@@ -1123,23 +1126,27 @@ test(
 				.uncheck();
 
 			await expect(
-				page.getByText('9 of 75 Items Selected')
+				page.getByText('19 of 75 Items Selected')
 			).toBeVisible();
 
 			await expect(page.getByText('Select All')).not.toBeVisible();
 		});
 
 		await test.step('Without Select All flag active, requests sent actual item selection to bulk actions', async () => {
-			await page.locator('.bulk-actions').getByLabel('Actions').click();
+			await bulkActionsButton.click();
 
 			await page
 				.locator('.dropdown-menu.show')
 				.getByRole('menuitem', {name: 'test'})
 				.click();
 
-			expect(sentItems).toHaveLength(9);
-			expect(sentKeyValues).toHaveLength(9);
+			expect(sentItems).toHaveLength(19);
+			expect(sentKeyValues).toHaveLength(19);
 			expect(sentSelectAll).toBe(false);
+
+			expect(await bulkActionsButton.getAttribute('aria-expanded')).toBe(
+				'false'
+			);
 		});
 
 		await test.step('With Select All flag active, requests sent the flag instead of selected items', async () => {
@@ -1147,7 +1154,7 @@ test(
 
 			await page.getByText('Select All').click();
 
-			await page.locator('.bulk-actions').getByLabel('Actions').click();
+			await bulkActionsButton.click();
 
 			await page
 				.locator('.dropdown-menu.show')
@@ -1157,6 +1164,10 @@ test(
 			expect(sentItems).toEqual([]);
 			expect(sentKeyValues).toEqual([]);
 			expect(sentSelectAll).toBe(true);
+
+			expect(await bulkActionsButton.getAttribute('aria-expanded')).toBe(
+				'false'
+			);
 		});
 	}
 );

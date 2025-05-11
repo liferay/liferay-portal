@@ -6,7 +6,6 @@
 package com.liferay.site.cms.site.initializer.internal.frontend.data.set.view.cards;
 
 import com.liferay.frontend.data.set.view.FDSView;
-import com.liferay.frontend.data.set.view.cards.BaseCardsFDSView;
 import com.liferay.petra.string.StringPool;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
@@ -19,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
 	property = "frontend.data.set.name=" + CMSSiteInitializerFDSNames.ALL_SECTION,
 	service = FDSView.class
 )
-public class AllSectionCardsFDSView extends BaseCardsFDSView {
+public class AllSectionCardsFDSView extends BaseSectionCardsFDSView {
 
 	@Override
 	public String getDescription() {

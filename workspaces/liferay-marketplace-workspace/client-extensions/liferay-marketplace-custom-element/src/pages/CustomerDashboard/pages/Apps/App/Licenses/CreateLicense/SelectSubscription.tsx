@@ -11,7 +11,7 @@ import useSWR from 'swr';
 import RadioCardList from '../../../../../../../components/RadioCardList/RadioCardList';
 import i18n from '../../../../../../../i18n';
 import koroneikiOAuth2 from '../../../../../../../services/oauth/Koroneiki';
-import {formatDate} from '../../../../../../PublisherDashboard/PublisherDashboardPageUtil';
+import {formatDate} from '../../../../../../../utils/date';
 
 type SubscriptionSelectionProps = {
 	onSelectSubscription: (subscription: any) => void;

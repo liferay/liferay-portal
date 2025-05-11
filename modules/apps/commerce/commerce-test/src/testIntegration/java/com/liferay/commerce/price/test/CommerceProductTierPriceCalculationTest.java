@@ -25,10 +25,12 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
@@ -39,6 +41,7 @@ import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -97,6 +100,10 @@ public class CommerceProductTierPriceCalculationTest {
 					CommercePriceListConstants.TYPE_PRICE_LIST);
 
 		_group = GroupTestUtil.addGroup();
+
+		_commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_group.getGroupId(), _commerceCurrency.getCode());
+
 		_user = UserTestUtil.addUser(_company);
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
@@ -141,7 +148,8 @@ public class CommerceProductTierPriceCalculationTest {
 			false, BigDecimal.ZERO, StringPool.BLANK, _serviceContext);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -268,7 +276,8 @@ public class CommerceProductTierPriceCalculationTest {
 				false, BigDecimal.ZERO, StringPool.BLANK, _serviceContext);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -356,7 +365,8 @@ public class CommerceProductTierPriceCalculationTest {
 				false, BigDecimal.ZERO, StringPool.BLANK, _serviceContext);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -457,7 +467,8 @@ public class CommerceProductTierPriceCalculationTest {
 			false, BigDecimal.ZERO, StringPool.BLANK, _serviceContext);
 
 		CommerceContext commerceContext = new TestCommerceContext(
-			_accountEntry, _commerceCurrency, null, _user, _group, null);
+			_accountEntry, _commerceCurrency, _commerceChannel, _user, _group,
+			null);
 
 		CommerceProductPrice commerceProductPrice =
 			_commerceProductPriceCalculation.getCommerceProductPrice(
@@ -563,6 +574,10 @@ public class CommerceProductTierPriceCalculationTest {
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	private CommerceCatalog _commerceCatalog;
+
+	@DeleteAfterTestRun
+	private CommerceChannel _commerceChannel;
+
 	private CommerceCurrency _commerceCurrency;
 
 	@Inject

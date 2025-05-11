@@ -5,28 +5,11 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayTable from '@clayui/table';
-
-import './DashboardTable.scss';
-
 import React, {ReactNode} from 'react';
 
 import {DashboardEmptyTable} from './DashboardEmptyTable';
 
-export type AppProps = {
-	attachments: Partial<ProductAttachment>[];
-	catalogId: number;
-	externalReferenceCode: string;
-	images: Partial<ProductAttachment>[];
-	lastUpdatedBy?: string;
-	name: string;
-	productId: number;
-	selected?: boolean;
-	status: string;
-	thumbnail: string;
-	type: string;
-	updatedDate: string;
-	version: string;
-};
+import './DashboardTable.scss';
 
 export type TableHeaders = {
 	iconSymbol?: string;

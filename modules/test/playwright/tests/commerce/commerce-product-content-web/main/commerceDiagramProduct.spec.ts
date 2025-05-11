@@ -29,8 +29,6 @@ test('COMMERCE-11835 Account Supplier role user can upload diagram file/image', 
 		type: 'supplier',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
 		accountId: account.id,
 	});

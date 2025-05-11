@@ -64,8 +64,6 @@ test('LPD-30855 Can map order item information', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -302,8 +300,6 @@ test('LPD-41395 Can map display page and schedule fields to fragments', async ({
 		type: 'person',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['demo.unprivileged@liferay.com']
@@ -438,8 +434,6 @@ test('LPD-41395 Can map detailed information fields to fragments', async ({
 			name: getRandomString(),
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,

@@ -416,13 +416,22 @@ export class HeadlessAdminUserApiHelper {
 	}
 
 	async postAccount(account?: TAccount): Promise<TAccount> {
-		return this.apiHelpers.post(
+		account = await this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/accounts`,
 			{
 				data: {name: 'Account' + getRandomInt(), ...(account || {})},
 				failOnStatusCode: true,
 			}
 		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: account.id,
+				type: 'account',
+			});
+		}
+
+		return account;
 	}
 
 	async postAccountAccountRoles(

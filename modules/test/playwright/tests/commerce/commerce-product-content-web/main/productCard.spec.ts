@@ -36,7 +36,6 @@ test('COMMERCE-5864. Verify buyers can view a product price on the product card'
 		name: getRandomString(),
 		type: 'business',
 	});
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -113,8 +112,6 @@ test('COMMERCE-6193. As a buyer, I want the first selectable quantity of a produ
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(

@@ -43,6 +43,21 @@ public class MinifierUtilTest {
 	}
 
 	@Test
+	public void testProcessMinifiedCssWithContainerQuery() {
+		String minifiedCss = MinifierUtil.minifyCss(
+			"@container c-card-page (min-width: 540px)");
+
+		Assert.assertEquals(
+			"@container c-card-page (min-width:540px)", minifiedCss);
+
+		minifiedCss = MinifierUtil.minifyCss(
+			"@container     c-card-page    (min-width: 540px)   ;");
+
+		Assert.assertEquals(
+			"@container c-card-page (min-width:540px);", minifiedCss);
+	}
+
+	@Test
 	public void testProcessMinifiedCssWithDataImageUrl() {
 		String minifiedCss = MinifierUtil.minifyCss(
 			StringBundler.concat(

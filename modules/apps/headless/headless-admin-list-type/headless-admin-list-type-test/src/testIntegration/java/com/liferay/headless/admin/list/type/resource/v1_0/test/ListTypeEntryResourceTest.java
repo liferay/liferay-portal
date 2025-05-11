@@ -7,6 +7,8 @@ package com.liferay.headless.admin.list.type.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.list.type.client.dto.v1_0.ListTypeEntry;
+import com.liferay.headless.admin.list.type.client.pagination.Page;
+import com.liferay.headless.admin.list.type.client.pagination.Pagination;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -18,8 +20,10 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -94,6 +98,52 @@ public class ListTypeEntryResourceTest
 						listTypeEntry2, entityField.getName(), 1);
 				}
 			});
+	}
+
+	@FeatureFlag("LPD-24055")
+	@Override
+	@Test
+	public void testGetListTypeDefinitionListTypeEntriesPage()
+		throws Exception {
+
+		super.testGetListTypeDefinitionListTypeEntriesPage();
+
+		ListTypeEntry customListTypeEntry = _addListTypeEntry(
+			_systemListTypeDefinition, false);
+		ListTypeEntry systemListTypeEntry = _addListTypeEntry(
+			_systemListTypeDefinition, true);
+
+		Page<ListTypeEntry> page =
+			listTypeEntryResource.getListTypeDefinitionListTypeEntriesPage(
+				_systemListTypeDefinition.getListTypeDefinitionId(), null, null,
+				null, Pagination.of(1, 10), null);
+
+		List<ListTypeEntry> listTypeEntries =
+			(List<ListTypeEntry>)page.getItems();
+
+		Map<String, Map<String, String>> customListTypeEntryActions =
+			_getActions(listTypeEntries, customListTypeEntry.getId());
+
+		Assert.assertEquals(
+			customListTypeEntryActions.toString(), 3,
+			customListTypeEntryActions.size());
+
+		Assert.assertTrue(customListTypeEntryActions.containsKey("delete"));
+		Assert.assertTrue(customListTypeEntryActions.containsKey("get"));
+		Assert.assertTrue(customListTypeEntryActions.containsKey("update"));
+
+		Map<String, Map<String, String>> systemListTypeEntryActions =
+			_getActions(listTypeEntries, systemListTypeEntry.getId());
+
+		Assert.assertEquals(
+			systemListTypeEntryActions.toString(), 2,
+			systemListTypeEntryActions.size());
+
+		Assert.assertTrue(systemListTypeEntryActions.containsKey("get"));
+		Assert.assertTrue(systemListTypeEntryActions.containsKey("update"));
+
+		listTypeEntryResource.deleteListTypeEntry(customListTypeEntry.getId());
+		listTypeEntryResource.deleteListTypeEntry(systemListTypeEntry.getId());
 	}
 
 	@Override
@@ -181,13 +231,7 @@ public class ListTypeEntryResourceTest
 
 	@Override
 	protected ListTypeEntry randomListTypeEntry() throws Exception {
-		ListTypeEntry listTypeEntry = super.randomListTypeEntry();
-
-		listTypeEntry.setName_i18n(
-			Collections.singletonMap("en-US", RandomTestUtil.randomString()));
-		listTypeEntry.setSystem(false);
-
-		return listTypeEntry;
+		return _randomListTypeEntry(false);
 	}
 
 	@Override
@@ -259,9 +303,16 @@ public class ListTypeEntryResourceTest
 			ListTypeDefinition listTypeDefinition)
 		throws Exception {
 
+		return _addListTypeEntry(listTypeDefinition, false);
+	}
+
+	private ListTypeEntry _addListTypeEntry(
+			ListTypeDefinition listTypeDefinition, boolean system)
+		throws Exception {
+
 		return listTypeEntryResource.postListTypeDefinitionListTypeEntry(
 			listTypeDefinition.getListTypeDefinitionId(),
-			randomListTypeEntry());
+			_randomListTypeEntry(system));
 	}
 
 	private void _assertListTypeEntryNameLocalizedMap(
@@ -273,6 +324,30 @@ public class ListTypeEntryResourceTest
 		Assert.assertEquals(
 			listTypeEntry.getName(),
 			nameLocalizedMap.get(LocaleUtil.getSiteDefault()));
+	}
+
+	private Map<String, Map<String, String>> _getActions(
+		List<ListTypeEntry> listTypeEntries, long listTypeEntryId) {
+
+		for (ListTypeEntry listTypeEntry : listTypeEntries) {
+			if (Objects.equals(listTypeEntry.getId(), listTypeEntryId)) {
+				return listTypeEntry.getActions();
+			}
+		}
+
+		return null;
+	}
+
+	private ListTypeEntry _randomListTypeEntry(boolean system)
+		throws Exception {
+
+		ListTypeEntry listTypeEntry = super.randomListTypeEntry();
+
+		listTypeEntry.setName_i18n(
+			Collections.singletonMap("en-US", RandomTestUtil.randomString()));
+		listTypeEntry.setSystem(system);
+
+		return listTypeEntry;
 	}
 
 	@DeleteAfterTestRun

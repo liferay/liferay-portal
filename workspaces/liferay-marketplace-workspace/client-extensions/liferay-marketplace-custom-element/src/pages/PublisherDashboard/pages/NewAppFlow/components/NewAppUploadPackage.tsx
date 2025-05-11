@@ -123,7 +123,9 @@ export function NewAppUploadAppPackagesComponent({
 
 			{enableUploadFiles && (
 				<DropzoneUpload
-					acceptFileTypes={acceptFileTypes[appType]}
+					acceptFileTypes={
+						acceptFileTypes[appType as keyof typeof acceptFileTypes]
+					}
 					buttonText={i18n.translate('select-a-file')}
 					description={
 						appType === ProductType.CLOUD

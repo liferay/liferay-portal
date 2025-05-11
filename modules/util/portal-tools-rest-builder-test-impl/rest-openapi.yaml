@@ -134,6 +134,11 @@ components:
                     x-json-map: true
             title: JSONMapAttributeTestEntity
             type: object
+        MultipartTestEntity:
+            properties:
+                name:
+                    type: string
+            type: object
         NestedArrayItemsTestEntity:
             description:
                 Test Component to test the REST Builder support for nested array items
@@ -417,12 +422,12 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/CompanyTestEntity"
                                 type: array
-                        "application/xml":
+                        application/xml:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/CompanyTestEntity"
@@ -462,10 +467,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
                     description:
@@ -490,10 +495,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
                     description:
@@ -512,10 +517,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
                     description:
@@ -541,10 +546,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
                     description:
@@ -570,10 +575,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
                     description:
@@ -626,12 +631,12 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/EntityModelResourceTestEntity1"
                                 type: array
-                        "application/xml":
+                        application/xml:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/EntityModelResourceTestEntity1"
@@ -655,10 +660,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/EntityModelResourceTestEntity2"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/EntityModelResourceTestEntity2"
                     description:
@@ -670,12 +675,12 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/Filter"
                                 type: array
-                        "application/xml":
+                        application/xml:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/Filter"
@@ -683,6 +688,80 @@ paths:
                     description:
                         "OK"
             tags: ["Filter"]
+    /multipart-test-entities/{multipartTestEntityId}:
+        get:
+            operationId: getMultipartTestEntity
+            parameters:
+                -   in: path
+                    name: multipartTestEntityId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MultipartTestEntity"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MultipartTestEntity"
+                    description:
+                        "OK"
+            tags: ["MultipartTestEntity"]
+        patch:
+            operationId: patchMultipartTestEntity
+            parameters:
+                -   in: path
+                    name: multipartTestEntityId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/MultipartTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/MultipartTestEntity"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MultipartTestEntity"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MultipartTestEntity"
+                    description:
+                        "OK"
+            tags: ["MultipartTestEntity"]
+        put:
+            operationId: putMultipartTestEntity
+            parameters:
+                -   in: path
+                    name: multipartTestEntityId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            $ref: "#/components/schemas/MultipartTestEntity"
+            responses:
+                200:
+                    content:
+                        multipart/form-data:
+                            schema:
+                                $ref: "#/components/schemas/MultipartTestEntity"
+                    description:
+                        "OK"
+            tags: ["MultipartTestEntity"]
     /reserved-word:
         post:
             operationId: postReservedWord
@@ -706,12 +785,12 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/Schema"
                                 type: array
-                        "application/xml":
+                        application/xml:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/Schema"
@@ -732,10 +811,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
                     description:
@@ -763,10 +842,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
                     description:
@@ -792,10 +871,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
                     description:
@@ -963,12 +1042,12 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/SiteTestEntity"
                                 type: array
-                        "application/xml":
+                        application/xml:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/SiteTestEntity"
@@ -1021,10 +1100,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
                     description:
@@ -1055,10 +1134,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
                     description:
@@ -1070,12 +1149,12 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/Sort"
                                 type: array
-                        "application/xml":
+                        application/xml:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/Sort"
@@ -1089,12 +1168,12 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/TestEntity"
                                 type: array
-                        "application/xml":
+                        application/xml:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/TestEntity"
@@ -1169,10 +1248,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/TestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/TestEntity"
                     description:
@@ -1204,10 +1283,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/TestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/TestEntity"
                     description:
@@ -1239,10 +1318,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/TestEntity"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/TestEntity"
                     description:
@@ -1263,10 +1342,10 @@ paths:
             responses:
                 200:
                     content:
-                        "application/json":
+                        application/json:
                             schema:
                                 $ref: "#/components/schemas/TestEntityAddress"
-                        "application/xml":
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/TestEntityAddress"
                     description:

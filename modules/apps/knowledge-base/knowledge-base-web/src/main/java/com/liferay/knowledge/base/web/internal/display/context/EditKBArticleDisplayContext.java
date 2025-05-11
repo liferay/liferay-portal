@@ -108,7 +108,9 @@ public class EditKBArticleDisplayContext {
 	}
 
 	public String getCancelURL() {
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-11003")) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-11003")) {
+
 			return getRedirect();
 		}
 

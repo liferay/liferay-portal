@@ -100,8 +100,6 @@ test('LPD-30370 Search for all orders by typing user email in global search', as
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']
@@ -231,8 +229,6 @@ test('COMMERCE-6322 As a buyer, I want to be able to search an entry in Catalog 
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
@@ -292,8 +288,6 @@ test('COMMERCE-6326 As a buyer, I want to be able to search an entry in All Cont
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -361,8 +355,6 @@ test('COMMERCE-6321 As a buyer, I want to be able to search an Orders entry usin
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -451,8 +443,6 @@ test('COMMERCE-6329 As a buyer, I want to search for products in Catalog by typi
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(

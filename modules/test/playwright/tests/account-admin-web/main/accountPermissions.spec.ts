@@ -170,7 +170,6 @@ test.describe('Test for Organization Account visibility depending on Permissions
 			);
 
 			const account = await apiHelpers.headlessAdminUser.postAccount();
-			apiHelpers.data.push({id: account.id, type: 'account'});
 
 			await apiHelpers.headlessAdminUser.postAccountOrganization(
 				account.id,
@@ -277,7 +276,6 @@ test.describe('Test for Organization Account visibility depending on Permissions
 			);
 
 			const account = await apiHelpers.headlessAdminUser.postAccount();
-			apiHelpers.data.push({id: account.id, type: 'account'});
 
 			await apiHelpers.headlessAdminUser.postAccountOrganization(
 				account.id,
@@ -384,7 +382,6 @@ test.describe('Test for Organization Account visibility depending on Permissions
 			);
 
 			const account = await apiHelpers.headlessAdminUser.postAccount();
-			apiHelpers.data.push({id: account.id, type: 'account'});
 
 			await apiHelpers.headlessAdminUser.postAccountOrganization(
 				account.id,
@@ -461,8 +458,6 @@ test(
 			name: 'Account' + getRandomInt(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
@@ -555,8 +550,6 @@ test(
 			name: 'Account' + getRandomInt(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
@@ -666,8 +659,6 @@ test(
 				type: 'business',
 			});
 
-			apiHelpers.data.push({id: account.id, type: 'account'});
-
 			accounts.push(account);
 
 			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -762,8 +753,6 @@ test(
 			await initAccountAdministrator(apiHelpers);
 
 		const account2 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await performLogout(page);
 		await performLoginViaApi({
@@ -2529,16 +2518,8 @@ test(
 		});
 
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
-
 		const account3 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account3.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2712,14 +2693,9 @@ test(
 		});
 
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			status: 5,
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2833,14 +2809,9 @@ test(
 		});
 
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -2963,8 +2934,6 @@ test(
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		userData[user.alternateName] = {
@@ -3082,8 +3051,6 @@ test(
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		userData[user.alternateName] = {
@@ -3155,12 +3122,7 @@ test(
 		});
 
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 

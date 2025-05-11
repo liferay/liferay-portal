@@ -608,11 +608,11 @@ public class DefaultAttributeResolver implements AttributeResolver {
 			String nameFormat = null;
 
 			if (namespaceEnabled) {
-				name = "urn:liferay:userGroups";
+				name = "urn:liferay:membership:userGroups";
 				nameFormat = Attribute.URI_REFERENCE;
 			}
 			else {
-				name = "userGroups";
+				name = "membership:userGroups";
 				nameFormat = Attribute.UNSPECIFIED;
 			}
 

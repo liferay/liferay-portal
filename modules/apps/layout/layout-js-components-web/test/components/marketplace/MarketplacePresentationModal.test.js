@@ -51,6 +51,7 @@ const mockProps = {
 	fragmentsImportURL: '/testImportURL',
 	heading: 'Test Heading',
 	onCloseModal: jest.fn(),
+	portletNamespace: 'testPortlet',
 };
 
 const renderComponent = (props = mockProps) =>
@@ -113,6 +114,7 @@ describe('MarketplacePresentationModal', () => {
 				fragmentPortletNamespace: mockProps.fragmentPortletNamespace,
 				fragmentsImportURL: mockProps.fragmentsImportURL,
 				openOnRender: true,
+				portletNamespace: mockProps.portletNamespace,
 				trigger: null,
 			}),
 			expect.anything()

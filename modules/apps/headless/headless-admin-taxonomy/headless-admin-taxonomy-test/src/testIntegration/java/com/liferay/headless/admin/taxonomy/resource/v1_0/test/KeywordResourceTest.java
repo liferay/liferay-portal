@@ -15,6 +15,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.AssetLibrary;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.Keyword;
+import com.liferay.headless.admin.taxonomy.client.http.HttpInvoker;
 import com.liferay.headless.admin.taxonomy.client.pagination.Page;
 import com.liferay.headless.admin.taxonomy.client.pagination.Pagination;
 import com.liferay.headless.admin.taxonomy.client.problem.Problem;
@@ -446,6 +447,47 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			keyword.getId(), randomKeyword);
 
 		assertEquals(randomKeyword, putKeyword);
+	}
+
+	@Override
+	@Test
+	public void testPutKeywordMerge() throws Exception {
+		Keyword keyword1 = _addKeywordWithAssetLibraries(_randomAssetLibrary());
+		Keyword keyword2 = _addKeywordWithAssetLibraries(_randomAssetLibrary());
+		Keyword keyword3 = _addKeywordWithAssetLibraries(_randomAssetLibrary());
+
+		keywordResource.putKeywordMerge(
+			keyword1.getId(), new Long[] {keyword2.getId(), keyword3.getId()});
+
+		Keyword keyword4 = _addKeywordWithAssetLibraries(_randomAssetLibrary());
+		Keyword keyword5 = _addKeywordWithAssetLibraries(_randomAssetLibrary());
+
+		HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+		httpInvoker.httpMethod(HttpInvoker.HttpMethod.PUT);
+		httpInvoker.path(
+			StringBundler.concat(
+				"http://localhost:8080/o/headless-admin-taxonomy/v1.0/keywords",
+				"/", keyword1.getId(), "/merge?fromKeywordIds=",
+				keyword4.getId(), "&fromKeywordIds=", keyword5.getId()));
+		httpInvoker.userNameAndPassword(
+			"test@liferay.com:" + PropsValues.DEFAULT_ADMIN_PASSWORD);
+
+		HttpInvoker.HttpResponse httpResponse = httpInvoker.invoke();
+
+		Assert.assertEquals(204, httpResponse.getStatusCode());
+
+		List<AssetTagGroupRel> assetTagGroupRels =
+			_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
+				keyword1.getId());
+
+		Assert.assertEquals(
+			assetTagGroupRels.toString(), 1, assetTagGroupRels.size());
+
+		AssetTagGroupRel assetTagGroupRel = assetTagGroupRels.get(0);
+
+		Assert.assertEquals(
+			assetTagGroupRels.toString(), -1, assetTagGroupRel.getGroupId());
 	}
 
 	@Override

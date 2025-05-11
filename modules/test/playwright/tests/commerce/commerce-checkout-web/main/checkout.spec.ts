@@ -83,8 +83,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
 			['test@liferay.com']
@@ -269,8 +267,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
 			['test@liferay.com']
@@ -439,8 +435,6 @@ test(
 			name: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const catalog =
 			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
@@ -617,8 +611,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
 		const displayPageTemplateName = getRandomString();
@@ -742,8 +734,6 @@ test(
 			name: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const catalog =
 			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({

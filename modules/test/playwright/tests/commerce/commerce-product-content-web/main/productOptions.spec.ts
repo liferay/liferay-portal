@@ -42,11 +42,10 @@ test(
 			`UploadOption${getRandomString()}`
 		);
 
-		const account = await apiHelpers.headlessAdminUser.postAccount({
+		await apiHelpers.headlessAdminUser.postAccount({
 			name: 'admin',
 			type: 'business',
 		});
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const uploadOption =
 			await apiHelpers.headlessCommerceAdminCatalog.postOption(

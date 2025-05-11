@@ -5,7 +5,7 @@
 
 import useSWR, {SWRConfiguration} from 'swr';
 
-import MarketplaceDeliveryOrder from '../entity/DeliveryOrder';
+import MarketplaceDeliveryOrder from '../entity/MarketplaceDeliveryOrder';
 import {ProductImageFallbackCategories} from '../enums/Product';
 import {Liferay} from '../liferay/liferay';
 import HeadlessCommerceDeliveryCatalog from '../services/rest/HeadlessCommerceDeliveryCatalog';

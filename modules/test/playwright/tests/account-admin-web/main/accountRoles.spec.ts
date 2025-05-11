@@ -40,8 +40,6 @@ const setupPermissionsTest = async (
 
 	const account = await apiHelpers.headlessAdminUser.postAccount();
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const userAccount = await apiHelpers.headlessAdminUser.postUserAccount();
 
 	userData[userAccount.alternateName] = {
@@ -117,8 +115,6 @@ test(
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await accountsPage.goto();
 
 		await accountsPage.accountNameLink(account.name).click();
@@ -153,12 +149,7 @@ test(
 		const roleName = getRandomString();
 
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		await accountsPage.goto();
 
@@ -190,12 +181,7 @@ test(
 	{tag: ['@LPD-47225']},
 	async ({accountRolesPage, accountsPage, apiHelpers}) => {
 		const account1 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const role = await apiHelpers.headlessAdminUser.postRole({
 			name: getRandomString(),
@@ -239,8 +225,6 @@ test(
 		const roles = ['Account Administrator', getRandomString()];
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -318,8 +302,6 @@ test(
 		const roles = ['Account Administrator', getRandomString()];
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -412,8 +394,6 @@ test(
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
@@ -488,8 +468,6 @@ test(
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await accountsPage.goto();
 
 		await accountsPage.accountNameLink(account.name).click();
@@ -533,8 +511,6 @@ test(
 		const roleName = 'Account Administrator';
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
@@ -673,8 +649,6 @@ test(
 		const roleName = getRandomString();
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await accountsPage.goto();
 
@@ -837,8 +811,6 @@ test(
 		const roleName = getRandomString();
 
 		const account = await apiHelpers.headlessAdminUser.postAccount();
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await accountsPage.goto();
 
@@ -1745,8 +1717,6 @@ test(
 	}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const ownedAccountRole =
 			await apiHelpers.headlessAdminUser.postAccountAccountRoles(
 				account.id,
@@ -1829,14 +1799,9 @@ test(
 		const account1 = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account1.id, type: 'account'});
-
 		const account2 = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account2.id, type: 'account'});
 
 		const userAccountManager =
 			await apiHelpers.headlessAdminUser.postUserAccount();

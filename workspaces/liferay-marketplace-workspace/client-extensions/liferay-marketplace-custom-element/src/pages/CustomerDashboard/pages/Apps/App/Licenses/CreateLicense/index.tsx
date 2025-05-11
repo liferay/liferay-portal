@@ -11,20 +11,20 @@ import {z} from 'zod';
 import FooterButtons from '../../../../../../../components/FooterButtons';
 import {useMarketplaceContext} from '../../../../../../../context/MarketplaceContext';
 import {Analytics} from '../../../../../../../core/Analytics';
-import {MarketplaceProduct} from '../../../../../../../entity/MarketplaceProduct';
+import {MarketplaceDeliveryProduct} from '../../../../../../../entity/MarketplaceDeliveryProduct';
 import useGetProductByOrderId from '../../../../../../../hooks/useGetProductByOrderId';
 import {Liferay} from '../../../../../../../liferay/liferay';
 import zodSchema from '../../../../../../../schema/zod';
 import provisioningOAuth2 from '../../../../../../../services/oauth/Provisioning';
 import ProductCard from '../../../../../../GetApp/components/ProductCard/ProductCard';
 import StepWizard from '../../../../../../GetApp/components/StepWizard/StepWizard';
-import {formatDate} from '../../../../../../PublisherDashboard/PublisherDashboardPageUtil';
 import AccountEmailInfo from './AccountInfo';
 import LicenseDetails from './LicenseDetails';
 import SelectSubscription from './SelectSubscription';
 import {CreateLicenseForm, StepCreateLicense, StepsInformation} from './types';
 
 import './index.scss';
+import {formatDate} from '../../../../../../../utils/date';
 
 type ExtendBannerProps = {
 	subscription: {
@@ -130,7 +130,7 @@ const CreateLicense = () => {
 		async (form: z.infer<typeof zodSchema.generateLicenseKey>) => {
 			setLoading(true);
 
-			const marketplaceProduct = new MarketplaceProduct(
+			const marketplaceProduct = new MarketplaceDeliveryProduct(
 				product as DeliveryProduct
 			);
 

@@ -7,6 +7,7 @@ package com.liferay.login.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.login.web.constants.LoginPortletKeys;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
@@ -16,13 +17,13 @@ import com.liferay.portal.kernel.service.persistence.CompanyUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsUtil;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -45,17 +46,11 @@ public class CreateAccountMVCRenderCommandTest {
 
 	@Before
 	public void setUp() {
-		_companySecurityStrangers = PropsUtil.get(
-			PropsKeys.COMPANY_SECURITY_STRANGERS);
-
 		CompanyUtil.clearCache();
 	}
 
 	@After
 	public void tearDown() {
-		PropsUtil.set(
-			PropsKeys.COMPANY_SECURITY_STRANGERS, _companySecurityStrangers);
-
 		CompanyUtil.clearCache();
 	}
 
@@ -63,28 +58,36 @@ public class CreateAccountMVCRenderCommandTest {
 	public void testRedirectToCreateAccountWhenCompanyStrangersTrue()
 		throws Exception {
 
-		PropsUtil.set(
-			PropsKeys.COMPANY_SECURITY_STRANGERS, Boolean.TRUE.toString());
+		try (SafeCloseable safeCloseable =
+				PrefsPropsTestUtil.swapWithSafeCloseable(
+					TestPropsValues.getCompanyId(),
+					PropsKeys.COMPANY_SECURITY_STRANGERS,
+					Boolean.TRUE.toString())) {
 
-		Assert.assertEquals(
-			"/create_account.jsp",
-			_mvcRenderCommand.render(
-				_getMockLiferayPortletRenderRequest(),
-				new MockLiferayPortletRenderResponse()));
+			Assert.assertEquals(
+				"/create_account.jsp",
+				_mvcRenderCommand.render(
+					_getMockLiferayPortletRenderRequest(),
+					new MockLiferayPortletRenderResponse()));
+		}
 	}
 
 	@Test
 	public void testRedirectToLoginWhenCompanyStrangersFalse()
 		throws Exception {
 
-		PropsUtil.set(
-			PropsKeys.COMPANY_SECURITY_STRANGERS, Boolean.FALSE.toString());
+		try (SafeCloseable safeCloseable =
+				PrefsPropsTestUtil.swapWithSafeCloseable(
+					TestPropsValues.getCompanyId(),
+					PropsKeys.COMPANY_SECURITY_STRANGERS,
+					Boolean.FALSE.toString())) {
 
-		Assert.assertEquals(
-			"/login.jsp",
-			_mvcRenderCommand.render(
-				_getMockLiferayPortletRenderRequest(),
-				new MockLiferayPortletRenderResponse()));
+			Assert.assertEquals(
+				"/login.jsp",
+				_mvcRenderCommand.render(
+					_getMockLiferayPortletRenderRequest(),
+					new MockLiferayPortletRenderResponse()));
+		}
 	}
 
 	private MockLiferayPortletRenderRequest
@@ -125,8 +128,6 @@ public class CreateAccountMVCRenderCommandTest {
 
 		return mockLiferayPortletRenderRequest;
 	}
-
-	private static String _companySecurityStrangers;
 
 	@Inject(
 		filter = "mvc.command.name=/login/create_account",

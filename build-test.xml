@@ -7251,11 +7251,6 @@ log.sanitizer.enabled=false</echo>
 	<macrodef name="setup-testable-jboss">
 		<sequential>
 			<setup-testable-jboss-jsp-configuration />
-
-			<ant antfile="build-dist.xml" target="set-up-jakarta-ee-transformer-agent">
-				<property name="app.server.type" value="jboss" />
-				<property name="app.server.version" value="${app.server.jboss.version}" />
-			</ant>
 		</sequential>
 	</macrodef>
 
@@ -7287,11 +7282,6 @@ log.sanitizer.enabled=false</echo>
 			<setup-testable-tomcat-osgi-modules />
 
 			<setup-testable-tomcat-setenv />
-
-			<ant antfile="build-dist.xml" target="set-up-jakarta-ee-transformer-agent">
-				<property name="app.server.type" value="tomcat" />
-				<property name="app.server.version" value="${app.server.tomcat.version}" />
-			</ant>
 		</sequential>
 	</macrodef>
 

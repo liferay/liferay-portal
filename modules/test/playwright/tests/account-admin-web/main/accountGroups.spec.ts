@@ -31,8 +31,6 @@ test(
 			type: 'business',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const accountGroup1 =
 			await apiHelpers.headlessAdminUser.postAccountGroup({
 				name: getRandomString(),
@@ -82,8 +80,6 @@ test(
 			name: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const accountGroup1 =
 			await apiHelpers.headlessAdminUser.postAccountGroup({
@@ -342,8 +338,6 @@ test('Can assign an account to an account group', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const accountGroup = await apiHelpers.headlessAdminUser.postAccountGroup({
 		name: getRandomString(),
 	});
@@ -391,8 +385,6 @@ test(
 				name: `${i} ${getRandomString()}`,
 				type: 'business',
 			});
-
-			apiHelpers.data.push({id: account.id, type: 'account'});
 
 			accounts.push(account);
 		}
@@ -462,8 +454,6 @@ test('Can search assigneed accounts of an account group', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account1.externalReferenceCode,
 		accountGroup.externalReferenceCode
@@ -473,8 +463,6 @@ test('Can search assigneed accounts of an account group', async ({
 		name: `A ${getRandomString()}`,
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account2.externalReferenceCode,
@@ -547,15 +535,10 @@ test('Can search assigning accounts in an account group', async ({
 		name: `Z ${getRandomString()}`,
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: `A ${getRandomString()}`,
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await accountGroupsPage.goto();
 
@@ -620,16 +603,11 @@ test('Can filter assigneed accounts of an account group by status', async ({
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
 		status: 5,
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await accountGroupsPage.goto();
 
@@ -722,15 +700,10 @@ test('Can filter assigneed accounts of an account group by type', async ({
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
 		type: 'person',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await accountGroupsPage.goto();
 
@@ -845,8 +818,6 @@ test('Can remove accounts from an account group', async ({
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account1.externalReferenceCode,
 		accountGroup.externalReferenceCode
@@ -856,8 +827,6 @@ test('Can remove accounts from an account group', async ({
 		name: getRandomString(),
 		type: 'person',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account2.externalReferenceCode,
@@ -925,8 +894,6 @@ test('User without Assign Account permission can not assign/unassign account to 
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account.externalReferenceCode,
@@ -1018,8 +985,6 @@ test('User with Assign Account permission can assign/unassign account to an acco
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account1.externalReferenceCode,
 		accountGroup.externalReferenceCode
@@ -1029,8 +994,6 @@ test('User with Assign Account permission can assign/unassign account to an acco
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	const userAccount = await apiHelpers.headlessAdminUser.postUserAccount();
 
@@ -1139,8 +1102,6 @@ test('User without View Account permission can not view accounts in an account g
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account.externalReferenceCode,
 		accountGroup.externalReferenceCode
@@ -1219,8 +1180,6 @@ test('User with View Account permission can view accounts in an account group', 
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
 		account.externalReferenceCode,

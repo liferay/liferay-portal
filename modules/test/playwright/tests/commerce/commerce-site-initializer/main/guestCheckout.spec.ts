@@ -93,8 +93,6 @@ test('LPD-35678 Guest can checkout a new order on sign-in in B2B channel site', 
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await guestCheckoutSetUp(
 		channel,
 		commerceAdminChannelDetailsPage,
@@ -169,18 +167,14 @@ test('LPD-35678 Guest can checkout a new order on sign-in with multiple accounts
 		`B2B_${getRandomString()}`
 	);
 
-	const account1 = await apiHelpers.headlessAdminUser.postAccount({
+	await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
 		type: 'business',
 	});
-
 	const account2 = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account1.id, type: 'account'});
-	apiHelpers.data.push({id: account2.id, type: 'account'});
 
 	await guestCheckoutSetUp(
 		channel,

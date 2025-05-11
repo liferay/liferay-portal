@@ -110,8 +110,6 @@ test('LPD-36797 Quantity selector starting quantity in catalog page and minicart
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
@@ -423,8 +421,6 @@ test('COMMERCE-12399 Verify that the maximum order quantity is applied correctly
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
@@ -659,8 +655,6 @@ test('COMMERCE-12397 Verify that the minimum order quantity is applied correctly
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -941,8 +935,6 @@ test('COMMERCE-12398 Verify that the multiple order quantity is applied correctl
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
@@ -1117,8 +1109,6 @@ test('COMMERCE-12399 Verify that the maximum order quantity is applied correctly
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -1379,8 +1369,6 @@ test('COMMERCE-12397 Verify that the minimum order quantity is applied correctly
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -1649,8 +1637,6 @@ test('COMMERCE-12398 Verify that the multiple order quantity is applied correctl
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
@@ -1823,8 +1809,6 @@ test('COMMERCE-12399 Verify that the maximum order quantity is applied correctly
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
@@ -2090,8 +2074,6 @@ test('COMMERCE-12398 Verify that the multiple order quantity is applied correctl
 		name: getRandomString(),
 		type: 'business',
 	});
-
-	apiHelpers.data.push({id: account.id, type: 'account'});
 
 	const user =
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(

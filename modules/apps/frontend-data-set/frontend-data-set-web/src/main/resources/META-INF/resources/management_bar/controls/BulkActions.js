@@ -280,6 +280,7 @@ function BulkActions({
 								{!!bulkActions.length && (
 									<li className="nav-item">
 										<DropDown
+											closeOnClick
 											hasLeftSymbols
 											trigger={
 												<ClayButtonWithIcon

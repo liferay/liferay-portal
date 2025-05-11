@@ -100,8 +100,6 @@ test('LPP-55641 Variable Shipping Rate is calculated based only on shippable pro
 		type: 'business',
 	});
 
-	apiHelpers.data.push({id: account.id, type: 'account'});
-
 	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account.id,
 		['test@liferay.com']

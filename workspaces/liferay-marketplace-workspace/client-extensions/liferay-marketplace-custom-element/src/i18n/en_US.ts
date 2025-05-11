@@ -91,6 +91,7 @@ export default {
 	'cloud-license-usage-type': 'Cloud License Usage Type',
 	'cloud-provisioning': 'Cloud Provisioning',
 	'cloud-upload': 'Cloud Upload',
+	'columns': 'Columns',
 	'comments': 'Comments',
 	'company-profile': 'Company Profile',
 	'compatible-offering': 'Compatible Offering',
@@ -282,6 +283,8 @@ export default {
 	'manage-all-your-app-purchases-and-subscriptions-in-one-place-read-other-users-reviews-get-notifications-when-updates-are-available-and-get-the-most-out-of-our-apps-catalog':
 		'Manage all your app purchases and subscriptions in one place, read other users reviews, get notifications when updates are available and get the most out of our Apps catalog.',
 	'manage-all-your-apps-in-one-place': 'Manage All Your Apps in One Place',
+	'manage-and-publish-apps-on-the-marketplace':
+		'Manage and publish apps on the Marketplace',
 	'manage-license-keys': 'Manage License Key(s)',
 	'maximum-number-of-upload-reached': 'Maximum Number of Upload Reached',
 	'modular-components-built-with-html-css-and-javascript-offer-extensible-and-reusable-elements-or-collections-of-elements-for-constructing-content-pages-and-templates':
@@ -298,6 +301,7 @@ export default {
 	'my-solutions': 'My Solutions',
 	'name': 'Name',
 	'never-expires': 'Never Expires',
+	'new-app': 'New App',
 	'new-trial': 'New Trial',
 	'no': 'No',
 	'no-apps-yet': 'No Apps Yet',
@@ -321,6 +325,7 @@ export default {
 		'Only ZIP files are allowed. Max file size is 500MB',
 	'order-date': 'Order Date',
 	'order-id': 'Order ID',
+	'order-panel': 'Order Panel',
 	'order-status': 'Order Status',
 	'orders': 'Orders',
 	'other': 'Other',
@@ -370,6 +375,7 @@ export default {
 	'quantity': 'Quantity',
 	'ram': 'RAM',
 	'ram-in-gbs': 'RAM in GBs',
+	'recent-orders': 'Recent Orders',
 	'recent-published-apps': 'Recent Published Apps',
 	'recent-trials': 'Recent Trials',
 	'remove': 'Remove',
@@ -407,6 +413,7 @@ export default {
 		'Select the versions of Liferay that your app is compatible with.',
 	'self-managed': 'Self-Managed',
 	'send-request': 'Send Request',
+	'showing-x-to-x-of-x': 'Showing {0} to {1} of {2}',
 	'sign-in-with-a-different-account': 'Sign in with a different Account',
 	'solution-details': 'Solution Details',
 	'solution-header': 'Solution Header',
@@ -528,6 +535,7 @@ export default {
 	'via-zip-upload': 'Via ZIP Upload',
 	'video-description': 'Video description',
 	'video-url': 'Video URL',
+	'view-all': 'View All',
 	'view-details': 'View details',
 	'we-are-happy-to-have-you-interested-in-the-liferay-marketplace-at-the-moment-we-are-working-on-enhancing-the-experience-for-our-customers-in-the-marketplace-and-access-is-invite-only-if-you-are-an-existing-liferay-customer-please-keep-an-eye-out-for-an-announcement-related-to-the-new-marketplace-in-the-coming-months':
 		'We are happy to have you interested in the Liferay Marketplace. At the moment, we are working on enhancing the experience for our customers in the Marketplace and access is invite only. If you are an existing Liferay customer, please keep an eye out for an announcement related to the new Marketplace in the coming months!',
@@ -542,6 +550,7 @@ export default {
 	'workspace-owner-email': 'Workspace Owner Email',
 	'x-available-for-you': `{0} available for <b>${Liferay.ThemeDisplay.getUserEmailAddress()}</b> (you)`,
 	'x-is-required': '{0} is required',
+	'x-items': '{0} Items',
 	'x-saved-as-a-draft-successfully':
 		'<b>{0}</b> saved as a <b>draft</b> successfully',
 	'x-will-be-deleted-and-this-action-cant-be-undone-are-you-sure-you-want-to-delete-it':

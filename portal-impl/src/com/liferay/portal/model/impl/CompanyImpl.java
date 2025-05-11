@@ -24,16 +24,12 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
-
-import java.io.Serializable;
 
 import java.security.Key;
 
@@ -70,9 +66,9 @@ public class CompanyImpl extends CompanyBaseImpl {
 
 	@Override
 	public String getAuthType() {
-		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
-
-		return companySecurityBag._authType;
+		return PrefsPropsUtil.getString(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_AUTH_TYPE,
+			PropsValues.COMPANY_SECURITY_AUTH_TYPE);
 	}
 
 	@Override
@@ -92,15 +88,6 @@ public class CompanyImpl extends CompanyBaseImpl {
 		}
 
 		return _companyInfo;
-	}
-
-	@Override
-	public CompanySecurityBag getCompanySecurityBag() {
-		if (_companySecurityBag == null) {
-			_companySecurityBag = new CompanySecurityBag(this);
-		}
-
-		return _companySecurityBag;
 	}
 
 	/**
@@ -329,9 +316,9 @@ public class CompanyImpl extends CompanyBaseImpl {
 
 	@Override
 	public boolean isAutoLogin() {
-		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
-
-		return companySecurityBag._autoLogin;
+		return PrefsPropsUtil.getBoolean(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_AUTO_LOGIN,
+			PropsValues.COMPANY_SECURITY_AUTO_LOGIN);
 	}
 
 	@Override
@@ -343,42 +330,37 @@ public class CompanyImpl extends CompanyBaseImpl {
 
 	@Override
 	public boolean isSiteLogo() {
-		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
-
-		return companySecurityBag._siteLogo;
+		return PrefsPropsUtil.getBoolean(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_SITE_LOGO,
+			PropsValues.COMPANY_SECURITY_SITE_LOGO);
 	}
 
 	@Override
 	public boolean isStrangers() {
-		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
-
-		return companySecurityBag._strangers;
+		return PrefsPropsUtil.getBoolean(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_STRANGERS,
+			PropsValues.COMPANY_SECURITY_STRANGERS);
 	}
 
 	@Override
 	public boolean isStrangersVerify() {
-		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
-
-		return companySecurityBag._strangersVerify;
+		return PrefsPropsUtil.getBoolean(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY,
+			PropsValues.COMPANY_SECURITY_STRANGERS_VERIFY);
 	}
 
 	@Override
 	public boolean isStrangersWithMx() {
-		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
-
-		return companySecurityBag._strangersWithMx;
+		return PrefsPropsUtil.getBoolean(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX,
+			PropsValues.COMPANY_SECURITY_STRANGERS_WITH_MX);
 	}
 
 	@Override
 	public boolean isUpdatePasswordRequired() {
-		CompanySecurityBag companySecurityBag = getCompanySecurityBag();
-
-		return companySecurityBag._updatePasswordRequired;
-	}
-
-	@Override
-	public void setCompanySecurityBag(CompanySecurityBag companySecurityBag) {
-		_companySecurityBag = companySecurityBag;
+		return PrefsPropsUtil.getBoolean(
+			getCompanyId(), PropsKeys.COMPANY_SECURITY_UPDATE_PASSWORD_REQUIRED,
+			PropsValues.COMPANY_SECURITY_UPDATE_PASSWORD_REQUIRED);
 	}
 
 	@Override
@@ -405,73 +387,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 		_virtualHostname = virtualHostname;
 	}
 
-	public static class CompanySecurityBag implements Serializable {
-
-		private CompanySecurityBag(Company company) {
-			_authType = _getPrefsPropsString(
-				company, PropsKeys.COMPANY_SECURITY_AUTH_TYPE,
-				PropsValues.COMPANY_SECURITY_AUTH_TYPE);
-			_autoLogin = _getPrefsPropsBoolean(
-				company, PropsKeys.COMPANY_SECURITY_AUTO_LOGIN,
-				PropsValues.COMPANY_SECURITY_AUTO_LOGIN);
-			_siteLogo = _getPrefsPropsBoolean(
-				company, PropsKeys.COMPANY_SECURITY_SITE_LOGO,
-				PropsValues.COMPANY_SECURITY_SITE_LOGO);
-			_strangers = _getPrefsPropsBoolean(
-				company, PropsKeys.COMPANY_SECURITY_STRANGERS,
-				PropsValues.COMPANY_SECURITY_STRANGERS);
-			_strangersVerify = _getPrefsPropsBoolean(
-				company, PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY,
-				PropsValues.COMPANY_SECURITY_STRANGERS_VERIFY);
-			_strangersWithMx = _getPrefsPropsBoolean(
-				company, PropsKeys.COMPANY_SECURITY_STRANGERS_WITH_MX,
-				PropsValues.COMPANY_SECURITY_STRANGERS_WITH_MX);
-			_updatePasswordRequired = _getPrefsPropsBoolean(
-				company, PropsKeys.COMPANY_SECURITY_UPDATE_PASSWORD_REQUIRED,
-				PropsValues.COMPANY_SECURITY_UPDATE_PASSWORD_REQUIRED);
-		}
-
-		private final String _authType;
-		private final boolean _autoLogin;
-		private final boolean _siteLogo;
-		private final boolean _strangers;
-		private final boolean _strangersVerify;
-		private final boolean _strangersWithMx;
-		private final boolean _updatePasswordRequired;
-
-	}
-
-	private static boolean _getPrefsPropsBoolean(
-		Company company, String name, boolean defaultValue) {
-
-		String value = PrefsPropsUtil.getString(
-			company.getCompanyId(), name, PropsUtil.get(name));
-
-		if (value != null) {
-			return GetterUtil.getBoolean(value);
-		}
-
-		return defaultValue;
-	}
-
-	private static String _getPrefsPropsString(
-		Company company, String name, String defaultValue) {
-
-		String value = PrefsPropsUtil.getString(
-			company.getCompanyId(), name, PropsUtil.get(name));
-
-		if (value != null) {
-			return value;
-		}
-
-		return defaultValue;
-	}
-
 	private CompanyInfo _companyInfo;
-
-	@CacheField
-	private CompanySecurityBag _companySecurityBag;
-
 	private Group _group;
 
 	@CacheField(permanent = true, propagateToInterface = true)

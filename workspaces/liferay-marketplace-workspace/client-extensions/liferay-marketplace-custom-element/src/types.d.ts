@@ -416,6 +416,7 @@ type OfferingType = {
 type Order = {
 	account: {
 		id: number;
+		name: string;
 		type: string;
 	};
 	accountExternalReferenceCode?: string;
@@ -449,16 +450,23 @@ type Order = {
 		},
 	];
 	orderStatus: number;
-	orderStatusInfo?: {
+	orderStatusInfo: {
+		code: number;
 		label: string;
 		label_i18n: string;
 	};
 	orderTypeExternalReferenceCode?: string;
 	orderTypeId?: number;
+	paymentStatusInfo: {
+		code: number;
+		label: string;
+		label_i18n: string;
+	};
 	placedOrderItems?: any;
 	shippingAmount?: number;
 	shippingWithTaxAmount?: number;
 	totalAmount?: number;
+	totalFormatted: string;
 };
 
 type OrderType = {
@@ -526,39 +534,8 @@ type PlacedOrderItems = {
 	virtualItems: VirtualItem[];
 };
 
-type PostCartResponse = {
-	account: string;
-	accountId: number;
-	author: string;
-	billingAddressId: number;
-	createDate: string;
-	customFields: object;
-	id: number;
-	modifiedDate: string;
-	orderStatusInfo: {
-		cod: number;
-		label: string;
-		label_i18: string;
-	};
-	orderTypeId: number;
-	orderUUID: string;
-	paymentMethod: string;
-	paymentStatus: number;
-	paymentStatusInfo: {
-		cod: number;
-		label: string;
-		label_i18: string;
-	};
-	paymentStatusLabel: string;
-	purchaseOrderNumber: string;
-	status: string;
-};
-
-type PostCheckoutCartResponse = {
-	cartItems: CartItem[];
-} & PostCartResponse;
-
 type Product = {
+	__marketplaceProduct: any;
 	active: boolean;
 	attachments: ProductAttachment[];
 	catalog: Catalog;
@@ -652,6 +629,8 @@ type ProductSpecification = {
 };
 
 type PublisherRequestInfo = {
+	creator: {name: string};
+	dateCreated: string;
 	emailAddress?: string;
 	extension?: string;
 	firstName?: string;

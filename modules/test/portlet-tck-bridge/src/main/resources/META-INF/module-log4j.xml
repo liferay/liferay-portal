@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<Configuration strict="true">
+	<Loggers>
+		<Logger level="INFO" name="com.liferay.portlet.tck.bridge.PortletTCKBridge" />
+	</Loggers>
+</Configuration>

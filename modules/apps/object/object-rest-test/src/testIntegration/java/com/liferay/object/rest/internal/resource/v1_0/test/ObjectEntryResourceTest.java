@@ -15461,7 +15461,7 @@ public class ObjectEntryResourceTest {
 			_toFileEntry(
 				customFileEntry2.getFileName(),
 				customFileEntry2.getFileEntryId()),
-			null, objectDefinition,
+			"thumbnailURL", objectDefinition,
 			_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
 
 		// File from user computer

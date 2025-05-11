@@ -11,9 +11,6 @@ import {useMemo, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import useSWR, {KeyedMutator} from 'swr';
 
-import {ReviewAndSubmitAppPage} from './AppCreationFlow/ReviewAndSubmitAppPage/ReviewAndSubmitAppPage';
-
-import './App.scss';
 import {useMarketplaceContext} from '../../../../context/MarketplaceContext';
 import {ProductWorkflowStatusCode} from '../../../../enums/Product';
 import i18n from '../../../../i18n';
@@ -25,6 +22,9 @@ import {
 	getThumbnailByProductAttachment,
 	showAppImage,
 } from '../../../../utils/util';
+import {ReviewAndSubmitAppPage} from './AppCreationFlow/ReviewAndSubmitAppPage/ReviewAndSubmitAppPage';
+
+import './App.scss';
 
 type AppProps = {
 	isAdministratorDashboard?: boolean;
@@ -119,11 +119,9 @@ const AdministratorButtons: React.FC<AdministratorButtons> = ({
 };
 
 const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
-	const {appId} = useParams();
+	const {appId: productId} = useParams();
 	const {myUserAccount} = useMarketplaceContext();
 	const navigate = useNavigate();
-
-	const productId = Number(appId) + 1;
 
 	const {
 		data: selectedApp,
@@ -131,7 +129,7 @@ const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
 		mutate,
 	} = useSWR(`/published-app/${productId}`, () =>
 		HeadlessCommerceAdminCatalog.getProduct(
-			productId,
+			productId as unknown as number,
 			new URLSearchParams({
 				nestedFields: 'attachments,images,productSpecifications',
 			})
@@ -245,7 +243,7 @@ const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
 						<div className="app-details-page-app-info-buttons-container">
 							<AdministratorButtons
 								mutate={mutate}
-								productId={productId}
+								productId={productId as unknown as number}
 								selectedApp={selectedApp}
 							/>
 						</div>

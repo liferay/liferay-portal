@@ -8,6 +8,7 @@ import {useOutletContext, useParams} from 'react-router-dom';
 
 import QATable from '../../../../../components/QATable';
 import i18n from '../../../../../i18n';
+import {formatDate} from '../../../../../utils/date';
 import formatLocaleCurrency from '../../../../../utils/formatLocaleCurrency';
 import {
 	getSpecificationByKey,
@@ -15,7 +16,6 @@ import {
 } from '../../../../../utils/productUtils';
 import {safeJSONParse} from '../../../../../utils/util';
 import getProductPriceModel from '../../../../GetApp/utils/getProductPriceModel';
-import {formatDate} from '../../../../PublisherDashboard/PublisherDashboardPageUtil';
 
 import './App.scss';
 

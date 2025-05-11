@@ -1146,6 +1146,32 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["Keyword"]
+    "/keywords/{toKeywordId}/merge":
+        put:
+            operationId: putKeywordMerge
+            parameters:
+                -   in: path
+                    name: toKeywordId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    explode: true
+                    name: fromKeywordIds
+                    required: true
+                    schema:
+                        items:
+                            format: int64
+                            type: integer
+                        type: array
+                    style: form
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["Keyword"]
     "/sites/{siteId}/keywords":
         get:
             description:

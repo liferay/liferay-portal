@@ -7,10 +7,11 @@ import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import {useState} from 'react';
 
-import './index.scss';
 import {useSolutionContext} from '../../../../../context/SolutionContext';
-import {Submit} from '../NewSolutionFlow/pages';
+import {Submit} from '../SolutionForm/pages';
 import SolutionsDetailsHeader from '../components/SolutionDetailsHeader';
+
+import './index.scss';
 
 export type Solution = {
 	attachmentTitle: string;

@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Text} from '@clayui/core';
 import {ReactNode} from 'react';
-
-import './Header.scss';
 
 type HeaderProps = {
 	description?: ReactNode | string;
@@ -14,10 +13,12 @@ type HeaderProps = {
 
 export function Header({description, title}: HeaderProps) {
 	return (
-		<div className="header-container">
-			<span className="header-title">{title}</span>
+		<div className="d-flex flex-column mb-4">
+			<Text size={9} weight="semi-bold">
+				{title}
+			</Text>
 
-			<div className="header-description">{description}</div>
+			<span className="secondary-text">{description}</span>
 		</div>
 	);
 }

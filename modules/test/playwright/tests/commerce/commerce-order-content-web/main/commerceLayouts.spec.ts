@@ -106,8 +106,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
 		const displayPageTemplateName = getRandomString();
@@ -184,8 +182,6 @@ test(
 			name: getRandomString(),
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
@@ -350,8 +346,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
 		const displayPageTemplateName = getRandomString();
@@ -492,8 +486,6 @@ test(
 			name: getRandomString(),
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
@@ -688,8 +680,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const address =
 			await apiHelpers.headlessCommerceAdminAccount.postAddress(
 				account.id,
@@ -877,8 +867,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const address =
 			await apiHelpers.headlessCommerceAdminAccount.postAddress(
 				account.id,
@@ -1002,8 +990,6 @@ test(
 			name: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
@@ -1257,8 +1243,6 @@ test(
 			name: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
@@ -1549,8 +1533,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
 		const displayPageTemplateName = getRandomString();
@@ -1696,8 +1678,6 @@ test(
 			name: getRandomString(),
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 			account.id,
@@ -1929,8 +1909,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
 				siteGroupId: site.id,
@@ -2080,8 +2058,6 @@ test(
 			name: getRandomString(),
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
@@ -2350,8 +2326,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
 			{
 				accountId: account.id,
@@ -2454,8 +2428,6 @@ test(
 			name: getRandomString(),
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
@@ -2828,8 +2800,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
 		const displayPageTemplateName = getRandomString();
@@ -2950,8 +2920,6 @@ test(
 			type: 'person',
 		});
 
-		apiHelpers.data.push({id: account.id, type: 'account'});
-
 		await apiHelpers.headlessDelivery.createSitePage({
 			pageDefinition: getPageDefinition([
 				getFragmentDefinition({
@@ -3020,8 +2988,6 @@ test(
 			name: getRandomString(),
 			type: 'business',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		const address =
 			await apiHelpers.headlessCommerceAdminAccount.postAddress(
@@ -3142,8 +3108,6 @@ test(
 			name: getRandomString(),
 			type: 'person',
 		});
-
-		apiHelpers.data.push({id: account.id, type: 'account'});
 
 		await apiHelpers.headlessDelivery.createSitePage({
 			pageDefinition: getPageDefinition([

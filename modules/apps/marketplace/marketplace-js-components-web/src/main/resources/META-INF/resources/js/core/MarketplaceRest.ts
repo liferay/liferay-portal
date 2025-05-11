@@ -58,6 +58,7 @@ async function getBaseFetch<T = any>(url: string, options?: FetchOptions) {
 	return response.json() as unknown as T;
 }
 
+const removeEdgesUnderscoresRegEx = /^_+|_+$/g;
 const sessionKey = '@marketplace/token';
 
 export class MarketplaceRest {
@@ -128,8 +129,22 @@ export class MarketplaceRest {
 		);
 	}
 
-	static getBaseResourceURL() {
-		return `/group/guest/~/control_panel/manage?p_p_id=${Liferay.PortletKeys.INSTANCE_SETTINGS}`;
+	static getBaseResourceURL(portletId?: string) {
+		if (!portletId) {
+			return `/group/guest/~/control_panel/manage?p_p_id=${Liferay.PortletKeys.INSTANCE_SETTINGS}`;
+		}
+
+		const currentURL = new URL(window.location.href);
+
+		if (!currentURL.searchParams.get('p_p_id')) {
+			const cleanPortletId = portletId.replace(
+				removeEdgesUnderscoresRegEx,
+				''
+			);
+			currentURL.searchParams.set('p_p_id', cleanPortletId);
+		}
+
+		return currentURL.href;
 	}
 
 	private static async getMarketplaceConfiguration() {

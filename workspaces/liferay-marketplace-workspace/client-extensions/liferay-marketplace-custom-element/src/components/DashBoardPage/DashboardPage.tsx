@@ -6,13 +6,11 @@
 import ClayButton from '@clayui/button';
 import {ReactNode} from 'react';
 
-import {AppProps} from '../DashboardTable/DashboardTable';
 import {Header} from '../Header/Header';
 
 export type DashboardListItems = {
 	itemName: string;
 	itemTitle: string;
-	items?: AppProps[];
 	symbol: string;
 };
 

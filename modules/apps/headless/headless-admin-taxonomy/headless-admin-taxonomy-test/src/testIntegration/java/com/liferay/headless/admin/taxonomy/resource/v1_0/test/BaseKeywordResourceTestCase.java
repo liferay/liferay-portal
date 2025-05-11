@@ -2614,6 +2614,23 @@ public abstract class BaseKeywordResourceTestCase {
 	}
 
 	@Test
+	public void testPutKeywordMerge() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Keyword keyword = testPutKeywordMerge_addKeyword();
+
+		assertHttpResponseStatusCode(
+			204, keywordResource.putKeywordMergeHttpResponse(null, null));
+
+		assertHttpResponseStatusCode(
+			404, keywordResource.putKeywordMergeHttpResponse(null, null));
+	}
+
+	protected Keyword testPutKeywordMerge_addKeyword() throws Exception {
+		return keywordResource.postSiteKeyword(
+			testGroup.getGroupId(), randomKeyword());
+	}
+
+	@Test
 	public void testPutKeywordSubscribe() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Keyword keyword = testPutKeywordSubscribe_addKeyword();

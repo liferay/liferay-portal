@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {CONSENT_TYPE} from '../core/Storage';
+
 export type IOAuth2ClientAgentApplication = {
 	authorizeURL: string;
 	clientId: string;
@@ -11,6 +13,11 @@ export type IOAuth2ClientAgentApplication = {
 	homePageURL: string;
 	redirectURIs: string[];
 	tokenURL: string;
+};
+
+export type LiferayStorage = Storage & {
+	getItem(key: string, consentType: CONSENT_TYPE): string | null;
+	setItem(key: string, value: string, consentType: CONSENT_TYPE): void;
 };
 
 export type IOAuth2Client = {
@@ -25,6 +32,10 @@ type ILiferay = {
 			accountId: number | string | null;
 		};
 		commerceChannelId: string;
+		currency: {
+			currencyCode: string;
+			currencyId: string;
+		};
 	};
 	MarketplaceCustomerFlow: {appId: number};
 	OAuth2Client: IOAuth2Client;
@@ -49,6 +60,8 @@ type ILiferay = {
 		isSignedIn: () => boolean;
 	};
 	Util: {
+		LocalStorage: LiferayStorage;
+		SessionStorage: LiferayStorage;
 		fetch: typeof fetch;
 		navigate: (path: string) => void;
 		openModal: (options?: {}) => void;
