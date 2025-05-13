@@ -21,6 +21,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
@@ -233,7 +235,15 @@ public class ObjectEntryPerformanceTest {
 					currentObjectEntriesCount < _objectEntriesCount);
 		}
 
-		try (PerformanceTimer performanceTimer = new PerformanceTimer(
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						_company.getCompanyId(),
+						"com.liferay.portal.vulcan.internal.configuration." +
+							"HeadlessAPICompanyConfiguration",
+						MapUtil.singletonDictionary(
+							"pageSizeLimit", _objectEntriesCount));
+			PerformanceTimer performanceTimer = new PerformanceTimer(
 				GetterUtil.getInteger(
 					_properties.getProperty("object.entries.delete.max.time")),
 				StringBundler.concat(
