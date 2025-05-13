@@ -27,6 +27,7 @@ export {default as ViewTags} from './main/categorization/tags/ViewTags';
 export {default as EditVocabulary} from './main/categorization/vocabularies/EditVocabulary';
 export {default as SpaceSticker} from './main/components/SpaceSticker';
 export {default as EditFolder} from './main/components/folders/EditFolder';
+export {default as NewSpace} from './main/components/spaces/NewSpace';
 export {default as ViewDashboard} from './main/dashboard/ViewDashboard';
 export {default as SpacesNavigation} from './main/spaces_navigation/SpacesNavigation';
 
