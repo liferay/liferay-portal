@@ -32,11 +32,15 @@ import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {mockedObjectFields} from './dependencies/objectMockedFields';
-import {getFDSDateFormat, getPageEditorDateFormat} from './utils/dateFormat';
+import {
+	getFDSDateFormat,
+	getObjectEntryUIDateTimeFormat,
+	getPageEditorDateFormat,
+} from './utils/dateFormat';
 import evaluateKeepCheckingAfterFound from './utils/keepCheckingAfterFound';
 import {createObjectFields, mockObjectFields} from './utils/mockObjectFields';
 
-export const test = mergeTests(
+const test = mergeTests(
 	accountSettingsPagesTest,
 	applicationsMenuPageTest,
 	collectionsPagesTest,
@@ -53,6 +57,13 @@ export const test = mergeTests(
 	objectPagesTest,
 	pageEditorPagesTest,
 	workflowPagesTest
+);
+
+const scheduleTest = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-17564': {enabled: true},
+	})
 );
 
 let siteLanguage = 'en';
@@ -1693,4 +1704,102 @@ test.describe('Manage object entries through Workflow', () => {
 
 		await expect(page.getByText(objectEntry.textField)).toBeVisible();
 	});
+});
+
+scheduleTest.describe('Manage object entries schedule properties', () => {
+	scheduleTest(
+		'can create, read, update, and delete a reviewDate of an object entry',
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFolderExternalReferenceCode: 'default',
+					status: {code: 0},
+					titleObjectFieldName: 'textField',
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.neverReview.uncheck();
+
+			await page.getByRole('button', {name: 'Choose date'}).click();
+
+			await page.getByLabel('Select Current Date').click();
+
+			await page.keyboard.press('Escape');
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			const date = new Date();
+
+			const today = getObjectEntryUIDateTimeFormat(date);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
+				today
+			);
+
+			date.setDate(date.getDate() + 1);
+
+			const tomorrow = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.reviewDateInput.fill(tomorrow);
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
+				tomorrow
+			);
+
+			await viewObjectEntriesPage.neverReview.check();
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue('');
+		}
+	);
+
+	scheduleTest(
+		'cannot submit an empty reviewDate when neverReview is not checked',
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFolderExternalReferenceCode: 'default',
+					status: {code: 0},
+					titleObjectFieldName: 'textField',
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.neverReview.uncheck();
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await expect(
+				page.getByText('This field is required')
+			).toBeVisible();
+		}
+	);
 });
