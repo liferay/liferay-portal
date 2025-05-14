@@ -1,0 +1,18 @@
+{
+	"friendlyURL": "/new-space",
+	"hidden": true,
+	"name_i18n": {
+		"en_US": "New Space"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}
