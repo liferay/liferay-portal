@@ -63,16 +63,10 @@ public class AllSpacesSectionDisplayContext {
 	public CreationMenu getCreationMenu() {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.putData("action", "createSpace");
-				dropdownItem.putData(
-					"redirect",
+				dropdownItem.setHref(
 					StringBundler.concat(
-						_themeDisplay.getPortalURL(),
-						_themeDisplay.getPathMain(),
-						GroupConstants.CMS_FRIENDLY_URL, "/e/space-settings/",
-						_portal.getClassNameId(DepotEntry.class), "/{id}"));
-				dropdownItem.putData(
-					"title", _language.get(_httpServletRequest, "new-space"));
+						_themeDisplay.getPathFriendlyURLPublic(),
+						GroupConstants.CMS_FRIENDLY_URL, "/new-space"));
 				dropdownItem.setIcon("forms");
 				dropdownItem.setLabel(
 					_language.get(_httpServletRequest, "space"));
