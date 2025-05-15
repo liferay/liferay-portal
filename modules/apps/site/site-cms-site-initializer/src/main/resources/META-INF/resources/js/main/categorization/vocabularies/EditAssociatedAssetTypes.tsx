@@ -38,11 +38,13 @@ export default function EditAssociatedAssetTypes({
 	availableAssetTypes,
 	initialAssetTypes,
 	onChangeVocabulary,
+	setAssetTypeChange,
 	vocabulary,
 }: {
 	availableAssetTypes: AssetType[];
 	initialAssetTypes: AssetType[];
 	onChangeVocabulary: Function;
+	setAssetTypeChange: Function;
 	vocabulary: IVocabulary;
 }) {
 	const [allAssetTypesSelected, setAllAssetTypesSelected] =
@@ -85,7 +87,24 @@ export default function EditAssociatedAssetTypes({
 				)
 			);
 		}
-	}, [selectedItems]);
+
+		if (selectedItems?.find((item) => item.value === 0)) {
+			setAssetTypeChange(false);
+		}
+		else if (
+			initialAssetTypes?.some(
+				(assetType) =>
+					!selectedItems.find(
+						(item) => item.value === assetType.typeId
+					)
+			)
+		) {
+			setAssetTypeChange(true);
+		}
+		else {
+			setAssetTypeChange(false);
+		}
+	}, [initialAssetTypes, selectedItems, setAssetTypeChange]);
 
 	const isChecked = (item: Structure) => {
 		return !!selectedItems.find((val) => val.value === item.value);

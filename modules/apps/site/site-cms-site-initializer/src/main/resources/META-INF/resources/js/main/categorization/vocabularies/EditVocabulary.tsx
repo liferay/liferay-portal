@@ -50,7 +50,7 @@ export default function EditVocabulary({
 		[]
 	);
 	const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
-	const assetTypeChange = false;
+	const [assetTypeChange, setAssetTypeChange] = useState(false);
 	const [nameInputError, setNameInputError] = useState<string>('');
 	const {observer, onOpenChange, open} = useModal();
 	const [spaceChange, setSpaceChange] = useState(false);
@@ -311,6 +311,7 @@ export default function EditVocabulary({
 									availableAssetTypes={availableAssetTypes}
 									initialAssetTypes={assetTypes}
 									onChangeVocabulary={setVocabulary}
+									setAssetTypeChange={setAssetTypeChange}
 									vocabulary={vocabulary}
 								/>
 							)}
