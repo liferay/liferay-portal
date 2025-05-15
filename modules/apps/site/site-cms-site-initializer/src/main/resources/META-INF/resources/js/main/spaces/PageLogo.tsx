@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-export const PageLogo = () => {
+export function PageLogo() {
 	return (
 		<svg
 			fill="none"
@@ -34,4 +34,4 @@ export const PageLogo = () => {
 			/>
 		</svg>
 	);
-};
+}
