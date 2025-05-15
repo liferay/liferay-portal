@@ -10,29 +10,30 @@ import {PORTLET_URLS} from '../../../../utils/portletUrls';
 export class EditVocabularyPage {
 	readonly page: Page;
 
-	private readonly assetTypeCheckbox: Locator;
 	private readonly assetTypeSelector: Locator;
 	private readonly descriptionInput: Locator;
 	private readonly nameInput: Locator;
-	private readonly spaceCheckbox: Locator;
 
+	readonly assetTypeCheckbox: Locator;
 	readonly assetTypesButton: Locator;
 	readonly generalButton: Locator;
 	readonly multiSelectToggle: Locator;
 	readonly newButton: Locator;
 	readonly saveButton: Locator;
+	readonly spaceCheckbox: Locator;
 	readonly spaceSelector: Locator;
 	readonly visibilitySelector: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 
-		this.assetTypesButton = this.page.getByRole('button', {
+		this.assetTypesButton = this.page.getByRole('menuitem', {
 			name: 'Associated Asset Types',
 		});
 		this.assetTypeCheckbox = this.page.getByRole('checkbox', {
 			name: 'Make this vocabulary available in all asset types',
 		});
+		this.assetTypeSelector = this.page.getByLabel('Asset Type Selector');
 		this.descriptionInput = this.page.getByLabel('Description');
 		this.generalButton = this.page.getByRole('button', {name: 'General'});
 		this.multiSelectToggle = this.page.getByLabel('Multi Value');
@@ -78,6 +79,18 @@ export class EditVocabularyPage {
 
 	async changeVisibility(visibility: string) {
 		await this.visibilitySelector.selectOption({label: visibility});
+	}
+
+	async selectAssetTypes(assetType: string) {
+		if (this.assetTypeCheckbox.isChecked()) {
+			await this.assetTypeCheckbox.click();
+
+			await expect(this.assetTypeCheckbox).not.toBeChecked();
+		}
+
+		await this.assetTypeSelector.click();
+
+		await this.page.getByText(assetType).click();
 	}
 
 	async selectSpaces(spaceName: string) {

@@ -137,6 +137,10 @@ test(
 
 		await editVocabularyPage.changeVisibility('Private');
 
+		await editVocabularyPage.assetTypesButton.click();
+
+		await editVocabularyPage.selectAssetTypes('Blog');
+
 		await clickAndExpectToBeVisible({
 			target: page.getByText(
 				`Success:${name} was published successfully.`
@@ -174,6 +178,14 @@ test(
 			name: newName,
 		});
 
+		await editVocabularyPage.assetTypesButton.click();
+
+		const assetTypesInputLocator = page
+			.locator('.input-group-item span')
+			.nth(1);
+
+		await expect(assetTypesInputLocator).toContainText('Blog');
+
 		await clickAndExpectToBeVisible({
 			target: page.getByText(
 				`Success:${newName} was updated successfully.`
@@ -182,6 +194,53 @@ test(
 		});
 
 		await expect(vocabulariesPage.getItem(newName)).toBeVisible();
+	}
+);
+
+test(
+	'Validate change asset types when saving',
+	{tag: '@LPD-52591'},
+	async ({editVocabularyPage, page, vocabulariesPage}) => {
+		editVocabularyPage.goto();
+
+		const name = `Vocabulary${getRandomInt()}`;
+
+		await editVocabularyPage.changeGeneralInfo({
+			description: getRandomString(),
+			name,
+		});
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText(
+				`Success:${name} was published successfully.`
+			),
+			trigger: editVocabularyPage.saveButton,
+		});
+
+		const newVocabRow = vocabulariesPage.getItem(name);
+		await expect(newVocabRow).toBeVisible();
+
+		const newVocabualry = page.getByRole('link', {name});
+
+		await newVocabualry.click();
+
+		await expect(page.getByText(`Edit ${name}`)).toBeVisible();
+
+		await editVocabularyPage.assetTypesButton.click();
+
+		await editVocabularyPage.selectAssetTypes('Blog');
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText('Confirm Asset Type Change'),
+			trigger: editVocabularyPage.saveButton,
+		});
+
+		const modalSaveButton = page.locator('.modal .btn-primary');
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText(`Success:${name} was updated successfully.`),
+			trigger: modalSaveButton,
+		});
 	}
 );
 
@@ -242,6 +301,35 @@ test(
 
 		await clickAndExpectToBeVisible({
 			target: page.getByText('The Name field is required'),
+			trigger: editVocabularyPage.saveButton,
+		});
+
+		const name = `Vocabulary${getRandomInt()}`;
+
+		await editVocabularyPage.changeGeneralInfo({
+			description: getRandomString(),
+			name,
+		});
+
+		// Check we can't publish without selecting a space
+
+		await editVocabularyPage.spaceCheckbox.click();
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText('The Space field is required'),
+			trigger: editVocabularyPage.saveButton,
+		});
+
+		await editVocabularyPage.spaceCheckbox.click();
+
+		// Check we can't publish without selecting an asset type
+
+		await editVocabularyPage.assetTypesButton.click();
+
+		await editVocabularyPage.assetTypeCheckbox.click();
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText('The Asset Types field is required.'),
 			trigger: editVocabularyPage.saveButton,
 		});
 	}
