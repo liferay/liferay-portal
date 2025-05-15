@@ -35,16 +35,20 @@ const ALL_STRUCTURES: Structure[] = [
 ];
 
 export default function EditAssociatedAssetTypes({
+	assetTypeInputError,
 	availableAssetTypes,
 	initialAssetTypes,
 	onChangeVocabulary,
 	setAssetTypeChange,
+	setAssetTypeInputError,
 	vocabulary,
 }: {
+	assetTypeInputError: string;
 	availableAssetTypes: AssetType[];
 	initialAssetTypes: AssetType[];
 	onChangeVocabulary: Function;
 	setAssetTypeChange: Function;
+	setAssetTypeInputError: Function;
 	vocabulary: IVocabulary;
 }) {
 	const [allAssetTypesSelected, setAllAssetTypesSelected] =
@@ -54,7 +58,6 @@ export default function EditAssociatedAssetTypes({
 		required: assetType.required,
 		value: assetType.typeId,
 	}));
-	const [inputError, setInputError] = useState<string>('');
 
 	const [selectedItems, setSelectedItems] =
 		useState<Structure[]>(ALL_STRUCTURES);
@@ -77,10 +80,10 @@ export default function EditAssociatedAssetTypes({
 
 	useEffect(() => {
 		if (selectedItems.length) {
-			setInputError('');
+			setAssetTypeInputError('');
 		}
 		else {
-			setInputError(
+			setAssetTypeInputError(
 				sub(
 					Liferay.Language.get('the-x-field-is-required'),
 					Liferay.Language.get('asset-types')
@@ -104,7 +107,12 @@ export default function EditAssociatedAssetTypes({
 		else {
 			setAssetTypeChange(false);
 		}
-	}, [initialAssetTypes, selectedItems, setAssetTypeChange]);
+	}, [
+		initialAssetTypes,
+		selectedItems,
+		setAssetTypeChange,
+		setAssetTypeInputError,
+	]);
 
 	const isChecked = (item: Structure) => {
 		return !!selectedItems.find((val) => val.value === item.value);
@@ -209,7 +217,7 @@ export default function EditAssociatedAssetTypes({
 					)}
 				</p>
 
-				<div className={inputError ? 'has-error' : ''}>
+				<div className={assetTypeInputError ? 'has-error' : ''}>
 					<label>{Liferay.Language.get('asset-types')}</label>
 
 					<ClayMultiSelect
@@ -255,9 +263,9 @@ export default function EditAssociatedAssetTypes({
 						)}
 					</ClayMultiSelect>
 
-					{inputError && (
+					{assetTypeInputError && (
 						<ClayAlert displayType="danger" variant="feedback">
-							{inputError}
+							{assetTypeInputError}
 						</ClayAlert>
 					)}
 				</div>

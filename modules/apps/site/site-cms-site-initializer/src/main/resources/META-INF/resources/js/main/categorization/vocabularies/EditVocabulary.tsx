@@ -51,6 +51,7 @@ export default function EditVocabulary({
 	);
 	const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
 	const [assetTypeChange, setAssetTypeChange] = useState(false);
+	const [assetTypeInputError, setAssetTypeInputError] = useState<string>('');
 	const [nameInputError, setNameInputError] = useState<string>('');
 	const {observer, onOpenChange, open} = useModal();
 	const [spaceChange, setSpaceChange] = useState(false);
@@ -127,6 +128,12 @@ export default function EditVocabulary({
 
 		if (spaceInputError) {
 			setActiveVerticalNavKey('general');
+
+			return false;
+		}
+
+		if (assetTypeInputError) {
+			setActiveVerticalNavKey('assetTypes');
 
 			return false;
 		}
@@ -308,10 +315,14 @@ export default function EditVocabulary({
 
 							{activeVerticalNavKey === 'assetTypes' && (
 								<EditAssociatedAssetTypes
+									assetTypeInputError={assetTypeInputError}
 									availableAssetTypes={availableAssetTypes}
 									initialAssetTypes={assetTypes}
 									onChangeVocabulary={setVocabulary}
 									setAssetTypeChange={setAssetTypeChange}
+									setAssetTypeInputError={
+										setAssetTypeInputError
+									}
 									vocabulary={vocabulary}
 								/>
 							)}
