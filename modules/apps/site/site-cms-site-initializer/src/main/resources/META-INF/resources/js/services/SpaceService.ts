@@ -5,10 +5,12 @@
 
 import {Space} from '../types/Space';
 import ApiHelper from './ApiHelper';
-async function addSpace({name}: {name: string}) {
+
+async function addSpace({description, name}: {description?: string; name: string}) {
 	return await ApiHelper.post<{id: number}>(
 		'/o/headless-asset-library/v1.0/asset-libraries',
 		{
+			description,
 			name,
 		}
 	);
