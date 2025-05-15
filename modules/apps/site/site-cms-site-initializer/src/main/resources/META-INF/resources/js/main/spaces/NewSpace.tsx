@@ -6,45 +6,80 @@
 import ClayButton from '@clayui/button';
 import Form, {ClayInput} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
+import {useFormik} from 'formik';
+import {navigate} from 'frontend-js-web';
 import React from 'react';
 
+import SpaceService from '../../structure_builder/services/SpaceService';
 import {FieldText} from '../components/forms';
+import {required, validate} from '../components/forms/validations';
 import {CreateSpaceStepOneIllustration} from './CreateSpaceStepOneIllustration';
-import {StepOneFormSection} from './StepOneFormSection';
+import {NewSpaceFormSection} from './NewSpaceFormSection';
 
-interface NewSpaceProps {}
+interface NewSpaceProps {
+	baseRedirectUrl: string;
+}
 
-const NewSpace: React.FC<NewSpaceProps> = () => {
+const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
+	const {errors, handleChange, handleSubmit, isSubmitting, touched, values} =
+		useFormik({
+			initialValues: {
+				description: '',
+				name: '',
+			},
+			onSubmit: (values) => {
+				const {description, name} = values;
+
+				SpaceService.addSpace({description, name}).then((response) => {
+					navigate(baseRedirectUrl + response.id);
+				});
+			},
+			validate: (values) =>
+				validate(
+					{
+						name: [required],
+					},
+					values
+				),
+		});
+
 	return (
 		<ClayLayout.Row className="p-4">
-			<StepOneFormSection
+			<NewSpaceFormSection
 				description={Liferay.Language.get(
 					'spaces-are-essential-for-organizing-defining-and-managing-your-content-and-files'
 				)}
 				linkLabel={Liferay.Language.get('learn-more-about-spaces')}
 				linkUrl="/"
+				onSubmit={handleSubmit}
 				step={1}
 				title={Liferay.Language.get('create-a-space')}
 			>
 				<FieldText
+					errorMessage={touched.name ? errors.name : undefined}
 					label={Liferay.Language.get('space-name')}
-					name="spaceName"
+					name="name"
+					onChange={handleChange}
 					placeholder={Liferay.Language.get('enter-a-space-name')}
 					required
+					value={values.name}
 				/>
 
 				<Form.Group>
-					<label htmlFor="spaceDescription">
+					<label htmlFor="description">
 						{Liferay.Language.get('description')}
 					</label>
 
 					<ClayInput
 						component="textarea"
-						id="spaceDescription"
+						id="description"
+						name="description"
+						onChange={handleChange}
 						placeholder={Liferay.Language.get(
 							'enter-a-decription-for-your-space'
 						)}
 						type="text"
+						value={values.description}
 					/>
 				</Form.Group>
 
@@ -56,13 +91,15 @@ const NewSpace: React.FC<NewSpaceProps> = () => {
 					<ClayButton
 						borderless
 						className="mt-2"
+						disabled={isSubmitting}
 						displayType="secondary"
 						outline
+						type="submit"
 					>
 						{Liferay.Language.get('create-a-space-without-members')}
 					</ClayButton>
 				</ClayButton.Group>
-			</StepOneFormSection>
+			</NewSpaceFormSection>
 
 			<CreateSpaceStepOneIllustration />
 		</ClayLayout.Row>
