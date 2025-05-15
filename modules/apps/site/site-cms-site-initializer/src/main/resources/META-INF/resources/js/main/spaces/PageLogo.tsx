@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-export function PageLogo() {
+export function PageLogo(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			fill="none"
@@ -13,6 +13,7 @@ export function PageLogo() {
 			viewBox="0 0 64 64"
 			width="64"
 			xmlns="http://www.w3.org/2000/svg"
+			{...props}
 		>
 			<path
 				clipRule="evenodd"

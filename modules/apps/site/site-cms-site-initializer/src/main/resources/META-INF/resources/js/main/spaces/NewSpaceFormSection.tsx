@@ -7,11 +7,11 @@ import ClayForm from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import Link from '@clayui/link';
 import {sub} from 'frontend-js-web';
-import React, {PropsWithChildren} from 'react';
+import React, {PropsWithChildren, useId} from 'react';
 
 import {PageLogo} from './PageLogo';
 
-interface NewSpaceFormSectionProps {
+export interface NewSpaceFormSectionProps {
 	description: string;
 	linkLabel: string;
 	linkUrl: string;
@@ -29,14 +29,22 @@ export function NewSpaceFormSection({
 	step,
 	title,
 }: PropsWithChildren<NewSpaceFormSectionProps>) {
+	const logoDescriptioId = useId();
+
 	return (
 		<ClayLayout.Col className="mw-50 px-9 w-50">
 			<ClayForm onSubmit={onSubmit}>
 				<ClayLayout.Container className="mb-5 p-0">
 					<ClayLayout.ContentRow className="align-items-center mb-6">
-						<PageLogo />
+						<PageLogo
+							aria-labelledby={logoDescriptioId}
+							role="img"
+						/>
 
-						<span className="font-weight-bold ms-3 text-7">
+						<span
+							className="font-weight-bold ms-3 text-7"
+							id={logoDescriptioId}
+						>
 							{Liferay.Language.get('cms-product')}
 						</span>
 					</ClayLayout.ContentRow>

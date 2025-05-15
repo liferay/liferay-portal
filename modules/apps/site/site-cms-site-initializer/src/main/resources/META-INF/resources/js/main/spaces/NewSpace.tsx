@@ -16,7 +16,7 @@ import {required, validate} from '../components/forms/validations';
 import {CreateSpaceStepOneIllustration} from './CreateSpaceStepOneIllustration';
 import {NewSpaceFormSection} from './NewSpaceFormSection';
 
-interface NewSpaceProps {
+export interface NewSpaceProps {
 	baseRedirectUrl: string;
 }
 
@@ -50,6 +50,9 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 					'spaces-are-essential-for-organizing-defining-and-managing-your-content-and-files'
 				)}
 				linkLabel={Liferay.Language.get('learn-more-about-spaces')}
+
+				// TODO: update this link
+
 				linkUrl="/"
 				onSubmit={handleSubmit}
 				step={1}
