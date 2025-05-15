@@ -16,6 +16,7 @@ dependencies {
 	compileOnly project(":apps:headless:headless-admin-taxonomy:headless-admin-taxonomy-api")
 	compileOnly project(":apps:headless:headless-common-spi")
 	compileOnly project(":apps:oauth2-provider:oauth2-provider-scope-api")
+	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:segments:segments-api")

@@ -7,10 +7,14 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectFolder;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectFolderLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -45,29 +49,40 @@ public class EditVocabularyDisplayContext {
 			AssetRendererFactory::isCategorizable);
 	}
 
-	public List<Map<String, String>> getClassNameIdOptions() {
+	public List<Map<String, String>> getClassNameIdOptions()
+		throws PortalException {
+
 		List<Map<String, String>> selectOptions = new ArrayList<>();
 
-		List<AssetRendererFactory<?>> availableAssetRendererFactories =
-			getAvailableAssetRendererFactories();
+		List<ObjectFolder> objectFolders = new ArrayList<>();
 
-		for (AssetRendererFactory<?> availableAssetRendererFactory :
-				availableAssetRendererFactories) {
+		objectFolders.add(
+			ObjectFolderLocalServiceUtil.getObjectFolderByExternalReferenceCode(
+				"L_CMS_CONTENT_STRUCTURES", _themeDisplay.getCompanyId()));
+		objectFolders.add(
+			ObjectFolderLocalServiceUtil.getObjectFolderByExternalReferenceCode(
+				"L_CMS_FILE_TYPES", _themeDisplay.getCompanyId()));
 
+		List<ObjectDefinition> objectDefinitions = new ArrayList<>();
+
+		for (ObjectFolder objectFolder : objectFolders) {
+			objectDefinitions.addAll(
+				ObjectDefinitionLocalServiceUtil.
+					getObjectFolderObjectDefinitions(
+						objectFolder.getObjectFolderId()));
+		}
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
 			selectOptions.add(
 				HashMapBuilder.put(
-					"icon", availableAssetRendererFactory.getIconCssClass()
-				).put(
 					"restricted", Boolean.FALSE.toString()
 				).put(
-					"type",
-					ResourceActionsUtil.getModelResource(
-						_themeDisplay.getLocale(),
-						availableAssetRendererFactory.getClassName())
+					"type", objectDefinition.getLabelCurrentValue()
 				).put(
 					"typeId",
 					String.valueOf(
-						availableAssetRendererFactory.getClassNameId())
+						PortalUtil.getClassNameId(
+							objectDefinition.getClassName()))
 				).build());
 		}
 
@@ -76,7 +91,7 @@ public class EditVocabularyDisplayContext {
 
 	public Map<String, Object> getReactData() throws Exception {
 		return HashMapBuilder.<String, Object>put(
-			"assetTypes", getClassNameIdOptions()
+			"availableAssetTypes", getClassNameIdOptions()
 		).put(
 			"backURL",
 			PortalUtil.getLayoutFullURL(

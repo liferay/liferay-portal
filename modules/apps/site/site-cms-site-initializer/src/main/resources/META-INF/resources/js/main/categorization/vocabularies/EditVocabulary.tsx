@@ -27,7 +27,7 @@ const NAVIGATION_TABS = {
 };
 
 export default function EditVocabulary({
-	assetTypes,
+	availableAssetTypes,
 	backURL,
 	defaultLanguageId,
 	locales,
@@ -35,7 +35,7 @@ export default function EditVocabulary({
 	vocabularyId,
 	vocabularyPermissionsAPIURL,
 }: {
-	assetTypes: AssetType[];
+	availableAssetTypes: AssetType[];
 	backURL: string;
 	defaultLanguageId: string;
 	locales: any[];
@@ -49,6 +49,7 @@ export default function EditVocabulary({
 	const [assetLibraries, setAssetLibraries] = useState<AssetLibraryType[]>(
 		[]
 	);
+	const [assetTypes, setAssetTypes] = useState<AssetType[]>([]);
 	const assetTypeChange = false;
 	const [nameInputError, setNameInputError] = useState<string>('');
 	const {observer, onOpenChange, open} = useModal();
@@ -65,9 +66,8 @@ export default function EditVocabulary({
 		assetTypes: [
 			{
 				required: false,
-				subtype: '-1',
 				type: 'AllAssetTypes',
-				typeId: '0',
+				typeId: 0,
 			},
 		],
 		description: '',
@@ -97,6 +97,7 @@ export default function EditVocabulary({
 						await VocabularyService.fetchVocabulary(vocabularyId);
 
 					setAssetLibraries(fetchedData.assetLibraries);
+					setAssetTypes(fetchedData.assetTypes);
 					setTitle(fetchedData.name);
 					setVocabulary(fetchedData);
 				}
@@ -307,7 +308,10 @@ export default function EditVocabulary({
 
 							{activeVerticalNavKey === 'assetTypes' && (
 								<EditAssociatedAssetTypes
-									assetTypes={assetTypes}
+									availableAssetTypes={availableAssetTypes}
+									initialAssetTypes={assetTypes}
+									onChangeVocabulary={setVocabulary}
+									vocabulary={vocabulary}
 								/>
 							)}
 						</ClayLayout.Col>
