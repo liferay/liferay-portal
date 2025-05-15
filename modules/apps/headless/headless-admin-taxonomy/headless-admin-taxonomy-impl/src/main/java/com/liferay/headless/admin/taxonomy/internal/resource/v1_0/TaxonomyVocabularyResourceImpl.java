@@ -25,6 +25,8 @@ import com.liferay.headless.admin.taxonomy.internal.odata.entity.v1_0.Vocabulary
 import com.liferay.headless.admin.taxonomy.internal.util.TaxonomyGroupUtil;
 import com.liferay.headless.admin.taxonomy.resource.v1_0.TaxonomyVocabularyResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -649,6 +651,13 @@ public class TaxonomyVocabularyResourceImpl
 							return assetTypeType;
 						}
 
+						assetTypeType = _getObjectDefinitionName(
+							_portal.getClassName(classNameId));
+
+						if (assetTypeType != null) {
+							return assetTypeType;
+						}
+
 						return _getModelResource(
 							AssetRendererFactoryRegistryUtil.
 								getAssetRendererFactoryByClassNameId(
@@ -786,6 +795,14 @@ public class TaxonomyVocabularyResourceImpl
 		return ResourceActionsUtil.getModelResource(
 			contextAcceptLanguage.getPreferredLocale(),
 			assetRendererFactory.getClassName());
+	}
+
+	private String _getObjectDefinitionName(String className) {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				contextCompany.getCompanyId(), className);
+
+		return objectDefinition.getLabelCurrentLanguageId();
 	}
 
 	private String _getSettings(
@@ -1007,6 +1024,9 @@ public class TaxonomyVocabularyResourceImpl
 		target = "(dto.class.name=com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyVocabulary)"
 	)
 	private DTOActionProvider _dtoActionProvider;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private Portal _portal;
