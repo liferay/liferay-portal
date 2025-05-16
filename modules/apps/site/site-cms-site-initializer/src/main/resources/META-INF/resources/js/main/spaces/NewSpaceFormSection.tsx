@@ -10,8 +10,6 @@ import {sub} from 'frontend-js-web';
 import React, {PropsWithChildren, useId} from 'react';
 import {getImage} from '../../structure_builder/utils/getImage';
 
-import {PageLogo} from './PageLogo';
-
 export interface NewSpaceFormSectionProps {
 	description: string;
 	linkLabel: string;

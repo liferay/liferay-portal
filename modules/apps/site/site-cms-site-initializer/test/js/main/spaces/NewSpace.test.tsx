@@ -6,8 +6,8 @@
 import '@testing-library/jest-dom/extend-expect';
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as formik from 'formik';
 import React from 'react';
+import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/structure_builder/services/ApiHelper';
 
 import NewSpace, {
 	NewSpaceProps,
@@ -18,31 +18,14 @@ describe('NewSpace', () => {
 		baseRedirectUrl: 'fake-redirect-url/',
 	};
 
-	let useFormikSpy: jest.SpyInstance;
-	const mockHandleSubmit = jest.fn();
+	let apiPostSpy: jest.SpyInstance;
 
 	beforeAll(() => {
-		const realUseFormik = jest.requireActual('formik').useFormik;
-	
-		useFormikSpy = jest
-			.spyOn(formik, 'useFormik')
-			.mockImplementation((config) => {
-				const original = realUseFormik(config);
-	
-				return {
-					...original,
-					handleSubmit: mockHandleSubmit,
-				};
-			});
+		apiPostSpy = jest.spyOn(ApiHelper, 'post').mockResolvedValue({id: 'fake-id'});
 	});
 
 	afterEach(() => {
-		mockHandleSubmit.mockClear();
-		useFormikSpy.mockClear();
-	});
-
-	afterAll(() => {
-		useFormikSpy.mockRestore();
+		apiPostSpy.mockRestore();
 	});
 
 	it('renders with correct title, description, buttons', () => {
@@ -89,12 +72,17 @@ describe('NewSpace', () => {
 		await userEvent.type(descriptionInput, spaceDescription);
 		expect(descriptionInput).toHaveValue(spaceDescription);
 
+		expect(apiPostSpy).not.toHaveBeenCalled();
+
 		const submitButton = screen.getByRole('button', {
 			name: 'create-a-space-without-members',
 		});
 		await userEvent.click(submitButton);
 
-		expect(mockHandleSubmit).toHaveBeenCalledTimes(1);
-		expect(mockHandleSubmit).toHaveBeenCalledWith(expect.any(Object)); // valores são pegos dentro do hook
+		expect(apiPostSpy).toHaveBeenCalledTimes(1);
+		expect(apiPostSpy).toHaveBeenCalledWith('/o/headless-asset-library/v1.0/asset-libraries', {
+			description: spaceDescription,
+			name: spaceName,
+		});
 	});
 });
