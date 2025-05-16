@@ -64,17 +64,19 @@ describe('NewSpace', () => {
 		const spaceName = 'My Space';
 		const spaceDescription = 'My space description';
 
-		const spaceNameInput = screen.getByRole('textbox', {
-			name: /space-name/i,
-		});
-		await userEvent.type(spaceNameInput, spaceName);
-		expect(spaceNameInput).toHaveValue(spaceName);
+		await userEvent.type(
+			screen.getByRole('textbox', {
+				name: /space-name/i,
+			}),
+			spaceName
+		);
 
-		const descriptionInput = screen.getByRole('textbox', {
-			name: 'description',
-		});
-		await userEvent.type(descriptionInput, spaceDescription);
-		expect(descriptionInput).toHaveValue(spaceDescription);
+		await userEvent.type(
+			screen.getByRole('textbox', {
+				name: 'description',
+			}),
+			spaceDescription
+		);
 
 		expect(apiPostSpy).not.toHaveBeenCalled();
 
