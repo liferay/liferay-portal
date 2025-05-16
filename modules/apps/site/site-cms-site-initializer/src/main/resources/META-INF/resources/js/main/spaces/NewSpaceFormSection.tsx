@@ -9,7 +9,7 @@ import Link from '@clayui/link';
 import {sub} from 'frontend-js-web';
 import React, {PropsWithChildren, useId} from 'react';
 
-import {getImage} from '../../structure_builder/utils/getImage';
+import {getImage} from '../util/getImage';
 
 export interface NewSpaceFormSectionProps {
 	description: string;

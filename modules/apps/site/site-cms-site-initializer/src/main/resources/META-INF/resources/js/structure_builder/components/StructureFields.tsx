@@ -11,7 +11,7 @@ import {ManagementToolbar} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
 
-import {getImage} from '../../structure_builder/utils/getImage';
+import {getImage} from '../../main/util/getImage';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectSelection from '../selectors/selectSelection';
 import selectStructureFields from '../selectors/selectStructureFields';

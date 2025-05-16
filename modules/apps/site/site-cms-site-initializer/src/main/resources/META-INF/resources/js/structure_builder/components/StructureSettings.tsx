@@ -10,6 +10,7 @@ import ClayLayout from '@clayui/layout';
 import ClayTabs from '@clayui/tabs';
 import React, {useEffect} from 'react';
 
+import {getImage} from '../../main/util/getImage';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectSelection from '../selectors/selectSelection';
 import selectStructureERC from '../selectors/selectStructureERC';
@@ -19,7 +20,6 @@ import selectStructureName from '../selectors/selectStructureName';
 import selectStructureStatus from '../selectors/selectStructureStatus';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import focusInvalidElement from '../utils/focusInvalidElement';
-import {getImage} from '../utils/getImage';
 import ERCInput from './ERCInput';
 import Input from './Input';
 import {LocalizedInput} from './LocalizedInput';

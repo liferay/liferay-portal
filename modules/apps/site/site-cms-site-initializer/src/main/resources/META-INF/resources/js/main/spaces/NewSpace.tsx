@@ -11,9 +11,9 @@ import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import SpaceService from '../../structure_builder/services/SpaceService';
-import {getImage} from '../../structure_builder/utils/getImage';
 import {FieldText} from '../components/forms';
 import {required, validate} from '../components/forms/validations';
+import {getImage} from '../util/getImage';
 import {NewSpaceFormSection} from './NewSpaceFormSection';
 
 export interface NewSpaceProps {
