@@ -29,44 +29,42 @@ export function NewSpaceFormSection({
 	step,
 	title,
 }: PropsWithChildren<NewSpaceFormSectionProps>) {
-	const logoDescriptioId = useId();
+	const logoDescriptionId = useId();
 
 	return (
-		<ClayLayout.Col className="mw-50 px-9 w-50">
-			<ClayForm onSubmit={onSubmit}>
-				<ClayLayout.Container className="mb-5 p-0">
-					<ClayLayout.ContentRow className="align-items-center mb-6">
-						<img
-							aria-labelledby={logoDescriptioId}
-							src={getImage('cms_logo.svg')}
-						></img>
+		<ClayForm onSubmit={onSubmit}>
+			<ClayLayout.Container className="mb-5 p-0">
+				<ClayLayout.ContentRow className="align-items-center mb-6">
+					<img
+						aria-labelledby={logoDescriptionId}
+						src={getImage('cms_logo.svg')}
+					></img>
 
-						<span
-							className="font-weight-bold ms-3 text-7"
-							id={logoDescriptioId}
-						>
-							{Liferay.Language.get('cms-product')}
-						</span>
-					</ClayLayout.ContentRow>
-
-					<p className="mb-2 text-secondary">
-						{sub(Liferay.Language.get('step-x-of-x'), [step, 2])}
-					</p>
-
-					<h1 className="font-semibold mb-4 text-7">{title}</h1>
-
-					<p className="mb-2 text-5 text-secondary">{description}</p>
-
-					<Link
-						className="font-weight-bold text-4 text-underline"
-						href={linkUrl}
+					<span
+						className="font-weight-bold ms-3 text-7"
+						id={logoDescriptionId}
 					>
-						{linkLabel}
-					</Link>
-				</ClayLayout.Container>
+						{Liferay.Language.get('cms-product')}
+					</span>
+				</ClayLayout.ContentRow>
 
-				{children}
-			</ClayForm>
-		</ClayLayout.Col>
+				<p className="mb-2 text-secondary">
+					{sub(Liferay.Language.get('step-x-of-x'), [step, 2])}
+				</p>
+
+				<h1 className="font-semibold mb-4 text-7">{title}</h1>
+
+				<p className="mb-2 text-5 text-secondary">{description}</p>
+
+				<Link
+					className="font-weight-bold text-4 text-underline"
+					href={linkUrl}
+				>
+					{linkLabel}
+				</Link>
+			</ClayLayout.Container>
+
+			{children}
+		</ClayForm>
 	);
 }

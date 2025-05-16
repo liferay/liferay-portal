@@ -45,61 +45,65 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 
 	return (
 		<ClayLayout.Row className="p-4">
-			<NewSpaceFormSection
-				description={Liferay.Language.get(
-					'spaces-are-essential-for-organizing-defining-and-managing-your-content-and-files'
-				)}
-				linkLabel={Liferay.Language.get('learn-more-about-spaces')}
-				linkUrl="/"
-				onSubmit={handleSubmit}
-				step={1}
-				title={Liferay.Language.get('create-a-space')}
-			>
-				<FieldText
-					errorMessage={touched.name ? errors.name : undefined}
-					label={Liferay.Language.get('space-name')}
-					name="name"
-					onChange={handleChange}
-					placeholder={Liferay.Language.get('enter-a-space-name')}
-					required
-					value={values.name}
-				/>
-
-				<Form.Group>
-					<label htmlFor="description">
-						{Liferay.Language.get('description')}
-					</label>
-
-					<ClayInput
-						component="textarea"
-						id="description"
-						name="description"
+			<ClayLayout.Col className="mw-50 px-9 w-50">
+				<NewSpaceFormSection
+					description={Liferay.Language.get(
+						'spaces-are-essential-for-organizing-defining-and-managing-your-content-and-files'
+					)}
+					linkLabel={Liferay.Language.get('learn-more-about-spaces')}
+					linkUrl="/"
+					onSubmit={handleSubmit}
+					step={1}
+					title={Liferay.Language.get('create-a-space')}
+				>
+					<FieldText
+						errorMessage={touched.name ? errors.name : undefined}
+						label={Liferay.Language.get('space-name')}
+						name="name"
 						onChange={handleChange}
-						placeholder={Liferay.Language.get(
-							'enter-a-decription-for-your-space'
-						)}
-						type="text"
-						value={values.description}
+						placeholder={Liferay.Language.get('enter-a-space-name')}
+						required
+						value={values.name}
 					/>
-				</Form.Group>
 
-				<ClayButton.Group className="mb-0 w-100" spaced vertical>
-					<ClayButton className="mt-4">
-						{Liferay.Language.get('add-members')}
-					</ClayButton>
+					<Form.Group>
+						<label htmlFor="description">
+							{Liferay.Language.get('description')}
+						</label>
 
-					<ClayButton
-						borderless
-						className="mt-2"
-						disabled={isSubmitting}
-						displayType="secondary"
-						outline
-						type="submit"
-					>
-						{Liferay.Language.get('create-a-space-without-members')}
-					</ClayButton>
-				</ClayButton.Group>
-			</NewSpaceFormSection>
+						<ClayInput
+							component="textarea"
+							id="description"
+							name="description"
+							onChange={handleChange}
+							placeholder={Liferay.Language.get(
+								'enter-a-decription-for-your-space'
+							)}
+							type="text"
+							value={values.description}
+						/>
+					</Form.Group>
+
+					<ClayButton.Group className="mb-0 w-100" spaced vertical>
+						<ClayButton className="mt-4">
+							{Liferay.Language.get('add-members')}
+						</ClayButton>
+
+						<ClayButton
+							borderless
+							className="mt-2"
+							disabled={isSubmitting}
+							displayType="secondary"
+							outline
+							type="submit"
+						>
+							{Liferay.Language.get(
+								'create-a-space-without-members'
+							)}
+						</ClayButton>
+					</ClayButton.Group>
+				</NewSpaceFormSection>
+			</ClayLayout.Col>
 
 			<ClayLayout.Col>
 				<img
