@@ -7,11 +7,11 @@ import '@testing-library/jest-dom/extend-expect';
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/structure_builder/services/ApiHelper';
 
 import NewSpace, {
 	NewSpaceProps,
 } from '../../../../src/main/resources/META-INF/resources/js/main/spaces/NewSpace';
+import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/structure_builder/services/ApiHelper';
 
 describe('NewSpace', () => {
 	const props: NewSpaceProps = {
@@ -21,7 +21,9 @@ describe('NewSpace', () => {
 	let apiPostSpy: jest.SpyInstance;
 
 	beforeAll(() => {
-		apiPostSpy = jest.spyOn(ApiHelper, 'post').mockResolvedValue({id: 'fake-id'});
+		apiPostSpy = jest
+			.spyOn(ApiHelper, 'post')
+			.mockResolvedValue({id: 'fake-id'});
 	});
 
 	afterEach(() => {
@@ -80,9 +82,12 @@ describe('NewSpace', () => {
 		await userEvent.click(submitButton);
 
 		expect(apiPostSpy).toHaveBeenCalledTimes(1);
-		expect(apiPostSpy).toHaveBeenCalledWith('/o/headless-asset-library/v1.0/asset-libraries', {
-			description: spaceDescription,
-			name: spaceName,
-		});
+		expect(apiPostSpy).toHaveBeenCalledWith(
+			'/o/headless-asset-library/v1.0/asset-libraries',
+			{
+				description: spaceDescription,
+				name: spaceName,
+			}
+		);
 	});
 });
