@@ -127,6 +127,11 @@ public class FreeMarkerFragmentEntryProcessor
 			).put(
 				"fragmentEntryLinkNamespace", fragmentEntryLink.getNamespace()
 			).put(
+				"fragmentName",
+				_fragmentEntryLinkHelper.getFragmentEntryName(
+					fragmentEntryLink,
+					fragmentEntryProcessorContext.getLocale())
+			).put(
 				"layoutMode",
 				_getLayoutMode(
 					fragmentEntryProcessorContext.getHttpServletRequest())

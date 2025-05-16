@@ -420,6 +420,7 @@ public class EditFragmentEntryDisplayContext {
 		freeMarkerVariables.add("configuration");
 		freeMarkerVariables.add("fragmentElementId");
 		freeMarkerVariables.add("fragmentEntryLinkNamespace");
+		freeMarkerVariables.add("fragmentName");
 		freeMarkerVariables.add("layoutMode");
 
 		FragmentCollection fragmentCollection =
