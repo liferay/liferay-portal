@@ -8,6 +8,7 @@ import ClayLayout from '@clayui/layout';
 import Link from '@clayui/link';
 import {sub} from 'frontend-js-web';
 import React, {PropsWithChildren, useId} from 'react';
+import {getImage} from '../../structure_builder/utils/getImage';
 
 import {PageLogo} from './PageLogo';
 
@@ -36,10 +37,7 @@ export function NewSpaceFormSection({
 			<ClayForm onSubmit={onSubmit}>
 				<ClayLayout.Container className="mb-5 p-0">
 					<ClayLayout.ContentRow className="align-items-center mb-6">
-						<PageLogo
-							aria-labelledby={logoDescriptioId}
-							role="img"
-						/>
+						<img src={getImage("cms_logo.svg")} aria-labelledby={logoDescriptioId}></img>
 
 						<span
 							className="font-weight-bold ms-3 text-7"

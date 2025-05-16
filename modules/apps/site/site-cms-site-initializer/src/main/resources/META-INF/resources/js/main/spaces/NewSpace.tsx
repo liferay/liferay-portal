@@ -13,8 +13,8 @@ import React from 'react';
 import SpaceService from '../../structure_builder/services/SpaceService';
 import {FieldText} from '../components/forms';
 import {required, validate} from '../components/forms/validations';
-import {CreateSpaceStepOneIllustration} from './CreateSpaceStepOneIllustration';
 import {NewSpaceFormSection} from './NewSpaceFormSection';
+import {getImage} from '../../structure_builder/utils/getImage';
 
 export interface NewSpaceProps {
 	baseRedirectUrl: string;
@@ -104,7 +104,9 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 				</ClayButton.Group>
 			</NewSpaceFormSection>
 
-			<CreateSpaceStepOneIllustration />
+			<ClayLayout.Col>
+				<img src={getImage("create_space_step_one_illustration.svg")} aria-hidden="true"></img>
+			</ClayLayout.Col>
 		</ClayLayout.Row>
 	);
 };

@@ -21,14 +21,14 @@ describe('NewSpace', () => {
 	let useFormikSpy: jest.SpyInstance;
 	const mockHandleSubmit = jest.fn();
 
-	beforeEach(() => {
+	beforeAll(() => {
 		const realUseFormik = jest.requireActual('formik').useFormik;
-
+	
 		useFormikSpy = jest
 			.spyOn(formik, 'useFormik')
 			.mockImplementation((config) => {
 				const original = realUseFormik(config);
-
+	
 				return {
 					...original,
 					handleSubmit: mockHandleSubmit,
@@ -37,7 +37,11 @@ describe('NewSpace', () => {
 	});
 
 	afterEach(() => {
-		mockHandleSubmit.mockReset();
+		mockHandleSubmit.mockClear();
+		useFormikSpy.mockClear();
+	});
+
+	afterAll(() => {
 		useFormikSpy.mockRestore();
 	});
 

@@ -5,13 +5,10 @@
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
-import createSpaceAction from './actions/createSpaceAction';
 import SpaceRenderer from './cell_renderers/SpaceRenderer';
 import addOnClickToCreationMenuItems from './utils/addOnClickToCreationMenuItems';
 
-const ACTIONS = {
-	createSpace: createSpaceAction,
-};
+const ACTIONS = {};
 
 export default function AllSpacesFDSPropsTransformer({
 	creationMenu,
