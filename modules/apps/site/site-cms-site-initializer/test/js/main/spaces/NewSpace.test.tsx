@@ -33,13 +33,14 @@ describe('NewSpace', () => {
 	it('renders with correct title, description, buttons', () => {
 		render(<NewSpace {...props} />);
 
-		const title = screen.getByRole('heading', {name: 'create-a-space'});
-		expect(title).toBeInTheDocument();
-
-		const description = screen.getByText(
-			'spaces-are-essential-for-organizing-defining-and-managing-your-content-and-files'
-		);
-		expect(description).toBeInTheDocument();
+		expect(
+			screen.getByRole('heading', {name: 'create-a-space'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				'spaces-are-essential-for-organizing-defining-and-managing-your-content-and-files'
+			)
+		).toBeInTheDocument();
 
 		const learnMoreLink = screen.getByRole('link', {
 			name: 'learn-more-about-spaces',
@@ -47,13 +48,14 @@ describe('NewSpace', () => {
 		expect(learnMoreLink).toBeInTheDocument();
 		expect(learnMoreLink).toHaveAttribute('href', '/');
 
-		const addMembersBtn = screen.getByRole('button', {name: 'add-members'});
-		expect(addMembersBtn).toBeInTheDocument();
-
-		const createSpaceBtn = screen.getByRole('button', {
-			name: 'create-a-space-without-members',
-		});
-		expect(createSpaceBtn).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {name: 'add-members'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {
+				name: 'create-a-space-without-members',
+			})
+		).toBeInTheDocument();
 	});
 
 	it('submits form with correct values and redirect to baseRedirectUrl', async () => {
@@ -76,10 +78,11 @@ describe('NewSpace', () => {
 
 		expect(apiPostSpy).not.toHaveBeenCalled();
 
-		const submitButton = screen.getByRole('button', {
-			name: 'create-a-space-without-members',
-		});
-		await userEvent.click(submitButton);
+		await userEvent.click(
+			screen.getByRole('button', {
+				name: 'create-a-space-without-members',
+			})
+		);
 
 		expect(apiPostSpy).toHaveBeenCalledTimes(1);
 		expect(apiPostSpy).toHaveBeenCalledWith(

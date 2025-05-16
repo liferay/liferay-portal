@@ -27,20 +27,17 @@ describe('NewSpaceFormSection', () => {
 	it('renders with title, description, step, links, and children', () => {
 		render(<NewSpaceFormSection {...props} />);
 
-		const liferayLogo = screen.getByRole('img', {name: 'cms-product'});
-		expect(liferayLogo).toBeInTheDocument();
-
-		const title = screen.getByRole('heading', {name: props.title});
-		expect(title).toBeInTheDocument();
-
-		const description = screen.getByText(props.description);
-		expect(description).toBeInTheDocument();
-
-		const step = screen.getByText('step-x-of-x');
-		expect(step).toBeInTheDocument();
-
-		const children = screen.getByText(props.children!.toString());
-		expect(children).toBeInTheDocument();
+		expect(
+			screen.getByRole('img', {name: 'cms-product'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('heading', {name: props.title})
+		).toBeInTheDocument();
+		expect(screen.getByText(props.description)).toBeInTheDocument();
+		expect(screen.getByText('step-x-of-x')).toBeInTheDocument();
+		expect(
+			screen.getByText(props.children!.toString())
+		).toBeInTheDocument();
 	});
 
 	it('calls onSubmit callback when clicking on a button of type submit', async () => {
