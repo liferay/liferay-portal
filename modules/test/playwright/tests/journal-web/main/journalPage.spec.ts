@@ -379,3 +379,65 @@ test(
 		expect(/[[{]/.test(inputValue || '')).toBeFalsy();
 	}
 );
+
+test(
+	'Validate Folder Count After Creating Folders and Filtering by Approved',
+	{
+		tag: '@LPD-55865',
+	},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		for (let i = 1; i <= 6; i++) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: site.id,
+				titleMap: {en_US: `Web Content ${i}`},
+			});
+		}
+
+		for (let i = 1; i <= 6; i++) {
+			await apiHelpers.jsonWebServicesJournal.addFolder({
+				groupId: site.id,
+				name: `Folder ${i}`,
+			});
+		}
+
+		for (let i = 7; i <= 12; i++) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: site.id,
+				titleMap: {en_US: `Web Content ${i}`},
+			});
+		}
+
+		for (let i = 7; i <= 12; i++) {
+			await apiHelpers.jsonWebServicesJournal.addFolder({
+				groupId: site.id,
+				name: `Folder ${i}`,
+			});
+		}
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await page.getByLabel('Filter', {exact: true}).click();
+
+		await page.getByRole('menuitem', {name: 'Approved'}).click();
+
+		await page.getByLabel('Filter', {exact: true}).click();
+
+		await page.getByRole('menuitem', {name: 'Web Content'}).click();
+
+		await page.getByLabel('Order', {exact: true}).click();
+
+		await page.getByRole('menuitem', {name: 'Create Date'}).click();
+
+		await page.waitForSelector('dd[data-folder="true"]');
+
+		const folders = await page.locator('dd[data-folder="true"]');
+		const folderCount = await folders.count();
+
+		expect(folderCount).toBe(12);
+	}
+);
