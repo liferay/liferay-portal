@@ -126,7 +126,7 @@ public class DBPartitionMySQLDB implements DBPartitionDB {
 				return resultSet.getString("variable_value");
 			}
 
-			return "utf8";
+			return "utf8mb4";
 		}
 	}
 
