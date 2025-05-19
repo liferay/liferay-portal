@@ -6,6 +6,7 @@
 import {
 	ObjectDefinition,
 	ObjectDefinitionAPI,
+	ObjectField,
 	ObjectFieldAPI,
 	ObjectRelationshipAPI,
 	ObjectValidationRuleAPI,
@@ -13,45 +14,60 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
+import getRandomString from '../../../utils/getRandomString';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
+import getFormContainerDefinition from '../../layout-content-page-editor-web/main/utils/getFormContainerDefinition';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 
-export const test = mergeTests(apiHelpersTest, loginTest(), objectPagesTest);
-
-let objectDefinition1: ObjectDefinition;
-let objectDefinition2: ObjectDefinition;
-
-test.beforeEach(async ({apiHelpers}) => {
-	const newObjectDefinition1 =
-		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			objectFolderExternalReferenceCode: 'default',
-			status: {code: 0},
-		});
-
-	const newObjectDefinition2 =
-		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			objectFolderExternalReferenceCode: 'default',
-			status: {code: 0},
-		});
-
-	objectDefinition1 = newObjectDefinition1;
-	objectDefinition2 = newObjectDefinition2;
-});
-
-test.afterEach(async ({apiHelpers}) => {
-	const objectDefinitionAPIClient =
-		await apiHelpers.buildRestClient(ObjectDefinitionAPI);
-
-	await objectDefinitionAPIClient.deleteObjectDefinition(
-		objectDefinition1.id
-	);
-	await objectDefinitionAPIClient.deleteObjectDefinition(
-		objectDefinition2.id
-	);
-});
+export const test = mergeTests(
+	apiHelpersTest,
+	dataApiHelpersTest,
+	isolatedSiteTest,
+	loginTest(),
+	objectPagesTest,
+	pageEditorPagesTest,
+	journalPagesTest
+);
 
 test.describe('Object Unique Composite Key Validation', () => {
+	let objectDefinition1: ObjectDefinition;
+	let objectDefinition2: ObjectDefinition;
+
+	test.beforeEach(async ({apiHelpers}) => {
+		const newObjectDefinition1 =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFolderExternalReferenceCode: 'default',
+				status: {code: 0},
+			});
+
+		const newObjectDefinition2 =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFolderExternalReferenceCode: 'default',
+				status: {code: 0},
+			});
+
+		objectDefinition1 = newObjectDefinition1;
+		objectDefinition2 = newObjectDefinition2;
+	});
+
+	test.afterEach(async ({apiHelpers}) => {
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		await objectDefinitionAPIClient.deleteObjectDefinition(
+			objectDefinition1.id
+		);
+		await objectDefinitionAPIClient.deleteObjectDefinition(
+			objectDefinition2.id
+		);
+	});
+
 	test('can create an object unique composite key validation', async ({
 		apiHelpers,
 		editObjectValidationPage,
@@ -503,4 +519,202 @@ test.describe('Object Unique Composite Key Validation', () => {
 			editObjectValidationPage.addTwoObjectFieldsErrorMessage
 		).toBeVisible();
 	});
+});
+
+test('can see an error message under those fields in the page builder when attempting to add incorrect entries', async ({
+	apiHelpers,
+	page,
+	pageEditorPage,
+	site,
+}) => {
+	const objectDefinitionAPIClient =
+		await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+	const {body: objectDefinition} =
+		await objectDefinitionAPIClient.postObjectDefinition({
+			active: true,
+			externalReferenceCode: 'objectDefinitionERC' + getRandomInt(),
+			label: {
+				en_US: 'objectDefinition',
+			},
+			name: 'ObjectDefinition' + getRandomInt(),
+			objectFields: [
+				{
+					DBType: 'Integer',
+					businessType: 'Integer',
+					// indexed: true,
+					// indexedAsKeyword: false,
+					label: {
+						en_US: 'objectFieldLabelInt',
+					},
+					name: `fieldInt${getRandomInt()}`,
+					required: false,
+				},
+				{
+					DBType: 'Double',
+					businessType: 'Decimal',
+					// indexed: true,
+					// indexedAsKeyword: false,
+					label: {
+						en_US: 'objectFieldLabelDouble',
+					},
+					name: `fieldDouble${getRandomInt()}`,
+					required: false,
+				},
+				{
+					DBType: 'String',
+					businessType: 'Text',
+					// indexed: true,
+					// indexedAsKeyword: false,
+					label: {
+						en_US: 'objectFieldLabel',
+					},
+					name: `field${getRandomInt()}`,
+					required: false,
+				},
+			],
+			pluralLabel: {
+				en_US: 'objectDefinitions',
+			},
+			portlet: true,
+			scope: 'company',
+			status: {
+				code: 0,
+			},
+		});
+
+	apiHelpers.data.push({
+		id: objectDefinition.id,
+		type: 'objectDefinition',
+	});
+
+	// const fields = [
+	// 	{label: 'field' + getRandomInt(), type: 'Integer'},
+	// 	{label: 'field' + getRandomInt(), type: 'Decimal'},
+	// 	{label: 'field' + getRandomInt(), type: 'Text'},
+	// ];
+
+	// const objectFieldApi =
+	// 	await apiHelpers.buildRestClient(ObjectFieldAPI);
+
+	// for (const field of fields) {
+	// 	await objectFieldApi.postObjectDefinitionObjectField(
+	// 		objectDefinition.id,
+	// 		{
+	// 			DBType: 'String',
+	// 			businessType: field.type as 'Integer' | 'Decimal' | 'Text',
+	// 			indexed: true,
+	// 			label: {en_US: field.label},
+	// 			localized: false,
+	// 			name: `field${getRandomInt()}`,
+	// 			readOnly: 'false',
+	// 			required: false,
+	// 			state: false,
+	// 		}
+	// 	);
+	// }
+
+	const allObjectDefinitionFields =
+		await apiHelpers.objectAdmin.getAllObjectDefinitionsFields(
+			objectDefinition.id
+		);
+
+	const objectDefinitionFields = allObjectDefinitionFields.items.filter(
+		(item: ObjectField) => {
+			return item.businessType !== 'Text' && item.system === false;
+		}
+	);
+
+	const objectDefinitionValidation = await apiHelpers.buildRestClient(
+		ObjectValidationRuleAPI
+	);
+
+	await objectDefinitionValidation.postObjectDefinitionObjectValidationRule(
+		objectDefinition.id,
+		{
+			active: true,
+			engine: 'ddm',
+			engineLabel: 'Expression Builder',
+			errorLabel: {en_US: 'Should be greater than 5'},
+			name: {
+				en_US: `validation${getRandomInt()}`,
+			},
+			objectDefinitionExternalReferenceCode: objectDefinition.externalReferenceCode,
+			objectValidationRuleSettings: [
+				{
+					name: 'outputObjectFieldExternalReferenceCode',
+					value: objectDefinitionFields[0].externalReferenceCode,
+				} as any,
+			],
+			outputType: 'partialValidation',
+			script: `${objectDefinitionFields[0].label.en_US} > 5`,
+			system: false,
+		}
+	);
+
+	await objectDefinitionValidation.postObjectDefinitionObjectValidationRule(
+		objectDefinition.id,
+		{
+			active: true,
+			engine: 'ddm',
+			engineLabel: 'Expression Builder',
+			errorLabel: {en_US: 'Should be less than 6.5'},
+			name: {
+				en_US: `validation${getRandomInt()}`,
+			},
+			objectDefinitionExternalReferenceCode: objectDefinition.externalReferenceCode,
+			objectValidationRuleSettings: [
+				{
+					name: 'outputObjectFieldExternalReferenceCode',
+					value: objectDefinitionFields[1].externalReferenceCode,
+				} as any,
+			],
+			outputType: 'partialValidation',
+			script: `${objectDefinitionFields[1].label.en_US} < 6.5`,
+			system: false,
+		}
+	);
+
+	const formId = getRandomString();
+
+	const formDefinition = getFormContainerDefinition({
+		id: formId,
+	});
+
+	const pageName = getRandomString();
+
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([formDefinition]),
+		siteId: site.id,
+		title: pageName,
+	});
+
+	await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+	// Go to edit mode and map the form container to the object
+
+	await pageEditorPage.mapFormFragment(
+		formId,
+		`${objectDefinition.label.en_US}`
+	);
+
+	await pageEditorPage.publishPage();
+
+	// Go to view mode of page and check both fields are shown
+
+	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+	await expect(
+		page.locator('.control-label', {hasText: 'Content'})
+	).toBeVisible();
+
+	await expect(page.locator('.cke_contents')).toBeVisible();
+
+	await expect(page.getByLabel('Name')).toBeVisible();
+
+	// Wait for five seconds and check Name field does not disappear
+
+	await page.waitForTimeout(5000);
+
+	await expect(page.getByLabel('Name')).toBeVisible();
 });
