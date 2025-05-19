@@ -63,20 +63,23 @@ export default function EditAssociatedAssetTypes({
 		useState<Structure[]>(ALL_STRUCTURES);
 
 	useEffect(() => {
-		if (initialAssetTypes.length) {
-			if (initialAssetTypes[0].typeId !== 0) {
-				setAllAssetTypesSelected(false);
+		if (vocabulary.assetTypes.length) {
+			if (vocabulary.assetTypes[0].typeId === 0) {
+				setSelectedItems(ALL_STRUCTURES);
 			}
+			else {
+				setAllAssetTypesSelected(false);
 
-			setSelectedItems(
-				initialAssetTypes.map((assetType) => ({
-					label: assetType.type,
-					required: assetType.required,
-					value: assetType.typeId,
-				}))
-			);
+				setSelectedItems(
+					vocabulary.assetTypes.map((assetType: AssetType) => ({
+						label: assetType.type,
+						required: assetType.required,
+						value: assetType.typeId,
+					}))
+				);
+			}
 		}
-	}, [initialAssetTypes]);
+	}, [vocabulary]);
 
 	useEffect(() => {
 		if (selectedItems.length) {
