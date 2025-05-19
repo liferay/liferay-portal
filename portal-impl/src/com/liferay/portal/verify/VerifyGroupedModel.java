@@ -110,13 +110,6 @@ public class VerifyGroupedModel extends VerifyProcess {
 		}
 	}
 
-	@Override
-	protected boolean isForceConcurrent(
-		Collection<? extends Callable<Void>> callables) {
-
-		return true;
-	}
-
 	protected void verifyGroupedModel(
 			VerifiableGroupedModel verifiableGroupedModel)
 		throws Exception {
