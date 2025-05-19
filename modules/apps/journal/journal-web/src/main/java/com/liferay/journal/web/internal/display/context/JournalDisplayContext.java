@@ -1453,6 +1453,12 @@ public class JournalDisplayContext {
 			_themeDisplay.getLocale(), _themeDisplay.getTimeZone());
 	}
 
+	private SearchResponse _fetchArticles(int start, int end) {
+		return JournalSearcherUtil.searchJournalArticles(
+			searchContext -> _populateSearchContext(
+				start, end, searchContext, false));
+	}
+
 	private SearchContainer<Object> _getArticleAndFolderSearchContainer()
 		throws PortalException {
 
@@ -1562,17 +1568,53 @@ public class JournalDisplayContext {
 		SearchContainer<Object> articleAndFolderSearchContainer =
 			_getArticleAndFolderSearchContainer();
 
-		SearchResponse searchResponse =
-			JournalSearcherUtil.searchJournalArticleAndFolders(
+		int start = articleAndFolderSearchContainer.getStart();
+		int end = articleAndFolderSearchContainer.getEnd();
+
+		int delta = end - start;
+
+		SearchResponse folderSearchResponse =
+			JournalSearcherUtil.searchJournalFolders(
 				searchContext -> _populateSearchContext(
-					articleAndFolderSearchContainer.getStart(),
-					articleAndFolderSearchContainer.getEnd(), searchContext,
-					false));
+					start, end, searchContext, false));
+
+		int totalArticleCount;
+		int totalFolderCount = folderSearchResponse.getTotalHits();
+		List<Document> documents = new ArrayList<>();
+
+		if (start < totalFolderCount) {
+			documents.addAll(
+				folderSearchResponse.getDocuments71(
+				).subList(
+					start, Math.min(end, totalFolderCount)
+				));
+
+			SearchResponse articleSearchResponse = _fetchArticles(
+				0, delta - documents.size());
+
+			totalArticleCount = articleSearchResponse.getTotalHits();
+
+			if (delta > documents.size()) {
+				documents.addAll(articleSearchResponse.getDocuments71());
+			}
+		}
+		else {
+			int articleStart = start - totalFolderCount;
+
+			int articleEnd = delta + articleStart;
+
+			SearchResponse articleSearchResponse = _fetchArticles(
+				articleStart, articleEnd);
+
+			documents.addAll(articleSearchResponse.getDocuments71());
+
+			totalArticleCount = articleSearchResponse.getTotalHits();
+		}
 
 		articleAndFolderSearchContainer.setResultsAndTotal(
 			() -> JournalSearcherUtil.transformJournalArticleAndFolders(
-				searchResponse.getDocuments71()),
-			searchResponse.getTotalHits());
+				documents),
+			totalFolderCount + totalArticleCount);
 
 		_articleSearchContainer = articleAndFolderSearchContainer;
 

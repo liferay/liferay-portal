@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.util.OrderByComparator;
  */
 public class FolderArticleTitleComparator extends OrderByComparator<Object> {
 
-	public static final String ORDER_BY_ASC = "title ASC";
+	public static final String ORDER_BY_ASC = "modelFolder DESC, title ASC";
 
-	public static final String ORDER_BY_DESC = "title DESC";
+	public static final String ORDER_BY_DESC = "modelFolder DESC, title DESC";
 
 	public static final String[] ORDER_BY_FIELDS = {"title"};
 

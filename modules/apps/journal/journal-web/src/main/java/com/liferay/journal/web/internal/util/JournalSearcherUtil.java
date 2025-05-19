@@ -63,6 +63,24 @@ public class JournalSearcherUtil {
 			).build());
 	}
 
+	public static SearchResponse searchJournalFolders(
+		Consumer<SearchContext> searchContextConsumer) {
+
+		Searcher searcher = _searcherSnapshot.get();
+		SearchRequestBuilderFactory searchRequestBuilderFactory =
+			_searchRequestBuilderFactorySnapshot.get();
+
+		return searcher.search(
+			searchRequestBuilderFactory.builder(
+			).emptySearchEnabled(
+				true
+			).modelIndexerClasses(
+				JournalFolder.class
+			).withSearchContext(
+				searchContextConsumer
+			).build());
+	}
+
 	public static List<Object> transformJournalArticleAndFolders(
 		List<Document> documents) {
 
