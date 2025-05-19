@@ -150,7 +150,7 @@
 			"constraints": {
 				"notEmpty": true
 			},
-			"description": "A FEEL expression that extracts a secret from the request.",
+			"description": "Enter a FEEL expression that extracts a secret (e.g., API key or token) from the request body or headers.",
 			"feel": "required",
 			"group": "authorization",
 			"id": "inbound.auth.apiKeyLocator",
