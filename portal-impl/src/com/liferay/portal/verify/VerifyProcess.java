@@ -37,12 +37,6 @@ import java.util.regex.Pattern;
  */
 public abstract class VerifyProcess extends BaseDBProcess {
 
-	public static final int ALWAYS = -1;
-
-	public static final int NEVER = 0;
-
-	public static final int ONCE = 1;
-
 	public void verify() throws VerifyException {
 		long start = System.currentTimeMillis();
 
