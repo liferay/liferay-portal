@@ -30,10 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * This abstract class should be extended for startup processes that verify the
- * integrity of the database. They can be added as part of
- * <code>VerifyProcessSuite</code> or be executed independently by being set in
- * the portal.properties file. Each of these processes should not cause any
- * problems if run multiple times.
+ * integrity of the database.
  *
  * @author Alexander Chow
  * @author Hugo Huijser
