@@ -9645,14 +9645,14 @@ war.path=${app.server.portal.dir}/</echo>
 						<echo file="create.sql">
 drop database if exists lportal;
 
-create database lportal character set utf8;</echo>
+create database lportal character set utf8mb4;</echo>
 
 						<antelope:repeat count="${databases.size}">
 							<echo append="true" file="create.sql">
 
 drop database if exists lportal${database.index};
 
-create database lportal${database.index} character set utf8;</echo>
+create database lportal${database.index} character set utf8mb4;</echo>
 
 							<math
 								datatype="int"
@@ -9922,7 +9922,7 @@ go</echo>
 
 drop database if exists lportal${database.index};
 
-create database lportal${database.index} character set utf8;</echo>
+create database lportal${database.index} character set utf8mb4;</echo>
 
 							<math
 								datatype="int"

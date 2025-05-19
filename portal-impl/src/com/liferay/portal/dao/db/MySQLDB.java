@@ -163,7 +163,7 @@ public class MySQLDB extends BaseDB {
 	public String getRecreateSQL(String databaseName) {
 		return StringBundler.concat(
 			"drop database if exists ", databaseName, ";\ncreate database ",
-			databaseName, " character set utf8;\n");
+			databaseName, " character set utf8mb4;\n");
 	}
 
 	@Override
