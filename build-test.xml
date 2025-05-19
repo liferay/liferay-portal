@@ -9674,13 +9674,13 @@ create database lportal${database.index} character set utf8mb4;</echo>
 							<echo file="create.sql">
 drop database if exists lportal;
 
-create database lportal encoding = 'UNICODE';</echo>
+create database lportal encoding = 'UTF8';</echo>
 
 							<echo append="true" file="create.sql">
 
 drop database if exists lportal${databases.size};
 
-create database lportal${databases.size} encoding = 'UNICODE';</echo>
+create database lportal${databases.size} encoding = 'UTF8';</echo>
 						</then>
 					</elseif>
 					<else>
@@ -9945,7 +9945,7 @@ create database lportal${database.index} character set utf8mb4;</echo>
 
 drop database if exists lportal${databases.size};
 
-create database lportal${databases.size} encoding = 'UNICODE';</echo>
+create database lportal${databases.size} encoding = 'UTF8';</echo>
 						</then>
 					</elseif>
 					<else>
