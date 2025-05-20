@@ -176,7 +176,7 @@
 				"name": "activationCondition",
 				"type": "zeebe:property"
 			},
-			"description": "Enter the condition to trigger the connector. Leave this empty to catch all events. triggers. Leave empty to catch all events.",
+			"description": "Enter the condition to trigger the connector. Leave this empty to catch all events.",
 			"feel": "required",
 			"group": "activation",
 			"id": "activationCondition",
@@ -251,7 +251,7 @@
 			"constraints": {
 				"notEmpty": true
 			},
-			"description": "Extracts the correlation key from the incoming message payload.",
+			"description": "Enter an expression to extract the correlation key from the incoming method payload.",
 			"feel": "required",
 			"group": "correlation",
 			"id": "correlationKeyPayload",
@@ -270,7 +270,7 @@
 					"value": "^(PT.*|)$"
 				}
 			},
-			"description": "Set the lifespan (time-to-live) of the broker message as an ISO-8601 duration.-8601 duration).",
+			"description": "Set the lifespan (time-to-live) of the broker message as an ISO-8601 duration.",
 			"feel": "optional",
 			"group": "correlation",
 			"id": "messageTtl",
@@ -283,7 +283,7 @@
 				"name": "messageIdExpression",
 				"type": "zeebe:property"
 			},
-			"description": "EEnter an expression to extract the unique identifier of a message. message.",
+			"description": "Enter an expression to extract the unique identifier of a message. message.",
 			"feel": "required",
 			"group": "correlation",
 			"id": "messageIdExpression",
@@ -319,7 +319,7 @@
 				"name": "resultExpression",
 				"type": "zeebe:property"
 			},
-			"description": "Enter an expression to map the response into process variables.bles.",
+			"description": "Enter an expression to map the response into process variables.",
 			"feel": "required",
 			"group": "output",
 			"id": "resultExpression",

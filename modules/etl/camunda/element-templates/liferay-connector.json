@@ -666,7 +666,7 @@
 				"key": "resultExpression",
 				"type": "zeebe:taskHeader"
 			},
-			"description": "Enter an expression to map the response into process variables.bles.",
+			"description": "Enter an expression to map the response into process variables.",
 			"feel": "required",
 			"group": "output",
 			"id": "resultExpression",

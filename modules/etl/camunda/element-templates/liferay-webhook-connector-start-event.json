@@ -169,7 +169,7 @@
 				"name": "activationCondition",
 				"type": "zeebe:property"
 			},
-			"description": "Enter the condition to trigger the connector. Leave this empty to catch all events. triggers. Leave empty to catch all events.",
+			"description": "Enter the condition to trigger the connector. Leave this empty to catch all events.",
 			"feel": "required",
 			"group": "activation",
 			"id": "activationCondition",
@@ -205,7 +205,7 @@
 				"name": "resultExpression",
 				"type": "zeebe:property"
 			},
-			"description": "Enter an expression to map the response into process variables.bles.",
+			"description": "Enter an expression to map the response into process variables.",
 			"feel": "required",
 			"group": "output",
 			"id": "resultExpression",
