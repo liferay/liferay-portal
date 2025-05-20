@@ -24,12 +24,12 @@ This is in line with the [REUSE Software 3.0 specification][reuse] of community 
 
 Code of third party components is available to you under the license that those components are released under and you obtain the license directly from the original licensor of each such component.
 
-[spdx_id]: https://spdx.org/ids
-[reuse]: https://reuse.software/spec/
-[gplcc]: https://gplcc.github.io/gplcc/
-[gplcc_liferay]: https://liferay.dev/gplv3-enforcement-statement
-[lgpl-2.1-or-later]: https://spdx.org/licenses/LGPL-2.1-or-later.html
-[gplcc_blog]: https://liferay.dev/blogs/-/blogs/liferay-joins-open-source-leaders-in-protecting-developers
-[fsf]: https://fsf.org
 [dxp_eula]: https://web.liferay.com/legal/doc/eula/dxp/2002306_GL
 [esa]: https://www.liferay.com/legal
+[fsf]: https://fsf.org
+[gplcc]: https://gplcc.github.io/gplcc/
+[gplcc_blog]: https://liferay.dev/blogs/-/blogs/liferay-joins-open-source-leaders-in-protecting-developers
+[gplcc_liferay]: https://liferay.dev/gplv3-enforcement-statement
+[lgpl-2.1-or-later]: https://spdx.org/licenses/LGPL-2.1-or-later.html
+[reuse]: https://reuse.software/spec/
+[spdx_id]: https://spdx.org/ids
