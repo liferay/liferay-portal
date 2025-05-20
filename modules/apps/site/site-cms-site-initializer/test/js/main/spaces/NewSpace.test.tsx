@@ -20,7 +20,7 @@ describe('NewSpace', () => {
 
 	let apiPostSpy: jest.SpyInstance;
 
-	beforeAll(() => {
+	beforeEach(() => {
 		apiPostSpy = jest
 			.spyOn(ApiHelper, 'post')
 			.mockResolvedValue({id: 'fake-id'});
