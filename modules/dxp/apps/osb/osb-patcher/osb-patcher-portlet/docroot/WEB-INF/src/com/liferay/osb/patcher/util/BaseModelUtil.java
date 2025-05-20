@@ -47,7 +47,7 @@ public class BaseModelUtil {
 		String methodName = "fetch" + simpleClassName;
 
 		Method fetchBaseModelMethod = localServiceUtilClass.getMethod(
-			methodName, new Class[] {long.class});
+			methodName, new Class<?>[] {long.class});
 
 		return (BaseModel<?>)fetchBaseModelMethod.invoke(
 			localServiceUtilClass, classPK);
@@ -66,7 +66,7 @@ public class BaseModelUtil {
 			List<BaseModel> baseModels)
 		throws Exception {
 
-		List<Long> baseModelIds = new ArrayList<Long>();
+		List<Long> baseModelIds = new ArrayList<>();
 
 		for (BaseModel<?> baseModel : baseModels) {
 			baseModelIds.add(GetterUtil.getLong(baseModel.getPrimaryKeyObj()));
@@ -105,10 +105,10 @@ public class BaseModelUtil {
 	public static String getBaseModelRequestKey(BaseModel<?> baseModel)
 		throws Exception {
 
-		Class clazz = baseModel.getClass();
+		Class<?> clazz = baseModel.getClass();
 
 		Method getRequestKeyMethod = clazz.getMethod(
-			"getRequestKey", new Class[0]);
+			"getRequestKey", new Class<?>[0]);
 
 		return (String)getRequestKeyMethod.invoke(baseModel);
 	}
@@ -119,7 +119,7 @@ public class BaseModelUtil {
 		Class<?> baseModelClass = baseModel.getClass();
 
 		Method getStatusMethod = baseModelClass.getMethod(
-			"getStatus", new Class[0]);
+			"getStatus", new Class<?>[0]);
 
 		return (Integer)getStatusMethod.invoke(baseModel);
 	}
@@ -130,7 +130,7 @@ public class BaseModelUtil {
 		Class<?> baseModelClass = baseModel.getClass();
 
 		Method getStatusByUserIdMethod = baseModelClass.getMethod(
-			"getStatusByUserId", new Class[0]);
+			"getStatusByUserId", new Class<?>[0]);
 
 		return (Long)getStatusByUserIdMethod.invoke(baseModel);
 	}
@@ -141,7 +141,7 @@ public class BaseModelUtil {
 		Class<?> baseModelClass = baseModel.getClass();
 
 		Method getUserIdMethod = baseModelClass.getMethod(
-			"getUserId", new Class[0]);
+			"getUserId", new Class<?>[0]);
 
 		return (Long)getUserIdMethod.invoke(baseModel);
 	}
@@ -153,7 +153,7 @@ public class BaseModelUtil {
 		Class<?> clazz = baseModel.getClass();
 
 		Method setRequestKeyMethod = clazz.getMethod(
-			"setRequestKey", new Class[] {String.class});
+			"setRequestKey", new Class<?>[] {String.class});
 
 		setRequestKeyMethod.invoke(baseModel, requestKey);
 	}
@@ -164,7 +164,7 @@ public class BaseModelUtil {
 		Class<?> clazz = baseModel.getClass();
 
 		Method setStatusMethod = clazz.getMethod(
-			"setStatus", new Class[] {int.class});
+			"setStatus", new Class<?>[] {int.class});
 
 		setStatusMethod.invoke(baseModel, status);
 	}

@@ -15,12 +15,12 @@
 package com.liferay.osb.patcher.hook.upgrade.v4_4_0;
 
 import com.liferay.compat.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -130,6 +130,6 @@ public class UpgradePatcherBuild extends UpgradeProcess {
 		}
 	}
 
-	private static String _REGEX = ".*/job/(.*)/[0-9]+.*$";
+	private static final String _REGEX = ".*/job/(.*)/[0-9]+.*$";
 
 }

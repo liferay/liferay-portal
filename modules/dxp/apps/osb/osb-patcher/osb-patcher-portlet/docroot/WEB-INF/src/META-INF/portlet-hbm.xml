@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping default-lazy="false" auto-import="false">
+<hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="com.liferay.osb.patcher.model.PatcherAccount" />
 	<import class="com.liferay.osb.patcher.model.PatcherBuild" />
 	<import class="com.liferay.osb.patcher.model.PatcherBuildRel" />
@@ -43,9 +43,9 @@
 		<property name="hotfixId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="originalName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="key" type="com.liferay.portal.dao.orm.hibernate.StringType" column="key_" />
+		<property column="key_" name="key" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="keyVersion" type="com.liferay.portal.dao.orm.hibernate.DoubleType" />
-		<property name="type" type="com.liferay.portal.dao.orm.hibernate.IntegerType" column="type_" />
+		<property column="type_" name="type" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="latestBuild" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="latestKeyBuild" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="latestLESATicketBuild" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
@@ -90,9 +90,9 @@
 		<property name="patcherProductVersionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="patcherProjectVersionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property name="key" type="com.liferay.portal.dao.orm.hibernate.StringType" column="key_" />
+		<property column="key_" name="key" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="keyVersion" type="com.liferay.portal.dao.orm.hibernate.DoubleType" />
-		<property name="type" type="com.liferay.portal.dao.orm.hibernate.IntegerType" column="type_" />
+		<property column="type_" name="type" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 		<property name="latestFix" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="obsolete" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="committish" type="com.liferay.portal.dao.orm.hibernate.StringType" />

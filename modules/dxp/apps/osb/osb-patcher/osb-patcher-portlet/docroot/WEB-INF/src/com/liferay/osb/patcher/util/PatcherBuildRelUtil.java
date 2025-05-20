@@ -115,7 +115,7 @@ public class PatcherBuildRelUtil {
 			PatcherBuild patcherBuild)
 		throws Exception {
 
-		List<PatcherFix> patcherFixes = new ArrayList<PatcherFix>();
+		List<PatcherFix> patcherFixes = new ArrayList<>();
 
 		List<PatcherBuild> childPatcherBuilds = getChildPatcherBuilds(
 			patcherBuild);
@@ -164,7 +164,7 @@ public class PatcherBuildRelUtil {
 			String propertyName, long propertyValue, String projectionName)
 		throws Exception {
 
-		List<PatcherBuild> patcherBuilds = new ArrayList<PatcherBuild>();
+		List<PatcherBuild> patcherBuilds = new ArrayList<>();
 
 		AlloyServiceInvoker patcherBuildRelAlloyServiceInvoker =
 			new AlloyServiceInvoker(PatcherBuildRel.class.getName());

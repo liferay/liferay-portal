@@ -24,11 +24,11 @@ import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class PatcherScanUtil {
 			AlloyController alloyController, PatcherBuild patcherBuild)
 		throws Exception {
 
-		List<Long> patcherProjectVersionIds = new ArrayList<Long>();
+		List<Long> patcherProjectVersionIds = new ArrayList<>();
 
 		patcherProjectVersionIds.add(patcherBuild.getPatcherProjectVersionId());
 
@@ -136,7 +136,7 @@ public class PatcherScanUtil {
 			List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<String> tickets = PatcherUtil.getTickets(patcherBuildName);
 
@@ -166,7 +166,7 @@ public class PatcherScanUtil {
 		throws Exception {
 
 		Map<Long, List<Long>> patcherProjectVersionIdPatcherFixIdsMap =
-			new HashMap<Long, List<Long>>();
+			new HashMap<>();
 
 		for (long patcherProjectVersionId : patcherProjectVersionIds) {
 			List<PatcherFix> patcherFixesSelection =
@@ -199,7 +199,7 @@ public class PatcherScanUtil {
 			List<String> tickets)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<String> patcherFixPackNames =
 			PatcherFixPackUtil.getPatcherFixPackNames(patcherBuildName);
@@ -296,7 +296,7 @@ public class PatcherScanUtil {
 				List<String> patcherBuildTickets)
 		throws Exception {
 
-		List<Long> patcherProjectVersionIds = new ArrayList<Long>();
+		List<Long> patcherProjectVersionIds = new ArrayList<>();
 
 		if (PatcherProductVersionUtil.isMarketplaceAppProduct(
 				patcherProjectVersion.getPatcherProductVersionId())) {
@@ -325,7 +325,7 @@ public class PatcherScanUtil {
 						olderPatcherProjectVersion.
 							getPatcherProjectVersionId());
 
-					if (!olderPatcherProjectVersion.getCombinedBranch()) {
+					if (!olderPatcherProjectVersion.isCombinedBranch()) {
 						PatcherProjectVersion siblingPatcherProjectVersion =
 							PatcherProjectVersionUtil.
 								getSiblingPatcherProjectVersion(
@@ -352,7 +352,7 @@ public class PatcherScanUtil {
 						newerPatcherProjectVersion.
 							getPatcherProjectVersionId());
 
-					if (!newerPatcherProjectVersion.getCombinedBranch()) {
+					if (!newerPatcherProjectVersion.isCombinedBranch()) {
 						PatcherProjectVersion siblingPatcherProjectVersion =
 							PatcherProjectVersionUtil.
 								getSiblingPatcherProjectVersion(
@@ -383,7 +383,7 @@ public class PatcherScanUtil {
 			patcherProductVersionName.equals("Quarterly Releases")) {
 
 			final int fixedIssuesLength = patcherProjectVersion.getFixedIssues(
-				).length();
+			).length();
 
 			PatcherProductVersion quarterlyProduct =
 				PatcherProductVersionUtil.fetchPatcherProductVersion(
@@ -409,11 +409,11 @@ public class PatcherScanUtil {
 						PatcherProjectVersion version2) {
 
 						int length1 = Math.abs(
-							version1.getFixedIssues().length() -
-								fixedIssuesLength);
+							version1.getFixedIssues(
+							).length() - fixedIssuesLength);
 						int length2 = Math.abs(
-							version2.getFixedIssues().length() -
-								fixedIssuesLength);
+							version2.getFixedIssues(
+							).length() - fixedIssuesLength);
 
 						if (length1 == length2) {
 							return Long.compare(
@@ -427,8 +427,7 @@ public class PatcherScanUtil {
 				};
 
 			TreeSet<PatcherProjectVersion> orderedPatcherProjectVersions =
-				new TreeSet<PatcherProjectVersion>(
-					ticketListDistanceComparator);
+				new TreeSet<>(ticketListDistanceComparator);
 
 			orderedPatcherProjectVersions.addAll(
 				quarterlyPatcherProjectVersions);
@@ -459,7 +458,7 @@ public class PatcherScanUtil {
 			String tickets, List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<String> patcherBuildTickets = PatcherUtil.sortTokens(tickets);
 
@@ -545,7 +544,7 @@ public class PatcherScanUtil {
 				sb.append(StringPool.COLON);
 				sb.append("<br />");
 
-				List<Long> excludedAncestorIds = new ArrayList<Long>();
+				List<Long> excludedAncestorIds = new ArrayList<>();
 
 				List<PatcherFix> patcherFixAncestors =
 					PatcherFixRelUtil.getPatcherFixAncestors(patcherFix);
@@ -617,7 +616,7 @@ public class PatcherScanUtil {
 			List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
-		List<String> patcherFixTickets = new ArrayList<String>();
+		List<String> patcherFixTickets = new ArrayList<>();
 
 		for (PatcherFix patcherFix : patcherFixesSelection) {
 			String[] tickets = StringUtil.split(patcherFix.getName());
@@ -642,7 +641,7 @@ public class PatcherScanUtil {
 		throws Exception {
 
 		Map<String, PatcherFix> PatcherFixPackFixNamePatcherFixPackFixMap =
-			new HashMap<String, PatcherFix>();
+			new HashMap<>();
 
 		List<String> tickets = PatcherUtil.sortTokens(patcherBuildTickets);
 
@@ -703,6 +702,7 @@ public class PatcherScanUtil {
 		return patcherFixPackFixIds;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(PatcherScanUtil.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		PatcherScanUtil.class);
 
 }

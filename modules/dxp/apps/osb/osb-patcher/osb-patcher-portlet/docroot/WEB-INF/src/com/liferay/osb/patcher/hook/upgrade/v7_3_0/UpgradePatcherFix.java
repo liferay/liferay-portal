@@ -36,7 +36,7 @@ public class UpgradePatcherFix extends UpgradeProcess {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		Set<Long> patcherFixIds = new HashSet<Long>();
+		Set<Long> patcherFixIds = new HashSet<>();
 
 		try {
 			con = DataAccess.getUpgradeOptimizedConnection();

@@ -22,7 +22,6 @@ import com.liferay.portal.NoSuchModelException;
 public class NoSuchPatcherAccountException extends NoSuchModelException {
 
 	public NoSuchPatcherAccountException() {
-		super();
 	}
 
 	public NoSuchPatcherAccountException(String msg) {

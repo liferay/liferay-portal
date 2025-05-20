@@ -19,10 +19,10 @@ import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.osb.patcher.model.impl.PatcherBuildModelImpl;
 import com.liferay.osb.patcher.model.impl.PatcherFixModelImpl;
 import com.liferay.osb.patcher.model.impl.PatcherProjectVersionModelImpl;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,8 +44,8 @@ public class UpgradePatcherProductVersion extends UpgradeProcess {
 			ps = con.prepareStatement(
 				"insert into OSB_PatcherProductVersion (" +
 					"patcherProductVersionId, companyId, userId, userName, " +
-					"createDate, modifiedDate, name) values (?, ?, ?, ?, ?, " +
-					"?, ?)");
+						"createDate, modifiedDate, name) values (?, ?, ?, ?, ?, " +
+							"?, ?)");
 
 			long patcherProductVersionId = CounterLocalServiceUtil.increment();
 
@@ -96,7 +96,7 @@ public class UpgradePatcherProductVersion extends UpgradeProcess {
 			}
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
@@ -106,13 +106,14 @@ public class UpgradePatcherProductVersion extends UpgradeProcess {
 
 	private static final String[] _TABLES_WITH_PRODUCT_VERSION = {
 		PatcherBuildModelImpl.TABLE_NAME, PatcherFixModelImpl.TABLE_NAME,
-			PatcherProjectVersionModelImpl.TABLE_NAME};
+		PatcherProjectVersionModelImpl.TABLE_NAME
+	};
 
 	private static final int _TYPE_PRODUCT_VERSION_6X = 1;
 
 	private static final int _TYPE_PRODUCT_VERSION_7X = 2;
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradePatcherProductVersion.class);
 
 }

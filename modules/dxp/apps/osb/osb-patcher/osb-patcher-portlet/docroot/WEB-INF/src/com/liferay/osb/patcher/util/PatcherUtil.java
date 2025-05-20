@@ -38,6 +38,7 @@ import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherFixPack;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -55,7 +56,6 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ServiceBeanMethodInvocationFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
@@ -122,7 +122,7 @@ public class PatcherUtil {
 	public static List<String> getCurrentTickets(PatcherFixPack patcherFixPack)
 		throws Exception {
 
-		List<String> currentTickets = new ArrayList<String>();
+		List<String> currentTickets = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes =
 			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixs(
@@ -170,7 +170,9 @@ public class PatcherUtil {
 			credentialsProvider);
 		subscriberStubSettingsBuilder.setTransportChannelProvider(
 			SubscriberStubSettings.defaultGrpcTransportProviderBuilder(
-				).setMaxInboundMessageSize(20 * 1024 * 1024).build());
+			).setMaxInboundMessageSize(
+				20 * 1024 * 1024
+			).build());
 
 		SubscriberStubSettings subscriberStubSettings =
 			subscriberStubSettingsBuilder.build();
@@ -201,7 +203,7 @@ public class PatcherUtil {
 
 			ReceivedMessage receivedMessage = receivedMessageList.get(0);
 
-			List<String> acknowledgeIds = new ArrayList<String>();
+			List<String> acknowledgeIds = new ArrayList<>();
 
 			acknowledgeIds.add(receivedMessage.getAckId());
 
@@ -237,7 +239,7 @@ public class PatcherUtil {
 	public static List<String> getOldTickets(PatcherFixPack patcherFixPack)
 		throws Exception {
 
-		List<String> oldTickets = new ArrayList<String>();
+		List<String> oldTickets = new ArrayList<>();
 
 		List<PatcherFixPack> patcherFixPackVersions =
 			PatcherFixPackUtil.getPatcherFixPackVersions(patcherFixPack, true);
@@ -263,7 +265,7 @@ public class PatcherUtil {
 	public static Map<String, Object> getPropertiesMap(Object... properties)
 		throws Exception {
 
-		Map<String, Object> propertiesMap = new HashMap<String, Object>();
+		Map<String, Object> propertiesMap = new HashMap<>();
 
 		for (int i = 0; i < properties.length; i += 2) {
 			String propertyName = String.valueOf(properties[i]);
@@ -276,7 +278,7 @@ public class PatcherUtil {
 	}
 
 	public static List<String> getTickets(String name) throws Exception {
-		List<String> tickets = new ArrayList<String>();
+		List<String> tickets = new ArrayList<>();
 
 		List<String> tokens = getTokens(name);
 
@@ -519,11 +521,11 @@ public class PatcherUtil {
 					new String[] {"transactionAdvice"});
 			}
 			catch (Exception e) {
-				_log.error(e, e);
+				_log.error(e);
 			}
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 		finally {
 			LockLocalServiceUtil.unlock(
@@ -685,12 +687,12 @@ public class PatcherUtil {
 					}
 				}
 				catch (Exception e) {
-					_log.error(e, e);
+					_log.error(e);
 				}
 			}
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 		finally {
 			LockLocalServiceUtil.unlock(
@@ -785,8 +787,7 @@ public class PatcherUtil {
 			Object... attributes)
 		throws Exception {
 
-		Map<String, Serializable> attributesMap =
-			new HashMap<String, Serializable>();
+		Map<String, Serializable> attributesMap = new HashMap<>();
 
 		if ((attributes.length != 0) && ((attributes.length % 2) != 0)) {
 			throw new AlloyException("Arguments length is not an even number");
@@ -807,7 +808,7 @@ public class PatcherUtil {
 
 	private static final long _POLL_INDEX_WAIT_INTERVAL = 250;
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		"jsp.osb.patcher.util.PatcherUtil");
 
 }

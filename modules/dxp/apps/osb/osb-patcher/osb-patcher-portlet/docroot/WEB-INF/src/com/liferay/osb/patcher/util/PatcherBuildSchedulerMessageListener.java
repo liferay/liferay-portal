@@ -53,7 +53,7 @@ public class PatcherBuildSchedulerMessageListener extends BaseMessageListener {
 			_alloyController, PortletPropsValues.OSB_PATCHER_STATUS_BUILD_PATH);
 	}
 
-	private static PatcherBuildSchedulerMessageListener _instance =
+	private static final PatcherBuildSchedulerMessageListener _instance =
 		new PatcherBuildSchedulerMessageListener();
 
 	private AlloyController _alloyController;

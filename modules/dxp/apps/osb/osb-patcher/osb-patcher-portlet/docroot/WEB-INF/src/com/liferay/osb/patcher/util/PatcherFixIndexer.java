@@ -18,6 +18,7 @@ import com.liferay.alloy.mvc.BaseAlloyIndexer;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -27,7 +28,6 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -149,7 +149,7 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 		document.addText("jenkinsResults", patcherFix.getJenkinsResults());
 		document.addText("key", patcherFix.getKey());
 		document.addKeyword("keyVersion", patcherFix.getKeyVersion());
-		document.addKeyword("latestFix", patcherFix.getLatestFix());
+		document.addKeyword("latestFix", patcherFix.isLatestFix());
 
 		String patcherFixName = patcherFix.getName();
 
@@ -294,6 +294,6 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 		setPortletId(PortletKeys.OSB_PATCHER);
 	}
 
-	private static PatcherFixIndexer _instance = new PatcherFixIndexer();
+	private static final PatcherFixIndexer _instance = new PatcherFixIndexer();
 
 }

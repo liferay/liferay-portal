@@ -22,7 +22,6 @@ import com.liferay.portal.NoSuchModelException;
 public class NoSuchPatcherProjectVersionException extends NoSuchModelException {
 
 	public NoSuchPatcherProjectVersionException() {
-		super();
 	}
 
 	public NoSuchPatcherProjectVersionException(String msg) {

@@ -45,8 +45,6 @@ public class UpgradePatcherBuild extends UpgradeProcess {
 		runSQL(sb.toString());
 	}
 
-	private static final long[] _PATCHER_BUILD_IDS = {
-		414605, 640861, 738389
-	};
+	private static final long[] _PATCHER_BUILD_IDS = {414605, 640861, 738389};
 
 }

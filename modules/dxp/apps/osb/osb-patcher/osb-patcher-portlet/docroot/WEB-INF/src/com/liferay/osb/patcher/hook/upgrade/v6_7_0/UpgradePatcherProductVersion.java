@@ -32,13 +32,13 @@ public class UpgradePatcherProductVersion extends UpgradeProcess {
 						_PRODUCT_VERSION_SUFFIX_DE + "'");
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
 	private static final String _PRODUCT_VERSION_SUFFIX_DE = " DE";
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradePatcherProductVersion.class);
 
 }

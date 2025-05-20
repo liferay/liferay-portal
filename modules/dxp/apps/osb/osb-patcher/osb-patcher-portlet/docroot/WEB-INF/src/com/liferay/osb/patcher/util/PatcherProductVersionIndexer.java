@@ -90,7 +90,7 @@ public class PatcherProductVersionIndexer extends BaseAlloyIndexer {
 		return new Summary(title, content, portletURL);
 	}
 
-	private static PatcherProductVersionIndexer _instance =
+	private static final PatcherProductVersionIndexer _instance =
 		new PatcherProductVersionIndexer();
 
 }

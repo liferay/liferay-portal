@@ -79,9 +79,7 @@ public class UpgradePatcherBuild extends UpgradeProcess {
 		1565206, 1581065, 1581095, 1581127, 1605381
 	};
 
-	private static final long[] _PATCHER_BUILD_IDS_LATEST = {
-		956021, 1334952
-	};
+	private static final long[] _PATCHER_BUILD_IDS_LATEST = {956021, 1334952};
 
 	private static final long[] _PATCHER_FIX_IDS = {
 		1048722, 1208427, 1321829, 1366961

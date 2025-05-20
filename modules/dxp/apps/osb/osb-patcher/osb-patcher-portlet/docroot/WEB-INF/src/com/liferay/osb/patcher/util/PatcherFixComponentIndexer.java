@@ -89,7 +89,7 @@ public class PatcherFixComponentIndexer extends BaseAlloyIndexer {
 		setPortletId(PortletKeys.OSB_PATCHER);
 	}
 
-	private static PatcherFixComponentIndexer _instance =
+	private static final PatcherFixComponentIndexer _instance =
 		new PatcherFixComponentIndexer();
 
 }

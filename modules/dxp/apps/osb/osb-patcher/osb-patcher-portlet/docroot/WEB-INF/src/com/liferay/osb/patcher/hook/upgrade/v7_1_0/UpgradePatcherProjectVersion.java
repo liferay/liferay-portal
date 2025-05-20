@@ -44,7 +44,7 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 			runSQL(sb.toString());
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 		68175109, 69400748, 70023287, 70632186, 71100904, 72027665, 72374230
 	};
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradePatcherProjectVersion.class);
 
 }

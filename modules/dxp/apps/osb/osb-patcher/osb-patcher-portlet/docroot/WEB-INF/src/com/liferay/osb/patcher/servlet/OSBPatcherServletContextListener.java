@@ -103,7 +103,7 @@ public class OSBPatcherServletContextListener
 			String name = defaultActionKeysElement.attributeValue(
 				"resourceName");
 
-			List<String> actionIds = new ArrayList<String>();
+			List<String> actionIds = new ArrayList<>();
 
 			List<Element> actionKeyElements = defaultActionKeysElement.elements(
 				"action-key");
@@ -114,7 +114,7 @@ public class OSBPatcherServletContextListener
 
 			ResourcePermissionLocalServiceUtil.setResourcePermissions(
 				companyId, name, scope, primKey, role.getRoleId(),
-				actionIds.toArray(new String[actionIds.size()]));
+				actionIds.toArray(new String[0]));
 		}
 	}
 

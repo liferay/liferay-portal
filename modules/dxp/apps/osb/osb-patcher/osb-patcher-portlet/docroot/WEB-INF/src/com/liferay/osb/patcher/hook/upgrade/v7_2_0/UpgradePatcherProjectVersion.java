@@ -42,7 +42,7 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 
 			runSQL(sb.toString());
 
-			StringBundler sb2 = new StringBundler(8);
+			StringBundler sb2 = new StringBundler(5);
 
 			sb2.append("update OSB_PatcherProjectVersion set hide = 1 where ");
 			sb2.append("committish not like '%-private' and combinedBranch = ");
@@ -53,7 +53,7 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 			runSQL(sb2.toString());
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 		119478738, 119838027, 119839350, 119839816, 119923682, 119924817
 	};
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradePatcherProjectVersion.class);
 
 }

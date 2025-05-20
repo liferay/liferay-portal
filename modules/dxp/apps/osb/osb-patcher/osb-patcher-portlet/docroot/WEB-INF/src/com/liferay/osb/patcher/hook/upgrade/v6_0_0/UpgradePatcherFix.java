@@ -33,10 +33,11 @@ public class UpgradePatcherFix extends UpgradeProcess {
 			runSQL("alter table OSB_PatcherFix drop index IX_687F0E48");
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(UpgradePatcherFix.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherFix.class);
 
 }

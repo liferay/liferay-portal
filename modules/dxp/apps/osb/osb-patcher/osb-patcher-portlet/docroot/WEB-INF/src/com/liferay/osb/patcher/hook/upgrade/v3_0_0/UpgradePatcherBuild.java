@@ -49,10 +49,11 @@ public class UpgradePatcherBuild extends UpgradeProcess {
 					"(patcherBuildKey, patcherBuildVersion)");
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(UpgradePatcherBuild.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherBuild.class);
 
 }

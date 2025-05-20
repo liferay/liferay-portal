@@ -22,7 +22,6 @@ import com.liferay.portal.NoSuchModelException;
 public class NoSuchPatcherFixRelException extends NoSuchModelException {
 
 	public NoSuchPatcherFixRelException() {
-		super();
 	}
 
 	public NoSuchPatcherFixRelException(String msg) {

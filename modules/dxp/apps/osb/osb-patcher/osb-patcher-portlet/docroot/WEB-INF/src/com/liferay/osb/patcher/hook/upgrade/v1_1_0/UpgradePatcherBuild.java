@@ -36,8 +36,7 @@ public class UpgradePatcherBuild extends UpgradeProcess {
 		runSQL("update OSB_PatcherBuild set latestBuild = 1");
 
 		runSQL(
-			"alter table OSB_PatcherBuild add patcherBuildVersion " +
-				"DOUBLE");
+			"alter table OSB_PatcherBuild add patcherBuildVersion " + "DOUBLE");
 
 		runSQL("update OSB_PatcherBuild set patcherBuildVersion = 1.0");
 	}

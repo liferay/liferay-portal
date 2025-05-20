@@ -127,8 +127,8 @@
 }
 
 .osb-patcher-loader-container{
-	min-width: 4rem;
 	min-height: 2rem;
+	min-width: 4rem;
 }
 
 .osb-patcher-loader {

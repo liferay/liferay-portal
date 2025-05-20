@@ -17,11 +17,11 @@ package com.liferay.osb.patcher.hook.upgrade.v5_9_0;
 import com.liferay.compat.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.counter.service.CounterLocalServiceUtil;
 import com.liferay.osb.patcher.model.PatcherBuild;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,7 +57,7 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 			}
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
@@ -74,10 +74,10 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 			ps = con.prepareStatement(
 				"insert into OSB_PatcherProjectVersion (" +
 					"patcherProjectVersionId, companyId, userId, userName, " +
-					"createDate, modifiedDate, rootPatcherProjectVersionId, " +
-					"name, committish, repositoryName, fixedIssues, " +
-					"productVersion) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-					"?, ?)");
+						"createDate, modifiedDate, rootPatcherProjectVersionId, " +
+							"name, committish, repositoryName, fixedIssues, " +
+								"productVersion) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+									"?, ?)");
 
 			ps.setLong(1, basePatcherProjectVersionId);
 			ps.setLong(2, 10154);
@@ -157,7 +157,7 @@ public class UpgradePatcherProjectVersion extends UpgradeProcess {
 
 	private static final int _TYPE_PRODUCT_VERSION_7X = 2;
 
-	private static Log _log = LogFactoryUtil.getLog(
-			UpgradePatcherProjectVersion.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherProjectVersion.class);
 
 }

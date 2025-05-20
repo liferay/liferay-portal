@@ -49,10 +49,11 @@ public class UpgradePatcherFix extends UpgradeProcess {
 			}
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(UpgradePatcherFix.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherFix.class);
 
 }

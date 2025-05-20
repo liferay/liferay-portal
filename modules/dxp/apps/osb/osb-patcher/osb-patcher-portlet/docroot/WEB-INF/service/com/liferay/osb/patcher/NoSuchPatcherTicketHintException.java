@@ -22,7 +22,6 @@ import com.liferay.portal.NoSuchModelException;
 public class NoSuchPatcherTicketHintException extends NoSuchModelException {
 
 	public NoSuchPatcherTicketHintException() {
-		super();
 	}
 
 	public NoSuchPatcherTicketHintException(String msg) {

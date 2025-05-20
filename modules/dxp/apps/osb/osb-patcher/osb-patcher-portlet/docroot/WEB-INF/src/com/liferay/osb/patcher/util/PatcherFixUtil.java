@@ -26,6 +26,7 @@ import com.liferay.osb.patcher.model.impl.PatcherFixModelImpl;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -42,7 +43,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
@@ -247,8 +247,11 @@ public class PatcherFixUtil {
 			if (oldPatcherFix != null) {
 				oldPatcherFix.setLatestFix(true);
 
-				boolean patcherFixExcluded =
-					patcherFix.getType() == PatcherFixConstants.TYPE_EXCLUDED;
+				boolean patcherFixExcluded = false;
+
+				if (patcherFix.getType() == PatcherFixConstants.TYPE_EXCLUDED) {
+					patcherFixExcluded = true;
+				}
 
 				if (patcherFixExcluded) {
 					oldPatcherFix.setType(PatcherFixConstants.TYPE_EXCLUDED);
@@ -377,8 +380,7 @@ public class PatcherFixUtil {
 	public static Map<String, Set<String>> getComponentDependencies(
 		String dependencies) {
 
-		Map<String, Set<String>> componentDependencies =
-			new HashMap<String, Set<String>>();
+		Map<String, Set<String>> componentDependencies = new HashMap<>();
 
 		String[] phrases = StringUtil.split(dependencies);
 
@@ -387,7 +389,7 @@ public class PatcherFixUtil {
 
 			String dependentComponentName = componentNames[0];
 
-			Set<String> prerequisiteComponentNames = new HashSet<String>();
+			Set<String> prerequisiteComponentNames = new HashSet<>();
 
 			if (componentDependencies.containsKey(dependentComponentName)) {
 				prerequisiteComponentNames = componentDependencies.get(
@@ -500,7 +502,7 @@ public class PatcherFixUtil {
 			PatcherBuild patcherBuild, long patcherFixStatus)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<Long> fixIds =
 			PatcherBuildUtil.getRelatedPatcherBuildsPatcherFixIds(patcherBuild);
@@ -545,7 +547,7 @@ public class PatcherFixUtil {
 			long patcherProjectVersionId, boolean includeAnyStatusRebaseFixes)
 		throws Exception {
 
-		List<PatcherFix> filteredPatcherFixes = new ArrayList<PatcherFix>();
+		List<PatcherFix> filteredPatcherFixes = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes = PatcherFixUtil.getFilteredPatcherFixes(
 			patcherProjectVersionId, WorkflowConstants.STATUS_FIX_COMPLETE);
@@ -566,7 +568,7 @@ public class PatcherFixUtil {
 				continue;
 			}
 
-			if (patcherFix.getObsolete()) {
+			if (patcherFix.isObsolete()) {
 				continue;
 			}
 
@@ -586,7 +588,7 @@ public class PatcherFixUtil {
 			return StringPool.BLANK;
 		}
 
-		StringBundler sb = new StringBundler(14);
+		StringBundler sb = new StringBundler(12);
 
 		sb.append(PortletPropsValues.GITHUB_URL);
 		sb.append(StringPool.SLASH);
@@ -614,7 +616,7 @@ public class PatcherFixUtil {
 			List<PatcherFixPack> patcherFixPacks)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		for (PatcherFixPack patcherFixPack : patcherFixPacks) {
 			patcherFixIds.addAll(getPatcherFixIds(patcherFixPack));
@@ -626,7 +628,7 @@ public class PatcherFixUtil {
 	public static List<Long> getPatcherFixIds(PatcherFixPack patcherFixPack)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<PatcherFix> patcherFixPackPatcherFixes =
 			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixs(
@@ -706,14 +708,14 @@ public class PatcherFixUtil {
 					patcherFixPackVersion.getPatcherBuildId()));
 		}
 
-		return new ArrayList<PatcherFix>();
+		return new ArrayList<>();
 	}
 
 	public static List<Long> getPreviousVersionsPatcherFixIds(
 			PatcherFix patcherFix)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
 			new AlloyServiceInvoker(PatcherFix.class.getName());
@@ -753,8 +755,7 @@ public class PatcherFixUtil {
 			List<Long> patcherFixIds)
 		throws Exception {
 
-		Map<Integer, PatcherFix> statusPatcherFixMap =
-			new HashMap<Integer, PatcherFix>();
+		Map<Integer, PatcherFix> statusPatcherFixMap = new HashMap<>();
 
 		for (long patcherFixId : patcherFixIds) {
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
@@ -875,7 +876,7 @@ public class PatcherFixUtil {
 
 	@Transactional(
 		isolation = Isolation.PORTAL, propagation = Propagation.REQUIRES_NEW,
-		rollbackFor = {Exception.class}
+		rollbackFor = Exception.class
 	)
 	public static void processOSBPatcherFixAddJenkinsStatus(
 			AlloyController alloyController, long patcherFixId,
@@ -903,7 +904,7 @@ public class PatcherFixUtil {
 			JSONFactoryUtil.looseDeserializeSafe(
 				outcome, OSBPatcherServletOutcome.class);
 
-		List<String> messages = new ArrayList<String>();
+		List<String> messages = new ArrayList<>();
 
 		if (patcherFix.getType() == PatcherFixConstants.TYPE_REBASE) {
 			updatePatcherFixRebaseStatus(
@@ -922,7 +923,7 @@ public class PatcherFixUtil {
 	public static List<PatcherFix> toPatcherFixes(List<Long> patcherFixIds)
 		throws Exception {
 
-		List<PatcherFix> patcherFixes = new ArrayList<PatcherFix>();
+		List<PatcherFix> patcherFixes = new ArrayList<>();
 
 		for (long patcherFixId : patcherFixIds) {
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
@@ -997,7 +998,7 @@ public class PatcherFixUtil {
 	}
 
 	public static void validateDelete(PatcherFix patcherFix) throws Exception {
-		if (!patcherFix.getLatestFix()) {
+		if (!patcherFix.isLatestFix()) {
 			throw new AlloyException(
 				"the-fix-cannot-be-deleted-because-the-current-fix-is-not-" +
 					"the-latest");
@@ -1166,7 +1167,7 @@ public class PatcherFixUtil {
 	protected static List<Long> getPatcherFixIds(PatcherBuild patcherBuild)
 		throws Exception {
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes =
 			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
@@ -1393,6 +1394,6 @@ public class PatcherFixUtil {
 			patcherFix, jenkinsStatusJSONString);
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(PatcherFixUtil.class);
+	private static final Log _log = LogFactoryUtil.getLog(PatcherFixUtil.class);
 
 }

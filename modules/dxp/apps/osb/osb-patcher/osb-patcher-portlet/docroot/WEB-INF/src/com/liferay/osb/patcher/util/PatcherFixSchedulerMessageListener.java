@@ -45,7 +45,7 @@ public class PatcherFixSchedulerMessageListener extends BaseMessageListener {
 		PatcherUtil.notifyUsersInactivePatcherBaseModels(_alloyController);
 	}
 
-	private static PatcherFixSchedulerMessageListener _instance =
+	private static final PatcherFixSchedulerMessageListener _instance =
 		new PatcherFixSchedulerMessageListener();
 
 	private AlloyController _alloyController;

@@ -24,7 +24,6 @@ import com.liferay.osb.patcher.model.PatcherFixRelClp;
 import com.liferay.osb.patcher.model.PatcherProductVersionClp;
 import com.liferay.osb.patcher.model.PatcherProjectVersionClp;
 import com.liferay.osb.patcher.model.PatcherTicketHintClp;
-
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.log.Log;
@@ -46,6 +45,7 @@ import java.util.List;
  * @author Calvin Keum
  */
 public class ClpSerializer {
+
 	public static String getServletContextName() {
 		if (Validator.isNotNull(_servletContextName)) {
 			return _servletContextName;
@@ -60,13 +60,14 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Class<?> portletPropsClass = classLoader.loadClass(
-						"com.liferay.util.portlet.PortletProps");
+					"com.liferay.util.portlet.PortletProps");
 
-				Method getMethod = portletPropsClass.getMethod("get",
-						new Class<?>[] { String.class });
+				Method getMethod = portletPropsClass.getMethod(
+					"get", new Class<?>[] {String.class});
 
-				String portletPropsServletContextName = (String)getMethod.invoke(null,
-						"osb-patcher-portlet-deployment-context");
+				String portletPropsServletContextName =
+					(String)getMethod.invoke(
+						null, "osb-patcher-portlet-deployment-context");
 
 				if (Validator.isNotNull(portletPropsServletContextName)) {
 					_servletContextName = portletPropsServletContextName;
@@ -82,7 +83,7 @@ public class ClpSerializer {
 			if (Validator.isNull(_servletContextName)) {
 				try {
 					String propsUtilServletContextName = PropsUtil.get(
-							"osb-patcher-portlet-deployment-context");
+						"osb-patcher-portlet-deployment-context");
 
 					if (Validator.isNotNull(propsUtilServletContextName)) {
 						_servletContextName = propsUtilServletContextName;
@@ -137,11 +138,15 @@ public class ClpSerializer {
 			return translateInputPatcherFixRel(oldModel);
 		}
 
-		if (oldModelClassName.equals(PatcherProductVersionClp.class.getName())) {
+		if (oldModelClassName.equals(
+				PatcherProductVersionClp.class.getName())) {
+
 			return translateInputPatcherProductVersion(oldModel);
 		}
 
-		if (oldModelClassName.equals(PatcherProjectVersionClp.class.getName())) {
+		if (oldModelClassName.equals(
+				PatcherProjectVersionClp.class.getName())) {
+
 			return translateInputPatcherProjectVersion(oldModel);
 		}
 
@@ -153,15 +158,24 @@ public class ClpSerializer {
 	}
 
 	public static Object translateInput(List<Object> oldList) {
-		List<Object> newList = new ArrayList<Object>(oldList.size());
+		List<Object> newList = new ArrayList<>(oldList.size());
 
-		for (int i = 0; i < oldList.size(); i++) {
-			Object curObj = oldList.get(i);
-
+		for (Object curObj : oldList) {
 			newList.add(translateInput(curObj));
 		}
 
 		return newList;
+	}
+
+	public static Object translateInput(Object obj) {
+		if (obj instanceof BaseModel<?>) {
+			return translateInput((BaseModel<?>)obj);
+		}
+		else if (obj instanceof List<?>) {
+			return translateInput((List<Object>)obj);
+		}
+
+		return obj;
 	}
 
 	public static Object translateInputPatcherAccount(BaseModel<?> oldModel) {
@@ -206,6 +220,7 @@ public class ClpSerializer {
 
 	public static Object translateInputPatcherFixComponent(
 		BaseModel<?> oldModel) {
+
 		PatcherFixComponentClp oldClpModel = (PatcherFixComponentClp)oldModel;
 
 		BaseModel<?> newModel = oldClpModel.getPatcherFixComponentRemoteModel();
@@ -237,9 +252,12 @@ public class ClpSerializer {
 
 	public static Object translateInputPatcherProductVersion(
 		BaseModel<?> oldModel) {
-		PatcherProductVersionClp oldClpModel = (PatcherProductVersionClp)oldModel;
 
-		BaseModel<?> newModel = oldClpModel.getPatcherProductVersionRemoteModel();
+		PatcherProductVersionClp oldClpModel =
+			(PatcherProductVersionClp)oldModel;
+
+		BaseModel<?> newModel =
+			oldClpModel.getPatcherProductVersionRemoteModel();
 
 		newModel.setModelAttributes(oldClpModel.getModelAttributes());
 
@@ -248,16 +266,21 @@ public class ClpSerializer {
 
 	public static Object translateInputPatcherProjectVersion(
 		BaseModel<?> oldModel) {
-		PatcherProjectVersionClp oldClpModel = (PatcherProjectVersionClp)oldModel;
 
-		BaseModel<?> newModel = oldClpModel.getPatcherProjectVersionRemoteModel();
+		PatcherProjectVersionClp oldClpModel =
+			(PatcherProjectVersionClp)oldModel;
+
+		BaseModel<?> newModel =
+			oldClpModel.getPatcherProjectVersionRemoteModel();
 
 		newModel.setModelAttributes(oldClpModel.getModelAttributes());
 
 		return newModel;
 	}
 
-	public static Object translateInputPatcherTicketHint(BaseModel<?> oldModel) {
+	public static Object translateInputPatcherTicketHint(
+		BaseModel<?> oldModel) {
+
 		PatcherTicketHintClp oldClpModel = (PatcherTicketHintClp)oldModel;
 
 		BaseModel<?> newModel = oldClpModel.getPatcherTicketHintRemoteModel();
@@ -267,25 +290,14 @@ public class ClpSerializer {
 		return newModel;
 	}
 
-	public static Object translateInput(Object obj) {
-		if (obj instanceof BaseModel<?>) {
-			return translateInput((BaseModel<?>)obj);
-		}
-		else if (obj instanceof List<?>) {
-			return translateInput((List<Object>)obj);
-		}
-		else {
-			return obj;
-		}
-	}
-
 	public static Object translateOutput(BaseModel<?> oldModel) {
 		Class<?> oldModelClass = oldModel.getClass();
 
 		String oldModelClassName = oldModelClass.getName();
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherAccountImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherAccountImpl")) {
+
 			return translateOutputPatcherAccount(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -293,24 +305,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -322,7 +337,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherBuildImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherBuildImpl")) {
+
 			return translateOutputPatcherBuild(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -330,24 +346,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -359,7 +378,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherBuildRelImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherBuildRelImpl")) {
+
 			return translateOutputPatcherBuildRel(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -367,24 +387,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -396,7 +419,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherFixImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherFixImpl")) {
+
 			return translateOutputPatcherFix(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -404,24 +428,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -433,7 +460,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherFixComponentImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherFixComponentImpl")) {
+
 			return translateOutputPatcherFixComponent(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -441,24 +469,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -470,7 +501,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherFixPackImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherFixPackImpl")) {
+
 			return translateOutputPatcherFixPack(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -478,24 +510,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -507,7 +542,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherFixRelImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherFixRelImpl")) {
+
 			return translateOutputPatcherFixRel(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -515,24 +551,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -544,7 +583,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherProductVersionImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherProductVersionImpl")) {
+
 			return translateOutputPatcherProductVersion(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -552,24 +592,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -581,7 +624,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherProjectVersionImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherProjectVersionImpl")) {
+
 			return translateOutputPatcherProjectVersion(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -589,24 +633,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -618,7 +665,8 @@ public class ClpSerializer {
 		}
 
 		if (oldModelClassName.equals(
-					"com.liferay.osb.patcher.model.impl.PatcherTicketHintImpl")) {
+				"com.liferay.osb.patcher.model.impl.PatcherTicketHintImpl")) {
+
 			return translateOutputPatcherTicketHint(oldModel);
 		}
 		else if (oldModelClassName.endsWith("Clp")) {
@@ -626,24 +674,27 @@ public class ClpSerializer {
 				ClassLoader classLoader = ClpSerializer.class.getClassLoader();
 
 				Method getClpSerializerClassMethod = oldModelClass.getMethod(
-						"getClpSerializerClass");
+					"getClpSerializerClass");
 
-				Class<?> oldClpSerializerClass = (Class<?>)getClpSerializerClassMethod.invoke(oldModel);
+				Class<?> oldClpSerializerClass =
+					(Class<?>)getClpSerializerClassMethod.invoke(oldModel);
 
-				Class<?> newClpSerializerClass = classLoader.loadClass(oldClpSerializerClass.getName());
+				Class<?> newClpSerializerClass = classLoader.loadClass(
+					oldClpSerializerClass.getName());
 
-				Method translateOutputMethod = newClpSerializerClass.getMethod("translateOutput",
-						BaseModel.class);
+				Method translateOutputMethod = newClpSerializerClass.getMethod(
+					"translateOutput", BaseModel.class);
 
 				Class<?> oldModelModelClass = oldModel.getModelClass();
 
-				Method getRemoteModelMethod = oldModelClass.getMethod("get" +
-						oldModelModelClass.getSimpleName() + "RemoteModel");
+				Method getRemoteModelMethod = oldModelClass.getMethod(
+					"get" + oldModelModelClass.getSimpleName() + "RemoteModel");
 
 				Object oldRemoteModel = getRemoteModelMethod.invoke(oldModel);
 
-				BaseModel<?> newModel = (BaseModel<?>)translateOutputMethod.invoke(null,
-						oldRemoteModel);
+				BaseModel<?> newModel =
+					(BaseModel<?>)translateOutputMethod.invoke(
+						null, oldRemoteModel);
 
 				return newModel;
 			}
@@ -658,11 +709,9 @@ public class ClpSerializer {
 	}
 
 	public static Object translateOutput(List<Object> oldList) {
-		List<Object> newList = new ArrayList<Object>(oldList.size());
+		List<Object> newList = new ArrayList<>(oldList.size());
 
-		for (int i = 0; i < oldList.size(); i++) {
-			Object curObj = oldList.get(i);
-
+		for (Object curObj : oldList) {
 			newList.add(translateOutput(curObj));
 		}
 
@@ -676,124 +725,8 @@ public class ClpSerializer {
 		else if (obj instanceof List<?>) {
 			return translateOutput((List<Object>)obj);
 		}
-		else {
-			return obj;
-		}
-	}
 
-	public static Throwable translateThrowable(Throwable throwable) {
-		if (_useReflectionToTranslateThrowable) {
-			try {
-				UnsyncByteArrayOutputStream unsyncByteArrayOutputStream = new UnsyncByteArrayOutputStream();
-				ObjectOutputStream objectOutputStream = new ObjectOutputStream(unsyncByteArrayOutputStream);
-
-				objectOutputStream.writeObject(throwable);
-
-				objectOutputStream.flush();
-				objectOutputStream.close();
-
-				UnsyncByteArrayInputStream unsyncByteArrayInputStream = new UnsyncByteArrayInputStream(unsyncByteArrayOutputStream.unsafeGetByteArray(),
-						0, unsyncByteArrayOutputStream.size());
-
-				Thread currentThread = Thread.currentThread();
-
-				ClassLoader contextClassLoader = currentThread.getContextClassLoader();
-
-				ObjectInputStream objectInputStream = new ClassLoaderObjectInputStream(unsyncByteArrayInputStream,
-						contextClassLoader);
-
-				throwable = (Throwable)objectInputStream.readObject();
-
-				objectInputStream.close();
-
-				return throwable;
-			}
-			catch (ClassNotFoundException cnfe) {
-				if (_log.isInfoEnabled()) {
-					_log.info("Do not use reflection to translate throwable");
-				}
-
-				_useReflectionToTranslateThrowable = false;
-			}
-			catch (SecurityException se) {
-				if (_log.isInfoEnabled()) {
-					_log.info("Do not use reflection to translate throwable");
-				}
-
-				_useReflectionToTranslateThrowable = false;
-			}
-			catch (Throwable throwable2) {
-				_log.error(throwable2, throwable2);
-
-				return throwable2;
-			}
-		}
-
-		Class<?> clazz = throwable.getClass();
-
-		String className = clazz.getName();
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherAccountException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherAccountException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherBuildException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherBuildException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherBuildRelException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherBuildRelException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherFixException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherFixException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherFixComponentException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherFixComponentException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherFixPackException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherFixPackException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherFixRelException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherFixRelException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherProductVersionException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherProductVersionException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherProjectVersionException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherProjectVersionException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		if (className.equals(
-					"com.liferay.osb.patcher.NoSuchPatcherTicketHintException")) {
-			return new com.liferay.osb.patcher.NoSuchPatcherTicketHintException(throwable.getMessage(),
-				throwable.getCause());
-		}
-
-		return throwable;
+		return obj;
 	}
 
 	public static Object translateOutputPatcherAccount(BaseModel<?> oldModel) {
@@ -838,6 +771,7 @@ public class ClpSerializer {
 
 	public static Object translateOutputPatcherFixComponent(
 		BaseModel<?> oldModel) {
+
 		PatcherFixComponentClp newModel = new PatcherFixComponentClp();
 
 		newModel.setModelAttributes(oldModel.getModelAttributes());
@@ -869,6 +803,7 @@ public class ClpSerializer {
 
 	public static Object translateOutputPatcherProductVersion(
 		BaseModel<?> oldModel) {
+
 		PatcherProductVersionClp newModel = new PatcherProductVersionClp();
 
 		newModel.setModelAttributes(oldModel.getModelAttributes());
@@ -880,6 +815,7 @@ public class ClpSerializer {
 
 	public static Object translateOutputPatcherProjectVersion(
 		BaseModel<?> oldModel) {
+
 		PatcherProjectVersionClp newModel = new PatcherProjectVersionClp();
 
 		newModel.setModelAttributes(oldModel.getModelAttributes());
@@ -889,7 +825,9 @@ public class ClpSerializer {
 		return newModel;
 	}
 
-	public static Object translateOutputPatcherTicketHint(BaseModel<?> oldModel) {
+	public static Object translateOutputPatcherTicketHint(
+		BaseModel<?> oldModel) {
+
 		PatcherTicketHintClp newModel = new PatcherTicketHintClp();
 
 		newModel.setModelAttributes(oldModel.getModelAttributes());
@@ -899,7 +837,144 @@ public class ClpSerializer {
 		return newModel;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(ClpSerializer.class);
+	public static Throwable translateThrowable(Throwable throwable) {
+		if (_useReflectionToTranslateThrowable) {
+			try {
+				UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
+					new UnsyncByteArrayOutputStream();
+
+				ObjectOutputStream objectOutputStream = new ObjectOutputStream(
+					unsyncByteArrayOutputStream);
+
+				objectOutputStream.writeObject(throwable);
+
+				objectOutputStream.flush();
+				objectOutputStream.close();
+
+				UnsyncByteArrayInputStream unsyncByteArrayInputStream =
+					new UnsyncByteArrayInputStream(
+						unsyncByteArrayOutputStream.unsafeGetByteArray(), 0,
+						unsyncByteArrayOutputStream.size());
+
+				Thread currentThread = Thread.currentThread();
+
+				ClassLoader contextClassLoader =
+					currentThread.getContextClassLoader();
+
+				ObjectInputStream objectInputStream =
+					new ClassLoaderObjectInputStream(
+						unsyncByteArrayInputStream, contextClassLoader);
+
+				throwable = (Throwable)objectInputStream.readObject();
+
+				objectInputStream.close();
+
+				return throwable;
+			}
+			catch (ClassNotFoundException cnfe) {
+				if (_log.isInfoEnabled()) {
+					_log.info("Do not use reflection to translate throwable");
+				}
+
+				_useReflectionToTranslateThrowable = false;
+			}
+			catch (SecurityException se) {
+				if (_log.isInfoEnabled()) {
+					_log.info("Do not use reflection to translate throwable");
+				}
+
+				_useReflectionToTranslateThrowable = false;
+			}
+			catch (Throwable throwable2) {
+				_log.error(throwable2, throwable2);
+
+				return throwable2;
+			}
+		}
+
+		Class<?> clazz = throwable.getClass();
+
+		String className = clazz.getName();
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherAccountException")) {
+
+			return new com.liferay.osb.patcher.NoSuchPatcherAccountException(
+				throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherBuildException")) {
+
+			return new com.liferay.osb.patcher.NoSuchPatcherBuildException(
+				throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherBuildRelException")) {
+
+			return new com.liferay.osb.patcher.NoSuchPatcherBuildRelException(
+				throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherFixException")) {
+
+			return new com.liferay.osb.patcher.NoSuchPatcherFixException(
+				throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherFixComponentException")) {
+
+			return new com.liferay.osb.patcher.
+				NoSuchPatcherFixComponentException(
+					throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherFixPackException")) {
+
+			return new com.liferay.osb.patcher.NoSuchPatcherFixPackException(
+				throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherFixRelException")) {
+
+			return new com.liferay.osb.patcher.NoSuchPatcherFixRelException(
+				throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherProductVersionException")) {
+
+			return new com.liferay.osb.patcher.
+				NoSuchPatcherProductVersionException(
+					throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherProjectVersionException")) {
+
+			return new com.liferay.osb.patcher.
+				NoSuchPatcherProjectVersionException(
+					throwable.getMessage(), throwable.getCause());
+		}
+
+		if (className.equals(
+				"com.liferay.osb.patcher.NoSuchPatcherTicketHintException")) {
+
+			return new com.liferay.osb.patcher.NoSuchPatcherTicketHintException(
+				throwable.getMessage(), throwable.getCause());
+		}
+
+		return throwable;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(ClpSerializer.class);
+
 	private static String _servletContextName;
 	private static boolean _useReflectionToTranslateThrowable = true;
+
 }

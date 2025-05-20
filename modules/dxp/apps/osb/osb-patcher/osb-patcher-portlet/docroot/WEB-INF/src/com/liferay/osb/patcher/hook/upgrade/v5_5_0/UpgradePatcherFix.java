@@ -35,12 +35,13 @@ public class UpgradePatcherFix extends UpgradeProcess {
 					_TYPE_PRODUCT_VERSION_6X);
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
 	private static final int _TYPE_PRODUCT_VERSION_6X = 1;
 
-	private static Log _log = LogFactoryUtil.getLog(UpgradePatcherFix.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherFix.class);
 
 }

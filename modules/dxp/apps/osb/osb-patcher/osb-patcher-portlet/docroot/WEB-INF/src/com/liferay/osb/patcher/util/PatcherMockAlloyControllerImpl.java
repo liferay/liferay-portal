@@ -47,6 +47,6 @@ public class PatcherMockAlloyControllerImpl extends MockAlloyControllerImpl {
 			baseModel, properties);
 	}
 
-	private static PatcherAlloyControllerImpl _patcherAlloyControllerImpl;
+	private static final PatcherAlloyControllerImpl _patcherAlloyControllerImpl;
 
 }

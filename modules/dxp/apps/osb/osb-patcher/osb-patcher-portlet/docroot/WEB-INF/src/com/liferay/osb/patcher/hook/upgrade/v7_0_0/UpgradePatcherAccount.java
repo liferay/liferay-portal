@@ -43,7 +43,8 @@ public class UpgradePatcherAccount extends UpgradeProcess {
 			Class<?> clazz = getClass();
 
 			String csvText = StringUtil.read(
-				clazz.getClassLoader(), "com/liferay/osb/patcher/hook/" +
+				clazz.getClassLoader(),
+				"com/liferay/osb/patcher/hook/" +
 					"upgrade/v7_0_0/dependencies/AccountEntryIds_20181113.csv");
 
 			CSVParser csvParser = CSVParser.parse(
@@ -60,7 +61,7 @@ public class UpgradePatcherAccount extends UpgradeProcess {
 			}
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
@@ -70,7 +71,7 @@ public class UpgradePatcherAccount extends UpgradeProcess {
 
 	private static final CSVFormat _CSV_FORMAT = CSVFormat.DEFAULT;
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradePatcherAccount.class);
 
 }

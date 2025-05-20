@@ -29,6 +29,7 @@ import com.liferay.osb.patcher.service.PatcherFixComponentLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -39,7 +40,6 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BaseModel;
@@ -68,8 +68,7 @@ public class JenkinsUtil {
 				PatcherFix patcherFix, String patcherFixIds)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters =
-			new HashMap<String, String>();
+		Map<String, String> jenkinsRequestParameters = new HashMap<>();
 
 		jenkinsRequestParameters.put(
 			"osb.patcher.fixId", String.valueOf(patcherFix.getPatcherFixId()));
@@ -79,7 +78,7 @@ public class JenkinsUtil {
 			PortletPropsValues.
 				OSB_PATCHER_SHARED_REQUEST_BUILD_PATCH_PATCHER_TYPE);
 
-		if (!patcherProjectVersion.getCombinedBranch()) {
+		if (!patcherProjectVersion.isCombinedBranch()) {
 			String siblingCommittish = StringPool.BLANK;
 
 			PatcherFix siblingMainPatcherFix =
@@ -113,8 +112,7 @@ public class JenkinsUtil {
 				PatcherFix patcherFix)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters =
-			new HashMap<String, String>();
+		Map<String, String> jenkinsRequestParameters = new HashMap<>();
 
 		jenkinsRequestParameters.put(
 			"osb.patcher.committish",
@@ -187,8 +185,7 @@ public class JenkinsUtil {
 			PatcherBuild patcherBuild)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters =
-			new HashMap<String, String>();
+		Map<String, String> jenkinsRequestParameters = new HashMap<>();
 
 		PatcherAccount patcherAccount =
 			PatcherAccountLocalServiceUtil.getPatcherAccount(
@@ -235,7 +232,7 @@ public class JenkinsUtil {
 			jenkinsRequestParameters.put(
 				"fix.pack.hotfixed.issues", patcherBuild.getName());
 
-			if (!patcherProjectVersion.getCombinedBranch()) {
+			if (!patcherProjectVersion.isCombinedBranch()) {
 				PatcherFix mainPatcherFix =
 					PatcherFixLocalServiceUtil.getPatcherFix(
 						patcherBuild.getPatcherFixId());
@@ -287,7 +284,7 @@ public class JenkinsUtil {
 			"patcher.build.name", patcherBuild.getName());
 		jenkinsRequestParameters.put(
 			"patcher.combined.branch",
-			String.valueOf(patcherProjectVersion.getCombinedBranch()));
+			String.valueOf(patcherProjectVersion.isCombinedBranch()));
 		jenkinsRequestParameters.put(
 			"patcher.request.key", patcherBuild.getRequestKey());
 
@@ -326,7 +323,7 @@ public class JenkinsUtil {
 		throws Exception {
 
 		if (patcherFix == null) {
-			return new ArrayList<Map<String, String>>();
+			return new ArrayList<>();
 		}
 
 		String jenkinsResults = HtmlUtil.unescape(
@@ -395,8 +392,7 @@ public class JenkinsUtil {
 			PatcherBuild patcherBuild)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters =
-			new HashMap<String, String>();
+		Map<String, String> jenkinsRequestParameters = new HashMap<>();
 
 		jenkinsRequestParameters.put(
 			"patcher.build.file.name",
@@ -444,13 +440,10 @@ public class JenkinsUtil {
 			ThemeDisplay themeDisplay, PatcherFix patcherFix)
 		throws Exception {
 
-		if (patcherFix == null) {
-			return false;
-		}
-
-		if ((themeDisplay != null) &&
-			!PatcherPermission.contains(
-				themeDisplay, patcherFix, "sendRequest")) {
+		if ((patcherFix == null) ||
+			((themeDisplay != null) &&
+			 !PatcherPermission.contains(
+				 themeDisplay, patcherFix, "sendRequest"))) {
 
 			return false;
 		}
@@ -730,8 +723,9 @@ public class JenkinsUtil {
 			"yyyyMMddHHmmss");
 
 		String requestKey = PatcherUtil.generatePatcherKey(
-			baseModel.getClass().getName(), classPk,
-			dateFormat.format(new Date()));
+			baseModel.getClass(
+			).getName(),
+			classPk, dateFormat.format(new Date()));
 
 		BaseModelUtil.setBaseModelRequestKey(baseModel, requestKey);
 
@@ -764,7 +758,7 @@ public class JenkinsUtil {
 		throws Exception {
 
 		List<Map<String, String>> childPatcherBuildsJenkinsResults =
-			new ArrayList<Map<String, String>>();
+			new ArrayList<>();
 
 		List<PatcherBuild> childPatcherBuilds =
 			PatcherBuildRelUtil.getChildPatcherBuilds(patcherBuild);
@@ -795,15 +789,13 @@ public class JenkinsUtil {
 			String jenkinsResults, boolean appendPrivateSuffix)
 		throws Exception {
 
-		List<Map<String, String>> jenkinsResultsMaps =
-			new ArrayList<Map<String, String>>();
+		List<Map<String, String>> jenkinsResultsMaps = new ArrayList<>();
 
 		JSONArray jenkinsResultsJSONArray = JSONFactoryUtil.createJSONArray(
 			jenkinsResults);
 
 		for (int i = 0; i < jenkinsResultsJSONArray.length(); i++) {
-			Map<String, String> jenkinsResultMap =
-				new HashMap<String, String>();
+			Map<String, String> jenkinsResultMap = new HashMap<>();
 
 			JSONObject jenkinsResultJSONObject =
 				jenkinsResultsJSONArray.getJSONObject(i);
@@ -849,7 +841,7 @@ public class JenkinsUtil {
 		PatcherFix mainPatcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
 			patcherBuild.getPatcherFixId());
 
-		List<Long> patcherFixIds = new ArrayList<Long>();
+		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes =
 			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(

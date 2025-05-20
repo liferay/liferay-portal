@@ -60,7 +60,7 @@ public class UpgradePatcherFix extends UpgradeProcess {
 	protected List<Long> getParentPatcherFixIds(long patcherFixId)
 		throws Exception {
 
-		List<Long> parentPatcherFixIds = new ArrayList<Long>();
+		List<Long> parentPatcherFixIds = new ArrayList<>();
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -91,7 +91,7 @@ public class UpgradePatcherFix extends UpgradeProcess {
 	protected List<Long> getPatcherBuildIds(long patcherFixId)
 		throws Exception {
 
-		List<Long> patcherBuildIds = new ArrayList<Long>();
+		List<Long> patcherBuildIds = new ArrayList<>();
 
 		Connection con = null;
 		PreparedStatement ps = null;

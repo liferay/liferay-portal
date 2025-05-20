@@ -32,7 +32,7 @@ public class PatcherFixRadix {
 		}
 
 		if (!_map.containsKey(bucket)) {
-			List<PatcherFix> patcherFixes = new ArrayList<PatcherFix>();
+			List<PatcherFix> patcherFixes = new ArrayList<>();
 
 			patcherFixes.add(patcherFix);
 
@@ -62,7 +62,6 @@ public class PatcherFixRadix {
 	}
 
 	private int _currentBucket;
-	private Map<Integer, List<PatcherFix>> _map =
-		new HashMap<Integer, List<PatcherFix>>();
+	private final Map<Integer, List<PatcherFix>> _map = new HashMap<>();
 
 }

@@ -35,12 +35,13 @@ public class UpgradePatcherBuild extends UpgradeProcess {
 					_STATUS_BUILD_QA_FAILED_MANUALLY);
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
 	private static final int _STATUS_BUILD_QA_FAILED_MANUALLY = 221;
 
-	private static Log _log = LogFactoryUtil.getLog(UpgradePatcherBuild.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherBuild.class);
 
 }

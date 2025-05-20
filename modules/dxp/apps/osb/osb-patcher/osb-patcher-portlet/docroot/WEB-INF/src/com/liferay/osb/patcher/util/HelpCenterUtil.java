@@ -17,11 +17,11 @@ package com.liferay.osb.patcher.util;
 import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.service.PatcherAccountLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.io.File;
 import java.io.FileInputStream;

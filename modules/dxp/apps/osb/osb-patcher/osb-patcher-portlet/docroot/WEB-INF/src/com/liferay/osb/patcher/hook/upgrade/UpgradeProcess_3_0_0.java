@@ -23,7 +23,6 @@ import com.liferay.osb.patcher.hook.upgrade.v3_0_0.UpgradePatcherFixRel;
 /**
  * @author Eddie Olson
  */
-
 public class UpgradeProcess_3_0_0 extends UpgradeProcess {
 
 	@Override

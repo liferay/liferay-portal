@@ -26,6 +26,7 @@ import com.liferay.osb.patcher.service.PatcherFixComponentLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixPackLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -36,7 +37,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
@@ -154,11 +154,9 @@ public class PatcherFixPackUtil {
 			getFilteredPatcherFixPacksByComponentAndProjectVersion()
 		throws Exception {
 
-		List<PatcherFixPack> filteredPatcherFixPacks =
-			new ArrayList<PatcherFixPack>();
+		List<PatcherFixPack> filteredPatcherFixPacks = new ArrayList<>();
 
-		Map<Long, Set<Long>> patcherFixPackComponentIds =
-			new HashMap<Long, Set<Long>>();
+		Map<Long, Set<Long>> patcherFixPackComponentIds = new HashMap<>();
 
 		List<PatcherFixPack> currentPatcherFixPacks =
 			PatcherFixPackLocalServiceUtil.getPatcherFixPacks(
@@ -169,7 +167,7 @@ public class PatcherFixPackUtil {
 				currentPatcherFixPack.getPatcherProjectVersionId());
 
 			if (currentComponents == null) {
-				currentComponents = new HashSet<Long>();
+				currentComponents = new HashSet<>();
 			}
 
 			if (!currentComponents.contains(
@@ -228,7 +226,7 @@ public class PatcherFixPackUtil {
 	public static List<String> getPatcherFixPackNames(String name)
 		throws Exception {
 
-		List<String> patcherFixPackNames = new ArrayList<String>();
+		List<String> patcherFixPackNames = new ArrayList<>();
 
 		List<String> tokens = PatcherUtil.getTokens(name);
 
@@ -259,9 +257,9 @@ public class PatcherFixPackUtil {
 			PatcherFixPack patcherFixPack)
 		throws Exception {
 
-		List<String> patcherFixPackRequirements = new ArrayList<String>();
+		List<String> patcherFixPackRequirements = new ArrayList<>();
 
-		Set<String> allRequirements = new HashSet<String>();
+		Set<String> allRequirements = new HashSet<>();
 
 		allRequirements.addAll(getRequirements(patcherFixPack));
 
@@ -291,11 +289,7 @@ public class PatcherFixPackUtil {
 
 				matcher = pattern.matcher(patcherFixPackRequirement);
 
-				if (!matcher.find()) {
-					continue;
-				}
-
-				if (!component.equals(matcher.group(1))) {
+				if (!matcher.find() || !component.equals(matcher.group(1))) {
 					continue;
 				}
 
@@ -323,7 +317,7 @@ public class PatcherFixPackUtil {
 			List<String> patcherFixPackNames, long patcherProjectVersionId)
 		throws Exception {
 
-		List<PatcherFixPack> patcherFixPacks = new ArrayList<PatcherFixPack>();
+		List<PatcherFixPack> patcherFixPacks = new ArrayList<>();
 
 		for (String patcherFixPackName : patcherFixPackNames) {
 			patcherFixPacks.add(
@@ -362,8 +356,7 @@ public class PatcherFixPackUtil {
 			PatcherFixPack patcherFixPack)
 		throws Exception {
 
-		Set<PatcherFixPack> prerequisitePatcherFixPacks =
-			new HashSet<PatcherFixPack>();
+		Set<PatcherFixPack> prerequisitePatcherFixPacks = new HashSet<>();
 
 		PatcherFixComponent dependentPatcherFixComponent =
 			PatcherFixComponentLocalServiceUtil.getPatcherFixComponent(
@@ -458,7 +451,7 @@ public class PatcherFixPackUtil {
 			PatcherFixPack patcherFixPack)
 		throws Exception {
 
-		Set<String> requirements = new HashSet<String>();
+		Set<String> requirements = new HashSet<>();
 
 		requirements.addAll(
 			SetUtil.fromArray(
@@ -491,7 +484,7 @@ public class PatcherFixPackUtil {
 	protected static Set<String> getRequirements(PatcherFixPack patcherFixPack)
 		throws Exception {
 
-		Set<String> requirements = new HashSet<String>();
+		Set<String> requirements = new HashSet<>();
 
 		requirements.addAll(getRequirementFields(patcherFixPack));
 
@@ -514,6 +507,7 @@ public class PatcherFixPackUtil {
 		return requirements;
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(PatcherFixPackUtil.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		PatcherFixPackUtil.class);
 
 }

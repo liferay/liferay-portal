@@ -85,10 +85,11 @@ public class UpgradePatcherFix extends UpgradeProcess {
 	}
 
 	private static final String[] _REPLACE_WITH = {
-		"fixpack-builder-agent(production)",
-		"fixpack-builder-dist(production)"};
+		"fixpack-builder-agent(production)", "fixpack-builder-dist(production)"
+	};
 
 	private static final String[] _SEARCH_FOR = {
-		"fixpack-builder-agent", "fixpack-builder-dist"};
+		"fixpack-builder-agent", "fixpack-builder-dist"
+	};
 
 }

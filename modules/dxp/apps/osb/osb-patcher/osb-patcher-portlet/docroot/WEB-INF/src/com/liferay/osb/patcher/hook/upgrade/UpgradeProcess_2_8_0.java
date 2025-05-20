@@ -20,7 +20,6 @@ import com.liferay.osb.patcher.hook.upgrade.v2_8_0.UpgradePatcherPortalVersion;
 /**
  * @author Johnny Duong
  */
-
 public class UpgradeProcess_2_8_0 extends UpgradeProcess {
 
 	@Override

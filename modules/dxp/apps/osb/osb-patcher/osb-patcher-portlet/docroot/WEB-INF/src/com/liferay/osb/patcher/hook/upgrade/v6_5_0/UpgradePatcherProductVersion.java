@@ -40,15 +40,16 @@ public class UpgradePatcherProductVersion extends UpgradeProcess {
 			}
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
 	private static final String[] _TABLES_WITH_PRODUCT_VERSION = {
 		PatcherBuildModelImpl.TABLE_NAME, PatcherFixModelImpl.TABLE_NAME,
-			PatcherProjectVersionModelImpl.TABLE_NAME};
+		PatcherProjectVersionModelImpl.TABLE_NAME
+	};
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradePatcherProductVersion.class);
 
 }

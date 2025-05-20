@@ -198,7 +198,7 @@ public class PatcherFixPackIndexer extends BaseAlloyIndexer {
 		return new Summary(title, content, portletURL);
 	}
 
-	private static PatcherFixPackIndexer _instance =
+	private static final PatcherFixPackIndexer _instance =
 		new PatcherFixPackIndexer();
 
 }

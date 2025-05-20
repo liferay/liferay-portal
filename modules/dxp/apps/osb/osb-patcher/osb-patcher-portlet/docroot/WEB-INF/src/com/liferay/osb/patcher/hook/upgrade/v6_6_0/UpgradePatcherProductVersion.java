@@ -50,7 +50,7 @@ public class UpgradePatcherProductVersion extends UpgradeProcess {
 			runSQL(sb.toString());
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
@@ -64,7 +64,7 @@ public class UpgradePatcherProductVersion extends UpgradeProcess {
 
 	private static final String _TYPE_FIX_DELIVERY_METHOD_FIX_PACK_30 = "2";
 
-	private static Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradePatcherProductVersion.class);
 
 }

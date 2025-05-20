@@ -15,8 +15,8 @@
 package com.liferay.osb.patcher.hook.upgrade.v5_8_0;
 
 import com.liferay.compat.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.util.StringPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

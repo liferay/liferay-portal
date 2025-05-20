@@ -18,7 +18,7 @@ import com.liferay.osb.patcher.service.base.PatcherProjectVersionLocalServiceBas
 
 /**
  * @author Calvin Keum
- * @see com.liferay.osb.patcher.service.base.PatcherProjectVersionLocalServiceBaseImpl
+ * @see PatcherProjectVersionLocalServiceBaseImpl
  * @see com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil
  */
 public class PatcherProjectVersionLocalServiceImpl

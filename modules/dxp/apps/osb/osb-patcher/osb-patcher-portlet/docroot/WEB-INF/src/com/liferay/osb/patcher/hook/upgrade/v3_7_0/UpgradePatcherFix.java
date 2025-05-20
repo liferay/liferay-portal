@@ -65,7 +65,7 @@ public class UpgradePatcherFix extends UpgradeProcess {
 							curPatcherFixId);
 			}
 			catch (Exception e) {
-				_log.error(e, e);
+				_log.error(e);
 			}
 		}
 	}
@@ -96,14 +96,15 @@ public class UpgradePatcherFix extends UpgradeProcess {
 		}
 	}
 
-	private static final long[][] _REMOVE_PATCHER_FIX_IDS = new long[][] {
+	private static final long[][] _REMOVE_PATCHER_FIX_IDS = {
 		{3450510}, {3450516}, {3453526}, {3450513}, {3382896}
 	};
 
 	private static final long[] _ROOT_PATCHER_FIX_IDS = {
-		3066188, 3035339, 3060674, 3060747, 3359201,
+		3066188, 3035339, 3060674, 3060747, 3359201
 	};
 
-	private static Log _log = LogFactoryUtil.getLog(UpgradePatcherFix.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherFix.class);
 
 }

@@ -20,6 +20,7 @@ import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
 import com.liferay.osb.patcher.model.impl.PatcherProductVersionModelImpl;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
@@ -29,7 +30,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.BaseModel;
 
 import java.util.Collections;

@@ -34,11 +34,10 @@ public class UpgradePatcherFix extends UpgradeProcess {
 		try {
 			runSQL(
 				"create unique index IX_8BFFC3A0 on OSB_PatcherFix " +
-					"(patcherFixKey, patcherFixVersion)"
-			);
+					"(patcherFixKey, patcherFixVersion)");
 		}
 		catch (Exception e) {
-			_log.error(e, e);
+			_log.error(e);
 		}
 	}
 
@@ -52,6 +51,7 @@ public class UpgradePatcherFix extends UpgradeProcess {
 		}
 	}
 
-	private static Log _log = LogFactoryUtil.getLog(UpgradePatcherFix.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		UpgradePatcherFix.class);
 
 }

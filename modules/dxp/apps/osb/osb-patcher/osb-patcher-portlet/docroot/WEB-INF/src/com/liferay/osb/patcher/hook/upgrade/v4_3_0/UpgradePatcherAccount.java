@@ -41,7 +41,7 @@ public class UpgradePatcherAccount extends UpgradeProcess {
 
 	protected void updatePatcherAccount() throws Exception {
 		Map<String, Long> patcherAccountEntryCodePatcherAccountIdsMap =
-			new HashMap<String, Long>();
+			new HashMap<>();
 
 		List<PatcherBuild> patcherBuilds =
 			PatcherBuildLocalServiceUtil.getPatcherBuilds(

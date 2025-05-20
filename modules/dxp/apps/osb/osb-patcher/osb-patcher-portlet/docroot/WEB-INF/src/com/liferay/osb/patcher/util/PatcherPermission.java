@@ -15,8 +15,8 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyPermission;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.security.permission.PermissionThreadLocal;

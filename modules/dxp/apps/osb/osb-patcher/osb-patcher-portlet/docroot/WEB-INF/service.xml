@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
 
 <service-builder package-path="com.liferay.osb.patcher">
 	<author>Calvin Keum</author>
 	<namespace>OSB</namespace>
-	<entity name="PatcherAccount" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherAccount" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherAccountId" type="long" primary="true" />
+		<column name="patcherAccountId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -25,13 +25,13 @@
 
 		<!-- Relationships -->
 
-		<column name="patcherBuilds" type="Collection" entity="PatcherBuild" mapping-table="PatcherAccounts_PatcherBuilds" />
+		<column entity="PatcherBuild" mapping-table="PatcherAccounts_PatcherBuilds" name="patcherBuilds" type="Collection" />
 	</entity>
-	<entity name="PatcherBuild" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherBuild" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherBuildId" type="long" primary="true" />
+		<column name="patcherBuildId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -79,8 +79,8 @@
 
 		<!-- Relationships -->
 
-		<column name="patcherAccounts" type="Collection" entity="PatcherAccount" mapping-table="PatcherAccounts_PatcherBuilds" />
-		<column name="patcherFixes" type="Collection" entity="PatcherFix" mapping-table="PatcherBuilds_PatcherFixes" />
+		<column entity="PatcherAccount" mapping-table="PatcherAccounts_PatcherBuilds" name="patcherAccounts" type="Collection" />
+		<column entity="PatcherFix" mapping-table="PatcherBuilds_PatcherFixes" name="patcherFixes" type="Collection" />
 
 		<!-- Finder methods -->
 
@@ -89,22 +89,22 @@
 			<finder-column name="keyVersion" />
 		</finder>
 	</entity>
-	<entity name="PatcherBuildRel" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherBuildRel" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherBuildRelId" type="long" primary="true" />
+		<column name="patcherBuildRelId" primary="true" type="long" />
 
 		<!-- Other fields -->
 
 		<column name="childPatcherBuildId" type="long" />
 		<column name="parentPatcherBuildId" type="long" />
 	</entity>
-	<entity name="PatcherFix" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherFix" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherFixId" type="long" primary="true" />
+		<column name="patcherFixId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -142,14 +142,14 @@
 
 		<!-- Relationships -->
 
-		<column name="patcherBuilds" type="Collection" entity="PatcherBuild" mapping-table="PatcherBuilds_PatcherFixes" />
-		<column name="patcherFixPack" type="Collection" entity="PatcherFixPack" mapping-table="PatcherFixes_PatcherFixPacks" />
+		<column entity="PatcherBuild" mapping-table="PatcherBuilds_PatcherFixes" name="patcherBuilds" type="Collection" />
+		<column entity="PatcherFixPack" mapping-table="PatcherFixes_PatcherFixPacks" name="patcherFixPack" type="Collection" />
 	</entity>
-	<entity name="PatcherFixComponent" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherFixComponent" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherFixComponentId" type="long" primary="true" />
+		<column name="patcherFixComponentId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -163,11 +163,11 @@
 
 		<column name="name" type="String" />
 	</entity>
-	<entity name="PatcherFixPack" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherFixPack" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherFixPackId" type="long" primary="true" />
+		<column name="patcherFixPackId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -190,7 +190,7 @@
 
 		<!-- Relationships -->
 
-		<column name="patcherFix" type="Collection" entity="PatcherFix" mapping-table="PatcherFixes_PatcherFixPacks" />
+		<column entity="PatcherFix" mapping-table="PatcherFixes_PatcherFixPacks" name="patcherFix" type="Collection" />
 
 		<!-- Finder methods -->
 
@@ -201,22 +201,22 @@
 			<finder-column name="version" />
 		</finder>
 	</entity>
-	<entity name="PatcherFixRel" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherFixRel" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherFixRelId" type="long" primary="true" />
+		<column name="patcherFixRelId" primary="true" type="long" />
 
 		<!-- Other fields -->
 
 		<column name="childPatcherFixId" type="long" />
 		<column name="parentPatcherFixId" type="long" />
 	</entity>
-	<entity name="PatcherProductVersion" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherProductVersion" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherProductVersionId" type="long" primary="true" />
+		<column name="patcherProductVersionId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -232,11 +232,11 @@
 		<column name="fixDeliveryMethod" type="int" />
 		<column name="moduleFolderName" type="String" />
 	</entity>
-	<entity name="PatcherProjectVersion" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherProjectVersion" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherProjectVersionId" type="long" primary="true" />
+		<column name="patcherProjectVersionId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
@@ -258,11 +258,11 @@
 		<column name="fixedIssues" type="String" />
 		<column name="productVersion" type="int" />
 	</entity>
-	<entity name="PatcherTicketHint" local-service="true" remote-service="false">
+	<entity local-service="true" name="PatcherTicketHint" remote-service="false">
 
 		<!-- PK fields -->
 
-		<column name="patcherTicketHintId" type="long" primary="true" />
+		<column name="patcherTicketHintId" primary="true" type="long" />
 
 		<!-- Audit fields -->
 
