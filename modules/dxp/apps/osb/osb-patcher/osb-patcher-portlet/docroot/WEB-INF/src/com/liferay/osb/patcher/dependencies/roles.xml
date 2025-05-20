@@ -1,0 +1,364 @@
+<?xml version="1.0"?>
+
+<roles>
+	<role>
+		<name>Patcher Admin</name>
+		<organization-role>false</organization-role>
+		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+			<action-key>ADD_BY_NAME#BUILDS</action-key>
+			<action-key>ADD_BY_NAME#PROJECT_VERSIONS</action-key>
+			<action-key>ADD_TO_PAGE</action-key>
+			<action-key>ADD#BUILDS</action-key>
+			<action-key>ADD#FIX_COMPONENTS</action-key>
+			<action-key>ADD#FIX_PACKS</action-key>
+			<action-key>ADD#FIXES</action-key>
+			<action-key>ADD#PRODUCT_VERSIONS</action-key>
+			<action-key>ADD#PROJECT_VERSIONS</action-key>
+			<action-key>CONFIGURATION</action-key>
+			<action-key>CREATE#BUILDS</action-key>
+			<action-key>CREATE#FIX_COMPONENTS</action-key>
+			<action-key>CREATE#FIX_PACKS</action-key>
+			<action-key>CREATE#FIXES</action-key>
+			<action-key>CREATE#PRODUCT_VERSIONS</action-key>
+			<action-key>CREATE#PROJECT_VERSIONS</action-key>
+			<action-key>INDEX#ACCOUNTS</action-key>
+			<action-key>INDEX#BUILDS</action-key>
+			<action-key>INDEX#FIXES</action-key>
+			<action-key>INDEX#FIX_COMPONENTS</action-key>
+			<action-key>INDEX#FIX_PACKS</action-key>
+			<action-key>INDEX#PRODUCT_VERSIONS</action-key>
+			<action-key>INDEX#PROJECT_VERSIONS</action-key>
+			<action-key>PERMISSIONS</action-key>
+			<action-key>SAVE_BY_NAME#FIXES</action-key>
+			<action-key>UPDATE_FIXED_ISSUES#PROJECT_VERSIONS</action-key>
+			<action-key>VIEW</action-key>
+			<action-key>VIEW#ACCOUNTS</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherAccount">
+			<action-key>CONFIGURATION</action-key>
+			<action-key>PERMISSIONS</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherBuild">
+			<action-key>CONFIGURATION</action-key>
+			<action-key>BUILD</action-key>
+			<action-key>CHILD_BUILDS</action-key>
+			<action-key>CONTENT</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>EDIT_QA_FIELDS</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>PERMISSIONS</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>SMOKE_TEST</action-key>
+			<action-key>TEST</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>UPDATE_META_DATA_FIELDS</action-key>
+			<action-key>UPDATE_QA_FIELDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFix">
+			<action-key>BUILDS</action-key>
+			<action-key>CONFIGURATION</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>EDIT_FIX_PACK_FIELDS</action-key>
+			<action-key>EXCLUDE</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>PERMISSIONS</action-key>
+			<action-key>SET_FIX_PACK_FIELDS</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixComponent">
+			<action-key>CONFIGURATION</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>PERMISSIONS</action-key>
+			<action-key>UPDATE</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixPack">
+			<action-key>BUILD</action-key>
+			<action-key>CONFIGURATION</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>PERMISSIONS</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>SET_BUILD</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherProductVersion">
+			<action-key>EDIT</action-key>
+			<action-key>UPDATE</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherProjectVersion">
+			<action-key>ACCOUNT_BUILDS</action-key>
+			<action-key>CONFIGURATION</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>PERMISSIONS</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+	</role>
+	<role>
+		<name>Patcher Customer Support Engineer</name>
+		<organization-role>false</organization-role>
+		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+			<action-key>ADD_BY_NAME#BUILDS</action-key>
+			<action-key>ADD#BUILDS</action-key>
+			<action-key>ADD#FIX_COMPONENTS</action-key>
+			<action-key>ADD#FIX_PACKS</action-key>
+			<action-key>ADD#FIXES</action-key>
+			<action-key>CREATE#BUILDS</action-key>
+			<action-key>CREATE#FIX_COMPONENTS</action-key>
+			<action-key>CREATE#FIX_PACKS</action-key>
+			<action-key>CREATE#FIXES</action-key>
+			<action-key>INDEX#ACCOUNTS</action-key>
+			<action-key>INDEX#BUILDS</action-key>
+			<action-key>INDEX#FIXES</action-key>
+			<action-key>INDEX#FIX_COMPONENTS</action-key>
+			<action-key>INDEX#FIX_PACKS</action-key>
+			<action-key>INDEX#PROJECT_VERSIONS</action-key>
+			<action-key>SAVE_BY_NAME#FIXES</action-key>
+			<action-key>VIEW</action-key>
+			<action-key>VIEW#ACCOUNTS</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherBuild">
+			<action-key>BUILD</action-key>
+			<action-key>CHILD_BUILDS</action-key>
+			<action-key>CONTENT</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>EDIT_QA_FIELDS</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>UPDATE_META_DATA_FIELDS</action-key>
+			<action-key>UPDATE_QA_FIELDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFix">
+			<action-key>BUILDS</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixComponent">
+			<action-key>EDIT</action-key>
+			<action-key>UPDATE</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixPack">
+			<action-key>BUILD</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>SET_BUILD</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherProjectVersion">
+			<action-key>ACCOUNT_BUILDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+	</role>
+	<role>
+		<name>Patcher Fix Pack Engineer</name>
+		<organization-role>false</organization-role>
+		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+			<action-key>ADD_BY_NAME#BUILDS</action-key>
+			<action-key>ADD#BUILDS</action-key>
+			<action-key>ADD#FIX_COMPONENTS</action-key>
+			<action-key>ADD#FIX_PACKS</action-key>
+			<action-key>ADD#FIXES</action-key>
+			<action-key>CREATE#BUILDS</action-key>
+			<action-key>CREATE#FIX_COMPONENTS</action-key>
+			<action-key>CREATE#FIX_PACKS</action-key>
+			<action-key>CREATE#FIXES</action-key>
+			<action-key>INDEX#ACCOUNTS</action-key>
+			<action-key>INDEX#BUILDS</action-key>
+			<action-key>INDEX#FIXES</action-key>
+			<action-key>INDEX#FIX_COMPONENTS</action-key>
+			<action-key>INDEX#FIX_PACKS</action-key>
+			<action-key>INDEX#PROJECT_VERSIONS</action-key>
+			<action-key>SAVE_BY_NAME#FIXES</action-key>
+			<action-key>VIEW</action-key>
+			<action-key>VIEW#ACCOUNTS</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherBuild">
+			<action-key>BUILD</action-key>
+			<action-key>CHILD_BUILDS</action-key>
+			<action-key>CONTENT</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>EDIT_QA_FIELDS</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>UPDATE_META_DATA_FIELDS</action-key>
+			<action-key>UPDATE_QA_FIELDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFix">
+			<action-key>BUILDS</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>EDIT_FIX_PACK_FIELDS</action-key>
+			<action-key>EXCLUDE</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>SET_FIX_PACK_FIELDS</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixComponent">
+			<action-key>EDIT</action-key>
+			<action-key>UPDATE</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixPack">
+			<action-key>BUILD</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>SET_BUILD</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherProjectVersion">
+			<action-key>ACCOUNT_BUILDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+	</role>
+	<role>
+		<name>Patcher Technical Support Engineer</name>
+		<organization-role>false</organization-role>
+		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+			<action-key>ADD_BY_NAME#BUILDS</action-key>
+			<action-key>ADD#BUILDS</action-key>
+			<action-key>ADD#FIX_COMPONENTS</action-key>
+			<action-key>ADD#FIX_PACKS</action-key>
+			<action-key>ADD#FIXES</action-key>
+			<action-key>CREATE#BUILDS</action-key>
+			<action-key>CREATE#FIX_COMPONENTS</action-key>
+			<action-key>CREATE#FIX_PACKS</action-key>
+			<action-key>CREATE#FIXES</action-key>
+			<action-key>INDEX#ACCOUNTS</action-key>
+			<action-key>INDEX#BUILDS</action-key>
+			<action-key>INDEX#FIXES</action-key>
+			<action-key>INDEX#FIX_COMPONENTS</action-key>
+			<action-key>INDEX#FIX_PACKS</action-key>
+			<action-key>INDEX#PROJECT_VERSIONS</action-key>
+			<action-key>SAVE_BY_NAME#FIXES</action-key>
+			<action-key>VIEW</action-key>
+			<action-key>VIEW#ACCOUNTS</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherBuild">
+			<action-key>BUILD</action-key>
+			<action-key>CHILD_BUILDS</action-key>
+			<action-key>CONTENT</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>EDIT_QA_FIELDS</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>UPDATE_META_DATA_FIELDS</action-key>
+			<action-key>UPDATE_QA_FIELDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFix">
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixComponent">
+			<action-key>EDIT</action-key>
+			<action-key>UPDATE</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixPack">
+			<action-key>BUILD</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>SET_BUILD</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherProjectVersion">
+			<action-key>ACCOUNT_BUILDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+	</role>
+	<role>
+		<name>Patcher User</name>
+		<organization-role>false</organization-role>
+		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+			<action-key>ADD_BY_NAME#BUILDS</action-key>
+			<action-key>ADD#BUILDS</action-key>
+			<action-key>ADD#FIX_COMPONENTS</action-key>
+			<action-key>ADD#FIX_PACKS</action-key>
+			<action-key>ADD#FIXES</action-key>
+			<action-key>CREATE#BUILDS</action-key>
+			<action-key>CREATE#FIX_COMPONENTS</action-key>
+			<action-key>CREATE#FIX_PACKS</action-key>
+			<action-key>CREATE#FIXES</action-key>
+			<action-key>INDEX#ACCOUNTS</action-key>
+			<action-key>INDEX#BUILDS</action-key>
+			<action-key>INDEX#FIXES</action-key>
+			<action-key>INDEX#FIX_COMPONENTS</action-key>
+			<action-key>INDEX#FIX_PACKS</action-key>
+			<action-key>INDEX#PROJECT_VERSIONS</action-key>
+			<action-key>SAVE_BY_NAME#FIXES</action-key>
+			<action-key>VIEW</action-key>
+			<action-key>VIEW#ACCOUNTS</action-key>
+			<action-key>VIEW_ISSUES#FIX_PACKS</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherBuild">
+			<action-key>BUILD</action-key>
+			<action-key>CHILD_BUILDS</action-key>
+			<action-key>CONTENT</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>EDIT_QA_FIELDS</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>SMOKE_TEST</action-key>
+			<action-key>TEST</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>UPDATE_META_DATA_FIELDS</action-key>
+			<action-key>UPDATE_QA_FIELDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFix">
+			<action-key>BUILDS</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>EDIT_COMMENTS_FIELD</action-key>
+			<action-key>FIXES</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>UPDATE_COMMENTS_FIELD</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixComponent">
+			<action-key>EDIT</action-key>
+			<action-key>UPDATE</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherFixPack">
+			<action-key>BUILD</action-key>
+			<action-key>EDIT</action-key>
+			<action-key>SEND_REQUEST</action-key>
+			<action-key>SET_BUILD</action-key>
+			<action-key>UPDATE</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+		<default-action-keys resourceName="com.liferay.osb.patcher.model.PatcherProjectVersion">
+			<action-key>ACCOUNT_BUILDS</action-key>
+			<action-key>VIEW</action-key>
+		</default-action-keys>
+	</role>
+</roles>

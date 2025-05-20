@@ -1,0 +1,172 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
+package com.liferay.osb.patcher.util;
+
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.model.BaseModel;
+
+import java.lang.reflect.Method;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Zsolt Balogh
+ */
+public class BaseModelUtil {
+
+	public static BaseModel<?> fetchBaseModel(
+			Class<?> clazz, String modelClassName, long classPK)
+		throws Exception {
+
+		ClassLoader classLoader = clazz.getClassLoader();
+
+		int pos = modelClassName.indexOf(".model.");
+
+		String simpleClassName = modelClassName.substring(pos + 7);
+
+		String localServiceUtilClassName =
+			modelClassName.substring(0, pos) + ".service." + simpleClassName +
+				"LocalServiceUtil";
+
+		Class<?> localServiceUtilClass = classLoader.loadClass(
+			localServiceUtilClassName);
+
+		String methodName = "fetch" + simpleClassName;
+
+		Method fetchBaseModelMethod = localServiceUtilClass.getMethod(
+			methodName, new Class[] {long.class});
+
+		return (BaseModel<?>)fetchBaseModelMethod.invoke(
+			localServiceUtilClass, classPK);
+	}
+
+	public static String fetchBaseModelRequestKey(BaseModel<?> baseModel) {
+		try {
+			return getBaseModelRequestKey(baseModel);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static List<Long> fetchBaseModelsPrimaryIds(
+			List<BaseModel> baseModels)
+		throws Exception {
+
+		List<Long> baseModelIds = new ArrayList<Long>();
+
+		for (BaseModel<?> baseModel : baseModels) {
+			baseModelIds.add(GetterUtil.getLong(baseModel.getPrimaryKeyObj()));
+		}
+
+		return baseModelIds;
+	}
+
+	public static Integer fetchBaseModelStatus(BaseModel<?> baseModel) {
+		try {
+			return getBaseModelStatus(baseModel);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static Long fetchBaseModelStatusByUserId(BaseModel<?> baseModel) {
+		try {
+			return getBaseModelStatusByUserId(baseModel);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static Long fetchBaseModelUserId(BaseModel<?> baseModel) {
+		try {
+			return getBaseModelUserId(baseModel);
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static String getBaseModelRequestKey(BaseModel<?> baseModel)
+		throws Exception {
+
+		Class clazz = baseModel.getClass();
+
+		Method getRequestKeyMethod = clazz.getMethod(
+			"getRequestKey", new Class[0]);
+
+		return (String)getRequestKeyMethod.invoke(baseModel);
+	}
+
+	public static int getBaseModelStatus(BaseModel<?> baseModel)
+		throws Exception {
+
+		Class<?> baseModelClass = baseModel.getClass();
+
+		Method getStatusMethod = baseModelClass.getMethod(
+			"getStatus", new Class[0]);
+
+		return (Integer)getStatusMethod.invoke(baseModel);
+	}
+
+	public static long getBaseModelStatusByUserId(BaseModel<?> baseModel)
+		throws Exception {
+
+		Class<?> baseModelClass = baseModel.getClass();
+
+		Method getStatusByUserIdMethod = baseModelClass.getMethod(
+			"getStatusByUserId", new Class[0]);
+
+		return (Long)getStatusByUserIdMethod.invoke(baseModel);
+	}
+
+	public static long getBaseModelUserId(BaseModel<?> baseModel)
+		throws Exception {
+
+		Class<?> baseModelClass = baseModel.getClass();
+
+		Method getUserIdMethod = baseModelClass.getMethod(
+			"getUserId", new Class[0]);
+
+		return (Long)getUserIdMethod.invoke(baseModel);
+	}
+
+	public static void setBaseModelRequestKey(
+			BaseModel<?> baseModel, String requestKey)
+		throws Exception {
+
+		Class<?> clazz = baseModel.getClass();
+
+		Method setRequestKeyMethod = clazz.getMethod(
+			"setRequestKey", new Class[] {String.class});
+
+		setRequestKeyMethod.invoke(baseModel, requestKey);
+	}
+
+	public static void setBaseModelStatus(BaseModel<?> baseModel, int status)
+		throws Exception {
+
+		Class<?> clazz = baseModel.getClass();
+
+		Method setStatusMethod = clazz.getMethod(
+			"setStatus", new Class[] {int.class});
+
+		setStatusMethod.invoke(baseModel, status);
+	}
+
+}

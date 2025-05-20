@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<bean id="com.liferay.osb.patcher.service.PatcherAccountLocalService" class="com.liferay.osb.patcher.service.impl.PatcherAccountLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherAccountPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherAccountPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherBuildLocalService" class="com.liferay.osb.patcher.service.impl.PatcherBuildLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherBuildPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherBuildPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherBuildRelLocalService" class="com.liferay.osb.patcher.service.impl.PatcherBuildRelLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherBuildRelPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherBuildRelPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherFixLocalService" class="com.liferay.osb.patcher.service.impl.PatcherFixLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherFixPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherFixPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherFixComponentLocalService" class="com.liferay.osb.patcher.service.impl.PatcherFixComponentLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherFixComponentPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherFixComponentPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherFixPackLocalService" class="com.liferay.osb.patcher.service.impl.PatcherFixPackLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherFixPackPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherFixPackPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherFixRelLocalService" class="com.liferay.osb.patcher.service.impl.PatcherFixRelLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherFixRelPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherFixRelPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherProductVersionLocalService" class="com.liferay.osb.patcher.service.impl.PatcherProductVersionLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherProductVersionPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherProductVersionPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherProjectVersionLocalService" class="com.liferay.osb.patcher.service.impl.PatcherProjectVersionLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherProjectVersionPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherProjectVersionPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.osb.patcher.service.PatcherTicketHintLocalService" class="com.liferay.osb.patcher.service.impl.PatcherTicketHintLocalServiceImpl" />
+	<bean id="com.liferay.osb.patcher.service.persistence.PatcherTicketHintPersistence" class="com.liferay.osb.patcher.service.persistence.PatcherTicketHintPersistenceImpl" parent="basePersistence" />
+</beans>

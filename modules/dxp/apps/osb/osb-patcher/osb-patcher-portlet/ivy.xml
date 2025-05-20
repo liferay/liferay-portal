@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<ivy-module
+	version="2.0"
+	xmlns:m2="http://ant.apache.org/ivy/maven"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
+>
+	<info module="${ivy.module.name}" organisation="com.liferay">
+		<extends extendType="configurations,description,info" location="${sdk.dir}/ivy.xml" module="com.liferay.sdk" organisation="com.liferay" revision="latest.integration" />
+	</info>
+
+	<dependencies defaultconf="default">
+		<dependency name="gax" org="com.google.api" rev="2.18.2" />
+		<dependency name="proto-google-cloud-pubsub-v1" org="com.google.api.grpc" rev="1.101.1" />
+		<dependency name="google-auth-library-oauth2-http" org="com.google.auth" rev="1.7.0" />
+		<dependency name="google-cloud-pubsub" org="com.google.cloud" rev="1.119.1" />
+		<dependency name="protobuf-java" org="com.google.protobuf" rev="3.21.2" />
+		<dependency name="com.liferay.jenkins.results.parser" org="com.liferay" rev="1.0.194" />
+		<dependency name="flexjson" org="net.sf.flexjson" rev="2.1" />
+		<dependency name="commons-csv" org="org.apache.commons" rev="1.4" />
+		<dependency name="commons-io" org="org.apache.commons" rev="1.3.2" />
+		<dependency name="groovy-all" org="org.codehaus.groovy" rev="2.0.1" transitive="false" />
+	</dependencies>
+</ivy-module>

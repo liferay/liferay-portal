@@ -1,0 +1,90 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
+package com.liferay.osb.patcher.util;
+
+import com.liferay.portal.kernel.util.StringUtil;
+
+/**
+ * @author Zsolt Balogh
+ */
+public class PatcherBuildConstants {
+
+	public static final double KEY_VERSION_DEFAULT = 1.0;
+
+	public static final String LABEL_DEBUG = "debug";
+
+	public static final String LABEL_FIX_PACK = "fix-pack";
+
+	public static final String LABEL_HOTFIX = "hotfix";
+
+	public static final String LABEL_IGNORE = "ignore";
+
+	public static final String LABEL_OFFICIAL = "official";
+
+	public static final String PATCHER_BUILD_ACCOUNT_ENTRY_NAME_LIFERAY =
+		"LIFERAY";
+
+	public static final String
+		PATCHER_BUILD_ACCOUNT_ENTRY_NAME_LIFERAY_SECURITY = "LIFERAYSECURITY";
+
+	public static final double SUPPORT_TICKET_VERSION_DEFAULT = 1.0;
+
+	public static final int TYPE_ANY = -1;
+
+	public static final int TYPE_DEBUG = 3;
+
+	public static final int TYPE_FIX_PACK = 1;
+
+	public static final int TYPE_HOTFIX = 0;
+
+	public static final int TYPE_IGNORE = 4;
+
+	public static final int TYPE_OFFICIAL = 2;
+
+	public static int getLabelType(String label) {
+		if (StringUtil.equalsIgnoreCase(label, LABEL_DEBUG)) {
+			return TYPE_DEBUG;
+		}
+		else if (StringUtil.equalsIgnoreCase(label, LABEL_FIX_PACK)) {
+			return TYPE_FIX_PACK;
+		}
+		else if (StringUtil.equalsIgnoreCase(label, LABEL_HOTFIX)) {
+			return TYPE_HOTFIX;
+		}
+		else if (StringUtil.equalsIgnoreCase(label, LABEL_IGNORE)) {
+			return TYPE_IGNORE;
+		}
+
+		return TYPE_OFFICIAL;
+	}
+
+	public static String getTypeLabel(int type) {
+		if (type == TYPE_DEBUG) {
+			return LABEL_DEBUG;
+		}
+		else if (type == TYPE_FIX_PACK) {
+			return LABEL_FIX_PACK;
+		}
+		else if (type == TYPE_HOTFIX) {
+			return LABEL_HOTFIX;
+		}
+		else if (type == TYPE_IGNORE) {
+			return LABEL_IGNORE;
+		}
+
+		return LABEL_OFFICIAL;
+	}
+
+}
