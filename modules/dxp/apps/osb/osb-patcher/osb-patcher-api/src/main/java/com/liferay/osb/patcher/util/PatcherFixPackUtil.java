@@ -223,8 +223,7 @@ public class PatcherFixPackUtil {
 		List<String> tokens = PatcherUtil.getTokens(name);
 
 		for (String token : tokens) {
-			Pattern pattern = Pattern.compile(
-				PatcherConstants.FIX_PACKS_REGEX);
+			Pattern pattern = Pattern.compile(PatcherConstants.FIX_PACKS_REGEX);
 
 			Matcher matcher = pattern.matcher(token);
 

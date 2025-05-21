@@ -68,7 +68,7 @@ public class PatcherFixRelUtil {
 
 			if ((patcherFix == null) ||
 				(patcherFix.getStatus() !=
-				 WorkflowConstants.STATUS_FIX_COMPLETE) ||
+					WorkflowConstants.STATUS_FIX_COMPLETE) ||
 				(patcherFix.getType() != PatcherFixConstants.TYPE_PATCH) ||
 				PatcherFixPackUtil.containsPatcherFixPackName(
 					patcherFix.getName())) {
@@ -159,7 +159,7 @@ public class PatcherFixRelUtil {
 
 			if ((patcherFix == null) ||
 				(patcherFix.getStatus() !=
-				 WorkflowConstants.STATUS_FIX_COMPLETE) ||
+					WorkflowConstants.STATUS_FIX_COMPLETE) ||
 				(patcherFix.getType() != PatcherFixConstants.TYPE_PATCH) ||
 				PatcherFixPackUtil.containsPatcherFixPackName(
 					patcherFix.getName())) {

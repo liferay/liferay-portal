@@ -35,6 +35,9 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -47,11 +50,9 @@ import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 
 import java.io.FileNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -150,22 +151,20 @@ public class PatcherBuildUtil {
 
 		patcherBuild.setPatcherAccountId(patcherAccount.getPatcherAccountId());
 
-		patcherBuild.setHotfixId(
-			generateHotfixId(
-				accountEntryCode, patcherBuild.getSupportTicket(),
-				patcherProjectVersionId));
-		patcherBuild.setKey(
-			generateKey(patcherProjectVersionId, name, accountEntryCode));
-		patcherBuild.setName(name);
 		patcherBuild.setPatcherBuildId(alloyController.increment());
 		patcherBuild.setPatcherProductVersionId(
 			PatcherProjectVersionUtil.getPatcherProductVersionId(
 				patcherProjectVersionId));
 		patcherBuild.setPatcherProjectVersionId(patcherProjectVersionId);
-		patcherBuild.setQaStatus(
-			WorkflowConstants.STATUS_PENDING);
-		patcherBuild.setType(
-			PatcherBuildConstants.TYPE_FIX_PACK);
+		patcherBuild.setHotfixId(
+			generateHotfixId(
+				accountEntryCode, patcherBuild.getSupportTicket(),
+				patcherProjectVersionId));
+		patcherBuild.setName(name);
+		patcherBuild.setKey(
+			generateKey(patcherProjectVersionId, name, accountEntryCode));
+		patcherBuild.setType(PatcherBuildConstants.TYPE_FIX_PACK);
+		patcherBuild.setQaStatus(WorkflowConstants.STATUS_PENDING);
 
 		setStatus(alloyController, user, patcherBuild, status);
 
@@ -219,7 +218,7 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		if (patcherBuild.getKeyVersion() !=
-			PatcherBuildConstants.KEY_VERSION_DEFAULT) {
+				PatcherBuildConstants.KEY_VERSION_DEFAULT) {
 
 			PatcherBuild oldPatcherBuild =
 				PatcherBuildUtil.fetchPatcherBuildByNextKeyVersion(
@@ -427,7 +426,7 @@ public class PatcherBuildUtil {
 
 		return CounterLocalServiceUtil.increment(
 			PatcherBuild.class.getName() + StringPool.POUND +
-			PatcherProjectVersionUtil.getRootPatcherProjectVersionId(
+				PatcherProjectVersionUtil.getRootPatcherProjectVersionId(
 					patcherProjectVersionId));
 	}
 
@@ -437,8 +436,7 @@ public class PatcherBuildUtil {
 
 		return PatcherUtil.generatePatcherKey(
 			PatcherBuild.class.getName(), patcherProjectVersionId,
-			StringUtil.merge(
-				PatcherUtil.sortTokens(name)), accountEntryCode);
+			StringUtil.merge(PatcherUtil.sortTokens(name)), accountEntryCode);
 	}
 
 	public static String generateKey(
@@ -448,8 +446,7 @@ public class PatcherBuildUtil {
 
 		return PatcherUtil.generatePatcherKey(
 			PatcherBuild.class.getName(), patcherProjectVersionId,
-			StringUtil.merge(
-				PatcherUtil.sortTokens(name)), accountEntryCode,
+			StringUtil.merge(PatcherUtil.sortTokens(name)), accountEntryCode,
 			key);
 	}
 
@@ -481,14 +478,11 @@ public class PatcherBuildUtil {
 		Property statusProperty = PropertyFactoryUtil.forName("status");
 
 		disjunction.add(
-			statusProperty.eq(
-				WorkflowConstants.STATUS_BUILD_COMPLETE));
+			statusProperty.eq(WorkflowConstants.STATUS_BUILD_COMPLETE));
 		disjunction.add(
-			statusProperty.eq(
-				WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE));
+			statusProperty.eq(WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE));
 		disjunction.add(
-			statusProperty.eq(
-				WorkflowConstants.STATUS_BUILD_RELEASED));
+			statusProperty.eq(WorkflowConstants.STATUS_BUILD_RELEASED));
 
 		patcherBuildDynamicQuery.add(disjunction);
 
@@ -509,7 +503,7 @@ public class PatcherBuildUtil {
 		List<String> fixedIssues = new ArrayList<>();
 
 		if (patcherProjectVersion.getPatcherProductVersionId() ==
-			PatcherProductVersionUtil.getPatcherProductVersionId(
+				PatcherProductVersionUtil.getPatcherProductVersionId(
 					PatcherProductVersionConstants.
 						LABEL_PRODUCT_VERSION_PORTAL_6X)) {
 
@@ -530,8 +524,7 @@ public class PatcherBuildUtil {
 			}
 		}
 		else {
-			fixedIssues.addAll(
-				PatcherUtil.getTokens(patcherBuild.getName()));
+			fixedIssues.addAll(PatcherUtil.getTokens(patcherBuild.getName()));
 
 			fixedIssues.addAll(
 				PatcherProjectVersionUtil.
@@ -637,7 +630,7 @@ public class PatcherBuildUtil {
 			PatcherFixUtil.getWeightedStatusPatcherFix(patcherFixIds);
 
 		if (weightedStatusPatcherFix.getStatus() ==
-			WorkflowConstants.STATUS_FIX_FAILED) {
+				WorkflowConstants.STATUS_FIX_FAILED) {
 
 			if (mergeOnly) {
 				return WorkflowConstants.STATUS_BUILD_FAILED_MERGING_ONLY;
@@ -646,10 +639,10 @@ public class PatcherBuildUtil {
 			return WorkflowConstants.STATUS_BUILD_FAILED;
 		}
 		else if (weightedStatusPatcherFix.getType() ==
-				 PatcherFixConstants.TYPE_REBASE) {
+					PatcherFixConstants.TYPE_REBASE) {
 
 			if (weightedStatusPatcherFix.getStatus() ==
-				WorkflowConstants.STATUS_FIX_REBASE_CONFLICT) {
+					WorkflowConstants.STATUS_FIX_REBASE_CONFLICT) {
 
 				if (mergeOnly) {
 					return WorkflowConstants.
@@ -659,9 +652,9 @@ public class PatcherBuildUtil {
 				return WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT;
 			}
 			else if ((weightedStatusPatcherFix.getStatus() ==
-					  WorkflowConstants.STATUS_FIX_REBASING) ||
+						WorkflowConstants.STATUS_FIX_REBASING) ||
 					 (weightedStatusPatcherFix.getStatus() ==
-					  WorkflowConstants.STATUS_FIX_ADDING)) {
+						 WorkflowConstants.STATUS_FIX_ADDING)) {
 
 				if (mergeOnly) {
 					return WorkflowConstants.STATUS_BUILD_REBASING_MERGING_ONLY;
@@ -672,7 +665,7 @@ public class PatcherBuildUtil {
 		}
 
 		if (weightedStatusPatcherFix.getStatus() ==
-			WorkflowConstants.STATUS_FIX_CONFLICT) {
+				WorkflowConstants.STATUS_FIX_CONFLICT) {
 
 			if (mergeOnly) {
 				return WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY;
@@ -681,7 +674,7 @@ public class PatcherBuildUtil {
 			return WorkflowConstants.STATUS_BUILD_CONFLICT;
 		}
 		else if ((weightedStatusPatcherFix.getStatus() ==
-				  WorkflowConstants.STATUS_FIX_ADDING) ||
+					WorkflowConstants.STATUS_FIX_ADDING) ||
 				 !isPatcherBuildDescendantsContainGitHash(patcherBuild)) {
 
 			if (mergeOnly) {
@@ -795,11 +788,11 @@ public class PatcherBuildUtil {
 
 		if (Validator.isNumber(supportTicket)) {
 			return PortletPropsValues.HELP_CENTER_URL +
-				   StringPool.FORWARD_SLASH + supportTicket;
+				StringPool.FORWARD_SLASH + supportTicket;
 		}
 
 		return PortletPropsValues.LESA_URL + StringPool.FORWARD_SLASH +
-			   supportTicket;
+			supportTicket;
 	}
 
 	public static boolean hasEquivalentPatcherBuild(
@@ -814,9 +807,9 @@ public class PatcherBuildUtil {
 
 	public static boolean isComplete(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_COMPLETE) ||
+				WorkflowConstants.STATUS_BUILD_COMPLETE) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY)) {
 
 			return true;
 		}
@@ -827,7 +820,7 @@ public class PatcherBuildUtil {
 	public static boolean isCompleteOrReady(PatcherBuild patcherBuild) {
 		if (isComplete(patcherBuild) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE)) {
+				WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE)) {
 
 			return true;
 		}
@@ -838,7 +831,7 @@ public class PatcherBuildUtil {
 	public static boolean isCompleteOrReleased(PatcherBuild patcherBuild) {
 		if (isComplete(patcherBuild) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_RELEASED)) {
+				WorkflowConstants.STATUS_BUILD_RELEASED)) {
 
 			return true;
 		}
@@ -849,7 +842,7 @@ public class PatcherBuildUtil {
 	public static boolean isCompleteReadyOrReleased(PatcherBuild patcherBuild) {
 		if (isCompleteOrReleased(patcherBuild) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE)) {
+				WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE)) {
 
 			return true;
 		}
@@ -869,9 +862,9 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		if ((patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_COMPILING) ||
+				WorkflowConstants.STATUS_BUILD_COMPILING) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY)) {
 
 			return true;
 		}
@@ -883,9 +876,9 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		if ((patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_CONFLICT) ||
+				WorkflowConstants.STATUS_BUILD_CONFLICT) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY)) {
 
 			return true;
 		}
@@ -897,17 +890,17 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		if ((patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_FAILED_MERGING_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_FAILED_MERGING_ONLY) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT_MERGING_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT_MERGING_ONLY) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_REBASING_MERGING_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_REBASING_MERGING_ONLY)) {
 
 			return true;
 		}
@@ -919,9 +912,9 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		if ((patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_MERGING) ||
+				WorkflowConstants.STATUS_BUILD_MERGING) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_MERGING_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_MERGING_ONLY)) {
 
 			return true;
 		}
@@ -976,9 +969,9 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		if ((patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT) ||
+				WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT) ||
 			(patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT_MERGING_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT_MERGING_ONLY)) {
 
 			return true;
 		}
@@ -988,24 +981,24 @@ public class PatcherBuildUtil {
 
 	public static boolean isSmokeTestOnly(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.
+				WorkflowConstants.
 					STATUS_BUILD_QA_ANALYSIS_STARTED_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.
+				WorkflowConstants.
 					STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.
+				WorkflowConstants.
 					STATUS_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY) ||
+				WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_TESTING_SKIPPED_SMOKE_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_QA_TESTING_SKIPPED_SMOKE_ONLY)) {
 
 			return true;
 		}
@@ -1015,9 +1008,9 @@ public class PatcherBuildUtil {
 
 	public static boolean isTestingFailed(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY) ||
+				WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY)) {
 
 			return true;
 		}
@@ -1027,14 +1020,14 @@ public class PatcherBuildUtil {
 
 	public static boolean isTestingPassed(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED) ||
+				WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.
+				WorkflowConstants.
 					STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY) ||
+				WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY) ||
 			(patcherBuild.getQaStatus() ==
-			 WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY)) {
+				WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY)) {
 
 			return true;
 		}
@@ -1169,8 +1162,7 @@ public class PatcherBuildUtil {
 
 		String outcome = jenkinsStatusJSONObject.getString("outcome");
 
-		OSBPatcherServletOutcome
-			osbPatcherServletOutcome =
+		OSBPatcherServletOutcome osbPatcherServletOutcome =
 			JSONFactoryUtil.looseDeserializeSafe(
 				outcome, OSBPatcherServletOutcome.class);
 
@@ -1277,7 +1269,7 @@ public class PatcherBuildUtil {
 
 		String path =
 			PortletPropsValues.HOTFIX_MOUNT_PATH + StringPool.FORWARD_SLASH +
-			patcherBuild.getFileName();
+				patcherBuild.getFileName();
 
 		String quarterReleasePath = getQuarterReleaseBuildPath(path);
 
@@ -1374,7 +1366,7 @@ public class PatcherBuildUtil {
 					isCombinedBranchPatcherProjectVersion(
 						parentPatcherBuild.getPatcherProjectVersionId()) &&
 				(parentPatcherBuild.getType() !=
-				 PatcherBuildConstants.TYPE_FIX_PACK) &&
+					PatcherBuildConstants.TYPE_FIX_PACK) &&
 				!PatcherBuildRelUtil.hasParentPatcherBuilds(
 					parentPatcherBuild)) {
 
@@ -1431,8 +1423,7 @@ public class PatcherBuildUtil {
 			return patcherBuild;
 		}
 
-		patcherBuild.setKeyVersion(
-			PatcherBuildConstants.KEY_VERSION_DEFAULT);
+		patcherBuild.setKeyVersion(PatcherBuildConstants.KEY_VERSION_DEFAULT);
 		patcherBuild.setLatestKeyBuild(true);
 		patcherBuild.setLatestSupportTicketBuild(true);
 		patcherBuild.setSupportTicketVersion(
@@ -1602,15 +1593,15 @@ public class PatcherBuildUtil {
 
 		for (PatcherFix incompletePatcherFix : incompletePatcherFixes) {
 			if ((incompletePatcherFix.getStatus() ==
-				 WorkflowConstants.STATUS_FIX_REBASE_CONFLICT) ||
+					WorkflowConstants.STATUS_FIX_REBASE_CONFLICT) ||
 				(incompletePatcherFix.getStatus() ==
-				 WorkflowConstants.STATUS_FIX_CONFLICT)) {
+					WorkflowConstants.STATUS_FIX_CONFLICT)) {
 
 				continue;
 			}
 
 			if (incompletePatcherFix.getStatus() ==
-				WorkflowConstants.STATUS_FIX_FAILED) {
+					WorkflowConstants.STATUS_FIX_FAILED) {
 
 				if (Validator.isNull(incompletePatcherFix.getGitHash()) ||
 					Validator.isNull(incompletePatcherFix.getGitRemoteURL())) {
@@ -1759,10 +1750,10 @@ public class PatcherBuildUtil {
 		PatcherAccount patcherAccount =
 			PatcherAccountLocalServiceUtil.createPatcherAccount(0);
 
-		patcherAccount.setAccountEntryCode(accountEntryCode);
+		patcherAccount.setPatcherAccountId(alloyController.increment());
 		patcherAccount.setAccountEntryId(
 			HelpCenterUtil.fetchAccountEntryId(accountEntryCode));
-		patcherAccount.setPatcherAccountId(alloyController.increment());
+		patcherAccount.setAccountEntryCode(accountEntryCode);
 
 		alloyController.updateModelIgnoreRequest(patcherAccount);
 
@@ -1895,7 +1886,7 @@ public class PatcherBuildUtil {
 
 			if ((parentPatcherFix != latestPatcherFix) ||
 				(latestPatcherFix.getType() ==
-				 PatcherFixConstants.TYPE_EXCLUDED)) {
+					PatcherFixConstants.TYPE_EXCLUDED)) {
 
 				return latestPatcherFix;
 			}
@@ -1928,8 +1919,7 @@ public class PatcherBuildUtil {
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
 				patcherFixId);
 
-			tickets.addAll(
-				PatcherUtil.getTokens(patcherFix.getName()));
+			tickets.addAll(PatcherUtil.getTokens(patcherFix.getName()));
 		}
 
 		tickets = PatcherUtil.sortTokens(tickets);
@@ -2093,18 +2083,18 @@ public class PatcherBuildUtil {
 		PatcherBuild childPatcherBuild =
 			PatcherBuildLocalServiceUtil.createPatcherBuild(0);
 
-		childPatcherBuild.setChildBuild(true);
-		childPatcherBuild.setName(patcherBuildName);
-		childPatcherBuild.setKey(key);
 		childPatcherBuild.setPatcherAccountId(
 			patcherAccount.getPatcherAccountId());
 		childPatcherBuild.setPatcherProductVersionId(
 			parentPatcherBuild.getPatcherProductVersionId());
 		childPatcherBuild.setPatcherProjectVersionId(patcherProjectVersionId);
-		childPatcherBuild.setQaStatus(parentPatcherBuild.getQaStatus());
+		childPatcherBuild.setName(patcherBuildName);
+		childPatcherBuild.setKey(key);
+		childPatcherBuild.setType(parentPatcherBuild.getType());
 		childPatcherBuild.setSupportTicket(
 			parentPatcherBuild.getSupportTicket());
-		childPatcherBuild.setType(parentPatcherBuild.getType());
+		childPatcherBuild.setChildBuild(true);
+		childPatcherBuild.setQaStatus(parentPatcherBuild.getQaStatus());
 
 		childPatcherBuild = setLatestPatcherBuild(
 			alloyController, childPatcherBuild, key,
@@ -2174,8 +2164,7 @@ public class PatcherBuildUtil {
 
 				mainPatcherFix.setGitHash(StringPool.BLANK);
 				mainPatcherFix.setJenkinsResults(StringPool.BLANK);
-				mainPatcherFix.setStatus(
-					WorkflowConstants.STATUS_FIX_ADDING);
+				mainPatcherFix.setStatus(WorkflowConstants.STATUS_FIX_ADDING);
 
 				alloyController.updateModelIgnoreRequest(mainPatcherFix);
 			}
@@ -2275,15 +2264,14 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		if (OSBPatcherServletOutcomeStatus ==
-			OSBPatcherServletOutcome.STATUS_SUCCESS) {
+				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
 				patcherBuild.getPatcherFixId());
 
 			patcherFix.setGitHash(OSBPatcherServletOutcomeResult);
 
-			patcherFix.setStatus(
-				WorkflowConstants.STATUS_FIX_COMPLETE);
+			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 
 			alloyController.updateModelIgnoreRequest(patcherFix);
 
@@ -2296,7 +2284,7 @@ public class PatcherBuildUtil {
 				messages);
 		}
 		else if (OSBPatcherServletOutcomeStatus ==
-				 OSBPatcherServletOutcome.STATUS_CONFLICT) {
+					OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
 			PatcherUtil.addMessage(
 				"The patch for build " + patcherBuild.getPatcherBuildId() +
@@ -2365,15 +2353,14 @@ public class PatcherBuildUtil {
 				PatcherFixLocalServiceUtil.getPatcherFix(
 					patcherBuild.getPatcherFixId());
 
-			mainPatcherFix.setStatus(
-				WorkflowConstants.STATUS_FIX_CONFLICT);
+			mainPatcherFix.setStatus(WorkflowConstants.STATUS_FIX_CONFLICT);
 
 			alloyController.updateModelIgnoreRequest(mainPatcherFix);
 
 			if ((patcherBuild.getStatus() ==
-				 WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
+					WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
 				(patcherBuild.getStatus() ==
-				 WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY)) {
+					WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY)) {
 
 				setStatus(
 					alloyController, user, patcherBuild,
@@ -2391,8 +2378,7 @@ public class PatcherBuildUtil {
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
 				patcherBuild.getPatcherFixId());
 
-			patcherFix.setStatus(
-				WorkflowConstants.STATUS_FIX_FAILED);
+			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
 
 			alloyController.updateModelIgnoreRequest(patcherFix);
 

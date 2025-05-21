@@ -15,14 +15,17 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * @author Zsolt Balogh
@@ -41,7 +44,7 @@ public class HelpCenterUtil {
 
 		String login =
 			PortletPropsValues.HELP_CENTER_API_USERNAME + ":" +
-			PortletPropsValues.HELP_CENTER_API_PASSWORD;
+				PortletPropsValues.HELP_CENTER_API_PASSWORD;
 
 		options.addHeader(
 			"Authorization", "Basic " + Base64.encode(login.getBytes()));
@@ -64,8 +67,8 @@ public class HelpCenterUtil {
 
 		options.setLocation(
 			PortletPropsValues.HELP_CENTER_JSONWS_URL +
-			StringPool.FORWARD_SLASH +
-			PortletPropsValues.
+				StringPool.FORWARD_SLASH +
+					PortletPropsValues.
 						HELP_CENTER_TICKET_ATTACHMENT_API_ENDPOINT);
 		options.setPost(true);
 
@@ -79,7 +82,7 @@ public class HelpCenterUtil {
 
 		String login =
 			PortletPropsValues.HELP_CENTER_API_USERNAME + ":" +
-			PortletPropsValues.HELP_CENTER_API_PASSWORD;
+				PortletPropsValues.HELP_CENTER_API_PASSWORD;
 
 		options.addHeader(
 			"Authorization", "Basic " + Base64.encode(login.getBytes()));
@@ -88,8 +91,8 @@ public class HelpCenterUtil {
 
 		options.setLocation(
 			PortletPropsValues.HELP_CENTER_JSONWS_URL +
-			StringPool.FORWARD_SLASH +
-			PortletPropsValues.HELP_CENTER_GET_ACCOUNT_API_ENDPOINT);
+				StringPool.FORWARD_SLASH +
+					PortletPropsValues.HELP_CENTER_GET_ACCOUNT_API_ENDPOINT);
 		options.setPost(true);
 
 		String response = HttpUtil.URLtoString(options);
@@ -115,11 +118,11 @@ public class HelpCenterUtil {
 
 		String uploadTokenURL =
 			PortletPropsValues.HELP_CENTER_FILE_REPO_URL +
-			StringPool.FORWARD_SLASH + "token";
+				StringPool.FORWARD_SLASH + "token";
 
 		String dirPath =
 			PortletPropsValues.HELP_CENTER_TOKEN_TICKET_DIR +
-			StringPool.FORWARD_SLASH + supportTicket;
+				StringPool.FORWARD_SLASH + supportTicket;
 
 		uploadTokenURL = HttpComponentsUtil.addParameter(
 			uploadTokenURL, "dirPath", dirPath);
@@ -135,14 +138,16 @@ public class HelpCenterUtil {
 
 		String uploadURL =
 			PortletPropsValues.HELP_CENTER_FILE_REPO_URL +
-			StringPool.FORWARD_SLASH + "upload";
+				StringPool.FORWARD_SLASH + "upload";
 
-		uploadURL = HttpComponentsUtil.addParameter(uploadURL, "resumableChunkNumber", 1);
+		uploadURL = HttpComponentsUtil.addParameter(
+			uploadURL, "resumableChunkNumber", 1);
 		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableChunkSize", 26214400);
 		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableFilename", fileName);
-		uploadURL = HttpComponentsUtil.addParameter(uploadURL, "resumableTotalChunks", 1);
+		uploadURL = HttpComponentsUtil.addParameter(
+			uploadURL, "resumableTotalChunks", 1);
 		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableTotalSize", file.length());
 		uploadURL = HttpComponentsUtil.addParameter(

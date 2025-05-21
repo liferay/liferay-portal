@@ -519,7 +519,7 @@ public class PatcherScanUtil {
 				patcherFix);
 
 			if (latestPatcherFix.getType() ==
-				PatcherFixConstants.TYPE_EXCLUDED) {
+					PatcherFixConstants.TYPE_EXCLUDED) {
 
 				String msg = sb.toString();
 
@@ -543,7 +543,7 @@ public class PatcherScanUtil {
 
 				for (PatcherFix patcherFixAncestor : patcherFixAncestors) {
 					if (patcherFixAncestor.getType() ==
-						PatcherFixConstants.TYPE_EXCLUDED) {
+							PatcherFixConstants.TYPE_EXCLUDED) {
 
 						excludedAncestorIds.add(
 							patcherFixAncestor.getPatcherFixId());
@@ -678,7 +678,7 @@ public class PatcherScanUtil {
 					PatcherBuildUtil.getLatestPatcherFix(foundPatcherFix);
 
 				if (latestFoundPatcherFix.getType() ==
-					PatcherFixConstants.TYPE_EXCLUDED) {
+						PatcherFixConstants.TYPE_EXCLUDED) {
 
 					return null;
 				}

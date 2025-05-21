@@ -15,8 +15,9 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import javax.portlet.PortletURL;
 import java.util.Locale;
+
+import javax.portlet.PortletURL;
 
 /**
  * @author Zsolt Balogh

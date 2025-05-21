@@ -10,24 +10,26 @@ import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.WorkflowedModel;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.WorkflowedModel;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.util.ContentUtil;
 
 import java.net.URL;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -173,8 +175,7 @@ public class EmailUtil {
 				sb.append("https://releases-cdn.liferay.com/dxp/hotfix");
 			}
 			else {
-				sb.append(
-					PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL);
+				sb.append(PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL);
 			}
 
 			sb.append(StringPool.SLASH);
@@ -328,7 +329,7 @@ public class EmailUtil {
 				patcherBuild, WorkflowConstants.STATUS_FIX_CONFLICT);
 		}
 		else if (patcherBuildStatus ==
-				 WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT) {
+					WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT) {
 
 			patcherFixIds = PatcherFixUtil.getPatcherBuildFixIdsByFixStatus(
 				patcherBuild, WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);

@@ -5,10 +5,11 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.lang.reflect.Method;
+
 import java.util.ArrayList;
 import java.util.List;
 

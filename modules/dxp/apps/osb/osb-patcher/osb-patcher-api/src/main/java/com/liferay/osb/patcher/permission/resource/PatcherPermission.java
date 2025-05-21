@@ -8,11 +8,11 @@ package com.liferay.osb.patcher.permission.resource;
 import com.liferay.alloy.mvc.AlloyPermission;
 import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 /**
  * @author Zsolt Balogh
@@ -48,8 +48,7 @@ public class PatcherPermission extends AlloyPermission {
 
 		if (contains(
 				getPermissionChecker(themeDisplay),
-				themeDisplay.getScopeGroupId(),
-				PatcherPortletKeys.PATCHER,
+				themeDisplay.getScopeGroupId(), PatcherPortletKeys.PATCHER,
 				themeDisplay.getScopeGroupId(),
 				formatActionId(controller, action))) {
 

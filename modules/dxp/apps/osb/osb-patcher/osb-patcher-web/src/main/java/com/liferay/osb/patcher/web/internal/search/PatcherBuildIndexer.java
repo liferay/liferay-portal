@@ -29,9 +29,10 @@ import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import javax.portlet.PortletURL;
 import java.util.List;
 import java.util.Locale;
+
+import javax.portlet.PortletURL;
 
 /**
  * @author Zsolt Balogh
@@ -216,7 +217,7 @@ public class PatcherBuildIndexer extends BaseAlloyIndexer {
 		document.addText(
 			"downloadURL",
 			PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL +
-			StringPool.SLASH + patcherBuild.getFileName());
+				StringPool.SLASH + patcherBuild.getFileName());
 
 		if (Validator.isNotNull(patcherBuild.getFileName())) {
 			document.addKeyword("hotfixId", patcherBuild.getHotfixId());

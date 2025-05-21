@@ -14,22 +14,23 @@ import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.web.internal.permission.resource.PatcherPermission;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.servlet.DynamicServletRequest;
-import com.liferay.portal.kernel.servlet.HttpMethods;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.model.AuditedModel;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowedModel;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.DynamicServletRequest;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringBundler;
 
 import java.lang.reflect.Method;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -78,11 +79,11 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 
 					if (PatcherFixUtil.isMainPatcherFix(classPK) ||
 						((patcherFix.getType() ==
-						  PatcherFixConstants.TYPE_REBASE) &&
+							PatcherFixConstants.TYPE_REBASE) &&
 						 ((patcherFix.getStatus() ==
-						   WorkflowConstants.STATUS_FIX_COMPLETE) ||
+							 WorkflowConstants.STATUS_FIX_COMPLETE) ||
 						  (patcherFix.getStatus() ==
-						   WorkflowConstants.STATUS_FIX_FAILED)))) {
+							  WorkflowConstants.STATUS_FIX_FAILED)))) {
 
 						return;
 					}
@@ -99,24 +100,24 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 				PatcherBuild patcherBuild = (PatcherBuild)baseModel;
 
 				if ((patcherBuild.getQaStatus() ==
-					 WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_STARTED) ||
+						WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_STARTED) ||
 					(patcherBuild.getQaStatus() ==
-					 WorkflowConstants.
+						WorkflowConstants.
 							STATUS_BUILD_QA_ANALYSIS_STARTED_SMOKE_ONLY) ||
 					(patcherBuild.getQaStatus() ==
-					 WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED) ||
+						WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED) ||
 					(patcherBuild.getQaStatus() ==
-					 WorkflowConstants.
+						WorkflowConstants.
 							STATUS_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY) ||
 					(patcherBuild.getQaStatus() ==
-					 WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY) ||
+						WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY) ||
 					(patcherBuild.getQaStatus() ==
-					 WorkflowConstants.STATUS_BUILD_QA_TESTING_SKIPPED) ||
+						WorkflowConstants.STATUS_BUILD_QA_TESTING_SKIPPED) ||
 					(patcherBuild.getQaStatus() ==
-					 WorkflowConstants.
+						WorkflowConstants.
 							STATUS_BUILD_QA_TESTING_SKIPPED_SMOKE_ONLY) ||
 					(patcherBuild.getQaStatus() ==
-					 WorkflowConstants.STATUS_PENDING)) {
+						WorkflowConstants.STATUS_PENDING)) {
 
 					return;
 				}

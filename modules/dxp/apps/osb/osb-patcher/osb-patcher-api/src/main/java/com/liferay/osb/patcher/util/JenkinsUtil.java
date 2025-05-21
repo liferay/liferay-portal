@@ -5,8 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.portal.kernel.util.HttpComponentsUtil;
-
 import com.liferay.alloy.mvc.AlloyController;
 import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.jenkins.results.parser.LoadBalancerUtil;
@@ -33,20 +31,22 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public class JenkinsUtil {
 			if (siblingMainPatcherFix != null) {
 				siblingCommittish =
 					PortletPropsValues.OSB_PATCHER_GIT_TAG_PREFIX +
-					siblingMainPatcherFix.getPatcherFixId();
+						siblingMainPatcherFix.getPatcherFixId();
 			}
 			else {
 				PatcherProjectVersion siblingPatcherProjectVersion =
@@ -224,7 +224,7 @@ public class JenkinsUtil {
 				patcherProjectVersion.getPatcherProductVersionId()));
 
 		if (patcherProjectVersion.getPatcherProductVersionId() !=
-			PatcherProductVersionUtil.getPatcherProductVersionId(
+				PatcherProductVersionUtil.getPatcherProductVersionId(
 					PatcherProductVersionConstants.
 						LABEL_PRODUCT_VERSION_PORTAL_6X)) {
 
@@ -494,7 +494,7 @@ public class JenkinsUtil {
 		}
 
 		if ((patcherBuild.getStatus() ==
-			 WorkflowConstants.STATUS_BUILD_COMPLETE) &&
+				WorkflowConstants.STATUS_BUILD_COMPLETE) &&
 			Validator.isNotNull(patcherBuild.getFileName())) {
 
 			return true;
@@ -652,7 +652,7 @@ public class JenkinsUtil {
 
 		String credentials =
 			PortletPropsValues.JENKINS_ADMIN_USERNAME + StringPool.COLON +
-			PortletPropsValues.JENKINS_ADMIN_USER_TOKEN;
+				PortletPropsValues.JENKINS_ADMIN_USER_TOKEN;
 
 		options.addHeader(
 			"Authorization", "Basic " + Base64.encode(credentials.getBytes()));
@@ -739,8 +739,7 @@ public class JenkinsUtil {
 				"jenkins-build-with-parameters-path-is-not-set";
 		}
 
-		if (Validator.isNull(
-			PortletPropsValues.JENKINS_TOKEN)) {
+		if (Validator.isNull(PortletPropsValues.JENKINS_TOKEN)) {
 			return "the-build-cannot-send-request-because-the-" +
 				"jenkins-token-is-not-set";
 		}

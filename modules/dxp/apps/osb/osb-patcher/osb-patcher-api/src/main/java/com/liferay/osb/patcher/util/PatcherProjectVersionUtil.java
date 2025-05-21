@@ -104,8 +104,7 @@ public class PatcherProjectVersionUtil {
 
 		List<String> fixedIssues = new ArrayList<>();
 
-		Pattern pattern = Pattern.compile(
-			PatcherConstants.FIX_PACK_TAG_REGEX);
+		Pattern pattern = Pattern.compile(PatcherConstants.FIX_PACK_TAG_REGEX);
 
 		Matcher matcher = pattern.matcher(
 			patcherProjectVersion.getCommittish());
@@ -162,8 +161,7 @@ public class PatcherProjectVersionUtil {
 
 		String neighborCommittish = null;
 
-		Pattern pattern = Pattern.compile(
-			PatcherConstants.FIX_PACK_TAG_REGEX);
+		Pattern pattern = Pattern.compile(PatcherConstants.FIX_PACK_TAG_REGEX);
 
 		Matcher matcher = pattern.matcher(patcherProjectVersionCommittish);
 
@@ -432,7 +430,7 @@ public class PatcherProjectVersionUtil {
 		else {
 			siblingPatcherProjectVersionCommittish =
 				patcherProjectVersionCommittish +
-				PatcherProjectVersionConstants.PRIVATE_NAME_SUFFIX;
+					PatcherProjectVersionConstants.PRIVATE_NAME_SUFFIX;
 		}
 
 		return fetchPatcherProjectVersionByCommittish(

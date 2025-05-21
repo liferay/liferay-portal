@@ -28,6 +28,9 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -38,9 +41,6 @@ import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -67,19 +67,19 @@ public class PatcherFixUtil {
 		PatcherFix newPatcherFix = PatcherFixLocalServiceUtil.createPatcherFix(
 			0);
 
-		newPatcherFix.setKey(
-			PatcherFixUtil.generateKey(patcherProjectVersionId, name));
-		newPatcherFix.setKeyVersion(keyVersion);
-		newPatcherFix.setLatestFix(true);
-		newPatcherFix.setName(name);
+		newPatcherFix.setUserId(user.getUserId());
+		newPatcherFix.setUserName(user.getFullName());
 		newPatcherFix.setPatcherProductVersionId(
 			PatcherProjectVersionUtil.getPatcherProductVersionId(
 				patcherProjectVersionId));
 		newPatcherFix.setPatcherProjectVersionId(patcherProjectVersionId);
-		newPatcherFix.setStatus(status);
+		newPatcherFix.setName(name);
+		newPatcherFix.setKey(
+			PatcherFixUtil.generateKey(patcherProjectVersionId, name));
+		newPatcherFix.setKeyVersion(keyVersion);
 		newPatcherFix.setType(type);
-		newPatcherFix.setUserId(user.getUserId());
-		newPatcherFix.setUserName(user.getFullName());
+		newPatcherFix.setLatestFix(true);
+		newPatcherFix.setStatus(status);
 
 		alloyController.updateModelIgnoreRequest(newPatcherFix);
 
@@ -128,10 +128,10 @@ public class PatcherFixUtil {
 			if (PatcherUtil.equals(
 					existingParentPatcherFixIds, parentPatcherFixIds) ||
 				(existingPatcherFix.getFixPackStatus() ==
-				 WorkflowConstants.STATUS_FIX_FIX_PACK_READY) ||
+					WorkflowConstants.STATUS_FIX_FIX_PACK_READY) ||
 				((patcherFixPack != null) &&
 				 (existingPatcherFix.getStatus() !=
-				  WorkflowConstants.STATUS_FIX_COMPLETE))) {
+					 WorkflowConstants.STATUS_FIX_COMPLETE))) {
 
 				return existingPatcherFix;
 			}
@@ -159,7 +159,7 @@ public class PatcherFixUtil {
 
 			if ((patcherFix.getType() == PatcherFixConstants.TYPE_REBASE) &&
 				(patcherFix.getStatus() !=
-				 WorkflowConstants.STATUS_FIX_COMPLETE)) {
+					WorkflowConstants.STATUS_FIX_COMPLETE)) {
 
 				return true;
 			}
@@ -232,7 +232,7 @@ public class PatcherFixUtil {
 		throws Exception {
 
 		if (patcherFix.getKeyVersion() !=
-			PatcherFixConstants.KEY_VERSION_DEFAULT) {
+				PatcherFixConstants.KEY_VERSION_DEFAULT) {
 
 			PatcherFix oldPatcherFix = fetchPatcherFixByNextKeyVersion(
 				patcherFix, true);
@@ -358,8 +358,7 @@ public class PatcherFixUtil {
 
 		return PatcherUtil.generatePatcherKey(
 			PatcherFix.class.getName(), patcherProjectVersionId,
-			StringUtil.merge(
-				PatcherUtil.sortTokens(name)));
+			StringUtil.merge(PatcherUtil.sortTokens(name)));
 	}
 
 	public static String generateKey(
@@ -368,8 +367,7 @@ public class PatcherFixUtil {
 
 		return PatcherUtil.generatePatcherKey(
 			PatcherFix.class.getName(), patcherProjectVersionId, key,
-			StringUtil.merge(
-				PatcherUtil.sortTokens(name)));
+			StringUtil.merge(PatcherUtil.sortTokens(name)));
 	}
 
 	public static Map<String, Set<String>> getComponentDependencies(
@@ -585,8 +583,7 @@ public class PatcherFixUtil {
 
 		StringBundler sb = new StringBundler(12);
 
-		sb.append(
-			PortletPropsValues.GITHUB_URL);
+		sb.append(PortletPropsValues.GITHUB_URL);
 		sb.append(StringPool.SLASH);
 
 		PatcherProjectVersion patcherProjectVersion =
@@ -649,8 +646,7 @@ public class PatcherFixUtil {
 			List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
-		PatcherFixRadix
-			patcherFixRadix = new PatcherFixRadix();
+		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
 
 		for (PatcherFix patcherFix : patcherFixesSelection) {
 			String[] tickets = StringUtil.split(patcherFix.getName());
@@ -670,8 +666,7 @@ public class PatcherFixUtil {
 			List<PatcherFix> patcherFixesSelection, String[] ticketsFilter)
 		throws Exception {
 
-		PatcherFixRadix
-			patcherFixRadix = new PatcherFixRadix();
+		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
 
 		for (PatcherFix patcherFix : patcherFixesSelection) {
 			String[] tickets1 = StringUtil.split(patcherFix.getName());
@@ -787,12 +782,10 @@ public class PatcherFixUtil {
 		else if (statusPatcherFixMap.containsKey(
 					WorkflowConstants.STATUS_FIX_ADDING)) {
 
-			return statusPatcherFixMap.get(
-				WorkflowConstants.STATUS_FIX_ADDING);
+			return statusPatcherFixMap.get(WorkflowConstants.STATUS_FIX_ADDING);
 		}
 
-		return statusPatcherFixMap.get(
-			WorkflowConstants.STATUS_FIX_COMPLETE);
+		return statusPatcherFixMap.get(WorkflowConstants.STATUS_FIX_COMPLETE);
 	}
 
 	public static boolean isCoveredPatcherFixTickets(
@@ -900,8 +893,7 @@ public class PatcherFixUtil {
 
 		String outcome = servletStatusJSONObject.getString("outcome");
 
-		OSBPatcherServletOutcome
-			osbPatcherServletOutcome =
+		OSBPatcherServletOutcome osbPatcherServletOutcome =
 			JSONFactoryUtil.looseDeserializeSafe(
 				outcome, OSBPatcherServletOutcome.class);
 
@@ -1204,7 +1196,7 @@ public class PatcherFixUtil {
 				patcherBuild, PatcherBuildUtil.isMergeOnly(patcherBuild));
 
 			if (OSBPatcherServletOutcomeStatus ==
-				OSBPatcherServletOutcome.STATUS_SUCCESS) {
+					OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
 				if (PatcherBuildUtil.containsIncompletePatcherFix(
 						patcherBuild)) {
@@ -1223,7 +1215,7 @@ public class PatcherFixUtil {
 						alloyController, themeDisplay.getUser(), patcherBuild);
 				}
 				else if ((status ==
-						  WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
+							WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
 						 (status == WorkflowConstants.STATUS_BUILD_MERGING)) {
 
 					JenkinsUtil.sendAgentJenkinsRequest(
@@ -1233,10 +1225,10 @@ public class PatcherFixUtil {
 				continue;
 			}
 			else if (OSBPatcherServletOutcomeStatus ==
-					 OSBPatcherServletOutcome.STATUS_CONFLICT) {
+						OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
 				if (patcherBuild.getStatus() ==
-					WorkflowConstants.STATUS_BUILD_FAILED) {
+						WorkflowConstants.STATUS_BUILD_FAILED) {
 
 					continue;
 				}
@@ -1287,7 +1279,7 @@ public class PatcherFixUtil {
 					patcherBuild.getPatcherFixId());
 
 			if (mainPatcherFix.getStatus() !=
-				WorkflowConstants.STATUS_FIX_CONFLICT) {
+					WorkflowConstants.STATUS_FIX_CONFLICT) {
 
 				patcherFixIds.add(patcherBuild.getPatcherFixId());
 			}
@@ -1315,22 +1307,19 @@ public class PatcherFixUtil {
 		throws Exception {
 
 		if (OSBPatcherServletOutcomeStatus ==
-			OSBPatcherServletOutcome.STATUS_SUCCESS) {
+				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
 			patcherFix.setGitHash(OSBPatcherServletOutcomeResult);
 
-			patcherFix.setStatus(
-				WorkflowConstants.STATUS_FIX_COMPLETE);
+			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 		}
 		else if (OSBPatcherServletOutcomeStatus ==
-				 OSBPatcherServletOutcome.STATUS_CONFLICT) {
+					OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
-			patcherFix.setStatus(
-				WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);
+			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);
 		}
 		else {
-			patcherFix.setStatus(
-				WorkflowConstants.STATUS_FIX_FAILED);
+			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
 		}
 
 		alloyController.updateModelIgnoreRequest(patcherFix);
@@ -1357,12 +1346,11 @@ public class PatcherFixUtil {
 		throws Exception {
 
 		if (OSBPatcherServletOutcomeStatus ==
-			OSBPatcherServletOutcome.STATUS_SUCCESS) {
+				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
 			patcherFix.setGitHash(OSBPatcherServletOutcomeResult);
 
-			patcherFix.setStatus(
-				WorkflowConstants.STATUS_FIX_COMPLETE);
+			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 
 			alloyController.updateModelIgnoreRequest(patcherFix);
 

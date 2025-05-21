@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -44,6 +45,8 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -52,16 +55,15 @@ import com.liferay.portal.kernel.util.ServiceBeanMethodInvocationFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.lock.service.LockLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+
 import java.lang.reflect.Method;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -309,8 +311,7 @@ public class PatcherUtil {
 			return StringPool.BLANK;
 		}
 
-		if (Validator.isNull(
-			PortletPropsValues.LIFERAY_USERS_PROFILE_URL)) {
+		if (Validator.isNull(PortletPropsValues.LIFERAY_USERS_PROFILE_URL)) {
 			return user.getDisplayURL(themeDisplay);
 		}
 
@@ -341,7 +342,7 @@ public class PatcherUtil {
 		throws Exception {
 
 		if (patcherProductVersionId ==
-			PatcherProductVersionUtil.getPatcherProductVersionId(
+				PatcherProductVersionUtil.getPatcherProductVersionId(
 					PatcherProductVersionConstants.
 						LABEL_PRODUCT_VERSION_PORTAL_6X)) {
 
