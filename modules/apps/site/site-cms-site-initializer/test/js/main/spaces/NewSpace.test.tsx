@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
-import {render, screen} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -19,6 +19,7 @@ describe('NewSpace', () => {
 	};
 
 	let apiPostSpy: jest.SpyInstance;
+	let navigateSpy: jest.SpyInstance;
 
 	beforeEach(() => {
 		apiPostSpy = jest
@@ -58,7 +59,7 @@ describe('NewSpace', () => {
 		).toBeInTheDocument();
 	});
 
-	it('submits form with correct values and redirect to baseRedirectUrl', async () => {
+	it('submits form with correct values', async () => {
 		render(<NewSpace {...props} />);
 
 		const spaceName = 'My Space';
@@ -92,7 +93,52 @@ describe('NewSpace', () => {
 			{
 				description: spaceDescription,
 				name: spaceName,
+				settings: {
+					logoColor: 'outline-0',
+				}
 			}
+		);
+	});
+
+	it('submits form with custom color', async () => {
+		render(<NewSpace {...props} />);
+
+		await userEvent.type(
+			screen.getByRole('textbox', {
+				name: /space-name/i,
+			}),
+			'Space Name'
+		);
+
+		await userEvent.type(
+			screen.getByRole('textbox', {
+				name: 'description',
+			}),
+			'Space Description'
+		);
+
+		await userEvent.click(screen.getByRole('button', {
+			name: 'space-color',
+		}));
+
+		const colorsMenu = screen.getByRole('menu');
+		expect(colorsMenu).toBeInTheDocument();
+
+		await userEvent.click(within(colorsMenu).getAllByRole('menuitem', {name: 'color-x'})[1]);
+
+		await userEvent.click(
+			screen.getByRole('button', {
+				name: 'create-a-space-without-members',
+			})
+		);
+
+		expect(apiPostSpy).toHaveBeenCalledWith(
+			'/o/headless-asset-library/v1.0/asset-libraries',
+			expect.objectContaining({
+				settings: {
+					logoColor: 'outline-1',
+				},
+			}),
 		);
 	});
 });

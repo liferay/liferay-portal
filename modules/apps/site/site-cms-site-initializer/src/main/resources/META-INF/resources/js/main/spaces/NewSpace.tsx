@@ -11,6 +11,8 @@ import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import SpaceService from '../../services/SpaceService';
+import SpaceColorDropdown from '../components/SpaceLogoColorDropdown';
+import SpaceSticker, {LogoColor} from '../components/SpaceSticker';
 import {FieldText} from '../components/forms';
 import {required, validate} from '../components/forms/validations';
 import {getImage} from '../util/getImage';
@@ -21,16 +23,24 @@ export interface NewSpaceProps {
 }
 
 const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
-	const {errors, handleChange, handleSubmit, isSubmitting, touched, values} =
-		useFormik({
-			initialValues: {
-				description: '',
-				name: '',
-			},
-			onSubmit: (values) => {
-				const {description, name} = values;
+	const {
+		errors,
+		handleChange,
+		handleSubmit,
+		isSubmitting,
+		setFieldValue,
+		touched,
+		values,
+	} = useFormik({
+		initialValues: {
+			description: '',
+			logoColor: 'outline-0' as LogoColor,
+			name: '',
+		},
+		onSubmit: (values) => {
+			const {description, logoColor = 'outline-0', name} = values;
 
-				SpaceService.addSpace({description, name}).then((response) => {
+				SpaceService.addSpace({description, name, settings: {logoColor}}).then((response) => {
 					if (response.data) {
 						navigate(baseRedirectUrl + response.data.id);
 					}
@@ -58,6 +68,26 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 					step={1}
 					title={Liferay.Language.get('create-a-space')}
 				>
+					<label htmlFor="sicker">
+						{Liferay.Language.get('space-logo')}
+					</label>
+
+					<SpaceSticker
+						className="d-block"
+						displayType={values.logoColor}
+						hiddenName
+						id="sicker"
+						name={values.name || 'S'}
+						size="xl"
+					/>
+
+					<SpaceColorDropdown
+						className="my-4"
+						onChange={(color) => {
+							setFieldValue('logoColor', color);
+						}}
+					/>
+
 					<FieldText
 						errorMessage={touched.name ? errors.name : undefined}
 						label={Liferay.Language.get('space-name')}
