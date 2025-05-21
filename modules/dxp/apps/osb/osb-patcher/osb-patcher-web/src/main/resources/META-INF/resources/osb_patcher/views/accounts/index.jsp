@@ -263,7 +263,7 @@
 
 					var patcherAccountsJSONURL = Liferay.PortletURL.createURL('${viewPatcherAccountsURL}.json');
 
-					patcherAccountsJSONURL.setPortletId('${PortletKeys.OSB_PATCHER}');
+					patcherAccountsJSONURL.setPortletId('${PatcherPortletKeys.PATCHER}');
 
 					patcherAccountsJSONURL.setParameter('limit', 10000);
 
@@ -350,7 +350,7 @@
 
 							var viewPatcherAccountURL = Liferay.PortletURL.createURL('${viewPatcherAccountURL}');
 
-							viewPatcherAccountURL.setPortletId('${PortletKeys.OSB_PATCHER}');
+							viewPatcherAccountURL.setPortletId('${PatcherPortletKeys.PATCHER}');
 
 							viewPatcherAccountURL.setParameter('accountEntryCode', event.result.text);
 

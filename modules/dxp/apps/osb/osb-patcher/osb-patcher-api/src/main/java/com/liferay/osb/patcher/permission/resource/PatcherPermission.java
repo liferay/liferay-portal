@@ -6,7 +6,7 @@
 package com.liferay.osb.patcher.permission.resource;
 
 import com.liferay.alloy.mvc.AlloyPermission;
-import com.liferay.osb.patcher.web.internal.constants.PortletKeys;
+import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.model.BaseModel;
@@ -48,7 +48,8 @@ public class PatcherPermission extends AlloyPermission {
 
 		if (contains(
 				getPermissionChecker(themeDisplay),
-				themeDisplay.getScopeGroupId(), PortletKeys.OSB_PATCHER,
+				themeDisplay.getScopeGroupId(),
+				PatcherPortletKeys.PATCHER,
 				themeDisplay.getScopeGroupId(),
 				formatActionId(controller, action))) {
 
@@ -73,7 +74,7 @@ public class PatcherPermission extends AlloyPermission {
 		String actionId = formatActionId(controller, action);
 
 		if ((name == null) || name.isEmpty()) {
-			name = PortletKeys.OSB_PATCHER;
+			name = PatcherPortletKeys.PATCHER;
 		}
 		else {
 			actionId = actionId.substring(

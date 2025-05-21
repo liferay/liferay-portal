@@ -6,7 +6,7 @@
 package com.liferay.osb.patcher.web.internal.search;
 
 import com.liferay.alloy.mvc.BaseAlloyIndexer;
-import com.liferay.osb.patcher.constants.PortletKeys;
+import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.model.PatcherFixComponent;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
@@ -77,7 +77,7 @@ public class PatcherFixComponentIndexer extends BaseAlloyIndexer {
 
 	private PatcherFixComponentIndexer() {
 		setClassName(PatcherFixComponent.class.getName());
-		setPortletId(PortletKeys.OSB_PATCHER);
+		setPortletId(PatcherPortletKeys.PATCHER);
 	}
 
 	private static final PatcherFixComponentIndexer _instance =

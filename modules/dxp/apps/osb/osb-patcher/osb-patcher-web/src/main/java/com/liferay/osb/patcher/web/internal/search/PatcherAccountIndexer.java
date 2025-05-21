@@ -6,7 +6,7 @@
 package com.liferay.osb.patcher.web.internal.search;
 
 import com.liferay.alloy.mvc.BaseAlloyIndexer;
-import com.liferay.osb.patcher.constants.PortletKeys;
+import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
 import com.liferay.osb.patcher.util.PatcherProductVersionUtil;
@@ -37,7 +37,7 @@ public class PatcherAccountIndexer extends BaseAlloyIndexer {
 
 	public PatcherAccountIndexer() {
 		setClassName(PatcherAccount.class.getName());
-		setPortletId(PortletKeys.OSB_PATCHER);
+		setPortletId(PatcherPortletKeys.PATCHER);
 	}
 
 	@Override

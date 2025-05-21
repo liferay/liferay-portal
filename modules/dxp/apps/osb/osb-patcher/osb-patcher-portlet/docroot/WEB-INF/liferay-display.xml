@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE display PUBLIC "-//Liferay//DTD Display 7.4.0//EN" "http://www.liferay.com/dtd/liferay-display_7_4_0.dtd">
-
-<display>
-	<category name="category.osb">
-		<portlet id="1"></portlet>
-	</category>
-</display>

@@ -72,7 +72,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 
 		Layout layout = themeDisplay.getLayout();
 
-		PortletURL portletURL = PortletURLFactoryUtil.create(request, PortletKeys.OSB_PATCHER, layout.getPlid(), PortletRequest.RENDER_PHASE);
+		PortletURL portletURL = PortletURLFactoryUtil.create(request, PatcherPortletKeys.PATCHER, layout.getPlid(), PortletRequest.RENDER_PHASE);
 
 		portletURL.setParameter("action", "view");
 		portletURL.setParameter("controller", "builds");

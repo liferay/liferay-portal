@@ -6,10 +6,11 @@
 package com.liferay.osb.patcher.constants;
 
 /**
- * @author Eddie Olson
+ * @author Eudaldo Alonso
  */
-public class PortletKeys extends com.liferay.portal.util.PortletKeys {
+public class PatcherPortletKeys {
 
-	public static final String OSB_PATCHER = "1_WAR_osbpatcherportlet";
+	public static final String PATCHER =
+		"com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet";
 
 }

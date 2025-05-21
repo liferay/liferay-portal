@@ -40,7 +40,7 @@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %>
 <c:set value="<%= ConstantsBeanFactoryUtil.getConstantsBean(PatcherProductVersionConstants.class) %>" var="PatcherProductVersionConstants" />
 <c:set value="<%= new PatcherProductVersionConstants() %>" var="PatcherProductVersionConstantsMethods" />
 
-<c:set value="<%= ConstantsBeanFactoryUtil.getConstantsBean(PortletKeys.class) %>" var="PortletKeys" />
+<c:set value="<%= ConstantsBeanFactoryUtil.getConstantsBean(PatcherPortletKeys.class) %>" var="PatcherPortletKeys" />
 <c:set value="<%= ConstantsBeanFactoryUtil.getConstantsBean(PortletPropsValues.class) %>" var="PortletPropsValues" />
 <c:set value="<%= ConstantsBeanFactoryUtil.getConstantsBean(StringPool.class) %>" var="StringPool" />
 

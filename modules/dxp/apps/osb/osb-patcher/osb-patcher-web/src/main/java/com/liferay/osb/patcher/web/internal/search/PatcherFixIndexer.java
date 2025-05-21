@@ -6,12 +6,12 @@
 package com.liferay.osb.patcher.web.internal.search;
 
 import com.liferay.alloy.mvc.BaseAlloyIndexer;
+import com.liferay.osb.patcher.constants.PatcherFixConstants;
+import com.liferay.osb.patcher.constants.PatcherPortletKeys;
+import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
-import com.liferay.osb.patcher.constants.PatcherFixConstants;
-import com.liferay.osb.patcher.constants.PortletKeys;
-import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.BooleanClause;
@@ -285,7 +285,7 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 
 	private PatcherFixIndexer() {
 		setClassName(PatcherFix.class.getName());
-		setPortletId(PortletKeys.OSB_PATCHER);
+		setPortletId(PatcherPortletKeys.PATCHER);
 	}
 
 	private static final PatcherFixIndexer _instance = new PatcherFixIndexer();

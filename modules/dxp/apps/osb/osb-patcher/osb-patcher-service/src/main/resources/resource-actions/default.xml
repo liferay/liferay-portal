@@ -3,7 +3,7 @@
 
 <resource-action-mapping>
 	<portlet-resource>
-		<portlet-name>1</portlet-name>
+		<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		<permissions>
 			<supports>
 				<action-key>ADD#BUILDS</action-key>
@@ -71,7 +71,7 @@
 	<model-resource>
 		<model-name>com.liferay.osb.patcher.model.PatcherAccount</model-name>
 		<portlet-ref>
-			<portlet-name>1</portlet-name>
+			<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		</portlet-ref>
 		<permissions>
 			<supports>
@@ -90,7 +90,7 @@
 	<model-resource>
 		<model-name>com.liferay.osb.patcher.model.PatcherBuild</model-name>
 		<portlet-ref>
-			<portlet-name>1</portlet-name>
+			<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		</portlet-ref>
 		<permissions>
 			<supports>
@@ -141,7 +141,7 @@
 	<model-resource>
 		<model-name>com.liferay.osb.patcher.model.PatcherFix</model-name>
 		<portlet-ref>
-			<portlet-name>1</portlet-name>
+			<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		</portlet-ref>
 		<permissions>
 			<supports>
@@ -182,7 +182,7 @@
 	<model-resource>
 		<model-name>com.liferay.osb.patcher.model.PatcherFixComponent</model-name>
 		<portlet-ref>
-			<portlet-name>1</portlet-name>
+			<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		</portlet-ref>
 		<permissions>
 			<supports>
@@ -207,7 +207,7 @@
 	<model-resource>
 		<model-name>com.liferay.osb.patcher.model.PatcherFixPack</model-name>
 		<portlet-ref>
-			<portlet-name>1</portlet-name>
+			<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		</portlet-ref>
 		<permissions>
 			<supports>
@@ -240,7 +240,7 @@
 	<model-resource>
 		<model-name>com.liferay.osb.patcher.model.PatcherProductVersion</model-name>
 		<portlet-ref>
-			<portlet-name>1</portlet-name>
+			<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		</portlet-ref>
 		<permissions>
 			<supports>
@@ -263,7 +263,7 @@
 	<model-resource>
 		<model-name>com.liferay.osb.patcher.model.PatcherProjectVersion</model-name>
 		<portlet-ref>
-			<portlet-name>1</portlet-name>
+			<portlet-name>com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet</portlet-name>
 		</portlet-ref>
 		<permissions>
 			<supports>

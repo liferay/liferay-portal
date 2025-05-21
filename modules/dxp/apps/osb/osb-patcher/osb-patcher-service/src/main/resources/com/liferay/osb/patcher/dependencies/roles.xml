@@ -4,7 +4,7 @@
 	<role>
 		<name>Patcher Admin</name>
 		<organization-role>false</organization-role>
-		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+		<default-action-keys resourceName="com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet">
 			<action-key>ADD_BY_NAME#BUILDS</action-key>
 			<action-key>ADD_BY_NAME#PROJECT_VERSIONS</action-key>
 			<action-key>ADD_TO_PAGE</action-key>
@@ -103,7 +103,7 @@
 	<role>
 		<name>Patcher Customer Support Engineer</name>
 		<organization-role>false</organization-role>
-		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+		<default-action-keys resourceName="com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet">
 			<action-key>ADD_BY_NAME#BUILDS</action-key>
 			<action-key>ADD#BUILDS</action-key>
 			<action-key>ADD#FIX_COMPONENTS</action-key>
@@ -167,7 +167,7 @@
 	<role>
 		<name>Patcher Fix Pack Engineer</name>
 		<organization-role>false</organization-role>
-		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+		<default-action-keys resourceName="com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet">
 			<action-key>ADD_BY_NAME#BUILDS</action-key>
 			<action-key>ADD#BUILDS</action-key>
 			<action-key>ADD#FIX_COMPONENTS</action-key>
@@ -234,7 +234,7 @@
 	<role>
 		<name>Patcher Technical Support Engineer</name>
 		<organization-role>false</organization-role>
-		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+		<default-action-keys resourceName="com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet">
 			<action-key>ADD_BY_NAME#BUILDS</action-key>
 			<action-key>ADD#BUILDS</action-key>
 			<action-key>ADD#FIX_COMPONENTS</action-key>
@@ -297,7 +297,7 @@
 	<role>
 		<name>Patcher User</name>
 		<organization-role>false</organization-role>
-		<default-action-keys resourceName="1_WAR_osbpatcherportlet">
+		<default-action-keys resourceName="com_liferay_osb_patcher_web_internal_portlet_PatcherPortlet">
 			<action-key>ADD_BY_NAME#BUILDS</action-key>
 			<action-key>ADD#BUILDS</action-key>
 			<action-key>ADD#FIX_COMPONENTS</action-key>
