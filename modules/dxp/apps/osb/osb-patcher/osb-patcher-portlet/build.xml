@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE project>
-
-<project basedir="." default="deploy" name="osb-patcher-portlet">
-	<property name="import.shared" value="alloy-mvc-shared" />
-
-	<import file="../build-common-alloy-portlet.xml" />
-</project>
