@@ -1,3 +1,8 @@
 Bundle-Name: Liferay OSB Patcher API
 Bundle-SymbolicName: com.liferay.osb.patcher.api
 Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.osb.patcher.exception,\
+	com.liferay.osb.patcher.model,\
+	com.liferay.osb.patcher.service,\
+	com.liferay.osb.patcher.service.persistence
