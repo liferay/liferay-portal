@@ -44,6 +44,8 @@ const ClassicEditor = ({
 				editor={BaseClassicEditor}
 				onChange={onChange}
 				onReady={(editor: BaseClassicEditor) => {
+					Liferay.fire('ckeditor:ready', {editor});
+
 					editor.ui.view.toolbar.items.map((item: any) => {
 						if (item.buttonView) {
 							item.buttonView.tooltipPosition = 'n';
