@@ -1,0 +1,4 @@
+dependencies {
+	testIntegrationImplementation project(":dxp:apps:osb:osb-patcher:osb-patcher-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}

@@ -1,0 +1,4 @@
+Bundle-Name: Liferay OSB Patcher Web
+Bundle-SymbolicName: com.liferay.osb.patcher.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /osb-patcher-web
