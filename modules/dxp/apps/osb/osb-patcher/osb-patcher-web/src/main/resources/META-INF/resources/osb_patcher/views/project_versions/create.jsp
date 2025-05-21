@@ -5,14 +5,14 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/views/init.jsp" %>
+<%@ include file="/osb_patcher/views/init.jsp" %>
 
-<liferay-util:include page="/WEB-INF/jsp/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
+<liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="project-versions" />
 	<liferay-util:param name="patcherProductVersionId" value="${patcherProductVersionId}" />
 </liferay-util:include>
 
-<liferay-util:include page="/WEB-INF/jsp/osb_patcher/views/header.jsp" servletContext="<%= application %>">
+<liferay-util:include page="/osb_patcher/views/header.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="title" value="create-project-version" />
 	<liferay-util:param name="controller" value="project_versions" />
 	<liferay-util:param name="action" value="index" />

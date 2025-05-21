@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/views/init.jsp" %>
+<%@ include file="/osb_patcher/views/init.jsp" %>
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-builds"
@@ -17,7 +17,7 @@
 
 	<c:set value="${fn:length(childPatcherBuilds)}" var="resultsTotal" />
 
-	<%@ include file="/WEB-INF/jsp/osb_patcher/views/show_results_count.jspf" %>
+	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherBuild"
@@ -113,7 +113,7 @@
 		paginate="${false}"
 	/>
 
-	<%@ include file="/WEB-INF/jsp/osb_patcher/views/show_results_count.jspf" %>
+	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 </liferay-ui:search-container>
 
 <aui:script>

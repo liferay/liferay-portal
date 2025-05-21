@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/views/init.jsp" %>
+<%@ include file="/osb_patcher/views/init.jsp" %>
 
 <c:if test="${not empty param.title}">
 	<c:if test="${empty param.redirect}">

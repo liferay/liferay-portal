@@ -5,9 +5,9 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/views/init.jsp" %>
+<%@ include file="/osb_patcher/views/init.jsp" %>
 
-<liferay-util:include page="/WEB-INF/jsp/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
+<liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="fix-packs" />
 </liferay-util:include>
 

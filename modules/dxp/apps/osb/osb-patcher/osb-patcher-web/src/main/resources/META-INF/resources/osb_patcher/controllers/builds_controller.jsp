@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/controllers/init.jspf" %>
+<%@ include file="/osb_patcher/controllers/init.jspf" %>
 
 <%!
 public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {

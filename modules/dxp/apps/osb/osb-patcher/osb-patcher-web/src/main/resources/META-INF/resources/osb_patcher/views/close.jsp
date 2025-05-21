@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/views/init.jsp" %>
+<%@ include file="/osb_patcher/views/init.jsp" %>
 
 <aui:script>
 	var dialog = Liferay.Util.getWindow();

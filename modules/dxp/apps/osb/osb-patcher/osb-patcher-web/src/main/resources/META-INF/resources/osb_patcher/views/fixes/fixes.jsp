@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/views/init.jsp" %>
+<%@ include file="/osb_patcher/views/init.jsp" %>
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fixes"
@@ -17,7 +17,7 @@
 
 	<c:set value="${fn:length(patcherFixes)}" var="resultsTotal" />
 
-	<%@ include file="/WEB-INF/jsp/osb_patcher/views/show_results_count.jspf" %>
+	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFix"
@@ -122,7 +122,7 @@
 		paginate="${false}"
 	/>
 
-	<%@ include file="/WEB-INF/jsp/osb_patcher/views/show_results_count.jspf" %>
+	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 </liferay-ui:search-container>
 
 <aui:script>

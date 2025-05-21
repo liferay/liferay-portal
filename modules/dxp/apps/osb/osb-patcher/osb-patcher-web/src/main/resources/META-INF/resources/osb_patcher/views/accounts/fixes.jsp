@@ -5,9 +5,9 @@
  */
 --%>
 
-<%@ include file="/WEB-INF/jsp/osb_patcher/views/init.jsp" %>
+<%@ include file="/osb_patcher/views/init.jsp" %>
 
-<liferay-util:include page="/WEB-INF/jsp/osb_patcher/views/header.jsp" servletContext="<%= application %>">
+<liferay-util:include page="/osb_patcher/views/header.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="title" value="${title}" />
 	<liferay-util:param name="controller" value="builds" />
 	<liferay-util:param name="action" value="index" />
@@ -23,7 +23,7 @@
 
 	<c:set value="${fn:length(patcherFixes)}" var="resultsTotal" />
 
-	<%@ include file="/WEB-INF/jsp/osb_patcher/views/show_results_count.jspf" %>
+	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFix"
@@ -137,7 +137,7 @@
 		paginate="${false}"
 	/>
 
-	<%@ include file="/WEB-INF/jsp/osb_patcher/views/show_results_count.jspf" %>
+	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 </liferay-ui:search-container>
 
 <aui:script>
