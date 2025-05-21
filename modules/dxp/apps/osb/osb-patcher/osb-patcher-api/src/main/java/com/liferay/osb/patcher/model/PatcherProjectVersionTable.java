@@ -8,6 +8,7 @@ package com.liferay.osb.patcher.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.sql.Clob;
 import java.sql.Types;
 
 import java.util.Date;
@@ -65,9 +66,9 @@ public class PatcherProjectVersionTable
 	public final Column<PatcherProjectVersionTable, String> repositoryName =
 		createColumn(
 			"repositoryName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<PatcherProjectVersionTable, String> fixedIssues =
+	public final Column<PatcherProjectVersionTable, Clob> fixedIssues =
 		createColumn(
-			"fixedIssues", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+			"fixedIssues", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<PatcherProjectVersionTable, Integer> productVersion =
 		createColumn(
 			"productVersion", Integer.class, Types.INTEGER,

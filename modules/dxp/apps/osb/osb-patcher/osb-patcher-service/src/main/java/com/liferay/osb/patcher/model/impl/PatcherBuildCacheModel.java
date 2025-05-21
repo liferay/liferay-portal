@@ -291,7 +291,9 @@ public class PatcherBuildCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		patcherBuildId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
@@ -312,8 +314,8 @@ public class PatcherBuildCacheModel
 		ticketEntryId = objectInput.readLong();
 
 		hotfixId = objectInput.readLong();
-		name = objectInput.readUTF();
-		originalName = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		originalName = (String)objectInput.readObject();
 		key = objectInput.readUTF();
 
 		keyVersion = objectInput.readDouble();
@@ -338,8 +340,8 @@ public class PatcherBuildCacheModel
 		sourceName = objectInput.readUTF();
 
 		childBuild = objectInput.readBoolean();
-		comments = objectInput.readUTF();
-		qaComments = objectInput.readUTF();
+		comments = (String)objectInput.readObject();
+		qaComments = (String)objectInput.readObject();
 
 		qaStatus = objectInput.readInt();
 		requestKey = objectInput.readUTF();
@@ -386,17 +388,17 @@ public class PatcherBuildCacheModel
 		objectOutput.writeLong(hotfixId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (originalName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(originalName);
+			objectOutput.writeObject(originalName);
 		}
 
 		if (key == null) {
@@ -460,17 +462,17 @@ public class PatcherBuildCacheModel
 		objectOutput.writeBoolean(childBuild);
 
 		if (comments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(comments);
+			objectOutput.writeObject(comments);
 		}
 
 		if (qaComments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(qaComments);
+			objectOutput.writeObject(qaComments);
 		}
 
 		objectOutput.writeInt(qaStatus);

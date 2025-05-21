@@ -8,6 +8,7 @@ package com.liferay.osb.patcher.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.sql.Clob;
 import java.sql.Types;
 
 import java.util.Date;
@@ -52,10 +53,10 @@ public class PatcherBuildTable extends BaseTable<PatcherBuildTable> {
 		"ticketEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<PatcherBuildTable, Long> hotfixId = createColumn(
 		"hotfixId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<PatcherBuildTable, String> name = createColumn(
-		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<PatcherBuildTable, String> originalName = createColumn(
-		"originalName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<PatcherBuildTable, Clob> name = createColumn(
+		"name", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<PatcherBuildTable, Clob> originalName = createColumn(
+		"originalName", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<PatcherBuildTable, String> key = createColumn(
 		"key_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<PatcherBuildTable, Double> keyVersion = createColumn(
@@ -98,10 +99,10 @@ public class PatcherBuildTable extends BaseTable<PatcherBuildTable> {
 		"sourceName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<PatcherBuildTable, Boolean> childBuild = createColumn(
 		"childBuild", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
-	public final Column<PatcherBuildTable, String> comments = createColumn(
-		"comments", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<PatcherBuildTable, String> qaComments = createColumn(
-		"qaComments", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<PatcherBuildTable, Clob> comments = createColumn(
+		"comments", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<PatcherBuildTable, Clob> qaComments = createColumn(
+		"qaComments", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<PatcherBuildTable, Integer> qaStatus = createColumn(
 		"qaStatus", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<PatcherBuildTable, String> requestKey = createColumn(

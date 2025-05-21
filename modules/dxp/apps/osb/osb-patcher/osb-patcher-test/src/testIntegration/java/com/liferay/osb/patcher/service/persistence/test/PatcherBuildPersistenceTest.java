@@ -345,17 +345,15 @@ public class PatcherBuildPersistenceTest {
 			true, "userName", true, "createDate", true, "modifiedDate", true,
 			"patcherAccountId", true, "patcherFixId", true,
 			"patcherProductVersionId", true, "patcherProjectVersionId", true,
-			"ticketEntryId", true, "hotfixId", true, "name", true,
-			"originalName", true, "key", true, "keyVersion", true, "type", true,
-			"latestBuild", true, "latestKeyBuild", true,
+			"ticketEntryId", true, "hotfixId", true, "key", true, "keyVersion",
+			true, "type", true, "latestBuild", true, "latestKeyBuild", true,
 			"latestLESATicketBuild", true, "latestSupportTicketBuild", true,
 			"accountEntryCode", true, "lesaTicket", true, "lesaTicketVersion",
 			true, "supportTicket", true, "supportTicketVersion", true,
 			"fileName", true, "sourceName", true, "childBuild", true,
-			"comments", true, "qaComments", true, "qaStatus", true,
-			"requestKey", true, "notified", true, "productVersion", true,
-			"status", true, "statusByUserId", true, "statusByUserName", true,
-			"statusDate", true);
+			"qaStatus", true, "requestKey", true, "notified", true,
+			"productVersion", true, "status", true, "statusByUserId", true,
+			"statusByUserName", true, "statusDate", true);
 	}
 
 	@Test

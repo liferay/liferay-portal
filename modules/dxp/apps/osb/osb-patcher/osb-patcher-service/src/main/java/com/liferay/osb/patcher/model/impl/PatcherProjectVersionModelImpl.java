@@ -67,7 +67,7 @@ public class PatcherProjectVersionModelImpl
 		{"rootPatcherProjectVersionId", Types.BIGINT}, {"name", Types.VARCHAR},
 		{"combinedBranch", Types.BOOLEAN}, {"hide", Types.BOOLEAN},
 		{"committish", Types.VARCHAR}, {"repositoryName", Types.VARCHAR},
-		{"fixedIssues", Types.VARCHAR}, {"productVersion", Types.INTEGER}
+		{"fixedIssues", Types.CLOB}, {"productVersion", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -87,12 +87,12 @@ public class PatcherProjectVersionModelImpl
 		TABLE_COLUMNS_MAP.put("hide", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("committish", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("repositoryName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("fixedIssues", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("fixedIssues", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("productVersion", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PatcherProjectVersion (patcherProjectVersionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,patcherProductVersionId LONG,rootPatcherProjectVersionId LONG,name VARCHAR(75) null,combinedBranch BOOLEAN,hide BOOLEAN,committish VARCHAR(75) null,repositoryName VARCHAR(75) null,fixedIssues VARCHAR(75) null,productVersion INTEGER)";
+		"create table PatcherProjectVersion (patcherProjectVersionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,patcherProductVersionId LONG,rootPatcherProjectVersionId LONG,name VARCHAR(150) null,combinedBranch BOOLEAN,hide BOOLEAN,committish VARCHAR(150) null,repositoryName VARCHAR(75) null,fixedIssues TEXT null,productVersion INTEGER)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table PatcherProjectVersion";

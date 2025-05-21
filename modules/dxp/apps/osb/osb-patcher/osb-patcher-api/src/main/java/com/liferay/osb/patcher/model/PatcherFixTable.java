@@ -8,6 +8,7 @@ package com.liferay.osb.patcher.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.sql.Clob;
 import java.sql.Types;
 
 import java.util.Date;
@@ -43,8 +44,8 @@ public class PatcherFixTable extends BaseTable<PatcherFixTable> {
 		createColumn(
 			"patcherProjectVersionId", Long.class, Types.BIGINT,
 			Column.FLAG_DEFAULT);
-	public final Column<PatcherFixTable, String> name = createColumn(
-		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<PatcherFixTable, Clob> name = createColumn(
+		"name", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, String> key = createColumn(
 		"key_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, Double> keyVersion = createColumn(
@@ -67,10 +68,10 @@ public class PatcherFixTable extends BaseTable<PatcherFixTable> {
 		"requirements", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, String> requestKey = createColumn(
 		"requestKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<PatcherFixTable, String> jenkinsResults = createColumn(
-		"jenkinsResults", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<PatcherFixTable, String> comments = createColumn(
-		"comments", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<PatcherFixTable, Clob> jenkinsResults = createColumn(
+		"jenkinsResults", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<PatcherFixTable, Clob> comments = createColumn(
+		"comments", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, Integer> fixPackStatus = createColumn(
 		"fixPackStatus", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, Boolean> notified = createColumn(

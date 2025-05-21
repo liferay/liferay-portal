@@ -68,7 +68,7 @@ public class PatcherBuildModelImpl
 		{"patcherProductVersionId", Types.BIGINT},
 		{"patcherProjectVersionId", Types.BIGINT},
 		{"ticketEntryId", Types.BIGINT}, {"hotfixId", Types.BIGINT},
-		{"name", Types.VARCHAR}, {"originalName", Types.VARCHAR},
+		{"name", Types.CLOB}, {"originalName", Types.CLOB},
 		{"key_", Types.VARCHAR}, {"keyVersion", Types.DOUBLE},
 		{"type_", Types.INTEGER}, {"latestBuild", Types.BOOLEAN},
 		{"latestKeyBuild", Types.BOOLEAN},
@@ -78,7 +78,7 @@ public class PatcherBuildModelImpl
 		{"lesaTicketVersion", Types.DOUBLE}, {"supportTicket", Types.VARCHAR},
 		{"supportTicketVersion", Types.DOUBLE}, {"fileName", Types.VARCHAR},
 		{"sourceName", Types.VARCHAR}, {"childBuild", Types.BOOLEAN},
-		{"comments", Types.VARCHAR}, {"qaComments", Types.VARCHAR},
+		{"comments", Types.CLOB}, {"qaComments", Types.CLOB},
 		{"qaStatus", Types.INTEGER}, {"requestKey", Types.VARCHAR},
 		{"notified", Types.BOOLEAN}, {"productVersion", Types.INTEGER},
 		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
@@ -101,8 +101,8 @@ public class PatcherBuildModelImpl
 		TABLE_COLUMNS_MAP.put("patcherProjectVersionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("ticketEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("hotfixId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("originalName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("name", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("originalName", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("key_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("keyVersion", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
@@ -118,8 +118,8 @@ public class PatcherBuildModelImpl
 		TABLE_COLUMNS_MAP.put("fileName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sourceName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("childBuild", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("comments", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("qaComments", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("comments", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("qaComments", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("qaStatus", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("requestKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("notified", Types.BOOLEAN);
@@ -131,7 +131,7 @@ public class PatcherBuildModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PatcherBuild (patcherBuildId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,patcherAccountId LONG,patcherFixId LONG,patcherProductVersionId LONG,patcherProjectVersionId LONG,ticketEntryId LONG,hotfixId LONG,name VARCHAR(75) null,originalName VARCHAR(75) null,key_ VARCHAR(75) null,keyVersion DOUBLE,type_ INTEGER,latestBuild BOOLEAN,latestKeyBuild BOOLEAN,latestLESATicketBuild BOOLEAN,latestSupportTicketBuild BOOLEAN,accountEntryCode VARCHAR(75) null,lesaTicket VARCHAR(75) null,lesaTicketVersion DOUBLE,supportTicket VARCHAR(75) null,supportTicketVersion DOUBLE,fileName VARCHAR(75) null,sourceName VARCHAR(75) null,childBuild BOOLEAN,comments VARCHAR(75) null,qaComments VARCHAR(75) null,qaStatus INTEGER,requestKey VARCHAR(75) null,notified BOOLEAN,productVersion INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+		"create table PatcherBuild (patcherBuildId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,patcherAccountId LONG,patcherFixId LONG,patcherProductVersionId LONG,patcherProjectVersionId LONG,ticketEntryId LONG,hotfixId LONG,name TEXT null,originalName TEXT null,key_ VARCHAR(75) null,keyVersion DOUBLE,type_ INTEGER,latestBuild BOOLEAN,latestKeyBuild BOOLEAN,latestLESATicketBuild BOOLEAN,latestSupportTicketBuild BOOLEAN,accountEntryCode VARCHAR(75) null,lesaTicket VARCHAR(75) null,lesaTicketVersion DOUBLE,supportTicket VARCHAR(75) null,supportTicketVersion DOUBLE,fileName VARCHAR(500) null,sourceName VARCHAR(500) null,childBuild BOOLEAN,comments TEXT null,qaComments TEXT null,qaStatus INTEGER,requestKey VARCHAR(75) null,notified BOOLEAN,productVersion INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table PatcherBuild";
 

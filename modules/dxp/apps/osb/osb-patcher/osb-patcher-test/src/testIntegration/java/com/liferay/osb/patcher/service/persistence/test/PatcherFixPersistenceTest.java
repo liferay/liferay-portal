@@ -277,13 +277,12 @@ public class PatcherFixPersistenceTest {
 			"PatcherFix", "patcherFixId", true, "companyId", true, "userId",
 			true, "userName", true, "createDate", true, "modifiedDate", true,
 			"patcherProductVersionId", true, "patcherProjectVersionId", true,
-			"name", true, "key", true, "keyVersion", true, "type", true,
-			"latestFix", true, "obsolete", true, "committish", true, "gitHash",
-			true, "gitRemoteURL", true, "dependencies", true, "requirements",
-			true, "requestKey", true, "jenkinsResults", true, "comments", true,
-			"fixPackStatus", true, "notified", true, "productVersion", true,
-			"status", true, "statusByUserId", true, "statusByUserName", true,
-			"statusDate", true);
+			"key", true, "keyVersion", true, "type", true, "latestFix", true,
+			"obsolete", true, "committish", true, "gitHash", true,
+			"gitRemoteURL", true, "dependencies", true, "requirements", true,
+			"requestKey", true, "fixPackStatus", true, "notified", true,
+			"productVersion", true, "status", true, "statusByUserId", true,
+			"statusByUserName", true, "statusDate", true);
 	}
 
 	@Test

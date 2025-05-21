@@ -167,7 +167,9 @@ public class PatcherProjectVersionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		patcherProjectVersionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
@@ -187,7 +189,7 @@ public class PatcherProjectVersionCacheModel
 		hide = objectInput.readBoolean();
 		committish = objectInput.readUTF();
 		repositoryName = objectInput.readUTF();
-		fixedIssues = objectInput.readUTF();
+		fixedIssues = (String)objectInput.readObject();
 
 		productVersion = objectInput.readInt();
 	}
@@ -240,10 +242,10 @@ public class PatcherProjectVersionCacheModel
 		}
 
 		if (fixedIssues == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fixedIssues);
+			objectOutput.writeObject(fixedIssues);
 		}
 
 		objectOutput.writeInt(productVersion);

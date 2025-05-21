@@ -64,14 +64,14 @@ public class PatcherFixModelImpl
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"patcherProductVersionId", Types.BIGINT},
-		{"patcherProjectVersionId", Types.BIGINT}, {"name", Types.VARCHAR},
+		{"patcherProjectVersionId", Types.BIGINT}, {"name", Types.CLOB},
 		{"key_", Types.VARCHAR}, {"keyVersion", Types.DOUBLE},
 		{"type_", Types.INTEGER}, {"latestFix", Types.BOOLEAN},
 		{"obsolete", Types.BOOLEAN}, {"committish", Types.VARCHAR},
 		{"gitHash", Types.VARCHAR}, {"gitRemoteURL", Types.VARCHAR},
 		{"dependencies", Types.VARCHAR}, {"requirements", Types.VARCHAR},
-		{"requestKey", Types.VARCHAR}, {"jenkinsResults", Types.VARCHAR},
-		{"comments", Types.VARCHAR}, {"fixPackStatus", Types.INTEGER},
+		{"requestKey", Types.VARCHAR}, {"jenkinsResults", Types.CLOB},
+		{"comments", Types.CLOB}, {"fixPackStatus", Types.INTEGER},
 		{"notified", Types.BOOLEAN}, {"productVersion", Types.INTEGER},
 		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
 		{"statusByUserName", Types.VARCHAR}, {"statusDate", Types.TIMESTAMP}
@@ -89,7 +89,7 @@ public class PatcherFixModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("patcherProductVersionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("patcherProjectVersionId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("name", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("key_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("keyVersion", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
@@ -101,8 +101,8 @@ public class PatcherFixModelImpl
 		TABLE_COLUMNS_MAP.put("dependencies", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("requirements", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("requestKey", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("jenkinsResults", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("comments", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("jenkinsResults", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("comments", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("fixPackStatus", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("notified", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("productVersion", Types.INTEGER);
@@ -113,7 +113,7 @@ public class PatcherFixModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PatcherFix (patcherFixId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,patcherProductVersionId LONG,patcherProjectVersionId LONG,name VARCHAR(75) null,key_ VARCHAR(75) null,keyVersion DOUBLE,type_ INTEGER,latestFix BOOLEAN,obsolete BOOLEAN,committish VARCHAR(75) null,gitHash VARCHAR(75) null,gitRemoteURL VARCHAR(75) null,dependencies VARCHAR(75) null,requirements VARCHAR(75) null,requestKey VARCHAR(75) null,jenkinsResults VARCHAR(75) null,comments VARCHAR(75) null,fixPackStatus INTEGER,notified BOOLEAN,productVersion INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+		"create table PatcherFix (patcherFixId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,patcherProductVersionId LONG,patcherProjectVersionId LONG,name TEXT null,key_ VARCHAR(75) null,keyVersion DOUBLE,type_ INTEGER,latestFix BOOLEAN,obsolete BOOLEAN,committish VARCHAR(75) null,gitHash VARCHAR(75) null,gitRemoteURL VARCHAR(500) null,dependencies VARCHAR(500) null,requirements VARCHAR(75) null,requestKey VARCHAR(75) null,jenkinsResults TEXT null,comments TEXT null,fixPackStatus INTEGER,notified BOOLEAN,productVersion INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table PatcherFix";
 

@@ -83,7 +83,7 @@ public class PatcherProductVersionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PatcherProductVersion (patcherProductVersionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,fixDeliveryMethod INTEGER,moduleFolderName VARCHAR(75) null)";
+		"create table PatcherProductVersion (patcherProductVersionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,fixDeliveryMethod INTEGER,moduleFolderName VARCHAR(500) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table PatcherProductVersion";
