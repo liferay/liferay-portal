@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 
 <model-hints>
+	<hint-collection name="TEXTAREA">
+		<hint name="max-length">2000000</hint>
+	</hint-collection>
 	<model name="com.liferay.osb.patcher.model.PatcherAccount">
 		<field name="patcherAccountId" type="long" />
 		<field name="companyId" type="long" />
@@ -24,8 +27,12 @@
 		<field name="patcherProjectVersionId" type="long" />
 		<field name="ticketEntryId" type="long" />
 		<field name="hotfixId" type="long" />
-		<field name="name" type="String" />
-		<field name="originalName" type="String" />
+		<field name="name" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
+		<field name="originalName" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
 		<field name="key" type="String" />
 		<field name="keyVersion" type="double" />
 		<field name="type" type="int" />
@@ -38,11 +45,19 @@
 		<field name="lesaTicketVersion" type="double" />
 		<field name="supportTicket" type="String" />
 		<field name="supportTicketVersion" type="double" />
-		<field name="fileName" type="String" />
-		<field name="sourceName" type="String" />
+		<field name="fileName" type="String">
+			<hint name="max-length">500</hint>
+		</field>
+		<field name="sourceName" type="String">
+			<hint name="max-length">500</hint>
+		</field>
 		<field name="childBuild" type="boolean" />
-		<field name="comments" type="String" />
-		<field name="qaComments" type="String" />
+		<field name="comments" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
+		<field name="qaComments" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
 		<field name="qaStatus" type="int" />
 		<field name="requestKey" type="String" />
 		<field name="notified" type="boolean" />
@@ -66,7 +81,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="patcherProductVersionId" type="long" />
 		<field name="patcherProjectVersionId" type="long" />
-		<field name="name" type="String" />
+		<field name="name" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
 		<field name="key" type="String" />
 		<field name="keyVersion" type="double" />
 		<field name="type" type="int" />
@@ -74,12 +91,20 @@
 		<field name="obsolete" type="boolean" />
 		<field name="committish" type="String" />
 		<field name="gitHash" type="String" />
-		<field name="gitRemoteURL" type="String" />
-		<field name="dependencies" type="String" />
+		<field name="gitRemoteURL" type="String">
+			<hint name="max-length">500</hint>
+		</field>
+		<field name="dependencies" type="String">
+			<hint name="max-length">500</hint>
+		</field>
 		<field name="requirements" type="String" />
 		<field name="requestKey" type="String" />
-		<field name="jenkinsResults" type="String" />
-		<field name="comments" type="String" />
+		<field name="jenkinsResults" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
+		<field name="comments" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
 		<field name="fixPackStatus" type="int" />
 		<field name="notified" type="boolean" />
 		<field name="productVersion" type="int" />
@@ -127,7 +152,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="name" type="String" />
 		<field name="fixDeliveryMethod" type="int" />
-		<field name="moduleFolderName" type="String" />
+		<field name="moduleFolderName" type="String">
+			<hint name="max-length">500</hint>
+		</field>
 	</model>
 	<model name="com.liferay.osb.patcher.model.PatcherProjectVersion">
 		<field name="patcherProjectVersionId" type="long" />
@@ -138,12 +165,18 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="patcherProductVersionId" type="long" />
 		<field name="rootPatcherProjectVersionId" type="long" />
-		<field name="name" type="String" />
+		<field name="name" type="String">
+			<hint name="max-length">150</hint>
+		</field>
 		<field name="combinedBranch" type="boolean" />
 		<field name="hide" type="boolean" />
-		<field name="committish" type="String" />
+		<field name="committish" type="String">
+			<hint name="max-length">150</hint>
+		</field>
 		<field name="repositoryName" type="String" />
-		<field name="fixedIssues" type="String" />
+		<field name="fixedIssues" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
 		<field name="productVersion" type="int" />
 	</model>
 	<model name="com.liferay.osb.patcher.model.PatcherTicketHint">
