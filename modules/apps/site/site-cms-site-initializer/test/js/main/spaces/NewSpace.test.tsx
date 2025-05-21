@@ -11,7 +11,7 @@ import React from 'react';
 import NewSpace, {
 	NewSpaceProps,
 } from '../../../../src/main/resources/META-INF/resources/js/main/spaces/NewSpace';
-import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/structure_builder/services/ApiHelper';
+import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/services/ApiHelper';
 
 describe('NewSpace', () => {
 	const props: NewSpaceProps = {
@@ -23,7 +23,7 @@ describe('NewSpace', () => {
 	beforeEach(() => {
 		apiPostSpy = jest
 			.spyOn(ApiHelper, 'post')
-			.mockResolvedValue({id: 'fake-id'});
+			.mockResolvedValue({data: {id: 'fake-id'}, error: null});
 	});
 
 	afterEach(() => {
