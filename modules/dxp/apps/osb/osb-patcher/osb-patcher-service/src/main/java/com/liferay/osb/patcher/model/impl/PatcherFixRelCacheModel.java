@@ -1,0 +1,102 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.osb.patcher.model.impl;
+
+import com.liferay.osb.patcher.model.PatcherFixRel;
+import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.CacheModel;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+/**
+ * The cache model class for representing PatcherFixRel in entity cache.
+ *
+ * @author Brian Wing Shun Chan
+ * @generated
+ */
+public class PatcherFixRelCacheModel
+	implements CacheModel<PatcherFixRel>, Externalizable {
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+
+		if (!(object instanceof PatcherFixRelCacheModel)) {
+			return false;
+		}
+
+		PatcherFixRelCacheModel patcherFixRelCacheModel =
+			(PatcherFixRelCacheModel)object;
+
+		if (patcherFixRelId == patcherFixRelCacheModel.patcherFixRelId) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, patcherFixRelId);
+	}
+
+	@Override
+	public String toString() {
+		StringBundler sb = new StringBundler(7);
+
+		sb.append("{patcherFixRelId=");
+		sb.append(patcherFixRelId);
+		sb.append(", childPatcherFixId=");
+		sb.append(childPatcherFixId);
+		sb.append(", parentPatcherFixId=");
+		sb.append(parentPatcherFixId);
+		sb.append("}");
+
+		return sb.toString();
+	}
+
+	@Override
+	public PatcherFixRel toEntityModel() {
+		PatcherFixRelImpl patcherFixRelImpl = new PatcherFixRelImpl();
+
+		patcherFixRelImpl.setPatcherFixRelId(patcherFixRelId);
+		patcherFixRelImpl.setChildPatcherFixId(childPatcherFixId);
+		patcherFixRelImpl.setParentPatcherFixId(parentPatcherFixId);
+
+		patcherFixRelImpl.resetOriginalValues();
+
+		return patcherFixRelImpl;
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException {
+		patcherFixRelId = objectInput.readLong();
+
+		childPatcherFixId = objectInput.readLong();
+
+		parentPatcherFixId = objectInput.readLong();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput) throws IOException {
+		objectOutput.writeLong(patcherFixRelId);
+
+		objectOutput.writeLong(childPatcherFixId);
+
+		objectOutput.writeLong(parentPatcherFixId);
+	}
+
+	public long patcherFixRelId;
+	public long childPatcherFixId;
+	public long parentPatcherFixId;
+
+}
