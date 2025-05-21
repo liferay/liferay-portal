@@ -9,10 +9,10 @@ import com.liferay.alloy.mvc.AlloyPermission;
 import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.model.BaseModel;
-import com.liferay.portal.security.permission.PermissionChecker;
-import com.liferay.portal.security.permission.PermissionThreadLocal;
-import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 /**
  * @author Zsolt Balogh

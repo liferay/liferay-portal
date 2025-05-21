@@ -52,10 +52,10 @@ import com.liferay.portal.kernel.util.ServiceBeanMethodInvocationFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.LockLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.lock.service.LockLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -699,7 +699,7 @@ public class PatcherUtil {
 
 		Class<?> clazz = Class.forName(className);
 
-		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(clazz);
+		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(clazz);
 
 		if (indexer == null) {
 			throw new AlloyException("No indexer found for class " + className);
@@ -728,7 +728,7 @@ public class PatcherUtil {
 		searchContext.setSorts(new Sort[] {new Sort()});
 		searchContext.setStart(QueryUtil.ALL_POS);
 
-		String indexerClassName = indexer.getClassNames()[0];
+		String indexerClassName = indexer.getSearchClassNames()[0];
 
 		Class<?> indexerClass = Class.forName(indexerClassName);
 

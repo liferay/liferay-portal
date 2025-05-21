@@ -7,7 +7,7 @@ package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.BaseAlloyControllerImpl;
 import com.liferay.alloy.mvc.MockAlloyControllerImpl;
-import com.liferay.portal.model.BaseModel;
+import com.liferay.portal.kernel.model.BaseModel;
 
 /**
  * @author Zsolt Balogh

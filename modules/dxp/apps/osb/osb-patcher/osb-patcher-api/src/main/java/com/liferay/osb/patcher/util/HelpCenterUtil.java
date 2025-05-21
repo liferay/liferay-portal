@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import org.apache.commons.io.IOUtils;
 
@@ -120,7 +121,7 @@ public class HelpCenterUtil {
 			PortletPropsValues.HELP_CENTER_TOKEN_TICKET_DIR +
 			StringPool.FORWARD_SLASH + supportTicket;
 
-		uploadTokenURL = HttpUtil.addParameter(
+		uploadTokenURL = HttpComponentsUtil.addParameter(
 			uploadTokenURL, "dirPath", dirPath);
 
 		options.setLocation(uploadTokenURL);
@@ -136,15 +137,15 @@ public class HelpCenterUtil {
 			PortletPropsValues.HELP_CENTER_FILE_REPO_URL +
 			StringPool.FORWARD_SLASH + "upload";
 
-		uploadURL = HttpUtil.addParameter(uploadURL, "resumableChunkNumber", 1);
-		uploadURL = HttpUtil.addParameter(
+		uploadURL = HttpComponentsUtil.addParameter(uploadURL, "resumableChunkNumber", 1);
+		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableChunkSize", 26214400);
-		uploadURL = HttpUtil.addParameter(
+		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableFilename", fileName);
-		uploadURL = HttpUtil.addParameter(uploadURL, "resumableTotalChunks", 1);
-		uploadURL = HttpUtil.addParameter(
+		uploadURL = HttpComponentsUtil.addParameter(uploadURL, "resumableTotalChunks", 1);
+		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableTotalSize", file.length());
-		uploadURL = HttpUtil.addParameter(
+		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "token", getAttachmentToken(supportTicket));
 
 		URL url = new URL(uploadURL);

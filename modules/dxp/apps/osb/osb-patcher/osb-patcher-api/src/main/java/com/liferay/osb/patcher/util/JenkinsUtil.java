@@ -5,6 +5,8 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
+
 import com.liferay.alloy.mvc.AlloyController;
 import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.jenkins.results.parser.LoadBalancerUtil;
@@ -40,9 +42,9 @@ import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.BaseModel;
-import com.liferay.portal.model.User;
-import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -393,7 +395,7 @@ public class JenkinsUtil {
 
 		jenkinsRequestParameters.put(
 			"patcher.build.file.name",
-			HttpUtil.encodePath(patcherBuild.getFileName()));
+			HttpComponentsUtil.encodePath(patcherBuild.getFileName()));
 		jenkinsRequestParameters.put(
 			"patcher.build.id",
 			String.valueOf(patcherBuild.getPatcherBuildId()));
