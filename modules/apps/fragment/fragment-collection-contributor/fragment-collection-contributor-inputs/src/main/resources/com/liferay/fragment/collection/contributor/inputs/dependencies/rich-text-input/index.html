@@ -126,7 +126,7 @@
 		[#else]
 			<div class="d-flex">
 				<div class="flex-grow-1">
-					[@liferay_editor["editor"] contents=input.value editorName="ckeditor" name=fragmentEntryLinkNamespace + "-" + input.name placeholder=inputLabel required=input.required /]
+					[@liferay_layout["render-editor"] content=input.value name=fragmentEntryLinkNamespace + "-" + input.name label=inputLabel required=input.required /]
 				</div>
 
 				[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
