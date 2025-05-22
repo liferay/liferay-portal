@@ -5,17 +5,13 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherBuildRel;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherBuildRelLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Projection;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,44 +21,14 @@ import java.util.List;
  */
 public class PatcherBuildRelUtil {
 
-	public static void addPatcherBuildRel(
-			AlloyController alloyController, long childPatcherBuildId,
-			List<Long> parentPatcherBuildIds)
-		throws Exception {
-
-		for (long parentPatcherBuildId : parentPatcherBuildIds) {
-			addPatcherBuildRel(
-				alloyController, childPatcherBuildId, parentPatcherBuildId);
-		}
-	}
-
-	public static PatcherBuildRel addPatcherBuildRel(
-			AlloyController alloyController, long childPatcherBuildId,
-			long parentPatcherBuildId)
-		throws Exception {
-
-		PatcherBuildRel patcherBuildRel =
-			PatcherBuildRelLocalServiceUtil.createPatcherBuildRel(0);
-
-		alloyController.updateModelIgnoreRequest(
-			patcherBuildRel, "childPatcherBuildId", childPatcherBuildId,
-			"parentPatcherBuildId", parentPatcherBuildId);
-
-		return patcherBuildRel;
-	}
-
 	public static void deletePatcherBuildRelsByChildPatcherBuildId(
-			long childPatcherBuildId)
-		throws Exception {
+		long childPatcherBuildId) {
 
-		AlloyServiceInvoker patcherBuildRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuildRel.class.getName());
+		for (PatcherBuildRel patcherBuildRel :
+				PatcherBuildRelLocalServiceUtil.
+					getPatcherBuildRelsByChildPatcherBuildId(
+						childPatcherBuildId)) {
 
-		List<PatcherBuildRel> patcherBuildRels =
-			patcherBuildRelAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"childPatcherBuildId", childPatcherBuildId});
-
-		for (PatcherBuildRel patcherBuildRel : patcherBuildRels) {
 			PatcherBuildRelLocalServiceUtil.deletePatcherBuildRel(
 				patcherBuildRel);
 		}
@@ -94,12 +60,14 @@ public class PatcherBuildRelUtil {
 	}
 
 	public static List<PatcherBuild> getChildPatcherBuilds(
-			PatcherBuild patcherBuild)
-		throws Exception {
+		PatcherBuild patcherBuild) {
 
-		return getPatcherBuilds(
-			"parentPatcherBuildId", patcherBuild.getPatcherBuildId(),
-			"childPatcherBuildId");
+		return TransformUtil.transform(
+			PatcherBuildRelLocalServiceUtil.
+				getPatcherBuildRelsByParentPatcherBuildId(
+					patcherBuild.getPatcherBuildId()),
+			patcherBuildRel -> PatcherBuildLocalServiceUtil.getPatcherBuild(
+				patcherBuildRel.getChildPatcherBuildId()));
 	}
 
 	public static List<PatcherFix> getChildPatcherBuildsMainFixes(
@@ -129,70 +97,36 @@ public class PatcherBuildRelUtil {
 	}
 
 	public static List<PatcherBuild> getParentPatcherBuilds(
-			PatcherBuild patcherBuild)
-		throws Exception {
+		PatcherBuild patcherBuild) {
 
-		return getPatcherBuilds(
-			"childPatcherBuildId", patcherBuild.getPatcherBuildId(),
-			"parentPatcherBuildId");
+		return TransformUtil.transform(
+			PatcherBuildRelLocalServiceUtil.
+				getPatcherBuildRelsByChildPatcherBuildId(
+					patcherBuild.getPatcherBuildId()),
+			patcherBuildRel -> PatcherBuildLocalServiceUtil.getPatcherBuild(
+				patcherBuildRel.getParentPatcherBuildId()));
 	}
 
-	public static boolean hasChildPatcherBuilds(PatcherBuild patcherBuild)
-		throws Exception {
+	public static boolean hasChildPatcherBuilds(PatcherBuild patcherBuild) {
+		int count =
+			PatcherBuildRelLocalServiceUtil.
+				getPatcherBuildRelsByParentPatcherBuildIdCount(
+					patcherBuild.getPatcherBuildId());
 
-		return hasPatcherBuilds(
-			"parentPatcherBuildId", patcherBuild.getPatcherBuildId());
-	}
-
-	public static boolean hasParentPatcherBuilds(PatcherBuild patcherBuild)
-		throws Exception {
-
-		return hasPatcherBuilds(
-			"childPatcherBuildId", patcherBuild.getPatcherBuildId());
-	}
-
-	protected static List<PatcherBuild> getPatcherBuilds(
-			String propertyName, long propertyValue, String projectionName)
-		throws Exception {
-
-		List<PatcherBuild> patcherBuilds = new ArrayList<>();
-
-		AlloyServiceInvoker patcherBuildRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuildRel.class.getName());
-
-		DynamicQuery patcherBuildRelDynamicQuery =
-			patcherBuildRelAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {propertyName, propertyValue});
-
-		Projection patcherBuildProjection = ProjectionFactoryUtil.property(
-			projectionName);
-
-		patcherBuildRelDynamicQuery.setProjection(patcherBuildProjection);
-
-		List<Long> patcherBuildIds =
-			patcherBuildRelAlloyServiceInvoker.executeDynamicQuery(
-				patcherBuildRelDynamicQuery);
-
-		for (long patcherBuildId : patcherBuildIds) {
-			patcherBuilds.add(
-				PatcherBuildLocalServiceUtil.getPatcherBuild(patcherBuildId));
+		if (count > 0) {
+			return true;
 		}
 
-		return patcherBuilds;
+		return false;
 	}
 
-	protected static boolean hasPatcherBuilds(
-			String propertyName, long propertyValue)
-		throws Exception {
+	public static boolean hasParentPatcherBuilds(PatcherBuild patcherBuild) {
+		int count =
+			PatcherBuildRelLocalServiceUtil.
+				getPatcherBuildRelsByChildPatcherBuildIdCount(
+					patcherBuild.getPatcherBuildId());
 
-		AlloyServiceInvoker patcherBuildRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuildRel.class.getName());
-
-		long patcherBuildRelsCount =
-			patcherBuildRelAlloyServiceInvoker.executeDynamicQueryCount(
-				new Object[] {propertyName, propertyValue});
-
-		if (patcherBuildRelsCount > 0) {
+		if (count > 0) {
 			return true;
 		}
 
