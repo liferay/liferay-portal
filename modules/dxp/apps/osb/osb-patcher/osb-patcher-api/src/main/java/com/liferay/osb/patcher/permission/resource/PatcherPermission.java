@@ -183,12 +183,8 @@ public class PatcherPermission {
 	}
 
 	protected static String formatActionId(String controller, String action) {
-		StringBuilder sb = new StringBuilder(formatAction(action));
-
-		sb.append(StringPool.POUND);
-		sb.append(StringUtil.toUpperCase(controller));
-
-		return sb.toString();
+		return formatAction(action) + StringPool.POUND +
+			StringUtil.toUpperCase(controller);
 	}
 
 	protected static long getOwnerId(String className, long classPK) {
