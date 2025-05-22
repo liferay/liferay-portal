@@ -8,13 +8,15 @@ package com.liferay.osb.patcher.permission.resource;
 import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.NoSuchResourceActionException;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+
+import java.util.List;
 
 /**
  * @author Zsolt Balogh
@@ -32,10 +34,10 @@ public class PatcherPermission {
 		PermissionChecker permissionChecker, long groupId, String name,
 		long primKey, String actionId, long ownerId) {
 
-		try {
-			ResourceActionsUtil.checkAction(name, actionId);
-		}
-		catch (NoSuchResourceActionException noSuchResourceActionException) {
+		List<String> resourceActions = ResourceActionsUtil.getResourceActions(
+			name);
+
+		if (!resourceActions.contains(actionId)) {
 			return true;
 		}
 
