@@ -5,46 +5,56 @@
 
 package com.liferay.osb.patcher.web.internal.search;
 
-import com.liferay.alloy.mvc.BaseAlloyIndexer;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
-import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
-import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.osb.patcher.service.PatcherFixLocalService;
+import com.liferay.osb.patcher.service.PatcherProjectVersionLocalService;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.search.BooleanClause;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelper;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.List;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
+
 import java.util.Locale;
 
-import javax.portlet.PortletURL;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Zsolt Balogh
  */
-public class PatcherFixIndexer extends BaseAlloyIndexer {
+@Component(service = Indexer.class)
+public class PatcherFixIndexer extends BaseIndexer<PatcherFix> {
 
-	public static PatcherFixIndexer getInstance() {
-		return _instance;
+	public static final String CLASS_NAME = PatcherFix.class.getName();
+
+	@Override
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
 	public void postProcessContextQuery(
 			BooleanQuery contextQuery, SearchContext searchContext)
 		throws Exception {
-
-		super.postProcessContextQuery(contextQuery, searchContext);
 
 		long patcherProductVersionId = GetterUtil.getLong(
 			searchContext.getAttribute("patcherProductVersionId"));
@@ -54,8 +64,7 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 				"patcherProductVersionId", patcherProductVersionId);
 		}
 
-		BooleanQuery booleanQuery = BooleanQueryFactoryUtil.create(
-			searchContext);
+		BooleanQuery booleanQuery = new BooleanQueryImpl();
 
 		BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.MUST;
 
@@ -74,8 +83,7 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 				booleanQuery.addRequiredTerm("key", key, false);
 			}
 
-			BooleanQuery subbooleanQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
+			BooleanQuery subbooleanQuery = new BooleanQueryImpl();
 
 			subbooleanQuery.addExactTerm(
 				"type", PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC);
@@ -92,8 +100,7 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 			booleanQuery.addExactTerm(
 				"type", PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC);
 
-			BooleanQuery subbooleanQuery = BooleanQueryFactoryUtil.create(
-				searchContext);
+			BooleanQuery subbooleanQuery = new BooleanQueryImpl();
 
 			subbooleanQuery.addExactTerm(
 				"status", WorkflowConstants.STATUS_FIX_CONFLICT);
@@ -103,9 +110,7 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 			booleanClauseOccur = BooleanClauseOccur.MUST_NOT;
 		}
 
-		List<BooleanClause> booleanClauses = booleanQuery.clauses();
-
-		if (!booleanClauses.isEmpty()) {
+		if (booleanQuery.hasClauses()) {
 			contextQuery.add(booleanQuery, booleanClauseOccur);
 		}
 	}
@@ -136,10 +141,13 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 	}
 
 	@Override
-	protected Document doGetDocument(Object obj) throws Exception {
-		PatcherFix patcherFix = (PatcherFix)obj;
+	protected void doDelete(PatcherFix patcherFix) throws Exception {
+		deleteDocument(patcherFix.getCompanyId(), patcherFix.getPatcherFixId());
+	}
 
-		Document document = getBaseModelDocument(portletId, patcherFix);
+	@Override
+	protected Document doGetDocument(PatcherFix patcherFix) throws Exception {
+		Document document = getBaseModelDocument(CLASS_NAME, patcherFix);
 
 		document.addText("jenkinsResults", patcherFix.getJenkinsResults());
 		document.addText("key", patcherFix.getKey());
@@ -156,7 +164,7 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 			"patcherProjectVersionId", patcherFix.getPatcherProjectVersionId());
 
 		PatcherProjectVersion patcherProjectVersion =
-			PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(
+			_patcherProjectVersionLocalService.getPatcherProjectVersion(
 				patcherFix.getPatcherProjectVersionId());
 
 		document.addText(
@@ -174,21 +182,53 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet,
-		PortletURL portletURL) {
+			Document document, Locale locale, String snippet,
+			PortletRequest portletRequest, PortletResponse portletResponse)
+		throws Exception {
 
-		String title = document.get(Field.ENTRY_CLASS_PK);
+		return createSummary(document, Field.ENTRY_CLASS_PK, null);
+	}
 
-		String content = null;
+	@Override
+	protected void doReindex(PatcherFix patcherFix) throws Exception {
+		_indexWriterHelper.updateDocument(
+			patcherFix.getCompanyId(), getDocument(patcherFix));
+	}
 
-		portletURL.setParameter(
-			"mvcPath", "/WEB-INF/jsp/osb_patcher/views/fixes/view.jsp");
+	@Override
+	protected void doReindex(String className, long classPK) throws Exception {
+		PatcherFix patcherFix = _patcherFixLocalService.fetchPatcherFix(
+			classPK);
 
-		String patcherFixId = document.get(Field.ENTRY_CLASS_PK);
+		if (patcherFix != null) {
+			doReindex(patcherFix);
+		}
+	}
 
-		portletURL.setParameter("id", patcherFixId);
+	@Override
+	protected void doReindex(String[] ids) throws Exception {
+		long companyId = GetterUtil.getLong(ids[0]);
 
-		return new Summary(title, content, portletURL);
+		IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			_patcherFixLocalService.getIndexableActionableDynamicQuery();
+
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			(PatcherFix patcherFix) -> {
+				try {
+					indexableActionableDynamicQuery.addDocuments(
+						getDocument(patcherFix));
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to index patcher fix " + patcherFix,
+							portalException);
+					}
+				}
+			});
+
+		indexableActionableDynamicQuery.performActions();
 	}
 
 	protected void setBooleanQuery(
@@ -284,11 +324,17 @@ public class PatcherFixIndexer extends BaseAlloyIndexer {
 		}
 	}
 
-	private PatcherFixIndexer() {
-		setClassName(PatcherFix.class.getName());
-		setPortletId(PatcherPortletKeys.PATCHER);
-	}
+	private static final Log _log = LogFactoryUtil.getLog(
+		PatcherFixIndexer.class);
 
-	private static final PatcherFixIndexer _instance = new PatcherFixIndexer();
+	@Reference
+	private IndexWriterHelper _indexWriterHelper;
+
+	@Reference
+	private PatcherFixLocalService _patcherFixLocalService;
+
+	@Reference
+	private PatcherProjectVersionLocalService
+		_patcherProjectVersionLocalService;
 
 }

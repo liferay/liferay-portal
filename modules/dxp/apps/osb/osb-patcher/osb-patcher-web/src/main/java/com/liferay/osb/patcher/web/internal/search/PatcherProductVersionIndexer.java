@@ -5,37 +5,50 @@
 
 package com.liferay.osb.patcher.web.internal.search;
 
-import com.liferay.alloy.mvc.BaseAlloyIndexer;
-import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
+import com.liferay.osb.patcher.service.PatcherProductVersionLocalService;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelper;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import java.util.Locale;
 
-import javax.portlet.PortletURL;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Zsolt Balogh
  */
-public class PatcherProductVersionIndexer extends BaseAlloyIndexer {
+@Component(service = Indexer.class)
+public class PatcherProductVersionIndexer
+	extends BaseIndexer<PatcherProductVersion> {
 
-	public static PatcherProductVersionIndexer getInstance() {
-		return _instance;
-	}
+	public static final String CLASS_NAME =
+		PatcherProductVersion.class.getName();
 
-	public PatcherProductVersionIndexer() {
-		setClassName(PatcherProductVersion.class.getName());
-		setPortletId(PatcherPortletKeys.PATCHER);
+	@Override
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
 	public void postProcessSearchQuery(
-			BooleanQuery searchQuery, SearchContext searchContext)
+			BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+			SearchContext searchContext)
 		throws Exception {
 
 		long entryClassPK = GetterUtil.getLong(
@@ -49,12 +62,21 @@ public class PatcherProductVersionIndexer extends BaseAlloyIndexer {
 	}
 
 	@Override
-	protected Document doGetDocument(Object obj) throws Exception {
-		PatcherProductVersion patcherProductVersion =
-			(PatcherProductVersion)obj;
+	protected void doDelete(PatcherProductVersion patcherProductVersion)
+		throws Exception {
+
+		deleteDocument(
+			patcherProductVersion.getCompanyId(),
+			patcherProductVersion.getPatcherProductVersionId());
+	}
+
+	@Override
+	protected Document doGetDocument(
+			PatcherProductVersion patcherProductVersion)
+		throws Exception {
 
 		Document document = getBaseModelDocument(
-			portletId, patcherProductVersion);
+			CLASS_NAME, patcherProductVersion);
 
 		document.addText("name", patcherProductVersion.getName());
 		document.addKeyword("name_sortable", patcherProductVersion.getName());
@@ -64,25 +86,69 @@ public class PatcherProductVersionIndexer extends BaseAlloyIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet,
-		PortletURL portletURL) {
+			Document document, Locale locale, String snippet,
+			PortletRequest portletRequest, PortletResponse portletResponse)
+		throws Exception {
 
-		String title = document.get(Field.ENTRY_CLASS_PK);
-
-		String content = null;
-
-		portletURL.setParameter(
-			"mvcPath",
-			"/WEB-INF/jsp/osb_patcher/views/product_versions/view.jsp");
-
-		String patcherProductVersionId = document.get(Field.ENTRY_CLASS_PK);
-
-		portletURL.setParameter("id", patcherProductVersionId);
-
-		return new Summary(title, content, portletURL);
+		return createSummary(document, Field.ENTRY_CLASS_PK, null);
 	}
 
-	private static final PatcherProductVersionIndexer _instance =
-		new PatcherProductVersionIndexer();
+	@Override
+	protected void doReindex(PatcherProductVersion patcherProductVersion)
+		throws Exception {
+
+		_indexWriterHelper.updateDocument(
+			patcherProductVersion.getCompanyId(),
+			getDocument(patcherProductVersion));
+	}
+
+	@Override
+	protected void doReindex(String className, long classPK) throws Exception {
+		PatcherProductVersion patcherProductVersion =
+			_patcherProductVersionLocalService.fetchPatcherProductVersion(
+				classPK);
+
+		if (patcherProductVersion != null) {
+			doReindex(patcherProductVersion);
+		}
+	}
+
+	@Override
+	protected void doReindex(String[] ids) throws Exception {
+		long companyId = GetterUtil.getLong(ids[0]);
+
+		IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			_patcherProductVersionLocalService.
+				getIndexableActionableDynamicQuery();
+
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			(PatcherProductVersion patcherProductVersion) -> {
+				try {
+					indexableActionableDynamicQuery.addDocuments(
+						getDocument(patcherProductVersion));
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to index patcher product version " +
+								patcherProductVersion,
+							portalException);
+					}
+				}
+			});
+
+		indexableActionableDynamicQuery.performActions();
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		PatcherProductVersionIndexer.class);
+
+	@Reference
+	private IndexWriterHelper _indexWriterHelper;
+
+	@Reference
+	private PatcherProductVersionLocalService
+		_patcherProductVersionLocalService;
 
 }

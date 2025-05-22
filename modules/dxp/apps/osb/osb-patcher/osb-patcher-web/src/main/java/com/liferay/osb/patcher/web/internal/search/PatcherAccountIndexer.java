@@ -5,40 +5,49 @@
 
 package com.liferay.osb.patcher.web.internal.search;
 
-import com.liferay.alloy.mvc.BaseAlloyIndexer;
-import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
+import com.liferay.osb.patcher.service.PatcherAccountLocalService;
 import com.liferay.osb.patcher.util.PatcherProductVersionUtil;
 import com.liferay.osb.patcher.util.PatcherUtil;
-import com.liferay.portal.kernel.search.BooleanClause;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
-import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelper;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import java.util.List;
 import java.util.Locale;
 
-import javax.portlet.PortletURL;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Zsolt Balogh
  */
-public class PatcherAccountIndexer extends BaseAlloyIndexer {
+@Component(service = Indexer.class)
+public class PatcherAccountIndexer extends BaseIndexer<PatcherAccount> {
 
-	public static PatcherAccountIndexer getInstance() {
-		return _instance;
-	}
+	public static final String CLASS_NAME = PatcherAccount.class.getName();
 
-	public PatcherAccountIndexer() {
-		setClassName(PatcherAccount.class.getName());
-		setPortletId(PatcherPortletKeys.PATCHER);
+	@Override
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
@@ -46,10 +55,7 @@ public class PatcherAccountIndexer extends BaseAlloyIndexer {
 			BooleanQuery contextQuery, SearchContext searchContext)
 		throws Exception {
 
-		super.postProcessContextQuery(contextQuery, searchContext);
-
-		BooleanQuery booleanQuery = BooleanQueryFactoryUtil.create(
-			searchContext);
+		BooleanQuery booleanQuery = new BooleanQueryImpl();
 
 		String accountEntryCode = GetterUtil.getString(
 			searchContext.getAttribute("accountEntryCode"));
@@ -64,16 +70,15 @@ public class PatcherAccountIndexer extends BaseAlloyIndexer {
 			setBooleanQuery(booleanQuery, searchContext);
 		}
 
-		List<BooleanClause> booleanClauses = booleanQuery.clauses();
-
-		if (!booleanClauses.isEmpty()) {
+		if (booleanQuery.hasClauses()) {
 			contextQuery.add(booleanQuery, BooleanClauseOccur.MUST);
 		}
 	}
 
 	@Override
 	public void postProcessSearchQuery(
-			BooleanQuery searchQuery, SearchContext searchContext)
+			BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+			SearchContext searchContext)
 		throws Exception {
 
 		addSearchTerm(searchQuery, searchContext, "accountEntryCode", true);
@@ -85,10 +90,17 @@ public class PatcherAccountIndexer extends BaseAlloyIndexer {
 	}
 
 	@Override
-	protected Document doGetDocument(Object obj) throws Exception {
-		PatcherAccount patcherAccount = (PatcherAccount)obj;
+	protected void doDelete(PatcherAccount patcherAccount) throws Exception {
+		deleteDocument(
+			patcherAccount.getCompanyId(),
+			patcherAccount.getPatcherAccountId());
+	}
 
-		Document document = getBaseModelDocument(portletId, patcherAccount);
+	@Override
+	protected Document doGetDocument(PatcherAccount patcherAccount)
+		throws Exception {
+
+		Document document = getBaseModelDocument(CLASS_NAME, patcherAccount);
 
 		String accountEntryCode = patcherAccount.getAccountEntryCode();
 
@@ -116,21 +128,53 @@ public class PatcherAccountIndexer extends BaseAlloyIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet,
-		PortletURL portletURL) {
+			Document document, Locale locale, String snippet,
+			PortletRequest portletRequest, PortletResponse portletResponse)
+		throws Exception {
 
-		String title = document.get(Field.ENTRY_CLASS_PK);
+		return createSummary(document, Field.ENTRY_CLASS_PK, null);
+	}
 
-		String content = null;
+	@Override
+	protected void doReindex(PatcherAccount patcherAccount) throws Exception {
+		_indexWriterHelper.updateDocument(
+			patcherAccount.getCompanyId(), getDocument(patcherAccount));
+	}
 
-		portletURL.setParameter(
-			"mvcPath", "/WEB-INF/jsp/patcher/views/accounts/view.jsp");
+	@Override
+	protected void doReindex(String className, long classPK) throws Exception {
+		PatcherAccount patcherAccount =
+			_patcherAccountLocalService.fetchPatcherAccount(classPK);
 
-		String patcherAccountId = document.get(Field.ENTRY_CLASS_PK);
+		if (patcherAccount != null) {
+			doReindex(patcherAccount);
+		}
+	}
 
-		portletURL.setParameter("id", patcherAccountId);
+	@Override
+	protected void doReindex(String[] ids) throws Exception {
+		long companyId = GetterUtil.getLong(ids[0]);
 
-		return new Summary(title, content, portletURL);
+		IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			_patcherAccountLocalService.getIndexableActionableDynamicQuery();
+
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			(PatcherAccount patcherAccount) -> {
+				try {
+					indexableActionableDynamicQuery.addDocuments(
+						getDocument(patcherAccount));
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to index patcher account " + patcherAccount,
+							portalException);
+					}
+				}
+			});
+
+		indexableActionableDynamicQuery.performActions();
 	}
 
 	protected void setBooleanQuery(
@@ -187,7 +231,13 @@ public class PatcherAccountIndexer extends BaseAlloyIndexer {
 		}
 	}
 
-	private static final PatcherAccountIndexer _instance =
-		new PatcherAccountIndexer();
+	private static final Log _log = LogFactoryUtil.getLog(
+		PatcherAccountIndexer.class);
+
+	@Reference
+	private IndexWriterHelper _indexWriterHelper;
+
+	@Reference
+	private PatcherAccountLocalService _patcherAccountLocalService;
 
 }

@@ -5,32 +5,49 @@
 
 package com.liferay.osb.patcher.web.internal.search;
 
-import com.liferay.alloy.mvc.BaseAlloyIndexer;
-import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.model.PatcherFixComponent;
+import com.liferay.osb.patcher.service.PatcherFixComponentLocalService;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelper;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 
 import java.util.Locale;
 
-import javax.portlet.PortletURL;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Zsolt Balogh
  */
-public class PatcherFixComponentIndexer extends BaseAlloyIndexer {
+@Component(service = Indexer.class)
+public class PatcherFixComponentIndexer
+	extends BaseIndexer<PatcherFixComponent> {
 
-	public static PatcherFixComponentIndexer getInstance() {
-		return _instance;
+	public static final String CLASS_NAME = PatcherFixComponent.class.getName();
+
+	@Override
+	public String getClassName() {
+		return CLASS_NAME;
 	}
 
 	@Override
 	public void postProcessSearchQuery(
-			BooleanQuery searchQuery, SearchContext searchContext)
+			BooleanQuery searchQuery, BooleanFilter fullQueryBooleanFilter,
+			SearchContext searchContext)
 		throws Exception {
 
 		long entryClassPK = GetterUtil.getLong(
@@ -44,11 +61,20 @@ public class PatcherFixComponentIndexer extends BaseAlloyIndexer {
 	}
 
 	@Override
-	protected Document doGetDocument(Object obj) throws Exception {
-		PatcherFixComponent patcherFixComponent = (PatcherFixComponent)obj;
+	protected void doDelete(PatcherFixComponent patcherFixComponent)
+		throws Exception {
+
+		deleteDocument(
+			patcherFixComponent.getCompanyId(),
+			patcherFixComponent.getPatcherFixComponentId());
+	}
+
+	@Override
+	protected Document doGetDocument(PatcherFixComponent patcherFixComponent)
+		throws Exception {
 
 		Document document = getBaseModelDocument(
-			portletId, patcherFixComponent);
+			CLASS_NAME, patcherFixComponent);
 
 		document.addText("name", patcherFixComponent.getName());
 		document.addKeyword("name_sortable", patcherFixComponent.getName());
@@ -58,30 +84,67 @@ public class PatcherFixComponentIndexer extends BaseAlloyIndexer {
 
 	@Override
 	protected Summary doGetSummary(
-		Document document, Locale locale, String snippet,
-		PortletURL portletURL) {
+			Document document, Locale locale, String snippet,
+			PortletRequest portletRequest, PortletResponse portletResponse)
+		throws Exception {
 
-		String title = document.get(Field.ENTRY_CLASS_PK);
-
-		String content = null;
-
-		portletURL.setParameter(
-			"mvcPath",
-			"/WEB-INF/jsp/osb_patcher/views/fix_components/view.jsp");
-
-		String patcherFixComponentId = document.get(Field.ENTRY_CLASS_PK);
-
-		portletURL.setParameter("id", patcherFixComponentId);
-
-		return new Summary(title, content, portletURL);
+		return createSummary(document, Field.ENTRY_CLASS_PK, null);
 	}
 
-	private PatcherFixComponentIndexer() {
-		setClassName(PatcherFixComponent.class.getName());
-		setPortletId(PatcherPortletKeys.PATCHER);
+	@Override
+	protected void doReindex(PatcherFixComponent patcherFixComponent)
+		throws Exception {
+
+		_indexWriterHelper.updateDocument(
+			patcherFixComponent.getCompanyId(),
+			getDocument(patcherFixComponent));
 	}
 
-	private static final PatcherFixComponentIndexer _instance =
-		new PatcherFixComponentIndexer();
+	@Override
+	protected void doReindex(String className, long classPK) throws Exception {
+		PatcherFixComponent patcherFixComponent =
+			_patcherFixComponentLocalService.fetchPatcherFixComponent(classPK);
+
+		if (patcherFixComponent != null) {
+			doReindex(patcherFixComponent);
+		}
+	}
+
+	@Override
+	protected void doReindex(String[] ids) throws Exception {
+		long companyId = GetterUtil.getLong(ids[0]);
+
+		IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+			_patcherFixComponentLocalService.
+				getIndexableActionableDynamicQuery();
+
+		indexableActionableDynamicQuery.setCompanyId(companyId);
+		indexableActionableDynamicQuery.setPerformActionMethod(
+			(PatcherFixComponent patcherFixComponent) -> {
+				try {
+					indexableActionableDynamicQuery.addDocuments(
+						getDocument(patcherFixComponent));
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to index patcher patcher fix component " +
+								patcherFixComponent,
+							portalException);
+					}
+				}
+			});
+
+		indexableActionableDynamicQuery.performActions();
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		PatcherFixComponentIndexer.class);
+
+	@Reference
+	private IndexWriterHelper _indexWriterHelper;
+
+	@Reference
+	private PatcherFixComponentLocalService _patcherFixComponentLocalService;
 
 }
