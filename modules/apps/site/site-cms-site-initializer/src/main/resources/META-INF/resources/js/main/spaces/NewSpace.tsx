@@ -68,7 +68,7 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 					step={1}
 					title={Liferay.Language.get('create-a-space')}
 				>
-					<label htmlFor="sicker">
+					<label htmlFor="sticker">
 						{Liferay.Language.get('space-logo')}
 					</label>
 
@@ -76,7 +76,7 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 						className="d-block"
 						displayType={values.logoColor}
 						hiddenName
-						id="sicker"
+						id="sticker"
 						name={values.name || 'S'}
 						size="xl"
 					/>
