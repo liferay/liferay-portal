@@ -5,8 +5,14 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.service.base.PatcherAccountLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
+import com.liferay.portal.kernel.dao.orm.WildcardMode;
+import com.liferay.portal.kernel.util.OrderByComparator;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,4 +25,33 @@ import org.osgi.service.component.annotations.Component;
 )
 public class PatcherAccountLocalServiceImpl
 	extends PatcherAccountLocalServiceBaseImpl {
+
+	@Override
+	public PatcherAccount fetchPatcherAccount(String accountEntryCode) {
+		return patcherAccountPersistence.fetchByAccountEntryCode(
+			accountEntryCode);
+	}
+
+	@Override
+	public PatcherAccount getPatcherAccount(String accountEntryCode)
+		throws Exception {
+
+		return patcherAccountPersistence.findByAccountEntryCode(
+			accountEntryCode);
+	}
+
+	@Override
+	public List<PatcherAccount> getPatcherAccounts(
+		long companyId, String keyword, int start, int end,
+		OrderByComparator<PatcherAccount> orderByComparator) {
+
+		return patcherAccountPersistence.findByC_LikeA(
+			companyId,
+			_customSQL.keywords(keyword, false, WildcardMode.SURROUND)[0],
+			start, end, orderByComparator);
+	}
+
+	@Reference
+	private CustomSQL _customSQL;
+
 }

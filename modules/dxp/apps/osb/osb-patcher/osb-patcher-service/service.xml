@@ -25,6 +25,16 @@
 		<!-- Relationships -->
 
 		<column entity="PatcherBuild" mapping-table="PatcherAccounts_PatcherBuilds" name="patcherBuilds" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="AccountEntryCode" return-type="PatcherAccount" unique="true">
+			<finder-column name="accountEntryCode" />
+		</finder>
+		<finder name="C_LikeA" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="LIKE" name="accountEntryCode" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherBuild" remote-service="false">
 
