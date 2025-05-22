@@ -7,7 +7,6 @@ package com.liferay.message.boards.moderation.internal.configuration.persistence
 
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.moderation.configuration.MBModerationGroupConfiguration;
-import com.liferay.message.boards.moderation.internal.constants.MBModerationConstants;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
@@ -17,6 +16,7 @@ import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
+import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import java.util.Dictionary;
@@ -85,12 +85,15 @@ public class MBModerationGroupConfigurationModelListener
 
 		WorkflowDefinition workflowDefinition =
 			_workflowDefinitionManager.liberalGetLatestWorkflowDefinition(
-				companyId, MBModerationConstants.WORKFLOW_DEFINITION_NAME);
+				companyId,
+				WorkflowDefinitionConstants.
+					NAME_MESSAGE_BOARDS_USER_STATS_MODERATION);
 
 		_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
 			null, workflowDefinition.getUserId(), companyId, 0,
 			MBMessage.class.getName(), 0, 0,
-			MBModerationConstants.WORKFLOW_DEFINITION_NAME,
+			WorkflowDefinitionConstants.
+				NAME_MESSAGE_BOARDS_USER_STATS_MODERATION,
 			workflowDefinition.getVersion());
 	}
 

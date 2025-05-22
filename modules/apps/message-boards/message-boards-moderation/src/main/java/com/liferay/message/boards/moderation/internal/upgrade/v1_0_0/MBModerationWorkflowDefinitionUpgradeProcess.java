@@ -5,7 +5,6 @@
 
 package com.liferay.message.boards.moderation.internal.upgrade.v1_0_0;
 
-import com.liferay.message.boards.moderation.internal.constants.MBModerationConstants;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -13,6 +12,7 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 /**
@@ -40,7 +40,9 @@ public class MBModerationWorkflowDefinitionUpgradeProcess
 
 		int workflowDefinitionsCount =
 			_workflowDefinitionManager.getWorkflowDefinitionsCount(
-				companyId, MBModerationConstants.WORKFLOW_DEFINITION_NAME);
+				companyId,
+				WorkflowDefinitionConstants.
+					NAME_MESSAGE_BOARDS_USER_STATS_MODERATION);
 
 		if (workflowDefinitionsCount == 0) {
 			return;
@@ -48,7 +50,9 @@ public class MBModerationWorkflowDefinitionUpgradeProcess
 
 		WorkflowDefinition latestWorkflowDefinition =
 			_workflowDefinitionManager.liberalGetLatestWorkflowDefinition(
-				companyId, MBModerationConstants.WORKFLOW_DEFINITION_NAME);
+				companyId,
+				WorkflowDefinitionConstants.
+					NAME_MESSAGE_BOARDS_USER_STATS_MODERATION);
 
 		String content = StringUtil.read(
 			MBModerationWorkflowDefinitionUpgradeProcess.class,
