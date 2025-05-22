@@ -6,7 +6,6 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
@@ -2461,7 +2460,7 @@ public class PatcherBuildUtil {
 			String resultStatusURL = resultJSONObject.getString("statusURL");
 
 			if (!Validator.isUrl(resultStatusURL)) {
-				throw new AlloyException("the-status-url-is-not-valid");
+				throw new Exception("the-status-url-is-not-valid");
 			}
 		}
 
@@ -2477,7 +2476,7 @@ public class PatcherBuildUtil {
 			  StringUtil.equalsIgnoreCase(status, "pass") ||
 			  StringUtil.equalsIgnoreCase(status, "pending"))) {
 
-			throw new AlloyException("the-status-is-not-valid");
+			throw new Exception("the-status-is-not-valid");
 		}
 	}
 

@@ -6,7 +6,6 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
@@ -992,7 +991,7 @@ public class PatcherFixUtil {
 
 	public static void validateDelete(PatcherFix patcherFix) throws Exception {
 		if (!patcherFix.isLatestFix()) {
-			throw new AlloyException(
+			throw new Exception(
 				"the-fix-cannot-be-deleted-because-the-current-fix-is-not-" +
 					"the-latest");
 		}
@@ -1002,7 +1001,7 @@ public class PatcherFixUtil {
 				patcherFix.getPatcherFixId());
 
 		if (!patcherBuilds.isEmpty()) {
-			throw new AlloyException(
+			throw new Exception(
 				"the-fix-cannot-be-deleted-because-it-has-associated-builds");
 		}
 
@@ -1016,7 +1015,7 @@ public class PatcherFixUtil {
 				});
 
 		if (!patcherFixRels.isEmpty()) {
-			throw new AlloyException(
+			throw new Exception(
 				"the-fix-cannot-be-deleted-because-another-fix-depends-on-it");
 		}
 	}
@@ -1139,7 +1138,7 @@ public class PatcherFixUtil {
 		throws Exception {
 
 		if ((attributes.length == 0) || ((attributes.length % 2) != 0)) {
-			throw new AlloyException("attributes-length-is-not-an-even-number");
+			throw new Exception("attributes-length-is-not-an-even-number");
 		}
 
 		AlloyServiceInvoker patcherFixAlloyServiceInvoker =

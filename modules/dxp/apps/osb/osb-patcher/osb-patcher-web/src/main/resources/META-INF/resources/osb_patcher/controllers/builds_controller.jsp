@@ -819,12 +819,12 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String accountEntryCode = StringUtil.toUpperCase(ParamUtil.getString(request, "patcherBuildAccountEntryCode"));
 
 		if (Validator.isNull(accountEntryCode)) {
-			throw new AlloyException("the-account-code-is-invalid");
+			throw new Exception("the-account-code-is-invalid");
 		}
 
 		for (int i = 0; i < accountEntryCode.length(); i++) {
 			if (!Validator.isAscii(accountEntryCode.charAt(i))) {
-				throw new AlloyException("the-account-code-contains-non-ascii-characters");
+				throw new Exception("the-account-code-contains-non-ascii-characters");
 			}
 		}
 
@@ -836,7 +836,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			if (accountEntryId <= 0) {
 				_log.error("The account does not exist in OSB: " + accountEntryCode);
 
-				throw new AlloyException("the-account-does-not-exist-in-osb", false);
+				throw new Exception("the-account-does-not-exist-in-osb");
 			}
 		}
 	}
@@ -884,25 +884,25 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String message = JenkinsUtil.validateJenkinsSetup();
 
 		if (Validator.isNotNull(message)) {
-			throw new AlloyException(message);
+			throw new Exception(message);
 		}
 
 		if (PatcherBuildUtil.isMergeOnly(patcherBuild)) {
-			throw new AlloyException("the-build-cannot-be-built-because-the-build-is-merge-only");
+			throw new Exception("the-build-cannot-be-built-because-the-build-is-merge-only");
 		}
 
 		List<PatcherFix> patcherFixes = PatcherBuildRelUtil.getChildPatcherBuildsMainFixes(patcherBuild);
 
 		for (PatcherFix patcherFix : patcherFixes) {
 			if (Validator.isNull(patcherFix.getGitHash())) {
-				throw new AlloyException("the-build-cannot-be-built-because-its-fix-git-hash-is-not-set");
+				throw new Exception("the-build-cannot-be-built-because-its-fix-git-hash-is-not-set");
 			}
 		}
 	}
 
 	private void _validateChildPatcherBuild(PatcherBuild patcherBuild) throws Exception {
 		if (PatcherBuildRelUtil.hasParentPatcherBuilds(patcherBuild)) {
-			throw new AlloyException("the-action-cannot-be-performed-on-child-builds");
+			throw new Exception("the-action-cannot-be-performed-on-child-builds");
 		}
 	}
 
@@ -916,7 +916,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		_validatePatcherBuild(patcherBuild);
 
 		if (!patcherBuild.isLatestKeyBuild()) {
-			throw new AlloyException("the-build-cannot-be-deleted-because-the-current-build-is-not-the-latest");
+			throw new Exception("the-build-cannot-be-deleted-because-the-current-build-is-not-the-latest");
 		}
 
 		AlloyServiceInvoker patcherFixPackAlloyServiceInvoker = new AlloyServiceInvoker(PatcherFixPack.class.getName());
@@ -926,7 +926,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		if (!patcherFixPacks.isEmpty()) {
 			PatcherFixPack patcherFixPack = patcherFixPacks.get(0);
 
-			throw new AlloyException(translate("the-build-cannot-be-deleted-because-fix-pack-x-depends-on-it", patcherFixPack.getName()));
+			throw new Exception(translate("the-build-cannot-be-deleted-because-fix-pack-x-depends-on-it", patcherFixPack.getName()));
 		}
 	}
 
@@ -963,14 +963,14 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			PatcherBuild oldPatcherBuild = patcherBuilds.get(0);
 
 			if (oldPatcherBuild.getPatcherBuildId() != patcherBuild.getPatcherBuildId()) {
-				throw new AlloyException("the-build-name-already-exists");
+				throw new Exception("the-build-name-already-exists");
 			}
 		}
 	}
 
 	private void _validateName(PatcherBuild patcherBuild) throws Exception {
 		if (Validator.isNull(patcherBuild.getName())) {
-			throw new AlloyException("the-build-name-is-invalid");
+			throw new Exception("the-build-name-is-invalid");
 		}
 
 		String patcherBuildName = PatcherUtil.preparePatcherName(patcherBuild.getName());
@@ -994,20 +994,20 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			matcher = _patcherFixPackNamePattern.matcher(token);
 
 			if (!matcher.find()) {
-				throw new AlloyException(translate("the-build-name-has-invalid-token-x", token));
+				throw new Exception(translate("the-build-name-has-invalid-token-x", token));
 			}
 			else if (patcherBuild.getPatcherProductVersionId() != PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_PORTAL_6X)) {
-				throw new AlloyException("the-build-name-cannot-contain-fix-packs");
+				throw new Exception("the-build-name-cannot-contain-fix-packs");
 			}
 
 			PatcherFixPack patcherFixPack = PatcherFixPackUtil.fetchPatcherFixPack(token, patcherBuild.getPatcherProjectVersionId());
 
 			if (patcherFixPack == null) {
-				throw new AlloyException(translate("the-fix-pack-name-x-is-invalid", token));
+				throw new Exception(translate("the-fix-pack-name-x-is-invalid", token));
 			}
 
 			if (patcherFixPack.getStatus() != WorkflowConstants.STATUS_FIX_PACK_RELEASED) {
-				throw new AlloyException(translate("the-fix-pack-name-x-is-not-released", token));
+				throw new Exception(translate("the-fix-pack-name-x-is-not-released", token));
 			}
 		}
 
@@ -1017,14 +1017,14 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			if (cumulativePatcherProjectVersionFixedIssues.containsAll(tokens)) {
 				PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(patcherBuild.getPatcherProjectVersionId());
 
-				throw new AlloyException(translate("all-the-tickets-in-the-ticket-list-are-included-in-x", patcherProjectVersion.getName()));
+				throw new Exception(translate("all-the-tickets-in-the-ticket-list-are-included-in-x", patcherProjectVersion.getName()));
 			}
 		}
 	}
 
 	private void _validatePatcherBuild(PatcherBuild patcherBuild) throws Exception {
 		if (patcherBuild == null) {
-			throw new AlloyException("the-build-does-not-exist");
+			throw new Exception("the-build-does-not-exist");
 		}
 	}
 
@@ -1032,7 +1032,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String typeLabel = ParamUtil.getString(request, "typeLabel");
 
 		if (Validator.isNull(typeLabel)) {
-			throw new AlloyException("the-type-label-is-invalid");
+			throw new Exception("the-type-label-is-invalid");
 		}
 	}
 
@@ -1044,7 +1044,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		PatcherFixPack patcherFixPack = PatcherFixPackUtil.getPatcherFixPack(patcherBuild);
 
 		if (patcherFixPack.getStatus() == WorkflowConstants.STATUS_FIX_PACK_RELEASED) {
-			throw new AlloyException("the-main-build-of-a-released-fix-pack-cannot-change");
+			throw new Exception("the-main-build-of-a-released-fix-pack-cannot-change");
 		}
 	}
 
@@ -1052,7 +1052,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		long patcherProjectVersionId = ParamUtil.getLong(request, "patcherProjectVersionId");
 
 		if (patcherProjectVersionId == 0) {
-			throw new AlloyException("the-build-project-version-is-invalid");
+			throw new Exception("the-build-project-version-is-invalid");
 		}
 
 		long patcherProductVersionId = ParamUtil.getLong(request, "patcherProductVersionId");
@@ -1061,7 +1061,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(patcherProjectVersionId);
 
 			if (patcherProjectVersion.getPatcherProductVersionId() == PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_PORTAL_6X)) {
-				throw new AlloyException("the-project-version-is-invalid-because-its-product-version-is-6x");
+				throw new Exception("the-project-version-is-invalid-because-its-product-version-is-6x");
 			}
 
 			Pattern pattern = Pattern.compile(PatcherConstants.LIFERAY_PORTAL_REPOSITORY_REGEX);
@@ -1069,7 +1069,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			Matcher matcher = pattern.matcher(patcherProjectVersion.getRepositoryName());
 
 			if (!matcher.find() || (patcherProjectVersion.getPatcherProductVersionId() == PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_PORTAL_6X))) {
-				throw new AlloyException("the-project-version-is-invalid-because-its-repository-is-not-portal");
+				throw new Exception("the-project-version-is-invalid-because-its-repository-is-not-portal");
 			}
 		}
 	}
@@ -1078,13 +1078,13 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String patcherProjectVersionName = ParamUtil.getString(request, "patcherProjectVersionName");
 
 		if (Validator.isNull(patcherProjectVersionName)) {
-			throw new AlloyException("the-project-version-name-is-invalid");
+			throw new Exception("the-project-version-name-is-invalid");
 		}
 
 		PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionUtil.fetchPatcherProjectVersionByName(patcherProjectVersionName);
 
 		if (patcherProjectVersion == null) {
-			throw new AlloyException("the-project-version-name-is-invalid");
+			throw new Exception("the-project-version-name-is-invalid");
 		}
 	}
 
@@ -1092,7 +1092,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		long patcherProductVersionId = ParamUtil.getLong(request, "patcherProductVersionId");
 
 		if (Validator.isNull(PatcherProductVersionLocalServiceUtil.getPatcherProductVersion(patcherProductVersionId))) {
-			throw new AlloyException("the-product-version-id-is-invalid");
+			throw new Exception("the-product-version-id-is-invalid");
 		}
 	}
 
@@ -1102,51 +1102,51 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		_validateChildPatcherBuild(patcherBuild);
 
 		if (!PatcherBuildUtil.isCompleteOrReady(patcherBuild)) {
-			throw new AlloyException("the-build-cannot-be-released-before-completion");
+			throw new Exception("the-build-cannot-be-released-before-completion");
 		}
 
 		String supportTicket = patcherBuild.getSupportTicket();
 
 		if (!Validator.isNumber(supportTicket)) {
-			throw new AlloyException("the-build-cannot-be-released-because-the-support-ticket-does-not-point-to-zendesk");
+			throw new Exception("the-build-cannot-be-released-because-the-support-ticket-does-not-point-to-zendesk");
 		}
 	}
 
 	private void _validateSmokeTest(PatcherBuild patcherBuild) throws Exception {
 		if (patcherBuild.getStatus() != WorkflowConstants.STATUS_BUILD_COMPLETE) {
-			throw new AlloyException("the-build-cannot-be-tested-because-its-status-is-not-complete");
+			throw new Exception("the-build-cannot-be-tested-because-its-status-is-not-complete");
 		}
 
 		if (Validator.isNull(patcherBuild.getFileName())) {
-			throw new AlloyException("the-build-cannot-be-tested-because-its-filename-is-not-set");
+			throw new Exception("the-build-cannot-be-tested-because-its-filename-is-not-set");
 		}
 	}
 
-	private void _validateSupportTicket() throws AlloyException {
+	private void _validateSupportTicket() throws Exception {
 		String supportTicket = ParamUtil.getString(request, "supportTicket");
 
 		if (Validator.isNull(supportTicket)) {
-			throw new AlloyException("the-support-ticket-is-invalid");
+			throw new Exception("the-support-ticket-is-invalid");
 		}
 
 		if (supportTicket.contains(StringPool.SPACE)) {
-			throw new AlloyException("the-support-ticket-cannot-contain-spaces");
+			throw new Exception("the-support-ticket-cannot-contain-spaces");
 		}
 
 		for (int i = 0; i < supportTicket.length(); i++) {
 			if (!Validator.isAscii(supportTicket.charAt(i))) {
-				throw new AlloyException("the-support-ticket-contains-non-ascii-characters");
+				throw new Exception("the-support-ticket-contains-non-ascii-characters");
 			}
 		}
 	}
 
 	private void _validateTest(PatcherBuild patcherBuild) throws Exception {
 		if (patcherBuild.getStatus() != WorkflowConstants.STATUS_BUILD_COMPLETE) {
-			throw new AlloyException("the-build-cannot-be-tested-because-its-status-is-not-complete");
+			throw new Exception("the-build-cannot-be-tested-because-its-status-is-not-complete");
 		}
 
 		if (Validator.isNull(patcherBuild.getFileName())) {
-			throw new AlloyException("the-build-cannot-be-tested-because-its-filename-is-not-set");
+			throw new Exception("the-build-cannot-be-tested-because-its-filename-is-not-set");
 		}
 	}
 
@@ -1154,7 +1154,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		int type = ParamUtil.getInteger(request, "type");
 
 		if ((type != PatcherBuildConstants.TYPE_DEBUG) && (type != PatcherBuildConstants.TYPE_IGNORE) && (type != PatcherBuildConstants.TYPE_OFFICIAL)) {
-			throw new AlloyException("the-type-is-invalid");
+			throw new Exception("the-type-is-invalid");
 		}
 	}
 
@@ -1162,7 +1162,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		_validatePatcherBuild(patcherBuild);
 
 		if (!PortletPropsValues.OSB_PATCHER_SCANNING_ENABLED && !PatcherBuildUtil.isLatestPatcherBuild(patcherBuild)) {
-			throw new AlloyException("the-build-cannot-be-versioned-because-the-current-build-is-not-the-latest");
+			throw new Exception("the-build-cannot-be-versioned-because-the-current-build-is-not-the-latest");
 		}
 
 		_validateKey(patcherBuild);
@@ -1197,7 +1197,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		int limit = ParamUtil.getInteger(request, "limit");
 
 		if (limit < 1) {
-			throw new AlloyException("the-limit-is-invalid");
+			throw new Exception("the-limit-is-invalid");
 		}
 	}
 

@@ -5,7 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.alloy.mvc.BaseAlloyControllerImpl;
 import com.liferay.compat.portal.util.PortalUtil;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
@@ -242,7 +241,7 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 
 	protected void setParameters(Object... attributes) throws Exception {
 		if ((attributes.length != 0) && ((attributes.length % 2) != 0)) {
-			throw new AlloyException("Arguments length is not an even number");
+			throw new Exception("Arguments length is not an even number");
 		}
 
 		DynamicServletRequest dynamicServletRequest = null;
@@ -333,7 +332,7 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 		String requestMethod = request.getMethod();
 
 		if (!_isValidRequestMethod(requestMethod, false, HttpMethods.GET)) {
-			throw new AlloyException(
+			throw new Exception(
 				translate(
 					"the-request-method-x-is-not-supported-by-x", requestMethod,
 					actionPath));
@@ -344,7 +343,7 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 		String requestMethod = request.getMethod();
 
 		if (!_isValidRequestMethod(requestMethod, false, HttpMethods.POST)) {
-			throw new AlloyException(
+			throw new Exception(
 				translate(
 					"the-request-method-x-is-not-supported-by-x", requestMethod,
 					actionPath));

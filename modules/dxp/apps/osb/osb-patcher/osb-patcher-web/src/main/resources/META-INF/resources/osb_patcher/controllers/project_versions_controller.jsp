@@ -340,7 +340,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 
 	private void _validateAccountBuilds(PatcherProjectVersion patcherProjectVersion) throws Exception {
 		if (!isRespondingTo("json")) {
-			throw new AlloyException("this-method-only-responds-with-json");
+			throw new Exception("this-method-only-responds-with-json");
 		}
 
 		_validatePatcherProjectVersion(patcherProjectVersion);
@@ -348,7 +348,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		int depth = ParamUtil.getInteger(request, "depth");
 
 		if (depth < 1) {
-			throw new AlloyException("the-depth-is-invalid");
+			throw new Exception("the-depth-is-invalid");
 		}
 	}
 
@@ -378,7 +378,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		long patcherBuildCount = patcherBuildAlloyServiceInvoker.executeDynamicQueryCount(new Object[] {"patcherProjectVersionId", patcherProjectVersion.getPatcherProjectVersionId()});
 
 		if (patcherBuildCount > 0) {
-			throw new AlloyException("the-project-version-cannot-be-deleted-because-it-has-associated-builds");
+			throw new Exception("the-project-version-cannot-be-deleted-because-it-has-associated-builds");
 		}
 	}
 
@@ -388,7 +388,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		long patcherFixCount = patcherFixAlloyServiceInvoker.executeDynamicQueryCount(new Object[] {"patcherProjectVersionId", patcherProjectVersion.getPatcherProjectVersionId()});
 
 		if (patcherFixCount > 0) {
-			throw new AlloyException("the-project-version-cannot-be-deleted-because-it-has-associated-fixes");
+			throw new Exception("the-project-version-cannot-be-deleted-because-it-has-associated-fixes");
 		}
 	}
 
@@ -406,7 +406,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String committish = ParamUtil.getString(request, "committish");
 
 		if (Validator.isNull(committish)) {
-			throw new AlloyException("the-tag-name-is-invalid");
+			throw new Exception("the-tag-name-is-invalid");
 		}
 	}
 
@@ -448,7 +448,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String fixedIssues = ParamUtil.getString(request, "fixedIssues");
 
 		if (Validator.isNull(fixedIssues)) {
-			throw new AlloyException("the-fixed-issues-are-required");
+			throw new Exception("the-fixed-issues-are-required");
 		}
 
 		fixedIssues = PatcherUtil.preparePatcherName(fixedIssues);
@@ -463,7 +463,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			}
 
 			if (!matcher.find()) {
-				throw new AlloyException(translate("the-fixed-issues-has-invalid-token-x", token));
+				throw new Exception(translate("the-fixed-issues-has-invalid-token-x", token));
 			}
 		}
 	}
@@ -495,7 +495,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String name = ParamUtil.getString(request, "name");
 
 		if (Validator.isNull(name)) {
-			throw new AlloyException("the-project-version-name-is-invalid");
+			throw new Exception("the-project-version-name-is-invalid");
 		}
 
 		List<PatcherProjectVersion> patcherProjectVersions = alloyServiceInvoker.executeDynamicQuery(new Object[] {"name", name});
@@ -504,14 +504,14 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			PatcherProjectVersion patcherProjectVersion = patcherProjectVersions.get(0);
 
 			if (patcherProjectVersion.getPatcherProjectVersionId() != patcherProjectVersionId) {
-				throw new AlloyException("the-project-version-name-already-exists");
+				throw new Exception("the-project-version-name-already-exists");
 			}
 		}
 	}
 
 	private void _validatePatcherProjectVersion(PatcherProjectVersion patcherProjectVersion) throws Exception {
 		if (patcherProjectVersion == null) {
-			throw new AlloyException("the-project-version-does-not-exist");
+			throw new Exception("the-project-version-does-not-exist");
 		}
 	}
 
@@ -521,7 +521,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		PatcherProductVersion patcherProductVersion = PatcherProductVersionLocalServiceUtil.getPatcherProductVersion(patcherProductVersionId);
 
 		if (Validator.isNull(patcherProductVersion)) {
-			throw new AlloyException("the-product-version-id-is-invalid");
+			throw new Exception("the-product-version-id-is-invalid");
 		}
 	}
 
@@ -529,13 +529,13 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String productVersionLabel = ParamUtil.getString(request, "productVersionLabel");
 
 		if (Validator.isNull(productVersionLabel)) {
-			throw new AlloyException("the-product-version-label-is-invalid");
+			throw new Exception("the-product-version-label-is-invalid");
 		}
 
 		PatcherProductVersion patcherProductVersion = PatcherProductVersionUtil.fetchPatcherProductVersion(productVersionLabel);
 
 		if (patcherProductVersion == null) {
-			throw new AlloyException("the-product-version-label-is-invalid");
+			throw new Exception("the-product-version-label-is-invalid");
 		}
 	}
 
@@ -543,7 +543,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String repositoryName = ParamUtil.getString(request, "repositoryName");
 
 		if (Validator.isNull(repositoryName)) {
-			throw new AlloyException("the-repository-name-is-invalid");
+			throw new Exception("the-repository-name-is-invalid");
 		}
 	}
 
@@ -554,11 +554,11 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			PatcherProjectVersion rootPatcherProjectVersion = PatcherProjectVersionUtil.fetchPatcherProjectVersionByName(rootPatcherProjectVersionName);
 
 			if (rootPatcherProjectVersion == null) {
-				throw new AlloyException("the-root-patcher-project-version-name-does-not-exist");
+				throw new Exception("the-root-patcher-project-version-name-does-not-exist");
 			}
 
 			if (rootPatcherProjectVersion.getRootPatcherProjectVersionId() != 0) {
-				throw new AlloyException("the-root-patcher-project-version-name-is-not-a-root-project-version");
+				throw new Exception("the-root-patcher-project-version-name-is-not-a-root-project-version");
 			}
 		}
 	}
@@ -585,7 +585,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String fixedIssues = ParamUtil.getString(request, "fixedIssues");
 
 		if (Validator.isNull(fixedIssues)) {
-			throw new AlloyException("the-fixed-issues-are-required");
+			throw new Exception("the-fixed-issues-are-required");
 		}
 
 		fixedIssues = PatcherUtil.preparePatcherName(fixedIssues);
@@ -602,7 +602,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			}
 
 			if (!matcher.find()) {
-				throw new AlloyException(translate("the-fixed-issues-has-invalid-token-x", token));
+				throw new Exception(translate("the-fixed-issues-has-invalid-token-x", token));
 			}
 		}
 	}

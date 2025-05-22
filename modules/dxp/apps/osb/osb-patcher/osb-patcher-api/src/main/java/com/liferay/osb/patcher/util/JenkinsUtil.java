@@ -6,7 +6,6 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.jenkins.results.parser.LoadBalancerUtil;
 import com.liferay.osb.patcher.constants.JenkinsConstants;
 import com.liferay.osb.patcher.constants.PatcherActionKeys;
@@ -923,7 +922,7 @@ public class JenkinsUtil {
 		throws Exception {
 
 		if (baseModel == null) {
-			throw new AlloyException("the-base-model-is-null");
+			throw new Exception("the-base-model-is-null");
 		}
 
 		JSONObject jenkinsStatusJSONObject = JSONFactoryUtil.createJSONObject(
@@ -936,7 +935,7 @@ public class JenkinsUtil {
 			baseModel);
 
 		if (Validator.isNull(baseModelRequestKey)) {
-			throw new AlloyException(
+			throw new Exception(
 				"The base model with ID " +
 					GetterUtil.getLong(baseModel.getPrimaryKeyObj()) +
 						" does not have a request key");
@@ -955,7 +954,7 @@ public class JenkinsUtil {
 			sb.append(" is not contained in the status file ");
 			sb.append(jenkinsStatusJSONString);
 
-			throw new AlloyException(sb.toString());
+			throw new Exception(sb.toString());
 		}
 	}
 

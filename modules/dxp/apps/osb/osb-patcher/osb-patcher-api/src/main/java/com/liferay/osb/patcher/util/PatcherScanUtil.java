@@ -6,7 +6,6 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
@@ -116,7 +115,7 @@ public class PatcherScanUtil {
 
 			_log.error(sb.toString());
 
-			throw new AlloyException(sb.toString(), false);
+			throw new Exception(sb.toString());
 		}
 
 		return patcherProjectVersionIdPatcherFixIdsMap;
@@ -512,7 +511,7 @@ public class PatcherScanUtil {
 
 				_log.error(sb.toString());
 
-				throw new AlloyException(sb.toString(), false);
+				throw new Exception(sb.toString());
 			}
 
 			PatcherFix latestPatcherFix = PatcherBuildUtil.getLatestPatcherFix(
@@ -556,7 +555,7 @@ public class PatcherScanUtil {
 
 				sb.append(msg);
 
-				throw new AlloyException(sb.toString());
+				throw new Exception(sb.toString());
 			}
 
 			patcherFixIds.add(latestPatcherFix.getPatcherFixId());

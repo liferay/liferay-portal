@@ -22,7 +22,6 @@ import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
@@ -104,7 +103,7 @@ public class PatcherUtil {
 		throws Exception {
 
 		if (arguments.length <= 0) {
-			throw new AlloyException("Arguments are empty");
+			throw new Exception("Arguments are empty");
 		}
 
 		String key = StringUtil.merge(arguments, StringPool.BLANK);
@@ -703,7 +702,7 @@ public class PatcherUtil {
 		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(clazz);
 
 		if (indexer == null) {
-			throw new AlloyException("No indexer found for class " + className);
+			throw new Exception("No indexer found for class " + className);
 		}
 
 		SearchContext searchContext = new SearchContext();
@@ -783,7 +782,7 @@ public class PatcherUtil {
 		Map<String, Serializable> attributesMap = new HashMap<>();
 
 		if ((attributes.length != 0) && ((attributes.length % 2) != 0)) {
-			throw new AlloyException("Arguments length is not an even number");
+			throw new Exception("Arguments length is not an even number");
 		}
 
 		for (int i = 0; i < attributes.length; i += 2) {

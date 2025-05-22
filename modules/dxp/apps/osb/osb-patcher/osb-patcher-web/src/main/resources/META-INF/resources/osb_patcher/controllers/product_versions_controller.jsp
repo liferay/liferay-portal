@@ -141,13 +141,13 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String fixDeliveryMethodLabel = ParamUtil.getString(request, "fixDeliveryMethodLabel");
 
 		if (Validator.isNull(fixDeliveryMethodLabel)) {
-			throw new AlloyException("fixDeliveryMethodLabel-is-not-valid");
+			throw new Exception("fixDeliveryMethodLabel-is-not-valid");
 		}
 
 		int fixDeliveryMethodType = PatcherProductVersionConstants.getLabelType(fixDeliveryMethodLabel);
 
 		if (fixDeliveryMethodType < 0) {
-			throw new AlloyException("fixDeliveryMethodLabel-is-not-valid");
+			throw new Exception("fixDeliveryMethodLabel-is-not-valid");
 		}
 	}
 
@@ -162,7 +162,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			long patcherProductVersionId = ParamUtil.getLong(request, "id");
 
 			if (patcherProductVersion.getPatcherProductVersionId() != patcherProductVersionId) {
-				throw new AlloyException("the-product-version-name-already-exists");
+				throw new Exception("the-product-version-name-already-exists");
 			}
 		}
 	}
@@ -176,10 +176,10 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String moduleFolderName = ParamUtil.getString(request, "moduleFolderName");
 
 		if (Validator.isNull(fixDeliveryMethod)) {
-			throw new AlloyException("the-fix-delivery-method-is-invalid");
+			throw new Exception("the-fix-delivery-method-is-invalid");
 		}
 		else if ((fixDeliveryMethod == PatcherProductVersionConstants.TYPE_FIX_DELIVERY_METHOD_MARKETPLACE_RELEASE) && Validator.isNull(moduleFolderName)) {
-			throw new AlloyException("the-module-folder-name-is-required-for-marketplace-apps");
+			throw new Exception("the-module-folder-name-is-required-for-marketplace-apps");
 		}
 	}
 
@@ -187,13 +187,13 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String name = ParamUtil.getString(request, "name");
 
 		if (Validator.isNull(name)) {
-			throw new AlloyException("the-product-version-name-is-invalid");
+			throw new Exception("the-product-version-name-is-invalid");
 		}
 	}
 
 	private void _validatePatcherProductVersion(PatcherProductVersion patcherProductVersion) throws Exception {
 		if (patcherProductVersion == null) {
-			throw new AlloyException("the-product-version-does-not-exist");
+			throw new Exception("the-product-version-does-not-exist");
 		}
 	}
 

@@ -146,7 +146,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		List<PatcherFixPack> patcherFixPacks = patcherFixPackAlloyServiceInvoker.executeDynamicQuery(new Object[] {"patcherFixComponentId", patcherFixComponent.getPatcherFixComponentId()});
 
 		if (!patcherFixPacks.isEmpty()) {
-			throw new AlloyException("the-component-cannot-be-deleted-because-it-has-an-associated-fix-pack");
+			throw new Exception("the-component-cannot-be-deleted-because-it-has-an-associated-fix-pack");
 		}
 	}
 
@@ -160,7 +160,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		List<PatcherFixPack> patcherFixPacks = patcherFixPackAlloyServiceInvoker.executeDynamicQuery(new Object[] {"patcherFixComponentId", patcherFixComponent.getPatcherFixComponentId()});
 
 		if (!patcherFixPacks.isEmpty()) {
-			throw new AlloyException("the-component's-name-cannot-change-when-the-component-is-used-in-a-fix-pack");
+			throw new Exception("the-component's-name-cannot-change-when-the-component-is-used-in-a-fix-pack");
 		}
 
 		List<PatcherFix> patcherFixes = PatcherFixLocalServiceUtil.getPatcherFixs(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
@@ -172,7 +172,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 
 			for (String componentName : componentNames) {
 				if (componentName.equals(patcherFixComponent.getName())) {
-					throw new AlloyException("the-component's-name-cannot-be-changed-while-it-is-in-a-fix-dependency");
+					throw new Exception("the-component's-name-cannot-be-changed-while-it-is-in-a-fix-dependency");
 				}
 			}
 		}
@@ -182,7 +182,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String patcherFixComponentName = ParamUtil.getString(request, "patcherFixComponentName");
 
 		if (Validator.isNull(patcherFixComponentName)) {
-			throw new AlloyException("the-name-is-invalid");
+			throw new Exception("the-name-is-invalid");
 		}
 
 		Pattern pattern = Pattern.compile(PatcherConstants.FIX_COMPONENT_REGEX);
@@ -190,19 +190,19 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		Matcher matcher = pattern.matcher(patcherFixComponentName);
 
 		if (!matcher.find()) {
-			throw new AlloyException("the-name-is-invalid");
+			throw new Exception("the-name-is-invalid");
 		}
 
 		List<PatcherFixComponent> patcherFixComponents = alloyServiceInvoker.executeDynamicQuery(new Object[] {"name", patcherFixComponentName});
 
 		if (!patcherFixComponents.isEmpty()) {
-			throw new AlloyException("the-component-name-already-exists");
+			throw new Exception("the-component-name-already-exists");
 		}
 	}
 
 	private void _validatePatcherFixComponent(PatcherFixComponent patcherFixComponent) throws Exception {
 		if (patcherFixComponent == null) {
-			throw new AlloyException("the-fix-component-does-not-exist");
+			throw new Exception("the-fix-component-does-not-exist");
 		}
 	}
 

@@ -121,13 +121,13 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		int limit = ParamUtil.getInteger(request, "limit");
 
 		if (limit < 1) {
-			throw new AlloyException("the-limit-is-invalid");
+			throw new Exception("the-limit-is-invalid");
 		}
 	}
 
 	private void _validatePatcherAccount(PatcherAccount patcherAccount) throws Exception {
 		if (patcherAccount == null) {
-			throw new AlloyException("the-account-does-not-exist");
+			throw new Exception("the-account-does-not-exist");
 		}
 	}
 
@@ -135,7 +135,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 		String patcherBuildAccountEntryCode = ParamUtil.getString(request, "patcherBuildAccountEntryCode");
 
 		if (Validator.isNull(patcherBuildAccountEntryCode)) {
-			throw new AlloyException("the-account-code-is-invalid");
+			throw new Exception("the-account-code-is-invalid");
 		}
 	}
 

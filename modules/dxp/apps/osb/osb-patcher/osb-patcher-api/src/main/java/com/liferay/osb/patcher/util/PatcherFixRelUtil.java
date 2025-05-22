@@ -6,7 +6,6 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.compat.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
@@ -223,7 +222,7 @@ public class PatcherFixRelUtil {
 				childPatcherFixPatcherFixes) {
 
 			if (childPatcherFixPatcherFix.equals(patcherFix)) {
-				throw new AlloyException(
+				throw new Exception(
 					"circular-reference-detected-the-" +
 						"parent-fix-is-equal-to-the-child-fix");
 			}
