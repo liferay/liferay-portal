@@ -5,8 +5,11 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.model.PatcherBuildRel;
 import com.liferay.osb.patcher.service.base.PatcherBuildRelLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,4 +22,37 @@ import org.osgi.service.component.annotations.Component;
 )
 public class PatcherBuildRelLocalServiceImpl
 	extends PatcherBuildRelLocalServiceBaseImpl {
+
+	@Override
+	public List<PatcherBuildRel> getPatcherBuildRelsByChildPatcherBuildId(
+		long childPatcherBuildId) {
+
+		return patcherBuildRelPersistence.findByChildPatcherBuildId(
+			childPatcherBuildId);
+	}
+
+	@Override
+	public int getPatcherBuildRelsByChildPatcherBuildIdCount(
+		long childPatcherBuildId) {
+
+		return patcherBuildRelPersistence.countByChildPatcherBuildId(
+			childPatcherBuildId);
+	}
+
+	@Override
+	public List<PatcherBuildRel> getPatcherBuildRelsByParentPatcherBuildId(
+		long parentPatcherBuildId) {
+
+		return patcherBuildRelPersistence.findByParentPatcherBuildId(
+			parentPatcherBuildId);
+	}
+
+	@Override
+	public int getPatcherBuildRelsByParentPatcherBuildIdCount(
+		long parentPatcherBuildId) {
+
+		return patcherBuildRelPersistence.countByParentPatcherBuildId(
+			parentPatcherBuildId);
+	}
+
 }

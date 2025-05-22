@@ -112,6 +112,15 @@
 
 		<column name="childPatcherBuildId" type="long" />
 		<column name="parentPatcherBuildId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ChildPatcherBuildId" return-type="Collection">
+			<finder-column name="childPatcherBuildId" />
+		</finder>
+		<finder name="ParentPatcherBuildId" return-type="Collection">
+			<finder-column name="parentPatcherBuildId" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherFix" remote-service="false">
 
