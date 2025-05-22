@@ -94,7 +94,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 
 		renderRequest.setAttribute("filteredPatcherFixPacksJSON", HtmlUtil.escapeJS(filteredPatcherFixPacksJSON));
 
-		renderRequest.setAttribute("patcherFixComponents", PatcherFixComponentUtil.getPatcherFixComponents("name", true));
+		renderRequest.setAttribute("patcherFixComponents", PatcherFixComponentLocalServiceUtil.getPatcherFixComponents());
 
 		renderRequest.setAttribute("patcherProjectVersions", PatcherProjectVersionUtil.getPatcherProjectVersions("name", PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_PORTAL_6X), true));
 	}
@@ -160,7 +160,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			renderRequest.setAttribute("patcherFix", patcherFix);
 		}
 
-		renderRequest.setAttribute("patcherFixComponents", PatcherFixComponentUtil.getPatcherFixComponents("name", true));
+		renderRequest.setAttribute("patcherFixComponents", PatcherFixComponentLocalServiceUtil.getPatcherFixComponents());
 
 		renderRequest.setAttribute("patcherProjectVersions", PatcherProjectVersionUtil.getPatcherProjectVersions("name", true));
 
@@ -182,7 +182,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 
 		renderRequest.setAttribute("displayTerms", new DisplayTerms(request));
 
-		renderRequest.setAttribute("patcherFixComponents", PatcherFixComponentUtil.getPatcherFixComponents("name", true));
+		renderRequest.setAttribute("patcherFixComponents", PatcherFixComponentLocalServiceUtil.getPatcherFixComponents());
 
 		long patcherProductVersionId = ParamUtil.getLong(request, "patcherProductVersionId");
 
@@ -351,7 +351,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 
 		String patcherFixComponentName = ParamUtil.getString(request, "patcherFixComponentName");
 
-		PatcherFixComponent patcherFixComponent = PatcherFixComponentUtil.fetchPatcherFixComponent(patcherFixComponentName);
+		PatcherFixComponent patcherFixComponent = PatcherFixComponentLocalServiceUtil.fetchPatcherFixComponent(patcherFixComponentName);
 
 		PatcherFixPack patcherFixPack = PatcherFixPackUtil.fetchPatcherFixPackByRootPatcherProjectVersion(patcherFixComponent.getPatcherFixComponentId(), fixPackVersion, rootPatcherProjectVersion.getPatcherProjectVersionId());
 
@@ -366,7 +366,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 			return;
 		}
 
-		PatcherFixComponent portalPatcherFixComponent = PatcherFixComponentUtil.fetchPatcherFixComponent("portal");
+		PatcherFixComponent portalPatcherFixComponent = PatcherFixComponentLocalServiceUtil.fetchPatcherFixComponent("portal");
 
 		OrderByComparator obc = OrderByComparatorFactoryUtil.create(PatcherFixPackModelImpl.TABLE_NAME, "version", false);
 
@@ -674,7 +674,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 				throw new Exception("the-patcher-fix-component-name-is-invalid");
 			}
 
-			PatcherFixComponent patcherFixComponent = PatcherFixComponentUtil.fetchPatcherFixComponent(patcherFixComponentName);
+			PatcherFixComponent patcherFixComponent = PatcherFixComponentLocalServiceUtil.fetchPatcherFixComponent(patcherFixComponentName);
 
 			if (patcherFixComponent == null) {
 				throw new Exception("the-patcher-fix-component-name-does-not-exist");
