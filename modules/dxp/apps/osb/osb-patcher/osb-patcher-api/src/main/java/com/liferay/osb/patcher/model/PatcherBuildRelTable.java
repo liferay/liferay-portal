@@ -25,6 +25,8 @@ public class PatcherBuildRelTable extends BaseTable<PatcherBuildRelTable> {
 	public final Column<PatcherBuildRelTable, Long> patcherBuildRelId =
 		createColumn(
 			"patcherBuildRelId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
+	public final Column<PatcherBuildRelTable, Long> companyId = createColumn(
+		"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<PatcherBuildRelTable, Long> childPatcherBuildId =
 		createColumn(
 			"childPatcherBuildId", Long.class, Types.BIGINT,

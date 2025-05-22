@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -123,6 +124,9 @@ public class PatcherFixModelImpl
 	public static final String ORDER_BY_SQL =
 		" ORDER BY PatcherFix.patcherFixId ASC";
 
+	public static final String ORDER_BY_SQL_INLINE_DISTINCT =
+		" ORDER BY patcherFix.patcherFixId ASC";
+
 	public static final String DATA_SOURCE = "liferayDataSource";
 
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
@@ -130,11 +134,65 @@ public class PatcherFixModelImpl
 	public static final String TX_MANAGER = "liferayTransactionManager";
 
 	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long KEY_COLUMN_BITMASK = 1L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long KEYVERSION_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long LATESTFIX_COLUMN_BITMASK = 4L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 8L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NAME_COLUMN_BITMASK = 16L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NOTIFIED_COLUMN_BITMASK = 32L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERPROJECTVERSIONID_COLUMN_BITMASK = 64L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long STATUS_COLUMN_BITMASK = 128L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long TYPE_COLUMN_BITMASK = 256L;
+
+	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PATCHERFIXID_COLUMN_BITMASK = 1L;
+	public static final long PATCHERFIXID_COLUMN_BITMASK = 512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -537,6 +595,15 @@ public class PatcherFixModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public Date getOriginalModifiedDate() {
+		return getColumnOriginalValue("modifiedDate");
+	}
+
 	@Override
 	public long getPatcherProductVersionId() {
 		return _patcherProductVersionId;
@@ -565,6 +632,16 @@ public class PatcherFixModelImpl
 		_patcherProjectVersionId = patcherProjectVersionId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherProjectVersionId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherProjectVersionId"));
+	}
+
 	@Override
 	public String getName() {
 		if (_name == null) {
@@ -582,6 +659,15 @@ public class PatcherFixModelImpl
 		}
 
 		_name = name;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalName() {
+		return getColumnOriginalValue("name");
 	}
 
 	@Override
@@ -603,6 +689,15 @@ public class PatcherFixModelImpl
 		_key = key;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalKey() {
+		return getColumnOriginalValue("key_");
+	}
+
 	@Override
 	public double getKeyVersion() {
 		return _keyVersion;
@@ -617,6 +712,16 @@ public class PatcherFixModelImpl
 		_keyVersion = keyVersion;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public double getOriginalKeyVersion() {
+		return GetterUtil.getDouble(
+			this.<Double>getColumnOriginalValue("keyVersion"));
+	}
+
 	@Override
 	public int getType() {
 		return _type;
@@ -629,6 +734,16 @@ public class PatcherFixModelImpl
 		}
 
 		_type = type;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalType() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("type_"));
 	}
 
 	@Override
@@ -648,6 +763,16 @@ public class PatcherFixModelImpl
 		}
 
 		_latestFix = latestFix;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalLatestFix() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("latestFix"));
 	}
 
 	@Override
@@ -854,6 +979,16 @@ public class PatcherFixModelImpl
 		_notified = notified;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalNotified() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("notified"));
+	}
+
 	@Override
 	public int getProductVersion() {
 		return _productVersion;
@@ -880,6 +1015,16 @@ public class PatcherFixModelImpl
 		}
 
 		_status = status;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalStatus() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("status"));
 	}
 
 	@Override

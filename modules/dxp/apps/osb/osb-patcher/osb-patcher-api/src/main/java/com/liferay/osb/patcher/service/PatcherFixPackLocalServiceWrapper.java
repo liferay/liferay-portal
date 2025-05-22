@@ -29,6 +29,17 @@ public class PatcherFixPackLocalServiceWrapper
 		_patcherFixPackLocalService = patcherFixPackLocalService;
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFixPack addPatcherFixPack(
+			long userId, long patcherFixComponentId,
+			long patcherProjectVersionId, int version, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixPackLocalService.addPatcherFixPack(
+			userId, patcherFixComponentId, patcherProjectVersionId, version,
+			status);
+	}
+
 	/**
 	 * Adds the patcher fix pack to the database. Also notifies the appropriate model listeners.
 	 *
@@ -307,6 +318,22 @@ public class PatcherFixPackLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.patcher.model.PatcherFixPack fetchPatcherFixPack(
+		long patcherProjectVersionId, String name) {
+
+		return _patcherFixPackLocalService.fetchPatcherFixPack(
+			patcherProjectVersionId, name);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFixPack
+		fetchPatcherFixPackByPatcherBuildId(long patcherBuildId) {
+
+		return _patcherFixPackLocalService.fetchPatcherFixPackByPatcherBuildId(
+			patcherBuildId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -345,6 +372,24 @@ public class PatcherFixPackLocalServiceWrapper
 		return _patcherFixPackLocalService.getPatcherFixPack(patcherFixPackId);
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFixPack getPatcherFixPack(
+			long patcherProjectVersionId, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixPackLocalService.getPatcherFixPack(
+			patcherProjectVersionId, name);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFixPack
+			getPatcherFixPackByPatcherBuildId(long patcherBuildId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixPackLocalService.getPatcherFixPackByPatcherBuildId(
+			patcherBuildId);
+	}
+
 	/**
 	 * Returns a range of all the patcher fix packs.
 	 *
@@ -361,6 +406,40 @@ public class PatcherFixPackLocalServiceWrapper
 		getPatcherFixPacks(int start, int end) {
 
 		return _patcherFixPackLocalService.getPatcherFixPacks(start, end);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFixPack>
+		getPatcherFixPacks(long patcherFixComponentId, int version) {
+
+		return _patcherFixPackLocalService.getPatcherFixPacks(
+			patcherFixComponentId, version);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFixPack>
+		getPatcherFixPacks(
+			long patcherFixComponentId, long patcherProjectVersionId,
+			int version, boolean older) {
+
+		return _patcherFixPackLocalService.getPatcherFixPacks(
+			patcherFixComponentId, patcherProjectVersionId, version, older);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFixPack>
+		getPatcherFixPacksByPatcherFixComponentId(long patcherFixComponentId) {
+
+		return _patcherFixPackLocalService.
+			getPatcherFixPacksByPatcherFixComponentId(patcherFixComponentId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFixPack>
+		getPatcherFixPacksByStatus(long patcherProjectVersionId, int status) {
+
+		return _patcherFixPackLocalService.getPatcherFixPacksByStatus(
+			patcherProjectVersionId, status);
 	}
 
 	/**

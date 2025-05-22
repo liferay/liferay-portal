@@ -20,12 +20,15 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
+import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -39,6 +42,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.Serializable;
 
@@ -48,6 +52,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -89,6 +94,1214 @@ public class PatcherAccountPersistenceImpl
 	private FinderPath _finderPathWithPaginationFindAll;
 	private FinderPath _finderPathWithoutPaginationFindAll;
 	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathFetchByAccountEntryCode;
+
+	/**
+	 * Returns the patcher account where accountEntryCode = &#63; or throws a <code>NoSuchPatcherAccountException</code> if it could not be found.
+	 *
+	 * @param accountEntryCode the account entry code
+	 * @return the matching patcher account
+	 * @throws NoSuchPatcherAccountException if a matching patcher account could not be found
+	 */
+	@Override
+	public PatcherAccount findByAccountEntryCode(String accountEntryCode)
+		throws NoSuchPatcherAccountException {
+
+		PatcherAccount patcherAccount = fetchByAccountEntryCode(
+			accountEntryCode);
+
+		if (patcherAccount == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("accountEntryCode=");
+			sb.append(accountEntryCode);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchPatcherAccountException(sb.toString());
+		}
+
+		return patcherAccount;
+	}
+
+	/**
+	 * Returns the patcher account where accountEntryCode = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param accountEntryCode the account entry code
+	 * @return the matching patcher account, or <code>null</code> if a matching patcher account could not be found
+	 */
+	@Override
+	public PatcherAccount fetchByAccountEntryCode(String accountEntryCode) {
+		return fetchByAccountEntryCode(accountEntryCode, true);
+	}
+
+	/**
+	 * Returns the patcher account where accountEntryCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param accountEntryCode the account entry code
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching patcher account, or <code>null</code> if a matching patcher account could not be found
+	 */
+	@Override
+	public PatcherAccount fetchByAccountEntryCode(
+		String accountEntryCode, boolean useFinderCache) {
+
+		accountEntryCode = Objects.toString(accountEntryCode, "");
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache) {
+			finderArgs = new Object[] {accountEntryCode};
+		}
+
+		Object result = null;
+
+		if (useFinderCache) {
+			result = finderCache.getResult(
+				_finderPathFetchByAccountEntryCode, finderArgs, this);
+		}
+
+		if (result instanceof PatcherAccount) {
+			PatcherAccount patcherAccount = (PatcherAccount)result;
+
+			if (!Objects.equals(
+					accountEntryCode, patcherAccount.getAccountEntryCode())) {
+
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_SELECT_PATCHERACCOUNT_WHERE);
+
+			boolean bindAccountEntryCode = false;
+
+			if (accountEntryCode.isEmpty()) {
+				sb.append(_FINDER_COLUMN_ACCOUNTENTRYCODE_ACCOUNTENTRYCODE_3);
+			}
+			else {
+				bindAccountEntryCode = true;
+
+				sb.append(_FINDER_COLUMN_ACCOUNTENTRYCODE_ACCOUNTENTRYCODE_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindAccountEntryCode) {
+					queryPos.add(accountEntryCode);
+				}
+
+				List<PatcherAccount> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache) {
+						finderCache.putResult(
+							_finderPathFetchByAccountEntryCode, finderArgs,
+							list);
+					}
+				}
+				else {
+					PatcherAccount patcherAccount = list.get(0);
+
+					result = patcherAccount;
+
+					cacheResult(patcherAccount);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (PatcherAccount)result;
+		}
+	}
+
+	/**
+	 * Removes the patcher account where accountEntryCode = &#63; from the database.
+	 *
+	 * @param accountEntryCode the account entry code
+	 * @return the patcher account that was removed
+	 */
+	@Override
+	public PatcherAccount removeByAccountEntryCode(String accountEntryCode)
+		throws NoSuchPatcherAccountException {
+
+		PatcherAccount patcherAccount = findByAccountEntryCode(
+			accountEntryCode);
+
+		return remove(patcherAccount);
+	}
+
+	/**
+	 * Returns the number of patcher accounts where accountEntryCode = &#63;.
+	 *
+	 * @param accountEntryCode the account entry code
+	 * @return the number of matching patcher accounts
+	 */
+	@Override
+	public int countByAccountEntryCode(String accountEntryCode) {
+		PatcherAccount patcherAccount = fetchByAccountEntryCode(
+			accountEntryCode);
+
+		if (patcherAccount == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String
+		_FINDER_COLUMN_ACCOUNTENTRYCODE_ACCOUNTENTRYCODE_2 =
+			"patcherAccount.accountEntryCode = ?";
+
+	private static final String
+		_FINDER_COLUMN_ACCOUNTENTRYCODE_ACCOUNTENTRYCODE_3 =
+			"(patcherAccount.accountEntryCode IS NULL OR patcherAccount.accountEntryCode = '')";
+
+	private FinderPath _finderPathWithPaginationFindByC_LikeA;
+	private FinderPath _finderPathWithPaginationCountByC_LikeA;
+
+	/**
+	 * Returns all the patcher accounts where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @return the matching patcher accounts
+	 */
+	@Override
+	public List<PatcherAccount> findByC_LikeA(
+		long companyId, String accountEntryCode) {
+
+		return findByC_LikeA(
+			companyId, accountEntryCode, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the patcher accounts where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @return the range of matching patcher accounts
+	 */
+	@Override
+	public List<PatcherAccount> findByC_LikeA(
+		long companyId, String accountEntryCode, int start, int end) {
+
+		return findByC_LikeA(companyId, accountEntryCode, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher accounts where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher accounts
+	 */
+	@Override
+	public List<PatcherAccount> findByC_LikeA(
+		long companyId, String accountEntryCode, int start, int end,
+		OrderByComparator<PatcherAccount> orderByComparator) {
+
+		return findByC_LikeA(
+			companyId, accountEntryCode, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher accounts where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher accounts
+	 */
+	@Override
+	public List<PatcherAccount> findByC_LikeA(
+		long companyId, String accountEntryCode, int start, int end,
+		OrderByComparator<PatcherAccount> orderByComparator,
+		boolean useFinderCache) {
+
+		accountEntryCode = Objects.toString(accountEntryCode, "");
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByC_LikeA;
+		finderArgs = new Object[] {
+			companyId, accountEntryCode, start, end, orderByComparator
+		};
+
+		List<PatcherAccount> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherAccount>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherAccount patcherAccount : list) {
+					if ((companyId != patcherAccount.getCompanyId()) ||
+						!StringUtil.wildcardMatches(
+							patcherAccount.getAccountEntryCode(),
+							accountEntryCode, '_', '%', '\\', true)) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(4);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERACCOUNT_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_LIKEA_COMPANYID_2);
+
+			boolean bindAccountEntryCode = false;
+
+			if (accountEntryCode.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_3);
+			}
+			else {
+				bindAccountEntryCode = true;
+
+				sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherAccountModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				if (bindAccountEntryCode) {
+					queryPos.add(accountEntryCode);
+				}
+
+				list = (List<PatcherAccount>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher account in the ordered set where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher account
+	 * @throws NoSuchPatcherAccountException if a matching patcher account could not be found
+	 */
+	@Override
+	public PatcherAccount findByC_LikeA_First(
+			long companyId, String accountEntryCode,
+			OrderByComparator<PatcherAccount> orderByComparator)
+		throws NoSuchPatcherAccountException {
+
+		PatcherAccount patcherAccount = fetchByC_LikeA_First(
+			companyId, accountEntryCode, orderByComparator);
+
+		if (patcherAccount != null) {
+			return patcherAccount;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", accountEntryCodeLIKE");
+		sb.append(accountEntryCode);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherAccountException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher account in the ordered set where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher account, or <code>null</code> if a matching patcher account could not be found
+	 */
+	@Override
+	public PatcherAccount fetchByC_LikeA_First(
+		long companyId, String accountEntryCode,
+		OrderByComparator<PatcherAccount> orderByComparator) {
+
+		List<PatcherAccount> list = findByC_LikeA(
+			companyId, accountEntryCode, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher account in the ordered set where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher account
+	 * @throws NoSuchPatcherAccountException if a matching patcher account could not be found
+	 */
+	@Override
+	public PatcherAccount findByC_LikeA_Last(
+			long companyId, String accountEntryCode,
+			OrderByComparator<PatcherAccount> orderByComparator)
+		throws NoSuchPatcherAccountException {
+
+		PatcherAccount patcherAccount = fetchByC_LikeA_Last(
+			companyId, accountEntryCode, orderByComparator);
+
+		if (patcherAccount != null) {
+			return patcherAccount;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", accountEntryCodeLIKE");
+		sb.append(accountEntryCode);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherAccountException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher account in the ordered set where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher account, or <code>null</code> if a matching patcher account could not be found
+	 */
+	@Override
+	public PatcherAccount fetchByC_LikeA_Last(
+		long companyId, String accountEntryCode,
+		OrderByComparator<PatcherAccount> orderByComparator) {
+
+		int count = countByC_LikeA(companyId, accountEntryCode);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherAccount> list = findByC_LikeA(
+			companyId, accountEntryCode, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher accounts before and after the current patcher account in the ordered set where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param patcherAccountId the primary key of the current patcher account
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher account
+	 * @throws NoSuchPatcherAccountException if a patcher account with the primary key could not be found
+	 */
+	@Override
+	public PatcherAccount[] findByC_LikeA_PrevAndNext(
+			long patcherAccountId, long companyId, String accountEntryCode,
+			OrderByComparator<PatcherAccount> orderByComparator)
+		throws NoSuchPatcherAccountException {
+
+		accountEntryCode = Objects.toString(accountEntryCode, "");
+
+		PatcherAccount patcherAccount = findByPrimaryKey(patcherAccountId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherAccount[] array = new PatcherAccountImpl[3];
+
+			array[0] = getByC_LikeA_PrevAndNext(
+				session, patcherAccount, companyId, accountEntryCode,
+				orderByComparator, true);
+
+			array[1] = patcherAccount;
+
+			array[2] = getByC_LikeA_PrevAndNext(
+				session, patcherAccount, companyId, accountEntryCode,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherAccount getByC_LikeA_PrevAndNext(
+		Session session, PatcherAccount patcherAccount, long companyId,
+		String accountEntryCode,
+		OrderByComparator<PatcherAccount> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERACCOUNT_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_LIKEA_COMPANYID_2);
+
+		boolean bindAccountEntryCode = false;
+
+		if (accountEntryCode.isEmpty()) {
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_3);
+		}
+		else {
+			bindAccountEntryCode = true;
+
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherAccountModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(companyId);
+
+		if (bindAccountEntryCode) {
+			queryPos.add(accountEntryCode);
+		}
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						patcherAccount)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherAccount> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher accounts that the user has permission to view where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @return the matching patcher accounts that the user has permission to view
+	 */
+	@Override
+	public List<PatcherAccount> filterFindByC_LikeA(
+		long companyId, String accountEntryCode) {
+
+		return filterFindByC_LikeA(
+			companyId, accountEntryCode, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the patcher accounts that the user has permission to view where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @return the range of matching patcher accounts that the user has permission to view
+	 */
+	@Override
+	public List<PatcherAccount> filterFindByC_LikeA(
+		long companyId, String accountEntryCode, int start, int end) {
+
+		return filterFindByC_LikeA(
+			companyId, accountEntryCode, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher accounts that the user has permissions to view where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher accounts that the user has permission to view
+	 */
+	@Override
+	public List<PatcherAccount> filterFindByC_LikeA(
+		long companyId, String accountEntryCode, int start, int end,
+		OrderByComparator<PatcherAccount> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_LikeA(
+				companyId, accountEntryCode, start, end, orderByComparator);
+		}
+
+		accountEntryCode = Objects.toString(accountEntryCode, "");
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERACCOUNT_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_PATCHERACCOUNT_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_C_LIKEA_COMPANYID_2);
+
+		boolean bindAccountEntryCode = false;
+
+		if (accountEntryCode.isEmpty()) {
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_3);
+		}
+		else {
+			bindAccountEntryCode = true;
+
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_2);
+		}
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_PATCHERACCOUNT_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherAccountModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherAccountModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherAccount.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, PatcherAccountImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, PatcherAccountImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			if (bindAccountEntryCode) {
+				queryPos.add(accountEntryCode);
+			}
+
+			return (List<PatcherAccount>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher accounts before and after the current patcher account in the ordered set of patcher accounts that the user has permission to view where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param patcherAccountId the primary key of the current patcher account
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher account
+	 * @throws NoSuchPatcherAccountException if a patcher account with the primary key could not be found
+	 */
+	@Override
+	public PatcherAccount[] filterFindByC_LikeA_PrevAndNext(
+			long patcherAccountId, long companyId, String accountEntryCode,
+			OrderByComparator<PatcherAccount> orderByComparator)
+		throws NoSuchPatcherAccountException {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_LikeA_PrevAndNext(
+				patcherAccountId, companyId, accountEntryCode,
+				orderByComparator);
+		}
+
+		accountEntryCode = Objects.toString(accountEntryCode, "");
+
+		PatcherAccount patcherAccount = findByPrimaryKey(patcherAccountId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherAccount[] array = new PatcherAccountImpl[3];
+
+			array[0] = filterGetByC_LikeA_PrevAndNext(
+				session, patcherAccount, companyId, accountEntryCode,
+				orderByComparator, true);
+
+			array[1] = patcherAccount;
+
+			array[2] = filterGetByC_LikeA_PrevAndNext(
+				session, patcherAccount, companyId, accountEntryCode,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherAccount filterGetByC_LikeA_PrevAndNext(
+		Session session, PatcherAccount patcherAccount, long companyId,
+		String accountEntryCode,
+		OrderByComparator<PatcherAccount> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERACCOUNT_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_PATCHERACCOUNT_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_C_LIKEA_COMPANYID_2);
+
+		boolean bindAccountEntryCode = false;
+
+		if (accountEntryCode.isEmpty()) {
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_3);
+		}
+		else {
+			bindAccountEntryCode = true;
+
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_2);
+		}
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_PATCHERACCOUNT_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherAccountModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherAccountModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherAccount.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherAccountImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherAccountImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(companyId);
+
+		if (bindAccountEntryCode) {
+			queryPos.add(accountEntryCode);
+		}
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						patcherAccount)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherAccount> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher accounts where companyId = &#63; and accountEntryCode LIKE &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 */
+	@Override
+	public void removeByC_LikeA(long companyId, String accountEntryCode) {
+		for (PatcherAccount patcherAccount :
+				findByC_LikeA(
+					companyId, accountEntryCode, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(patcherAccount);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher accounts where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @return the number of matching patcher accounts
+	 */
+	@Override
+	public int countByC_LikeA(long companyId, String accountEntryCode) {
+		accountEntryCode = Objects.toString(accountEntryCode, "");
+
+		FinderPath finderPath = _finderPathWithPaginationCountByC_LikeA;
+
+		Object[] finderArgs = new Object[] {companyId, accountEntryCode};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_COUNT_PATCHERACCOUNT_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_LIKEA_COMPANYID_2);
+
+			boolean bindAccountEntryCode = false;
+
+			if (accountEntryCode.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_3);
+			}
+			else {
+				bindAccountEntryCode = true;
+
+				sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				if (bindAccountEntryCode) {
+					queryPos.add(accountEntryCode);
+				}
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher accounts that the user has permission to view where companyId = &#63; and accountEntryCode LIKE &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param accountEntryCode the account entry code
+	 * @return the number of matching patcher accounts that the user has permission to view
+	 */
+	@Override
+	public int filterCountByC_LikeA(long companyId, String accountEntryCode) {
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return countByC_LikeA(companyId, accountEntryCode);
+		}
+
+		accountEntryCode = Objects.toString(accountEntryCode, "");
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERACCOUNT_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_LIKEA_COMPANYID_2);
+
+		boolean bindAccountEntryCode = false;
+
+		if (accountEntryCode.isEmpty()) {
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_3);
+		}
+		else {
+			bindAccountEntryCode = true;
+
+			sb.append(_FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_2);
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherAccount.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			if (bindAccountEntryCode) {
+				queryPos.add(accountEntryCode);
+			}
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_C_LIKEA_COMPANYID_2 =
+		"patcherAccount.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_2 =
+		"patcherAccount.accountEntryCode LIKE ?";
+
+	private static final String _FINDER_COLUMN_C_LIKEA_ACCOUNTENTRYCODE_3 =
+		"(patcherAccount.accountEntryCode IS NULL OR patcherAccount.accountEntryCode LIKE '')";
 
 	public PatcherAccountPersistenceImpl() {
 		setModelClass(PatcherAccount.class);
@@ -108,6 +1321,11 @@ public class PatcherAccountPersistenceImpl
 	public void cacheResult(PatcherAccount patcherAccount) {
 		entityCache.putResult(
 			PatcherAccountImpl.class, patcherAccount.getPrimaryKey(),
+			patcherAccount);
+
+		finderCache.putResult(
+			_finderPathFetchByAccountEntryCode,
+			new Object[] {patcherAccount.getAccountEntryCode()},
 			patcherAccount);
 	}
 
@@ -177,6 +1395,17 @@ public class PatcherAccountPersistenceImpl
 		for (Serializable primaryKey : primaryKeys) {
 			entityCache.removeResult(PatcherAccountImpl.class, primaryKey);
 		}
+	}
+
+	protected void cacheUniqueFindersCache(
+		PatcherAccountModelImpl patcherAccountModelImpl) {
+
+		Object[] args = new Object[] {
+			patcherAccountModelImpl.getAccountEntryCode()
+		};
+
+		finderCache.putResult(
+			_finderPathFetchByAccountEntryCode, args, patcherAccountModelImpl);
 	}
 
 	/**
@@ -355,7 +1584,9 @@ public class PatcherAccountPersistenceImpl
 		}
 
 		entityCache.putResult(
-			PatcherAccountImpl.class, patcherAccount, false, true);
+			PatcherAccountImpl.class, patcherAccountModelImpl, false, true);
+
+		cacheUniqueFindersCache(patcherAccountModelImpl);
 
 		if (isNew) {
 			patcherAccount.setNew(false);
@@ -964,6 +2195,25 @@ public class PatcherAccountPersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
 			new String[0], new String[0], false);
 
+		_finderPathFetchByAccountEntryCode = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByAccountEntryCode",
+			new String[] {String.class.getName()},
+			new String[] {"accountEntryCode"}, true);
+
+		_finderPathWithPaginationFindByC_LikeA = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_LikeA",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"companyId", "accountEntryCode"}, true);
+
+		_finderPathWithPaginationCountByC_LikeA = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_LikeA",
+			new String[] {Long.class.getName(), String.class.getName()},
+			new String[] {"companyId", "accountEntryCode"}, false);
+
 		PatcherAccountUtil.setPersistence(this);
 	}
 
@@ -1015,13 +2265,45 @@ public class PatcherAccountPersistenceImpl
 	private static final String _SQL_SELECT_PATCHERACCOUNT =
 		"SELECT patcherAccount FROM PatcherAccount patcherAccount";
 
+	private static final String _SQL_SELECT_PATCHERACCOUNT_WHERE =
+		"SELECT patcherAccount FROM PatcherAccount patcherAccount WHERE ";
+
 	private static final String _SQL_COUNT_PATCHERACCOUNT =
 		"SELECT COUNT(patcherAccount) FROM PatcherAccount patcherAccount";
 
+	private static final String _SQL_COUNT_PATCHERACCOUNT_WHERE =
+		"SELECT COUNT(patcherAccount) FROM PatcherAccount patcherAccount WHERE ";
+
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN =
+		"patcherAccount.patcherAccountId";
+
+	private static final String _FILTER_SQL_SELECT_PATCHERACCOUNT_WHERE =
+		"SELECT DISTINCT {patcherAccount.*} FROM PatcherAccount patcherAccount WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_PATCHERACCOUNT_NO_INLINE_DISTINCT_WHERE_1 =
+			"SELECT {PatcherAccount.*} FROM (SELECT DISTINCT patcherAccount.patcherAccountId FROM PatcherAccount patcherAccount WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_PATCHERACCOUNT_NO_INLINE_DISTINCT_WHERE_2 =
+			") TEMP_TABLE INNER JOIN PatcherAccount ON TEMP_TABLE.patcherAccountId = PatcherAccount.patcherAccountId";
+
+	private static final String _FILTER_SQL_COUNT_PATCHERACCOUNT_WHERE =
+		"SELECT COUNT(DISTINCT patcherAccount.patcherAccountId) AS COUNT_VALUE FROM PatcherAccount patcherAccount WHERE ";
+
+	private static final String _FILTER_ENTITY_ALIAS = "patcherAccount";
+
+	private static final String _FILTER_ENTITY_TABLE = "PatcherAccount";
+
 	private static final String _ORDER_BY_ENTITY_ALIAS = "patcherAccount.";
+
+	private static final String _ORDER_BY_ENTITY_TABLE = "PatcherAccount.";
 
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
 		"No PatcherAccount exists with the primary key ";
+
+	private static final String _NO_SUCH_ENTITY_WITH_KEY =
+		"No PatcherAccount exists with the key {";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PatcherAccountPersistenceImpl.class);

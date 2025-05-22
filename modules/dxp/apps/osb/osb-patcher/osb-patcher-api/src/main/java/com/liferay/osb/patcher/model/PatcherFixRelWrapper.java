@@ -33,6 +33,7 @@ public class PatcherFixRelWrapper
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("patcherFixRelId", getPatcherFixRelId());
+		attributes.put("companyId", getCompanyId());
 		attributes.put("childPatcherFixId", getChildPatcherFixId());
 		attributes.put("parentPatcherFixId", getParentPatcherFixId());
 
@@ -45,6 +46,12 @@ public class PatcherFixRelWrapper
 
 		if (patcherFixRelId != null) {
 			setPatcherFixRelId(patcherFixRelId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
 		}
 
 		Long childPatcherFixId = (Long)attributes.get("childPatcherFixId");
@@ -73,6 +80,16 @@ public class PatcherFixRelWrapper
 	@Override
 	public long getChildPatcherFixId() {
 		return model.getChildPatcherFixId();
+	}
+
+	/**
+	 * Returns the company ID of this patcher fix rel.
+	 *
+	 * @return the company ID of this patcher fix rel
+	 */
+	@Override
+	public long getCompanyId() {
+		return model.getCompanyId();
 	}
 
 	/**
@@ -118,6 +135,16 @@ public class PatcherFixRelWrapper
 	@Override
 	public void setChildPatcherFixId(long childPatcherFixId) {
 		model.setChildPatcherFixId(childPatcherFixId);
+	}
+
+	/**
+	 * Sets the company ID of this patcher fix rel.
+	 *
+	 * @param companyId the company ID of this patcher fix rel
+	 */
+	@Override
+	public void setCompanyId(long companyId) {
+		model.setCompanyId(companyId);
 	}
 
 	/**

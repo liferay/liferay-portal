@@ -66,6 +66,7 @@
 	</model>
 	<model name="com.liferay.osb.patcher.model.PatcherBuildRel">
 		<field name="patcherBuildRelId" type="long" />
+		<field name="companyId" type="long" />
 		<field name="childPatcherBuildId" type="long" />
 		<field name="parentPatcherBuildId" type="long" />
 	</model>
@@ -137,6 +138,7 @@
 	</model>
 	<model name="com.liferay.osb.patcher.model.PatcherFixRel">
 		<field name="patcherFixRelId" type="long" />
+		<field name="companyId" type="long" />
 		<field name="childPatcherFixId" type="long" />
 		<field name="parentPatcherFixId" type="long" />
 	</model>

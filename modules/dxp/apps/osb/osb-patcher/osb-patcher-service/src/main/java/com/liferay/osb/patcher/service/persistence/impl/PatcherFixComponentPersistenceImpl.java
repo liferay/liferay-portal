@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
+import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
@@ -41,6 +42,7 @@ import java.lang.reflect.InvocationHandler;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -82,6 +84,187 @@ public class PatcherFixComponentPersistenceImpl
 	private FinderPath _finderPathWithPaginationFindAll;
 	private FinderPath _finderPathWithoutPaginationFindAll;
 	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathFetchByName;
+
+	/**
+	 * Returns the patcher fix component where name = &#63; or throws a <code>NoSuchPatcherFixComponentException</code> if it could not be found.
+	 *
+	 * @param name the name
+	 * @return the matching patcher fix component
+	 * @throws NoSuchPatcherFixComponentException if a matching patcher fix component could not be found
+	 */
+	@Override
+	public PatcherFixComponent findByName(String name)
+		throws NoSuchPatcherFixComponentException {
+
+		PatcherFixComponent patcherFixComponent = fetchByName(name);
+
+		if (patcherFixComponent == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("name=");
+			sb.append(name);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchPatcherFixComponentException(sb.toString());
+		}
+
+		return patcherFixComponent;
+	}
+
+	/**
+	 * Returns the patcher fix component where name = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param name the name
+	 * @return the matching patcher fix component, or <code>null</code> if a matching patcher fix component could not be found
+	 */
+	@Override
+	public PatcherFixComponent fetchByName(String name) {
+		return fetchByName(name, true);
+	}
+
+	/**
+	 * Returns the patcher fix component where name = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param name the name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching patcher fix component, or <code>null</code> if a matching patcher fix component could not be found
+	 */
+	@Override
+	public PatcherFixComponent fetchByName(
+		String name, boolean useFinderCache) {
+
+		name = Objects.toString(name, "");
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache) {
+			finderArgs = new Object[] {name};
+		}
+
+		Object result = null;
+
+		if (useFinderCache) {
+			result = finderCache.getResult(
+				_finderPathFetchByName, finderArgs, this);
+		}
+
+		if (result instanceof PatcherFixComponent) {
+			PatcherFixComponent patcherFixComponent =
+				(PatcherFixComponent)result;
+
+			if (!Objects.equals(name, patcherFixComponent.getName())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_SELECT_PATCHERFIXCOMPONENT_WHERE);
+
+			boolean bindName = false;
+
+			if (name.isEmpty()) {
+				sb.append(_FINDER_COLUMN_NAME_NAME_3);
+			}
+			else {
+				bindName = true;
+
+				sb.append(_FINDER_COLUMN_NAME_NAME_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindName) {
+					queryPos.add(name);
+				}
+
+				List<PatcherFixComponent> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache) {
+						finderCache.putResult(
+							_finderPathFetchByName, finderArgs, list);
+					}
+				}
+				else {
+					PatcherFixComponent patcherFixComponent = list.get(0);
+
+					result = patcherFixComponent;
+
+					cacheResult(patcherFixComponent);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (PatcherFixComponent)result;
+		}
+	}
+
+	/**
+	 * Removes the patcher fix component where name = &#63; from the database.
+	 *
+	 * @param name the name
+	 * @return the patcher fix component that was removed
+	 */
+	@Override
+	public PatcherFixComponent removeByName(String name)
+		throws NoSuchPatcherFixComponentException {
+
+		PatcherFixComponent patcherFixComponent = findByName(name);
+
+		return remove(patcherFixComponent);
+	}
+
+	/**
+	 * Returns the number of patcher fix components where name = &#63;.
+	 *
+	 * @param name the name
+	 * @return the number of matching patcher fix components
+	 */
+	@Override
+	public int countByName(String name) {
+		PatcherFixComponent patcherFixComponent = fetchByName(name);
+
+		if (patcherFixComponent == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String _FINDER_COLUMN_NAME_NAME_2 =
+		"patcherFixComponent.name = ?";
+
+	private static final String _FINDER_COLUMN_NAME_NAME_3 =
+		"(patcherFixComponent.name IS NULL OR patcherFixComponent.name = '')";
 
 	public PatcherFixComponentPersistenceImpl() {
 		setModelClass(PatcherFixComponent.class);
@@ -102,6 +285,10 @@ public class PatcherFixComponentPersistenceImpl
 		entityCache.putResult(
 			PatcherFixComponentImpl.class, patcherFixComponent.getPrimaryKey(),
 			patcherFixComponent);
+
+		finderCache.putResult(
+			_finderPathFetchByName,
+			new Object[] {patcherFixComponent.getName()}, patcherFixComponent);
 	}
 
 	private int _valueObjectFinderCacheListThreshold;
@@ -173,6 +360,15 @@ public class PatcherFixComponentPersistenceImpl
 		for (Serializable primaryKey : primaryKeys) {
 			entityCache.removeResult(PatcherFixComponentImpl.class, primaryKey);
 		}
+	}
+
+	protected void cacheUniqueFindersCache(
+		PatcherFixComponentModelImpl patcherFixComponentModelImpl) {
+
+		Object[] args = new Object[] {patcherFixComponentModelImpl.getName()};
+
+		finderCache.putResult(
+			_finderPathFetchByName, args, patcherFixComponentModelImpl);
 	}
 
 	/**
@@ -354,7 +550,10 @@ public class PatcherFixComponentPersistenceImpl
 		}
 
 		entityCache.putResult(
-			PatcherFixComponentImpl.class, patcherFixComponent, false, true);
+			PatcherFixComponentImpl.class, patcherFixComponentModelImpl, false,
+			true);
+
+		cacheUniqueFindersCache(patcherFixComponentModelImpl);
 
 		if (isNew) {
 			patcherFixComponent.setNew(false);
@@ -637,6 +836,10 @@ public class PatcherFixComponentPersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
 			new String[0], new String[0], false);
 
+		_finderPathFetchByName = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByName",
+			new String[] {String.class.getName()}, new String[] {"name"}, true);
+
 		PatcherFixComponentUtil.setPersistence(this);
 	}
 
@@ -682,13 +885,22 @@ public class PatcherFixComponentPersistenceImpl
 	private static final String _SQL_SELECT_PATCHERFIXCOMPONENT =
 		"SELECT patcherFixComponent FROM PatcherFixComponent patcherFixComponent";
 
+	private static final String _SQL_SELECT_PATCHERFIXCOMPONENT_WHERE =
+		"SELECT patcherFixComponent FROM PatcherFixComponent patcherFixComponent WHERE ";
+
 	private static final String _SQL_COUNT_PATCHERFIXCOMPONENT =
 		"SELECT COUNT(patcherFixComponent) FROM PatcherFixComponent patcherFixComponent";
+
+	private static final String _SQL_COUNT_PATCHERFIXCOMPONENT_WHERE =
+		"SELECT COUNT(patcherFixComponent) FROM PatcherFixComponent patcherFixComponent WHERE ";
 
 	private static final String _ORDER_BY_ENTITY_ALIAS = "patcherFixComponent.";
 
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
 		"No PatcherFixComponent exists with the primary key ";
+
+	private static final String _NO_SUCH_ENTITY_WITH_KEY =
+		"No PatcherFixComponent exists with the key {";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PatcherFixComponentPersistenceImpl.class);

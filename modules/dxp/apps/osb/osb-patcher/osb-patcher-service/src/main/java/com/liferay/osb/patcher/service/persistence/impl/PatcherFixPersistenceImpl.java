@@ -21,12 +21,15 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
+import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -40,16 +43,20 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.Serializable;
 
 import java.lang.reflect.InvocationHandler;
+
+import java.sql.Timestamp;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -90,6 +97,10042 @@ public class PatcherFixPersistenceImpl
 	private FinderPath _finderPathWithPaginationFindAll;
 	private FinderPath _finderPathWithoutPaginationFindAll;
 	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathWithPaginationFindByPatcherProjectVersionId;
+	private FinderPath
+		_finderPathWithoutPaginationFindByPatcherProjectVersionId;
+	private FinderPath _finderPathCountByPatcherProjectVersionId;
+
+	/**
+	 * Returns all the patcher fixes where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return findByPatcherProjectVersionId(
+			patcherProjectVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where patcherProjectVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByPatcherProjectVersionId(
+		long patcherProjectVersionId, int start, int end) {
+
+		return findByPatcherProjectVersionId(
+			patcherProjectVersionId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByPatcherProjectVersionId(
+		long patcherProjectVersionId, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByPatcherProjectVersionId(
+			patcherProjectVersionId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByPatcherProjectVersionId(
+		long patcherProjectVersionId, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath =
+					_finderPathWithoutPaginationFindByPatcherProjectVersionId;
+				finderArgs = new Object[] {patcherProjectVersionId};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByPatcherProjectVersionId;
+			finderArgs = new Object[] {
+				patcherProjectVersionId, start, end, orderByComparator
+			};
+		}
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if (patcherProjectVersionId !=
+							patcherFix.getPatcherProjectVersionId()) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					3 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(3);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			sb.append(
+				_FINDER_COLUMN_PATCHERPROJECTVERSIONID_PATCHERPROJECTVERSIONID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByPatcherProjectVersionId_First(
+			long patcherProjectVersionId,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByPatcherProjectVersionId_First(
+			patcherProjectVersionId, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByPatcherProjectVersionId_First(
+		long patcherProjectVersionId,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByPatcherProjectVersionId(
+			patcherProjectVersionId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByPatcherProjectVersionId_Last(
+			long patcherProjectVersionId,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByPatcherProjectVersionId_Last(
+			patcherProjectVersionId, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByPatcherProjectVersionId_Last(
+		long patcherProjectVersionId,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByPatcherProjectVersionId(patcherProjectVersionId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByPatcherProjectVersionId(
+			patcherProjectVersionId, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByPatcherProjectVersionId_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByPatcherProjectVersionId_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByPatcherProjectVersionId_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByPatcherProjectVersionId_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(3);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		sb.append(
+			_FINDER_COLUMN_PATCHERPROJECTVERSIONID_PATCHERPROJECTVERSIONID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(patcherProjectVersionId);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return filterFindByPatcherProjectVersionId(
+			patcherProjectVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByPatcherProjectVersionId(
+		long patcherProjectVersionId, int start, int end) {
+
+		return filterFindByPatcherProjectVersionId(
+			patcherProjectVersionId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where patcherProjectVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByPatcherProjectVersionId(
+		long patcherProjectVersionId, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByPatcherProjectVersionId(
+				patcherProjectVersionId, start, end, orderByComparator);
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				3 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(
+			_FINDER_COLUMN_PATCHERPROJECTVERSIONID_PATCHERPROJECTVERSIONID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByPatcherProjectVersionId_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByPatcherProjectVersionId_PrevAndNext(
+				patcherFixId, patcherProjectVersionId, orderByComparator);
+		}
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByPatcherProjectVersionId_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByPatcherProjectVersionId_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByPatcherProjectVersionId_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(
+			_FINDER_COLUMN_PATCHERPROJECTVERSIONID_PATCHERPROJECTVERSIONID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(patcherProjectVersionId);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where patcherProjectVersionId = &#63; from the database.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 */
+	@Override
+	public void removeByPatcherProjectVersionId(long patcherProjectVersionId) {
+		for (PatcherFix patcherFix :
+				findByPatcherProjectVersionId(
+					patcherProjectVersionId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByPatcherProjectVersionId(long patcherProjectVersionId) {
+		FinderPath finderPath = _finderPathCountByPatcherProjectVersionId;
+
+		Object[] finderArgs = new Object[] {patcherProjectVersionId};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(2);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			sb.append(
+				_FINDER_COLUMN_PATCHERPROJECTVERSIONID_PATCHERPROJECTVERSIONID_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByPatcherProjectVersionId(patcherProjectVersionId);
+		}
+
+		StringBundler sb = new StringBundler(2);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		sb.append(
+			_FINDER_COLUMN_PATCHERPROJECTVERSIONID_PATCHERPROJECTVERSIONID_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String
+		_FINDER_COLUMN_PATCHERPROJECTVERSIONID_PATCHERPROJECTVERSIONID_2 =
+			"patcherFix.patcherProjectVersionId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByP_T_L;
+	private FinderPath _finderPathWithoutPaginationFindByP_T_L;
+	private FinderPath _finderPathCountByP_T_L;
+
+	/**
+	 * Returns all the patcher fixes where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		return findByP_T_L(
+			patcherProjectVersionId, type, latestFix, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end) {
+
+		return findByP_T_L(
+			patcherProjectVersionId, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByP_T_L(
+			patcherProjectVersionId, type, latestFix, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath = _finderPathWithoutPaginationFindByP_T_L;
+				finderArgs = new Object[] {
+					patcherProjectVersionId, type, latestFix
+				};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByP_T_L;
+			finderArgs = new Object[] {
+				patcherProjectVersionId, type, latestFix, start, end,
+				orderByComparator
+			};
+		}
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if ((patcherProjectVersionId !=
+							patcherFix.getPatcherProjectVersionId()) ||
+						(type != patcherFix.getType()) ||
+						(latestFix != patcherFix.isLatestFix())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					5 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(5);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_T_L_PATCHERPROJECTVERSIONID_2);
+
+			sb.append(_FINDER_COLUMN_P_T_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_T_L_LATESTFIX_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_T_L_First(
+			long patcherProjectVersionId, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_T_L_First(
+			patcherProjectVersionId, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", type=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_T_L_First(
+		long patcherProjectVersionId, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByP_T_L(
+			patcherProjectVersionId, type, latestFix, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_T_L_Last(
+			long patcherProjectVersionId, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_T_L_Last(
+			patcherProjectVersionId, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", type=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_T_L_Last(
+		long patcherProjectVersionId, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByP_T_L(patcherProjectVersionId, type, latestFix);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByP_T_L(
+			patcherProjectVersionId, type, latestFix, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByP_T_L_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, int type,
+			boolean latestFix, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByP_T_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByP_T_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByP_T_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_T_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_T_L_TYPE_2);
+
+		sb.append(_FINDER_COLUMN_P_T_L_LATESTFIX_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(patcherProjectVersionId);
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		return filterFindByP_T_L(
+			patcherProjectVersionId, type, latestFix, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end) {
+
+		return filterFindByP_T_L(
+			patcherProjectVersionId, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_T_L(
+				patcherProjectVersionId, type, latestFix, start, end,
+				orderByComparator);
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_T_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_T_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_T_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByP_T_L_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, int type,
+			boolean latestFix, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_T_L_PrevAndNext(
+				patcherFixId, patcherProjectVersionId, type, latestFix,
+				orderByComparator);
+		}
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByP_T_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByP_T_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByP_T_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_T_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_T_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_T_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(patcherProjectVersionId);
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63; from the database.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 */
+	@Override
+	public void removeByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		for (PatcherFix patcherFix :
+				findByP_T_L(
+					patcherProjectVersionId, type, latestFix, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		FinderPath finderPath = _finderPathCountByP_T_L;
+
+		Object[] finderArgs = new Object[] {
+			patcherProjectVersionId, type, latestFix
+		};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_T_L_PATCHERPROJECTVERSIONID_2);
+
+			sb.append(_FINDER_COLUMN_P_T_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_T_L_LATESTFIX_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type = &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByP_T_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByP_T_L(patcherProjectVersionId, type, latestFix);
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_T_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_T_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_T_L_LATESTFIX_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_P_T_L_PATCHERPROJECTVERSIONID_2 =
+		"patcherFix.patcherProjectVersionId = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_T_L_TYPE_2 =
+		"patcherFix.type = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_T_L_TYPE_2_SQL =
+		"patcherFix.type_ = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_T_L_LATESTFIX_2 =
+		"patcherFix.latestFix = ?";
+
+	private FinderPath _finderPathWithPaginationFindByP_NotT_L;
+	private FinderPath _finderPathWithPaginationCountByP_NotT_L;
+
+	/**
+	 * Returns all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		return findByP_NotT_L(
+			patcherProjectVersionId, type, latestFix, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end) {
+
+		return findByP_NotT_L(
+			patcherProjectVersionId, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByP_NotT_L(
+			patcherProjectVersionId, type, latestFix, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByP_NotT_L;
+		finderArgs = new Object[] {
+			patcherProjectVersionId, type, latestFix, start, end,
+			orderByComparator
+		};
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if ((patcherProjectVersionId !=
+							patcherFix.getPatcherProjectVersionId()) ||
+						(type == patcherFix.getType()) ||
+						(latestFix != patcherFix.isLatestFix())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					5 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(5);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_LATESTFIX_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_NotT_L_First(
+			long patcherProjectVersionId, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_NotT_L_First(
+			patcherProjectVersionId, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_NotT_L_First(
+		long patcherProjectVersionId, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByP_NotT_L(
+			patcherProjectVersionId, type, latestFix, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_NotT_L_Last(
+			long patcherProjectVersionId, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_NotT_L_Last(
+			patcherProjectVersionId, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_NotT_L_Last(
+		long patcherProjectVersionId, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByP_NotT_L(patcherProjectVersionId, type, latestFix);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByP_NotT_L(
+			patcherProjectVersionId, type, latestFix, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByP_NotT_L_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, int type,
+			boolean latestFix, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByP_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByP_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByP_NotT_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_TYPE_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_LATESTFIX_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(patcherProjectVersionId);
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		return filterFindByP_NotT_L(
+			patcherProjectVersionId, type, latestFix, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end) {
+
+		return filterFindByP_NotT_L(
+			patcherProjectVersionId, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_NotT_L(
+				patcherProjectVersionId, type, latestFix, start, end,
+				orderByComparator);
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByP_NotT_L_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, int type,
+			boolean latestFix, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_NotT_L_PrevAndNext(
+				patcherFixId, patcherProjectVersionId, type, latestFix,
+				orderByComparator);
+		}
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByP_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByP_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByP_NotT_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(patcherProjectVersionId);
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; from the database.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 */
+	@Override
+	public void removeByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		for (PatcherFix patcherFix :
+				findByP_NotT_L(
+					patcherProjectVersionId, type, latestFix, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		FinderPath finderPath = _finderPathWithPaginationCountByP_NotT_L;
+
+		Object[] finderArgs = new Object[] {
+			patcherProjectVersionId, type, latestFix
+		};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_LATESTFIX_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByP_NotT_L(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByP_NotT_L(patcherProjectVersionId, type, latestFix);
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_LATESTFIX_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String
+		_FINDER_COLUMN_P_NOTT_L_PATCHERPROJECTVERSIONID_2 =
+			"patcherFix.patcherProjectVersionId = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_NOTT_L_TYPE_2 =
+		"patcherFix.type != ? AND ";
+
+	private static final String _FINDER_COLUMN_P_NOTT_L_TYPE_2_SQL =
+		"patcherFix.type_ != ? AND ";
+
+	private static final String _FINDER_COLUMN_P_NOTT_L_LATESTFIX_2 =
+		"patcherFix.latestFix = ?";
+
+	private FinderPath _finderPathWithPaginationFindByK_GtKV_NotT;
+	private FinderPath _finderPathWithPaginationCountByK_GtKV_NotT;
+
+	/**
+	 * Returns all the patcher fixes where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_GtKV_NotT(
+		String key, double keyVersion, int type) {
+
+		return findByK_GtKV_NotT(
+			key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_GtKV_NotT(
+		String key, double keyVersion, int type, int start, int end) {
+
+		return findByK_GtKV_NotT(key, keyVersion, type, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_GtKV_NotT(
+		String key, double keyVersion, int type, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByK_GtKV_NotT(
+			key, keyVersion, type, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_GtKV_NotT(
+		String key, double keyVersion, int type, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		key = Objects.toString(key, "");
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByK_GtKV_NotT;
+		finderArgs = new Object[] {
+			key, keyVersion, type, start, end, orderByComparator
+		};
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if (!key.equals(patcherFix.getKey()) ||
+						(keyVersion >= patcherFix.getKeyVersion()) ||
+						(type == patcherFix.getType())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					5 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(5);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEYVERSION_2);
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_TYPE_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(keyVersion);
+
+				queryPos.add(type);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByK_GtKV_NotT_First(
+			String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByK_GtKV_NotT_First(
+			key, keyVersion, type, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("key=");
+		sb.append(key);
+
+		sb.append(", keyVersion>");
+		sb.append(keyVersion);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByK_GtKV_NotT_First(
+		String key, double keyVersion, int type,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByK_GtKV_NotT(
+			key, keyVersion, type, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByK_GtKV_NotT_Last(
+			String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByK_GtKV_NotT_Last(
+			key, keyVersion, type, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("key=");
+		sb.append(key);
+
+		sb.append(", keyVersion>");
+		sb.append(keyVersion);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByK_GtKV_NotT_Last(
+		String key, double keyVersion, int type,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByK_GtKV_NotT(key, keyVersion, type);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByK_GtKV_NotT(
+			key, keyVersion, type, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByK_GtKV_NotT_PrevAndNext(
+			long patcherFixId, String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		key = Objects.toString(key, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByK_GtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByK_GtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByK_GtKV_NotT_PrevAndNext(
+		Session session, PatcherFix patcherFix, String key, double keyVersion,
+		int type, OrderByComparator<PatcherFix> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_3);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_2);
+		}
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_TYPE_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		if (bindKey) {
+			queryPos.add(key);
+		}
+
+		queryPos.add(keyVersion);
+
+		queryPos.add(type);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_GtKV_NotT(
+		String key, double keyVersion, int type) {
+
+		return filterFindByK_GtKV_NotT(
+			key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_GtKV_NotT(
+		String key, double keyVersion, int type, int start, int end) {
+
+		return filterFindByK_GtKV_NotT(key, keyVersion, type, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_GtKV_NotT(
+		String key, double keyVersion, int type, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByK_GtKV_NotT(
+				key, keyVersion, type, start, end, orderByComparator);
+		}
+
+		key = Objects.toString(key, "");
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_TYPE_2_SQL);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindKey) {
+				queryPos.add(key);
+			}
+
+			queryPos.add(keyVersion);
+
+			queryPos.add(type);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByK_GtKV_NotT_PrevAndNext(
+			long patcherFixId, String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByK_GtKV_NotT_PrevAndNext(
+				patcherFixId, key, keyVersion, type, orderByComparator);
+		}
+
+		key = Objects.toString(key, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByK_GtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByK_GtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByK_GtKV_NotT_PrevAndNext(
+		Session session, PatcherFix patcherFix, String key, double keyVersion,
+		int type, OrderByComparator<PatcherFix> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_TYPE_2_SQL);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		if (bindKey) {
+			queryPos.add(key);
+		}
+
+		queryPos.add(keyVersion);
+
+		queryPos.add(type);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63; from the database.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 */
+	@Override
+	public void removeByK_GtKV_NotT(String key, double keyVersion, int type) {
+		for (PatcherFix patcherFix :
+				findByK_GtKV_NotT(
+					key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByK_GtKV_NotT(String key, double keyVersion, int type) {
+		key = Objects.toString(key, "");
+
+		FinderPath finderPath = _finderPathWithPaginationCountByK_GtKV_NotT;
+
+		Object[] finderArgs = new Object[] {key, keyVersion, type};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEYVERSION_2);
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_TYPE_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(keyVersion);
+
+				queryPos.add(type);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where key = &#63; and keyVersion &gt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByK_GtKV_NotT(
+		String key, double keyVersion, int type) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByK_GtKV_NotT(key, keyVersion, type);
+		}
+
+		key = Objects.toString(key, "");
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_GTKV_NOTT_TYPE_2_SQL);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindKey) {
+				queryPos.add(key);
+			}
+
+			queryPos.add(keyVersion);
+
+			queryPos.add(type);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_K_GTKV_NOTT_KEY_2 =
+		"patcherFix.key = ? AND ";
+
+	private static final String _FINDER_COLUMN_K_GTKV_NOTT_KEY_3 =
+		"(patcherFix.key IS NULL OR patcherFix.key = '') AND ";
+
+	private static final String _FINDER_COLUMN_K_GTKV_NOTT_KEY_2_SQL =
+		"patcherFix.key_ = ? AND ";
+
+	private static final String _FINDER_COLUMN_K_GTKV_NOTT_KEY_3_SQL =
+		"(patcherFix.key_ IS NULL OR patcherFix.key_ = '') AND ";
+
+	private static final String _FINDER_COLUMN_K_GTKV_NOTT_KEYVERSION_2 =
+		"patcherFix.keyVersion > ? AND ";
+
+	private static final String _FINDER_COLUMN_K_GTKV_NOTT_TYPE_2 =
+		"patcherFix.type != ?";
+
+	private static final String _FINDER_COLUMN_K_GTKV_NOTT_TYPE_2_SQL =
+		"patcherFix.type_ != ?";
+
+	private FinderPath _finderPathWithPaginationFindByK_LtKV_NotT;
+	private FinderPath _finderPathWithPaginationCountByK_LtKV_NotT;
+
+	/**
+	 * Returns all the patcher fixes where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_LtKV_NotT(
+		String key, double keyVersion, int type) {
+
+		return findByK_LtKV_NotT(
+			key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_LtKV_NotT(
+		String key, double keyVersion, int type, int start, int end) {
+
+		return findByK_LtKV_NotT(key, keyVersion, type, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_LtKV_NotT(
+		String key, double keyVersion, int type, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByK_LtKV_NotT(
+			key, keyVersion, type, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_LtKV_NotT(
+		String key, double keyVersion, int type, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		key = Objects.toString(key, "");
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByK_LtKV_NotT;
+		finderArgs = new Object[] {
+			key, keyVersion, type, start, end, orderByComparator
+		};
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if (!key.equals(patcherFix.getKey()) ||
+						(keyVersion <= patcherFix.getKeyVersion()) ||
+						(type == patcherFix.getType())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					5 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(5);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEYVERSION_2);
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_TYPE_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(keyVersion);
+
+				queryPos.add(type);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByK_LtKV_NotT_First(
+			String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByK_LtKV_NotT_First(
+			key, keyVersion, type, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("key=");
+		sb.append(key);
+
+		sb.append(", keyVersion<");
+		sb.append(keyVersion);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByK_LtKV_NotT_First(
+		String key, double keyVersion, int type,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByK_LtKV_NotT(
+			key, keyVersion, type, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByK_LtKV_NotT_Last(
+			String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByK_LtKV_NotT_Last(
+			key, keyVersion, type, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("key=");
+		sb.append(key);
+
+		sb.append(", keyVersion<");
+		sb.append(keyVersion);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByK_LtKV_NotT_Last(
+		String key, double keyVersion, int type,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByK_LtKV_NotT(key, keyVersion, type);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByK_LtKV_NotT(
+			key, keyVersion, type, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByK_LtKV_NotT_PrevAndNext(
+			long patcherFixId, String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		key = Objects.toString(key, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByK_LtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByK_LtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByK_LtKV_NotT_PrevAndNext(
+		Session session, PatcherFix patcherFix, String key, double keyVersion,
+		int type, OrderByComparator<PatcherFix> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_3);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_2);
+		}
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_TYPE_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		if (bindKey) {
+			queryPos.add(key);
+		}
+
+		queryPos.add(keyVersion);
+
+		queryPos.add(type);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_LtKV_NotT(
+		String key, double keyVersion, int type) {
+
+		return filterFindByK_LtKV_NotT(
+			key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_LtKV_NotT(
+		String key, double keyVersion, int type, int start, int end) {
+
+		return filterFindByK_LtKV_NotT(key, keyVersion, type, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_LtKV_NotT(
+		String key, double keyVersion, int type, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByK_LtKV_NotT(
+				key, keyVersion, type, start, end, orderByComparator);
+		}
+
+		key = Objects.toString(key, "");
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_TYPE_2_SQL);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindKey) {
+				queryPos.add(key);
+			}
+
+			queryPos.add(keyVersion);
+
+			queryPos.add(type);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByK_LtKV_NotT_PrevAndNext(
+			long patcherFixId, String key, double keyVersion, int type,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByK_LtKV_NotT_PrevAndNext(
+				patcherFixId, key, keyVersion, type, orderByComparator);
+		}
+
+		key = Objects.toString(key, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByK_LtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByK_LtKV_NotT_PrevAndNext(
+				session, patcherFix, key, keyVersion, type, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByK_LtKV_NotT_PrevAndNext(
+		Session session, PatcherFix patcherFix, String key, double keyVersion,
+		int type, OrderByComparator<PatcherFix> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_TYPE_2_SQL);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		if (bindKey) {
+			queryPos.add(key);
+		}
+
+		queryPos.add(keyVersion);
+
+		queryPos.add(type);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63; from the database.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 */
+	@Override
+	public void removeByK_LtKV_NotT(String key, double keyVersion, int type) {
+		for (PatcherFix patcherFix :
+				findByK_LtKV_NotT(
+					key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByK_LtKV_NotT(String key, double keyVersion, int type) {
+		key = Objects.toString(key, "");
+
+		FinderPath finderPath = _finderPathWithPaginationCountByK_LtKV_NotT;
+
+		Object[] finderArgs = new Object[] {key, keyVersion, type};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEYVERSION_2);
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_TYPE_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(keyVersion);
+
+				queryPos.add(type);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where key = &#63; and keyVersion &lt; &#63; and type &ne; &#63;.
+	 *
+	 * @param key the key
+	 * @param keyVersion the key version
+	 * @param type the type
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByK_LtKV_NotT(
+		String key, double keyVersion, int type) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByK_LtKV_NotT(key, keyVersion, type);
+		}
+
+		key = Objects.toString(key, "");
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_KEYVERSION_2);
+
+		sb.append(_FINDER_COLUMN_K_LTKV_NOTT_TYPE_2_SQL);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindKey) {
+				queryPos.add(key);
+			}
+
+			queryPos.add(keyVersion);
+
+			queryPos.add(type);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_K_LTKV_NOTT_KEY_2 =
+		"patcherFix.key = ? AND ";
+
+	private static final String _FINDER_COLUMN_K_LTKV_NOTT_KEY_3 =
+		"(patcherFix.key IS NULL OR patcherFix.key = '') AND ";
+
+	private static final String _FINDER_COLUMN_K_LTKV_NOTT_KEY_2_SQL =
+		"patcherFix.key_ = ? AND ";
+
+	private static final String _FINDER_COLUMN_K_LTKV_NOTT_KEY_3_SQL =
+		"(patcherFix.key_ IS NULL OR patcherFix.key_ = '') AND ";
+
+	private static final String _FINDER_COLUMN_K_LTKV_NOTT_KEYVERSION_2 =
+		"patcherFix.keyVersion < ? AND ";
+
+	private static final String _FINDER_COLUMN_K_LTKV_NOTT_TYPE_2 =
+		"patcherFix.type != ?";
+
+	private static final String _FINDER_COLUMN_K_LTKV_NOTT_TYPE_2_SQL =
+		"patcherFix.type_ != ?";
+
+	private FinderPath _finderPathWithPaginationFindByK_NotT_L;
+	private FinderPath _finderPathWithPaginationCountByK_NotT_L;
+
+	/**
+	 * Returns all the patcher fixes where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_NotT_L(
+		String key, int type, boolean latestFix) {
+
+		return findByK_NotT_L(
+			key, type, latestFix, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_NotT_L(
+		String key, int type, boolean latestFix, int start, int end) {
+
+		return findByK_NotT_L(key, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_NotT_L(
+		String key, int type, boolean latestFix, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByK_NotT_L(
+			key, type, latestFix, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByK_NotT_L(
+		String key, int type, boolean latestFix, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		key = Objects.toString(key, "");
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByK_NotT_L;
+		finderArgs = new Object[] {
+			key, type, latestFix, start, end, orderByComparator
+		};
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if (!key.equals(patcherFix.getKey()) ||
+						(type == patcherFix.getType()) ||
+						(latestFix != patcherFix.isLatestFix())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					5 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(5);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_LATESTFIX_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByK_NotT_L_First(
+			String key, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByK_NotT_L_First(
+			key, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("key=");
+		sb.append(key);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByK_NotT_L_First(
+		String key, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByK_NotT_L(
+			key, type, latestFix, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByK_NotT_L_Last(
+			String key, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByK_NotT_L_Last(
+			key, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("key=");
+		sb.append(key);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByK_NotT_L_Last(
+		String key, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByK_NotT_L(key, type, latestFix);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByK_NotT_L(
+			key, type, latestFix, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByK_NotT_L_PrevAndNext(
+			long patcherFixId, String key, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		key = Objects.toString(key, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByK_NotT_L_PrevAndNext(
+				session, patcherFix, key, type, latestFix, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByK_NotT_L_PrevAndNext(
+				session, patcherFix, key, type, latestFix, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByK_NotT_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, String key, int type,
+		boolean latestFix, OrderByComparator<PatcherFix> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_3);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_2);
+		}
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_TYPE_2);
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_LATESTFIX_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		if (bindKey) {
+			queryPos.add(key);
+		}
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_NotT_L(
+		String key, int type, boolean latestFix) {
+
+		return filterFindByK_NotT_L(
+			key, type, latestFix, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_NotT_L(
+		String key, int type, boolean latestFix, int start, int end) {
+
+		return filterFindByK_NotT_L(key, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByK_NotT_L(
+		String key, int type, boolean latestFix, int start, int end,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByK_NotT_L(
+				key, type, latestFix, start, end, orderByComparator);
+		}
+
+		key = Objects.toString(key, "");
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindKey) {
+				queryPos.add(key);
+			}
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByK_NotT_L_PrevAndNext(
+			long patcherFixId, String key, int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByK_NotT_L_PrevAndNext(
+				patcherFixId, key, type, latestFix, orderByComparator);
+		}
+
+		key = Objects.toString(key, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByK_NotT_L_PrevAndNext(
+				session, patcherFix, key, type, latestFix, orderByComparator,
+				true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByK_NotT_L_PrevAndNext(
+				session, patcherFix, key, type, latestFix, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByK_NotT_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, String key, int type,
+		boolean latestFix, OrderByComparator<PatcherFix> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		if (bindKey) {
+			queryPos.add(key);
+		}
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where key = &#63; and type &ne; &#63; and latestFix = &#63; from the database.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 */
+	@Override
+	public void removeByK_NotT_L(String key, int type, boolean latestFix) {
+		for (PatcherFix patcherFix :
+				findByK_NotT_L(
+					key, type, latestFix, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByK_NotT_L(String key, int type, boolean latestFix) {
+		key = Objects.toString(key, "");
+
+		FinderPath finderPath = _finderPathWithPaginationCountByK_NotT_L;
+
+		Object[] finderArgs = new Object[] {key, type, latestFix};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			boolean bindKey = false;
+
+			if (key.isEmpty()) {
+				sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_3);
+			}
+			else {
+				bindKey = true;
+
+				sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_2);
+			}
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_LATESTFIX_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindKey) {
+					queryPos.add(key);
+				}
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where key = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param key the key
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByK_NotT_L(String key, int type, boolean latestFix) {
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByK_NotT_L(key, type, latestFix);
+		}
+
+		key = Objects.toString(key, "");
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		boolean bindKey = false;
+
+		if (key.isEmpty()) {
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_3_SQL);
+		}
+		else {
+			bindKey = true;
+
+			sb.append(_FINDER_COLUMN_K_NOTT_L_KEY_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_K_NOTT_L_LATESTFIX_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindKey) {
+				queryPos.add(key);
+			}
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_K_NOTT_L_KEY_2 =
+		"patcherFix.key = ? AND ";
+
+	private static final String _FINDER_COLUMN_K_NOTT_L_KEY_3 =
+		"(patcherFix.key IS NULL OR patcherFix.key = '') AND ";
+
+	private static final String _FINDER_COLUMN_K_NOTT_L_KEY_2_SQL =
+		"patcherFix.key_ = ? AND ";
+
+	private static final String _FINDER_COLUMN_K_NOTT_L_KEY_3_SQL =
+		"(patcherFix.key_ IS NULL OR patcherFix.key_ = '') AND ";
+
+	private static final String _FINDER_COLUMN_K_NOTT_L_TYPE_2 =
+		"patcherFix.type != ? AND ";
+
+	private static final String _FINDER_COLUMN_K_NOTT_L_TYPE_2_SQL =
+		"patcherFix.type_ != ? AND ";
+
+	private static final String _FINDER_COLUMN_K_NOTT_L_LATESTFIX_2 =
+		"patcherFix.latestFix = ?";
+
+	private FinderPath _finderPathWithPaginationFindByLtM_T_N_S;
+	private FinderPath _finderPathWithPaginationCountByLtM_T_N_S;
+
+	/**
+	 * Returns all the patcher fixes where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status) {
+
+		return findByLtM_T_N_S(
+			modifiedDate, type, notified, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status, int start,
+		int end) {
+
+		return findByLtM_T_N_S(
+			modifiedDate, type, notified, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByLtM_T_N_S(
+			modifiedDate, type, notified, status, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByLtM_T_N_S;
+		finderArgs = new Object[] {
+			_getTime(modifiedDate), type, notified, status, start, end,
+			orderByComparator
+		};
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if ((modifiedDate.getTime() <= patcherFix.getModifiedDate(
+						).getTime()) || (type != patcherFix.getType()) ||
+						(notified != patcherFix.isNotified()) ||
+						(status != patcherFix.getStatus())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					6 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(6);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+			}
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindModifiedDate) {
+					queryPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				queryPos.add(type);
+
+				queryPos.add(notified);
+
+				queryPos.add(status);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByLtM_T_N_S_First(
+			Date modifiedDate, int type, boolean notified, int status,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByLtM_T_N_S_First(
+			modifiedDate, type, notified, status, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("modifiedDate<");
+		sb.append(modifiedDate);
+
+		sb.append(", type=");
+		sb.append(type);
+
+		sb.append(", notified=");
+		sb.append(notified);
+
+		sb.append(", status=");
+		sb.append(status);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByLtM_T_N_S_First(
+		Date modifiedDate, int type, boolean notified, int status,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByLtM_T_N_S(
+			modifiedDate, type, notified, status, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByLtM_T_N_S_Last(
+			Date modifiedDate, int type, boolean notified, int status,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByLtM_T_N_S_Last(
+			modifiedDate, type, notified, status, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("modifiedDate<");
+		sb.append(modifiedDate);
+
+		sb.append(", type=");
+		sb.append(type);
+
+		sb.append(", notified=");
+		sb.append(notified);
+
+		sb.append(", status=");
+		sb.append(status);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByLtM_T_N_S_Last(
+		Date modifiedDate, int type, boolean notified, int status,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByLtM_T_N_S(modifiedDate, type, notified, status);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByLtM_T_N_S(
+			modifiedDate, type, notified, status, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByLtM_T_N_S_PrevAndNext(
+			long patcherFixId, Date modifiedDate, int type, boolean notified,
+			int status, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByLtM_T_N_S_PrevAndNext(
+				session, patcherFix, modifiedDate, type, notified, status,
+				orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByLtM_T_N_S_PrevAndNext(
+				session, patcherFix, modifiedDate, type, notified, status,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByLtM_T_N_S_PrevAndNext(
+		Session session, PatcherFix patcherFix, Date modifiedDate, int type,
+		boolean notified, int status,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+		}
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_2);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		if (bindModifiedDate) {
+			queryPos.add(new Timestamp(modifiedDate.getTime()));
+		}
+
+		queryPos.add(type);
+
+		queryPos.add(notified);
+
+		queryPos.add(status);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status) {
+
+		return filterFindByLtM_T_N_S(
+			modifiedDate, type, notified, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status, int start,
+		int end) {
+
+		return filterFindByLtM_T_N_S(
+			modifiedDate, type, notified, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByLtM_T_N_S(
+				modifiedDate, type, notified, status, start, end,
+				orderByComparator);
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(7);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+		}
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindModifiedDate) {
+				queryPos.add(new Timestamp(modifiedDate.getTime()));
+			}
+
+			queryPos.add(type);
+
+			queryPos.add(notified);
+
+			queryPos.add(status);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByLtM_T_N_S_PrevAndNext(
+			long patcherFixId, Date modifiedDate, int type, boolean notified,
+			int status, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByLtM_T_N_S_PrevAndNext(
+				patcherFixId, modifiedDate, type, notified, status,
+				orderByComparator);
+		}
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByLtM_T_N_S_PrevAndNext(
+				session, patcherFix, modifiedDate, type, notified, status,
+				orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByLtM_T_N_S_PrevAndNext(
+				session, patcherFix, modifiedDate, type, notified, status,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByLtM_T_N_S_PrevAndNext(
+		Session session, PatcherFix patcherFix, Date modifiedDate, int type,
+		boolean notified, int status,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				8 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(7);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+		}
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		if (bindModifiedDate) {
+			queryPos.add(new Timestamp(modifiedDate.getTime()));
+		}
+
+		queryPos.add(type);
+
+		queryPos.add(notified);
+
+		queryPos.add(status);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status) {
+
+		return filterFindByLtM_T_N_S(
+			modifiedDate, types, notified, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status, int start,
+		int end) {
+
+		return filterFindByLtM_T_N_S(
+			modifiedDate, types, notified, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByLtM_T_N_S(
+				modifiedDate, types, notified, status, start, end,
+				orderByComparator);
+		}
+
+		if (types == null) {
+			types = new int[0];
+		}
+		else if (types.length > 1) {
+			types = ArrayUtil.sortedUnique(types);
+		}
+
+		StringBundler sb = new StringBundler();
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+		}
+
+		if (types.length > 0) {
+			sb.append("(");
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_7_SQL);
+
+			sb.append(StringUtil.merge(types));
+
+			sb.append(")");
+
+			sb.append(")");
+
+			sb.append(WHERE_AND);
+		}
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+		sb.setStringAt(
+			removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindModifiedDate) {
+				queryPos.add(new Timestamp(modifiedDate.getTime()));
+			}
+
+			queryPos.add(notified);
+
+			queryPos.add(status);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status) {
+
+		return findByLtM_T_N_S(
+			modifiedDate, types, notified, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status, int start,
+		int end) {
+
+		return findByLtM_T_N_S(
+			modifiedDate, types, notified, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByLtM_T_N_S(
+			modifiedDate, types, notified, status, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status, int start,
+		int end, OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		if (types == null) {
+			types = new int[0];
+		}
+		else if (types.length > 1) {
+			types = ArrayUtil.sortedUnique(types);
+		}
+
+		if (types.length == 1) {
+			return findByLtM_T_N_S(
+				modifiedDate, types[0], notified, status, start, end,
+				orderByComparator);
+		}
+
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderArgs = new Object[] {
+					_getTime(modifiedDate), StringUtil.merge(types), notified,
+					status
+				};
+			}
+		}
+		else if (useFinderCache) {
+			finderArgs = new Object[] {
+				_getTime(modifiedDate), StringUtil.merge(types), notified,
+				status, start, end, orderByComparator
+			};
+		}
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				_finderPathWithPaginationFindByLtM_T_N_S, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if ((modifiedDate.getTime() <= patcherFix.getModifiedDate(
+						).getTime()) ||
+						!ArrayUtil.contains(types, patcherFix.getType()) ||
+						(notified != patcherFix.isNotified()) ||
+						(status != patcherFix.getStatus())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = new StringBundler();
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+			}
+
+			if (types.length > 0) {
+				sb.append("(");
+
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_7);
+
+				sb.append(StringUtil.merge(types));
+
+				sb.append(")");
+
+				sb.append(")");
+
+				sb.append(WHERE_AND);
+			}
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+			sb.setStringAt(
+				removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindModifiedDate) {
+					queryPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				queryPos.add(notified);
+
+				queryPos.add(status);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(
+						_finderPathWithPaginationFindByLtM_T_N_S, finderArgs,
+						list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Removes all the patcher fixes where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63; from the database.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 */
+	@Override
+	public void removeByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status) {
+
+		for (PatcherFix patcherFix :
+				findByLtM_T_N_S(
+					modifiedDate, type, notified, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status) {
+
+		FinderPath finderPath = _finderPathWithPaginationCountByLtM_T_N_S;
+
+		Object[] finderArgs = new Object[] {
+			_getTime(modifiedDate), type, notified, status
+		};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(5);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+			}
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindModifiedDate) {
+					queryPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				queryPos.add(type);
+
+				queryPos.add(notified);
+
+				queryPos.add(status);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status) {
+
+		if (types == null) {
+			types = new int[0];
+		}
+		else if (types.length > 1) {
+			types = ArrayUtil.sortedUnique(types);
+		}
+
+		Object[] finderArgs = new Object[] {
+			_getTime(modifiedDate), StringUtil.merge(types), notified, status
+		};
+
+		Long count = (Long)finderCache.getResult(
+			_finderPathWithPaginationCountByLtM_T_N_S, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler();
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			boolean bindModifiedDate = false;
+
+			if (modifiedDate == null) {
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+			}
+			else {
+				bindModifiedDate = true;
+
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+			}
+
+			if (types.length > 0) {
+				sb.append("(");
+
+				sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_7);
+
+				sb.append(StringUtil.merge(types));
+
+				sb.append(")");
+
+				sb.append(")");
+
+				sb.append(WHERE_AND);
+			}
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+			sb.setStringAt(
+				removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindModifiedDate) {
+					queryPos.add(new Timestamp(modifiedDate.getTime()));
+				}
+
+				queryPos.add(notified);
+
+				queryPos.add(status);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(
+					_finderPathWithPaginationCountByLtM_T_N_S, finderArgs,
+					count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param type the type
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByLtM_T_N_S(
+		Date modifiedDate, int type, boolean notified, int status) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByLtM_T_N_S(modifiedDate, type, notified, status);
+		}
+
+		StringBundler sb = new StringBundler(5);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+		}
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindModifiedDate) {
+				queryPos.add(new Timestamp(modifiedDate.getTime()));
+			}
+
+			queryPos.add(type);
+
+			queryPos.add(notified);
+
+			queryPos.add(status);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where modifiedDate &lt; &#63; and type = any &#63; and notified = &#63; and status = &#63;.
+	 *
+	 * @param modifiedDate the modified date
+	 * @param types the types
+	 * @param notified the notified
+	 * @param status the status
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByLtM_T_N_S(
+		Date modifiedDate, int[] types, boolean notified, int status) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByLtM_T_N_S(modifiedDate, types, notified, status);
+		}
+
+		if (types == null) {
+			types = new int[0];
+		}
+		else if (types.length > 1) {
+			types = ArrayUtil.sortedUnique(types);
+		}
+
+		StringBundler sb = new StringBundler();
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		boolean bindModifiedDate = false;
+
+		if (modifiedDate == null) {
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1);
+		}
+		else {
+			bindModifiedDate = true;
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2);
+		}
+
+		if (types.length > 0) {
+			sb.append("(");
+
+			sb.append(_FINDER_COLUMN_LTM_T_N_S_TYPE_7_SQL);
+
+			sb.append(StringUtil.merge(types));
+
+			sb.append(")");
+
+			sb.append(")");
+
+			sb.append(WHERE_AND);
+		}
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2);
+
+		sb.append(_FINDER_COLUMN_LTM_T_N_S_STATUS_2);
+
+		sb.setStringAt(
+			removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindModifiedDate) {
+				queryPos.add(new Timestamp(modifiedDate.getTime()));
+			}
+
+			queryPos.add(notified);
+
+			queryPos.add(status);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_1 =
+		"patcherFix.modifiedDate IS NULL AND ";
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_MODIFIEDDATE_2 =
+		"patcherFix.modifiedDate < ? AND ";
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_TYPE_2 =
+		"patcherFix.type = ? AND ";
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_TYPE_7 =
+		"patcherFix.type IN (";
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_TYPE_2_SQL =
+		"patcherFix.type_ = ? AND ";
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_TYPE_7_SQL =
+		"patcherFix.type_ IN (";
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_NOTIFIED_2 =
+		"patcherFix.notified = ? AND ";
+
+	private static final String _FINDER_COLUMN_LTM_T_N_S_STATUS_2 =
+		"patcherFix.status = ?";
+
+	private FinderPath _finderPathWithPaginationFindByP_N_NotT_L;
+	private FinderPath _finderPathWithPaginationCountByP_N_NotT_L;
+
+	/**
+	 * Returns all the patcher fixes where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type,
+		boolean latestFix) {
+
+		return findByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type, boolean latestFix,
+		int start, int end) {
+
+		return findByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type, boolean latestFix,
+		int start, int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type, boolean latestFix,
+		int start, int end, OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		name = Objects.toString(name, "");
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByP_N_NotT_L;
+		finderArgs = new Object[] {
+			patcherProjectVersionId, name, type, latestFix, start, end,
+			orderByComparator
+		};
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if ((patcherProjectVersionId !=
+							patcherFix.getPatcherProjectVersionId()) ||
+						!name.equals(patcherFix.getName()) ||
+						(type == patcherFix.getType()) ||
+						(latestFix != patcherFix.isLatestFix())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					6 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(6);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+			boolean bindName = false;
+
+			if (name.isEmpty()) {
+				sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_3);
+			}
+			else {
+				bindName = true;
+
+				sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_2);
+			}
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_LATESTFIX_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				if (bindName) {
+					queryPos.add(name);
+				}
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_N_NotT_L_First(
+			long patcherProjectVersionId, String name, int type,
+			boolean latestFix, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_N_NotT_L_First(
+			patcherProjectVersionId, name, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", name=");
+		sb.append(name);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_N_NotT_L_First(
+		long patcherProjectVersionId, String name, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix, 0, 1,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_N_NotT_L_Last(
+			long patcherProjectVersionId, String name, int type,
+			boolean latestFix, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_N_NotT_L_Last(
+			patcherProjectVersionId, name, type, latestFix, orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", name=");
+		sb.append(name);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_N_NotT_L_Last(
+		long patcherProjectVersionId, String name, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByP_N_NotT_L_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, String name,
+			int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		name = Objects.toString(name, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByP_N_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, name, type,
+				latestFix, orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByP_N_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, name, type,
+				latestFix, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByP_N_NotT_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		String name, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		boolean bindName = false;
+
+		if (name.isEmpty()) {
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_2);
+		}
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_TYPE_2);
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_LATESTFIX_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(patcherProjectVersionId);
+
+		if (bindName) {
+			queryPos.add(name);
+		}
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type,
+		boolean latestFix) {
+
+		return filterFindByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type, boolean latestFix,
+		int start, int end) {
+
+		return filterFindByP_N_NotT_L(
+			patcherProjectVersionId, name, type, latestFix, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type, boolean latestFix,
+		int start, int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_N_NotT_L(
+				patcherProjectVersionId, name, type, latestFix, start, end,
+				orderByComparator);
+		}
+
+		name = Objects.toString(name, "");
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(7);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		boolean bindName = false;
+
+		if (name.isEmpty()) {
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_2);
+		}
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			if (bindName) {
+				queryPos.add(name);
+			}
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByP_N_NotT_L_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, String name,
+			int type, boolean latestFix,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_N_NotT_L_PrevAndNext(
+				patcherFixId, patcherProjectVersionId, name, type, latestFix,
+				orderByComparator);
+		}
+
+		name = Objects.toString(name, "");
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByP_N_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, name, type,
+				latestFix, orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByP_N_NotT_L_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, name, type,
+				latestFix, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByP_N_NotT_L_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		String name, int type, boolean latestFix,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				8 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(7);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		boolean bindName = false;
+
+		if (name.isEmpty()) {
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_2);
+		}
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_LATESTFIX_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(patcherProjectVersionId);
+
+		if (bindName) {
+			queryPos.add(name);
+		}
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63; from the database.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 */
+	@Override
+	public void removeByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type,
+		boolean latestFix) {
+
+		for (PatcherFix patcherFix :
+				findByP_N_NotT_L(
+					patcherProjectVersionId, name, type, latestFix,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type,
+		boolean latestFix) {
+
+		name = Objects.toString(name, "");
+
+		FinderPath finderPath = _finderPathWithPaginationCountByP_N_NotT_L;
+
+		Object[] finderArgs = new Object[] {
+			patcherProjectVersionId, name, type, latestFix
+		};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(5);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+			boolean bindName = false;
+
+			if (name.isEmpty()) {
+				sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_3);
+			}
+			else {
+				bindName = true;
+
+				sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_2);
+			}
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_LATESTFIX_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				if (bindName) {
+					queryPos.add(name);
+				}
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and name = &#63; and type &ne; &#63; and latestFix = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param name the name
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByP_N_NotT_L(
+		long patcherProjectVersionId, String name, int type,
+		boolean latestFix) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByP_N_NotT_L(
+				patcherProjectVersionId, name, type, latestFix);
+		}
+
+		name = Objects.toString(name, "");
+
+		StringBundler sb = new StringBundler(5);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_PATCHERPROJECTVERSIONID_2);
+
+		boolean bindName = false;
+
+		if (name.isEmpty()) {
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			sb.append(_FINDER_COLUMN_P_N_NOTT_L_NAME_2);
+		}
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_N_NOTT_L_LATESTFIX_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			if (bindName) {
+				queryPos.add(name);
+			}
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String
+		_FINDER_COLUMN_P_N_NOTT_L_PATCHERPROJECTVERSIONID_2 =
+			"patcherFix.patcherProjectVersionId = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_N_NOTT_L_NAME_2 =
+		"CAST_CLOB_TEXT(patcherFix.name) = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_N_NOTT_L_NAME_3 =
+		"(patcherFix.name IS NULL OR CAST_CLOB_TEXT(patcherFix.name) = '') AND ";
+
+	private static final String _FINDER_COLUMN_P_N_NOTT_L_TYPE_2 =
+		"patcherFix.type != ? AND ";
+
+	private static final String _FINDER_COLUMN_P_N_NOTT_L_TYPE_2_SQL =
+		"patcherFix.type_ != ? AND ";
+
+	private static final String _FINDER_COLUMN_P_N_NOTT_L_LATESTFIX_2 =
+		"patcherFix.latestFix = ?";
+
+	private FinderPath _finderPathWithPaginationFindByP_NotT_L_S;
+	private FinderPath _finderPathWithPaginationCountByP_NotT_L_S;
+
+	/**
+	 * Returns all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @return the matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status) {
+
+		return findByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status,
+		int start, int end) {
+
+		return findByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status,
+		int start, int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		return findByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status, start, end,
+			orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher fixes
+	 */
+	@Override
+	public List<PatcherFix> findByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status,
+		int start, int end, OrderByComparator<PatcherFix> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByP_NotT_L_S;
+		finderArgs = new Object[] {
+			patcherProjectVersionId, type, latestFix, status, start, end,
+			orderByComparator
+		};
+
+		List<PatcherFix> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherFix>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherFix patcherFix : list) {
+					if ((patcherProjectVersionId !=
+							patcherFix.getPatcherProjectVersionId()) ||
+						(type == patcherFix.getType()) ||
+						(latestFix != patcherFix.isLatestFix()) ||
+						(status != patcherFix.getStatus())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					6 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(6);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_PATCHERPROJECTVERSIONID_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_LATESTFIX_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_STATUS_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				queryPos.add(status);
+
+				list = (List<PatcherFix>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_NotT_L_S_First(
+			long patcherProjectVersionId, int type, boolean latestFix,
+			int status, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_NotT_L_S_First(
+			patcherProjectVersionId, type, latestFix, status,
+			orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append(", status=");
+		sb.append(status);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_NotT_L_S_First(
+		long patcherProjectVersionId, int type, boolean latestFix, int status,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		List<PatcherFix> list = findByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status, 0, 1,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix
+	 * @throws NoSuchPatcherFixException if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix findByP_NotT_L_S_Last(
+			long patcherProjectVersionId, int type, boolean latestFix,
+			int status, OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = fetchByP_NotT_L_S_Last(
+			patcherProjectVersionId, type, latestFix, status,
+			orderByComparator);
+
+		if (patcherFix != null) {
+			return patcherFix;
+		}
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("patcherProjectVersionId=");
+		sb.append(patcherProjectVersionId);
+
+		sb.append(", type!=");
+		sb.append(type);
+
+		sb.append(", latestFix=");
+		sb.append(latestFix);
+
+		sb.append(", status=");
+		sb.append(status);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherFixException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher fix, or <code>null</code> if a matching patcher fix could not be found
+	 */
+	@Override
+	public PatcherFix fetchByP_NotT_L_S_Last(
+		long patcherProjectVersionId, int type, boolean latestFix, int status,
+		OrderByComparator<PatcherFix> orderByComparator) {
+
+		int count = countByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherFix> list = findByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status, count - 1, count,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] findByP_NotT_L_S_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, int type,
+			boolean latestFix, int status,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = getByP_NotT_L_S_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				status, orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = getByP_NotT_L_S_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				status, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix getByP_NotT_L_S_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		int type, boolean latestFix, int status,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(6);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_TYPE_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_LATESTFIX_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_STATUS_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherFixModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(patcherProjectVersionId);
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		queryPos.add(status);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @return the matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status) {
+
+		return filterFindByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @return the range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status,
+		int start, int end) {
+
+		return filterFindByP_NotT_L_S(
+			patcherProjectVersionId, type, latestFix, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher fixes that the user has permissions to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherFixModelImpl</code>.
+	 * </p>
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param start the lower bound of the range of patcher fixes
+	 * @param end the upper bound of the range of patcher fixes (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public List<PatcherFix> filterFindByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status,
+		int start, int end, OrderByComparator<PatcherFix> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_NotT_L_S(
+				patcherProjectVersionId, type, latestFix, status, start, end,
+				orderByComparator);
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(7);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_LATESTFIX_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_STATUS_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			queryPos.add(status);
+
+			return (List<PatcherFix>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the patcher fixes before and after the current patcher fix in the ordered set of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherFixId the primary key of the current patcher fix
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher fix
+	 * @throws NoSuchPatcherFixException if a patcher fix with the primary key could not be found
+	 */
+	@Override
+	public PatcherFix[] filterFindByP_NotT_L_S_PrevAndNext(
+			long patcherFixId, long patcherProjectVersionId, int type,
+			boolean latestFix, int status,
+			OrderByComparator<PatcherFix> orderByComparator)
+		throws NoSuchPatcherFixException {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByP_NotT_L_S_PrevAndNext(
+				patcherFixId, patcherProjectVersionId, type, latestFix, status,
+				orderByComparator);
+		}
+
+		PatcherFix patcherFix = findByPrimaryKey(patcherFixId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherFix[] array = new PatcherFixImpl[3];
+
+			array[0] = filterGetByP_NotT_L_S_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				status, orderByComparator, true);
+
+			array[1] = patcherFix;
+
+			array[2] = filterGetByP_NotT_L_S_PrevAndNext(
+				session, patcherFix, patcherProjectVersionId, type, latestFix,
+				status, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherFix filterGetByP_NotT_L_S_PrevAndNext(
+		Session session, PatcherFix patcherFix, long patcherProjectVersionId,
+		int type, boolean latestFix, int status,
+		OrderByComparator<PatcherFix> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				8 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(7);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_WHERE);
+		}
+		else {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_LATESTFIX_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_STATUS_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(PatcherFixModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, PatcherFixImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, PatcherFixImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(patcherProjectVersionId);
+
+		queryPos.add(type);
+
+		queryPos.add(latestFix);
+
+		queryPos.add(status);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(patcherFix)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherFix> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63; from the database.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 */
+	@Override
+	public void removeByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status) {
+
+		for (PatcherFix patcherFix :
+				findByP_NotT_L_S(
+					patcherProjectVersionId, type, latestFix, status,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			remove(patcherFix);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher fixes where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @return the number of matching patcher fixes
+	 */
+	@Override
+	public int countByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status) {
+
+		FinderPath finderPath = _finderPathWithPaginationCountByP_NotT_L_S;
+
+		Object[] finderArgs = new Object[] {
+			patcherProjectVersionId, type, latestFix, status
+		};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(5);
+
+			sb.append(_SQL_COUNT_PATCHERFIX_WHERE);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_PATCHERPROJECTVERSIONID_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_TYPE_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_LATESTFIX_2);
+
+			sb.append(_FINDER_COLUMN_P_NOTT_L_S_STATUS_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(patcherProjectVersionId);
+
+				queryPos.add(type);
+
+				queryPos.add(latestFix);
+
+				queryPos.add(status);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of patcher fixes that the user has permission to view where patcherProjectVersionId = &#63; and type &ne; &#63; and latestFix = &#63; and status = &#63;.
+	 *
+	 * @param patcherProjectVersionId the patcher project version ID
+	 * @param type the type
+	 * @param latestFix the latest fix
+	 * @param status the status
+	 * @return the number of matching patcher fixes that the user has permission to view
+	 */
+	@Override
+	public int filterCountByP_NotT_L_S(
+		long patcherProjectVersionId, int type, boolean latestFix, int status) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByP_NotT_L_S(
+				patcherProjectVersionId, type, latestFix, status);
+		}
+
+		StringBundler sb = new StringBundler(5);
+
+		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_PATCHERPROJECTVERSIONID_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_TYPE_2_SQL);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_LATESTFIX_2);
+
+		sb.append(_FINDER_COLUMN_P_NOTT_L_S_STATUS_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), PatcherFix.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(patcherProjectVersionId);
+
+			queryPos.add(type);
+
+			queryPos.add(latestFix);
+
+			queryPos.add(status);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String
+		_FINDER_COLUMN_P_NOTT_L_S_PATCHERPROJECTVERSIONID_2 =
+			"patcherFix.patcherProjectVersionId = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_NOTT_L_S_TYPE_2 =
+		"patcherFix.type != ? AND ";
+
+	private static final String _FINDER_COLUMN_P_NOTT_L_S_TYPE_2_SQL =
+		"patcherFix.type_ != ? AND ";
+
+	private static final String _FINDER_COLUMN_P_NOTT_L_S_LATESTFIX_2 =
+		"patcherFix.latestFix = ? AND ";
+
+	private static final String _FINDER_COLUMN_P_NOTT_L_S_STATUS_2 =
+		"patcherFix.status = ?";
 
 	public PatcherFixPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
@@ -360,7 +10403,8 @@ public class PatcherFixPersistenceImpl
 			closeSession(session);
 		}
 
-		entityCache.putResult(PatcherFixImpl.class, patcherFix, false, true);
+		entityCache.putResult(
+			PatcherFixImpl.class, patcherFixModelImpl, false, true);
 
 		if (isNew) {
 			patcherFix.setNew(false);
@@ -1304,6 +11348,193 @@ public class PatcherFixPersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
 			new String[0], new String[0], false);
 
+		_finderPathWithPaginationFindByPatcherProjectVersionId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByPatcherProjectVersionId",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"patcherProjectVersionId"}, true);
+
+		_finderPathWithoutPaginationFindByPatcherProjectVersionId =
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+				"findByPatcherProjectVersionId",
+				new String[] {Long.class.getName()},
+				new String[] {"patcherProjectVersionId"}, true);
+
+		_finderPathCountByPatcherProjectVersionId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByPatcherProjectVersionId",
+			new String[] {Long.class.getName()},
+			new String[] {"patcherProjectVersionId"}, false);
+
+		_finderPathWithPaginationFindByP_T_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_T_L",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Boolean.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"patcherProjectVersionId", "type_", "latestFix"},
+			true);
+
+		_finderPathWithoutPaginationFindByP_T_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByP_T_L",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Boolean.class.getName()
+			},
+			new String[] {"patcherProjectVersionId", "type_", "latestFix"},
+			true);
+
+		_finderPathCountByP_T_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_T_L",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Boolean.class.getName()
+			},
+			new String[] {"patcherProjectVersionId", "type_", "latestFix"},
+			false);
+
+		_finderPathWithPaginationFindByP_NotT_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_NotT_L",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Boolean.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"patcherProjectVersionId", "type_", "latestFix"},
+			true);
+
+		_finderPathWithPaginationCountByP_NotT_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByP_NotT_L",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Boolean.class.getName()
+			},
+			new String[] {"patcherProjectVersionId", "type_", "latestFix"},
+			false);
+
+		_finderPathWithPaginationFindByK_GtKV_NotT = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByK_GtKV_NotT",
+			new String[] {
+				String.class.getName(), Double.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"key_", "keyVersion", "type_"}, true);
+
+		_finderPathWithPaginationCountByK_GtKV_NotT = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByK_GtKV_NotT",
+			new String[] {
+				String.class.getName(), Double.class.getName(),
+				Integer.class.getName()
+			},
+			new String[] {"key_", "keyVersion", "type_"}, false);
+
+		_finderPathWithPaginationFindByK_LtKV_NotT = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByK_LtKV_NotT",
+			new String[] {
+				String.class.getName(), Double.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"key_", "keyVersion", "type_"}, true);
+
+		_finderPathWithPaginationCountByK_LtKV_NotT = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByK_LtKV_NotT",
+			new String[] {
+				String.class.getName(), Double.class.getName(),
+				Integer.class.getName()
+			},
+			new String[] {"key_", "keyVersion", "type_"}, false);
+
+		_finderPathWithPaginationFindByK_NotT_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByK_NotT_L",
+			new String[] {
+				String.class.getName(), Integer.class.getName(),
+				Boolean.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"key_", "type_", "latestFix"}, true);
+
+		_finderPathWithPaginationCountByK_NotT_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByK_NotT_L",
+			new String[] {
+				String.class.getName(), Integer.class.getName(),
+				Boolean.class.getName()
+			},
+			new String[] {"key_", "type_", "latestFix"}, false);
+
+		_finderPathWithPaginationFindByLtM_T_N_S = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByLtM_T_N_S",
+			new String[] {
+				Date.class.getName(), Integer.class.getName(),
+				Boolean.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"modifiedDate", "type_", "notified", "status"}, true);
+
+		_finderPathWithPaginationCountByLtM_T_N_S = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtM_T_N_S",
+			new String[] {
+				Date.class.getName(), Integer.class.getName(),
+				Boolean.class.getName(), Integer.class.getName()
+			},
+			new String[] {"modifiedDate", "type_", "notified", "status"},
+			false);
+
+		_finderPathWithPaginationFindByP_N_NotT_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_N_NotT_L",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Boolean.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {
+				"patcherProjectVersionId", "name", "type_", "latestFix"
+			},
+			true);
+
+		_finderPathWithPaginationCountByP_N_NotT_L = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByP_N_NotT_L",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				Integer.class.getName(), Boolean.class.getName()
+			},
+			new String[] {
+				"patcherProjectVersionId", "name", "type_", "latestFix"
+			},
+			false);
+
+		_finderPathWithPaginationFindByP_NotT_L_S = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_NotT_L_S",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Boolean.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {
+				"patcherProjectVersionId", "type_", "latestFix", "status"
+			},
+			true);
+
+		_finderPathWithPaginationCountByP_NotT_L_S = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByP_NotT_L_S",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Boolean.class.getName(), Integer.class.getName()
+			},
+			new String[] {
+				"patcherProjectVersionId", "type_", "latestFix", "status"
+			},
+			false);
+
 		PatcherFixUtil.setPersistence(this);
 	}
 
@@ -1356,16 +11587,56 @@ public class PatcherFixPersistenceImpl
 	protected TableMapper<PatcherFix, PatcherFixPack>
 		patcherFixToPatcherFixPackTableMapper;
 
+	private static Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_PATCHERFIX =
 		"SELECT patcherFix FROM PatcherFix patcherFix";
+
+	private static final String _SQL_SELECT_PATCHERFIX_WHERE =
+		"SELECT patcherFix FROM PatcherFix patcherFix WHERE ";
 
 	private static final String _SQL_COUNT_PATCHERFIX =
 		"SELECT COUNT(patcherFix) FROM PatcherFix patcherFix";
 
+	private static final String _SQL_COUNT_PATCHERFIX_WHERE =
+		"SELECT COUNT(patcherFix) FROM PatcherFix patcherFix WHERE ";
+
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN =
+		"patcherFix.patcherFixId";
+
+	private static final String _FILTER_SQL_SELECT_PATCHERFIX_WHERE =
+		"SELECT DISTINCT {patcherFix.*} FROM PatcherFix patcherFix WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_1 =
+			"SELECT {PatcherFix.*} FROM (SELECT DISTINCT patcherFix.patcherFixId FROM PatcherFix patcherFix WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_PATCHERFIX_NO_INLINE_DISTINCT_WHERE_2 =
+			") TEMP_TABLE INNER JOIN PatcherFix ON TEMP_TABLE.patcherFixId = PatcherFix.patcherFixId";
+
+	private static final String _FILTER_SQL_COUNT_PATCHERFIX_WHERE =
+		"SELECT COUNT(DISTINCT patcherFix.patcherFixId) AS COUNT_VALUE FROM PatcherFix patcherFix WHERE ";
+
+	private static final String _FILTER_ENTITY_ALIAS = "patcherFix";
+
+	private static final String _FILTER_ENTITY_TABLE = "PatcherFix";
+
 	private static final String _ORDER_BY_ENTITY_ALIAS = "patcherFix.";
+
+	private static final String _ORDER_BY_ENTITY_TABLE = "PatcherFix.";
 
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
 		"No PatcherFix exists with the primary key ";
+
+	private static final String _NO_SUCH_ENTITY_WITH_KEY =
+		"No PatcherFix exists with the key {";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PatcherFixPersistenceImpl.class);

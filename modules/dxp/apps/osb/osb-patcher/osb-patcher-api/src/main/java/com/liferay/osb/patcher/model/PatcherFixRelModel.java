@@ -6,6 +6,7 @@
 package com.liferay.osb.patcher.model;
 
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ShardedModel;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -21,7 +22,8 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface PatcherFixRelModel extends BaseModel<PatcherFixRel> {
+public interface PatcherFixRelModel
+	extends BaseModel<PatcherFixRel>, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -56,6 +58,22 @@ public interface PatcherFixRelModel extends BaseModel<PatcherFixRel> {
 	 * @param patcherFixRelId the patcher fix rel ID of this patcher fix rel
 	 */
 	public void setPatcherFixRelId(long patcherFixRelId);
+
+	/**
+	 * Returns the company ID of this patcher fix rel.
+	 *
+	 * @return the company ID of this patcher fix rel
+	 */
+	@Override
+	public long getCompanyId();
+
+	/**
+	 * Sets the company ID of this patcher fix rel.
+	 *
+	 * @param companyId the company ID of this patcher fix rel
+	 */
+	@Override
+	public void setCompanyId(long companyId);
 
 	/**
 	 * Returns the child patcher fix ID of this patcher fix rel.

@@ -112,6 +112,8 @@ public class PatcherFixRelPersistenceTest {
 
 		PatcherFixRel newPatcherFixRel = _persistence.create(pk);
 
+		newPatcherFixRel.setCompanyId(RandomTestUtil.nextLong());
+
 		newPatcherFixRel.setChildPatcherFixId(RandomTestUtil.nextLong());
 
 		newPatcherFixRel.setParentPatcherFixId(RandomTestUtil.nextLong());
@@ -125,11 +127,28 @@ public class PatcherFixRelPersistenceTest {
 			existingPatcherFixRel.getPatcherFixRelId(),
 			newPatcherFixRel.getPatcherFixRelId());
 		Assert.assertEquals(
+			existingPatcherFixRel.getCompanyId(),
+			newPatcherFixRel.getCompanyId());
+		Assert.assertEquals(
 			existingPatcherFixRel.getChildPatcherFixId(),
 			newPatcherFixRel.getChildPatcherFixId());
 		Assert.assertEquals(
 			existingPatcherFixRel.getParentPatcherFixId(),
 			newPatcherFixRel.getParentPatcherFixId());
+	}
+
+	@Test
+	public void testCountByChildPatcherFixId() throws Exception {
+		_persistence.countByChildPatcherFixId(RandomTestUtil.nextLong());
+
+		_persistence.countByChildPatcherFixId(0L);
+	}
+
+	@Test
+	public void testCountByParentPatcherFixId() throws Exception {
+		_persistence.countByParentPatcherFixId(RandomTestUtil.nextLong());
+
+		_persistence.countByParentPatcherFixId(0L);
 	}
 
 	@Test
@@ -157,8 +176,8 @@ public class PatcherFixRelPersistenceTest {
 
 	protected OrderByComparator<PatcherFixRel> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"PatcherFixRel", "patcherFixRelId", true, "childPatcherFixId", true,
-			"parentPatcherFixId", true);
+			"PatcherFixRel", "patcherFixRelId", true, "companyId", true,
+			"childPatcherFixId", true, "parentPatcherFixId", true);
 	}
 
 	@Test
@@ -378,6 +397,8 @@ public class PatcherFixRelPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		PatcherFixRel patcherFixRel = _persistence.create(pk);
+
+		patcherFixRel.setCompanyId(RandomTestUtil.nextLong());
 
 		patcherFixRel.setChildPatcherFixId(RandomTestUtil.nextLong());
 

@@ -141,6 +141,9 @@ public class PatcherBuildModelImpl
 	public static final String ORDER_BY_SQL =
 		" ORDER BY PatcherBuild.patcherBuildId ASC";
 
+	public static final String ORDER_BY_SQL_INLINE_DISTINCT =
+		" ORDER BY patcherBuild.patcherBuildId ASC";
+
 	public static final String DATA_SOURCE = "liferayDataSource";
 
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
@@ -151,20 +154,110 @@ public class PatcherBuildModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KEY_COLUMN_BITMASK = 1L;
+	public static final long ACCOUNTENTRYCODE_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KEYVERSION_COLUMN_BITMASK = 2L;
+	public static final long CHILDBUILD_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long KEY_COLUMN_BITMASK = 4L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long KEYVERSION_COLUMN_BITMASK = 8L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long LATESTKEYBUILD_COLUMN_BITMASK = 16L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long LATESTSUPPORTTICKETBUILD_COLUMN_BITMASK = 32L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NAME_COLUMN_BITMASK = 128L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NOTIFIED_COLUMN_BITMASK = 256L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERACCOUNTID_COLUMN_BITMASK = 512L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERFIXID_COLUMN_BITMASK = 1024L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERPRODUCTVERSIONID_COLUMN_BITMASK = 2048L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERPROJECTVERSIONID_COLUMN_BITMASK = 4096L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long STATUS_COLUMN_BITMASK = 8192L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long SUPPORTTICKET_COLUMN_BITMASK = 16384L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long SUPPORTTICKETVERSION_COLUMN_BITMASK = 32768L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long TYPE_COLUMN_BITMASK = 65536L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PATCHERBUILDID_COLUMN_BITMASK = 4L;
+	public static final long PATCHERBUILDID_COLUMN_BITMASK = 131072L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -640,6 +733,15 @@ public class PatcherBuildModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public Date getOriginalModifiedDate() {
+		return getColumnOriginalValue("modifiedDate");
+	}
+
 	@Override
 	public long getPatcherAccountId() {
 		return _patcherAccountId;
@@ -652,6 +754,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_patcherAccountId = patcherAccountId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherAccountId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherAccountId"));
 	}
 
 	@Override
@@ -668,6 +780,16 @@ public class PatcherBuildModelImpl
 		_patcherFixId = patcherFixId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherFixId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherFixId"));
+	}
+
 	@Override
 	public long getPatcherProductVersionId() {
 		return _patcherProductVersionId;
@@ -682,6 +804,16 @@ public class PatcherBuildModelImpl
 		_patcherProductVersionId = patcherProductVersionId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherProductVersionId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherProductVersionId"));
+	}
+
 	@Override
 	public long getPatcherProjectVersionId() {
 		return _patcherProjectVersionId;
@@ -694,6 +826,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_patcherProjectVersionId = patcherProjectVersionId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherProjectVersionId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherProjectVersionId"));
 	}
 
 	@Override
@@ -828,6 +970,16 @@ public class PatcherBuildModelImpl
 		_type = type;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalType() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("type_"));
+	}
+
 	@Override
 	public boolean getLatestBuild() {
 		return _latestBuild;
@@ -864,6 +1016,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_latestKeyBuild = latestKeyBuild;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalLatestKeyBuild() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("latestKeyBuild"));
 	}
 
 	@Override
@@ -904,6 +1066,16 @@ public class PatcherBuildModelImpl
 		_latestSupportTicketBuild = latestSupportTicketBuild;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalLatestSupportTicketBuild() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("latestSupportTicketBuild"));
+	}
+
 	@Override
 	public String getAccountEntryCode() {
 		if (_accountEntryCode == null) {
@@ -921,6 +1093,15 @@ public class PatcherBuildModelImpl
 		}
 
 		_accountEntryCode = accountEntryCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalAccountEntryCode() {
+		return getColumnOriginalValue("accountEntryCode");
 	}
 
 	@Override
@@ -975,6 +1156,15 @@ public class PatcherBuildModelImpl
 		_supportTicket = supportTicket;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalSupportTicket() {
+		return getColumnOriginalValue("supportTicket");
+	}
+
 	@Override
 	public double getSupportTicketVersion() {
 		return _supportTicketVersion;
@@ -987,6 +1177,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_supportTicketVersion = supportTicketVersion;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public double getOriginalSupportTicketVersion() {
+		return GetterUtil.getDouble(
+			this.<Double>getColumnOriginalValue("supportTicketVersion"));
 	}
 
 	@Override
@@ -1044,6 +1244,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_childBuild = childBuild;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalChildBuild() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("childBuild"));
 	}
 
 	@Override
@@ -1136,6 +1346,16 @@ public class PatcherBuildModelImpl
 		_notified = notified;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalNotified() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("notified"));
+	}
+
 	@Override
 	public int getProductVersion() {
 		return _productVersion;
@@ -1162,6 +1382,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_status = status;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalStatus() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("status"));
 	}
 
 	@Override

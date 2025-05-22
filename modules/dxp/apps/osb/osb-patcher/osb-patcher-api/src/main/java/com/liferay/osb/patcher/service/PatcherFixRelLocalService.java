@@ -52,6 +52,8 @@ public interface PatcherFixRelLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherFixRelLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the patcher fix rel local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PatcherFixRelLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public PatcherFixRel addPatcherFixRel(
+		long childPatcherFixId, long parentPatcherFixId);
 
 	/**
 	 * Adds the patcher fix rel to the database. Also notifies the appropriate model listeners.
@@ -108,6 +110,8 @@ public interface PatcherFixRelLocalService
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public PatcherFixRel deletePatcherFixRel(PatcherFixRel patcherFixRel);
+
+	public void deletePatcherFixRelsByChildPatcherFixId(long childPatcherFixId);
 
 	/**
 	 * @throws PortalException
@@ -228,6 +232,14 @@ public interface PatcherFixRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFixRel> getPatcherFixRels(int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFixRel> getPatcherFixRelsByChildPatcherFixId(
+		long childPatcherFixId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFixRel> getPatcherFixRelsByParentPatcherFixId(
+		long parentPatcherFixId);
 
 	/**
 	 * Returns the number of patcher fix rels.

@@ -71,6 +71,7 @@
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="patcherBuildRelId" type="long">
 			<generator class="assigned" />
 		</id>
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="childPatcherBuildId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="parentPatcherBuildId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
@@ -140,6 +141,7 @@
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="patcherFixRelId" type="long">
 			<generator class="assigned" />
 		</id>
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="childPatcherFixId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="parentPatcherFixId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>

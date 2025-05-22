@@ -33,6 +33,50 @@ public interface PatcherFixComponentPersistence
 	 */
 
 	/**
+	 * Returns the patcher fix component where name = &#63; or throws a <code>NoSuchPatcherFixComponentException</code> if it could not be found.
+	 *
+	 * @param name the name
+	 * @return the matching patcher fix component
+	 * @throws NoSuchPatcherFixComponentException if a matching patcher fix component could not be found
+	 */
+	public PatcherFixComponent findByName(String name)
+		throws NoSuchPatcherFixComponentException;
+
+	/**
+	 * Returns the patcher fix component where name = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param name the name
+	 * @return the matching patcher fix component, or <code>null</code> if a matching patcher fix component could not be found
+	 */
+	public PatcherFixComponent fetchByName(String name);
+
+	/**
+	 * Returns the patcher fix component where name = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param name the name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching patcher fix component, or <code>null</code> if a matching patcher fix component could not be found
+	 */
+	public PatcherFixComponent fetchByName(String name, boolean useFinderCache);
+
+	/**
+	 * Removes the patcher fix component where name = &#63; from the database.
+	 *
+	 * @param name the name
+	 * @return the patcher fix component that was removed
+	 */
+	public PatcherFixComponent removeByName(String name)
+		throws NoSuchPatcherFixComponentException;
+
+	/**
+	 * Returns the number of patcher fix components where name = &#63;.
+	 *
+	 * @param name the name
+	 * @return the number of matching patcher fix components
+	 */
+	public int countByName(String name);
+
+	/**
 	 * Caches the patcher fix component in the entity cache if it is enabled.
 	 *
 	 * @param patcherFixComponent the patcher fix component

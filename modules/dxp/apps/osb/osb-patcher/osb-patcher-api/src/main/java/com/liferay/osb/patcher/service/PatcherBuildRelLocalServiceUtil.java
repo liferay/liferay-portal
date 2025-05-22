@@ -259,6 +259,34 @@ public class PatcherBuildRelLocalServiceUtil {
 		return getService().getPatcherBuildRels(start, end);
 	}
 
+	public static List<PatcherBuildRel>
+		getPatcherBuildRelsByChildPatcherBuildId(long childPatcherBuildId) {
+
+		return getService().getPatcherBuildRelsByChildPatcherBuildId(
+			childPatcherBuildId);
+	}
+
+	public static int getPatcherBuildRelsByChildPatcherBuildIdCount(
+		long childPatcherBuildId) {
+
+		return getService().getPatcherBuildRelsByChildPatcherBuildIdCount(
+			childPatcherBuildId);
+	}
+
+	public static List<PatcherBuildRel>
+		getPatcherBuildRelsByParentPatcherBuildId(long parentPatcherBuildId) {
+
+		return getService().getPatcherBuildRelsByParentPatcherBuildId(
+			parentPatcherBuildId);
+	}
+
+	public static int getPatcherBuildRelsByParentPatcherBuildIdCount(
+		long parentPatcherBuildId) {
+
+		return getService().getPatcherBuildRelsByParentPatcherBuildIdCount(
+			parentPatcherBuildId);
+	}
+
 	/**
 	 * Returns the number of patcher build rels.
 	 *

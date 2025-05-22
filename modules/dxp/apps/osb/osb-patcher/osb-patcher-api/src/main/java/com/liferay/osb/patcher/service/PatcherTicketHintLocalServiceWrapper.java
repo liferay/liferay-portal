@@ -236,6 +236,14 @@ public class PatcherTicketHintLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.patcher.model.PatcherTicketHint
+		fetchPatcherTicketHintByProductVersionId(long patcherProductVersionId) {
+
+		return _patcherTicketHintLocalService.
+			fetchPatcherTicketHintByProductVersionId(patcherProductVersionId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 

@@ -250,6 +250,102 @@ public class PatcherFixPersistenceTest {
 	}
 
 	@Test
+	public void testCountByPatcherProjectVersionId() throws Exception {
+		_persistence.countByPatcherProjectVersionId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherProjectVersionId(0L);
+	}
+
+	@Test
+	public void testCountByP_T_L() throws Exception {
+		_persistence.countByP_T_L(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean());
+
+		_persistence.countByP_T_L(0L, 0, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByP_NotT_L() throws Exception {
+		_persistence.countByP_NotT_L(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean());
+
+		_persistence.countByP_NotT_L(0L, 0, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByK_GtKV_NotT() throws Exception {
+		_persistence.countByK_GtKV_NotT(
+			"", RandomTestUtil.nextDouble(), RandomTestUtil.nextInt());
+
+		_persistence.countByK_GtKV_NotT("null", 0D, 0);
+
+		_persistence.countByK_GtKV_NotT((String)null, 0D, 0);
+	}
+
+	@Test
+	public void testCountByK_LtKV_NotT() throws Exception {
+		_persistence.countByK_LtKV_NotT(
+			"", RandomTestUtil.nextDouble(), RandomTestUtil.nextInt());
+
+		_persistence.countByK_LtKV_NotT("null", 0D, 0);
+
+		_persistence.countByK_LtKV_NotT((String)null, 0D, 0);
+	}
+
+	@Test
+	public void testCountByK_NotT_L() throws Exception {
+		_persistence.countByK_NotT_L(
+			"", RandomTestUtil.nextInt(), RandomTestUtil.randomBoolean());
+
+		_persistence.countByK_NotT_L("null", 0, RandomTestUtil.randomBoolean());
+
+		_persistence.countByK_NotT_L(
+			(String)null, 0, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByLtM_T_N_S() throws Exception {
+		_persistence.countByLtM_T_N_S(
+			RandomTestUtil.nextDate(), RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.nextInt());
+
+		_persistence.countByLtM_T_N_S(
+			RandomTestUtil.nextDate(), 0, RandomTestUtil.randomBoolean(), 0);
+	}
+
+	@Test
+	public void testCountByLtM_T_N_SArrayable() throws Exception {
+		_persistence.countByLtM_T_N_S(
+			RandomTestUtil.nextDate(), new int[] {RandomTestUtil.nextInt(), 0},
+			RandomTestUtil.randomBoolean(), RandomTestUtil.nextInt());
+	}
+
+	@Test
+	public void testCountByP_N_NotT_L() throws Exception {
+		_persistence.countByP_N_NotT_L(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean());
+
+		_persistence.countByP_N_NotT_L(
+			0L, "null", 0, RandomTestUtil.randomBoolean());
+
+		_persistence.countByP_N_NotT_L(
+			0L, (String)null, 0, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByP_NotT_L_S() throws Exception {
+		_persistence.countByP_NotT_L_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.nextInt());
+
+		_persistence.countByP_NotT_L_S(
+			0L, 0, RandomTestUtil.randomBoolean(), 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		PatcherFix newPatcherFix = addPatcherFix();
 

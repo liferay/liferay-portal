@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -56,7 +57,8 @@ public class PatcherFixRelModelImpl
 	public static final String TABLE_NAME = "PatcherFixRel";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"patcherFixRelId", Types.BIGINT}, {"childPatcherFixId", Types.BIGINT},
+		{"patcherFixRelId", Types.BIGINT}, {"companyId", Types.BIGINT},
+		{"childPatcherFixId", Types.BIGINT},
 		{"parentPatcherFixId", Types.BIGINT}
 	};
 
@@ -65,12 +67,13 @@ public class PatcherFixRelModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("patcherFixRelId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("childPatcherFixId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("parentPatcherFixId", Types.BIGINT);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PatcherFixRel (patcherFixRelId LONG not null primary key,childPatcherFixId LONG,parentPatcherFixId LONG)";
+		"create table PatcherFixRel (patcherFixRelId LONG not null primary key,companyId LONG,childPatcherFixId LONG,parentPatcherFixId LONG)";
 
 	public static final String TABLE_SQL_DROP = "drop table PatcherFixRel";
 
@@ -87,11 +90,23 @@ public class PatcherFixRelModelImpl
 	public static final String TX_MANAGER = "liferayTransactionManager";
 
 	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long CHILDPATCHERFIXID_COLUMN_BITMASK = 1L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PARENTPATCHERFIXID_COLUMN_BITMASK = 2L;
+
+	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PATCHERFIXRELID_COLUMN_BITMASK = 1L;
+	public static final long PATCHERFIXRELID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -206,6 +221,8 @@ public class PatcherFixRelModelImpl
 			attributeGetterFunctions.put(
 				"patcherFixRelId", PatcherFixRel::getPatcherFixRelId);
 			attributeGetterFunctions.put(
+				"companyId", PatcherFixRel::getCompanyId);
+			attributeGetterFunctions.put(
 				"childPatcherFixId", PatcherFixRel::getChildPatcherFixId);
 			attributeGetterFunctions.put(
 				"parentPatcherFixId", PatcherFixRel::getParentPatcherFixId);
@@ -230,6 +247,9 @@ public class PatcherFixRelModelImpl
 				"patcherFixRelId",
 				(BiConsumer<PatcherFixRel, Long>)
 					PatcherFixRel::setPatcherFixRelId);
+			attributeSetterBiConsumers.put(
+				"companyId",
+				(BiConsumer<PatcherFixRel, Long>)PatcherFixRel::setCompanyId);
 			attributeSetterBiConsumers.put(
 				"childPatcherFixId",
 				(BiConsumer<PatcherFixRel, Long>)
@@ -260,6 +280,20 @@ public class PatcherFixRelModelImpl
 	}
 
 	@Override
+	public long getCompanyId() {
+		return _companyId;
+	}
+
+	@Override
+	public void setCompanyId(long companyId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_companyId = companyId;
+	}
+
+	@Override
 	public long getChildPatcherFixId() {
 		return _childPatcherFixId;
 	}
@@ -271,6 +305,16 @@ public class PatcherFixRelModelImpl
 		}
 
 		_childPatcherFixId = childPatcherFixId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalChildPatcherFixId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("childPatcherFixId"));
 	}
 
 	@Override
@@ -285,6 +329,16 @@ public class PatcherFixRelModelImpl
 		}
 
 		_parentPatcherFixId = parentPatcherFixId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalParentPatcherFixId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("parentPatcherFixId"));
 	}
 
 	public long getColumnBitmask() {
@@ -314,7 +368,7 @@ public class PatcherFixRelModelImpl
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return ExpandoBridgeFactoryUtil.getExpandoBridge(
-			0, PatcherFixRel.class.getName(), getPrimaryKey());
+			getCompanyId(), PatcherFixRel.class.getName(), getPrimaryKey());
 	}
 
 	@Override
@@ -344,6 +398,7 @@ public class PatcherFixRelModelImpl
 		PatcherFixRelImpl patcherFixRelImpl = new PatcherFixRelImpl();
 
 		patcherFixRelImpl.setPatcherFixRelId(getPatcherFixRelId());
+		patcherFixRelImpl.setCompanyId(getCompanyId());
 		patcherFixRelImpl.setChildPatcherFixId(getChildPatcherFixId());
 		patcherFixRelImpl.setParentPatcherFixId(getParentPatcherFixId());
 
@@ -358,6 +413,8 @@ public class PatcherFixRelModelImpl
 
 		patcherFixRelImpl.setPatcherFixRelId(
 			this.<Long>getColumnOriginalValue("patcherFixRelId"));
+		patcherFixRelImpl.setCompanyId(
+			this.<Long>getColumnOriginalValue("companyId"));
 		patcherFixRelImpl.setChildPatcherFixId(
 			this.<Long>getColumnOriginalValue("childPatcherFixId"));
 		patcherFixRelImpl.setParentPatcherFixId(
@@ -440,6 +497,8 @@ public class PatcherFixRelModelImpl
 
 		patcherFixRelCacheModel.patcherFixRelId = getPatcherFixRelId();
 
+		patcherFixRelCacheModel.companyId = getCompanyId();
+
 		patcherFixRelCacheModel.childPatcherFixId = getChildPatcherFixId();
 
 		patcherFixRelCacheModel.parentPatcherFixId = getParentPatcherFixId();
@@ -506,6 +565,7 @@ public class PatcherFixRelModelImpl
 	}
 
 	private long _patcherFixRelId;
+	private long _companyId;
 	private long _childPatcherFixId;
 	private long _parentPatcherFixId;
 
@@ -538,6 +598,7 @@ public class PatcherFixRelModelImpl
 		_columnOriginalValues = new HashMap<String, Object>();
 
 		_columnOriginalValues.put("patcherFixRelId", _patcherFixRelId);
+		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("childPatcherFixId", _childPatcherFixId);
 		_columnOriginalValues.put("parentPatcherFixId", _parentPatcherFixId);
 	}
@@ -555,9 +616,11 @@ public class PatcherFixRelModelImpl
 
 		columnBitmasks.put("patcherFixRelId", 1L);
 
-		columnBitmasks.put("childPatcherFixId", 2L);
+		columnBitmasks.put("companyId", 2L);
 
-		columnBitmasks.put("parentPatcherFixId", 4L);
+		columnBitmasks.put("childPatcherFixId", 4L);
+
+		columnBitmasks.put("parentPatcherFixId", 8L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

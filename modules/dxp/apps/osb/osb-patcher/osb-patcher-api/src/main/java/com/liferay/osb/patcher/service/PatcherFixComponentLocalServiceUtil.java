@@ -36,6 +36,12 @@ public class PatcherFixComponentLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherFixComponentLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static PatcherFixComponent addPatcherFixComponent(
+			long userId, String name)
+		throws PortalException {
+
+		return getService().addPatcherFixComponent(userId, name);
+	}
 
 	/**
 	 * Adds the patcher fix component to the database. Also notifies the appropriate model listeners.
@@ -210,6 +216,10 @@ public class PatcherFixComponentLocalServiceUtil {
 		return getService().fetchPatcherFixComponent(patcherFixComponentId);
 	}
 
+	public static PatcherFixComponent fetchPatcherFixComponent(String name) {
+		return getService().fetchPatcherFixComponent(name);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -246,6 +256,10 @@ public class PatcherFixComponentLocalServiceUtil {
 		return getService().getPatcherFixComponent(patcherFixComponentId);
 	}
 
+	public static List<PatcherFixComponent> getPatcherFixComponents() {
+		return getService().getPatcherFixComponents();
+	}
+
 	/**
 	 * Returns a range of all the patcher fix components.
 	 *
@@ -279,6 +293,14 @@ public class PatcherFixComponentLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static PatcherFixComponent updatePatcherFixComponent(
+			long patcherFixComponentId, String name)
+		throws PortalException {
+
+		return getService().updatePatcherFixComponent(
+			patcherFixComponentId, name);
 	}
 
 	/**

@@ -194,6 +194,10 @@ public interface PatcherTicketHintLocalService
 	public PatcherTicketHint fetchPatcherTicketHint(long patcherTicketHintId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherTicketHint fetchPatcherTicketHintByProductVersionId(
+		long patcherProductVersionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

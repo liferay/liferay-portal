@@ -33,6 +33,7 @@ public class PatcherBuildRelWrapper
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("patcherBuildRelId", getPatcherBuildRelId());
+		attributes.put("companyId", getCompanyId());
 		attributes.put("childPatcherBuildId", getChildPatcherBuildId());
 		attributes.put("parentPatcherBuildId", getParentPatcherBuildId());
 
@@ -45,6 +46,12 @@ public class PatcherBuildRelWrapper
 
 		if (patcherBuildRelId != null) {
 			setPatcherBuildRelId(patcherBuildRelId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
 		}
 
 		Long childPatcherBuildId = (Long)attributes.get("childPatcherBuildId");
@@ -74,6 +81,16 @@ public class PatcherBuildRelWrapper
 	@Override
 	public long getChildPatcherBuildId() {
 		return model.getChildPatcherBuildId();
+	}
+
+	/**
+	 * Returns the company ID of this patcher build rel.
+	 *
+	 * @return the company ID of this patcher build rel
+	 */
+	@Override
+	public long getCompanyId() {
+		return model.getCompanyId();
 	}
 
 	/**
@@ -119,6 +136,16 @@ public class PatcherBuildRelWrapper
 	@Override
 	public void setChildPatcherBuildId(long childPatcherBuildId) {
 		model.setChildPatcherBuildId(childPatcherBuildId);
+	}
+
+	/**
+	 * Sets the company ID of this patcher build rel.
+	 *
+	 * @param companyId the company ID of this patcher build rel
+	 */
+	@Override
+	public void setCompanyId(long companyId) {
+		model.setCompanyId(companyId);
 	}
 
 	/**

@@ -36,6 +36,12 @@ public class PatcherFixRelLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherFixRelLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static PatcherFixRel addPatcherFixRel(
+		long childPatcherFixId, long parentPatcherFixId) {
+
+		return getService().addPatcherFixRel(
+			childPatcherFixId, parentPatcherFixId);
+	}
 
 	/**
 	 * Adds the patcher fix rel to the database. Also notifies the appropriate model listeners.
@@ -102,6 +108,12 @@ public class PatcherFixRelLocalServiceUtil {
 		PatcherFixRel patcherFixRel) {
 
 		return getService().deletePatcherFixRel(patcherFixRel);
+	}
+
+	public static void deletePatcherFixRelsByChildPatcherFixId(
+		long childPatcherFixId) {
+
+		getService().deletePatcherFixRelsByChildPatcherFixId(childPatcherFixId);
 	}
 
 	/**
@@ -251,6 +263,20 @@ public class PatcherFixRelLocalServiceUtil {
 	 */
 	public static List<PatcherFixRel> getPatcherFixRels(int start, int end) {
 		return getService().getPatcherFixRels(start, end);
+	}
+
+	public static List<PatcherFixRel> getPatcherFixRelsByChildPatcherFixId(
+		long childPatcherFixId) {
+
+		return getService().getPatcherFixRelsByChildPatcherFixId(
+			childPatcherFixId);
+	}
+
+	public static List<PatcherFixRel> getPatcherFixRelsByParentPatcherFixId(
+		long parentPatcherFixId) {
+
+		return getService().getPatcherFixRelsByParentPatcherFixId(
+			parentPatcherFixId);
 	}
 
 	/**

@@ -52,6 +52,11 @@ public interface PatcherFixPackLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherFixPackLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the patcher fix pack local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PatcherFixPackLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFixPack addPatcherFixPack(
+			long userId, long patcherFixComponentId,
+			long patcherProjectVersionId, int version, int status)
+		throws PortalException;
 
 	/**
 	 * Adds the patcher fix pack to the database. Also notifies the appropriate model listeners.
@@ -218,6 +223,14 @@ public interface PatcherFixPackLocalService
 	public PatcherFixPack fetchPatcherFixPack(long patcherFixPackId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherFixPack fetchPatcherFixPack(
+		long patcherProjectVersionId, String name);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherFixPack fetchPatcherFixPackByPatcherBuildId(
+		long patcherBuildId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -241,6 +254,15 @@ public interface PatcherFixPackLocalService
 	public PatcherFixPack getPatcherFixPack(long patcherFixPackId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherFixPack getPatcherFixPack(
+			long patcherProjectVersionId, String name)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherFixPack getPatcherFixPackByPatcherBuildId(long patcherBuildId)
+		throws PortalException;
+
 	/**
 	 * Returns a range of all the patcher fix packs.
 	 *
@@ -254,6 +276,23 @@ public interface PatcherFixPackLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFixPack> getPatcherFixPacks(int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFixPack> getPatcherFixPacks(
+		long patcherFixComponentId, int version);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFixPack> getPatcherFixPacks(
+		long patcherFixComponentId, long patcherProjectVersionId, int version,
+		boolean older);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFixPack> getPatcherFixPacksByPatcherFixComponentId(
+		long patcherFixComponentId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFixPack> getPatcherFixPacksByStatus(
+		long patcherProjectVersionId, int status);
 
 	/**
 	 * Returns the number of patcher fix packs.

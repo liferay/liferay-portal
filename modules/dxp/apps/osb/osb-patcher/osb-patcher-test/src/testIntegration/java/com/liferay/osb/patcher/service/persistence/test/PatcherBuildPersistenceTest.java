@@ -308,12 +308,144 @@ public class PatcherBuildPersistenceTest {
 	}
 
 	@Test
+	public void testCountByPatcherFixId() throws Exception {
+		_persistence.countByPatcherFixId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherFixId(0L);
+	}
+
+	@Test
+	public void testCountByPatcherProjectVersionId() throws Exception {
+		_persistence.countByPatcherProjectVersionId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherProjectVersionId(0L);
+	}
+
+	@Test
+	public void testCountByKey() throws Exception {
+		_persistence.countByKey("");
+
+		_persistence.countByKey("null");
+
+		_persistence.countByKey((String)null);
+	}
+
+	@Test
+	public void testCountByP_P() throws Exception {
+		_persistence.countByP_P(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+
+		_persistence.countByP_P(0L, 0L);
+	}
+
+	@Test
+	public void testCountByP_C() throws Exception {
+		_persistence.countByP_C(
+			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
+
+		_persistence.countByP_C(0L, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
 	public void testCountByK_KV() throws Exception {
 		_persistence.countByK_KV("", RandomTestUtil.nextDouble());
 
 		_persistence.countByK_KV("null", 0D);
 
 		_persistence.countByK_KV((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByK_GtKV() throws Exception {
+		_persistence.countByK_GtKV("", RandomTestUtil.nextDouble());
+
+		_persistence.countByK_GtKV("null", 0D);
+
+		_persistence.countByK_GtKV((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByK_LtKV() throws Exception {
+		_persistence.countByK_LtKV("", RandomTestUtil.nextDouble());
+
+		_persistence.countByK_LtKV("null", 0D);
+
+		_persistence.countByK_LtKV((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByK_L() throws Exception {
+		_persistence.countByK_L("", RandomTestUtil.randomBoolean());
+
+		_persistence.countByK_L("null", RandomTestUtil.randomBoolean());
+
+		_persistence.countByK_L((String)null, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByL_S() throws Exception {
+		_persistence.countByL_S(RandomTestUtil.randomBoolean(), "");
+
+		_persistence.countByL_S(RandomTestUtil.randomBoolean(), "null");
+
+		_persistence.countByL_S(RandomTestUtil.randomBoolean(), (String)null);
+	}
+
+	@Test
+	public void testCountByS_GtS() throws Exception {
+		_persistence.countByS_GtS("", RandomTestUtil.nextDouble());
+
+		_persistence.countByS_GtS("null", 0D);
+
+		_persistence.countByS_GtS((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByS_LtS() throws Exception {
+		_persistence.countByS_LtS("", RandomTestUtil.nextDouble());
+
+		_persistence.countByS_LtS("null", 0D);
+
+		_persistence.countByS_LtS((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByLtM_N_S() throws Exception {
+		_persistence.countByLtM_N_S(
+			RandomTestUtil.nextDate(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.nextInt());
+
+		_persistence.countByLtM_N_S(
+			RandomTestUtil.nextDate(), RandomTestUtil.randomBoolean(), 0);
+	}
+
+	@Test
+	public void testCountByLtM_N_SArrayable() throws Exception {
+		_persistence.countByLtM_N_S(
+			RandomTestUtil.nextDate(), RandomTestUtil.randomBoolean(),
+			new int[] {RandomTestUtil.nextInt(), 0});
+	}
+
+	@Test
+	public void testCountByP_NotP_NotT_C() throws Exception {
+		_persistence.countByP_NotP_NotT_C(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextInt(), RandomTestUtil.randomBoolean());
+
+		_persistence.countByP_NotP_NotT_C(
+			0L, 0L, 0, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByP_N_L_A() throws Exception {
+		_persistence.countByP_N_L_A(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.randomBoolean(), "");
+
+		_persistence.countByP_N_L_A(
+			0L, "null", RandomTestUtil.randomBoolean(), "null");
+
+		_persistence.countByP_N_L_A(
+			0L, (String)null, RandomTestUtil.randomBoolean(), (String)null);
 	}
 
 	@Test

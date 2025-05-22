@@ -62,6 +62,18 @@ public class PatcherFixLocalServiceWrapper
 			patcherBuildId, patcherFixIds);
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix addPatcherFix(
+			long userId, long patcherProductVersionId,
+			long patcherProjectVersionId, String name, String committish,
+			String gitRemoteURL, int type, int status)
+		throws Exception {
+
+		return _patcherFixLocalService.addPatcherFix(
+			userId, patcherProductVersionId, patcherProjectVersionId, name,
+			committish, gitRemoteURL, type, status);
+	}
+
 	/**
 	 * Adds the patcher fix to the database. Also notifies the appropriate model listeners.
 	 *
@@ -455,6 +467,16 @@ public class PatcherFixLocalServiceWrapper
 		return _patcherFixLocalService.getPatcherFix(patcherFixId);
 	}
 
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			java.util.Date modifiedDate, int[] type, boolean notified,
+			int status) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			modifiedDate, type, notified, status);
+	}
+
 	/**
 	 * Returns a range of all the patcher fixes.
 	 *
@@ -473,6 +495,51 @@ public class PatcherFixLocalServiceWrapper
 		return _patcherFixLocalService.getPatcherFixes(start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			long patcherProjectVersionId, int type, boolean latestFix) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			patcherProjectVersionId, type, latestFix);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			long patcherProjectVersionId, int type, boolean latestFix,
+			int status) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			patcherProjectVersionId, type, latestFix, status);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			long patcherProjectVersionId, String name, int type,
+			boolean latestFix) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			patcherProjectVersionId, name, type, latestFix);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			String key, double keyVersion, int type, boolean older) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			key, keyVersion, type, older);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(String key, int type, boolean latestFix) {
+
+		return _patcherFixLocalService.getPatcherFixes(key, type, latestFix);
+	}
+
 	/**
 	 * Returns the number of patcher fixes.
 	 *
@@ -481,6 +548,15 @@ public class PatcherFixLocalServiceWrapper
 	@Override
 	public int getPatcherFixesCount() {
 		return _patcherFixLocalService.getPatcherFixesCount();
+	}
+
+	@Override
+	public int getPatcherFixesCountByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return _patcherFixLocalService.
+			getPatcherFixesCountByPatcherProjectVersionId(
+				patcherProjectVersionId);
 	}
 
 	@Override
@@ -584,6 +660,58 @@ public class PatcherFixLocalServiceWrapper
 			patcherFixPackId, patcherFixIds);
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updateJenkinsResults(
+			long patcherFixId, String jenkinsResults)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updateJenkinsResults(
+			patcherFixId, jenkinsResults);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updateLatestFix(
+			long patcherFixId, boolean latestFix)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updateLatestFix(patcherFixId, latestFix);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updateNotified(
+			long patcherFixId, boolean notified)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updateNotified(patcherFixId, notified);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updateObsolete(
+			long patcherFixId, boolean obsolete)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updateObsolete(patcherFixId, obsolete);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updatePatcherFix(
+			long patcherFixId, int type, boolean latestFix, boolean obsolete)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updatePatcherFix(
+			patcherFixId, type, latestFix, obsolete);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updatePatcherFix(
+			long userId, long patcherFixId, String gitHash,
+			String jenkinsResults, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updatePatcherFix(
+			userId, patcherFixId, gitHash, jenkinsResults, status);
+	}
+
 	/**
 	 * Updates the patcher fix in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -599,6 +727,24 @@ public class PatcherFixLocalServiceWrapper
 		com.liferay.osb.patcher.model.PatcherFix patcherFix) {
 
 		return _patcherFixLocalService.updatePatcherFix(patcherFix);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updateRequestKey(
+			long patcherFixId, String requestKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updateRequestKey(
+			patcherFixId, requestKey);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFix updateStatus(
+			long userId, long patcherFixId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherFixLocalService.updateStatus(
+			userId, patcherFixId, status);
 	}
 
 	@Override

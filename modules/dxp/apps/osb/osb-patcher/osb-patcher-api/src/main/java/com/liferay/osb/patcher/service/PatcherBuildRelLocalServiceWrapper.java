@@ -291,6 +291,39 @@ public class PatcherBuildRelLocalServiceWrapper
 		return _patcherBuildRelLocalService.getPatcherBuildRels(start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuildRel>
+		getPatcherBuildRelsByChildPatcherBuildId(long childPatcherBuildId) {
+
+		return _patcherBuildRelLocalService.
+			getPatcherBuildRelsByChildPatcherBuildId(childPatcherBuildId);
+	}
+
+	@Override
+	public int getPatcherBuildRelsByChildPatcherBuildIdCount(
+		long childPatcherBuildId) {
+
+		return _patcherBuildRelLocalService.
+			getPatcherBuildRelsByChildPatcherBuildIdCount(childPatcherBuildId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuildRel>
+		getPatcherBuildRelsByParentPatcherBuildId(long parentPatcherBuildId) {
+
+		return _patcherBuildRelLocalService.
+			getPatcherBuildRelsByParentPatcherBuildId(parentPatcherBuildId);
+	}
+
+	@Override
+	public int getPatcherBuildRelsByParentPatcherBuildIdCount(
+		long parentPatcherBuildId) {
+
+		return _patcherBuildRelLocalService.
+			getPatcherBuildRelsByParentPatcherBuildIdCount(
+				parentPatcherBuildId);
+	}
+
 	/**
 	 * Returns the number of patcher build rels.
 	 *

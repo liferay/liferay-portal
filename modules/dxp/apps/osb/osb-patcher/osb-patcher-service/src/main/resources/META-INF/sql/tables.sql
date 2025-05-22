@@ -60,6 +60,7 @@ create table PatcherBuild (
 
 create table PatcherBuildRel (
 	patcherBuildRelId LONG not null primary key,
+	companyId LONG,
 	childPatcherBuildId LONG,
 	parentPatcherBuildId LONG
 );
@@ -132,6 +133,7 @@ create table PatcherFixPack (
 
 create table PatcherFixRel (
 	patcherFixRelId LONG not null primary key,
+	companyId LONG,
 	childPatcherFixId LONG,
 	parentPatcherFixId LONG
 );

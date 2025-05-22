@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -56,7 +57,7 @@ public class PatcherBuildRelModelImpl
 	public static final String TABLE_NAME = "PatcherBuildRel";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"patcherBuildRelId", Types.BIGINT},
+		{"patcherBuildRelId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"childPatcherBuildId", Types.BIGINT},
 		{"parentPatcherBuildId", Types.BIGINT}
 	};
@@ -66,12 +67,13 @@ public class PatcherBuildRelModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("patcherBuildRelId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("childPatcherBuildId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("parentPatcherBuildId", Types.BIGINT);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PatcherBuildRel (patcherBuildRelId LONG not null primary key,childPatcherBuildId LONG,parentPatcherBuildId LONG)";
+		"create table PatcherBuildRel (patcherBuildRelId LONG not null primary key,companyId LONG,childPatcherBuildId LONG,parentPatcherBuildId LONG)";
 
 	public static final String TABLE_SQL_DROP = "drop table PatcherBuildRel";
 
@@ -88,11 +90,23 @@ public class PatcherBuildRelModelImpl
 	public static final String TX_MANAGER = "liferayTransactionManager";
 
 	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long CHILDPATCHERBUILDID_COLUMN_BITMASK = 1L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PARENTPATCHERBUILDID_COLUMN_BITMASK = 2L;
+
+	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PATCHERBUILDRELID_COLUMN_BITMASK = 1L;
+	public static final long PATCHERBUILDRELID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -207,6 +221,8 @@ public class PatcherBuildRelModelImpl
 			attributeGetterFunctions.put(
 				"patcherBuildRelId", PatcherBuildRel::getPatcherBuildRelId);
 			attributeGetterFunctions.put(
+				"companyId", PatcherBuildRel::getCompanyId);
+			attributeGetterFunctions.put(
 				"childPatcherBuildId", PatcherBuildRel::getChildPatcherBuildId);
 			attributeGetterFunctions.put(
 				"parentPatcherBuildId",
@@ -232,6 +248,10 @@ public class PatcherBuildRelModelImpl
 				"patcherBuildRelId",
 				(BiConsumer<PatcherBuildRel, Long>)
 					PatcherBuildRel::setPatcherBuildRelId);
+			attributeSetterBiConsumers.put(
+				"companyId",
+				(BiConsumer<PatcherBuildRel, Long>)
+					PatcherBuildRel::setCompanyId);
 			attributeSetterBiConsumers.put(
 				"childPatcherBuildId",
 				(BiConsumer<PatcherBuildRel, Long>)
@@ -262,6 +282,20 @@ public class PatcherBuildRelModelImpl
 	}
 
 	@Override
+	public long getCompanyId() {
+		return _companyId;
+	}
+
+	@Override
+	public void setCompanyId(long companyId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_companyId = companyId;
+	}
+
+	@Override
 	public long getChildPatcherBuildId() {
 		return _childPatcherBuildId;
 	}
@@ -273,6 +307,16 @@ public class PatcherBuildRelModelImpl
 		}
 
 		_childPatcherBuildId = childPatcherBuildId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalChildPatcherBuildId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("childPatcherBuildId"));
 	}
 
 	@Override
@@ -287,6 +331,16 @@ public class PatcherBuildRelModelImpl
 		}
 
 		_parentPatcherBuildId = parentPatcherBuildId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalParentPatcherBuildId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("parentPatcherBuildId"));
 	}
 
 	public long getColumnBitmask() {
@@ -316,7 +370,7 @@ public class PatcherBuildRelModelImpl
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return ExpandoBridgeFactoryUtil.getExpandoBridge(
-			0, PatcherBuildRel.class.getName(), getPrimaryKey());
+			getCompanyId(), PatcherBuildRel.class.getName(), getPrimaryKey());
 	}
 
 	@Override
@@ -346,6 +400,7 @@ public class PatcherBuildRelModelImpl
 		PatcherBuildRelImpl patcherBuildRelImpl = new PatcherBuildRelImpl();
 
 		patcherBuildRelImpl.setPatcherBuildRelId(getPatcherBuildRelId());
+		patcherBuildRelImpl.setCompanyId(getCompanyId());
 		patcherBuildRelImpl.setChildPatcherBuildId(getChildPatcherBuildId());
 		patcherBuildRelImpl.setParentPatcherBuildId(getParentPatcherBuildId());
 
@@ -360,6 +415,8 @@ public class PatcherBuildRelModelImpl
 
 		patcherBuildRelImpl.setPatcherBuildRelId(
 			this.<Long>getColumnOriginalValue("patcherBuildRelId"));
+		patcherBuildRelImpl.setCompanyId(
+			this.<Long>getColumnOriginalValue("companyId"));
 		patcherBuildRelImpl.setChildPatcherBuildId(
 			this.<Long>getColumnOriginalValue("childPatcherBuildId"));
 		patcherBuildRelImpl.setParentPatcherBuildId(
@@ -442,6 +499,8 @@ public class PatcherBuildRelModelImpl
 
 		patcherBuildRelCacheModel.patcherBuildRelId = getPatcherBuildRelId();
 
+		patcherBuildRelCacheModel.companyId = getCompanyId();
+
 		patcherBuildRelCacheModel.childPatcherBuildId =
 			getChildPatcherBuildId();
 
@@ -510,6 +569,7 @@ public class PatcherBuildRelModelImpl
 	}
 
 	private long _patcherBuildRelId;
+	private long _companyId;
 	private long _childPatcherBuildId;
 	private long _parentPatcherBuildId;
 
@@ -542,6 +602,7 @@ public class PatcherBuildRelModelImpl
 		_columnOriginalValues = new HashMap<String, Object>();
 
 		_columnOriginalValues.put("patcherBuildRelId", _patcherBuildRelId);
+		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("childPatcherBuildId", _childPatcherBuildId);
 		_columnOriginalValues.put(
 			"parentPatcherBuildId", _parentPatcherBuildId);
@@ -560,9 +621,11 @@ public class PatcherBuildRelModelImpl
 
 		columnBitmasks.put("patcherBuildRelId", 1L);
 
-		columnBitmasks.put("childPatcherBuildId", 2L);
+		columnBitmasks.put("companyId", 2L);
 
-		columnBitmasks.put("parentPatcherBuildId", 4L);
+		columnBitmasks.put("childPatcherBuildId", 4L);
+
+		columnBitmasks.put("parentPatcherBuildId", 8L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

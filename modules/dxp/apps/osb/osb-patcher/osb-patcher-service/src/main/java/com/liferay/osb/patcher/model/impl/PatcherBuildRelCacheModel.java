@@ -51,10 +51,12 @@ public class PatcherBuildRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(9);
 
 		sb.append("{patcherBuildRelId=");
 		sb.append(patcherBuildRelId);
+		sb.append(", companyId=");
+		sb.append(companyId);
 		sb.append(", childPatcherBuildId=");
 		sb.append(childPatcherBuildId);
 		sb.append(", parentPatcherBuildId=");
@@ -69,6 +71,7 @@ public class PatcherBuildRelCacheModel
 		PatcherBuildRelImpl patcherBuildRelImpl = new PatcherBuildRelImpl();
 
 		patcherBuildRelImpl.setPatcherBuildRelId(patcherBuildRelId);
+		patcherBuildRelImpl.setCompanyId(companyId);
 		patcherBuildRelImpl.setChildPatcherBuildId(childPatcherBuildId);
 		patcherBuildRelImpl.setParentPatcherBuildId(parentPatcherBuildId);
 
@@ -81,6 +84,8 @@ public class PatcherBuildRelCacheModel
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		patcherBuildRelId = objectInput.readLong();
 
+		companyId = objectInput.readLong();
+
 		childPatcherBuildId = objectInput.readLong();
 
 		parentPatcherBuildId = objectInput.readLong();
@@ -90,12 +95,15 @@ public class PatcherBuildRelCacheModel
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeLong(patcherBuildRelId);
 
+		objectOutput.writeLong(companyId);
+
 		objectOutput.writeLong(childPatcherBuildId);
 
 		objectOutput.writeLong(parentPatcherBuildId);
 	}
 
 	public long patcherBuildRelId;
+	public long companyId;
 	public long childPatcherBuildId;
 	public long parentPatcherBuildId;
 

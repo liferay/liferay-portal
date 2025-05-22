@@ -64,6 +64,17 @@ public class PatcherFixLocalServiceUtil {
 			patcherBuildId, patcherFixIds);
 	}
 
+	public static PatcherFix addPatcherFix(
+			long userId, long patcherProductVersionId,
+			long patcherProjectVersionId, String name, String committish,
+			String gitRemoteURL, int type, int status)
+		throws Exception {
+
+		return getService().addPatcherFix(
+			userId, patcherProductVersionId, patcherProjectVersionId, name,
+			committish, gitRemoteURL, type, status);
+	}
+
 	/**
 	 * Adds the patcher fix to the database. Also notifies the appropriate model listeners.
 	 *
@@ -388,6 +399,13 @@ public class PatcherFixLocalServiceUtil {
 		return getService().getPatcherFix(patcherFixId);
 	}
 
+	public static List<PatcherFix> getPatcherFixes(
+		java.util.Date modifiedDate, int[] type, boolean notified, int status) {
+
+		return getService().getPatcherFixes(
+			modifiedDate, type, notified, status);
+	}
+
 	/**
 	 * Returns a range of all the patcher fixes.
 	 *
@@ -403,6 +421,40 @@ public class PatcherFixLocalServiceUtil {
 		return getService().getPatcherFixes(start, end);
 	}
 
+	public static List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, int type, boolean latestFix) {
+
+		return getService().getPatcherFixes(
+			patcherProjectVersionId, type, latestFix);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, int type, boolean latestFix, int status) {
+
+		return getService().getPatcherFixes(
+			patcherProjectVersionId, type, latestFix, status);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, String name, int type,
+		boolean latestFix) {
+
+		return getService().getPatcherFixes(
+			patcherProjectVersionId, name, type, latestFix);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		String key, double keyVersion, int type, boolean older) {
+
+		return getService().getPatcherFixes(key, keyVersion, type, older);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		String key, int type, boolean latestFix) {
+
+		return getService().getPatcherFixes(key, type, latestFix);
+	}
+
 	/**
 	 * Returns the number of patcher fixes.
 	 *
@@ -410,6 +462,13 @@ public class PatcherFixLocalServiceUtil {
 	 */
 	public static int getPatcherFixesCount() {
 		return getService().getPatcherFixesCount();
+	}
+
+	public static int getPatcherFixesCountByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return getService().getPatcherFixesCountByPatcherProjectVersionId(
+			patcherProjectVersionId);
 	}
 
 	public static List<PatcherFix> getPatcherFixPackPatcherFixes(
@@ -494,6 +553,49 @@ public class PatcherFixLocalServiceUtil {
 			patcherFixPackId, patcherFixIds);
 	}
 
+	public static PatcherFix updateJenkinsResults(
+			long patcherFixId, String jenkinsResults)
+		throws PortalException {
+
+		return getService().updateJenkinsResults(patcherFixId, jenkinsResults);
+	}
+
+	public static PatcherFix updateLatestFix(
+			long patcherFixId, boolean latestFix)
+		throws PortalException {
+
+		return getService().updateLatestFix(patcherFixId, latestFix);
+	}
+
+	public static PatcherFix updateNotified(long patcherFixId, boolean notified)
+		throws PortalException {
+
+		return getService().updateNotified(patcherFixId, notified);
+	}
+
+	public static PatcherFix updateObsolete(long patcherFixId, boolean obsolete)
+		throws PortalException {
+
+		return getService().updateObsolete(patcherFixId, obsolete);
+	}
+
+	public static PatcherFix updatePatcherFix(
+			long patcherFixId, int type, boolean latestFix, boolean obsolete)
+		throws PortalException {
+
+		return getService().updatePatcherFix(
+			patcherFixId, type, latestFix, obsolete);
+	}
+
+	public static PatcherFix updatePatcherFix(
+			long userId, long patcherFixId, String gitHash,
+			String jenkinsResults, int status)
+		throws PortalException {
+
+		return getService().updatePatcherFix(
+			userId, patcherFixId, gitHash, jenkinsResults, status);
+	}
+
 	/**
 	 * Updates the patcher fix in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -506,6 +608,20 @@ public class PatcherFixLocalServiceUtil {
 	 */
 	public static PatcherFix updatePatcherFix(PatcherFix patcherFix) {
 		return getService().updatePatcherFix(patcherFix);
+	}
+
+	public static PatcherFix updateRequestKey(
+			long patcherFixId, String requestKey)
+		throws PortalException {
+
+		return getService().updateRequestKey(patcherFixId, requestKey);
+	}
+
+	public static PatcherFix updateStatus(
+			long userId, long patcherFixId, int status)
+		throws PortalException {
+
+		return getService().updateStatus(userId, patcherFixId, status);
 	}
 
 	public static PatcherFixLocalService getService() {

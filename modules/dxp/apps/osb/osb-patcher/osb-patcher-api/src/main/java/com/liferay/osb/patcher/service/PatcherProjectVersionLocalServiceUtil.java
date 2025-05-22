@@ -36,6 +36,17 @@ public class PatcherProjectVersionLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherProjectVersionLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static PatcherProjectVersion addPatcherProjectVersion(
+			long userId, long patcherProductVersionId,
+			long rootPatcherProjectVersionId, String name,
+			boolean combinedBranch, boolean hide, String committish,
+			String repositoryName, String fixedIssues)
+		throws PortalException {
+
+		return getService().addPatcherProjectVersion(
+			userId, patcherProductVersionId, rootPatcherProjectVersionId, name,
+			combinedBranch, hide, committish, repositoryName, fixedIssues);
+	}
 
 	/**
 	 * Adds the patcher project version to the database. Also notifies the appropriate model listeners.
@@ -212,6 +223,18 @@ public class PatcherProjectVersionLocalServiceUtil {
 		return getService().fetchPatcherProjectVersion(patcherProjectVersionId);
 	}
 
+	public static PatcherProjectVersion fetchPatcherProjectVersionByCommittish(
+		String committish) {
+
+		return getService().fetchPatcherProjectVersionByCommittish(committish);
+	}
+
+	public static PatcherProjectVersion fetchPatcherProjectVersionByName(
+		String name) {
+
+		return getService().fetchPatcherProjectVersionByName(name);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -248,6 +271,17 @@ public class PatcherProjectVersionLocalServiceUtil {
 		return getService().getPatcherProjectVersion(patcherProjectVersionId);
 	}
 
+	public static PatcherProjectVersion getPatcherProjectVersionByName(
+			String name)
+		throws PortalException {
+
+		return getService().getPatcherProjectVersionByName(name);
+	}
+
+	public static List<PatcherProjectVersion> getPatcherProjectVersions() {
+		return getService().getPatcherProjectVersions();
+	}
+
 	/**
 	 * Returns a range of all the patcher project versions.
 	 *
@@ -263,6 +297,21 @@ public class PatcherProjectVersionLocalServiceUtil {
 		int start, int end) {
 
 		return getService().getPatcherProjectVersions(start, end);
+	}
+
+	public static List<PatcherProjectVersion> getPatcherProjectVersions(
+		long patcherProductVersionId) {
+
+		return getService().getPatcherProjectVersions(patcherProductVersionId);
+	}
+
+	public static List<PatcherProjectVersion> getPatcherProjectVersions(
+		long patcherProductVersionId, String repositoryName, int start, int end,
+		OrderByComparator<PatcherProjectVersion> orderByComparator) {
+
+		return getService().getPatcherProjectVersions(
+			patcherProductVersionId, repositoryName, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -281,6 +330,28 @@ public class PatcherProjectVersionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static List<PatcherProjectVersion> getRootPatcherProjectVersions() {
+		return getService().getRootPatcherProjectVersions();
+	}
+
+	public static List<PatcherProjectVersion> getRootPatcherProjectVersions(
+		long patcherProductVersionId) {
+
+		return getService().getRootPatcherProjectVersions(
+			patcherProductVersionId);
+	}
+
+	public static PatcherProjectVersion updatePatcherProjectVersion(
+			long patcherProjectVersionId, long patcherProductVersionId,
+			String name, boolean combinedBranch, boolean hide,
+			String committish, String repositoryName, String fixedIssues)
+		throws PortalException {
+
+		return getService().updatePatcherProjectVersion(
+			patcherProjectVersionId, patcherProductVersionId, name,
+			combinedBranch, hide, committish, repositoryName, fixedIssues);
 	}
 
 	/**

@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -63,6 +64,13 @@ public interface PatcherFixLocalService
 
 	public boolean addPatcherBuildPatcherFixes(
 		long patcherBuildId, long[] patcherFixIds);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix addPatcherFix(
+			long userId, long patcherProductVersionId,
+			long patcherProjectVersionId, String name, String committish,
+			String gitRemoteURL, int type, int status)
+		throws Exception;
 
 	/**
 	 * Adds the patcher fix to the database. Also notifies the appropriate model listeners.
@@ -289,6 +297,10 @@ public interface PatcherFixLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PatcherFix getPatcherFix(long patcherFixId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		Date modifiedDate, int[] type, boolean notified, int status);
+
 	/**
 	 * Returns a range of all the patcher fixes.
 	 *
@@ -303,6 +315,26 @@ public interface PatcherFixLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFix> getPatcherFixes(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, int type, boolean latestFix);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, int type, boolean latestFix, int status);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, String name, int type, boolean latestFix);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		String key, double keyVersion, int type, boolean older);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		String key, int type, boolean latestFix);
+
 	/**
 	 * Returns the number of patcher fixes.
 	 *
@@ -310,6 +342,10 @@ public interface PatcherFixLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPatcherFixesCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPatcherFixesCountByPatcherProjectVersionId(
+		long patcherProjectVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFix> getPatcherFixPackPatcherFixes(
@@ -364,6 +400,34 @@ public interface PatcherFixLocalService
 	public void setPatcherFixPackPatcherFixes(
 		long patcherFixPackId, long[] patcherFixIds);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateJenkinsResults(
+			long patcherFixId, String jenkinsResults)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateLatestFix(long patcherFixId, boolean latestFix)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateNotified(long patcherFixId, boolean notified)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateObsolete(long patcherFixId, boolean obsolete)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updatePatcherFix(
+			long patcherFixId, int type, boolean latestFix, boolean obsolete)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updatePatcherFix(
+			long userId, long patcherFixId, String gitHash,
+			String jenkinsResults, int status)
+		throws PortalException;
+
 	/**
 	 * Updates the patcher fix in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -376,5 +440,13 @@ public interface PatcherFixLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PatcherFix updatePatcherFix(PatcherFix patcherFix);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateRequestKey(long patcherFixId, String requestKey)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateStatus(long userId, long patcherFixId, int status)
+		throws PortalException;
 
 }

@@ -29,6 +29,17 @@ public class PatcherProductVersionLocalServiceWrapper
 		_patcherProductVersionLocalService = patcherProductVersionLocalService;
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherProductVersion
+			addPatcherProductVersion(
+				long userId, String name, int fixDeliveryMethod,
+				String moduleFolderName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherProductVersionLocalService.addPatcherProductVersion(
+			userId, name, fixDeliveryMethod, moduleFolderName);
+	}
+
 	/**
 	 * Adds the patcher product version to the database. Also notifies the appropriate model listeners.
 	 *
@@ -240,6 +251,14 @@ public class PatcherProductVersionLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.patcher.model.PatcherProductVersion
+		fetchPatcherProductVersion(String name) {
+
+		return _patcherProductVersionLocalService.fetchPatcherProductVersion(
+			name);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -278,6 +297,21 @@ public class PatcherProductVersionLocalServiceWrapper
 
 		return _patcherProductVersionLocalService.getPatcherProductVersion(
 			patcherProductVersionId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherProductVersion>
+		getPatcherProductVersions() {
+
+		return _patcherProductVersionLocalService.getPatcherProductVersions();
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherProductVersion>
+		getPatcherProductVersions(int fixDeliveryMethod) {
+
+		return _patcherProductVersionLocalService.getPatcherProductVersions(
+			fixDeliveryMethod);
 	}
 
 	/**
@@ -320,6 +354,17 @@ public class PatcherProductVersionLocalServiceWrapper
 
 		return _patcherProductVersionLocalService.getPersistedModel(
 			primaryKeyObj);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherProductVersion
+			updatePatcherProductVersion(
+				long patcherProductVersionId, String name,
+				int fixDeliveryMethod, String moduleFolderName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherProductVersionLocalService.updatePatcherProductVersion(
+			patcherProductVersionId, name, fixDeliveryMethod, moduleFolderName);
 	}
 
 	/**

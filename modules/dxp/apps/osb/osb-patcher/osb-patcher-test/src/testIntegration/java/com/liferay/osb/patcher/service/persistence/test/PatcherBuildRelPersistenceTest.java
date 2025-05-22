@@ -112,6 +112,8 @@ public class PatcherBuildRelPersistenceTest {
 
 		PatcherBuildRel newPatcherBuildRel = _persistence.create(pk);
 
+		newPatcherBuildRel.setCompanyId(RandomTestUtil.nextLong());
+
 		newPatcherBuildRel.setChildPatcherBuildId(RandomTestUtil.nextLong());
 
 		newPatcherBuildRel.setParentPatcherBuildId(RandomTestUtil.nextLong());
@@ -125,11 +127,28 @@ public class PatcherBuildRelPersistenceTest {
 			existingPatcherBuildRel.getPatcherBuildRelId(),
 			newPatcherBuildRel.getPatcherBuildRelId());
 		Assert.assertEquals(
+			existingPatcherBuildRel.getCompanyId(),
+			newPatcherBuildRel.getCompanyId());
+		Assert.assertEquals(
 			existingPatcherBuildRel.getChildPatcherBuildId(),
 			newPatcherBuildRel.getChildPatcherBuildId());
 		Assert.assertEquals(
 			existingPatcherBuildRel.getParentPatcherBuildId(),
 			newPatcherBuildRel.getParentPatcherBuildId());
+	}
+
+	@Test
+	public void testCountByChildPatcherBuildId() throws Exception {
+		_persistence.countByChildPatcherBuildId(RandomTestUtil.nextLong());
+
+		_persistence.countByChildPatcherBuildId(0L);
+	}
+
+	@Test
+	public void testCountByParentPatcherBuildId() throws Exception {
+		_persistence.countByParentPatcherBuildId(RandomTestUtil.nextLong());
+
+		_persistence.countByParentPatcherBuildId(0L);
 	}
 
 	@Test
@@ -157,8 +176,8 @@ public class PatcherBuildRelPersistenceTest {
 
 	protected OrderByComparator<PatcherBuildRel> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"PatcherBuildRel", "patcherBuildRelId", true, "childPatcherBuildId",
-			true, "parentPatcherBuildId", true);
+			"PatcherBuildRel", "patcherBuildRelId", true, "companyId", true,
+			"childPatcherBuildId", true, "parentPatcherBuildId", true);
 	}
 
 	@Test
@@ -380,6 +399,8 @@ public class PatcherBuildRelPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		PatcherBuildRel patcherBuildRel = _persistence.create(pk);
+
+		patcherBuildRel.setCompanyId(RandomTestUtil.nextLong());
 
 		patcherBuildRel.setChildPatcherBuildId(RandomTestUtil.nextLong());
 
