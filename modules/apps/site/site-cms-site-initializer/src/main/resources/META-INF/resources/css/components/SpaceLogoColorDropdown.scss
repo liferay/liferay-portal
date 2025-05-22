@@ -1,8 +1,10 @@
+@import 'atlas-variables';
+
 .space-logo-color-dropdown {
 	.dropdown-toggle.btn {
 		align-items: center;
-		background: #f1f2f5;
-		border-color: #e7e7ed;
+		background: $gray-200;
+		border-color: $gray-300;
 		display: flex;
 		justify-content: space-between;
 		width: 100%;
