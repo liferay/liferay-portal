@@ -57,8 +57,7 @@ if (layoutMode !== 'edit') {
 						namespace: fragmentNamespace,
 						onLocaleChange: ({languageId, value}) => {
 							editorPromise.then((editor) => {
-								editor.config.contentsLangDirection =
-									Liferay.Language.direction[languageId];
+								changeLanguageDirection(editor, languageId);
 
 								editor.setData(value);
 							});
@@ -66,8 +65,7 @@ if (layoutMode !== 'edit') {
 					});
 
 					editorPromise.then((editor) => {
-						editor.config.contentsLangDirection =
-							Liferay.Language.direction[defaultLanguageId];
+						changeLanguageDirection(editor, defaultLanguageId);
 
 						editor.on('change', () => {
 							const value = editor.getData();
@@ -110,10 +108,11 @@ if (layoutMode !== 'edit') {
 									input.attributes.unlocalizedFieldsState ===
 									'read-only';
 
-								editor.config.contentsLangDirection =
-									Liferay.Language.direction[languageId];
-
-								editor.setData(editor.getData());
+								changeLanguageDirection(
+									editor,
+									languageId,
+									() => editor.setData(editor.getData())
+								);
 
 								if (languageId === defaultLanguageId) {
 									if (Liferay.FeatureFlags['LPD-11235']) {
@@ -187,11 +186,28 @@ if (layoutMode !== 'edit') {
 					});
 
 					editorPromise.then((editor) => {
-						editor.config.contentsLangDirection =
-							Liferay.Language.direction[defaultLanguageId];
+						changeLanguageDirection(editor, defaultLanguageId);
 					});
 				}
 			}
 		);
+	}
+}
+
+function changeLanguageDirection(editor, languageId, onChange) {
+	if (Liferay.FeatureFlags['LPD-11235']) {
+		editor.editing.view.change((element) => {
+			element.setAttribute(
+				'dir',
+				Liferay.Language.direction[languageId],
+				editor.editing.view.document.getRoot()
+			);
+		});
+	}
+	else {
+		editor.config.contentsLangDirection =
+			Liferay.Language.direction[languageId];
+
+		onChange?.();
 	}
 }
