@@ -212,12 +212,16 @@ if (layoutMode !== 'edit') {
 
 function changeLanguageDirection(editor, languageId, onChange) {
 	if (Liferay.FeatureFlags['LPD-11235']) {
+		const root = editor.editing.view.document.getRoot();
+
 		editor.editing.view.change((element) => {
 			element.setAttribute(
 				'dir',
 				Liferay.Language.direction[languageId],
-				editor.editing.view.document.getRoot()
+				root
 			);
+
+			element.setAttribute('lang', languageId.substr(0, 2), root);
 		});
 	}
 	else {
