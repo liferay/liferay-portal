@@ -28,7 +28,11 @@
 	<clay:col
 		cssClass="osb-patcher-loader-container"
 	>
-		<aui:container cssClass="osb-patcher-loader" id="loader" name="loader" />
+		<clay:container
+			cssClass="osb-patcher-loader"
+			id="loader"
+			name="loader"
+		/>
 	</clay:col>
 
 	<clay:col>
