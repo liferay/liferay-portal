@@ -175,6 +175,12 @@
 		<!-- Other fields -->
 
 		<column name="name" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="Name" return-type="PatcherFixComponent" unique="true">
+			<finder-column name="name" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherFixPack" remote-service="false">
 

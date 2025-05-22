@@ -5,8 +5,13 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.model.PatcherFixComponent;
 import com.liferay.osb.patcher.service.base.PatcherFixComponentLocalServiceBaseImpl;
+import com.liferay.osb.patcher.util.comparator.PatcherFixComponentNameComparator;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,4 +24,17 @@ import org.osgi.service.component.annotations.Component;
 )
 public class PatcherFixComponentLocalServiceImpl
 	extends PatcherFixComponentLocalServiceBaseImpl {
+
+	@Override
+	public PatcherFixComponent fetchPatcherFixComponent(String name) {
+		return patcherFixComponentPersistence.fetchByName(name);
+	}
+
+	@Override
+	public List<PatcherFixComponent> getPatcherFixComponents() {
+		return patcherFixComponentPersistence.findAll(
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			PatcherFixComponentNameComparator.getInstance(true));
+	}
+
 }
