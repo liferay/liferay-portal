@@ -120,7 +120,7 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherProjectVersion, "edit")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherProjectVersion, PatcherActionKeys.EDIT)}">
 					<portlet:renderURL var="editPatcherProjectVersionURL">
 						<portlet:param name="controller" value="project_versions" />
 						<portlet:param name="action" value="edit" />
@@ -134,7 +134,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherProjectVersion, "delete")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherProjectVersion, ActionKeys.DELETE)}">
 					<portlet:actionURL var="deletePatcherProjectVersionURL">
 						<portlet:param name="controller" value="project_versions" />
 						<portlet:param name="action" value="delete" />

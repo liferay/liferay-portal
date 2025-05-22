@@ -40,7 +40,7 @@
 
 		<c:set value='javascript:${renderResponse.namespace}navigateWindow("${viewPatcherBuildPatcherFixesURL}");' var="viewPatcherBuildPatcherFixesPopUpURL" />
 
-		<c:set value='${PatcherPermission.contains(themeDisplay, patcherBuild, "fixes")}' var="fixes" />
+		<c:set value="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.FIXES)}" var="fixes" />
 
 		<liferay-ui:search-container-column-text>
 			<c:if test="${PatcherBuildUtil.isObsolete(patcherBuild.patcherBuildId)}">

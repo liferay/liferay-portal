@@ -87,7 +87,7 @@
 
 		<aui:button href="${(not empty redirect) ? redirect : viewPatcherFixesURL}" value="cancel" />
 
-		<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "editFixPackFields")}'>
+		<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS)}">
 			<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 				<portlet:param name="controller" value="fixes" />
 				<portlet:param name="action" value="editFixPackFields" />

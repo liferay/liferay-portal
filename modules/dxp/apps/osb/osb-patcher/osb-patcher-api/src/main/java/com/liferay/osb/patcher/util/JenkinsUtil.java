@@ -9,6 +9,7 @@ import com.liferay.alloy.mvc.AlloyController;
 import com.liferay.alloy.mvc.AlloyException;
 import com.liferay.jenkins.results.parser.LoadBalancerUtil;
 import com.liferay.osb.patcher.constants.JenkinsConstants;
+import com.liferay.osb.patcher.constants.PatcherActionKeys;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
@@ -442,7 +443,7 @@ public class JenkinsUtil {
 		if ((patcherFix == null) ||
 			((themeDisplay != null) &&
 			 !PatcherPermission.contains(
-				 themeDisplay, patcherFix, "sendRequest"))) {
+				 themeDisplay, patcherFix, PatcherActionKeys.SEND_REQUEST))) {
 
 			return false;
 		}
@@ -467,7 +468,8 @@ public class JenkinsUtil {
 
 			if ((themeDisplay != null) && (patcherFixPack != null) &&
 				PatcherPermission.contains(
-					themeDisplay, patcherFixPack, "sendRequest")) {
+					themeDisplay, patcherFixPack,
+					PatcherActionKeys.SEND_REQUEST)) {
 
 				return true;
 			}
@@ -488,7 +490,7 @@ public class JenkinsUtil {
 
 		if ((themeDisplay == null) ||
 			!PatcherPermission.contains(
-				themeDisplay, patcherBuild, "sendRequest")) {
+				themeDisplay, patcherBuild, PatcherActionKeys.SEND_REQUEST)) {
 
 			return false;
 		}

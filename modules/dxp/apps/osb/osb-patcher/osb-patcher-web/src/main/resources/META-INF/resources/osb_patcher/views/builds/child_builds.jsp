@@ -97,7 +97,7 @@
 
 				<c:set value='${AlloyLanguageUtil.formatUnicode("view-fixes-for-build-id-x", childPatcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, childPatcherBuild, "fixes")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, childPatcherBuild, PatcherActionKeys.FIXES)}">
 					<liferay-ui:icon
 						image="view"
 						message="view-fixes"

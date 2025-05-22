@@ -90,13 +90,13 @@ tabsNames.add("fix-components");
 
 tabsValuesList.add(viewPatcherFixComponentsURL);
 
-if (PatcherPermission.contains(themeDisplay, "fix_packs", "index")) {
+if (PatcherPermission.contains(themeDisplay, "fix_packs", PatcherActionKeys.INDEX)) {
 	tabsNames.add("fix-packs");
 
 	tabsValuesList.add(viewPatcherFixPacksURL);
 }
 
-if (PatcherPermission.contains(themeDisplay, "product_versions", "index")) {
+if (PatcherPermission.contains(themeDisplay, "product_versions", PatcherActionKeys.INDEX)) {
 	tabsNames.add("product-versions");
 
 	tabsValuesList.add(viewPatcherProductVersionsURL);

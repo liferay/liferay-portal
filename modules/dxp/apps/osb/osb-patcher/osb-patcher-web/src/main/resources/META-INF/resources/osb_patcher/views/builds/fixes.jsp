@@ -99,7 +99,7 @@
 			name="engineer-comments"
 		>
 			<c:choose>
-				<c:when test='${PatcherPermission.contains(themeDisplay, patcherFix, "editCommentsField") && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}'>
+				<c:when test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<aui:a href="${editPatcherFixCommentsFieldURL}">
 						${shortenedPatcherFixComments}
 					</aui:a>

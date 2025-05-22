@@ -66,7 +66,7 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherProductVersion, "edit")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherProductVersion, PatcherActionKeys.EDIT)}">
 					<portlet:renderURL var="editPatcherProductVersionURL">
 						<portlet:param name="controller" value="product_versions" />
 						<portlet:param name="action" value="edit" />

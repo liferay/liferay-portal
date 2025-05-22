@@ -30,7 +30,7 @@
 		<portlet:param name="patcherProductVersionId" value="${patcherProductVersionId}" />
 	</portlet:renderURL>
 
-	<aui:button disabled='${!PatcherPermission.contains(themeDisplay, "fixes", "create")}' href="${createPatcherFixURL}" value="create-fix" />
+	<aui:button disabled='${!PatcherPermission.contains(themeDisplay, "fixes", PatcherActionKeys.CREATE)}' href="${createPatcherFixURL}" value="create-fix" />
 </aui:button-row>
 
 <portlet:renderURL var="viewPatcherFixesURL">
@@ -212,7 +212,7 @@
 			name="engineer-comments"
 		>
 			<c:choose>
-				<c:when test='${PatcherPermission.contains(themeDisplay, patcherFix, "editCommentsField") && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}'>
+				<c:when test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<aui:a href="${editPatcherFixCommentsFieldURL}">
 						${shortenedPatcherFixComments}
 					</aui:a>
@@ -244,7 +244,7 @@
 			<liferay-ui:icon-menu
 				cssClass="osb-patcher-icon-menu"
 			>
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "edit") && patcherFix.latestFix && (patcherFix.type != PatcherFixConstants.TYPE_FIX_PACK)}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT) && patcherFix.latestFix && (patcherFix.type != PatcherFixConstants.TYPE_FIX_PACK)}">
 					<portlet:renderURL var="editPatcherFixURL">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="edit" />
@@ -258,7 +258,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "editCommentsField") && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<liferay-ui:icon
 						image="edit"
 						message="edit-engineer-comments"
@@ -267,7 +267,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "editFixPackFields") && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="editFixPackFields" />
@@ -286,7 +286,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "builds")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.BUILDS)}">
 					<portlet:renderURL var="viewPatcherFixPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="builds" />
@@ -305,7 +305,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "fixes")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.FIXES)}">
 					<portlet:renderURL var="viewPatcherFixesPopUpURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="fixes" />
@@ -337,7 +337,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "exclude") && (patcherFix.type != PatcherFixConstants.TYPE_EXCLUDED) && (patcherFix.type != PatcherFixConstants.TYPE_FIX_PACK)}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EXCLUDE) && (patcherFix.type != PatcherFixConstants.TYPE_EXCLUDED) && (patcherFix.type != PatcherFixConstants.TYPE_FIX_PACK)}">
 					<portlet:actionURL var="excludePatcherFixURL">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="exclude" />

@@ -56,7 +56,7 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFixComponent, "edit")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFixComponent, PatcherActionKeys.EDIT)}">
 					<portlet:renderURL var="editPatcherFixComponentURL">
 						<portlet:param name="controller" value="fix_components" />
 						<portlet:param name="action" value="edit" />
@@ -70,7 +70,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFixComponent, "delete")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFixComponent, ActionKeys.DELETE)}">
 					<portlet:actionURL var="deletePatcherFixComponentURL">
 						<portlet:param name="controller" value="fix_components" />
 						<portlet:param name="action" value="delete" />

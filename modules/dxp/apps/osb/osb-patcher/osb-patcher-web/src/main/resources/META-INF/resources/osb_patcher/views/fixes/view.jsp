@@ -154,7 +154,7 @@
 
 		<aui:button onClick="${viewPatcherFixesURL}" value="view-fixes" />
 
-		<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "editFixPackFields") && (patcherFix.patcherFixId > 0)}'>
+		<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS) && (patcherFix.patcherFixId > 0)}'>
 			<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 				<portlet:param name="controller" value="fixes" />
 				<portlet:param name="action" value="editFixPackFields" />

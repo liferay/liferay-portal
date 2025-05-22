@@ -17,7 +17,7 @@
 		<portlet:param name="action" value="create" />
 	</portlet:renderURL>
 
-	<aui:button disabled='${!PatcherPermission.contains(themeDisplay, "fix_packs", "create")}' href="${createPatcherFixPackURL}" value="create-fix-pack" />
+	<aui:button disabled='${!PatcherPermission.contains(themeDisplay, "fix_packs", PatcherActionKeys.CREATE)}' href="${createPatcherFixPackURL}" value="create-fix-pack" />
 </aui:button-row>
 
 <portlet:renderURL var="viewPatcherFixPacksURL">
@@ -149,7 +149,7 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFixPack, "edit")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFixPack, PatcherActionKeys.EDIT)}">
 					<portlet:renderURL var="editPatcherFixPackURL">
 						<portlet:param name="controller" value="fix_packs" />
 						<portlet:param name="action" value="edit" />

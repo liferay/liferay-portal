@@ -207,7 +207,7 @@
 		<aui:button onClick="${viewPatcherBuildPatcherFixesURL}" value="view-fixes" />
 	</c:if>
 
-	<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, 'child_builds') && PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)}">
+	<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.CHILD_BUILDS) && PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)}">
 		<portlet:renderURL var="viewChildPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 			<portlet:param name="controller" value="builds" />
 			<portlet:param name="action" value="childBuilds" />
@@ -224,7 +224,7 @@
 	<liferay-ui:icon-menu
 		cssClass="osb-patcher-icon-menu"
 	>
-		<c:if test='${PatcherPermission.contains(themeDisplay, patcherBuild, "edit") && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}'>
+		<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 			<portlet:renderURL var="createPatcherBuildTemplateURL">
 				<portlet:param name="controller" value="builds" />
 				<portlet:param name="action" value="create" />
@@ -240,7 +240,7 @@
 			/>
 		</c:if>
 
-		<c:if test='${PatcherPermission.contains(themeDisplay, patcherBuild, "editCommentsField") && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}'>
+		<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 			<portlet:renderURL var="editPatcherBuildCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 				<portlet:param name="controller" value="builds" />
 				<portlet:param name="action" value="editCommentsField" />
@@ -259,7 +259,7 @@
 			/>
 		</c:if>
 
-		<c:if test='${PatcherPermission.contains(themeDisplay, patcherBuild, "editQAFields") && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}'>
+		<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 			<portlet:renderURL var="editPatcherBuildQAFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 				<portlet:param name="controller" value="builds" />
 				<portlet:param name="action" value="editQAFields" />
@@ -278,7 +278,7 @@
 			/>
 		</c:if>
 
-		<c:set value='${PatcherPermission.contains(themeDisplay, patcherBuild, "sendRequest")}' var="sendRequestPermission" />
+		<c:set value="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.SEND_REQUEST)}" var="sendRequestPermission" />
 
 		<c:set value="${JenkinsUtil.isValidJenkinsSetup()}" var="isValidJenkinsSetup" />
 

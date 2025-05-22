@@ -192,7 +192,7 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "edit") && patcherFix.latestFix}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT) && patcherFix.latestFix}">
 					<portlet:renderURL var="editPatcherFixURL">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="edit" />
@@ -206,7 +206,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "editFixPackFields")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS)}">
 					<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="editFixPackFields" />
@@ -225,7 +225,7 @@
 					/>
 				</c:if>
 
-				<c:if test='${PatcherPermission.contains(themeDisplay, patcherFix, "setFixPackFields")}'>
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.SET_FIX_PACK_FIELDS)}">
 					<portlet:renderURL var="viewPatcherFixPackURL">
 						<portlet:param name="controller" value="fix_packs" />
 						<portlet:param name="action" value="view" />
