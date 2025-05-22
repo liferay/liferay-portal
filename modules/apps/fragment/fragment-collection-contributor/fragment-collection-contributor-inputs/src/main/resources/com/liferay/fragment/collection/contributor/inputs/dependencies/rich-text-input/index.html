@@ -125,7 +125,7 @@
 			</div>
 		[#else]
 			<div class="d-flex">
-				<div class="flex-grow-1">
+				<div class="flex-grow-1" id="${fragmentEntryLinkNamespace + '-wrapper'}">
 					[@liferay_layout["render-editor"] content=input.value name=fragmentEntryLinkNamespace + "-" + input.name label=inputLabel required=input.required /]
 				</div>
 
