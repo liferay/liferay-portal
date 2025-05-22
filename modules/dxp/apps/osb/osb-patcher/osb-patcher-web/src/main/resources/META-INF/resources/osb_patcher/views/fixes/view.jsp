@@ -173,10 +173,11 @@
 <c:if test="${alloySearchResult.size > 1}">
 	<aui:field-wrapper name="fix-versions" />
 
-	<liferay-ui:search-container>
+	<liferay-ui:search-container
+		total="${alloySearchResult.size}"
+	>
 		<liferay-ui:search-container-results
 			results="${alloySearchResult.baseModels}"
-			total="${alloySearchResult.size}"
 		/>
 
 		<liferay-ui:search-container-row

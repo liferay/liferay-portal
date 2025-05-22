@@ -398,10 +398,10 @@
 
 	<liferay-ui:search-container
 		iteratorURL="${alloySearchResult.portletURL}"
+		total="${alloySearchResult.size}"
 	>
 		<liferay-ui:search-container-results
 			results="${alloySearchResult.baseModels}"
-			total="${alloySearchResult.size}"
 		/>
 
 		<liferay-ui:search-container-row

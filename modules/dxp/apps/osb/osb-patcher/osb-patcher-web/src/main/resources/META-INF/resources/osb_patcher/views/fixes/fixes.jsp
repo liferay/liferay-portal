@@ -9,10 +9,10 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fixes"
+	total="${fn:length(patcherFixes)}"
 >
 	<liferay-ui:search-container-results
 		results="${patcherFixes}"
-		total="${fn:length(patcherFixes)}"
 	/>
 
 	<c:set value="${fn:length(patcherFixes)}" var="resultsTotal" />

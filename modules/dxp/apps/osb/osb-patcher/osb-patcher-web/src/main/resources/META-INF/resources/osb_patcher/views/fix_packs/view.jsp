@@ -121,10 +121,10 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fixes"
+	total="${fn:length(patcherFixes)}"
 >
 	<liferay-ui:search-container-results
 		results="${patcherFixes}"
-		total="${fn:length(patcherFixes)}"
 	/>
 
 	<liferay-ui:search-container-row
@@ -270,10 +270,11 @@
 <c:if test="${not empty prerequisitePatcherFixPacks}">
 	<aui:field-wrapper name="dependencies" />
 
-	<liferay-ui:search-container>
+	<liferay-ui:search-container
+		total="${fn:length(prerequisitePatcherFixPacks)}"
+	>
 		<liferay-ui:search-container-results
 			results="${prerequisitePatcherFixPacks}"
-			total="${fn:length(prerequisitePatcherFixPacks)}"
 		/>
 
 		<liferay-ui:search-container-row

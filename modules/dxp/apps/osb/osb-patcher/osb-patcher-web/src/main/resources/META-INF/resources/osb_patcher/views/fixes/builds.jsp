@@ -9,10 +9,10 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-builds"
+	total="${fn:length(patcherBuilds)}"
 >
 	<liferay-ui:search-container-results
 		results="${patcherBuilds}"
-		total="${fn:length(patcherBuilds)}"
 	/>
 
 	<c:set value="${fn:length(patcherBuilds)}" var="resultsTotal" />

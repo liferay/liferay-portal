@@ -45,10 +45,10 @@
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-accounts"
 	iteratorURL="${alloySearchResult.portletURL}"
+	total="${alloySearchResult.size}"
 >
 	<liferay-ui:search-container-results
 		results="${alloySearchResult.baseModels}"
-		total="${alloySearchResult.size}"
 	/>
 
 	<liferay-ui:search-container-row

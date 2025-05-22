@@ -69,10 +69,11 @@
 <c:if test="${not empty patcherFixPacks}">
 	<aui:field-wrapper name="fix-packs" />
 
-	<liferay-ui:search-container>
+	<liferay-ui:search-container
+		total="${fn:length(patcherFixPacks)}"
+	>
 		<liferay-ui:search-container-results
 			results="${patcherFixPacks}"
-			total="${fn:length(patcherFixPacks)}"
 		/>
 
 		<liferay-ui:search-container-row
