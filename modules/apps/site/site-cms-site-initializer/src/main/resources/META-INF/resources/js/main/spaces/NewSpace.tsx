@@ -79,7 +79,7 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 							name="description"
 							onChange={handleChange}
 							placeholder={Liferay.Language.get(
-								'enter-a-decription-for-your-space'
+								'enter-a-description-for-your-space'
 							)}
 							type="text"
 							value={values.description}
