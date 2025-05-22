@@ -25,13 +25,6 @@ public class PatcherPermission {
 
 	public static boolean contains(
 		PermissionChecker permissionChecker, long groupId, String name,
-		long primKey, String actionId) {
-
-		return contains(permissionChecker, groupId, name, primKey, actionId, 0);
-	}
-
-	public static boolean contains(
-		PermissionChecker permissionChecker, long groupId, String name,
 		long primKey, String actionId, long ownerId) {
 
 		List<String> resourceActions = ResourceActionsUtil.getResourceActions(
@@ -62,24 +55,15 @@ public class PatcherPermission {
 		ThemeDisplay themeDisplay, BaseModel<?> scopeBaseModel,
 		String actionId) {
 
-		return contains(
-			themeDisplay, scopeBaseModel, actionId,
-			themeDisplay.getScopeGroupId());
-	}
-
-	public static boolean contains(
-		ThemeDisplay themeDisplay, BaseModel<?> scopeBaseModel, String actionId,
-		long groupId) {
-
 		if (scopeBaseModel == null) {
 			return false;
 		}
 
 		return contains(
-			getPermissionChecker(themeDisplay), groupId,
+			getPermissionChecker(themeDisplay), themeDisplay.getScopeGroupId(),
 			scopeBaseModel.getModelClassName(),
 			GetterUtil.getLong(scopeBaseModel.getPrimaryKeyObj()),
-			formatAction(actionId));
+			formatAction(actionId), 0);
 	}
 
 	public static boolean contains(
@@ -89,43 +73,9 @@ public class PatcherPermission {
 				getPermissionChecker(themeDisplay),
 				themeDisplay.getScopeGroupId(), PatcherPortletKeys.PATCHER,
 				themeDisplay.getScopeGroupId(),
-				formatActionId(controller, action))) {
+				formatActionId(controller, action), 0)) {
 
 			return true;
-		}
-
-		return false;
-	}
-
-	public static boolean contains(
-		ThemeDisplay themeDisplay, String controller, String action,
-		long... groupIds) {
-
-		return contains(
-			themeDisplay, null, controller, formatAction(action), groupIds);
-	}
-
-	public static boolean contains(
-		ThemeDisplay themeDisplay, String name, String controller,
-		String action, long... groupIds) {
-
-		String actionId = formatActionId(controller, action);
-
-		if ((name == null) || name.isEmpty()) {
-			name = PatcherPortletKeys.PATCHER;
-		}
-		else {
-			actionId = actionId.substring(
-				0, actionId.indexOf(StringPool.POUND));
-		}
-
-		for (long groupId : groupIds) {
-			if (contains(
-					getPermissionChecker(themeDisplay), groupId, name, groupId,
-					actionId)) {
-
-				return true;
-			}
 		}
 
 		return false;
