@@ -67,11 +67,27 @@ if (layoutMode !== 'edit') {
 					editorPromise.then((editor) => {
 						changeLanguageDirection(editor, defaultLanguageId);
 
-						editor.on('change', () => {
+						const updateData = () => {
 							const value = editor.getData();
 
 							onChange(value);
-						});
+						};
+
+						if (Liferay.FeatureFlags['LPD-11235']) {
+							editor.model.document.on(
+								'change:data',
+								(event, source) => {
+									if (source?.isTyping) {
+										updateData();
+									}
+								}
+							);
+						}
+						else {
+							editor.on('change', () => {
+								updateData();
+							});
+						}
 					});
 				}
 				else {
