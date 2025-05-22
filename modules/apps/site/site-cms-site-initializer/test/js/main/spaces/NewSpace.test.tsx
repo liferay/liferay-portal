@@ -19,7 +19,6 @@ describe('NewSpace', () => {
 	};
 
 	let apiPostSpy: jest.SpyInstance;
-	let navigateSpy: jest.SpyInstance;
 
 	beforeEach(() => {
 		apiPostSpy = jest

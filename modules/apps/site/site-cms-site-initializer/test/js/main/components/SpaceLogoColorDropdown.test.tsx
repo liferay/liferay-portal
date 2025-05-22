@@ -47,10 +47,19 @@ describe('SpaceLogoColorDropdown', () => {
 
 		render(<SpaceLogoColorDropdown onChange={onColorSelect} />);
 
-		const dropdownButton = screen.getByRole('button', {
-			name: 'space-color',
-		});
+		await userEvent.click(
+			screen.getByRole('button', {
+				name: 'space-color',
+			})
+		);
 
-		await userEvent.click(dropdownButton);
+		const colorIndex = 3;
+
+		expect(onColorSelect).not.toHaveBeenCalled();
+
+		await userEvent.click(screen.getAllByRole('menuitem')[colorIndex]);
+
+		expect(onColorSelect).toHaveBeenCalledTimes(1);
+		expect(onColorSelect).toHaveBeenCalledWith(`outline-${colorIndex}`);
 	});
 });
