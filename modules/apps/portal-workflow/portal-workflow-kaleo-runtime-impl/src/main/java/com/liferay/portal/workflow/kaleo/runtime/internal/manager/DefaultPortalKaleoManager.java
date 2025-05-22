@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
+import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.kaleo.runtime.internal.BaseKaleoBean;
 import com.liferay.portal.workflow.kaleo.runtime.manager.PortalKaleoManager;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
@@ -71,7 +72,8 @@ public class DefaultPortalKaleoManager
 					Group companyGroup = groupLocalService.getCompanyGroup(
 						companyId);
 
-					String definitionName = _DEFINITION_NAME;
+					String definitionName =
+						WorkflowDefinitionConstants.NAME_SINGLE_APPROVER;
 
 					if (_definitionAssets.containsKey(assetClassName)) {
 						definitionName = _definitionAssets.get(assetClassName);
@@ -176,7 +178,9 @@ public class DefaultPortalKaleoManager
 			User guestUser = userLocalService.getGuestUser(companyId);
 
 			_workflowDefinitionManager.deployWorkflowDefinition(
-				null, serviceContext.getCompanyId(), guestUser.getUserId(),
+				WorkflowDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_SINGLE_APPROVER,
+				serviceContext.getCompanyId(), guestUser.getUserId(),
 				_getLocalizedTitle(companyId, definitionName), definitionName,
 				FileUtil.getBytes(inputStream));
 		}
@@ -297,7 +301,10 @@ public class DefaultPortalKaleoManager
 	private String _getLocalizedTitle(long companyId, String definitionName)
 		throws Exception {
 
-		if (!Objects.equals(_DEFINITION_NAME, definitionName)) {
+		if (!Objects.equals(
+				WorkflowDefinitionConstants.NAME_SINGLE_APPROVER,
+				definitionName)) {
+
 			return _localization.updateLocalization(
 				StringPool.BLANK, "title", definitionName,
 				LocaleUtil.toLanguageId(LocaleUtil.getDefault()));
@@ -321,15 +328,13 @@ public class DefaultPortalKaleoManager
 		return _localization.getXml(localizedValuesMap, "title");
 	}
 
-	private static final String _DEFINITION_NAME = "Single Approver";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultPortalKaleoManager.class);
 
 	private final Map<String, String> _defaultRoles = new HashMap<>();
 	private final Map<String, String> _definitionAssets = new HashMap<>();
 	private final Map<String, String> _definitionFiles = HashMapBuilder.put(
-		_DEFINITION_NAME,
+		WorkflowDefinitionConstants.NAME_SINGLE_APPROVER,
 		"META-INF/definitions/single-approver-workflow-definition.xml"
 	).build();
 
