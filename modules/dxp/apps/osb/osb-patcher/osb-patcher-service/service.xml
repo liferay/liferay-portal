@@ -254,6 +254,15 @@
 		<column name="name" type="String" />
 		<column name="fixDeliveryMethod" type="int" />
 		<column name="moduleFolderName" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="Name" return-type="PatcherProductVersion" unique="true">
+			<finder-column name="name" />
+		</finder>
+		<finder name="FixDeliveryMethod" return-type="Collection">
+			<finder-column name="fixDeliveryMethod" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherProjectVersion" remote-service="false">
 
