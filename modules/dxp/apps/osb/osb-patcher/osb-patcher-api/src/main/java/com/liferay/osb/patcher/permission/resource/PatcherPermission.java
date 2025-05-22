@@ -34,11 +34,7 @@ public class PatcherPermission {
 			return true;
 		}
 
-		if (name.indexOf(CharPool.PERIOD) != -1) {
-			if (ownerId <= 0) {
-				ownerId = getOwnerId(name, primKey);
-			}
-
+		if ((name.indexOf(CharPool.PERIOD) != -1) && (ownerId > 0)) {
 			if (permissionChecker.hasOwnerPermission(
 					permissionChecker.getCompanyId(), name, primKey, ownerId,
 					actionId)) {
@@ -52,8 +48,8 @@ public class PatcherPermission {
 	}
 
 	public static boolean contains(
-		ThemeDisplay themeDisplay, BaseModel<?> scopeBaseModel,
-		String actionId) {
+		ThemeDisplay themeDisplay, BaseModel<?> scopeBaseModel, String actionId,
+		long ownerId) {
 
 		if (scopeBaseModel == null) {
 			return false;
@@ -63,7 +59,7 @@ public class PatcherPermission {
 			getPermissionChecker(themeDisplay), themeDisplay.getScopeGroupId(),
 			scopeBaseModel.getModelClassName(),
 			GetterUtil.getLong(scopeBaseModel.getPrimaryKeyObj()),
-			formatAction(actionId), 0);
+			formatAction(actionId), ownerId);
 	}
 
 	public static boolean contains(
@@ -135,21 +131,6 @@ public class PatcherPermission {
 	protected static String formatActionId(String controller, String action) {
 		return formatAction(action) + StringPool.POUND +
 			StringUtil.toUpperCase(controller);
-	}
-
-	protected static long getOwnerId(String className, long classPK) {
-		BaseModel<?> baseModel = null;
-
-		try {
-			AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
-				className);
-
-			baseModel = alloyServiceInvoker.fetchModel(classPK);
-		}
-		catch (Exception e) {
-		}
-
-		return BeanPropertiesUtil.getLongSilent(baseModel, "userId");
 	}
 
 }

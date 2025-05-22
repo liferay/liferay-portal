@@ -149,7 +149,7 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFixPack, PatcherActionKeys.EDIT)}">
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFixPack, PatcherActionKeys.EDIT, patcherFixPack.userId)}">
 					<portlet:renderURL var="editPatcherFixPackURL">
 						<portlet:param name="controller" value="fix_packs" />
 						<portlet:param name="action" value="edit" />

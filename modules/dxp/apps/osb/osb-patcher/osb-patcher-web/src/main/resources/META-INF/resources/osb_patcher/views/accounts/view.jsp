@@ -133,7 +133,7 @@
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherBuildPatcherFixesURL}', '${viewPatcherFixesURLTitle}', true, 1000);" var="viewPatcherBuildPatcherFixesURL" />
 
-		<c:set value="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.FIXES)}" var="fixes" />
+		<c:set value="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.userId)}" var="fixes" />
 
 		<liferay-ui:search-container-column-text
 			cssClass="osb-patcher-search-container-column-text-icon"
@@ -252,7 +252,7 @@
 			<c:set value="${StringUtil.shorten(patcherBuild.comments, 75)}" var="shortenedPatcherBuildComments" />
 
 			<c:choose>
-				<c:when test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
+				<c:when test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<aui:a href="${editPatcherBuildCommentsFieldURL}">
 						${shortenedPatcherBuildComments}
 					</aui:a>
@@ -284,7 +284,7 @@
 			<c:set value="${StringUtil.shorten(patcherBuild.qaComments, 75)}" var="shortenedPatcherBuildQAComments" />
 
 			<c:choose>
-				<c:when test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
+				<c:when test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<aui:a href="${editPatcherBuildQAFieldsURL}">
 						${shortenedPatcherBuildQAComments}
 					</aui:a>
@@ -309,7 +309,7 @@
 			<liferay-ui:icon-menu
 				cssClass="osb-patcher-icon-menu"
 			>
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.userId) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<portlet:renderURL var="editPatcherBuildURL">
 						<portlet:param name="controller" value="builds" />
 						<portlet:param name="action" value="edit" />
@@ -324,7 +324,7 @@
 					/>
 				</c:if>
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.userId) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<portlet:renderURL var="createPatcherBuildTemplateURL">
 						<portlet:param name="controller" value="builds" />
 						<portlet:param name="action" value="create" />
@@ -340,7 +340,7 @@
 					/>
 				</c:if>
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<liferay-ui:icon
 						image="edit"
 						message="edit-engineer-comments"
@@ -349,7 +349,7 @@
 					/>
 				</c:if>
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
 					<liferay-ui:icon
 						image="edit"
 						message="edit-qa-status"
@@ -358,7 +358,7 @@
 					/>
 				</c:if>
 
-				<c:set value="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.SEND_REQUEST)}" var="sendRequestPermission" />
+				<c:set value="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.SEND_REQUEST, patcherBuild.userId)}" var="sendRequestPermission" />
 
 				<c:set value="${JenkinsUtil.isValidJenkinsSetup()}" var="isValidJenkinsSetup" />
 
@@ -471,7 +471,7 @@
 					/>
 				</c:if>
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.FIXES) && !PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)}">
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.userId) && !PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)}">
 					<liferay-ui:icon
 						image="view"
 						message="view-fixes"
@@ -480,7 +480,7 @@
 					/>
 				</c:if>
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.CHILD_BUILDS) && PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)}">
+				<c:if test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.CHILD_BUILDS, patcherBuild.userId) && PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)}">
 					<portlet:renderURL var="viewChildPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 						<portlet:param name="controller" value="builds" />
 						<portlet:param name="action" value="childBuilds" />

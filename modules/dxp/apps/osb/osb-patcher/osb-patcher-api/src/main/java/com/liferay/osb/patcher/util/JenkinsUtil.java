@@ -443,7 +443,8 @@ public class JenkinsUtil {
 		if ((patcherFix == null) ||
 			((themeDisplay != null) &&
 			 !PatcherPermission.contains(
-				 themeDisplay, patcherFix, PatcherActionKeys.SEND_REQUEST))) {
+				 themeDisplay, patcherFix, PatcherActionKeys.SEND_REQUEST,
+				 patcherFix.getUserId()))) {
 
 			return false;
 		}
@@ -469,7 +470,8 @@ public class JenkinsUtil {
 			if ((themeDisplay != null) && (patcherFixPack != null) &&
 				PatcherPermission.contains(
 					themeDisplay, patcherFixPack,
-					PatcherActionKeys.SEND_REQUEST)) {
+					PatcherActionKeys.SEND_REQUEST,
+					patcherFixPack.getUserId())) {
 
 				return true;
 			}
@@ -490,7 +492,8 @@ public class JenkinsUtil {
 
 		if ((themeDisplay == null) ||
 			!PatcherPermission.contains(
-				themeDisplay, patcherBuild, PatcherActionKeys.SEND_REQUEST)) {
+				themeDisplay, patcherBuild, PatcherActionKeys.SEND_REQUEST,
+				patcherBuild.getUserId())) {
 
 			return false;
 		}
