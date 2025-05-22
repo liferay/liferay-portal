@@ -12,7 +12,7 @@
 </liferay-util:include>
 
 <aui:layout>
-	<aui:column>
+	<clay:col>
 		<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" showEmptyOption="${true}">
 			<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
 				<aui:option label="${patcherProductVersion.name}" value="${patcherProductVersion.patcherProductVersionId}" />
@@ -20,7 +20,7 @@
 
 			<aui:option label="any" value="0" />
 		</aui:select>
-	</aui:column>
+	</clay:col>
 </aui:layout>
 
 <c:if test="${permissionChecker.isCompanyAdmin()}">

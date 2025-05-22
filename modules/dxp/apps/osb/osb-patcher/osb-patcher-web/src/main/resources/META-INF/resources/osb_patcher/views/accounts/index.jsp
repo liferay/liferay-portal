@@ -17,19 +17,21 @@
 </portlet:renderURL>
 
 <aui:button-row>
-	<aui:column>
+	<clay:col>
 		<aui:form action="" method="get" name="fm">
 			<aui:fieldset cssClass="account-search" id="searchFieldset">
 				<aui:input inlineField="${true}" label="" name="accountEntryCode" placeholder="find-account" size="30" title="find-account" type="text" />
 			</aui:fieldset>
 		</aui:form>
-	</aui:column>
+	</clay:col>
 
-	<aui:column cssClass="osb-patcher-loader-container">
+	<clay:col
+		cssClass="osb-patcher-loader-container"
+	>
 		<aui:container cssClass="osb-patcher-loader" id="loader" name="loader" />
-	</aui:column>
+	</clay:col>
 
-	<aui:column>
+	<clay:col>
 		<portlet:renderURL var="createPatcherBuildURL">
 			<portlet:param name="controller" value="builds" />
 			<portlet:param name="action" value="create" />
@@ -37,7 +39,7 @@
 		</portlet:renderURL>
 
 		<aui:button disabled='${!PatcherPermission.contains(themeDisplay, "builds", PatcherActionKeys.CREATE)}' href="${createPatcherBuildURL}" value="create-build-for-new-account" />
-	</aui:column>
+	</clay:col>
 </aui:button-row>
 
 <liferay-ui:search-container

@@ -12,7 +12,7 @@
 </liferay-util:include>
 
 <aui:layout>
-	<aui:column>
+	<clay:col>
 		<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" showEmptyOption="${true}">
 			<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
 				<aui:option label="${patcherProductVersion.name}" value="${patcherProductVersion.patcherProductVersionId}" />
@@ -20,7 +20,7 @@
 
 			<aui:option label="any" value="0" />
 		</aui:select>
-	</aui:column>
+	</clay:col>
 </aui:layout>
 
 <aui:button-row>
@@ -47,21 +47,21 @@
 		id="toggle_id_patcher_fix_search"
 	>
 		<aui:layout>
-			<aui:column>
+			<clay:col>
 				<aui:input label="fix-id" name="${Field.ENTRY_CLASS_PK}" size="30" type="text" />
-			</aui:column>
+			</clay:col>
 
-			<aui:column>
+			<clay:col>
 				<aui:input label="content" name="patcherFixName" size="30" title="search-fixes" type="text" />
-			</aui:column>
+			</clay:col>
 
-			<aui:column>
+			<clay:col>
 				<aui:input checked="${true}" inlineField="${false}" name="hideOldFixVersions" type="checkbox" />
-			</aui:column>
+			</clay:col>
 		</aui:layout>
 
 		<aui:layout>
-			<aui:column>
+			<clay:col>
 				<aui:select label="patcher-status" name="statusFilter" showEmptyOption="${true}">
 					<aui:option label="${WorkflowConstants.LABEL_FIX_ADDING}" value="${WorkflowConstants.STATUS_FIX_ADDING}" />
 					<aui:option label="${WorkflowConstants.LABEL_FIX_CONFLICT}" value="${WorkflowConstants.STATUS_FIX_CONFLICT}" />
@@ -70,9 +70,9 @@
 					<aui:option label="${WorkflowConstants.LABEL_FIX_REBASE_CONFLICT}" value="${WorkflowConstants.STATUS_FIX_REBASE_CONFLICT}" />
 					<aui:option label="${WorkflowConstants.LABEL_FIX_REBASING}" value="${WorkflowConstants.STATUS_FIX_REBASING}" />
 				</aui:select>
-			</aui:column>
+			</clay:col>
 
-			<aui:column>
+			<clay:col>
 				<aui:select label="type" name="typeFilter" showEmptyOption="${true}">
 					<aui:option label="${PatcherFixConstants.LABEL_PATCH}" value="${PatcherFixConstants.TYPE_PATCH}" />
 					<aui:option label="${PatcherFixConstants.LABEL_WORKAROUND}" value="${PatcherFixConstants.TYPE_WORKAROUND}" />
@@ -82,15 +82,15 @@
 					<aui:option label="${PatcherFixConstants.LABEL_EXCLUDED}" value="${PatcherFixConstants.TYPE_EXCLUDED}" />
 					<aui:option label="${PatcherFixConstants.LABEL_REBASE}" value="${PatcherFixConstants.TYPE_REBASE}" />
 				</aui:select>
-			</aui:column>
+			</clay:col>
 
-			<aui:column>
+			<clay:col>
 				<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
 					<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
 						<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
 					</c:forEach>
 				</aui:select>
-			</aui:column>
+			</clay:col>
 		</aui:layout>
 	</liferay-ui:search-toggle>
 </aui:form>

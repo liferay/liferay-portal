@@ -32,21 +32,21 @@
 		id="toggle_id_patcher_fix_pack_search"
 	>
 		<aui:layout>
-			<aui:column>
+			<clay:col>
 				<aui:input label="name" name="name" size="30" title="search-fix-packs" type="text" />
-			</aui:column>
+			</clay:col>
 		</aui:layout>
 
 		<aui:layout>
-			<aui:column>
+			<clay:col>
 				<aui:select label="status" name="statusFilter" showEmptyOption="${true}">
 					<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_FROZEN}" value="${WorkflowConstants.STATUS_FIX_PACK_FROZEN}" />
 					<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_RELEASED}" value="${WorkflowConstants.STATUS_FIX_PACK_RELEASED}" />
 					<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_UNDER_DEVELOPMENT}" value="${WorkflowConstants.STATUS_FIX_PACK_UNDER_DEVELOPMENT}" />
 				</aui:select>
-			</aui:column>
+			</clay:col>
 
-			<aui:column>
+			<clay:col>
 				<aui:select label="component" name="patcherFixComponentIdFilter" showEmptyOption="${true}">
 					<c:forEach items="${patcherFixComponents}" var="patcherFixComponent">
 						<aui:option value="${patcherFixComponent.patcherFixComponentId}">
@@ -54,15 +54,15 @@
 						</aui:option>
 					</c:forEach>
 				</aui:select>
-			</aui:column>
+			</clay:col>
 
-			<aui:column>
+			<clay:col>
 				<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
 					<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
 						<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
 					</c:forEach>
 				</aui:select>
-			</aui:column>
+			</clay:col>
 		</aui:layout>
 	</liferay-ui:search-toggle>
 </aui:form>

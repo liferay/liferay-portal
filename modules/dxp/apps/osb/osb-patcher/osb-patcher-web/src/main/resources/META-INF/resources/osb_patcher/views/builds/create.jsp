@@ -30,7 +30,7 @@
 <aui:form action="${addPatcherBuildURL}" method="post" name="fm" onSubmit="event.preventDefault(); ${renderResponse.namespace}checkForExistingHotfix();">
 	<aui:layout cssClass="osb-patcher-layout-flex" styleClass="osb-patcher-layout-flex">
 		<div class="osb-patcher-align-center">
-			<aui:column>
+			<clay:col>
 				<aui:input name="redirect" type="hidden" value="${redirect}" />
 
 				<aui:input name="useExistingHotfix" type="hidden" value="${false}" />
@@ -73,13 +73,17 @@
 
 					<aui:button href="${(not empty redirect) ? redirect : viewPatcherBuildsURL}" value="cancel" />
 				</aui:button-row>
-			</aui:column>
+			</clay:col>
 
-			<aui:column cssClass="osb-patcher-content-half">
+			<clay:col
+				cssClass="osb-patcher-content-half"
+			>
 				<aui:input inputCssClass="osb-patcher-input-wide" label="tickets-list" name="patcherBuildName" style="height: 100%;" type="textarea" value="${patcherBuild.name}" wrapperCssClass="osb-patcher-max-height" />
-			</aui:column>
+			</clay:col>
 
-			<aui:column style="margin-top: 5%;">
+			<clay:col
+				cssClass="mt-1"
+			>
 				<aui:field-wrapper>
 					<aui:input inputCssClass="osb-patcher-input-wide" label="troubleshooting-ticket-suggestions" name="troubleshootingTicketList" type="textarea" />
 
@@ -105,7 +109,7 @@
 						</aui:button-row>
 					</aui:field-wrapper>
 				</div>
-			</aui:column>
+			</clay:col>
 		</div>
 	</aui:layout>
 </aui:form>
