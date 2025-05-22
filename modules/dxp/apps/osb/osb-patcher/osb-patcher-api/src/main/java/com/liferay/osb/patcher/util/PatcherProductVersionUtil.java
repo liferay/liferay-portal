@@ -5,24 +5,19 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
 import com.liferay.osb.patcher.model.PatcherAccount;
-import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
-import com.liferay.osb.patcher.model.impl.PatcherProductVersionModelImpl;
+import com.liferay.osb.patcher.model.PatcherProductVersionModel;
+import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,26 +27,15 @@ import java.util.List;
  */
 public class PatcherProductVersionUtil {
 
-	public static PatcherProductVersion fetchPatcherProductVersion(String name)
-		throws Exception {
+	public static PatcherProductVersion fetchPatcherProductVersion(
+		String name) {
 
-		AlloyServiceInvoker patcherProductVersionAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherProductVersion.class.getName());
-
-		List<PatcherProductVersion> patcherProductVersions =
-			patcherProductVersionAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"name", name});
-
-		if (!patcherProductVersions.isEmpty()) {
-			return patcherProductVersions.get(0);
-		}
-
-		return null;
+		return PatcherProductVersionLocalServiceUtil.fetchPatcherProductVersion(
+			name);
 	}
 
 	public static String fetchPatcherProductVersionName(
-			long patcherProductVersionId)
-		throws Exception {
+		long patcherProductVersionId) {
 
 		PatcherProductVersion patcherProductVersion =
 			PatcherProductVersionLocalServiceUtil.fetchPatcherProductVersion(
@@ -64,84 +48,37 @@ public class PatcherProductVersionUtil {
 		return StringPool.BLANK;
 	}
 
-	public static List<Long> getMarketplaceReleasePatcherProductVersionIds()
-		throws Exception {
-
-		AlloyServiceInvoker patcherProductVersionAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherProductVersion.class.getName());
-
-		List<BaseModel> patcherProductVersions =
-			patcherProductVersionAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {
-					"fixDeliveryMethod",
-					PatcherProductVersionConstants.
-						TYPE_FIX_DELIVERY_METHOD_MARKETPLACE_RELEASE
-				});
-
-		return BaseModelUtil.fetchBaseModelsPrimaryIds(patcherProductVersions);
+	public static List<Long> getMarketplaceReleasePatcherProductVersionIds() {
+		return TransformUtil.transform(
+			PatcherProductVersionLocalServiceUtil.getPatcherProductVersions(
+				PatcherProductVersionConstants.
+					TYPE_FIX_DELIVERY_METHOD_MARKETPLACE_RELEASE),
+			PatcherProductVersionModel::getPatcherProductVersionId);
 	}
 
-	public static long getPatcherProductVersionId(String name)
-		throws Exception {
-
-		AlloyServiceInvoker patcherProductVersionAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherProductVersion.class.getName());
-
-		List<PatcherProductVersion> patcherProductVersions =
-			patcherProductVersionAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"name", name});
-
+	public static long getPatcherProductVersionId(String name) {
 		PatcherProductVersion patcherProductVersion =
-			patcherProductVersions.get(0);
+			PatcherProductVersionLocalServiceUtil.fetchPatcherProductVersion(
+				name);
 
 		return patcherProductVersion.getPatcherProductVersionId();
 	}
 
-	public static List<PatcherProductVersion> getPatcherProductVersions()
-		throws Exception {
-
-		List<PatcherProductVersion> patcherProductVersions =
-			PatcherProductVersionLocalServiceUtil.getPatcherProductVersions(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherProductVersionModelImpl.TABLE_NAME, "name", true);
-
-		return ListUtil.sort(patcherProductVersions, obc);
+	public static List<PatcherProductVersion> getPatcherProductVersions() {
+		return PatcherProductVersionLocalServiceUtil.
+			getPatcherProductVersions();
 	}
 
 	public static List<PatcherProductVersion> getPatcherProductVersions(
-			int fixDeliveryMethod)
-		throws Exception {
+		int fixDeliveryMethod) {
 
-		AlloyServiceInvoker patcherProductVersionAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherProductVersion.class.getName());
-
-		return patcherProductVersionAlloyServiceInvoker.executeDynamicQuery(
-			new Object[] {"fixDeliveryMethod", fixDeliveryMethod});
+		return PatcherProductVersionLocalServiceUtil.getPatcherProductVersions(
+			fixDeliveryMethod);
 	}
 
 	public static List<PatcherProductVersion> getPatcherProductVersions(
 			PatcherAccount patcherAccount)
 		throws Exception {
-
-		AlloyServiceInvoker patcherProductVersionAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherProductVersion.class.getName());
-
-		DynamicQuery patcherProductVersionDynamicQuery =
-			patcherProductVersionAlloyServiceInvoker.buildDynamicQuery();
-
-		Property patcherProductVersionIdProperty = PropertyFactoryUtil.forName(
-			"patcherProductVersionId");
-
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		DynamicQuery patcherBuildDynamicQuery =
-			patcherBuildAlloyServiceInvoker.buildDynamicQuery();
-
-		Property patcherBuildIdProperty = PropertyFactoryUtil.forName(
-			"patcherBuildId");
 
 		List<Long> patcherAccountPatcherBuildIds =
 			PatcherBuildUtil.getPatcherAccountPatcherBuildIds(
@@ -150,6 +87,18 @@ public class PatcherProductVersionUtil {
 		if (patcherAccountPatcherBuildIds.isEmpty()) {
 			return Collections.emptyList();
 		}
+
+		DynamicQuery patcherProductVersionDynamicQuery =
+			PatcherProductVersionLocalServiceUtil.dynamicQuery();
+
+		Property patcherProductVersionIdProperty = PropertyFactoryUtil.forName(
+			"patcherProductVersionId");
+
+		DynamicQuery patcherBuildDynamicQuery =
+			PatcherBuildLocalServiceUtil.dynamicQuery();
+
+		Property patcherBuildIdProperty = PropertyFactoryUtil.forName(
+			"patcherBuildId");
 
 		patcherBuildDynamicQuery.add(
 			patcherBuildIdProperty.in(patcherAccountPatcherBuildIds));
@@ -164,7 +113,7 @@ public class PatcherProductVersionUtil {
 		patcherProductVersionDynamicQuery.add(
 			patcherProductVersionIdProperty.in(patcherBuildDynamicQuery));
 
-		return patcherProductVersionAlloyServiceInvoker.executeDynamicQuery(
+		return PatcherProductVersionLocalServiceUtil.dynamicQuery(
 			patcherProductVersionDynamicQuery);
 	}
 
