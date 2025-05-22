@@ -40,10 +40,8 @@ export default function SpaceColorDropdown({
 	const [selected, setSelected] = useState(COLORS[0]);
 	const dropdownTriggerId = useId();
 
-	const classes = classNames('space-logo-color-dropdown', className);
-
 	return (
-		<ClayForm.Group className={classes}>
+		<ClayForm.Group className={classNames('space-logo-color-dropdown', className)}>
 			<label htmlFor={dropdownTriggerId}>
 				{Liferay.Language.get('space-color')}
 			</label>
