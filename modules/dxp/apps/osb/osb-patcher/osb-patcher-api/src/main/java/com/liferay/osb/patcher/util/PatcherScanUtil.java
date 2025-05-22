@@ -5,7 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyController;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
@@ -16,9 +15,11 @@ import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -52,7 +53,7 @@ public class PatcherScanUtil {
 	}
 
 	public static Map<Long, List<Long>> scanPatcherFixIdsBy7xProjectVersions(
-			AlloyController alloyController, PatcherBuild patcherBuild)
+			PatcherBuild patcherBuild)
 		throws Exception {
 
 		List<Long> patcherProjectVersionIds = new ArrayList<>();
@@ -75,8 +76,7 @@ public class PatcherScanUtil {
 
 		Map<Long, List<Long>> patcherProjectVersionIdPatcherFixIdsMap =
 			scanPatcherFixIdsByProjectVersionIds(
-				alloyController, patcherProjectVersionIds, patcherBuildTickets,
-				true);
+				patcherProjectVersionIds, patcherBuildTickets, true);
 
 		if (!patcherBuildTickets.isEmpty()) {
 			PatcherProjectVersion patcherProjectVersion =
@@ -85,8 +85,7 @@ public class PatcherScanUtil {
 
 			Map<Long, List<Long>> otherPatcherProjectVersionIdPatcherFixIdsMap =
 				scanPatcherFixIdsByOtherProjectVersions(
-					alloyController, patcherProjectVersion,
-					patcherBuildTickets);
+					patcherProjectVersion, patcherBuildTickets);
 
 			patcherProjectVersionIdPatcherFixIdsMap.putAll(
 				otherPatcherProjectVersionIdPatcherFixIdsMap);
@@ -96,7 +95,8 @@ public class PatcherScanUtil {
 			StringBundler sb = new StringBundler(7);
 
 			sb.append(
-				alloyController.translate(
+				LanguageUtil.get(
+					LocaleUtil.getMostRelevantLocale(),
 					"failed-building-a-patch-for-tickets"));
 			sb.append("<br />");
 			sb.append(
@@ -105,7 +105,8 @@ public class PatcherScanUtil {
 					StringPool.COMMA_AND_SPACE));
 			sb.append("<br /><br />");
 			sb.append(
-				alloyController.translate(
+				LanguageUtil.get(
+					LocaleUtil.getMostRelevantLocale(),
 					"there-was-no-match-found-in-our-fix-catalog-for-the-" +
 						"following-tokens"));
 			sb.append("<br />");
@@ -122,8 +123,7 @@ public class PatcherScanUtil {
 	}
 
 	public static List<Long> scanPatcherFixIdsByProjectVersionId(
-			AlloyController alloyController, String patcherBuildName,
-			long patcherProjectVersionId,
+			String patcherBuildName, long patcherProjectVersionId,
 			List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
@@ -136,9 +136,8 @@ public class PatcherScanUtil {
 
 		if (!tickets.isEmpty()) {
 			patcherFixIds = scanPatcherFixIdsByTickets(
-				alloyController, patcherBuildName, patcherFixPackFixIds,
-				patcherProjectVersionId, StringUtil.merge(tickets),
-				patcherFixesSelection);
+				patcherBuildName, patcherFixPackFixIds, patcherProjectVersionId,
+				StringUtil.merge(tickets), patcherFixesSelection);
 		}
 		else {
 			patcherFixIds = patcherFixPackFixIds;
@@ -150,7 +149,6 @@ public class PatcherScanUtil {
 	}
 
 	public static Map<Long, List<Long>> scanPatcherFixIdsByProjectVersionIds(
-			AlloyController alloyController,
 			List<Long> patcherProjectVersionIds,
 			List<String> patcherBuildTickets,
 			boolean includeAnyStatusRebaseFixes)
@@ -173,8 +171,8 @@ public class PatcherScanUtil {
 			}
 
 			List<Long> patcherFixIds = scanPatcherFixIdsByProjectVersionId(
-				alloyController, StringUtil.merge(foundTickets),
-				patcherProjectVersionId, patcherFixesSelection);
+				StringUtil.merge(foundTickets), patcherProjectVersionId,
+				patcherFixesSelection);
 
 			patcherProjectVersionIdPatcherFixIdsMap.put(
 				patcherProjectVersionId, patcherFixIds);
@@ -282,7 +280,6 @@ public class PatcherScanUtil {
 
 	protected static Map<Long, List<Long>>
 			scanPatcherFixIdsByOtherProjectVersions(
-				AlloyController alloyController,
 				PatcherProjectVersion patcherProjectVersion,
 				List<String> patcherBuildTickets)
 		throws Exception {
@@ -293,8 +290,7 @@ public class PatcherScanUtil {
 				patcherProjectVersion.getPatcherProductVersionId())) {
 
 			return scanPatcherFixIdsByProjectVersionIds(
-				alloyController, patcherProjectVersionIds, patcherBuildTickets,
-				false);
+				patcherProjectVersionIds, patcherBuildTickets, false);
 		}
 
 		PatcherProjectVersion newerPatcherProjectVersion =
@@ -439,14 +435,13 @@ public class PatcherScanUtil {
 		}
 
 		return scanPatcherFixIdsByProjectVersionIds(
-			alloyController, patcherProjectVersionIds, patcherBuildTickets,
-			false);
+			patcherProjectVersionIds, patcherBuildTickets, false);
 	}
 
 	protected static List<Long> scanPatcherFixIdsByTickets(
-			AlloyController alloyController, String patcherBuildName,
-			List<Long> patcherFixPackFixIds, long patcherProjectVersionId,
-			String tickets, List<PatcherFix> patcherFixesSelection)
+			String patcherBuildName, List<Long> patcherFixPackFixIds,
+			long patcherProjectVersionId, String tickets,
+			List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
 		List<Long> patcherFixIds = new ArrayList<>();
@@ -487,7 +482,8 @@ public class PatcherScanUtil {
 				sb = new StringBundler(12);
 
 				sb.append(
-					alloyController.translate(
+					LanguageUtil.get(
+						LocaleUtil.getMostRelevantLocale(),
 						"failed-building-a-patch-for-tickets"));
 				sb.append("<br />");
 				sb.append(
@@ -496,7 +492,8 @@ public class PatcherScanUtil {
 						StringPool.COMMA_AND_SPACE));
 				sb.append("<br /><br />");
 				sb.append(
-					alloyController.translate(
+					LanguageUtil.get(
+						LocaleUtil.getMostRelevantLocale(),
 						"there-was-no-match-found-in-our-fix-catalog-for-the-" +
 							"following-tokens"));
 				sb.append("<br />");
@@ -504,7 +501,9 @@ public class PatcherScanUtil {
 					StringUtil.merge(
 						patcherBuildTickets, StringPool.COMMA_AND_SPACE));
 				sb.append("<br /><br />");
-				sb.append(alloyController.translate("process"));
+				sb.append(
+					LanguageUtil.get(
+						LocaleUtil.getMostRelevantLocale(), "process"));
 				sb.append(StringPool.COLON);
 				sb.append("<br />");
 				sb.append(msg);
