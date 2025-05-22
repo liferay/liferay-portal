@@ -26,25 +26,24 @@ function getDisplayType(char: string): LogoColor {
 }
 
 export default function SpaceSticker({
-	className,
 	displayType,
 	hiddenName,
-	id,
 	name,
 	size,
+	...otherProps
 }: {
-	className?: string;
 	hiddenName?: boolean;
-	id?: string;
 	name: string;
-} & Pick<React.ComponentProps<typeof ClaySticker>, 'displayType' | 'size'>) {
+} & Pick<
+	React.ComponentProps<typeof ClaySticker>,
+	'className' | 'displayType' | 'id' | 'size'
+>) {
 	return (
 		<>
 			<ClaySticker
-				className={className}
 				displayType={displayType || getDisplayType(name)}
-				id={id}
 				size={size}
+				{...otherProps}
 			>
 				{name.charAt(0).toUpperCase()}
 			</ClaySticker>
