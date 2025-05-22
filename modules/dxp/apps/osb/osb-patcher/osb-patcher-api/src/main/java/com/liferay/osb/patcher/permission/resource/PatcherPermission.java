@@ -5,19 +5,56 @@
 
 package com.liferay.osb.patcher.permission.resource;
 
-import com.liferay.alloy.mvc.AlloyPermission;
 import com.liferay.osb.patcher.constants.PatcherPortletKeys;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchResourceActionException;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 /**
  * @author Zsolt Balogh
  */
-public class PatcherPermission extends AlloyPermission {
+public class PatcherPermission {
+
+	public static boolean contains(
+		PermissionChecker permissionChecker, long groupId, String name,
+		long primKey, String actionId) {
+
+		return contains(permissionChecker, groupId, name, primKey, actionId, 0);
+	}
+
+	public static boolean contains(
+		PermissionChecker permissionChecker, long groupId, String name,
+		long primKey, String actionId, long ownerId) {
+
+		try {
+			ResourceActionsUtil.checkAction(name, actionId);
+		}
+		catch (NoSuchResourceActionException noSuchResourceActionException) {
+			return true;
+		}
+
+		if (name.indexOf(CharPool.PERIOD) != -1) {
+			if (ownerId <= 0) {
+				ownerId = getOwnerId(name, primKey);
+			}
+
+			if (permissionChecker.hasOwnerPermission(
+					permissionChecker.getCompanyId(), name, primKey, ownerId,
+					actionId)) {
+
+				return true;
+			}
+		}
+
+		return permissionChecker.hasPermission(
+			groupId, name, primKey, actionId);
+	}
 
 	public static boolean contains(
 		ThemeDisplay themeDisplay, BaseModel<?> scopeBaseModel,
@@ -103,6 +140,68 @@ public class PatcherPermission extends AlloyPermission {
 		}
 
 		return permissionChecker;
+	}
+
+	protected static String formatAction(String action) {
+		StringBuilder sb = new StringBuilder(StringUtil.toUpperCase(action));
+
+		for (int i = 0; i < action.length(); i++) {
+			char c = action.charAt(i);
+
+			if (Character.isUpperCase(c) && (i > 0)) {
+				int delta = sb.length() - action.length();
+
+				sb.insert(i + delta, CharPool.UNDERLINE);
+
+				if (((i + 1) >= action.length()) ||
+					Character.isLowerCase(action.charAt(i + 1))) {
+
+					continue;
+				}
+
+				while (i < action.length()) {
+					c = action.charAt(i);
+
+					if (Character.isLowerCase(c)) {
+						break;
+					}
+
+					i++;
+				}
+
+				if (i == action.length()) {
+					continue;
+				}
+
+				sb.insert(i + delta, CharPool.UNDERLINE);
+			}
+		}
+
+		return sb.toString();
+	}
+
+	protected static String formatActionId(String controller, String action) {
+		StringBuilder sb = new StringBuilder(formatAction(action));
+
+		sb.append(StringPool.POUND);
+		sb.append(StringUtil.toUpperCase(controller));
+
+		return sb.toString();
+	}
+
+	protected static long getOwnerId(String className, long classPK) {
+		BaseModel<?> baseModel = null;
+
+		try {
+			AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
+				className);
+
+			baseModel = alloyServiceInvoker.fetchModel(classPK);
+		}
+		catch (Exception e) {
+		}
+
+		return BeanPropertiesUtil.getLongSilent(baseModel, "userId");
 	}
 
 }
