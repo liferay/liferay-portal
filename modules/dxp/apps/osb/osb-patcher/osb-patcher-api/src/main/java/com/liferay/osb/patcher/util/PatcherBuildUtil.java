@@ -136,15 +136,16 @@ public class PatcherBuildUtil {
 		PatcherBuild patcherBuild =
 			PatcherBuildLocalServiceUtil.createPatcherBuild(0);
 
-		PatcherAccount patcherAccount = PatcherAccountUtil.fetchPatcherAccount(
-			accountEntryCode);
+		PatcherAccount patcherAccount =
+			PatcherAccountLocalServiceUtil.fetchPatcherAccount(
+				accountEntryCode);
 
 		if (Validator.isNull(patcherAccount)) {
 			addPatcherAccountPatcherBuild(
 				alloyController, patcherBuild.getPatcherBuildId(),
 				accountEntryCode);
 
-			patcherAccount = PatcherAccountUtil.getPatcherAccount(
+			patcherAccount = PatcherAccountLocalServiceUtil.getPatcherAccount(
 				accountEntryCode);
 		}
 
@@ -1315,7 +1316,8 @@ public class PatcherBuildUtil {
 				accountEntryCode);
 
 			PatcherAccount patcherAccount =
-				PatcherAccountUtil.getPatcherAccount(accountEntryCode);
+				PatcherAccountLocalServiceUtil.getPatcherAccount(
+					accountEntryCode);
 
 			parentPatcherBuild.setPatcherAccountId(
 				patcherAccount.getPatcherAccountId());

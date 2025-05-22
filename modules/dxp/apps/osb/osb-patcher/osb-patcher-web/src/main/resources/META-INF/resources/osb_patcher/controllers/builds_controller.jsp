@@ -22,7 +22,7 @@ public static class AlloyControllerImpl extends PatcherAlloyControllerImpl {
 
 		String accountEntryCode = StringUtil.toUpperCase(ParamUtil.getString(request, "patcherBuildAccountEntryCode"));
 
-		PatcherAccount patcherAccount = PatcherAccountUtil.fetchPatcherAccount(accountEntryCode);
+		PatcherAccount patcherAccount = PatcherAccountLocalServiceUtil.fetchPatcherAccount(accountEntryCode);
 
 		if (Validator.isNotNull(patcherAccount)) {
 			patcherBuild.setPatcherAccountId(patcherAccount.getPatcherAccountId());
