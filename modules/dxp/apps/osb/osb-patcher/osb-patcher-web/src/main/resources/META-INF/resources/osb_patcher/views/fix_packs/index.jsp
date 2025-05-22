@@ -31,39 +31,43 @@
 		displayTerms="${displayTerms}"
 		id="toggle_id_patcher_fix_pack_search"
 	>
-		<aui:layout>
-			<clay:col>
-				<aui:input label="name" name="name" size="30" title="search-fix-packs" type="text" />
-			</clay:col>
-		</aui:layout>
+		<div class="layout">
+			<div class="layout-content">
+				<clay:col>
+					<aui:input label="name" name="name" size="30" title="search-fix-packs" type="text" />
+				</clay:col>
+			</div>
+		</div>
 
-		<aui:layout>
-			<clay:col>
-				<aui:select label="status" name="statusFilter" showEmptyOption="${true}">
-					<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_FROZEN}" value="${WorkflowConstants.STATUS_FIX_PACK_FROZEN}" />
-					<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_RELEASED}" value="${WorkflowConstants.STATUS_FIX_PACK_RELEASED}" />
-					<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_UNDER_DEVELOPMENT}" value="${WorkflowConstants.STATUS_FIX_PACK_UNDER_DEVELOPMENT}" />
-				</aui:select>
-			</clay:col>
+		<div class="layout">
+			<div class="layout-content">
+				<clay:col>
+					<aui:select label="status" name="statusFilter" showEmptyOption="${true}">
+						<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_FROZEN}" value="${WorkflowConstants.STATUS_FIX_PACK_FROZEN}" />
+						<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_RELEASED}" value="${WorkflowConstants.STATUS_FIX_PACK_RELEASED}" />
+						<aui:option label="${WorkflowConstants.LABEL_FIX_PACK_UNDER_DEVELOPMENT}" value="${WorkflowConstants.STATUS_FIX_PACK_UNDER_DEVELOPMENT}" />
+					</aui:select>
+				</clay:col>
 
-			<clay:col>
-				<aui:select label="component" name="patcherFixComponentIdFilter" showEmptyOption="${true}">
-					<c:forEach items="${patcherFixComponents}" var="patcherFixComponent">
-						<aui:option value="${patcherFixComponent.patcherFixComponentId}">
-							${patcherFixComponent.name}
-						</aui:option>
-					</c:forEach>
-				</aui:select>
-			</clay:col>
+				<clay:col>
+					<aui:select label="component" name="patcherFixComponentIdFilter" showEmptyOption="${true}">
+						<c:forEach items="${patcherFixComponents}" var="patcherFixComponent">
+							<aui:option value="${patcherFixComponent.patcherFixComponentId}">
+								${patcherFixComponent.name}
+							</aui:option>
+						</c:forEach>
+					</aui:select>
+				</clay:col>
 
-			<clay:col>
-				<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
-					<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
-						<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
-					</c:forEach>
-				</aui:select>
-			</clay:col>
-		</aui:layout>
+				<clay:col>
+					<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
+						<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
+							<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
+						</c:forEach>
+					</aui:select>
+				</clay:col>
+			</div>
+		</div>
 	</liferay-ui:search-toggle>
 </aui:form>
 

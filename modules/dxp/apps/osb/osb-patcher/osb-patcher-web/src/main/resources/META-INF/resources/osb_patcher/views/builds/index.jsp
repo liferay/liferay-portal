@@ -24,77 +24,81 @@
 	>
 		<aui:input name="patcherProductVersionId" type="hidden" value="${patcherProductVersionId}" />
 
-		<aui:layout>
-			<clay:col>
-				<aui:input label="build-id" name="${Field.ENTRY_CLASS_PK}" size="30" type="text" />
-			</clay:col>
+		<div class="layout">
+			<div class="layout-content">
+				<clay:col>
+					<aui:input label="build-id" name="${Field.ENTRY_CLASS_PK}" size="30" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input label="name" name="patcherBuildName" size="30" title="search-builds" type="text" />
-			</clay:col>
+				<clay:col>
+					<aui:input label="name" name="patcherBuildName" size="30" title="search-builds" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input label="account-code" name="patcherBuildAccountEntryCode" size="30" title="search-accounts" type="text" />
-			</clay:col>
+				<clay:col>
+					<aui:input label="account-code" name="patcherBuildAccountEntryCode" size="30" title="search-accounts" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input name="supportTicket" size="30" title="search-support-tickets" type="text" />
-			</clay:col>
+				<clay:col>
+					<aui:input name="supportTicket" size="30" title="search-support-tickets" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input checked="${true}" name="hideOldBuildVersions" type="checkbox" />
-			</clay:col>
-		</aui:layout>
+				<clay:col>
+					<aui:input checked="${true}" name="hideOldBuildVersions" type="checkbox" />
+				</clay:col>
+			</div>
+		</div>
 
-		<aui:layout>
-			<clay:col>
-				<aui:select label="status" name="statusFilter" showEmptyOption="${true}">
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_MERGING}" value="${WorkflowConstants.STATUS_BUILD_MERGING}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPILING}" value="${WorkflowConstants.STATUS_BUILD_COMPILING}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_CONFLICT}" value="${WorkflowConstants.STATUS_BUILD_CONFLICT}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPLETE}" value="${WorkflowConstants.STATUS_BUILD_COMPLETE}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_READY_TO_RELEASE}" value="${WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_RELEASED}" value="${WorkflowConstants.STATUS_BUILD_RELEASED}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_FAILED}" value="${WorkflowConstants.STATUS_BUILD_FAILED}" />
-				</aui:select>
-			</clay:col>
+		<div class="layout">
+			<div class="layout-content">
+				<clay:col>
+					<aui:select label="status" name="statusFilter" showEmptyOption="${true}">
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_MERGING}" value="${WorkflowConstants.STATUS_BUILD_MERGING}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPILING}" value="${WorkflowConstants.STATUS_BUILD_COMPILING}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_CONFLICT}" value="${WorkflowConstants.STATUS_BUILD_CONFLICT}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPLETE}" value="${WorkflowConstants.STATUS_BUILD_COMPLETE}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_READY_TO_RELEASE}" value="${WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_RELEASED}" value="${WorkflowConstants.STATUS_BUILD_RELEASED}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_FAILED}" value="${WorkflowConstants.STATUS_BUILD_FAILED}" />
+					</aui:select>
+				</clay:col>
 
-			<clay:col>
-				<aui:select label="qa-status" name="qaStatusFilter" showEmptyOption="${true}">
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_NEEDED}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_STARTED}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_STARTED}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_STARTED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_STARTED_SMOKE_ONLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_PASSED}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_STARTED}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_FAILED_MANUALLY}" value="${WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_PASSED_MANUALLY}" value="${WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY}" />
-					<aui:option label="${WorkflowConstants.LABEL_PENDING}" value="${WorkflowConstants.STATUS_PENDING}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_PENDING_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY}" />
-				</aui:select>
-			</clay:col>
+				<clay:col>
+					<aui:select label="qa-status" name="qaStatusFilter" showEmptyOption="${true}">
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_NEEDED}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_STARTED}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_STARTED}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_STARTED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_STARTED_SMOKE_ONLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_PASSED}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_STARTED}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_FAILED_MANUALLY}" value="${WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_PASSED_MANUALLY}" value="${WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY}" />
+						<aui:option label="${WorkflowConstants.LABEL_PENDING}" value="${WorkflowConstants.STATUS_PENDING}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_QA_PENDING_SMOKE_ONLY}" value="${WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY}" />
+					</aui:select>
+				</clay:col>
 
-			<clay:col>
-				<aui:select label="type" name="typeFilter" showEmptyOption="${false}">
-					<aui:option label="${PatcherBuildConstants.LABEL_OFFICIAL}" value="${PatcherBuildConstants.TYPE_OFFICIAL}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_DEBUG}" value="${PatcherBuildConstants.TYPE_DEBUG}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_IGNORE}" value="${PatcherBuildConstants.TYPE_IGNORE}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_FIX_PACK}" value="${PatcherBuildConstants.TYPE_FIX_PACK}" />
-				</aui:select>
-			</clay:col>
+				<clay:col>
+					<aui:select label="type" name="typeFilter" showEmptyOption="${false}">
+						<aui:option label="${PatcherBuildConstants.LABEL_OFFICIAL}" value="${PatcherBuildConstants.TYPE_OFFICIAL}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_DEBUG}" value="${PatcherBuildConstants.TYPE_DEBUG}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_IGNORE}" value="${PatcherBuildConstants.TYPE_IGNORE}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_FIX_PACK}" value="${PatcherBuildConstants.TYPE_FIX_PACK}" />
+					</aui:select>
+				</clay:col>
 
-			<clay:col>
-				<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
-					<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
-						<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
-					</c:forEach>
-				</aui:select>
-			</clay:col>
-		</aui:layout>
+				<clay:col>
+					<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
+						<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
+							<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
+						</c:forEach>
+					</aui:select>
+				</clay:col>
+			</div>
+		</div>
 	</liferay-ui:search-toggle>
 </aui:form>
 

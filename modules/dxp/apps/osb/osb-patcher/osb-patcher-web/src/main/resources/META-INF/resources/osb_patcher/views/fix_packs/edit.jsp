@@ -122,33 +122,37 @@
 </aui:form>
 
 <c:if test="${not empty jenkinsRequestParameters}">
-	<aui:layout>
-		<clay:col
-			size="4"
-		>
-			<aui:field-wrapper name="jenkins-request-parameters" />
-		</clay:col>
-
-		<clay:col
-			size="8"
-		>
-			<aui:field-wrapper name="value" />
-		</clay:col>
-	</aui:layout>
-
-	<c:forEach items="${jenkinsRequestParameters}" var="jenkinsRequestParameter">
-		<aui:layout>
+	<div class="layout">
+		<div class="layout-content">
 			<clay:col
 				size="4"
 			>
-				${jenkinsRequestParameter.key}
+				<aui:field-wrapper name="jenkins-request-parameters" />
 			</clay:col>
 
 			<clay:col
 				size="8"
 			>
-				${jenkinsRequestParameter.value}
+				<aui:field-wrapper name="value" />
 			</clay:col>
-		</aui:layout>
+		</div>
+	</div>
+
+	<c:forEach items="${jenkinsRequestParameters}" var="jenkinsRequestParameter">
+		<div class="layout">
+			<div class="layout-content">
+				<clay:col
+					size="4"
+				>
+					${jenkinsRequestParameter.key}
+				</clay:col>
+
+				<clay:col
+					size="8"
+				>
+					${jenkinsRequestParameter.value}
+				</clay:col>
+			</div>
+		</div>
 	</c:forEach>
 </c:if>

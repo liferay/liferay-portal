@@ -28,90 +28,92 @@
 </portlet:actionURL>
 
 <aui:form action="${addPatcherBuildURL}" method="post" name="fm" onSubmit="event.preventDefault(); ${renderResponse.namespace}checkForExistingHotfix();">
-	<aui:layout cssClass="osb-patcher-layout-flex" styleClass="osb-patcher-layout-flex">
-		<div class="osb-patcher-align-center">
-			<clay:col>
-				<aui:input name="redirect" type="hidden" value="${redirect}" />
+	<div class="layout osb-patcher-layout-flex">
+		<div class="layout-content">
+			<div class="osb-patcher-align-center">
+				<clay:col>
+					<aui:input name="redirect" type="hidden" value="${redirect}" />
 
-				<aui:input name="useExistingHotfix" type="hidden" value="${false}" />
+					<aui:input name="useExistingHotfix" type="hidden" value="${false}" />
 
-				<aui:field-wrapper name="version">
-					${patcherBuild.keyVersion}
-				</aui:field-wrapper>
+					<aui:field-wrapper name="version">
+						${patcherBuild.keyVersion}
+					</aui:field-wrapper>
 
-				<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" required="${true}" showEmptyOption="${true}">
-					<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
-						<aui:option label="${patcherProductVersion.getName()}" value="${patcherProductVersion.getPatcherProductVersionId()}" />
-					</c:forEach>
-				</aui:select>
+					<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" required="${true}" showEmptyOption="${true}">
+						<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
+							<aui:option label="${patcherProductVersion.getName()}" value="${patcherProductVersion.getPatcherProductVersionId()}" />
+						</c:forEach>
+					</aui:select>
 
-				<aui:select label="project-version" name="patcherProjectVersionId" onChange="${renderResponse.namespace}projectVersionOnChange(this.value);" required="${true}" />
+					<aui:select label="project-version" name="patcherProjectVersionId" onChange="${renderResponse.namespace}projectVersionOnChange(this.value);" required="${true}" />
 
-				<aui:input inputCssClass="osb-patcher-input-wide" label="account-code" name="patcherBuildAccountEntryCode" required="${true}" type="text" value="${patcherBuildAccountEntryCode}" />
+					<aui:input inputCssClass="osb-patcher-input-wide" label="account-code" name="patcherBuildAccountEntryCode" required="${true}" type="text" value="${patcherBuildAccountEntryCode}" />
 
-				<aui:input helpMessage="the-support-ticket-must-contain-only-the-help-center-ticket-id" inputCssClass="osb-patcher-input-wide" name="supportTicket" type="text">
-					<aui:validator name="number" />
-				</aui:input>
+					<aui:input helpMessage="the-support-ticket-must-contain-only-the-help-center-ticket-id" inputCssClass="osb-patcher-input-wide" name="supportTicket" type="text">
+						<aui:validator name="number" />
+					</aui:input>
 
-				<aui:select name="type">
-					<aui:option label="${PatcherBuildConstants.LABEL_OFFICIAL}" value="${PatcherBuildConstants.TYPE_OFFICIAL}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_DEBUG}" value="${PatcherBuildConstants.TYPE_DEBUG}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_IGNORE}" value="${PatcherBuildConstants.TYPE_IGNORE}" />
-				</aui:select>
+					<aui:select name="type">
+						<aui:option label="${PatcherBuildConstants.LABEL_OFFICIAL}" value="${PatcherBuildConstants.TYPE_OFFICIAL}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_DEBUG}" value="${PatcherBuildConstants.TYPE_DEBUG}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_IGNORE}" value="${PatcherBuildConstants.TYPE_IGNORE}" />
+					</aui:select>
 
-				<aui:input name="mergeOnly" type="checkbox" value="${patcherBuildMergeOnly}" />
+					<aui:input name="mergeOnly" type="checkbox" value="${patcherBuildMergeOnly}" />
 
-				<aui:input name="smokeTestOnly" type="checkbox" wrapperCssClass="osb-patcher-display-none" />
+					<aui:input name="smokeTestOnly" type="checkbox" wrapperCssClass="osb-patcher-display-none" />
 
-				<aui:button-row>
-					<aui:button type="submit" value="add" />
+					<aui:button-row>
+						<aui:button type="submit" value="add" />
 
-					<portlet:renderURL var="viewPatcherBuildsURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="index" />
-					</portlet:renderURL>
+						<portlet:renderURL var="viewPatcherBuildsURL">
+							<portlet:param name="controller" value="builds" />
+							<portlet:param name="action" value="index" />
+						</portlet:renderURL>
 
-					<aui:button href="${(not empty redirect) ? redirect : viewPatcherBuildsURL}" value="cancel" />
-				</aui:button-row>
-			</clay:col>
-
-			<clay:col
-				cssClass="osb-patcher-content-half"
-			>
-				<aui:input inputCssClass="osb-patcher-input-wide" label="tickets-list" name="patcherBuildName" style="height: 100%;" type="textarea" value="${patcherBuild.name}" wrapperCssClass="osb-patcher-max-height" />
-			</clay:col>
-
-			<clay:col
-				cssClass="mt-1"
-			>
-				<aui:field-wrapper>
-					<aui:input inputCssClass="osb-patcher-input-wide" label="troubleshooting-ticket-suggestions" name="troubleshootingTicketList" type="textarea" />
-
-					<aui:button-row cssClass="osb-patcher-button-row">
-						<aui:button cssClass="osb-patcher-button" icon="icon-plus-sign" onClick="${renderResponse.namespace}troubleshootAddOnClick(this.value);" title="Apply" />
+						<aui:button href="${(not empty redirect) ? redirect : viewPatcherBuildsURL}" value="cancel" />
 					</aui:button-row>
-				</aui:field-wrapper>
+				</clay:col>
 
-				<div style="display: none;">
+				<clay:col
+					cssClass="osb-patcher-content-half"
+				>
+					<aui:input inputCssClass="osb-patcher-input-wide" label="tickets-list" name="patcherBuildName" style="height: 100%;" type="textarea" value="${patcherBuild.name}" wrapperCssClass="osb-patcher-max-height" />
+				</clay:col>
+
+				<clay:col
+					cssClass="mt-1"
+				>
 					<aui:field-wrapper>
-						<aui:input inputCssClass="osb-patcher-input-wide" label="security-ticket-suggestions" name="securityTicketList" type="textarea" />
+						<aui:input inputCssClass="osb-patcher-input-wide" label="troubleshooting-ticket-suggestions" name="troubleshootingTicketList" type="textarea" />
 
 						<aui:button-row cssClass="osb-patcher-button-row">
-							<aui:button cssClass="osb-patcher-button" icon="icon-plus-sign" onClick="${renderResponse.namespace}securityAddOnClick(this.value);" title="Apply" />
+							<aui:button cssClass="osb-patcher-button" icon="icon-plus-sign" onClick="${renderResponse.namespace}troubleshootAddOnClick(this.value);" title="Apply" />
 						</aui:button-row>
 					</aui:field-wrapper>
 
-					<aui:field-wrapper>
-						<aui:input inputCssClass="osb-patcher-input-wide" label="regression-ticket-suggestions" name="regressionTicketList" type="textarea" />
+					<div style="display: none;">
+						<aui:field-wrapper>
+							<aui:input inputCssClass="osb-patcher-input-wide" label="security-ticket-suggestions" name="securityTicketList" type="textarea" />
 
-						<aui:button-row cssClass="osb-patcher-button-row">
-							<aui:button cssClass="osb-patcher-button" icon="icon-plus-sign" onClick="${renderResponse.namespace}regressionAddOnClick(this.value);" title="Apply" />
-						</aui:button-row>
-					</aui:field-wrapper>
-				</div>
-			</clay:col>
+							<aui:button-row cssClass="osb-patcher-button-row">
+								<aui:button cssClass="osb-patcher-button" icon="icon-plus-sign" onClick="${renderResponse.namespace}securityAddOnClick(this.value);" title="Apply" />
+							</aui:button-row>
+						</aui:field-wrapper>
+
+						<aui:field-wrapper>
+							<aui:input inputCssClass="osb-patcher-input-wide" label="regression-ticket-suggestions" name="regressionTicketList" type="textarea" />
+
+							<aui:button-row cssClass="osb-patcher-button-row">
+								<aui:button cssClass="osb-patcher-button" icon="icon-plus-sign" onClick="${renderResponse.namespace}regressionAddOnClick(this.value);" title="Apply" />
+							</aui:button-row>
+						</aui:field-wrapper>
+					</div>
+				</clay:col>
+			</div>
 		</div>
-	</aui:layout>
+	</div>
 </aui:form>
 
 <aui:script>

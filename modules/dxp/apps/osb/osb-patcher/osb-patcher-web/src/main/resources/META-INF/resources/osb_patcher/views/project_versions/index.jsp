@@ -11,17 +11,19 @@
 	<liferay-util:param name="tabs1" value="project-versions" />
 </liferay-util:include>
 
-<aui:layout>
-	<clay:col>
-		<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" showEmptyOption="${true}">
-			<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
-				<aui:option label="${patcherProductVersion.name}" value="${patcherProductVersion.patcherProductVersionId}" />
-			</c:forEach>
+<div class="layout">
+	<div class="layout-content">
+		<clay:col>
+			<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" showEmptyOption="${true}">
+				<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
+					<aui:option label="${patcherProductVersion.name}" value="${patcherProductVersion.patcherProductVersionId}" />
+				</c:forEach>
 
-			<aui:option label="any" value="0" />
-		</aui:select>
-	</clay:col>
-</aui:layout>
+				<aui:option label="any" value="0" />
+			</aui:select>
+		</clay:col>
+	</div>
+</div>
 
 <c:if test="${permissionChecker.isCompanyAdmin()}">
 	<aui:button-row>

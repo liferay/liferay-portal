@@ -19,17 +19,19 @@
 	<portlet:param name="patcherBuildAccountEntryCode" value="${patcherBuildAccountEntryCode}" />
 </portlet:renderURL>
 
-<aui:layout>
-	<clay:col>
-		<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" showEmptyOption="${true}">
-			<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
-				<aui:option label="${patcherProductVersion.name}" value="${patcherProductVersion.patcherProductVersionId}" />
-			</c:forEach>
+<div class="layout">
+	<div class="layout-content">
+		<clay:col>
+			<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" showEmptyOption="${true}">
+				<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
+					<aui:option label="${patcherProductVersion.name}" value="${patcherProductVersion.patcherProductVersionId}" />
+				</c:forEach>
 
-			<aui:option label="any" value="0" />
-		</aui:select>
-	</clay:col>
-</aui:layout>
+				<aui:option label="any" value="0" />
+			</aui:select>
+		</clay:col>
+	</div>
+</div>
 
 <aui:button-row>
 	<portlet:renderURL var="createPatcherBuildURL">
@@ -48,58 +50,62 @@
 		displayTerms="${displayTerms}"
 		id="toggle_id_patcher_build_search"
 	>
-		<aui:layout>
-			<clay:col>
-				<aui:input label="build-id" name="${Field.ENTRY_CLASS_PK}" size="30" type="text" />
-			</clay:col>
+		<div class="layout">
+			<div class="layout-content">
+				<clay:col>
+					<aui:input label="build-id" name="${Field.ENTRY_CLASS_PK}" size="30" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input label="content" name="patcherBuildName" size="30" title="search-builds" type="text" />
-			</clay:col>
+				<clay:col>
+					<aui:input label="content" name="patcherBuildName" size="30" title="search-builds" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input label="account-code" name="patcherBuildAccountEntryCode" size="30" title="search-accounts" type="text" />
-			</clay:col>
+				<clay:col>
+					<aui:input label="account-code" name="patcherBuildAccountEntryCode" size="30" title="search-accounts" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input label="support-ticket" name="supportTicket" size="30" title="search-support-tickets" type="text" />
-			</clay:col>
+				<clay:col>
+					<aui:input label="support-ticket" name="supportTicket" size="30" title="search-support-tickets" type="text" />
+				</clay:col>
 
-			<clay:col>
-				<aui:input checked="${true}" name="hideOldBuildVersions" type="checkbox" />
-			</clay:col>
-		</aui:layout>
+				<clay:col>
+					<aui:input checked="${true}" name="hideOldBuildVersions" type="checkbox" />
+				</clay:col>
+			</div>
+		</div>
 
-		<aui:layout>
-			<clay:col>
-				<aui:select label="patcher-status" name="statusFilter" showEmptyOption="${true}">
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_MERGING}" value="${WorkflowConstants.STATUS_BUILD_MERGING}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPILING}" value="${WorkflowConstants.STATUS_BUILD_COMPILING}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_CONFLICT}" value="${WorkflowConstants.STATUS_BUILD_CONFLICT}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPLETE}" value="${WorkflowConstants.STATUS_BUILD_COMPLETE}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_READY_TO_RELEASE}" value="${WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_RELEASED}" value="${WorkflowConstants.STATUS_BUILD_RELEASED}" />
-					<aui:option label="${WorkflowConstants.LABEL_BUILD_FAILED}" value="${WorkflowConstants.STATUS_BUILD_FAILED}" />
-				</aui:select>
-			</clay:col>
+		<div class="layout">
+			<div class="layout-content">
+				<clay:col>
+					<aui:select label="patcher-status" name="statusFilter" showEmptyOption="${true}">
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_MERGING}" value="${WorkflowConstants.STATUS_BUILD_MERGING}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPILING}" value="${WorkflowConstants.STATUS_BUILD_COMPILING}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_CONFLICT}" value="${WorkflowConstants.STATUS_BUILD_CONFLICT}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_COMPLETE}" value="${WorkflowConstants.STATUS_BUILD_COMPLETE}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_READY_TO_RELEASE}" value="${WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_RELEASED}" value="${WorkflowConstants.STATUS_BUILD_RELEASED}" />
+						<aui:option label="${WorkflowConstants.LABEL_BUILD_FAILED}" value="${WorkflowConstants.STATUS_BUILD_FAILED}" />
+					</aui:select>
+				</clay:col>
 
-			<clay:col>
-				<aui:select label="type" name="typeFilter" showEmptyOption="${true}">
-					<aui:option label="${PatcherBuildConstants.LABEL_OFFICIAL}" value="${PatcherBuildConstants.TYPE_OFFICIAL}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_DEBUG}" value="${PatcherBuildConstants.TYPE_DEBUG}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_IGNORE}" value="${PatcherBuildConstants.TYPE_IGNORE}" />
-					<aui:option label="${PatcherBuildConstants.LABEL_FIX_PACK}" value="${PatcherBuildConstants.TYPE_FIX_PACK}" />
-				</aui:select>
-			</clay:col>
+				<clay:col>
+					<aui:select label="type" name="typeFilter" showEmptyOption="${true}">
+						<aui:option label="${PatcherBuildConstants.LABEL_OFFICIAL}" value="${PatcherBuildConstants.TYPE_OFFICIAL}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_DEBUG}" value="${PatcherBuildConstants.TYPE_DEBUG}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_IGNORE}" value="${PatcherBuildConstants.TYPE_IGNORE}" />
+						<aui:option label="${PatcherBuildConstants.LABEL_FIX_PACK}" value="${PatcherBuildConstants.TYPE_FIX_PACK}" />
+					</aui:select>
+				</clay:col>
 
-			<clay:col>
-				<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
-					<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
-						<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
-					</c:forEach>
-				</aui:select>
-			</clay:col>
-		</aui:layout>
+				<clay:col>
+					<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="${true}">
+						<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
+							<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
+						</c:forEach>
+					</aui:select>
+				</clay:col>
+			</div>
+		</div>
 	</liferay-ui:search-toggle>
 </aui:form>
 
