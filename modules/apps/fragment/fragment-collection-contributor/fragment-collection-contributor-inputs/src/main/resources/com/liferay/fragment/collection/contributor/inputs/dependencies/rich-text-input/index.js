@@ -30,7 +30,12 @@ if (layoutMode !== 'edit') {
 
 	if (input.readOnly || input.attributes?.disabled) {
 		editorPromise.then((editor) => {
-			editor.setReadOnly(true);
+			if (Liferay.FeatureFlags['LPD-11235']) {
+				editor.enableReadOnlyMode('read-only');
+			}
+			else {
+				editor.setReadOnly(true);
+			}
 		});
 	}
 	else if (Liferay.FeatureFlags['LPD-37927']) {
@@ -111,7 +116,12 @@ if (layoutMode !== 'edit') {
 								editor.setData(editor.getData());
 
 								if (languageId === defaultLanguageId) {
-									editor.setReadOnly(false);
+									if (Liferay.FeatureFlags['LPD-11235']) {
+										editor.disableReadOnlyMode('read-only');
+									}
+									else {
+										editor.setReadOnly(false);
+									}
 
 									if (isReadOnly) {
 										label.innerHTML = input.label;
@@ -136,7 +146,12 @@ if (layoutMode !== 'edit') {
 									}
 								}
 								else {
-									editor.setReadOnly(true);
+									if (Liferay.FeatureFlags['LPD-11235']) {
+										editor.enableReadOnlyMode('read-only');
+									}
+									else {
+										editor.setReadOnly(true);
+									}
 
 									if (isReadOnly) {
 										label.innerHTML =
