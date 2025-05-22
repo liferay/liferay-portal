@@ -95,7 +95,7 @@ describe('NewSpace', () => {
 				name: spaceName,
 				settings: {
 					logoColor: 'outline-0',
-				}
+				},
 			}
 		);
 	});
@@ -117,14 +117,18 @@ describe('NewSpace', () => {
 			'Space Description'
 		);
 
-		await userEvent.click(screen.getByRole('button', {
-			name: 'space-color',
-		}));
+		await userEvent.click(
+			screen.getByRole('button', {
+				name: 'space-color',
+			})
+		);
 
 		const colorsMenu = screen.getByRole('menu');
 		expect(colorsMenu).toBeInTheDocument();
 
-		await userEvent.click(within(colorsMenu).getAllByRole('menuitem', {name: 'color-x'})[1]);
+		await userEvent.click(
+			within(colorsMenu).getAllByRole('menuitem', {name: 'color-x'})[1]
+		);
 
 		await userEvent.click(
 			screen.getByRole('button', {
@@ -138,7 +142,7 @@ describe('NewSpace', () => {
 				settings: {
 					logoColor: 'outline-1',
 				},
-			}),
+			})
 		);
 	});
 });

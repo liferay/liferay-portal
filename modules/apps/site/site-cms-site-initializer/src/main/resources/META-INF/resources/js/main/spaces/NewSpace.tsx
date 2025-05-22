@@ -40,20 +40,24 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 		onSubmit: (values) => {
 			const {description, logoColor = 'outline-0', name} = values;
 
-				SpaceService.addSpace({description, name, settings: {logoColor}}).then((response) => {
-					if (response.data) {
-						navigate(baseRedirectUrl + response.data.id);
-					}
-				});
-			},
-			validate: (values) =>
-				validate(
-					{
-						name: [required],
-					},
-					values
-				),
-		});
+			SpaceService.addSpace({
+				description,
+				name,
+				settings: {logoColor},
+			}).then((response) => {
+				if (response.data) {
+					navigate(baseRedirectUrl + response.data.id);
+				}
+			});
+		},
+		validate: (values) =>
+			validate(
+				{
+					name: [required],
+				},
+				values
+			),
+	});
 
 	return (
 		<ClayLayout.Row className="p-4">

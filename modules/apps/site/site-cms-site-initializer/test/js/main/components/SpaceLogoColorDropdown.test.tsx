@@ -5,49 +5,52 @@
 
 import '@testing-library/jest-dom/extend-expect';
 import {render, screen} from '@testing-library/react';
-import React from 'react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 
 import SpaceLogoColorDropdown from '../../../../src/main/resources/META-INF/resources/js/main/components/SpaceLogoColorDropdown';
 
 describe('SpaceLogoColorDropdown', () => {
-  it('renders outline-0 as default selected option', () => {
-    render(<SpaceLogoColorDropdown />);
+	it('renders outline-0 as default selected option', () => {
+		render(<SpaceLogoColorDropdown />);
 
-    const dropdownButton = screen.getByRole('button', {
-      name: 'space-color'
-    });
-    expect(dropdownButton).toBeInTheDocument();
-    expect(dropdownButton.getElementsByClassName('sticker-outline-0')).toHaveLength(1);
-  });
-  
-  it('renders all space colors', async () => {
-    render(<SpaceLogoColorDropdown />);
+		const dropdownButton = screen.getByRole('button', {
+			name: 'space-color',
+		});
+		expect(dropdownButton).toBeInTheDocument();
+		expect(
+			dropdownButton.getElementsByClassName('sticker-outline-0')
+		).toHaveLength(1);
+	});
 
-    const dropdownButton = screen.getByRole('button', {
-      name: 'space-color'
-    });
+	it('renders all space colors', async () => {
+		render(<SpaceLogoColorDropdown />);
 
-    await userEvent.click(dropdownButton);
+		const dropdownButton = screen.getByRole('button', {
+			name: 'space-color',
+		});
 
-    const allColorElements = screen.getAllByRole('menuitem');
-    expect(allColorElements).toHaveLength(10);
+		await userEvent.click(dropdownButton);
 
-    allColorElements.forEach((element, index) => {
-      expect(element.getElementsByClassName(`sticker-outline-${index}`)).toHaveLength(1);
-    });
-  });
+		const allColorElements = screen.getAllByRole('menuitem');
+		expect(allColorElements).toHaveLength(10);
 
-  it('calls callback when selecting an option', async () => {
-    const onColorSelect = jest.fn();
+		allColorElements.forEach((element, index) => {
+			expect(
+				element.getElementsByClassName(`sticker-outline-${index}`)
+			).toHaveLength(1);
+		});
+	});
 
-    render(<SpaceLogoColorDropdown onChange={onColorSelect}/>);
+	it('calls callback when selecting an option', async () => {
+		const onColorSelect = jest.fn();
 
-    const dropdownButton = screen.getByRole('button', {
-      name: 'space-color'
-    });
+		render(<SpaceLogoColorDropdown onChange={onColorSelect} />);
 
-    await userEvent.click(dropdownButton);
+		const dropdownButton = screen.getByRole('button', {
+			name: 'space-color',
+		});
 
-  });
+		await userEvent.click(dropdownButton);
+	});
 });
