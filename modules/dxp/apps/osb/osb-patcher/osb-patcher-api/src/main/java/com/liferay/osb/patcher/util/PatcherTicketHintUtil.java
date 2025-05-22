@@ -5,16 +5,15 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.model.PatcherTicketHint;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.osb.patcher.service.PatcherTicketHintLocalServiceUtil;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Zsolt Balogh
@@ -30,7 +29,8 @@ public class PatcherTicketHintUtil {
 				projectVersionId);
 
 		PatcherTicketHint patcherTicketHint =
-			fetchPatcherTicketHintByProductVersion(productVersionId);
+			PatcherTicketHintLocalServiceUtil.
+				fetchPatcherTicketHintByProductVersionId(productVersionId);
 
 		if (patcherTicketHint == null) {
 			return "";
@@ -42,26 +42,6 @@ public class PatcherTicketHintUtil {
 				patcherProjectVersion.getName()));
 
 		return result;
-	}
-
-	protected static PatcherTicketHint fetchPatcherTicketHintByProductVersion(
-			long patcherProductVersionId)
-		throws Exception {
-
-		AlloyServiceInvoker patcherTicketHintAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherTicketHint.class.getName());
-
-		List<PatcherTicketHint> patcherTicketHints =
-			patcherTicketHintAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {
-					"patcherProductVersionId", patcherProductVersionId
-				});
-
-		if (!patcherTicketHints.isEmpty()) {
-			return patcherTicketHints.get(0);
-		}
-
-		return null;
 	}
 
 	protected static String processPatcherLpsHintScript(

@@ -5,6 +5,7 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.model.PatcherTicketHint;
 import com.liferay.osb.patcher.service.base.PatcherTicketHintLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 
@@ -19,4 +20,13 @@ import org.osgi.service.component.annotations.Component;
 )
 public class PatcherTicketHintLocalServiceImpl
 	extends PatcherTicketHintLocalServiceBaseImpl {
+
+	@Override
+	public PatcherTicketHint fetchPatcherTicketHintByProductVersionId(
+		long patcherProductVersionId) {
+
+		return patcherTicketHintPersistence.fetchByPatcherProductVersionId(
+			patcherProductVersionId);
+	}
+
 }
