@@ -17,12 +17,10 @@ import MergeTagsModal from './MergeTagsModal';
 
 export default function ViewTags({
 	dataSetId,
-	tagsList,
 	tagsURL,
 	vocabulariesURL,
 }: {
 	dataSetId: string;
-	tagsList: string;
 	tagsURL: string;
 	vocabulariesURL: string;
 }) {
@@ -212,7 +210,6 @@ export default function ViewTags({
 					loadData,
 					tagId: itemData.id,
 					tagName: itemData.name,
-					tagsList,
 				}),
 			size: 'md',
 		});
