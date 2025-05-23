@@ -93,7 +93,7 @@
 						</aui:button-row>
 					</aui:field-wrapper>
 
-					<div style="display: none;">
+					<div class="d-none">
 						<aui:field-wrapper>
 							<aui:input inputCssClass="osb-patcher-input-wide" label="security-ticket-suggestions" name="securityTicketList" type="textarea" />
 
