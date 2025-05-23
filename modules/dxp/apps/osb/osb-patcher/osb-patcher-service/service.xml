@@ -94,6 +94,10 @@
 
 		<column name="patcherBuildRelId" primary="true" type="long" />
 
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
 		<!-- Other fields -->
 
 		<column name="childPatcherBuildId" type="long" />
@@ -205,6 +209,10 @@
 		<!-- PK fields -->
 
 		<column name="patcherFixRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
 
 		<!-- Other fields -->
 
