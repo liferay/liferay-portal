@@ -379,13 +379,11 @@ public class PatcherScanUtil {
 				PatcherProductVersionUtil.fetchPatcherProductVersion("DXP 7.4");
 
 			List<PatcherProjectVersion> quarterlyPatcherProjectVersions =
-				PatcherProjectVersionUtil.
-					fetchPatcherProjectVersionByPatcherProductVersionId(
-						quarterlyProduct.getPatcherProductVersionId());
+				PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions(
+					quarterlyProduct.getPatcherProductVersionId());
 			List<PatcherProjectVersion> updatePatcherProjectVersions =
-				PatcherProjectVersionUtil.
-					fetchPatcherProjectVersionByPatcherProductVersionId(
-						updateProduct.getPatcherProductVersionId());
+				PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions(
+					updateProduct.getPatcherProductVersionId());
 
 			Comparator<PatcherProjectVersion> ticketListDistanceComparator =
 				new Comparator<PatcherProjectVersion>() {

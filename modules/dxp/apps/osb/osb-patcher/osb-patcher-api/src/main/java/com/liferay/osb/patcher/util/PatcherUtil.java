@@ -22,13 +22,13 @@ import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherFixPack;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
+import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.web.internal.constants.PatcherConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -319,17 +319,16 @@ public class PatcherUtil {
 			"${liferay:screenName}", user.getScreenName());
 	}
 
-	public static boolean isPatcherProjectVersionName(String name)
-		throws Exception {
+	public static boolean isPatcherProjectVersionName(String name) {
+		PatcherProjectVersion patcherProjectVersion =
+			PatcherProjectVersionLocalServiceUtil.
+				fetchPatcherProjectVersionByName(name);
 
-		AlloyServiceInvoker PatcherProjectVersionAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherProjectVersion.class.getName());
+		if (patcherProjectVersion == null) {
+			return false;
+		}
 
-		List<PatcherProjectVersion> patcherProjectVersions =
-			PatcherProjectVersionAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"name", name});
-
-		return !patcherProjectVersions.isEmpty();
+		return true;
 	}
 
 	public static boolean isPatcherTickets(String name) throws Exception {
