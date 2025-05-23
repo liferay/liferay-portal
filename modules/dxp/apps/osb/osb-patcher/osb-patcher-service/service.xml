@@ -222,6 +222,37 @@
 
 		<!-- Finder methods -->
 
+		<finder name="PatcherBuildId" return-type="PatcherFixComponent" unique="true">
+			<finder-column name="patcherBuildId" />
+		</finder>
+		<finder name="PatcherFixComponentId" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+		</finder>
+		<finder name="Version" return-type="Collection">
+			<finder-column name="version" />
+		</finder>
+		<finder name="PFCI_V" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="version" />
+		</finder>
+		<finder name="PFCI_N" return-type="PatcherFixPack" unique="true">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="PFCI_S" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="PFCI_PPVI_GtV" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column comparator="&gt;" name="version" />
+		</finder>
+		<finder name="PFCI_PPVI_LtV" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column comparator="&lt;" name="version" />
+		</finder>
 		<finder name="PFCI_PPVI_N_V" return-type="PatcherFixPack" unique="true">
 			<finder-column name="patcherFixComponentId" />
 			<finder-column name="patcherProjectVersionId" />
