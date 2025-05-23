@@ -90,6 +90,12 @@
 		</attribute>
 		<attribute>
 			<description></description>
+			<name>layoutMode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
 			<name>name</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

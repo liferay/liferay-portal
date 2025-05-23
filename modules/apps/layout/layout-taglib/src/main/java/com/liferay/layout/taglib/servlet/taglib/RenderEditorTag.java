@@ -26,6 +26,10 @@ public class RenderEditorTag extends IncludeTag {
 		return _label;
 	}
 
+	public String getLayoutMode() {
+		return _layoutMode;
+	}
+
 	public String getName() {
 		return _name;
 	}
@@ -40,6 +44,10 @@ public class RenderEditorTag extends IncludeTag {
 
 	public void setLabel(String label) {
 		_label = label;
+	}
+
+	public void setLayoutMode(String layoutMode) {
+		_layoutMode = layoutMode;
 	}
 
 	public void setName(String name) {
@@ -63,6 +71,7 @@ public class RenderEditorTag extends IncludeTag {
 
 		_content = null;
 		_label = null;
+		_layoutMode = null;
 		_name = null;
 		_required = false;
 	}
@@ -80,6 +89,8 @@ public class RenderEditorTag extends IncludeTag {
 			httpServletRequest.setAttribute(
 				"liferay-layout:render-editor:label", _label);
 			httpServletRequest.setAttribute(
+				"liferay-layout:render-editor:layoutMode", _layoutMode);
+			httpServletRequest.setAttribute(
 				"liferay-layout:render-editor:name", _name);
 			httpServletRequest.setAttribute(
 				"liferay-layout:render-editor:required", _required);
@@ -96,6 +107,7 @@ public class RenderEditorTag extends IncludeTag {
 
 	private String _content;
 	private String _label;
+	private String _layoutMode;
 	private String _name;
 	private boolean _required;
 
