@@ -1162,7 +1162,7 @@ public class PatcherBuildUtil {
 		String outcome = jenkinsStatusJSONObject.getString("outcome");
 
 		OSBPatcherServletOutcome osbPatcherServletOutcome =
-			JSONFactoryUtil.looseDeserializeSafe(
+			JSONFactoryUtil.looseDeserialize(
 				outcome, OSBPatcherServletOutcome.class);
 
 		List<String> messages = new ArrayList<>();
