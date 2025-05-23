@@ -17,8 +17,6 @@ import com.liferay.osb.patcher.service.PatcherFixPackLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -398,8 +396,5 @@ public class PatcherFixPackUtil {
 
 		return requirements;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PatcherFixPackUtil.class);
 
 }
