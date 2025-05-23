@@ -17,6 +17,7 @@ import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.dto.v1_0.Settings;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Field;
@@ -265,15 +266,17 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		}
 
 		return _toAssetLibrary(
-			_depotEntryService.addDepotEntry(
-				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(),
-					assetLibrary.getName(), assetLibrary.getName_i18n()),
+			_addOrUpdateDepotEntry(
 				LocalizedMapUtil.getLocalizedMap(
 					contextAcceptLanguage.getPreferredLocale(),
 					assetLibrary.getDescription(),
 					assetLibrary.getDescription_i18n()),
-				_getServiceContext()));
+				StringPool.BLANK,
+				LocalizedMapUtil.getLocalizedMap(
+					contextAcceptLanguage.getPreferredLocale(),
+					assetLibrary.getName(), assetLibrary.getName_i18n()),
+				_getServiceContext(),
+				_toUnicodeProperties(assetLibrary.getSettings())));
 	}
 
 	@Override
@@ -337,31 +340,35 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 		DepotEntry depotEntry = null;
 
-		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, serviceContext.getCompanyId());
+		Group group = null;
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			group = _groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode, serviceContext.getCompanyId());
+		}
 
 		if (group != null) {
 			depotEntry = _depotEntryService.getGroupDepotEntry(
 				group.getGroupId());
-
-			depotEntry = _depotEntryService.updateDepotEntry(
-				depotEntry.getDepotEntryId(), nameMap, descriptionMap,
-				_getDepotAppCustomizationMap(
-					depotEntry.getCompanyId(), externalReferenceCode),
-				unicodeProperties, serviceContext);
 		}
 		else {
 			depotEntry = _depotEntryService.addDepotEntry(
 				nameMap, descriptionMap, serviceContext);
+
+			if (Validator.isNotNull(externalReferenceCode)) {
+				group = depotEntry.getGroup();
+
+				group.setExternalReferenceCode(externalReferenceCode);
+
+				_groupLocalService.updateGroup(group);
+			}
 		}
 
-		group = depotEntry.getGroup();
-
-		group.setExternalReferenceCode(externalReferenceCode);
-
-		_groupLocalService.updateGroup(group);
-
-		return depotEntry;
+		return _depotEntryService.updateDepotEntry(
+			depotEntry.getDepotEntryId(), nameMap, descriptionMap,
+			_getDepotAppCustomizationMap(
+				depotEntry.getCompanyId(), externalReferenceCode),
+			unicodeProperties, serviceContext);
 	}
 
 	private Map<String, Boolean> _getDepotAppCustomizationMap(
@@ -479,19 +486,16 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			true
 		).put(
 			"autoTaggingEnabled",
-			GetterUtil.getString(
-				Boolean.toString(settings.getAutoTaggingEnabled()), "false")
+			GetterUtil.getString(settings.getAutoTaggingEnabled(), "false")
 		).put(
 			"logoColor",
 			GetterUtil.getString(settings.getLogoColor(), "color-0")
 		).put(
 			"sharingEnabled",
-			GetterUtil.getString(
-				Boolean.toString(settings.getSharingEnabled()), "false")
+			GetterUtil.getString(settings.getSharingEnabled(), "false")
 		).put(
 			"useCustomLanguages",
-			GetterUtil.getString(
-				Boolean.toString(settings.getUseCustomLanguages()), "false")
+			GetterUtil.getString(settings.getUseCustomLanguages(), "false")
 		).build();
 	}
 
