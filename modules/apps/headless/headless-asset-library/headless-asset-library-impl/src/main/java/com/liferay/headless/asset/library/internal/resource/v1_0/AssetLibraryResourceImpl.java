@@ -489,7 +489,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			GetterUtil.getString(settings.getAutoTaggingEnabled(), "false")
 		).put(
 			"logoColor",
-			GetterUtil.getString(settings.getLogoColor(), "color-0")
+			GetterUtil.getString(settings.getLogoColor(), "outline-0")
 		).put(
 			"sharingEnabled",
 			GetterUtil.getString(settings.getSharingEnabled(), "false")

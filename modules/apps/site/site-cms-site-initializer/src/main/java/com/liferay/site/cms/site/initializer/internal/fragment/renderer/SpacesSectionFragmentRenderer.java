@@ -15,6 +15,7 @@ import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -108,6 +109,11 @@ public class SpacesSectionFragmentRenderer extends BaseSectionFragmentRenderer {
 						).put(
 							"name", assetLibrary.getName()
 						).put(
+							"settings",
+							_jsonFactory.createJSONObject(
+								_jsonFactory.looseSerialize(
+									assetLibrary.getSettings()))
+						).put(
 							"url",
 							StringBundler.concat(
 								themeDisplay.getPathFriendlyURLPublic(),
@@ -145,6 +151,9 @@ public class SpacesSectionFragmentRenderer extends BaseSectionFragmentRenderer {
 
 	@Reference
 	private AssetLibraryResource.Factory _assetLibraryResourceFactory;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;
