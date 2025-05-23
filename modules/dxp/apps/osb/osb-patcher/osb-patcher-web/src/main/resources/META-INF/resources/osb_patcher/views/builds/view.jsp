@@ -87,7 +87,11 @@
 	${patcherBuildStatus}
 
 	<c:if test="${patcherBuild.status == WorkflowConstants.STATUS_BUILD_FAILED}">
-		<aui:a href="${PortletPropsValues.TROUBLESHOOTING_URL}" label="troubleshooting-guide" target="_blank" />
+		<clay:link
+			href="${PortletPropsValues.TROUBLESHOOTING_URL}"
+			target="_blank"
+			title="troubleshooting-guide"
+		/>
 	</c:if>
 </aui:field-wrapper>
 
@@ -117,7 +121,12 @@
 
 <aui:field-wrapper name="jenkins">
 	<c:forEach items="${jenkinsResults}" var="jenkinsResult">
-		<aui:a cssClass="nobr" href="${jenkinsResult.statusURL}" label="${jenkinsResult.jobName}" target="_blank" />
+		<clay:link
+			cssClass="nobr"
+			href="${jenkinsResult.statusURL}"
+			target="_blank"
+			title="${jenkinsResult.jobName}"
+		/>
 	</c:forEach>
 </aui:field-wrapper>
 
@@ -155,7 +164,11 @@
 				message=""
 			/>
 
-			<aui:a href="${PortletPropsValues.INFO_MODIFY_TICKETS_LIST_URL}" label="click-here-to-find-out-why-the-ticket-list-changed" target="_blank" />
+			<clay:link
+				href="${PortletPropsValues.INFO_MODIFY_TICKETS_LIST_URL}"
+				label="click-here-to-find-out-why-the-ticket-list-changed"
+				target="_blank"
+			/>
 		</aui:field-wrapper>
 	</aui:field-wrapper>
 </c:if>
@@ -168,7 +181,10 @@
 </portlet:renderURL>
 
 <aui:field-wrapper name="account-code">
-	<aui:a href="<%= viewPatcherAccountPatcherProductVersionURL %>" label="${patcherBuildAccountEntryCode}" />
+	<clay:link
+		href="<%= viewPatcherAccountPatcherProductVersionURL %>"
+		title="${patcherBuildAccountEntryCode}"
+	/>
 </aui:field-wrapper>
 
 <aui:input inputCssClass="osb-patcher-input-wide osb-patcher-read-only" name="supportTicket" readonly="${true}" type="text" />

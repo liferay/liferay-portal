@@ -146,7 +146,7 @@
 							<c:choose>
 								<c:when test="${PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild)}">
 									<c:set var="relevantStatusActionLink">
-										(<aui:a href='${patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL}/${patcherBuild.fileName}' label="download" target="_blank" />)
+										(<clay:link href='${patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL}/${patcherBuild.fileName}' label="download" target="_blank" />)
 									</c:set>
 
 									<c:set value="passed" var="statusCSSClass" />
@@ -161,19 +161,19 @@
 
 										<c:if test='${jenkinsJobName.contains("hotfix")}'>
 											<c:set var="relevantStatusActionLink">
-												(<aui:a href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
+												(<clay:link href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
 											</c:set>
 										</c:if>
 
 										<c:if test='${(jenkinsJobName.contains("dist")) && ((empty relevantStatusActionLink) || (relevantStatusActionLink.contains("agent")))}'>
 											<c:set var="relevantStatusActionLink">
-												(<aui:a href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
+												(<clay:link href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
 											</c:set>
 										</c:if>
 
 										<c:if test='${(jenkinsJobName.contains("agent")) && (empty relevantStatusActionLink)}'>
 											<c:set var="relevantStatusActionLink">
-												(<aui:a href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
+												(<clay:link href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
 											</c:set>
 										</c:if>
 									</c:forEach>
@@ -209,7 +209,7 @@
 									<c:set value="${JenkinsUtil.getJenkinsResults(patcherBuild)}" var="jenkinsResults" />
 
 									<c:set var="relevantQAStatusActionLink">
-										(<aui:a href="${jenkinsResults[0].statusURL}" label="view-results" target="_blank" />)
+										(<clay:link href="${jenkinsResults[0].statusURL}" label="view-results" target="_blank" />)
 									</c:set>
 								</c:when>
 								<c:otherwise>

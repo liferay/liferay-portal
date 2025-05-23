@@ -116,7 +116,12 @@
 			<c:set value="${JenkinsUtil.getJenkinsResults(patcherBuild)}" var="jenkinsResults" />
 
 			<c:forEach items="${jenkinsResults}" var="jenkinsResult">
-				<aui:a cssClass="nobr" href="${jenkinsResult.statusURL}" label="${jenkinsResult.jobName}" target="_blank" />
+				<clay:link
+					cssClass="nobr"
+					href="${jenkinsResult.statusURL}"
+					target="_blank"
+					title="${jenkinsResult.jobName}"
+				/>
 			</c:forEach>
 		</liferay-ui:search-container-column-text>
 
