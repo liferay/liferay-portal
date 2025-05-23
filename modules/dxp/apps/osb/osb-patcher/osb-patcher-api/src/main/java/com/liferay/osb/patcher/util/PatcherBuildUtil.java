@@ -1276,7 +1276,7 @@ public class PatcherBuildUtil {
 			HelpCenterUtil.addAttachmentComment(
 				hotfixFileName, patcherBuild, quarterReleasePath);
 		}
-		catch (FileNotFoundException e) {
+		catch (FileNotFoundException fileNotFoundException) {
 			HelpCenterUtil.addAttachmentComment(
 				hotfixFileName, patcherBuild, path);
 		}

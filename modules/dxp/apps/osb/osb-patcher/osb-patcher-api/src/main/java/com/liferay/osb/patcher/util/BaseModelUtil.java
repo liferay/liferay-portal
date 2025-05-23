@@ -48,7 +48,7 @@ public class BaseModelUtil {
 		try {
 			return getBaseModelRequestKey(baseModel);
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			return null;
 		}
 	}
@@ -70,7 +70,7 @@ public class BaseModelUtil {
 		try {
 			return getBaseModelStatus(baseModel);
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			return null;
 		}
 	}
@@ -79,7 +79,7 @@ public class BaseModelUtil {
 		try {
 			return getBaseModelStatusByUserId(baseModel);
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			return null;
 		}
 	}
@@ -88,7 +88,7 @@ public class BaseModelUtil {
 		try {
 			return getBaseModelUserId(baseModel);
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			return null;
 		}
 	}

@@ -813,7 +813,7 @@ public class PatcherFixUtil {
 		try {
 			validateDelete(patcherFix);
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			return false;
 		}
 

@@ -221,7 +221,7 @@ public class PatcherUtil {
 
 			return pubsubMessageData.toStringUtf8();
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			subscriber.close();
 		}
 
@@ -512,12 +512,12 @@ public class PatcherUtil {
 					},
 					new String[] {"transactionAdvice"});
 			}
-			catch (Exception e) {
-				_log.error(e);
+			catch (Exception exception) {
+				_log.error(exception);
 			}
 		}
-		catch (Exception e) {
-			_log.error(e);
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 		finally {
 			LockLocalServiceUtil.unlock(
@@ -678,13 +678,13 @@ public class PatcherUtil {
 							new String[] {"transactionAdvice"});
 					}
 				}
-				catch (Exception e) {
-					_log.error(e);
+				catch (Exception exception) {
+					_log.error(exception);
 				}
 			}
 		}
-		catch (Exception e) {
-			_log.error(e);
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 		finally {
 			LockLocalServiceUtil.unlock(
@@ -735,7 +735,7 @@ public class PatcherUtil {
 		try {
 			indexerClass.getField(Field.GROUP_ID);
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			searchContext.setGroupIds(null);
 		}
 
