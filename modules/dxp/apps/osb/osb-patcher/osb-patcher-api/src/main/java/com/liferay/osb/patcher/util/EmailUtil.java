@@ -97,7 +97,7 @@ public class EmailUtil {
 			subscriptionSender.setSubject(message);
 		}
 
-		subscriptionSender.setUserId(themeDisplay.getDefaultUserId());
+		subscriptionSender.setCurrentUserId(themeDisplay.getDefaultUserId());
 
 		subscriptionSender.addRuntimeSubscribers(emailAddress, emailAddress);
 
