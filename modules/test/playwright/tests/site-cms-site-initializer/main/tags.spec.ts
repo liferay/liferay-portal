@@ -220,7 +220,12 @@ test('Merge tags', {tag: '@LPD-43388'}, async ({page, tagsPage}) => {
 		trigger: tagsPage.saveButton,
 	});
 
-	await page.getByRole('button', {name: 'OK'}).click();
+	await clickAndExpectToBeVisible({
+		target: page.getByText(
+			`Success:${tagName2} and ${tagName1} have been successfully merged.`
+		),
+		trigger: page.getByRole('button', {name: 'OK'}),
+	});
 
 	await expect(tag1).toBeVisible();
 	await expect(tag2).not.toBeVisible();
