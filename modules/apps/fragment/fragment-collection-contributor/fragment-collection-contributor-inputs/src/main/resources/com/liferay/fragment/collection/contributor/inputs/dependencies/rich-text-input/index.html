@@ -16,112 +16,17 @@
 
 <div class="rich-text-input [#if !input.showLabel || !input.label?has_content]rich-text-input--hidden-label[/#if]">
 	<div class="form-group [#if input.errorMessage?has_content]has-error[/#if] mb-0" data-localizable="${input.localizable?string('true', 'false')}" data-readonly-label="${readonlyLabel}" id="${fragmentEntryLinkNamespace}-rich-text-input">
-
-		[#if layoutMode == "edit"]
-			<link href="/o/frontend-editor-ckeditor-web/ckeditor/skins/moono-lexicon/editor_gecko.css" rel="stylesheet" />
-
-			<div role="presentation">
-				<label class="[#if !showLabel]sr-only[/#if]">
-					${htmlUtil.escape(input.label)} [#if input.readOnly](${languageUtil.get(locale, "read-only")})[#elseif input.required][@clay["icon"] className="reference-mark" symbol="asterisk" /][/#if]
-				</label>
-
-				<div class="cke_chrome cke_reset cke_ltr rich-text-input--disabled">
-					<div class="cke_inner">
-						<div class="cke_top cke_reset_all">
-							<div>
-								<div class="cke_toolgroup mb-0">
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__undo_icon"></div>
-									</a>
-
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__redo_icon" />
-									</a>
-								</div>
-							</div>
-							<div>
-								<a class="cke_button cke_button_disabled">
-									<div class="cke_button_label cke_button__source_label">
-										Styles
-									</div>
-								</a>
-								<div class="cke_toolgroup mb-0">
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__bold_icon"></div>
-									</a>
-
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__italic_icon" />
-									</a>
-
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__underline_icon" />
-									</a>
-								</div>
-							</div>
-							<div>
-								<div class="cke_toolgroup mb-0">
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__bulletedlist_icon" />
-									</a>
-
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__numberedlist_icon" />
-									</a>
-								</div>
-							</div>
-							<div>
-								<div class="cke_toolgroup mb-0">
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__link_icon" />
-									</a>
-
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__unlink_icon" />
-									</a>
-								</div>
-							</div>
-							<div>
-								<div class="cke_toolgroup mb-0">
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__table_icon" />
-									</a>
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__image_icon" />
-									</a>
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__videoselector_icon" />
-									</a>
-								</div>
-							</div>
-							<div>
-								<div class="cke_toolgroup mb-0">
-									<a class="cke_button cke_button_disabled">
-										<div class="cke_button_icon cke_button__source_icon" />
-										<div class="cke_button_label cke_button__source_label">
-											Source
-										</div>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="cke_contents cke_editable cke-height"></div>
-					</div>
-				</div>
+		<div class="d-flex">
+			<div class="flex-grow-1" id="${fragmentEntryLinkNamespace + '-wrapper'}">
+				[@liferay_layout["render-editor"] content=input.value name=fragmentEntryLinkNamespace + "-" + input.name label=inputLabel layoutMode=layoutMode required=input.required /]
 			</div>
-		[#else]
-			<div class="d-flex">
-				<div class="flex-grow-1" id="${fragmentEntryLinkNamespace + '-wrapper'}">
-					[@liferay_layout["render-editor"] content=input.value name=fragmentEntryLinkNamespace + "-" + input.name label=inputLabel required=input.required /]
-				</div>
 
-				[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
-					<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-3 pt-3" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentEntryLinkNamespace}-unlocalized-info" role="tooltip" tabindex="0">
-						[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
-					</div>
-				[/#if]
-			</div>
-		[/#if]
+			[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
+				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-3 pt-3" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentEntryLinkNamespace}-unlocalized-info" role="tooltip" tabindex="0">
+					[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
+				</div>
+			[/#if]
+		</div>
 
 		[#if input.errorMessage?has_content]
 			<p class="font-weight-semi-bold mt-1 text-danger">
