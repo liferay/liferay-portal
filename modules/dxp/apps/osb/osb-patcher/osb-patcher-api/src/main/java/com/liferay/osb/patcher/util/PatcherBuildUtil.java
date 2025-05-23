@@ -2155,12 +2155,12 @@ public class PatcherBuildUtil {
 						mainPatcherFix.getPatcherFixId());
 
 				if (!mainFixParentPatcherFixIds.containsAll(patcherFixIds)) {
-					PatcherFixRelUtil.deletePatcherFixRelsByChildPatcherFixId(
-						mainPatcherFix.getPatcherFixId());
+					PatcherFixRelLocalServiceUtil.
+						deletePatcherFixRelsByChildPatcherFixId(
+							mainPatcherFix.getPatcherFixId());
 
 					PatcherFixRelUtil.addPatcherFixRel(
-						alloyController, mainPatcherFix.getPatcherFixId(),
-						patcherFixIds);
+						mainPatcherFix.getPatcherFixId(), patcherFixIds);
 				}
 
 				mainPatcherFix.setGitHash(StringPool.BLANK);

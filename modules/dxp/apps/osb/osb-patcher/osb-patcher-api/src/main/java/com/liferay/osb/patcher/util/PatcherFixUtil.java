@@ -83,8 +83,7 @@ public class PatcherFixUtil {
 		alloyController.updateModelIgnoreRequest(newPatcherFix);
 
 		PatcherFixRelUtil.addPatcherFixRel(
-			alloyController, newPatcherFix.getPatcherFixId(),
-			parentPatcherFixIds);
+			newPatcherFix.getPatcherFixId(), parentPatcherFixIds);
 
 		return newPatcherFix;
 	}
@@ -108,7 +107,7 @@ public class PatcherFixUtil {
 						existingPatcherFix)) {
 
 					PatcherFixRelUtil.addPatcherFixRel(
-						alloyController, existingPatcherFix.getPatcherFixId(),
+						existingPatcherFix.getPatcherFixId(),
 						parentPatcherFixIds);
 				}
 
@@ -256,7 +255,7 @@ public class PatcherFixUtil {
 			}
 		}
 
-		PatcherFixRelUtil.deletePatcherFixRelsByChildPatcherFixId(
+		PatcherFixRelLocalServiceUtil.deletePatcherFixRelsByChildPatcherFixId(
 			patcherFix.getPatcherFixId());
 
 		PatcherFixLocalServiceUtil.deletePatcherFix(patcherFix);

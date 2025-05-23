@@ -5,17 +5,13 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyServiceInvoker;
-import com.liferay.compat.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherFix;
-import com.liferay.osb.patcher.model.PatcherFixRel;
+import com.liferay.osb.patcher.model.PatcherFixRelModel;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixRelLocalServiceUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Projection;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.ArrayList;
@@ -29,29 +25,11 @@ import java.util.Set;
 public class PatcherFixRelUtil {
 
 	public static void addPatcherFixRel(
-			AlloyController alloyController, long childPatcherFixId,
-			List<Long> parentPatcherFixIds)
-		throws Exception {
+		long childPatcherFixId, List<Long> parentPatcherFixIds) {
 
 		for (long parentPatcherFixId : parentPatcherFixIds) {
-			addPatcherFixRel(
-				alloyController, childPatcherFixId, parentPatcherFixId);
-		}
-	}
-
-	public static void deletePatcherFixRelsByChildPatcherFixId(
-			long childPatcherFixId)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
-		List<PatcherFixRel> patcherFixRels =
-			patcherFixRelAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"childPatcherFixId", childPatcherFixId});
-
-		for (PatcherFixRel patcherFixRel : patcherFixRels) {
-			PatcherFixRelLocalServiceUtil.deletePatcherFixRel(patcherFixRel);
+			PatcherFixRelLocalServiceUtil.addPatcherFixRel(
+				childPatcherFixId, parentPatcherFixId);
 		}
 	}
 
@@ -92,58 +70,31 @@ public class PatcherFixRelUtil {
 		return childPatcherFixIds;
 	}
 
-	public static List<Long> getChildPatcherFixIds(long parentPatcherFixId)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
-		return patcherFixRelAlloyServiceInvoker.executeDynamicQuery(
-			buildChildPatcherFixIdDynamicQuery(parentPatcherFixId));
+	public static List<Long> getChildPatcherFixIds(long parentPatcherFixId) {
+		return TransformUtil.transform(
+			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByParentPatcherFixId(
+				parentPatcherFixId),
+			PatcherFixRelModel::getChildPatcherFixId);
 	}
 
 	public static List<PatcherFix> getChildPatcherFixPatcherFixes(
-			PatcherFix parentPatcherFix)
-		throws Exception {
+		PatcherFix parentPatcherFix) {
 
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
-		List<PatcherFix> patcherFixes = new ArrayList<>();
-
-		List<Long> patcherFixIds =
-			patcherFixRelAlloyServiceInvoker.executeDynamicQuery(
-				buildChildPatcherFixIdDynamicQuery(
-					parentPatcherFix.getPatcherFixId()));
-
-		for (long patcherFixId : patcherFixIds) {
-			patcherFixes.add(
-				PatcherFixLocalServiceUtil.getPatcherFix(patcherFixId));
-		}
-
-		return patcherFixes;
+		return TransformUtil.transform(
+			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByParentPatcherFixId(
+				parentPatcherFix.getPatcherFixId()),
+			patcherFixRel -> PatcherFixLocalServiceUtil.getPatcherFix(
+				patcherFixRel.getChildPatcherFixId()));
 	}
 
 	public static List<PatcherFix> getParentPatcherFixes(
-			PatcherFix childPatcherFix)
-		throws Exception {
+		PatcherFix childPatcherFix) {
 
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
-		List<PatcherFix> patcherFixes = new ArrayList<>();
-
-		List<Long> patcherFixIds =
-			patcherFixRelAlloyServiceInvoker.executeDynamicQuery(
-				buildParentPatcherFixIdDynamicQuery(
-					childPatcherFix.getPatcherFixId()));
-
-		for (long patcherFixId : patcherFixIds) {
-			patcherFixes.add(
-				PatcherFixLocalServiceUtil.getPatcherFix(patcherFixId));
-		}
-
-		return patcherFixes;
+		return TransformUtil.transform(
+			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByChildPatcherFixId(
+				childPatcherFix.getPatcherFixId()),
+			patcherFixRel -> PatcherFixLocalServiceUtil.getPatcherFix(
+				patcherFixRel.getParentPatcherFixId()));
 	}
 
 	public static List<Long> getParentPatcherFixIds(
@@ -182,18 +133,15 @@ public class PatcherFixRelUtil {
 		return parentPatcherFixIds;
 	}
 
-	public static List<Long> getParentPatcherFixIds(long childPatcherFixId)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
-		return patcherFixRelAlloyServiceInvoker.executeDynamicQuery(
-			buildParentPatcherFixIdDynamicQuery(childPatcherFixId));
+	public static List<Long> getParentPatcherFixIds(long childPatcherFixId) {
+		return TransformUtil.transform(
+			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByChildPatcherFixId(
+				childPatcherFixId),
+			PatcherFixRelModel::getParentPatcherFixId);
 	}
 
-	public static List<PatcherFix> getPatcherFixAncestors(PatcherFix patcherFix)
-		throws Exception {
+	public static List<PatcherFix> getPatcherFixAncestors(
+		PatcherFix patcherFix) {
 
 		Set<PatcherFix> patcherFixAncestors = new HashSet<>();
 
@@ -236,9 +184,7 @@ public class PatcherFixRelUtil {
 		return ListUtil.fromCollection(patcherFixDescendants);
 	}
 
-	public static boolean hasObsoletePatcherFixAncestor(PatcherFix patcherFix)
-		throws Exception {
-
+	public static boolean hasObsoletePatcherFixAncestor(PatcherFix patcherFix) {
 		List<PatcherFix> patcherFixAncestors =
 			PatcherFixRelUtil.getPatcherFixAncestors(patcherFix);
 
@@ -255,66 +201,10 @@ public class PatcherFixRelUtil {
 		return false;
 	}
 
-	public static boolean hasParentPatcherFixes(PatcherFix patcherFix)
-		throws Exception {
-
+	public static boolean hasParentPatcherFixes(PatcherFix patcherFix) {
 		List<PatcherFix> parentPatcherFixes = getParentPatcherFixes(patcherFix);
 
 		return !parentPatcherFixes.isEmpty();
-	}
-
-	protected static PatcherFixRel addPatcherFixRel(
-			AlloyController alloyController, long childPatcherFixId,
-			long parentPatcherFixId)
-		throws Exception {
-
-		PatcherFixRel patcherFixRel =
-			PatcherFixRelLocalServiceUtil.createPatcherFixRel(0);
-
-		patcherFixRel.setChildPatcherFixId(childPatcherFixId);
-		patcherFixRel.setParentPatcherFixId(parentPatcherFixId);
-
-		alloyController.updateModelIgnoreRequest(patcherFixRel);
-
-		return patcherFixRel;
-	}
-
-	protected static DynamicQuery buildChildPatcherFixIdDynamicQuery(
-			long parentPatcherFixId)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
-		DynamicQuery patcherFixRelDynamicQuery =
-			patcherFixRelAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {"parentPatcherFixId", parentPatcherFixId});
-
-		Projection childPatcherFixIdProjection = ProjectionFactoryUtil.property(
-			"childPatcherFixId");
-
-		patcherFixRelDynamicQuery.setProjection(childPatcherFixIdProjection);
-
-		return patcherFixRelDynamicQuery;
-	}
-
-	protected static DynamicQuery buildParentPatcherFixIdDynamicQuery(
-			long childPatcherFixId)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
-		DynamicQuery patcherFixRelDynamicQuery =
-			patcherFixRelAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {"childPatcherFixId", childPatcherFixId});
-
-		Projection parentPatcherFixIdProjection =
-			ProjectionFactoryUtil.property("parentPatcherFixId");
-
-		patcherFixRelDynamicQuery.setProjection(parentPatcherFixIdProjection);
-
-		return patcherFixRelDynamicQuery;
 	}
 
 }
