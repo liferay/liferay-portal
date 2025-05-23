@@ -14,8 +14,6 @@ import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherProjectVersionNameComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.ArrayList;
@@ -351,8 +349,5 @@ public class PatcherProjectVersionUtil {
 
 		return false;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PatcherProjectVersionUtil.class);
 
 }
