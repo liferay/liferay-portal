@@ -107,9 +107,7 @@ public class AssetLibraryDTOConverter
 						nestedField ->
 							_userGroupLocalService.getGroupUserGroupsCount(
 								group.getGroupId())));
-				setSettings(
-					() -> NestedFieldsSupplier.supply(
-						"settings", nestedField -> _toSettings(group)));
+				setSettings(() -> _toSettings(group));
 			}
 		};
 	}
