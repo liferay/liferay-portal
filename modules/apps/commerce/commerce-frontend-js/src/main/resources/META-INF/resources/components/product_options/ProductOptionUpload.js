@@ -4,10 +4,11 @@
  */
 
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import skuOptionsAtom from '../../utilities/atoms/skuOptionsAtom';
 import DDMFormHandler from '../../utilities/forms/DDMFormHandler';
+import {getSkuOptionsErrors} from './utils';
 
 const CP_CONTENT_WEB_PORTLET_KEY =
 	'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet';
@@ -15,9 +16,14 @@ const CP_CONTENT_WEB_PORTLET_KEY =
 const ProductOptionUpload = ({
 	componentId,
 	cpDefinitionId,
+	forceRequired = false,
 	namespace,
 	productOption,
 }) => {
+	const errorsKey = 'errors';
+	const skuOptionsKey = 'skuOptions';
+	const [hasErrors, setHasErrors] = useState(false);
+
 	const [skuOptionsAtomState, setSkuOptionsAtomState] =
 		useLiferayState(skuOptionsAtom);
 
@@ -59,17 +65,30 @@ const ProductOptionUpload = ({
 				];
 			}
 
+			setHasErrors((forceRequired || productOption.required) &&
+						 (!value || value === '{}'));
+
 			setSkuOptionsAtomState({
 				...skuOptionsAtomState,
+				[errorsKey]: getSkuOptionsErrors(
+					(forceRequired || productOption.required) &&
+						(!value || value === '{}'),
+					false,
+					productOption,
+					skuOptionsAtomState
+				),
 				namespace,
 				skuOptions: currentSkuOptions,
 			});
 		},
 		[
+			errorsKey,
+			forceRequired,
 			namespace,
-			productOption.key,
-			productOption.name,
+			productOption,
 			skuOptionsAtomState,
+			skuOptionsKey,
+			setHasErrors,
 			setSkuOptionsAtomState,
 		]
 	);
@@ -84,10 +103,32 @@ const ProductOptionUpload = ({
 						namespace,
 						portletId: CP_CONTENT_WEB_PORTLET_KEY,
 					});
+
+					setHasErrors(forceRequired || productOption.required);
+
+					setSkuOptionsAtomState((previousSkuOptionsAtomState) => {
+						return {
+							...previousSkuOptionsAtomState,
+							[errorsKey]: getSkuOptionsErrors(
+								forceRequired || productOption.required,
+								false,
+								productOption,
+								previousSkuOptionsAtomState
+							),
+							namespace
+						};
+					});
 				}
 			}
 		);
-	}, [cpDefinitionId, namespace]);
+	}, [
+		cpDefinitionId,
+		forceRequired,
+		namespace,
+		productOption,
+		setHasErrors,
+		setSkuOptionsAtomState,
+	]);
 
 	useEffect(() => {
 		const handler = (payload) => handleChange(payload);
