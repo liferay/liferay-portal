@@ -1,18 +1,23 @@
-let wrapper = null;
-
+const editorClass = '.ck-editor';
 const editorName = `${fragmentEntryLinkNamespace}-${input.name}`;
+const wrapper = document.getElementById(
+	`${fragmentEntryLinkNamespace}-wrapper`
+);
 
-if (layoutMode !== 'edit') {
+if (layoutMode === 'edit') {
+	if (Liferay.FeatureFlags['LPD-11235']) {
+		initEditorWhenReady(() => {
+			wrapper
+				.querySelector(editorClass)
+				.classList.add('rich-text-input--disabled');
+		});
+	}
+}
+else {
 	const editorPromise = new Promise((resolve) => {
 		if (Liferay.FeatureFlags['LPD-11235']) {
-			wrapper = document.getElementById(
-				`${fragmentEntryLinkNamespace}-wrapper`
-			);
-
-			Liferay.on('ckeditor:ready', ({editor}) => {
-				if (editorName === editor.config.get('name')) {
-					resolve(editor);
-				}
+			initEditorWhenReady((editor) => {
+				resolve(editor);
 			});
 		}
 		else {
@@ -103,7 +108,7 @@ if (layoutMode !== 'edit') {
 
 								if (Liferay.FeatureFlags['LPD-11235']) {
 									editorElement =
-										wrapper.querySelector('.ck-editor');
+										wrapper.querySelector(editorClass);
 
 									label = wrapper.querySelector('label');
 								}
@@ -230,4 +235,12 @@ function changeLanguageDirection(editor, languageId, onChange) {
 
 		onChange?.();
 	}
+}
+
+function initEditorWhenReady(onReady) {
+	Liferay.on('ckeditor:ready', ({editor}) => {
+		if (editorName === editor.config.get('name')) {
+			onReady(editor);
+		}
+	});
 }
