@@ -117,7 +117,7 @@ public class PatcherUtil {
 		List<String> currentTickets = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixes(
 				patcherFixPack.getPatcherFixPackId());
 
 		for (PatcherFix patcherFix : patcherFixes) {

@@ -847,7 +847,7 @@ public class JenkinsUtil {
 		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuild.getPatcherBuildId());
 
 		for (PatcherFix patcherFix : patcherFixes) {

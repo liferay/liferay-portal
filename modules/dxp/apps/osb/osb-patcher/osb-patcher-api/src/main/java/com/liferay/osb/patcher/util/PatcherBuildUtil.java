@@ -92,7 +92,7 @@ public class PatcherBuildUtil {
 			PatcherBuild patcherBuild = patcherBuilds.get(0);
 
 			List<PatcherFix> patcherBuildPatcherFixes =
-				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 					patcherBuild.getPatcherBuildId());
 
 			for (PatcherFix patcherBuildPatcherFix : patcherBuildPatcherFixes) {
@@ -507,7 +507,7 @@ public class PatcherBuildUtil {
 						LABEL_PRODUCT_VERSION_PORTAL_6X)) {
 
 			List<PatcherFix> patcherFixes =
-				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 					patcherBuild.getPatcherBuildId(), QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 
@@ -580,7 +580,7 @@ public class PatcherBuildUtil {
 		throws Exception {
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuild.getPatcherBuildId());
 
 		return getIncompletePatcherFixes(
@@ -2235,7 +2235,7 @@ public class PatcherBuildUtil {
 			longestTicketPatcherFix.getName());
 
 		List<PatcherFix> patcherBuildPatcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuild.getPatcherBuildId());
 
 		for (PatcherFix patcherBuildPatcherFix : patcherBuildPatcherFixes) {
@@ -2317,7 +2317,7 @@ public class PatcherBuildUtil {
 			}
 
 			List<PatcherFix> patcherBuildPatcherFixes =
-				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 					patcherBuild.getPatcherBuildId());
 
 			if ((patcherBuildPatcherFixes.size() > 1) &&

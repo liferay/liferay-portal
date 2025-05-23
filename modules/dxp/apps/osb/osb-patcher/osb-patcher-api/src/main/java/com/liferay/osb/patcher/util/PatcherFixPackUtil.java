@@ -354,7 +354,7 @@ public class PatcherFixPackUtil {
 				patcherFixPack.getPatcherFixComponentId());
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixes(
 				patcherFixPack.getPatcherFixPackId());
 
 		for (PatcherFix patcherFix : patcherFixes) {
@@ -453,7 +453,7 @@ public class PatcherFixPackUtil {
 				patcherFixPack.getPatcherFixComponentId());
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixes(
 				patcherFixPack.getPatcherFixPackId());
 
 		for (PatcherFix patcherFix : patcherFixes) {

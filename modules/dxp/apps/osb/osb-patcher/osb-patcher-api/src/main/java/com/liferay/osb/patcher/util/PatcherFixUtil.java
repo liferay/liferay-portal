@@ -198,7 +198,7 @@ public class PatcherFixUtil {
 		throws Exception {
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuildId);
 
 		for (PatcherFix patcherFix : patcherFixes) {
@@ -214,7 +214,7 @@ public class PatcherFixUtil {
 		throws Exception {
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuildId);
 
 		for (PatcherFix patcherFix : patcherFixes) {
@@ -439,7 +439,7 @@ public class PatcherFixUtil {
 		throws Exception {
 
 		List<PatcherFix> patcherFixPackPatcherFixs =
-			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixes(
 				patcherFixPackId);
 
 		if (patcherFixPackPatcherFixs.isEmpty()) {
@@ -623,7 +623,7 @@ public class PatcherFixUtil {
 		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<PatcherFix> patcherFixPackPatcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixes(
 				patcherFixPack.getPatcherFixPackId());
 
 		for (PatcherFix patcherFixPackPatcherFix : patcherFixPackPatcherFixes) {
@@ -696,7 +696,7 @@ public class PatcherFixUtil {
 
 		if (Validator.isNotNull(patcherFixPackVersion)) {
 			return ListUtil.copy(
-				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 					patcherFixPackVersion.getPatcherBuildId()));
 		}
 
@@ -1162,7 +1162,7 @@ public class PatcherFixUtil {
 		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixs(
+			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuild.getPatcherBuildId());
 
 		for (PatcherFix patcherFix : patcherFixes) {
