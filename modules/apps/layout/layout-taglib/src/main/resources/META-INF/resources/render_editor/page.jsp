@@ -19,6 +19,7 @@ boolean required = GetterUtil.getBoolean(request.getAttribute("liferay-layout:re
 	<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
 		<liferay-editor:editor
 			contents="<%= content %>"
+			disabled='<%= Objects.equals(layoutMode, "edit") %>'
 			editorName="ckeditor5_classic"
 			name="<%= name %>"
 			placeholder="<%= label %>"

@@ -59,6 +59,13 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<description>Whether the field for the input editor is disabled. The default value is <![CDATA[<code>false</code>]]>.</description>
+			<name>disabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
 			<name>editorName</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
