@@ -9,7 +9,7 @@ import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {executeAsyncItemAction} from '../../FDSPropsTransformer/utils/executeAsyncItemAction';
-import SpaceSticker from '../../components/SpaceSticker';
+import SpaceSticker, {LogoColor} from '../../components/SpaceSticker';
 import CategorizationToolbar from '../CategorizationToolbar';
 import CreateTagsModal from './CreateTagsModal';
 import EditTagsModal from './EditTagsModal';
@@ -64,9 +64,6 @@ export default function ViewTags({
 	];
 
 	const ViewsSpaceTableCell = ({itemData}: {itemData: any}) => {
-		const assetLibraryNames = itemData.assetLibraries.map(
-			(assetLibrary: any) => assetLibrary.name
-		);
 		const assetLibraryIds = itemData.assetLibraries.map(
 			(assetLibrary: any) => assetLibrary.id
 		);
@@ -78,20 +75,34 @@ export default function ViewTags({
 				</span>
 			);
 		}
-		else {
-			return (
-				<>
-					{assetLibraryNames.map((name: string, index: number) => (
+
+		return (
+			<>
+				{itemData.assetLibraries.map(
+					(
+						assetLibrary: {
+							name: string;
+							settings?: {logoColor: string};
+						},
+						index: number
+					) => (
 						<span
 							className="align-items-center d-flex space-renderer-sticker"
 							key={index}
 						>
-							<SpaceSticker name={name} size="sm" />
+							<SpaceSticker
+								displayType={
+									assetLibrary.settings
+										?.logoColor as LogoColor
+								}
+								name={assetLibrary.name}
+								size="sm"
+							/>
 						</span>
-					))}
-				</>
-			);
-		}
+					)
+				)}
+			</>
+		);
 	};
 
 	const views = [

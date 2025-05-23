@@ -140,7 +140,6 @@ export default function CategorizationSpaces({
 			availableSpaces.filter((item) => items.includes(item))
 		);
 
-		console.log(items, '<<<<<<<<<<<');
 		setSelectedSpaces(items.map((item) => item.value));
 	};
 

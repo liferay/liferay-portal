@@ -10,11 +10,14 @@ import ClayPanel from '@clayui/panel';
 import {navigate, sub} from 'frontend-js-web';
 import React from 'react';
 
-import SpaceSticker from '../components/SpaceSticker';
+import SpaceSticker, {LogoColor} from '../components/SpaceSticker';
 
 export interface AssetLibrary {
 	id: number;
 	name: string;
+	settings?: {
+		logoColor: string;
+	};
 	url: string;
 }
 
@@ -74,7 +77,13 @@ const SpacesNavigation: React.FC<SpacesNavigationProps> = ({
 								className="nav-link"
 								href={assetLibrary.url}
 							>
-								<SpaceSticker name={assetLibrary.name} />
+								<SpaceSticker
+									displayType={
+										assetLibrary.settings
+											?.logoColor as LogoColor
+									}
+									name={assetLibrary.name}
+								/>
 							</ClayLink>
 						</li>
 					))}

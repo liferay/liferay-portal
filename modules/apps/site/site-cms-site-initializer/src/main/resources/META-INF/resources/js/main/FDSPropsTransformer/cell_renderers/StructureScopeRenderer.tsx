@@ -6,7 +6,7 @@
 import React from 'react';
 
 import SpaceService from '../../../services/SpaceService';
-import SpaceSticker from '../../components/SpaceSticker';
+import SpaceSticker, {LogoColor} from '../../components/SpaceSticker';
 
 const {useEffect, useState} = React;
 
@@ -41,6 +41,7 @@ const StructureScopeRenderer = ({
 }: {
 	itemData: {objectDefinitionSettings: ObjectDefinitionSetting[]};
 }) => {
+	const [spaceLogoColor, setSpaceLogoColor] = useState<LogoColor>();
 	const [spaceName, setSpaceName] = useState(Liferay.Language.get('loading'));
 
 	const fetchSpaceName = async (externalReferenceCodes: string[]) => {
@@ -52,6 +53,7 @@ const StructureScopeRenderer = ({
 				externalReferenceCodes[0]
 			);
 
+			setSpaceLogoColor(space.settings?.logoColor as LogoColor);
 			setSpaceName(space.name);
 		}
 	};
@@ -72,7 +74,11 @@ const StructureScopeRenderer = ({
 		</span>
 	) : (
 		<span className="align-items-center d-flex space-renderer-sticker">
-			<SpaceSticker name={spaceName} size="sm" />
+			<SpaceSticker
+				displayType={spaceLogoColor}
+				name={spaceName}
+				size="sm"
+			/>
 		</span>
 	);
 };

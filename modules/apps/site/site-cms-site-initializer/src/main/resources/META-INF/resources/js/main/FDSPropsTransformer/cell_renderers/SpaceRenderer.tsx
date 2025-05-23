@@ -7,10 +7,14 @@ import React from 'react';
 
 import SpaceSticker from '../../components/SpaceSticker';
 
-const SpaceRenderer = ({value}: {value: string}) => {
+const SpaceRenderer = ({itemData, value}: {itemData: any; value: string}) => {
 	return (
 		<span className="align-items-center d-flex space-renderer-sticker">
-			<SpaceSticker name={value} size="sm" />
+			<SpaceSticker
+				displayType={itemData.settings?.logoColor}
+				name={value}
+				size="sm"
+			/>
 		</span>
 	);
 };
