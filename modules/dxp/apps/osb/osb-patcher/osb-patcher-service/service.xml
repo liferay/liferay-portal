@@ -274,6 +274,15 @@
 
 		<column name="childPatcherFixId" type="long" />
 		<column name="parentPatcherFixId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ChildPatcherFixId" return-type="Collection">
+			<finder-column name="childPatcherFixId" />
+		</finder>
+		<finder name="ParentPatcherFixId" return-type="Collection">
+			<finder-column name="parentPatcherFixId" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherProductVersion" remote-service="false">
 

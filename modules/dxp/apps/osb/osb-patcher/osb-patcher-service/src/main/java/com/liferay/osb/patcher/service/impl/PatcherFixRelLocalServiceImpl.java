@@ -5,8 +5,11 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.model.PatcherFixRel;
 import com.liferay.osb.patcher.service.base.PatcherFixRelLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -19,4 +22,43 @@ import org.osgi.service.component.annotations.Component;
 )
 public class PatcherFixRelLocalServiceImpl
 	extends PatcherFixRelLocalServiceBaseImpl {
+
+	@Override
+	public PatcherFixRel addPatcherFixRel(
+		long childPatcherFixId, long parentPatcherFixId) {
+
+		long patcherFixRelId = counterLocalService.increment();
+
+		PatcherFixRel patcherFixRel = patcherFixRelPersistence.create(
+			patcherFixRelId);
+
+		patcherFixRel.setChildPatcherFixId(childPatcherFixId);
+		patcherFixRel.setParentPatcherFixId(parentPatcherFixId);
+
+		return patcherFixRel;
+	}
+
+	@Override
+	public void deletePatcherFixRelsByChildPatcherFixId(
+		long childPatcherFixId) {
+
+		patcherFixRelPersistence.removeByChildPatcherFixId(childPatcherFixId);
+	}
+
+	@Override
+	public List<PatcherFixRel> getPatcherFixRelsByChildPatcherFixId(
+		long childPatcherFixId) {
+
+		return patcherFixRelPersistence.findByChildPatcherFixId(
+			childPatcherFixId);
+	}
+
+	@Override
+	public List<PatcherFixRel> getPatcherFixRelsByParentPatcherFixId(
+		long parentPatcherFixId) {
+
+		return patcherFixRelPersistence.findByParentPatcherFixId(
+			parentPatcherFixId);
+	}
+
 }
