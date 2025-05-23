@@ -9,6 +9,7 @@
 
 <%
 String contents = (String)request.getAttribute(CKEditorConstants.ATTRIBUTE_NAMESPACE + ":contents");
+boolean disabled = GetterUtil.getBoolean((String)request.getAttribute(CKEditorConstants.ATTRIBUTE_NAMESPACE + ":disabled"));
 Map<String, Object> data = (Map<String, Object>)request.getAttribute(CKEditorConstants.ATTRIBUTE_NAMESPACE + ":data");
 
 JSONObject editorConfigJSONObject = null;
@@ -28,6 +29,8 @@ if (contents != null) {
 		props='<%=
 			HashMapBuilder.<String, Object>put(
 				"config", editorConfigJSONObject
+			).put(
+				"disabled", disabled
 			).build()
 		%>'
 	/>
