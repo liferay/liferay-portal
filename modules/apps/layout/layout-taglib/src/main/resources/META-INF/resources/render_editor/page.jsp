@@ -15,8 +15,25 @@ String name = (String)request.getAttribute("liferay-layout:render-editor:name");
 boolean required = GetterUtil.getBoolean(request.getAttribute("liferay-layout:render-editor:required"));
 %>
 
+<liferay-util:buffer
+	var="editorLabel"
+>
+	<label>
+		<%= label %>
+
+		<c:if test="<%= required %>">
+			<clay:icon
+				cssClass="reference-mark"
+				symbol="asterisk"
+			/>
+		</c:if>
+	</label>
+</liferay-util:buffer>
+
 <c:choose>
 	<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+		<%= editorLabel %>
+
 		<liferay-editor:editor
 			contents="<%= content %>"
 			disabled='<%= Objects.equals(layoutMode, "edit") %>'
@@ -34,16 +51,7 @@ boolean required = GetterUtil.getBoolean(request.getAttribute("liferay-layout:re
 				</liferay-util:html-top>
 
 				<div role="presentation">
-					<label>
-						<%= label %>
-
-						<c:if test="<%= required %>">
-							<clay:icon
-								cssClass="reference-mark"
-								symbol="asterisk"
-							/>
-						</c:if>
-					</label>
+					<%= editorLabel %>
 
 					<div class="cke_chrome cke_reset cke_ltr rich-text-input--disabled">
 						<div class="cke_inner">
