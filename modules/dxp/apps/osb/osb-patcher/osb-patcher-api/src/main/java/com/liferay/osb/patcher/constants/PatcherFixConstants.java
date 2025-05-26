@@ -5,6 +5,9 @@
 
 package com.liferay.osb.patcher.constants;
 
+/**
+ * @author Zsolt Balogh
+ */
 public class PatcherFixConstants {
 
 	public static final double KEY_VERSION_DEFAULT = 1.0;

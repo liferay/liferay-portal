@@ -5,6 +5,9 @@
 
 package com.liferay.osb.patcher.constants;
 
+/**
+ * @author Zsolt Balogh
+ */
 public class PatcherConstants {
 
 	public static final String CURRENTLY_INSTALLED_PATCHES_REGEX =
