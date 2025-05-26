@@ -37,7 +37,7 @@ public class PatcherFixRadix {
 			if (_map.containsKey(_currentBucket)) {
 				List<PatcherFix> patcherFixes = _map.get(_currentBucket);
 
-				if (patcherFixes.size() > 0) {
+				if (!patcherFixes.isEmpty()) {
 					return patcherFixes.remove(0);
 				}
 			}
