@@ -767,7 +767,8 @@ public class PatcherFixUtil {
 			User user = UserLocalServiceUtil.getUser(patcherFix.getUserId());
 
 			EmailUtil.sendPatcherTimeoutEmail(
-				alloyController, patcherFix, user.getEmailAddress());
+				patcherFix, user.getEmailAddress(),
+				alloyController.getThemeDisplay());
 
 			patcherFix.setNotified(true);
 
@@ -1003,14 +1004,14 @@ public class PatcherFixUtil {
 
 				if (status == WorkflowConstants.STATUS_BUILD_COMPILING) {
 					JenkinsUtil.sendDistJenkinsRequest(
-						alloyController, themeDisplay.getUser(), patcherBuild);
+						themeDisplay.getUser(), patcherBuild, themeDisplay);
 				}
 				else if ((status ==
 							WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
 						 (status == WorkflowConstants.STATUS_BUILD_MERGING)) {
 
 					JenkinsUtil.sendAgentJenkinsRequest(
-						alloyController, themeDisplay.getUser(), patcherBuild);
+						themeDisplay.getUser(), patcherBuild, themeDisplay);
 				}
 
 				continue;
@@ -1082,7 +1083,7 @@ public class PatcherFixUtil {
 				patcherFixIds);
 
 			JenkinsUtil.sendAgentJenkinsRequest(
-				alloyController, themeDisplay.getUser(), patcherBuild);
+				themeDisplay.getUser(), patcherBuild, themeDisplay);
 
 			PatcherUtil.addMessage(
 				"The build " + patcherBuild.getPatcherBuildId() +

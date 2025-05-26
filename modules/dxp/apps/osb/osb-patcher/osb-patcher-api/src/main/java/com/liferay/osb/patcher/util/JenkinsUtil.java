@@ -5,7 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyController;
 import com.liferay.jenkins.results.parser.LoadBalancerUtil;
 import com.liferay.osb.patcher.constants.JenkinsConstants;
 import com.liferay.osb.patcher.constants.PatcherActionKeys;
@@ -580,7 +579,7 @@ public class JenkinsUtil {
 	}
 
 	public static void sendAgentJenkinsRequest(
-			AlloyController alloyController, User user, BaseModel<?> baseModel)
+			User user, BaseModel<?> baseModel, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (baseModel instanceof PatcherBuild) {
@@ -600,32 +599,26 @@ public class JenkinsUtil {
 			updateJenkinsRequestKey(alloyController, mainPatcherFix);
 
 			sendAgentJenkinsPatcherBuildRequest(
-				alloyController.getThemeDisplay(), user, patcherBuild);
+				themeDisplay, user, patcherBuild);
 		}
 		else if (baseModel instanceof PatcherFix) {
 			PatcherFix patcherFix = (PatcherFix)baseModel;
 
-			if (!isValidSendAgentJenkinsRequest(
-					alloyController.getThemeDisplay(), patcherFix)) {
-
+			if (!isValidSendAgentJenkinsRequest(themeDisplay, patcherFix)) {
 				return;
 			}
 
 			updateJenkinsRequestKey(alloyController, patcherFix);
 
-			sendAgentJenkinsPatcherFixRequest(
-				alloyController.getThemeDisplay(), user, patcherFix);
+			sendAgentJenkinsPatcherFixRequest(themeDisplay, user, patcherFix);
 		}
 	}
 
 	public static void sendDistJenkinsRequest(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild)
+			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
 		throws Exception {
 
-		if (!isValidSendDistJenkinsRequest(
-				alloyController.getThemeDisplay(), patcherBuild)) {
-
+		if (!isValidSendDistJenkinsRequest(themeDisplay, patcherBuild)) {
 			return;
 		}
 
@@ -675,13 +668,11 @@ public class JenkinsUtil {
 	}
 
 	public static void sendTestJenkinsRequest(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild)
+			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (!PortletPropsValues.OSB_PATCHER_TESTS_ENABLED ||
-			!isValidSendTestJenkinsRequest(
-				alloyController.getThemeDisplay(), patcherBuild)) {
+			!isValidSendTestJenkinsRequest(themeDisplay, patcherBuild)) {
 
 			return;
 		}

@@ -89,7 +89,7 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 				}
 
 				EmailUtil.sendPatcherStatusEmail(
-					this, baseModel, user.getEmailAddress());
+					baseModel, user.getEmailAddress(), getThemeDisplay());
 			}
 
 			if ((baseModel instanceof PatcherBuild) &&
@@ -122,9 +122,10 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 				}
 
 				EmailUtil.sendPatcherEmail(
-					this, baseModel, user.getEmailAddress(),
+					baseModel, user.getEmailAddress(),
 					WorkflowConstants.getStatusLabel(
-						patcherBuild.getQaStatus()));
+						patcherBuild.getQaStatus()),
+					getThemeDisplay());
 			}
 		}
 	}
