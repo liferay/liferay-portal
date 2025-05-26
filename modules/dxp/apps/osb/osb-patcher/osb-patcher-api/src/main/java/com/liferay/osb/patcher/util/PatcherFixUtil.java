@@ -817,19 +817,9 @@ public class PatcherFixUtil {
 		}
 	}
 
-	public static List<PatcherFix> toPatcherFixes(List<Long> patcherFixIds)
-		throws Exception {
-
-		List<PatcherFix> patcherFixes = new ArrayList<>();
-
-		for (long patcherFixId : patcherFixIds) {
-			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
-				patcherFixId);
-
-			patcherFixes.add(patcherFix);
-		}
-
-		return patcherFixes;
+	public static List<PatcherFix> toPatcherFixes(List<Long> patcherFixIds) {
+		return TransformUtil.transform(
+			patcherFixIds, PatcherFixLocalServiceUtil::getPatcherFix);
 	}
 
 	public static void updateObsolete(
