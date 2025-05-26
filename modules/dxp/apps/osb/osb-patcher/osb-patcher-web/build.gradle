@@ -14,4 +14,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:osb:osb-patcher:osb-patcher-api")
+	compileOnly project(":test:jenkins-results-parser")
 }
