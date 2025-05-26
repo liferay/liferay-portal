@@ -119,6 +119,7 @@ public class PatcherProjectVersionUtil {
 				patcherProjectVersionCommittish.substring(0, 4));
 			int quarter = GetterUtil.getInteger(
 				patcherProjectVersionCommittish.substring(6, 7));
+
 			int patch = GetterUtil.getInteger(
 				patcherProjectVersionCommittish.substring(
 					patcherProjectVersionCommittish.lastIndexOf('.') + 1));
@@ -132,6 +133,7 @@ public class PatcherProjectVersionUtil {
 			int index = patcherProjectVersionCommittish.lastIndexOf('u') + 1;
 
 			String prefix = patcherProjectVersionCommittish.substring(0, index);
+
 			int update = GetterUtil.getInteger(
 				patcherProjectVersionCommittish.substring(index));
 

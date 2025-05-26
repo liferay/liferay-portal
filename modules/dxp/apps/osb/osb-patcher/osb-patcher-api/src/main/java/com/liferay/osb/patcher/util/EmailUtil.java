@@ -380,6 +380,7 @@ public class EmailUtil {
 			applyTextFormatterFormats(
 				modelClass.getSimpleName(), TextFormatter.L, TextFormatter.K,
 				TextFormatter.N));
+
 		sb.append(StringPool.UNDERLINE);
 		sb.append(
 			applyTextFormatterFormats(

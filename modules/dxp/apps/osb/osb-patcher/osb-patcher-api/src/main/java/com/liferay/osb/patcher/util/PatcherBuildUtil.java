@@ -1872,6 +1872,7 @@ public class PatcherBuildUtil {
 				patcherFixId);
 
 			sb.append(patcherFix.getName());
+
 			sb.append(StringPool.COMMA);
 		}
 
