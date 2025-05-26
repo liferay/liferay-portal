@@ -171,8 +171,8 @@ public class PatcherFixRelUtil {
 
 			if (childPatcherFixPatcherFix.equals(patcherFix)) {
 				throw new Exception(
-					"circular-reference-detected-the-" +
-						"parent-fix-is-equal-to-the-child-fix");
+					"circular-reference-detected-the-parent-fix-is-equal-to-" +
+						"the-child-fix");
 			}
 
 			patcherFixDescendants.add(childPatcherFixPatcherFix);

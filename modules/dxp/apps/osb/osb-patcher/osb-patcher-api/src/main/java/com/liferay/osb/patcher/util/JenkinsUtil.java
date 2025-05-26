@@ -744,18 +744,18 @@ public class JenkinsUtil {
 		if (Validator.isNull(
 				PortletPropsValues.JENKINS_BUILD_WITH_PARAMETERS_PATH)) {
 
-			return "the-build-cannot-send-request-because-the-" +
-				"jenkins-build-with-parameters-path-is-not-set";
+			return "the-build-cannot-send-request-because-the-jenkins-build-" +
+				"with-parameters-path-is-not-set";
 		}
 
 		if (Validator.isNull(PortletPropsValues.JENKINS_TOKEN)) {
-			return "the-build-cannot-send-request-because-the-" +
-				"jenkins-token-is-not-set";
+			return "the-build-cannot-send-request-because-the-jenkins-token-" +
+				"is-not-set";
 		}
 
 		if (Validator.isNull(PortletPropsValues.JENKINS_URL)) {
-			return "the-build-cannot-send-request-because-the-" +
-				"jenkins-url-is-not-set";
+			return "the-build-cannot-send-request-because-the-jenkins-url-" +
+				"is-not-set";
 		}
 
 		return StringPool.BLANK;
