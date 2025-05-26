@@ -5,18 +5,25 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyController;
+import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowedModel;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -105,8 +112,8 @@ public class EmailUtil {
 	}
 
 	public static void sendPatcherStatusEmail(
-			AlloyController alloyController, BaseModel<?> baseModel,
-			String emailAddress)
+			BaseModel<?> baseModel, String emailAddress,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		Integer baseModelStatus = BaseModelUtil.fetchBaseModelStatus(baseModel);
@@ -116,16 +123,16 @@ public class EmailUtil {
 		}
 
 		sendPatcherEmail(
-			alloyController, baseModel, emailAddress,
-			WorkflowConstants.getStatusLabel(baseModelStatus));
+			baseModel, emailAddress,
+			WorkflowConstants.getStatusLabel(baseModelStatus), themeDisplay);
 	}
 
 	public static void sendPatcherTimeoutEmail(
-			AlloyController alloyController, BaseModel<?> baseModel,
-			String emailAddress)
+			BaseModel<?> baseModel, String emailAddress,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
-		sendPatcherEmail(alloyController, baseModel, emailAddress, "timeout");
+		sendPatcherEmail(baseModel, emailAddress, "timeout", themeDisplay);
 	}
 
 	protected static String applyTextFormatterFormats(
@@ -142,23 +149,6 @@ public class EmailUtil {
 		throws Exception {
 
 		return getEmailTemplate(templateName + "_body.tmpl");
-	}
-
-	protected static String getDisplayURL(
-			AlloyController alloyController, String controllerPath,
-			long classPK)
-		throws Exception {
-
-		if (alloyController instanceof PatcherAlloyControllerImpl) {
-			return ((PatcherAlloyControllerImpl)alloyController).getDisplayURL(
-				controllerPath, classPK);
-		}
-		else if (alloyController instanceof PatcherMockAlloyControllerImpl) {
-			return ((PatcherMockAlloyControllerImpl)alloyController).
-				getDisplayURL(controllerPath, classPK);
-		}
-
-		return StringPool.BLANK;
 	}
 
 	protected static String getDownloadHotfixURL(PatcherBuild patcherBuild)
@@ -203,7 +193,7 @@ public class EmailUtil {
 	}
 
 	protected static Map<String, String> getPatcherContextAttributes(
-			AlloyController alloyController, BaseModel<?> baseModel)
+			BaseModel<?> baseModel, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		Map<String, String> contextAttributes = new HashMap<>();
@@ -265,19 +255,20 @@ public class EmailUtil {
 			contextAttributes.put("[$USER_NAME$]", patcherBuild.getUserName());
 			contextAttributes.put(
 				"[$VIEW_BUILD_URL$]",
-				getDisplayURL(
-					alloyController, _BUILDS_CONTROLLER_PATH,
-					patcherBuild.getPatcherBuildId()));
+				_getDisplayURL(
+					_BUILDS_CONTROLLER_PATH, patcherBuild.getPatcherBuildId(),
+					themeDisplay));
 			contextAttributes.put(
 				"[$VIEW_CONFLICT_FIX_URL$]",
 				getPatcherFixesURLsByBuildStatus(
-					alloyController, patcherBuild,
-					WorkflowConstants.STATUS_BUILD_CONFLICT));
+					patcherBuild, WorkflowConstants.STATUS_BUILD_CONFLICT,
+					themeDisplay));
 			contextAttributes.put(
 				"[$VIEW_REBASE_CONFLICT_FIX_URL$]",
 				getPatcherFixesURLsByBuildStatus(
-					alloyController, patcherBuild,
-					WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT));
+					patcherBuild,
+					WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT,
+					themeDisplay));
 			contextAttributes.put(
 				"[$VIEW_TROUBLESHOOTING_URL$]",
 				TextFormatter.format(
@@ -305,17 +296,17 @@ public class EmailUtil {
 			contextAttributes.put("[$USER_NAME$]", patcherFix.getUserName());
 			contextAttributes.put(
 				"[$VIEW_FIX_URL$]",
-				getDisplayURL(
-					alloyController, _FIXES_CONTROLLER_PATH,
-					patcherFix.getPatcherFixId()));
+				_getDisplayURL(
+					_FIXES_CONTROLLER_PATH, patcherFix.getPatcherFixId(),
+					themeDisplay));
 		}
 
 		return contextAttributes;
 	}
 
 	protected static String getPatcherFixesURLsByBuildStatus(
-			AlloyController alloyController, PatcherBuild patcherBuild,
-			long patcherBuildStatus)
+			PatcherBuild patcherBuild, long patcherBuildStatus,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (patcherBuild.getStatus() != patcherBuildStatus) {
@@ -344,8 +335,8 @@ public class EmailUtil {
 				}
 
 				sb.append(
-					getDisplayURL(
-						alloyController, _FIXES_CONTROLLER_PATH, patcherFixId));
+					_getDisplayURL(
+						_FIXES_CONTROLLER_PATH, patcherFixId, themeDisplay));
 			}
 
 			return sb.toString();
@@ -361,8 +352,8 @@ public class EmailUtil {
 	}
 
 	protected static void sendPatcherEmail(
-			AlloyController alloyController, BaseModel<?> baseModel,
-			String emailAddress, String templateNameSuffix)
+			BaseModel<?> baseModel, String emailAddress,
+			String templateNameSuffix, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (Validator.isNull(templateNameSuffix)) {
@@ -389,11 +380,9 @@ public class EmailUtil {
 		String subject = getSubjectEmailTemplate(sb.toString());
 
 		Map<String, String> contextAttributes = getPatcherContextAttributes(
-			alloyController, baseModel);
+			baseModel, themeDisplay);
 
-		sendEmail(
-			alloyController.getThemeDisplay(), emailAddress, body, subject,
-			contextAttributes);
+		sendEmail(themeDisplay, emailAddress, body, subject, contextAttributes);
 
 		if (baseModel instanceof WorkflowedModel) {
 			Long statusByUserId = BaseModelUtil.fetchBaseModelStatusByUserId(
@@ -404,10 +393,49 @@ public class EmailUtil {
 				User user = UserLocalServiceUtil.getUser(statusByUserId);
 
 				sendEmail(
-					alloyController.getThemeDisplay(), user.getEmailAddress(),
-					body, subject, contextAttributes);
+					themeDisplay, user.getEmailAddress(), body, subject,
+					contextAttributes);
 			}
 		}
+	}
+
+	private static String _getDisplayURL(
+			String controllerPath, long classPK, ThemeDisplay themeDisplay)
+		throws Exception {
+
+		String layoutFriendlyURL = StringPool.BLANK;
+
+		Layout layout = themeDisplay.getLayout();
+
+		if (layout != null) {
+			layoutFriendlyURL = GetterUtil.getString(
+				PortalUtil.getLayoutFriendlyURL(layout, themeDisplay));
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		if (!layoutFriendlyURL.startsWith(Http.HTTP_WITH_SLASH) &&
+			!layoutFriendlyURL.startsWith(Http.HTTPS_WITH_SLASH)) {
+
+			sb.append(
+				PortalUtil.getPortalURL(
+					themeDisplay.getRequest(), themeDisplay.isSecure()));
+		}
+
+		sb.append(layoutFriendlyURL);
+		sb.append(Portal.FRIENDLY_URL_SEPARATOR);
+
+		Portlet portlet = PortletLocalServiceUtil.getPortletById(
+			PatcherPortletKeys.PATCHER);
+
+		sb.append(portlet.getFriendlyURLMapping());
+
+		sb.append(StringPool.SLASH);
+		sb.append(controllerPath);
+		sb.append(StringPool.SLASH);
+		sb.append(classPK);
+
+		return sb.toString();
 	}
 
 	private static final String _BUILDS_CONTROLLER_PATH = "builds";

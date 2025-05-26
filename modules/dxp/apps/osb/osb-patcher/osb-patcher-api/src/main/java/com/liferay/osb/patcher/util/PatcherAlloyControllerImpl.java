@@ -6,27 +6,21 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.BaseAlloyControllerImpl;
-import com.liferay.compat.portal.util.PortalUtil;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.web.internal.permission.resource.PatcherPermission;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.AuditedModel;
 import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowedModel;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringBundler;
 
 import java.lang.reflect.Method;
 
@@ -176,37 +170,6 @@ public class PatcherAlloyControllerImpl extends BaseAlloyControllerImpl {
 		super.executeResource(method);
 
 		clazz = tempClass;
-	}
-
-	protected String getDisplayURL(String controllerPath, long classPK)
-		throws Exception {
-
-		String layoutFriendlyURL = StringPool.BLANK;
-
-		Layout layout = themeDisplay.getLayout();
-
-		if (layout != null) {
-			layoutFriendlyURL = GetterUtil.getString(
-				PortalUtil.getLayoutFriendlyURL(layout, themeDisplay));
-		}
-
-		StringBundler sb = new StringBundler(8);
-
-		if (!layoutFriendlyURL.startsWith(Http.HTTP_WITH_SLASH) &&
-			!layoutFriendlyURL.startsWith(Http.HTTPS_WITH_SLASH)) {
-
-			sb.append(PortalUtil.getPortalURL(request, request.isSecure()));
-		}
-
-		sb.append(layoutFriendlyURL);
-		sb.append(Portal.FRIENDLY_URL_SEPARATOR);
-		sb.append(portlet.getFriendlyURLMapping());
-		sb.append(StringPool.SLASH);
-		sb.append(controllerPath);
-		sb.append(StringPool.SLASH);
-		sb.append(classPK);
-
-		return sb.toString();
 	}
 
 	@Override
