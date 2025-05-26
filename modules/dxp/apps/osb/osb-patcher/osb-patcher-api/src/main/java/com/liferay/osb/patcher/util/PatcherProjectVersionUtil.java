@@ -12,6 +12,7 @@ import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherProjectVersionNameComparator;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -128,7 +129,8 @@ public class PatcherProjectVersionUtil {
 
 			patch += direction;
 
-			neighborCommittish = "" + year + ".q" + quarter + "." + patch;
+			neighborCommittish = StringBundler.concat(
+				year, ".q", quarter, ".", patch);
 		}
 		else if (patcherProjectVersionCommittish.contains("u")) {
 			int index = patcherProjectVersionCommittish.lastIndexOf('u') + 1;
