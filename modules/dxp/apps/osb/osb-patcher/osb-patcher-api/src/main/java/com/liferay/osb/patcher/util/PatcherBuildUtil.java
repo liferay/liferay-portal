@@ -131,7 +131,7 @@ public class PatcherBuildUtil {
 			PatcherAccountLocalServiceUtil.fetchPatcherAccount(
 				accountEntryCode);
 
-		if (Validator.isNull(patcherAccount)) {
+		if (patcherAccount == null) {
 			addPatcherAccountPatcherBuild(
 				alloyController, patcherBuild.getPatcherBuildId(),
 				accountEntryCode);
