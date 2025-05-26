@@ -265,10 +265,8 @@ public class PatcherFixPackUtil {
 			long patcherFixPackId)
 		throws Exception {
 
-		PatcherFixPack patcherFixPack =
-			PatcherFixPackLocalServiceUtil.getPatcherFixPack(patcherFixPackId);
-
-		return getPrerequisitePatcherFixPacks(patcherFixPack);
+		return getPrerequisitePatcherFixPacks(
+			PatcherFixPackLocalServiceUtil.getPatcherFixPack(patcherFixPackId));
 	}
 
 	public static Set<PatcherFixPack> getPrerequisitePatcherFixPacks(
@@ -286,9 +284,7 @@ public class PatcherFixPackUtil {
 				patcherFixPack.getPatcherFixPackId());
 
 		for (PatcherFix patcherFix : patcherFixes) {
-			String dependencies = patcherFix.getDependencies();
-
-			String[] phrases = StringUtil.split(dependencies);
+			String[] phrases = StringUtil.split(patcherFix.getDependencies());
 
 			for (String phrase : phrases) {
 				String[] componentNames = StringUtil.split(phrase, "->");

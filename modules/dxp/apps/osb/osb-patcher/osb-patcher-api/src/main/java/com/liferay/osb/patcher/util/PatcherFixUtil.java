@@ -68,8 +68,7 @@ public class PatcherFixUtil {
 				patcherProjectVersionId));
 		newPatcherFix.setPatcherProjectVersionId(patcherProjectVersionId);
 		newPatcherFix.setName(name);
-		newPatcherFix.setKey(
-			PatcherFixUtil.generateKey(patcherProjectVersionId, name));
+		newPatcherFix.setKey(generateKey(patcherProjectVersionId, name));
 		newPatcherFix.setKeyVersion(keyVersion);
 		newPatcherFix.setType(type);
 		newPatcherFix.setLatestFix(true);
@@ -474,7 +473,7 @@ public class PatcherFixUtil {
 
 		List<PatcherFix> filteredPatcherFixes = new ArrayList<>();
 
-		List<PatcherFix> patcherFixes = PatcherFixUtil.getFilteredPatcherFixes(
+		List<PatcherFix> patcherFixes = getFilteredPatcherFixes(
 			patcherProjectVersionId, WorkflowConstants.STATUS_FIX_COMPLETE);
 
 		if (includeAnyStatusRebaseFixes) {

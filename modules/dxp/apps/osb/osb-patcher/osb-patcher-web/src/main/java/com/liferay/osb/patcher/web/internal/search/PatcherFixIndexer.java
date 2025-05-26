@@ -120,9 +120,7 @@ public class PatcherFixIndexer extends BaseIndexer<PatcherFix> {
 			BooleanQuery searchQuery, SearchContext searchContext)
 		throws Exception {
 
-		String keywords = searchContext.getKeywords();
-
-		if (PatcherUtil.isPatcherTickets(keywords)) {
+		if (PatcherUtil.isPatcherTickets(searchContext.getKeywords())) {
 			addSearchTerm(searchQuery, searchContext, "patcherFixName", true);
 
 			return;

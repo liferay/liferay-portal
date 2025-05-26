@@ -6,8 +6,8 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.osb.patcher.model.PatcherFix;
+import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +23,7 @@ public class PatcherFixRadix {
 		}
 
 		if (!_map.containsKey(bucket)) {
-			List<PatcherFix> patcherFixes = new ArrayList<>();
-
-			patcherFixes.add(patcherFix);
-
-			_map.put(bucket, patcherFixes);
+			_map.put(bucket, ListUtil.fromArray(patcherFix));
 		}
 		else {
 			List<PatcherFix> patcherFixes = _map.get(bucket);

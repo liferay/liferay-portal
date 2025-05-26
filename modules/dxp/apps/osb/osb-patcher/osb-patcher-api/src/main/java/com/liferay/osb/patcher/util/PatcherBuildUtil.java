@@ -179,10 +179,8 @@ public class PatcherBuildUtil {
 			PatcherBuild patcherBuild)
 		throws Exception {
 
-		List<Long> patcherFixIds = PatcherFixUtil.getPatcherFixIds(
-			patcherBuild);
-
-		return PatcherFixUtil.containsIncompleteRebasePatcherFix(patcherFixIds);
+		return PatcherFixUtil.containsIncompleteRebasePatcherFix(
+			PatcherFixUtil.getPatcherFixIds(patcherBuild));
 	}
 
 	public static boolean containsOtherPatcherProjectVersionIds(
@@ -337,21 +335,22 @@ public class PatcherBuildUtil {
 				PatcherBuildConstants.
 					PATCHER_BUILD_ACCOUNT_ENTRY_NAME_LIFERAY_SECURITY)) {
 
-			long patcherProductVersionId =
-				PatcherProjectVersionUtil.getPatcherProductVersionId(
-					patcherProjectVersionId);
-
 			return CounterLocalServiceUtil.increment(
 				StringBundler.concat(
 					PatcherBuild.class.getName(), StringPool.POUND, "Security",
 					StringPool.POUND, supportTicket, StringPool.POUND,
-					String.valueOf(patcherProjectVersionId)));
+					String.valueOf(
+						PatcherProjectVersionUtil.getPatcherProductVersionId(
+							patcherProjectVersionId))));
 		}
+
+		long rootPatcherProjectVersionId =
+			PatcherProjectVersionUtil.getRootPatcherProjectVersionId(
+				patcherProjectVersionId);
 
 		return CounterLocalServiceUtil.increment(
 			PatcherBuild.class.getName() + StringPool.POUND +
-				PatcherProjectVersionUtil.getRootPatcherProjectVersionId(
-					patcherProjectVersionId));
+				rootPatcherProjectVersionId);
 	}
 
 	public static String generateKey(
@@ -842,11 +841,9 @@ public class PatcherBuildUtil {
 	}
 
 	public static boolean isObsolete(long patcherBuildId) throws Exception {
-		PatcherBuild patcherBuild =
-			PatcherBuildLocalServiceUtil.getPatcherBuild(patcherBuildId);
-
 		List<PatcherFix> patcherFixes =
-			PatcherBuildRelUtil.getChildPatcherBuildsMainFixes(patcherBuild);
+			PatcherBuildRelUtil.getChildPatcherBuildsMainFixes(
+				PatcherBuildLocalServiceUtil.getPatcherBuild(patcherBuildId));
 
 		for (PatcherFix patcherFix : patcherFixes) {
 			if (patcherFix.isObsolete()) {
@@ -1003,9 +1000,6 @@ public class PatcherBuildUtil {
 		validateOSBPatcherBuildCompileJenkinsStatus(
 			patcherBuild, jenkinsStatusJSONString);
 
-		String fileName = StringPool.BLANK;
-		String sourceName = StringPool.BLANK;
-
 		JSONObject jenkinsStatusJSONObject = JSONFactoryUtil.createJSONObject(
 			jenkinsStatusJSONString);
 
@@ -1018,6 +1012,9 @@ public class PatcherBuildUtil {
 
 			return;
 		}
+
+		String fileName = StringPool.BLANK;
+		String sourceName = StringPool.BLANK;
 
 		int exitValue = jenkinsStatusJSONObject.getInt("exitValue");
 
@@ -1129,8 +1126,6 @@ public class PatcherBuildUtil {
 			"results");
 
 		for (int i = 0; i < resultsJSONArray.length(); i++) {
-			JSONObject resultJSONObject = resultsJSONArray.getJSONObject(i);
-
 			PatcherFixUtil.updatePatcherFixJenkinsResult(
 				alloyController, jenkinsStatusJSONObject,
 				patcherBuild.getPatcherFixId());
@@ -2131,11 +2126,9 @@ public class PatcherBuildUtil {
 			long patcherFixId, String jenkinsStatusJSONString)
 		throws Exception {
 
-		PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
-			patcherFixId);
-
 		JenkinsUtil.validateJenkinsRequestKey(
-			patcherFix, jenkinsStatusJSONString);
+			PatcherFixLocalServiceUtil.getPatcherFix(patcherFixId),
+			jenkinsStatusJSONString);
 	}
 
 	protected static void validateOSBPatcherBuildTestJenkinsStatus(

@@ -102,9 +102,8 @@ public class PatcherAccountIndexer extends BaseIndexer<PatcherAccount> {
 
 		Document document = getBaseModelDocument(CLASS_NAME, patcherAccount);
 
-		String accountEntryCode = patcherAccount.getAccountEntryCode();
-
-		document.addText("accountEntryCode", accountEntryCode);
+		document.addText(
+			"accountEntryCode", patcherAccount.getAccountEntryCode());
 
 		List<PatcherProductVersion> patcherProductVersions =
 			PatcherProductVersionUtil.getPatcherProductVersions(patcherAccount);

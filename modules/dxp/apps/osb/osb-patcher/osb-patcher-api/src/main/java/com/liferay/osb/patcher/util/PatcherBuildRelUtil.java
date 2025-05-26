@@ -41,10 +41,8 @@ public class PatcherBuildRelUtil {
 		List<PatcherBuild> parentPatcherBuilds = getParentPatcherBuilds(
 			childPatcherBuild);
 
-		PatcherBuild parentPatcherBuild = parentPatcherBuilds.get(0);
-
 		List<PatcherBuild> childPatcherBuilds = getChildPatcherBuilds(
-			parentPatcherBuild);
+			parentPatcherBuilds.get(0));
 
 		for (PatcherBuild curChildPatcherBuild : childPatcherBuilds) {
 			if (curChildPatcherBuild.getPatcherBuildId() ==
@@ -76,21 +74,18 @@ public class PatcherBuildRelUtil {
 
 		List<PatcherFix> patcherFixes = new ArrayList<>();
 
-		List<PatcherBuild> childPatcherBuilds = getChildPatcherBuilds(
-			patcherBuild);
+		for (PatcherBuild childPatcherBuild :
+				getChildPatcherBuilds(patcherBuild)) {
 
-		for (PatcherBuild childPatcherBuild : childPatcherBuilds) {
-			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
-				childPatcherBuild.getPatcherFixId());
-
-			patcherFixes.add(patcherFix);
+			patcherFixes.add(
+				PatcherFixLocalServiceUtil.getPatcherFix(
+					childPatcherBuild.getPatcherFixId()));
 		}
 
 		if (patcherFixes.isEmpty()) {
-			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
-				patcherBuild.getPatcherFixId());
-
-			patcherFixes.add(patcherFix);
+			patcherFixes.add(
+				PatcherFixLocalServiceUtil.getPatcherFix(
+					patcherBuild.getPatcherFixId()));
 		}
 
 		return patcherFixes;

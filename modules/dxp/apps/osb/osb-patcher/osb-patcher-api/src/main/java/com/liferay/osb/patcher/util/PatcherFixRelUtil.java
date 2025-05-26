@@ -53,8 +53,8 @@ public class PatcherFixRelUtil {
 				continue;
 			}
 
-			List<Long> parentPatcherFixIds =
-				PatcherFixRelUtil.getParentPatcherFixIds(patcherFixId);
+			List<Long> parentPatcherFixIds = getParentPatcherFixIds(
+				patcherFixId);
 
 			if ((parentPatcherFixIds.size() != 2) ||
 				!allPatcherFixIds.containsAll(parentPatcherFixIds)) {
@@ -117,8 +117,8 @@ public class PatcherFixRelUtil {
 				continue;
 			}
 
-			List<Long> parentPatcherFixIdPatcherFixIds =
-				PatcherFixRelUtil.getParentPatcherFixIds(patcherFixId);
+			List<Long> parentPatcherFixIdPatcherFixIds = getParentPatcherFixIds(
+				patcherFixId);
 
 			if ((parentPatcherFixIdPatcherFixIds.size() != 2) ||
 				!allPatcherFixIds.containsAll(
@@ -185,8 +185,8 @@ public class PatcherFixRelUtil {
 	}
 
 	public static boolean hasObsoletePatcherFixAncestor(PatcherFix patcherFix) {
-		List<PatcherFix> patcherFixAncestors =
-			PatcherFixRelUtil.getPatcherFixAncestors(patcherFix);
+		List<PatcherFix> patcherFixAncestors = getPatcherFixAncestors(
+			patcherFix);
 
 		for (PatcherFix patcherFixAncestor : patcherFixAncestors) {
 			if (patcherFixAncestor == patcherFix) {

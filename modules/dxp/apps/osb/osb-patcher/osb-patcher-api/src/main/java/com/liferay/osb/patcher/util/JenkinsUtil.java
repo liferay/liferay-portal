@@ -362,9 +362,7 @@ public class JenkinsUtil {
 		Pattern pattern = Pattern.compile(
 			JenkinsConstants.JENKINS_JOB_NAME_REGEX);
 
-		String statusURL = getStatusURL(jenkinsResult);
-
-		Matcher matcher = pattern.matcher(statusURL);
+		Matcher matcher = pattern.matcher(getStatusURL(jenkinsResult));
 
 		if (matcher.find()) {
 			jobName = matcher.group(1);
@@ -903,13 +901,11 @@ public class JenkinsUtil {
 
 		Http.Options options = new Http.Options();
 
-		PatcherProjectVersion patcherProjectVersion =
-			PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(
-				patcherFix.getPatcherProjectVersionId());
-
 		Map<String, String> agentJenkinsRequestParameters =
 			getAgentJenkinsPatcherFixRequestParameters(
-				patcherProjectVersion, patcherFix);
+				PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(
+					patcherFix.getPatcherProjectVersionId()),
+				patcherFix);
 
 		for (Map.Entry<String, String> agentJenkinsRequestParameter :
 				agentJenkinsRequestParameters.entrySet()) {
@@ -930,12 +926,6 @@ public class JenkinsUtil {
 			throw new Exception("the-base-model-is-null");
 		}
 
-		JSONObject jenkinsStatusJSONObject = JSONFactoryUtil.createJSONObject(
-			jenkinsStatusJSONString);
-
-		String jenkinsStatusRequestKey = jenkinsStatusJSONObject.getString(
-			"patcherRequestKey");
-
 		String baseModelRequestKey = BaseModelUtil.fetchBaseModelRequestKey(
 			baseModel);
 
@@ -945,6 +935,12 @@ public class JenkinsUtil {
 					GetterUtil.getLong(baseModel.getPrimaryKeyObj()) +
 						" does not have a request key");
 		}
+
+		JSONObject jenkinsStatusJSONObject = JSONFactoryUtil.createJSONObject(
+			jenkinsStatusJSONString);
+
+		String jenkinsStatusRequestKey = jenkinsStatusJSONObject.getString(
+			"patcherRequestKey");
 
 		if (Validator.isNull(jenkinsStatusRequestKey) ||
 			!StringUtil.equalsIgnoreCase(
