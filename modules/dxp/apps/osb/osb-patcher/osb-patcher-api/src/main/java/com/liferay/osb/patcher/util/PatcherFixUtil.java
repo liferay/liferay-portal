@@ -966,7 +966,7 @@ public class PatcherFixUtil {
 
 	protected static void updatePatcherFixPatcherBuildRebaseStatus(
 			AlloyController alloyController, PatcherFix patcherFix,
-			int OSBPatcherServletOutcomeStatus, List<String> messages)
+			int osbPatcherServletOutcomeStatus, List<String> messages)
 		throws Exception {
 
 		ThemeDisplay themeDisplay = alloyController.getThemeDisplay();
@@ -987,7 +987,7 @@ public class PatcherFixUtil {
 			int status = PatcherBuildUtil.getNextPatcherBuildWorkflowStatus(
 				patcherBuild, PatcherBuildUtil.isMergeOnly(patcherBuild));
 
-			if (OSBPatcherServletOutcomeStatus ==
+			if (osbPatcherServletOutcomeStatus ==
 					OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
 				if (PatcherBuildUtil.containsIncompletePatcherFix(
@@ -1016,7 +1016,7 @@ public class PatcherFixUtil {
 
 				continue;
 			}
-			else if (OSBPatcherServletOutcomeStatus ==
+			else if (osbPatcherServletOutcomeStatus ==
 						OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
 				if (patcherBuild.getStatus() ==
@@ -1096,18 +1096,18 @@ public class PatcherFixUtil {
 
 	protected static void updatePatcherFixRebaseStatus(
 			AlloyController alloyController, PatcherFix patcherFix,
-			int OSBPatcherServletOutcomeStatus,
-			String OSBPatcherServletOutcomeResult, List<String> messages)
+			int osbPatcherServletOutcomeStatus,
+			String osbPatcherServletOutcomeResult, List<String> messages)
 		throws Exception {
 
-		if (OSBPatcherServletOutcomeStatus ==
+		if (osbPatcherServletOutcomeStatus ==
 				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
-			patcherFix.setGitHash(OSBPatcherServletOutcomeResult);
+			patcherFix.setGitHash(osbPatcherServletOutcomeResult);
 
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 		}
-		else if (OSBPatcherServletOutcomeStatus ==
+		else if (osbPatcherServletOutcomeStatus ==
 					OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);
@@ -1130,20 +1130,20 @@ public class PatcherFixUtil {
 			messages);
 
 		updatePatcherFixPatcherBuildRebaseStatus(
-			alloyController, patcherFix, OSBPatcherServletOutcomeStatus,
+			alloyController, patcherFix, osbPatcherServletOutcomeStatus,
 			messages);
 	}
 
 	protected static void updatePatcherFixStatus(
 			AlloyController alloyController, PatcherFix patcherFix,
-			int OSBPatcherServletOutcomeStatus,
-			String OSBPatcherServletOutcomeResult, List<String> messages)
+			int osbPatcherServletOutcomeStatus,
+			String osbPatcherServletOutcomeResult, List<String> messages)
 		throws Exception {
 
-		if (OSBPatcherServletOutcomeStatus ==
+		if (osbPatcherServletOutcomeStatus ==
 				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
-			patcherFix.setGitHash(OSBPatcherServletOutcomeResult);
+			patcherFix.setGitHash(osbPatcherServletOutcomeResult);
 
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 

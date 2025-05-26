@@ -623,7 +623,7 @@ public class PatcherScanUtil {
 			List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
-		Map<String, PatcherFix> PatcherFixPackFixNamePatcherFixPackFixMap =
+		Map<String, PatcherFix> patcherFixPackFixNamePatcherFixPackFixMap =
 			new HashMap<>();
 
 		List<String> tickets = PatcherUtil.sortTokens(patcherBuildTickets);
@@ -632,7 +632,7 @@ public class PatcherScanUtil {
 			PatcherFix patcherFixPackFix =
 				PatcherFixLocalServiceUtil.getPatcherFix(patcherFixPackFixId);
 
-			PatcherFixPackFixNamePatcherFixPackFixMap.put(
+			patcherFixPackFixNamePatcherFixPackFixMap.put(
 				patcherFixPackFix.getName(), patcherFixPackFix);
 
 			tickets.addAll(PatcherUtil.getTickets(patcherFixPackFix.getName()));
@@ -655,11 +655,11 @@ public class PatcherScanUtil {
 
 			foundPatcherFixTickets.removeAll(missingTickets);
 
-			if (PatcherFixPackFixNamePatcherFixPackFixMap.containsKey(
+			if (patcherFixPackFixNamePatcherFixPackFixMap.containsKey(
 					StringUtil.merge(foundPatcherFixTickets))) {
 
 				PatcherFix patcherFixPackFix =
-					PatcherFixPackFixNamePatcherFixPackFixMap.get(
+					patcherFixPackFixNamePatcherFixPackFixMap.get(
 						StringUtil.merge(foundPatcherFixTickets));
 
 				patcherFixPackFixIds.remove(
