@@ -5,6 +5,9 @@
 
 package com.liferay.osb.patcher.constants;
 
+/**
+ * @author Zsolt Balogh
+ */
 public class PatcherFixPackConstants {
 
 	public static final String FIX_PACK_COMPONENT_BASE = "base";
