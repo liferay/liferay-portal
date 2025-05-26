@@ -244,20 +244,17 @@ public class EmailUtil {
 					"[$QA_COMMENTS_TEMPLATE$]", StringPool.BLANK);
 			}
 
-			String qaStatusLabel = WorkflowConstants.getStatusLabel(
-				patcherBuild.getQaStatus());
-
 			contextAttributes.put(
 				"[$QA_STATUS$]",
-				TextFormatter.format(qaStatusLabel, TextFormatter.J));
-
-			String statusLabel = WorkflowConstants.getStatusLabel(
-				patcherBuild.getStatus());
-
+				TextFormatter.format(
+					WorkflowConstants.getStatusLabel(
+						patcherBuild.getQaStatus()),
+					TextFormatter.J));
 			contextAttributes.put(
 				"[$STATUS$]",
-				TextFormatter.format(statusLabel, TextFormatter.J));
-
+				TextFormatter.format(
+					WorkflowConstants.getStatusLabel(patcherBuild.getStatus()),
+					TextFormatter.J));
 			contextAttributes.put(
 				"[$STATUS_BY_USER_NAME$]", patcherBuild.getStatusByUserName());
 			contextAttributes.put(

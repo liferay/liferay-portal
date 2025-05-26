@@ -133,11 +133,9 @@ public class PatcherUtil {
 
 		List<String> newTickets = getCurrentTickets(patcherFixPack);
 
-		List<String> oldTickets = getOldTickets(patcherFixPack);
+		newTickets.removeAll(getOldTickets(patcherFixPack));
 
-		newTickets.removeAll(oldTickets);
-
-		return PatcherUtil.sortTokens(newTickets);
+		return sortTokens(newTickets);
 	}
 
 	public static String getNextPatcherBuilderStatusMsg() throws IOException {
@@ -252,7 +250,7 @@ public class PatcherUtil {
 
 		overriddenTickets.retainAll(getCurrentTickets(patcherFixPack));
 
-		return PatcherUtil.sortTokens(overriddenTickets);
+		return sortTokens(overriddenTickets);
 	}
 
 	public static Map<String, Object> getPropertiesMap(Object... properties)
@@ -355,17 +353,15 @@ public class PatcherUtil {
 	public static boolean isPatcherTickets(String name, String ticketNameRegex)
 		throws Exception {
 
-		Pattern pattern = Pattern.compile(ticketNameRegex);
-
 		name = unprepareKeywords(name);
 
 		if (Validator.isNull(name)) {
 			return false;
 		}
 
-		String[] tokens = StringUtil.split(name);
+		Pattern pattern = Pattern.compile(ticketNameRegex);
 
-		for (String token : tokens) {
+		for (String token : StringUtil.split(name)) {
 			Matcher matcher = pattern.matcher(StringUtil.trim(token));
 
 			if (!matcher.find()) {
@@ -438,11 +434,7 @@ public class PatcherUtil {
 		long defaultUserId = UserLocalServiceUtil.getDefaultUserId(
 			themeDisplay.getCompanyId());
 
-		Class<?> clazz = PatcherBuildUtil.class;
-
 		String lockClassName = PatcherBuild.class.getName() + "_Jenkins";
-
-		String methodName = "processOSBPatcherBuildCompileJenkinsStatus";
 
 		if (LockLocalServiceUtil.hasLock(
 				defaultUserId, lockClassName, themeDisplay.getCompanyId())) {
@@ -482,24 +474,26 @@ public class PatcherUtil {
 			String patcherId = jenkinsStatusJSONObject.getString(
 				"patcherBuildId");
 
-			long userId = jenkinsStatusJSONObject.getLong("patcherUserId");
-
-			User user = UserLocalServiceUtil.fetchUser(userId);
-
 			if (!Validator.isNumber(patcherId)) {
 				_log.error("Patcher ID is not a number: " + patcherId);
 
 				return;
 			}
 
+			long userId = jenkinsStatusJSONObject.getLong("patcherUserId");
+
+			User user = UserLocalServiceUtil.fetchUser(userId);
+
 			if (user != null) {
 				alloyController.setUser(user);
 			}
 
 			try {
+				Class<?> clazz = PatcherBuildUtil.class;
+
 				Method processOSBPatcherStatusMessageMethod =
 					clazz.getDeclaredMethod(
-						methodName,
+						"processOSBPatcherBuildCompileJenkinsStatus",
 						new Class<?>[] {
 							AlloyController.class, User.class, long.class,
 							String.class
@@ -781,11 +775,11 @@ public class PatcherUtil {
 			Object... attributes)
 		throws Exception {
 
-		Map<String, Serializable> attributesMap = new HashMap<>();
-
 		if ((attributes.length != 0) && ((attributes.length % 2) != 0)) {
 			throw new Exception("Arguments length is not an even number");
 		}
+
+		Map<String, Serializable> attributesMap = new HashMap<>();
 
 		for (int i = 0; i < attributes.length; i += 2) {
 			String name = String.valueOf(attributes[i]);

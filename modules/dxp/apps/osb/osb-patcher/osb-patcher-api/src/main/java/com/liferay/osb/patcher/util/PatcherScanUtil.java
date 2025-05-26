@@ -79,13 +79,12 @@ public class PatcherScanUtil {
 				patcherProjectVersionIds, patcherBuildTickets, true);
 
 		if (!patcherBuildTickets.isEmpty()) {
-			PatcherProjectVersion patcherProjectVersion =
-				PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(
-					patcherBuild.getPatcherProjectVersionId());
-
 			Map<Long, List<Long>> otherPatcherProjectVersionIdPatcherFixIdsMap =
 				scanPatcherFixIdsByOtherProjectVersions(
-					patcherProjectVersion, patcherBuildTickets);
+					PatcherProjectVersionLocalServiceUtil.
+						getPatcherProjectVersion(
+							patcherBuild.getPatcherProjectVersionId()),
+					patcherBuildTickets);
 
 			patcherProjectVersionIdPatcherFixIdsMap.putAll(
 				otherPatcherProjectVersionIdPatcherFixIdsMap);
@@ -190,15 +189,11 @@ public class PatcherScanUtil {
 
 		List<Long> patcherFixIds = new ArrayList<>();
 
-		List<String> patcherFixPackNames =
-			PatcherFixPackUtil.getPatcherFixPackNames(patcherBuildName);
-
-		List<PatcherFixPack> patcherFixPacks =
-			PatcherFixPackUtil.getPatcherFixPacks(
-				patcherFixPackNames, patcherProjectVersionId);
-
 		List<Long> patcherFixPackPatcherFixIds =
-			PatcherFixUtil.getPatcherFixIds(patcherFixPacks);
+			PatcherFixUtil.getPatcherFixIds(
+				PatcherFixPackUtil.getPatcherFixPacks(
+					PatcherFixPackUtil.getPatcherFixPackNames(patcherBuildName),
+					patcherProjectVersionId));
 
 		for (long patcherFixPackFixId : patcherFixPackPatcherFixIds) {
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(

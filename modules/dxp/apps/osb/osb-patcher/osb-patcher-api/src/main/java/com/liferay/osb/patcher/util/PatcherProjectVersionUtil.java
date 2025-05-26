@@ -38,19 +38,14 @@ public class PatcherProjectVersionUtil {
 			return new ArrayList<>();
 		}
 
-		PatcherProjectVersion patcherProjectVersion =
-			PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(
-				patcherProjectVersionId);
-
 		return getCumulativePatcherProjectVersionFixedIssues(
-			patcherProjectVersion);
+			PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(
+				patcherProjectVersionId));
 	}
 
 	public static List<String> getCumulativePatcherProjectVersionFixedIssues(
 			PatcherProjectVersion patcherProjectVersion)
 		throws Exception {
-
-		List<String> fixedIssues = new ArrayList<>();
 
 		Pattern pattern = Pattern.compile(PatcherConstants.FIX_PACK_TAG_REGEX);
 
@@ -61,6 +56,8 @@ public class PatcherProjectVersionUtil {
 			return PatcherUtil.getTokens(
 				patcherProjectVersion.getFixedIssues());
 		}
+
+		List<String> fixedIssues = new ArrayList<>();
 
 		int fixPackVersionNumber = GetterUtil.getInteger(matcher.group(3));
 		int portalVersionNumber = GetterUtil.getInteger(matcher.group(4));
