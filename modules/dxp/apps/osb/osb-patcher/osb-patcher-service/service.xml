@@ -166,6 +166,55 @@
 
 		<column entity="PatcherBuild" mapping-table="PatcherBuilds_PatcherFixes" name="patcherBuilds" type="Collection" />
 		<column entity="PatcherFixPack" mapping-table="PatcherFixes_PatcherFixPacks" name="patcherFixPack" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="PatcherProjectVersionId" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+		</finder>
+		<finder name="P_T_L" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="type" />
+			<finder-column name="latestFix" />
+		</finder>
+		<finder name="P_NotT_L" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column comparator="!=" name="type" />
+			<finder-column name="latestFix" />
+		</finder>
+		<finder name="K_GtKV_NotT" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&gt;" name="keyVersion" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="K_LtKV_NotT" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&lt;" name="keyVersion" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="K_NotT_L" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="!=" name="type" />
+			<finder-column name="latestFix" />
+		</finder>
+		<finder name="LtM_T_N_S" return-type="Collection">
+			<finder-column comparator="&lt;" name="modifiedDate" />
+			<finder-column arrayable-operator="OR" name="type" />
+			<finder-column name="notified" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="P_N_NotT_L" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="name" />
+			<finder-column comparator="!=" name="type" />
+			<finder-column name="latestFix" />
+		</finder>
+		<finder name="P_NotT_L_S" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column comparator="!=" name="type" />
+			<finder-column name="latestFix" />
+			<finder-column name="status" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherFixComponent" remote-service="false">
 
