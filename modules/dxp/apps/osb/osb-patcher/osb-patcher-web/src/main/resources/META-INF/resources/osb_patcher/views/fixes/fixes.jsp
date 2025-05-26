@@ -102,9 +102,9 @@
 		>
 			<c:choose>
 				<c:when test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherFix.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
-					<aui:a href="${editPatcherFixCommentsFieldURL}">
+					<a href="${editPatcherFixCommentsFieldURL}">
 						${shortenedPatcherFixComments}
-					</aui:a>
+					</a>
 				</c:when>
 				<c:otherwise>
 					${shortenedPatcherFixComments}

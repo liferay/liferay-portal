@@ -264,9 +264,9 @@
 
 			<c:choose>
 				<c:when test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
-					<aui:a href="${editPatcherBuildCommentsFieldURL}">
+					<a href="${editPatcherBuildCommentsFieldURL}">
 						${shortenedPatcherBuildComments}
-					</aui:a>
+					</a>
 				</c:when>
 				<c:otherwise>
 					${shortenedPatcherBuildComments}
@@ -296,9 +296,9 @@
 
 			<c:choose>
 				<c:when test="${PatcherPermission.contains(themeDisplay, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
-					<aui:a href="${editPatcherBuildQAFieldsURL}">
+					<a href="${editPatcherBuildQAFieldsURL}">
 						${shortenedPatcherBuildQAComments}
-					</aui:a>
+					</a>
 				</c:when>
 				<c:otherwise>
 					${shortenedPatcherBuildQAComments}

@@ -41,9 +41,9 @@
 		<portlet:param name="redirect" value="${viewPatcherFixURL}" />
 	</portlet:renderURL>
 
-	<aui:a href="${viewLatestPatcherFixURL}">
+	<a href="${viewLatestPatcherFixURL}">
 		${latestPatcherFix.patcherFixId}
-	</aui:a>
+	</a>
 </c:if>
 
 <aui:field-wrapper name="modifiedDate">
