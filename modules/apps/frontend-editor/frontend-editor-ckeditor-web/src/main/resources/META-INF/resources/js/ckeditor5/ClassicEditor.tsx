@@ -27,7 +27,6 @@ const ClassicEditor = ({
 	className?: string;
 	config?: LiferayEditorConfig;
 	data?: string;
-	id?: string;
 	onChange?: (event: EventInfo, editor: BaseClassicEditor) => void;
 	onReady?: (editor: BaseClassicEditor) => void;
 }) => {
