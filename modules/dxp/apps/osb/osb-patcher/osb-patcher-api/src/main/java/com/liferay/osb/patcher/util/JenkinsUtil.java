@@ -352,8 +352,10 @@ public class JenkinsUtil {
 		return PortletPropsValues.JENKINS_URL;
 	}
 
-	public static String getJobName(JSONObject jenkinsResult) throws Exception {
-		return getJobName(jenkinsResult.toString());
+	public static String getJobName(JSONObject jenkinsResultJSONObject)
+		throws Exception {
+
+		return getJobName(jenkinsResultJSONObject.toString());
 	}
 
 	public static String getJobName(String jenkinsResult) throws Exception {

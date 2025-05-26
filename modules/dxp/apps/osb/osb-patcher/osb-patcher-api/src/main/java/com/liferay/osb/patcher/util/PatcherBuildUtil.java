@@ -2084,17 +2084,17 @@ public class PatcherBuildUtil {
 
 	protected static void updatePatcherBuildStatus(
 			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild, int OSBPatcherServletOutcomeStatus,
-			String OSBPatcherServletOutcomeResult, List<String> messages)
+			PatcherBuild patcherBuild, int osbPatcherServletOutcomeStatus,
+			String osbPatcherServletOutcomeResult, List<String> messages)
 		throws Exception {
 
-		if (OSBPatcherServletOutcomeStatus ==
+		if (osbPatcherServletOutcomeStatus ==
 				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
 				patcherBuild.getPatcherFixId());
 
-			patcherFix.setGitHash(OSBPatcherServletOutcomeResult);
+			patcherFix.setGitHash(osbPatcherServletOutcomeResult);
 
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 
@@ -2110,7 +2110,7 @@ public class PatcherBuildUtil {
 					" with name ", patcherBuild.getName(), " was successful."),
 				messages);
 		}
-		else if (OSBPatcherServletOutcomeStatus ==
+		else if (osbPatcherServletOutcomeStatus ==
 					OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
 			PatcherUtil.addMessage(
@@ -2125,7 +2125,7 @@ public class PatcherBuildUtil {
 
 			HashMap<String, Object> conflictPatcherFixIdsMap =
 				(HashMap<String, Object>)jsonDeserializer.deserialize(
-					OSBPatcherServletOutcomeResult, HashMap.class);
+					osbPatcherServletOutcomeResult, HashMap.class);
 
 			for (Map.Entry<String, Object> conflictPatcherFixIdsEntry :
 					conflictPatcherFixIdsMap.entrySet()) {
