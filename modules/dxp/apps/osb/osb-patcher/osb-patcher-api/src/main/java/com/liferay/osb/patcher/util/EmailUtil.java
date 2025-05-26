@@ -10,6 +10,8 @@ import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
@@ -31,7 +33,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.util.ContentUtil;
+
+import java.io.IOException;
 
 import java.net.URL;
 
@@ -189,7 +192,17 @@ public class EmailUtil {
 			return StringPool.BLANK;
 		}
 
-		return ContentUtil.get(_TEMPLATE_DIRECTORY + templateName);
+		try {
+			return com.liferay.petra.string.StringUtil.read(
+				portletClassLoader, _TEMPLATE_DIRECTORY + templateName);
+		}
+		catch (IOException ioException) {
+			_log.error(
+				"Unable to read the content for: " + _TEMPLATE_DIRECTORY +
+					templateName);
+		}
+
+		return StringPool.BLANK;
 	}
 
 	protected static Map<String, String> getPatcherContextAttributes(
@@ -444,5 +457,7 @@ public class EmailUtil {
 
 	private static final String _TEMPLATE_DIRECTORY =
 		"com/liferay/osb/patcher/dependencies/";
+
+	private static final Log _log = LogFactoryUtil.getLog(EmailUtil.class);
 
 }
