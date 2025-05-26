@@ -1,0 +1,77 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.osb.patcher.util.comparator;
+
+import com.liferay.osb.patcher.model.PatcherFix;
+import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
+
+/**
+ * @author Eudaldo Alonso
+ */
+public class PatcherFixCreateDateComparator
+	extends OrderByComparator<PatcherFix> {
+
+	public static final String ORDER_BY_ASC = "PatcherFix.createDate ASC";
+
+	public static final String ORDER_BY_DESC = "PatcherFix.createDate DESC";
+
+	public static final String[] ORDER_BY_FIELDS = {"createDate"};
+
+	public static PatcherFixCreateDateComparator getInstance(
+		boolean ascending) {
+
+		if (ascending) {
+			return _INSTANCE_ASCENDING;
+		}
+
+		return _INSTANCE_DESCENDING;
+	}
+
+	@Override
+	public int compare(PatcherFix patcherFix1, PatcherFix patcherFix2) {
+		int value = DateUtil.compareTo(
+			patcherFix1.getCreateDate(), patcherFix2.getCreateDate());
+
+		if (_ascending) {
+			return value;
+		}
+
+		return -value;
+	}
+
+	@Override
+	public String getOrderBy() {
+		if (_ascending) {
+			return ORDER_BY_ASC;
+		}
+
+		return ORDER_BY_DESC;
+	}
+
+	@Override
+	public String[] getOrderByFields() {
+		return ORDER_BY_FIELDS;
+	}
+
+	@Override
+	public boolean isAscending() {
+		return _ascending;
+	}
+
+	private PatcherFixCreateDateComparator(boolean ascending) {
+		_ascending = ascending;
+	}
+
+	private static final PatcherFixCreateDateComparator _INSTANCE_ASCENDING =
+		new PatcherFixCreateDateComparator(true);
+
+	private static final PatcherFixCreateDateComparator _INSTANCE_DESCENDING =
+		new PatcherFixCreateDateComparator(false);
+
+	private final boolean _ascending;
+
+}
