@@ -2,9 +2,11 @@
 
 <suppressions>
 	<source-check>
+		<suppress checks="CSPTagIllegalAttributesCheck" files="osb-patcher/osb-patcher-web/.*" />
 		<suppress checks="CSPTagIllegalAttributesCheck" files="osb-site-initializer/osb-site-initializer-liferay-online/src/main/resources/site-initializer/ddm-templates/category-facet-widget-template/ddm-template\.ftl" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="osb-site-initializer/osb-site-initializer-liferay-online/src/main/resources/site-initializer/ddm-templates/category-facet-widget-template/ddm-template\.ftl" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="osb-site-initializer/osb-site-initializer-liferay-online/src/main/resources/site-initializer/ddm-templates/navigation-widget-template/ddm-template\.ftl" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="osb-site-initializer/osb-site-initializer-liferay-online/src/main/resources/site-initializer/ddm-templates/starterkits-widget-template/ddm-template\.ftl" />
+		<suppress checks="IllegalTaglibsCheck" files="osb-patcher/osb-patcher-web/.*" />
 	</source-check>
 </suppressions>
