@@ -30,6 +30,7 @@ import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.web.internal.constants.PatcherConstants;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -448,10 +449,11 @@ public class PatcherUtil {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"Skipping " + lockClassName +
-						" file processing for company " +
-							themeDisplay.getCompanyId() +
-								"because it is currently running");
+					StringBundler.concat(
+						"Skipping ", lockClassName,
+						" file processing for company ",
+						themeDisplay.getCompanyId(),
+						"because it is currently running"));
 			}
 
 			return;
@@ -580,10 +582,11 @@ public class PatcherUtil {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"Skipping " + lockClassName +
-						" file processing for company " +
-							themeDisplay.getCompanyId() +
-								"because it is currently running");
+					StringBundler.concat(
+						"Skipping ", lockClassName,
+						" file processing for company ",
+						themeDisplay.getCompanyId(),
+						"because it is currently running"));
 			}
 
 			return;

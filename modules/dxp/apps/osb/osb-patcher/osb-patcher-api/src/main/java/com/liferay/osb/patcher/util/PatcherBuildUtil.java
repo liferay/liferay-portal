@@ -342,9 +342,10 @@ public class PatcherBuildUtil {
 					patcherProjectVersionId);
 
 			return CounterLocalServiceUtil.increment(
-				PatcherBuild.class.getName() + StringPool.POUND + "Security" +
-					StringPool.POUND + supportTicket + StringPool.POUND +
-						patcherProjectVersionId);
+				StringBundler.concat(
+					PatcherBuild.class.getName(), StringPool.POUND, "Security",
+					StringPool.POUND, supportTicket, StringPool.POUND,
+					String.valueOf(patcherProjectVersionId)));
 		}
 
 		return CounterLocalServiceUtil.increment(
@@ -1550,8 +1551,9 @@ public class PatcherBuildUtil {
 
 		for (long conflictPatcherFixId : conflictPatcherFixIds) {
 			PatcherUtil.addMessage(
-				"The fixes " + patcherFixId + " and " + conflictPatcherFixId +
-					" conflict.",
+				StringBundler.concat(
+					"The fixes ", String.valueOf(patcherFixId), " and ",
+					String.valueOf(conflictPatcherFixId), " conflict."),
 				messages);
 
 			List<Long> parentPatcherFixIds = new ArrayList<>();
@@ -1570,8 +1572,10 @@ public class PatcherBuildUtil {
 			childPatcherFixes.add(childPatcherFix);
 
 			PatcherUtil.addMessage(
-				"The conflict fix " + childPatcherFix.getPatcherFixId() +
-					" with name " + childPatcherFix.getName() + " was created.",
+				StringBundler.concat(
+					"The conflict fix ",
+					String.valueOf(childPatcherFix.getPatcherFixId()),
+					" with name ", childPatcherFix.getName(), " was created."),
 				messages);
 		}
 
@@ -1905,8 +1909,11 @@ public class PatcherBuildUtil {
 			patcherBuild.getPatcherBuildId());
 
 		PatcherUtil.addMessage(
-			"The fix " + longestTicketPatcherFix.getPatcherFixId() +
-				" was added to the build " + patcherBuild.getPatcherBuildId(),
+			StringBundler.concat(
+				"The fix ",
+				String.valueOf(longestTicketPatcherFix.getPatcherFixId()),
+				" was added to the build ",
+				String.valueOf(patcherBuild.getPatcherBuildId())),
 			messages);
 
 		List<Long> parentPatcherFixIds =
@@ -1965,16 +1972,20 @@ public class PatcherBuildUtil {
 				alloyController, user, patcherBuild);
 
 			PatcherUtil.addMessage(
-				"The patch for build " + patcherBuild.getPatcherBuildId() +
-					" with name " + patcherBuild.getName() + " was successful.",
+				StringBundler.concat(
+					"The patch for build ",
+					String.valueOf(patcherBuild.getPatcherBuildId()),
+					" with name ", patcherBuild.getName(), " was successful."),
 				messages);
 		}
 		else if (OSBPatcherServletOutcomeStatus ==
 					OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
 			PatcherUtil.addMessage(
-				"The patch for build " + patcherBuild.getPatcherBuildId() +
-					" with name " + patcherBuild.getName() + " has a conflict.",
+				StringBundler.concat(
+					"The patch for build ",
+					String.valueOf(patcherBuild.getPatcherBuildId()),
+					" with name ", patcherBuild.getName(), " has a conflict."),
 				messages);
 
 			flexjson.JSONDeserializer jsonDeserializer =
@@ -2076,8 +2087,10 @@ public class PatcherBuildUtil {
 			alloyController.updateModelIgnoreRequest(patcherBuild);
 
 			PatcherUtil.addMessage(
-				"The patch for build " + patcherBuild.getPatcherBuildId() +
-					" with name " + patcherBuild.getName() + " failed.",
+				StringBundler.concat(
+					"The patch for build ",
+					String.valueOf(patcherBuild.getPatcherBuildId()),
+					" with name ", patcherBuild.getName(), " failed."),
 				messages);
 		}
 	}
