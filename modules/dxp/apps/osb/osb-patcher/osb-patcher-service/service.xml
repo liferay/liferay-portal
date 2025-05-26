@@ -93,9 +93,67 @@
 
 		<!-- Finder methods -->
 
+		<finder name="PatcherFixId" return-type="Collection">
+			<finder-column name="patcherFixId" />
+		</finder>
+		<finder name="PatcherProjectVersionId" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+		</finder>
+		<finder name="Key" return-type="Collection">
+			<finder-column name="key" />
+		</finder>
+		<finder name="P_P" return-type="Collection">
+			<finder-column name="patcherAccountId" />
+			<finder-column name="patcherProductVersionId" />
+		</finder>
+		<finder name="P_C" return-type="Collection">
+			<finder-column name="patcherFixId" />
+			<finder-column name="childBuild" />
+		</finder>
 		<finder name="K_KV" return-type="PatcherBuild" unique="true">
 			<finder-column name="key" />
 			<finder-column name="keyVersion" />
+		</finder>
+		<finder name="K_GtKV" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&gt;" name="keyVersion" />
+		</finder>
+		<finder name="K_LtKV" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&lt;" name="keyVersion" />
+		</finder>
+		<finder name="K_L" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column name="latestKeyBuild" />
+		</finder>
+		<finder name="L_S" return-type="Collection">
+			<finder-column name="latestSupportTicketBuild" />
+			<finder-column name="supportTicket" />
+		</finder>
+		<finder name="S_GtS" return-type="Collection">
+			<finder-column name="supportTicket" />
+			<finder-column comparator="&gt;" name="supportTicketVersion" />
+		</finder>
+		<finder name="S_LtS" return-type="Collection">
+			<finder-column name="supportTicket" />
+			<finder-column comparator="&lt;" name="supportTicketVersion" />
+		</finder>
+		<finder name="LtM_N_S" return-type="Collection">
+			<finder-column comparator="&lt;" name="modifiedDate" />
+			<finder-column name="notified" />
+			<finder-column arrayable-operator="OR" name="status" />
+		</finder>
+		<finder name="P_NotP_NotT_C" return-type="Collection">
+			<finder-column name="patcherFixId" />
+			<finder-column comparator="!=" name="patcherProductVersionId" />
+			<finder-column comparator="!=" name="type" />
+			<finder-column name="childBuild" />
+		</finder>
+		<finder name="P_N_L_A" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="name" />
+			<finder-column name="latestKeyBuild" />
+			<finder-column name="accountEntryCode" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherBuildRel" remote-service="false">
