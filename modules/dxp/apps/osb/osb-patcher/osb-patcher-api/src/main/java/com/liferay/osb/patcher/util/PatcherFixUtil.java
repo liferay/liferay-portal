@@ -622,7 +622,7 @@ public class PatcherFixUtil {
 		PatcherFixPack patcherFixPackVersion =
 			PatcherFixPackUtil.fetchPatcherFixPackVersion(patcherFixPack, true);
 
-		if (Validator.isNotNull(patcherFixPackVersion)) {
+		if (patcherFixPackVersion != null) {
 			return ListUtil.copy(
 				PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 					patcherFixPackVersion.getPatcherBuildId()));
