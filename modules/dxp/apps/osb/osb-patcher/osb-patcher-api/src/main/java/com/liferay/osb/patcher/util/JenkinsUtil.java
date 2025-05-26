@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -67,15 +68,15 @@ public class JenkinsUtil {
 				PatcherFix patcherFix, String patcherFixIds)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters = new HashMap<>();
-
-		jenkinsRequestParameters.put(
-			"osb.patcher.fixId", String.valueOf(patcherFix.getPatcherFixId()));
-		jenkinsRequestParameters.put("osb.patcher.fixIds", patcherFixIds);
-		jenkinsRequestParameters.put(
+		Map<String, String> jenkinsRequestParameters = HashMapBuilder.put(
+			"osb.patcher.fixId", String.valueOf(patcherFix.getPatcherFixId())
+		).put(
+			"osb.patcher.fixIds", patcherFixIds
+		).put(
 			"osb.patcher.type",
 			PortletPropsValues.
-				OSB_PATCHER_SHARED_REQUEST_BUILD_PATCH_PATCHER_TYPE);
+				OSB_PATCHER_SHARED_REQUEST_BUILD_PATCH_PATCHER_TYPE
+		).build();
 
 		if (!patcherProjectVersion.isCombinedBranch()) {
 			String siblingCommittish = StringPool.BLANK;
@@ -111,11 +112,9 @@ public class JenkinsUtil {
 				PatcherFix patcherFix)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters = new HashMap<>();
-
-		jenkinsRequestParameters.put(
-			"osb.patcher.committish",
-			String.valueOf(patcherFix.getCommittish()));
+		Map<String, String> jenkinsRequestParameters = HashMapBuilder.put(
+			"osb.patcher.committish", String.valueOf(patcherFix.getCommittish())
+		).build();
 
 		if (patcherFix.getStatus() == WorkflowConstants.STATUS_FIX_REBASING) {
 			List<Long> parentPatcherFixIds =
@@ -184,14 +183,13 @@ public class JenkinsUtil {
 			PatcherBuild patcherBuild)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters = new HashMap<>();
-
 		PatcherAccount patcherAccount =
 			PatcherAccountLocalServiceUtil.getPatcherAccount(
 				patcherBuild.getPatcherAccountId());
 
-		jenkinsRequestParameters.put(
-			"fix.pack.built.for", patcherAccount.getAccountEntryCode());
+		Map<String, String> jenkinsRequestParameters = HashMapBuilder.put(
+			"fix.pack.built.for", patcherAccount.getAccountEntryCode()
+		).build();
 
 		long fixPackId = patcherBuild.getHotfixId();
 
@@ -391,35 +389,33 @@ public class JenkinsUtil {
 			PatcherBuild patcherBuild)
 		throws Exception {
 
-		Map<String, String> jenkinsRequestParameters = new HashMap<>();
-
-		jenkinsRequestParameters.put(
+		return HashMapBuilder.put(
 			"patcher.build.file.name",
-			HttpComponentsUtil.encodePath(patcherBuild.getFileName()));
-		jenkinsRequestParameters.put(
-			"patcher.build.id",
-			String.valueOf(patcherBuild.getPatcherBuildId()));
-
-		PatcherProjectVersion patcherProjectVersion =
-			PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(
-				patcherBuild.getPatcherProjectVersionId());
-
-		jenkinsRequestParameters.put(
+			HttpComponentsUtil.encodePath(patcherBuild.getFileName())
+		).put(
+			"patcher.build.id", String.valueOf(patcherBuild.getPatcherBuildId())
+		).put(
 			"patcher.build.patcher.portal.version",
-			patcherProjectVersion.getName());
+			() -> {
+				PatcherProjectVersion patcherProjectVersion =
+					PatcherProjectVersionLocalServiceUtil.
+						getPatcherProjectVersion(
+							patcherBuild.getPatcherProjectVersionId());
 
-		jenkinsRequestParameters.put(
+				return patcherProjectVersion.getName();
+			}
+		).put(
 			"patcher.build.smoke.test.only",
-			String.valueOf(PatcherBuildUtil.isSmokeTestOnly(patcherBuild)));
-		jenkinsRequestParameters.put(
+			String.valueOf(PatcherBuildUtil.isSmokeTestOnly(patcherBuild))
+		).put(
 			"patcher.build.support.ticket.url",
 			PatcherBuildUtil.getSupportTicketURL(
-				patcherBuild.getSupportTicket()));
-		jenkinsRequestParameters.put(
-			"patcher.request.key", patcherBuild.getRequestKey());
-		jenkinsRequestParameters.put("run.tests.frontend", "true");
-
-		return jenkinsRequestParameters;
+				patcherBuild.getSupportTicket())
+		).put(
+			"patcher.request.key", patcherBuild.getRequestKey()
+		).put(
+			"run.tests.frontend", "true"
+		).build();
 	}
 
 	public static boolean isValidJenkinsRequirement(String requirement) {
