@@ -15,6 +15,7 @@ import com.liferay.osb.patcher.util.comparator.PatcherProjectVersionNameComparat
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.ArrayList;
@@ -61,8 +62,8 @@ public class PatcherProjectVersionUtil {
 				patcherProjectVersion.getFixedIssues());
 		}
 
-		int fixPackVersionNumber = Integer.parseInt(matcher.group(3));
-		int portalVersionNumber = Integer.parseInt(matcher.group(4));
+		int fixPackVersionNumber = GetterUtil.getInteger(matcher.group(3));
+		int portalVersionNumber = GetterUtil.getInteger(matcher.group(4));
 
 		List<PatcherProjectVersion> patcherProjectVersions =
 			PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions(
@@ -76,9 +77,10 @@ public class PatcherProjectVersionUtil {
 			matcher = pattern.matcher(curPatcherProjectVersion.getCommittish());
 
 			if (matcher.find()) {
-				int curFixPackVersionNumber = Integer.parseInt(
+				int curFixPackVersionNumber = GetterUtil.getInteger(
 					matcher.group(3));
-				int curPortalVersionNumber = Integer.parseInt(matcher.group(4));
+				int curPortalVersionNumber = GetterUtil.getInteger(
+					matcher.group(4));
 
 				if ((curPortalVersionNumber != portalVersionNumber) ||
 					(curFixPackVersionNumber > fixPackVersionNumber)) {
@@ -109,21 +111,21 @@ public class PatcherProjectVersionUtil {
 		if (matcher.find()) {
 			String fixPackDE = matcher.group(1);
 
-			int fixPackVersionNumber = Integer.parseInt(matcher.group(3));
+			int fixPackVersionNumber = GetterUtil.getInteger(matcher.group(3));
 
 			fixPackVersionNumber += direction;
 
-			int portalVersionNumber = Integer.parseInt(matcher.group(4));
+			int portalVersionNumber = GetterUtil.getInteger(matcher.group(4));
 
 			neighborCommittish =
 				fixPackDE + fixPackVersionNumber + "-" + portalVersionNumber;
 		}
 		else if (patcherProjectVersionCommittish.contains("q")) {
-			int year = Integer.valueOf(
+			int year = GetterUtil.getInteger(
 				patcherProjectVersionCommittish.substring(0, 4));
-			int quarter = Integer.valueOf(
+			int quarter = GetterUtil.getInteger(
 				patcherProjectVersionCommittish.substring(6, 7));
-			int patch = Integer.valueOf(
+			int patch = GetterUtil.getInteger(
 				patcherProjectVersionCommittish.substring(
 					patcherProjectVersionCommittish.lastIndexOf('.') + 1));
 
@@ -136,7 +138,7 @@ public class PatcherProjectVersionUtil {
 			int index = patcherProjectVersionCommittish.lastIndexOf('u') + 1;
 
 			String prefix = patcherProjectVersionCommittish.substring(0, index);
-			int update = Integer.valueOf(
+			int update = GetterUtil.getInteger(
 				patcherProjectVersionCommittish.substring(index));
 
 			update += direction;
@@ -306,7 +308,7 @@ public class PatcherProjectVersionUtil {
 
 		String fixPackComponent = matcher.group(2);
 
-		int fixPackVersionNumber = Integer.parseInt(matcher.group(3));
+		int fixPackVersionNumber = GetterUtil.getInteger(matcher.group(3));
 
 		if (fixPackComponent.equals("de") && (fixPackVersionNumber < 28)) {
 			return true;
