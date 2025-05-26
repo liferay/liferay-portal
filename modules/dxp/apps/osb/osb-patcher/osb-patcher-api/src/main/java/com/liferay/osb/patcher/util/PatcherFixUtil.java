@@ -512,7 +512,7 @@ public class PatcherFixUtil {
 			return StringPool.BLANK;
 		}
 
-		StringBundler sb = new StringBundler(12);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(PortletPropsValues.GITHUB_URL);
 		sb.append(StringPool.SLASH);
@@ -523,13 +523,9 @@ public class PatcherFixUtil {
 
 		sb.append(patcherProjectVersion.getRepositoryName());
 
-		sb.append(StringPool.SLASH);
-		sb.append("compare");
-		sb.append(StringPool.SLASH);
+		sb.append("/compare/");
 		sb.append(patcherProjectVersion.getCommittish());
-		sb.append(StringPool.PERIOD);
-		sb.append(StringPool.PERIOD);
-		sb.append(StringPool.PERIOD);
+		sb.append(StringPool.TRIPLE_PERIOD);
 		sb.append(PortletPropsValues.OSB_PATCHER_GIT_TAG_PREFIX);
 		sb.append(patcherFix.getPatcherFixId());
 
