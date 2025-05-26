@@ -22,6 +22,7 @@ import com.liferay.osb.patcher.model.PatcherProductVersion;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.permission.resource.PatcherPermission;
 import com.liferay.osb.patcher.service.PatcherAccountLocalServiceUtil;
+import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixComponentLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
@@ -596,7 +597,16 @@ public class JenkinsUtil {
 				PatcherFixLocalServiceUtil.getPatcherFix(
 					patcherBuild.getPatcherFixId());
 
-			updateJenkinsRequestKey(alloyController, mainPatcherFix);
+			DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+				"yyyyMMddHHmmss");
+
+			mainPatcherFix.setRequestKey(
+				PatcherUtil.generatePatcherKey(
+					PatcherFix.class.getName(),
+					mainPatcherFix.getPatcherFixId(),
+					dateFormat.format(new Date())));
+
+			PatcherFixLocalServiceUtil.updatePatcherFix(mainPatcherFix);
 
 			sendAgentJenkinsPatcherBuildRequest(
 				themeDisplay, user, patcherBuild);
@@ -608,7 +618,16 @@ public class JenkinsUtil {
 				return;
 			}
 
-			updateJenkinsRequestKey(alloyController, patcherFix);
+			DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+				"yyyyMMddHHmmss");
+
+			patcherFix.setRequestKey(
+				PatcherUtil.generatePatcherKey(
+					PatcherFix.class.getName(), patcherFix.getPatcherFixId(),
+					dateFormat.format(new Date())));
+
+			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+				patcherFix);
 
 			sendAgentJenkinsPatcherFixRequest(themeDisplay, user, patcherFix);
 		}
@@ -622,7 +641,16 @@ public class JenkinsUtil {
 			return;
 		}
 
-		updateJenkinsRequestKey(alloyController, patcherBuild);
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyyMMddHHmmss");
+
+		patcherBuild.setRequestKey(
+			PatcherUtil.generatePatcherKey(
+				PatcherBuild.class.getName(), patcherBuild.getPatcherBuildId(),
+				dateFormat.format(new Date())));
+
+		patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+			patcherBuild);
 
 		Http.Options options = new Http.Options();
 
@@ -677,7 +705,16 @@ public class JenkinsUtil {
 			return;
 		}
 
-		updateJenkinsRequestKey(alloyController, patcherBuild);
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyyMMddHHmmss");
+
+		patcherBuild.setRequestKey(
+			PatcherUtil.generatePatcherKey(
+				PatcherBuild.class.getName(), patcherBuild.getPatcherBuildId(),
+				dateFormat.format(new Date())));
+
+		patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+			patcherBuild);
 
 		Http.Options options = new Http.Options();
 
@@ -705,25 +742,6 @@ public class JenkinsUtil {
 		jsonObject.put("statusURL", statusURL);
 
 		return jsonObject;
-	}
-
-	public static void updateJenkinsRequestKey(
-			AlloyController alloyController, BaseModel<?> baseModel)
-		throws Exception {
-
-		long classPk = GetterUtil.getLong(baseModel.getPrimaryKeyObj());
-
-		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			"yyyyMMddHHmmss");
-
-		String requestKey = PatcherUtil.generatePatcherKey(
-			baseModel.getClass(
-			).getName(),
-			classPk, dateFormat.format(new Date()));
-
-		BaseModelUtil.setBaseModelRequestKey(baseModel, requestKey);
-
-		alloyController.updateModelIgnoreRequest(baseModel);
 	}
 
 	public static String validateJenkinsSetup() throws Exception {
