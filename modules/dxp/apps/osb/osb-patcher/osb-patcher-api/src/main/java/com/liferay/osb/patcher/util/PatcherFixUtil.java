@@ -6,22 +6,20 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
+import com.liferay.osb.patcher.model.PatcherFixModel;
 import com.liferay.osb.patcher.model.PatcherFixPack;
 import com.liferay.osb.patcher.model.PatcherFixRel;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
-import com.liferay.osb.patcher.model.impl.PatcherFixModelImpl;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.osb.patcher.util.comparator.PatcherFixCreateDateComparator;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -35,15 +33,12 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -295,22 +290,12 @@ public class PatcherFixUtil {
 	}
 
 	public static PatcherFix fetchPatcherFixByNextKeyVersion(
-			PatcherFix patcherFix, boolean older)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
-
-		DynamicQuery patcherFixKeyVersionDynamicQuery =
-			buildPatcherFixKeyVersionDynamicQuery(patcherFix, older);
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherFixModelImpl.TABLE_NAME, "keyVersion", !older);
+		PatcherFix patcherFix, boolean older) {
 
 		List<PatcherFix> patcherFixes =
-			patcherFixAlloyServiceInvoker.executeDynamicQuery(
-				patcherFixKeyVersionDynamicQuery, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, obc);
+			PatcherFixLocalServiceUtil.getPatcherFixes(
+				patcherFix.getKey(), patcherFix.getKeyVersion(),
+				PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC, older);
 
 		if (patcherFixes.isEmpty()) {
 			return null;
@@ -323,15 +308,9 @@ public class PatcherFixUtil {
 			PatcherFix mainPatcherFix)
 		throws Exception {
 
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
 		List<PatcherBuild> childPatcherBuilds =
-			patcherBuildAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {
-					"patcherFixId", mainPatcherFix.getPatcherFixId(),
-					"childBuild", true
-				});
+			PatcherBuildLocalServiceUtil.getPatcherBuilds(
+				mainPatcherFix.getPatcherFixId(), true);
 
 		if (childPatcherBuilds.isEmpty()) {
 			return null;
@@ -397,96 +376,51 @@ public class PatcherFixUtil {
 	}
 
 	public static List<PatcherFix> getFilteredPatcherFixes(
-			long patcherProjectVersionId, int status)
-		throws Exception {
+		long patcherProjectVersionId, int status) {
 
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return getFilteredPatcherFixesByAttributes(
-				new Object[] {
-					"patcherProjectVersionId", patcherProjectVersionId,
-					"latestFix", true
-				});
-		}
-
-		return getFilteredPatcherFixesByAttributes(
-			new Object[] {
-				"patcherProjectVersionId", patcherProjectVersionId, "latestFix",
-				true, "status", status
-			});
+		return PatcherFixLocalServiceUtil.getPatcherFixes(
+			patcherProjectVersionId,
+			PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC, true, status);
 	}
 
 	public static List<PatcherFix> getFilteredPatcherFixes(
-			long patcherProjectVersionId, String name, boolean latestFix)
-		throws Exception {
+		long patcherProjectVersionId, String name, boolean latestFix) {
 
-		return getFilteredPatcherFixesByAttributes(
-			new Object[] {
-				"patcherProjectVersionId", patcherProjectVersionId, "name",
-				name, "latestFix", latestFix
-			});
+		return PatcherFixLocalServiceUtil.getPatcherFixes(
+			patcherProjectVersionId, name,
+			PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC, latestFix);
 	}
 
 	public static List<PatcherFix> getFilteredPatcherFixes(
-			String key, boolean latestFix)
-		throws Exception {
+		String key, boolean latestFix) {
 
-		return getFilteredPatcherFixesByAttributes(
-			new Object[] {"key", key, "latestFix", latestFix});
+		return PatcherFixLocalServiceUtil.getPatcherFixes(
+			key, PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC, latestFix);
 	}
 
-	public static Date getOldestPatcherFixCreateDate(long patcherFixPackId)
-		throws Exception {
-
+	public static Date getOldestPatcherFixCreateDate(long patcherFixPackId) {
 		List<PatcherFix> patcherFixPackPatcherFixs =
 			PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixes(
-				patcherFixPackId);
+				patcherFixPackId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				PatcherFixCreateDateComparator.getInstance(true));
 
 		if (patcherFixPackPatcherFixs.isEmpty()) {
 			return null;
 		}
-
-		if (patcherFixPackPatcherFixs.size() == 1) {
-			PatcherFix patcherFix = patcherFixPackPatcherFixs.get(0);
-
-			return patcherFix.getCreateDate();
-		}
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherFixModelImpl.TABLE_NAME, "createDate", true);
-
-		patcherFixPackPatcherFixs = ListUtil.sort(
-			patcherFixPackPatcherFixs, obc);
 
 		PatcherFix patcherFix = patcherFixPackPatcherFixs.get(0);
 
 		return patcherFix.getCreateDate();
 	}
 
-	public static List<PatcherFix> getParentPatcherFixes(PatcherFix patcherFix)
-		throws Exception {
+	public static List<PatcherFix> getParentPatcherFixes(
+		PatcherFix patcherFix) {
 
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
-
-		DynamicQuery patcherFixDynamicQuery =
-			patcherFixAlloyServiceInvoker.buildDynamicQuery();
-
-		Property patcherFixIdProperty = PropertyFactoryUtil.forName(
-			"patcherFixId");
-
-		List<Long> parentPatcherFixIds =
-			PatcherFixRelUtil.getParentPatcherFixIds(
-				patcherFix.getPatcherFixId());
-
-		if (parentPatcherFixIds.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		patcherFixDynamicQuery.add(
-			patcherFixIdProperty.in(parentPatcherFixIds));
-
-		return patcherFixAlloyServiceInvoker.executeDynamicQuery(
-			patcherFixDynamicQuery);
+		return TransformUtil.transform(
+			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByChildPatcherFixId(
+				patcherFix.getPatcherFixId()),
+			patcherFixRel -> PatcherFixLocalServiceUtil.fetchPatcherFix(
+				patcherFixRel.getParentPatcherFixId()));
 	}
 
 	public static List<Long> getPatcherBuildFixIdsByFixStatus(
@@ -703,43 +637,20 @@ public class PatcherFixUtil {
 	}
 
 	public static List<Long> getPreviousVersionsPatcherFixIds(
-			PatcherFix patcherFix)
-		throws Exception {
+		PatcherFix patcherFix) {
 
-		List<Long> patcherFixIds = new ArrayList<>();
-
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
-
-		DynamicQuery previousVersionsPatcherFixesDynamicQuery =
-			buildPreviousVersionsPatcherFixesQuery(patcherFix);
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherFixModelImpl.TABLE_NAME, "keyVersion", false);
-
-		List<PatcherFix> patcherFixes =
-			patcherFixAlloyServiceInvoker.executeDynamicQuery(
-				previousVersionsPatcherFixesDynamicQuery, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, obc);
-
-		if (!patcherFixes.isEmpty()) {
-			for (PatcherFix curPatcherFix : patcherFixes) {
-				patcherFixIds.add(curPatcherFix.getPatcherFixId());
-			}
-		}
-
-		return patcherFixIds;
+		return TransformUtil.transform(
+			PatcherFixLocalServiceUtil.getPatcherFixes(
+				patcherFix.getKey(), patcherFix.getKeyVersion(),
+				PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC, true),
+			PatcherFixModel::getPatcherFixId);
 	}
 
 	public static List<PatcherFix> getRebasePatcherFixes(
-			long patcherProjectVersionId)
-		throws Exception {
+		long patcherProjectVersionId) {
 
-		return getFilteredPatcherFixesByAttributes(
-			new Object[] {
-				"patcherProjectVersionId", patcherProjectVersionId, "latestFix",
-				true, "type", PatcherFixConstants.TYPE_REBASE
-			});
+		return PatcherFixLocalServiceUtil.getPatcherFixes(
+			patcherProjectVersionId, PatcherFixConstants.TYPE_REBASE, true);
 	}
 
 	public static PatcherFix getWeightedStatusPatcherFix(
@@ -828,26 +739,25 @@ public class PatcherFixUtil {
 	}
 
 	public static boolean isMainPatcherFix(long patcherFixId) throws Exception {
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		List<Long> patcherBuildIds =
-			patcherBuildAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"patcherFixId", patcherFixId});
-
-		return !patcherBuildIds.isEmpty();
+		return PatcherBuildLocalServiceUtil.hasPatcherFixes(patcherFixId);
 	}
 
 	public static void notifyUsersInactivePatcherFixes(
 			AlloyController alloyController)
 		throws Exception {
 
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
+		Calendar calendar = new GregorianCalendar();
+
+		calendar.add(Calendar.HOUR, -1);
 
 		List<PatcherFix> patcherFixes =
-			patcherFixAlloyServiceInvoker.executeDynamicQuery(
-				buildInactivePatcherFixesDynamicQuery());
+			PatcherFixLocalServiceUtil.getPatcherFixes(
+				calendar.getTime(),
+				new int[] {
+					PatcherFixConstants.TYPE_PATCH,
+					PatcherFixConstants.TYPE_WORKAROUND
+				},
+				false, WorkflowConstants.STATUS_FIX_ADDING);
 
 		if (patcherFixes.isEmpty()) {
 			return;
@@ -1004,108 +914,14 @@ public class PatcherFixUtil {
 				"the-fix-cannot-be-deleted-because-it-has-associated-builds");
 		}
 
-		AlloyServiceInvoker patcherFixRelAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFixRel.class.getName());
-
 		List<PatcherFixRel> patcherFixRels =
-			patcherFixRelAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {
-					"parentPatcherFixId", patcherFix.getPatcherFixId()
-				});
+			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByParentPatcherFixId(
+				patcherFix.getPatcherFixId());
 
 		if (!patcherFixRels.isEmpty()) {
 			throw new Exception(
 				"the-fix-cannot-be-deleted-because-another-fix-depends-on-it");
 		}
-	}
-
-	protected static DynamicQuery buildInactivePatcherFixesDynamicQuery()
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
-
-		DynamicQuery patcherFixesDynamicQuery =
-			patcherFixAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {
-					"notified", false, "status",
-					WorkflowConstants.STATUS_FIX_ADDING
-				});
-
-		Calendar calendar = new GregorianCalendar();
-
-		calendar.add(Calendar.HOUR, -1);
-
-		Property modifiedDateProperty = PropertyFactoryUtil.forName(
-			"modifiedDate");
-
-		patcherFixesDynamicQuery.add(
-			modifiedDateProperty.lt(calendar.getTime()));
-
-		Property typeProperty = PropertyFactoryUtil.forName("type");
-
-		patcherFixesDynamicQuery.add(
-			typeProperty.in(
-				new int[] {
-					PatcherFixConstants.TYPE_PATCH,
-					PatcherFixConstants.TYPE_WORKAROUND
-				}));
-
-		return patcherFixesDynamicQuery;
-	}
-
-	protected static DynamicQuery buildPatcherFixKeyVersionDynamicQuery(
-			PatcherFix patcherFix, boolean older)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
-
-		DynamicQuery patcherFixDynamicQuery =
-			patcherFixAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {"key", patcherFix.getKey()});
-
-		Property keyVersionProperty = PropertyFactoryUtil.forName("keyVersion");
-
-		if (older) {
-			patcherFixDynamicQuery.add(
-				keyVersionProperty.lt(patcherFix.getKeyVersion()));
-		}
-		else {
-			patcherFixDynamicQuery.add(
-				keyVersionProperty.gt(patcherFix.getKeyVersion()));
-		}
-
-		Property typeProperty = PropertyFactoryUtil.forName("type");
-
-		patcherFixDynamicQuery.add(
-			typeProperty.ne(PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC));
-
-		return patcherFixDynamicQuery;
-	}
-
-	protected static DynamicQuery buildPreviousVersionsPatcherFixesQuery(
-			PatcherFix patcherFix)
-		throws Exception {
-
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
-
-		DynamicQuery patcherFixDynamicQuery =
-			patcherFixAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {"key", patcherFix.getKey()});
-
-		Property keyVersionProperty = PropertyFactoryUtil.forName("keyVersion");
-
-		patcherFixDynamicQuery.add(
-			keyVersionProperty.lt(patcherFix.getKeyVersion()));
-
-		Property typeProperty = PropertyFactoryUtil.forName("type");
-
-		patcherFixDynamicQuery.add(
-			typeProperty.ne(PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC));
-
-		return patcherFixDynamicQuery;
 	}
 
 	protected static boolean containsAllTickets(
@@ -1130,29 +946,6 @@ public class PatcherFixUtil {
 		}
 
 		return false;
-	}
-
-	protected static List<PatcherFix> getFilteredPatcherFixesByAttributes(
-			Object... attributes)
-		throws Exception {
-
-		if ((attributes.length == 0) || ((attributes.length % 2) != 0)) {
-			throw new Exception("attributes-length-is-not-an-even-number");
-		}
-
-		AlloyServiceInvoker patcherFixAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherFix.class.getName());
-
-		DynamicQuery patcherFixDynamicQuery =
-			patcherFixAlloyServiceInvoker.buildDynamicQuery(attributes);
-
-		Property typeProperty = PropertyFactoryUtil.forName("type");
-
-		patcherFixDynamicQuery.add(
-			typeProperty.ne(PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC));
-
-		return patcherFixAlloyServiceInvoker.executeDynamicQuery(
-			patcherFixDynamicQuery);
 	}
 
 	protected static List<Long> getPatcherFixIds(PatcherBuild patcherBuild)
