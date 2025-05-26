@@ -137,18 +137,6 @@ public class BaseModelUtil {
 		return (Long)getUserIdMethod.invoke(baseModel);
 	}
 
-	public static void setBaseModelRequestKey(
-			BaseModel<?> baseModel, String requestKey)
-		throws Exception {
-
-		Class<?> clazz = baseModel.getClass();
-
-		Method setRequestKeyMethod = clazz.getMethod(
-			"setRequestKey", new Class<?>[] {String.class});
-
-		setRequestKeyMethod.invoke(baseModel, requestKey);
-	}
-
 	public static void setBaseModelStatus(BaseModel<?> baseModel, int status)
 		throws Exception {
 
