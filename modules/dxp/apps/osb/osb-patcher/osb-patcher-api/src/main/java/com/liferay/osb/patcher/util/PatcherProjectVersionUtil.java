@@ -109,16 +109,13 @@ public class PatcherProjectVersionUtil {
 		Matcher matcher = pattern.matcher(patcherProjectVersionCommittish);
 
 		if (matcher.find()) {
-			String fixPackDE = matcher.group(1);
-
 			int fixPackVersionNumber = GetterUtil.getInteger(matcher.group(3));
 
 			fixPackVersionNumber += direction;
 
-			int portalVersionNumber = GetterUtil.getInteger(matcher.group(4));
-
-			neighborCommittish =
-				fixPackDE + fixPackVersionNumber + "-" + portalVersionNumber;
+			neighborCommittish = StringBundler.concat(
+				matcher.group(1), fixPackVersionNumber, "-",
+				GetterUtil.getInteger(matcher.group(4)));
 		}
 		else if (patcherProjectVersionCommittish.contains("q")) {
 			int year = GetterUtil.getInteger(

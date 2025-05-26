@@ -978,8 +978,9 @@ public class PatcherFixUtil {
 
 		if (!patcherBuilds.isEmpty()) {
 			PatcherUtil.addMessage(
-				"The fix " + patcherFix.getPatcherFixId() + " is related to " +
-					patcherBuilds.size() + " build(s).",
+				StringBundler.concat(
+					"The fix ", patcherFix.getPatcherFixId(), " is related to ",
+					patcherBuilds.size(), " build(s)."),
 				messages);
 		}
 
@@ -1050,8 +1051,9 @@ public class PatcherFixUtil {
 
 		if (!patcherBuilds.isEmpty()) {
 			PatcherUtil.addMessage(
-				"The fix " + patcherFix.getPatcherFixId() + " is related to " +
-					patcherBuilds.size() + " build(s).",
+				StringBundler.concat(
+					"The fix ", patcherFix.getPatcherFixId(), " is related to ",
+					patcherBuilds.size(), " build(s)."),
 				messages);
 		}
 
@@ -1086,8 +1088,9 @@ public class PatcherFixUtil {
 				themeDisplay.getUser(), patcherBuild, themeDisplay);
 
 			PatcherUtil.addMessage(
-				"The build " + patcherBuild.getPatcherBuildId() +
-					" with name " + patcherBuild.getName() + " was resaved.",
+				StringBundler.concat(
+					"The build ", patcherBuild.getPatcherBuildId(),
+					" with name ", patcherBuild.getName(), " was resaved."),
 				messages);
 		}
 	}
@@ -1122,8 +1125,9 @@ public class PatcherFixUtil {
 			WorkflowConstants.STATUS_FIX_COMPLETE);
 
 		PatcherUtil.addMessage(
-			"The fix " + patcherFix.getPatcherFixId() + " with name " +
-				patcherFix.getName() + " was successfully added.",
+			StringBundler.concat(
+				"The fix ", patcherFix.getPatcherFixId(), " with name ",
+				patcherFix.getName(), " was successfully added."),
 			messages);
 
 		updatePatcherFixPatcherBuildRebaseStatus(
@@ -1152,8 +1156,9 @@ public class PatcherFixUtil {
 				WorkflowConstants.STATUS_FIX_COMPLETE);
 
 			PatcherUtil.addMessage(
-				"The fix " + patcherFix.getPatcherFixId() + " with name " +
-					patcherFix.getName() + " was successfully added.",
+				StringBundler.concat(
+					"The fix ", patcherFix.getPatcherFixId(), " with name ",
+					patcherFix.getName(), " was successfully added."),
 				messages);
 
 			updatePatcherFixPatcherBuilds(
@@ -1165,8 +1170,9 @@ public class PatcherFixUtil {
 			alloyController.updateModelIgnoreRequest(patcherFix);
 
 			PatcherUtil.addMessage(
-				"The fix " + patcherFix.getPatcherFixId() + " with name " +
-					patcherFix.getName() + " failed to add.",
+				StringBundler.concat(
+					"The fix ", patcherFix.getPatcherFixId(), " with name ",
+					patcherFix.getName(), " failed to add."),
 				messages);
 		}
 	}

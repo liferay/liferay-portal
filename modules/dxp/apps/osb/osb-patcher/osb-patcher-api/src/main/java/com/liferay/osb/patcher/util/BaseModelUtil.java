@@ -5,6 +5,7 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -28,12 +29,10 @@ public class BaseModelUtil {
 
 		String simpleClassName = modelClassName.substring(pos + 7);
 
-		String localServiceUtilClassName =
-			modelClassName.substring(0, pos) + ".service." + simpleClassName +
-				"LocalServiceUtil";
-
 		Class<?> localServiceUtilClass = classLoader.loadClass(
-			localServiceUtilClassName);
+			StringBundler.concat(
+				modelClassName.substring(0, pos), ".service.", simpleClassName,
+				"LocalServiceUtil"));
 
 		String methodName = "fetch" + simpleClassName;
 
