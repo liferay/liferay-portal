@@ -207,9 +207,8 @@ public class PatcherBuildUtil {
 		if (patcherBuild.getKeyVersion() !=
 				PatcherBuildConstants.KEY_VERSION_DEFAULT) {
 
-			PatcherBuild oldPatcherBuild =
-				PatcherBuildUtil.fetchPatcherBuildByNextKeyVersion(
-					patcherBuild, true);
+			PatcherBuild oldPatcherBuild = fetchPatcherBuildByNextKeyVersion(
+				patcherBuild, true);
 
 			if (oldPatcherBuild != null) {
 				oldPatcherBuild.setLatestKeyBuild(true);
