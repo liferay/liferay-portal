@@ -386,12 +386,15 @@ public class PatcherScanUtil {
 						PatcherProjectVersion version1,
 						PatcherProjectVersion version2) {
 
+						String fixedIssues1 = version1.getFixedIssues();
+
 						int length1 = Math.abs(
-							version1.getFixedIssues(
-							).length() - fixedIssuesLength);
+							fixedIssues1.length() - fixedIssuesLength);
+
+						String fixedIssues2 = version2.getFixedIssues();
+
 						int length2 = Math.abs(
-							version2.getFixedIssues(
-							).length() - fixedIssuesLength);
+							fixedIssues2.length() - fixedIssuesLength);
 
 						if (length1 == length2) {
 							return Long.compare(
