@@ -71,8 +71,6 @@ public class PatcherBuildUtil {
 			int status, List<Long> relatedPatcherFixIds)
 		throws Exception {
 
-		double keyVersion = PatcherBuildConstants.KEY_VERSION_DEFAULT;
-
 		List<PatcherBuild> patcherBuilds =
 			PatcherBuildLocalServiceUtil.getPatcherBuilds(
 				patcherProjectVersionId, name, true, accountEntryCode);
