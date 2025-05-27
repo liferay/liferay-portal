@@ -6,6 +6,8 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -48,6 +50,10 @@ public class BaseModelUtil {
 			return getBaseModelRequestKey(baseModel);
 		}
 		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
 			return null;
 		}
 	}
@@ -70,6 +76,10 @@ public class BaseModelUtil {
 			return getBaseModelStatus(baseModel);
 		}
 		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
 			return null;
 		}
 	}
@@ -79,6 +89,10 @@ public class BaseModelUtil {
 			return getBaseModelStatusByUserId(baseModel);
 		}
 		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
 			return null;
 		}
 	}
@@ -88,6 +102,10 @@ public class BaseModelUtil {
 			return getBaseModelUserId(baseModel);
 		}
 		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
 			return null;
 		}
 	}
@@ -146,5 +164,7 @@ public class BaseModelUtil {
 
 		setStatusMethod.invoke(baseModel, status);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(BaseModelUtil.class);
 
 }

@@ -199,7 +199,8 @@ public class EmailUtil {
 		catch (IOException ioException) {
 			_log.error(
 				"Unable to read the content for: " + _TEMPLATE_DIRECTORY +
-					templateName);
+					templateName,
+				ioException);
 		}
 
 		return StringPool.BLANK;
