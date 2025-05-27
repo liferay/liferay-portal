@@ -87,9 +87,7 @@ public class PatcherScanUtil {
 
 			patcherProjectVersionIdPatcherFixIdsMap.putAll(
 				otherPatcherProjectVersionIdPatcherFixIdsMap);
-		}
 
-		if (!patcherBuildTickets.isEmpty()) {
 			StringBundler sb = new StringBundler(7);
 
 			sb.append(
