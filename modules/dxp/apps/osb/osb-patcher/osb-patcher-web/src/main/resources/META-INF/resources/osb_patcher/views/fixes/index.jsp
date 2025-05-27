@@ -122,7 +122,7 @@
 			<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.format("view-fix")}' var="viewPatcherFixPopUpTitle" />
+		<c:set value='${LanguageUtil.get(request, "view-fix")}' var="viewPatcherFixPopUpTitle" />
 
 		<c:set value='javascript:Liferay.Patcher.openWindow("${viewPatcherFixPopUpURL}", "${viewPatcherFixPopUpTitle}", true, 1000)' var="viewPatcherFixPopUpURL" />
 
@@ -199,7 +199,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="patcher-status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherFix.getStatus()))}"
+			value="${LanguageUtil.get(request, WorkflowConstantsMethods.getStatusLabel(patcherFix.getStatus()))}"
 		/>
 
 		<portlet:renderURL var="editPatcherFixCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -208,7 +208,7 @@
 			<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("edit-engineer-comments-for-fix-id-x", patcherFix.patcherFixId)}' var="editPatcherFixCommentsFieldURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.format(request, "edit-engineer-comments-for-fix-id-x", patcherFix.patcherFixId)}' var="editPatcherFixCommentsFieldURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherFixCommentsFieldURL}', '${editPatcherFixCommentsFieldURLTitle}', true, 800)" var="editPatcherFixCommentsFieldURL" />
 
@@ -246,7 +246,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="type"
-			value="${AlloyLanguageUtil.format(PatcherFixConstantsMethods.getTypeLabel(patcherFix.getType()))}"
+			value="<%= LanguageUtil.get(request, PatcherFixConstants.getTypeLabel(patcherFix.getType())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -285,7 +285,7 @@
 						<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 					</portlet:renderURL>
 
-					<c:set value='${AlloyLanguageUtil.formatUnicode("edit-fix-packs")}' var="editPatcherFixFixPackFieldsURLTitle" />
+					<c:set value='${UnicodeLanguageUtil.get(request, "edit-fix-packs")}' var="editPatcherFixFixPackFieldsURLTitle" />
 
 					<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherFixFixPackFieldsURL}', '${editPatcherFixFixPackFieldsURLTitle}', true, 800)" var="editPatcherFixFixPackFieldsURL" />
 
@@ -304,7 +304,7 @@
 						<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 					</portlet:renderURL>
 
-					<c:set value='${AlloyLanguageUtil.formatUnicode("view-builds-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherBuildsURLTitle" />
+					<c:set value='${UnicodeLanguageUtil.format(request, "view-builds-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherBuildsURLTitle" />
 
 					<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherFixPatcherBuildsURL}', '${viewPatcherBuildsURLTitle}', true, 1000);" var="viewPatcherFixPatcherBuildsURL" />
 
@@ -323,7 +323,7 @@
 						<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 					</portlet:renderURL>
 
-					<c:set value='${AlloyLanguageUtil.formatUnicode("view-fixes-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherFixesPopUpURLTitle" />
+					<c:set value='${UnicodeLanguageUtil.format(request, "view-fixes-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherFixesPopUpURLTitle" />
 
 					<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherFixesPopUpURL}', '${viewPatcherFixesPopUpURLTitle}', true, 1000);" var="viewPatcherFixesPopUpURL" />
 

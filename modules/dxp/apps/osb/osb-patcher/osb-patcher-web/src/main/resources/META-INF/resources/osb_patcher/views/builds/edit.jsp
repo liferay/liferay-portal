@@ -28,7 +28,7 @@
 			message=""
 		/>
 
-		<liferay-ui:message key='${AlloyLanguageUtil.format("the-tickets-x-will-be-removed-from-the-list-since-they-are-included-in-the-project-version", overlappingProjectVersionFixedIssues)}' />
+		<liferay-ui:message arguments="overlappingProjectVersionFixedIssues" key="the-tickets-x-will-be-removed-from-the-list-since-they-are-included-in-the-project-version" />
 	</aui:field-wrapper>
 </c:if>
 

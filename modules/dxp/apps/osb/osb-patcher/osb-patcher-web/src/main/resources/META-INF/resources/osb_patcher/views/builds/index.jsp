@@ -128,7 +128,7 @@
 			<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("view-fixes-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherBuildPatcherFixesURL}', '${viewPatcherFixesURLTitle}', true, 1000);" var="viewPatcherBuildPatcherFixesURL" />
 
@@ -171,7 +171,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="type"
-			value="${AlloyLanguageUtil.format(PatcherBuildConstantsMethods.getTypeLabel(patcherBuild.getType()))}"
+			value="<%= LanguageUtil.get(request, PatcherBuildConstants.getTypeLabel(patcherBuild.getType())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -213,7 +213,7 @@
 				<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 			</portlet:renderURL>
 
-			<c:set value='${AlloyLanguageUtil.formatUnicode("content")}' var="viewPatcherBuildContentURLTitle" />
+			<c:set value='${LanguageUtil.get(request, "content")}' var="viewPatcherBuildContentURLTitle" />
 
 			<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherBuildContentURL}', '${viewPatcherBuildContentURLTitle}', true, 1000, 1);" var="viewPatcherBuildContentURL" />
 
@@ -221,11 +221,11 @@
 
 			<c:set value="${PatcherFixPackUtil.getPatcherFixPackNamesCount(patcherBuildName)}" var="patcherFixPackNamesCount" />
 
-			<c:set value='${AlloyLanguageUtil.format("fix-packs")}' var="fixPacksLabel" />
+			<c:set value='${LanguageUtil.get(request, "fix-packs")}' var="fixPacksLabel" />
 
 			<c:set value="${PatcherUtil.getTicketsCount(patcherBuildName)}" var="ticketsCount" />
 
-			<c:set value='${AlloyLanguageUtil.format("tickets")}' var="ticketsLabel" />
+			<c:set value='${LanguageUtil.get(request, "tickets")}' var="ticketsLabel" />
 
 			<a class="nobr" href="${viewPatcherBuildContentURL}" title="${patcherBuildName}">
 				${patcherFixPackNamesCount} ${fixPacksLabel} + ${ticketsCount} ${ticketsLabel}
@@ -242,7 +242,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="patcher-status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherBuild.getStatus()))}"
+			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getStatus())) + ">" %>'
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -266,7 +266,7 @@
 			<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("edit-engineer-comments-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildCommentsFieldURLTitle" />
+		<c:set value='${LanguageUtil.format(request, "edit-engineer-comments-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildCommentsFieldURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherBuildCommentsFieldURL}', '${editPatcherBuildCommentsFieldURLTitle}', true, 800)" var="editPatcherBuildCommentsFieldURL" />
 
@@ -289,7 +289,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="qa-status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherBuild.getQaStatus()))}"
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getQaStatus())) %>"
 		/>
 
 		<portlet:renderURL var="editPatcherBuildQAFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -298,7 +298,7 @@
 			<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("edit-qa-status-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildQAFieldsURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.format(request, "edit-qa-status-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildQAFieldsURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherBuildQAFieldsURL}', '${editPatcherBuildQAFieldsURLTitle}', true, 800)" var="editPatcherBuildQAFieldsURL" />
 
@@ -449,7 +449,7 @@
 						<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 					</portlet:renderURL>
 
-					<c:set value='${AlloyLanguageUtil.formatUnicode("view-child-builds-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherBuildsURLTitle" />
+					<c:set value='${UnicodeLanguageUtil.formatUnicode("view-child-builds-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherBuildsURLTitle" />
 
 					<c:set value="javascript:Liferay.Patcher.openWindow('${viewChildPatcherBuildsURL}', '${viewPatcherBuildsURLTitle}', true, 1000);" var="viewChildPatcherBuildsURL" />
 

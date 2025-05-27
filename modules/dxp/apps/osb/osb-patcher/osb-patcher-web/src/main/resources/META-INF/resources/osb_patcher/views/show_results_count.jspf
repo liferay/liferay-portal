@@ -5,19 +5,17 @@
  */
 --%>
 
-<c:choose>
-	<c:when test="${resultsTotal == 1}">
-		<c:set value="showing-x-result" var="resultsTotalPattern" />
-	</c:when>
-	<c:otherwise>
-		<c:set value="showing-x-results" var="resultsTotalPattern" />
-	</c:otherwise>
-</c:choose>
-
 <div class="taglib-page-iterator">
 	<div class="clearfix lfr-pagination">
 		<small class="search-results">
-			${AlloyLanguageUtil.format(pageContext, resultsTotalPattern, resultsTotal)}
+			<c:choose>
+				<c:when test="${resultsTotal == 1}">
+					<liferay-ui:message arguments="<%= resultsTotal %>" key="showing-x-result" />
+				</c:when>
+				<c:otherwise>
+					<liferay-ui:message arguments="<%= resultsTotal %>" key="showing-x-results" />
+				</c:otherwise>
+			</c:choose>
 		</small>
 	</div>
 </div>

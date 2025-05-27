@@ -141,8 +141,6 @@
 							</span>
 						</td>
 						<td>
-							<c:set value="${WorkflowConstantsMethods.getStatusLabel(patcherBuild.status)}" var="patcherBuildStatusLabel" />
-
 							<c:choose>
 								<c:when test="${PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild)}">
 									<c:set var="relevantStatusActionLink">
@@ -187,7 +185,7 @@
 								</c:otherwise>
 							</c:choose>
 
-							<span class="${statusCSSClass}"><c:out value="${AlloyLanguageUtil.format(patcherBuildStatusLabel)}" /></span> ${relevantStatusActionLink}
+							<span class="${statusCSSClass}"><c:out value="${LanguageUtil.get(request, patcherBuildStatusLabel)}" /></span> ${relevantStatusActionLink}
 						</td>
 						<td>
 							<c:choose>
@@ -202,8 +200,6 @@
 								</c:otherwise>
 							</c:choose>
 
-							<c:set value="${WorkflowConstantsMethods.getStatusLabel(patcherBuild.qaStatus)}" var="patcherBuildQAStatusLabel" />
-
 							<c:choose>
 								<c:when test="${(patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY)}">
 									<c:set value="${JenkinsUtil.getJenkinsResults(patcherBuild)}" var="jenkinsResults" />
@@ -217,7 +213,7 @@
 								</c:otherwise>
 							</c:choose>
 
-							<span class="${qaStatusCSSClass}"><c:out value="${AlloyLanguageUtil.format(patcherBuildQAStatusLabel)}" /></span> ${relevantQAStatusActionLink}
+							<span class="${qaStatusCSSClass}"><c:out value="${LanguageUtil.get(request, patcherBuildQAStatusLabel)}" /></span> ${relevantQAStatusActionLink}
 						</td>
 					</tr>
 				</c:forEach>

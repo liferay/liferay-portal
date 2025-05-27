@@ -107,13 +107,13 @@
 				<portlet:param name="id" value="${patcherProjectVersion.patcherProjectVersionId}" />
 			</portlet:renderURL>
 
-			<c:set value='${AlloyLanguageUtil.formatUnicode("fixed-issues")}' var="viewPatcherProjectVersionFixedIssuesURLTitle" />
+			<c:set value='${UnicodeLanguageUtil.get(request, "fixed-issues")}' var="viewPatcherProjectVersionFixedIssuesURLTitle" />
 
 			<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherProjectVersionFixedIssuesURL}', '${viewPatcherProjectVersionFixedIssuesURLTitle}', true, 1000, 1);" var="viewPatcherProjectVersionFixedIssuesURL" />
 
 			<c:set value="${PatcherUtil.getTicketsCount(patcherProjectVersion.fixedIssues)}" var="ticketsCount" />
 
-			<c:set value='${ticketsCount} ${AlloyLanguageUtil.format("tickets")}' var="tickets" />
+			<c:set value='${ticketsCount} ${LanguageUtil.get(request, "tickets")}' var="tickets" />
 
 			<a class="nobr" href="${viewPatcherProjectVersionFixedIssuesURL}" title="${patcherProjectVersionFixedIssuesCount}">${ticketsCount > 0 ? tickets : ""} </a>
 		</liferay-ui:search-container-column-text>

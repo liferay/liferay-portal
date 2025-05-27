@@ -173,10 +173,10 @@
 
 		<liferay-ui:search-container-column-text
 			name="status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherFix.getStatus()))}"
+			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) + ">" %>'
 		/>
 
-		<c:set value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherFix.getFixPackStatus()))}" var="fixPackStatus" />
+		<c:set value="${LanguageUtil.get(request, WorkflowConstantsMethods.getStatusLabel(patcherFix.getFixPackStatus()))}" var="fixPackStatus" />
 
 		<liferay-ui:search-container-column-text
 			name="fix-pack-status"
@@ -185,7 +185,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="type"
-			value="${AlloyLanguageUtil.format(PatcherFixConstantsMethods.getTypeLabel(patcherFix.getType()))}"
+			value="<%= LanguageUtil.get(request, PatcherFixConstants.getTypeLabel(patcherFix.getType())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -213,7 +213,7 @@
 						<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 					</portlet:renderURL>
 
-					<c:set value='${AlloyLanguageUtil.formatUnicode("edit-fix-packs")}' var="editPatcherFixFixPackFieldsURLTitle" />
+					<c:set value='${UnicodeLanguageUtil.get(request, "edit-fix-packs")}' var="editPatcherFixFixPackFieldsURLTitle" />
 
 					<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherFixFixPackFieldsURL}', '${editPatcherFixFixPackFieldsURLTitle}', true, 800)" var="editPatcherFixFixPackFieldsURL" />
 
@@ -316,7 +316,7 @@
 
 			<liferay-ui:search-container-column-text
 				name="status"
-				value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherFixPack.getStatus()))}"
+				value='<%= LanguageUtil.get(WorkflowConstants.getStatusLabel(patcherFixPack.getStatus())) + ">" %>'
 			/>
 
 			<liferay-ui:search-container-column-text

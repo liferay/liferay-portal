@@ -141,7 +141,7 @@
 			<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("view-builds-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherBuildsURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.format(request, "view-builds-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherBuildsURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherBuildsURL}', '${viewPatcherBuildsURLTitle}', true, 1000);" var="viewPatcherBuildsURL" />
 
@@ -153,7 +153,7 @@
 			<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("view-fixes-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherFixesURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.format(request, "view-fixes-for-fix-id-x", patcherFix.patcherFixId)}' var="viewPatcherFixesURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherFixesURL}', '${viewPatcherFixesURLTitle}', true, 1000);" var="viewPatcherFixesURL" />
 
@@ -166,7 +166,7 @@
 				<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 			</portlet:renderURL>
 
-			<c:set value='${AlloyLanguageUtil.formatUnicode("edit-fix-packs")}' var="editPatcherFixFixPackFieldsURLTitle" />
+			<c:set value='${UnicodeLanguageUtil.get(request, "edit-fix-packs")}' var="editPatcherFixFixPackFieldsURLTitle" />
 
 			<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherFixFixPackFieldsURL}', '${editPatcherFixFixPackFieldsURLTitle}', true, 800)" var="editPatcherFixFixPackFieldsURL" />
 
@@ -245,12 +245,12 @@
 
 			<liferay-ui:search-container-column-text
 				name="patcher-status"
-				value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherFixKeyVersion.getStatus()))}"
+				value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFixKeyVersion.getStatus())) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
 				name="type"
-				value="${AlloyLanguageUtil.format(PatcherFixConstantsMethods.getTypeLabel(patcherFixKeyVersion.getType()))}"
+				value="<%= LanguageUtil.get(request, PatcherFixConstants.getTypeLabel(patcherFixKeyVersion.getType())) %>"
 			/>
 		</liferay-ui:search-container-row>
 

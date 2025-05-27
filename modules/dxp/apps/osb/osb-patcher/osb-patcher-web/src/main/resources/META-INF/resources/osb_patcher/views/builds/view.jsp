@@ -96,7 +96,7 @@
 </aui:field-wrapper>
 
 <aui:field-wrapper name="qa-status">
-	${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherBuild.getQaStatus()))}
+	<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getQaStatus()) %>" />
 </aui:field-wrapper>
 
 <aui:field-wrapper name="qa-comments">
@@ -130,7 +130,7 @@
 	</c:forEach>
 </aui:field-wrapper>
 
-<c:set value='${AlloyLanguageUtil.format("download")}' var="downloadURLLabel" />
+<c:set value='${LanguageUtil.get(request, "download")}' var="downloadURLLabel" />
 
 <aui:field-wrapper name="hotfix">
 	<c:choose>
@@ -216,7 +216,7 @@
 			<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("view-fixes-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherBuildPatcherFixesURL}', '${viewPatcherFixesURLTitle}', true, 1000);" var="viewPatcherBuildPatcherFixesURL" />
 
@@ -230,7 +230,7 @@
 			<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("view-child-builds-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherBuildsURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.format(request, "view-child-builds-for-build-id-x", patcherBuild.patcherBuildId)}' var="viewPatcherBuildsURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${viewChildPatcherBuildsURL}', '${viewPatcherBuildsURLTitle}', true, 1000);" var="viewChildPatcherBuildsURL" />
 
@@ -263,7 +263,7 @@
 				<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 			</portlet:renderURL>
 
-			<c:set value='${AlloyLanguageUtil.formatUnicode("edit-engineer-comments-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildCommentsFieldURLTitle" />
+			<c:set value='${UnicodeLanguageUtil.format(request, "edit-engineer-comments-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildCommentsFieldURLTitle" />
 
 			<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherBuildCommentsFieldURL}', '${editPatcherBuildCommentsFieldURLTitle}', true, 1000);" var="editPatcherBuildCommentsFieldURL" />
 
@@ -282,7 +282,7 @@
 				<portlet:param name="id" value="${patcherBuild.patcherBuildId}" />
 			</portlet:renderURL>
 
-			<c:set value='${AlloyLanguageUtil.formatUnicode("edit-qa-status-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildQAFieldsURLTitle" />
+			<c:set value='${UnicodeLanguageUtil.format(request, "edit-qa-status-for-build-id-x", patcherBuild.patcherBuildId)}' var="editPatcherBuildQAFieldsURLTitle" />
 
 			<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherBuildQAFieldsURL}', '${editPatcherBuildQAFieldsURLTitle}', true, 1000);" var="editPatcherBuildQAFieldsURL" />
 
@@ -347,10 +347,10 @@
 		</c:if>
 
 		<c:if test="${patcherBuild.status == WorkflowConstants.STATUS_BUILD_COMPLETE}">
-			<c:set value='${AlloyLanguageUtil.format("this-patch-has-not-passed-qa-testing-are-you-sure-this-patch-is-ready-for-release")}' var="releaseConfirmMessage" />
+			<c:set value='${LanguageUtil.get(request, "this-patch-has-not-passed-qa-testing-are-you-sure-this-patch-is-ready-for-release")}' var="releaseConfirmMessage" />
 
 			<c:if test="${PatcherBuildUtil.isTestingPassed(patcherBuild)}">
-				<c:set value='${AlloyLanguageUtil.format("are-you-sure-this-patch-is-ready-for-release")}' var="releaseConfirmMessage" />
+				<c:set value='${LanguageUtil.get(request, "are-you-sure-this-patch-is-ready-for-release")}' var="releaseConfirmMessage" />
 			</c:if>
 
 			<portlet:actionURL var="releasePatcherBuildURL">
@@ -370,10 +370,10 @@
 		</c:if>
 
 		<c:if test="${(patcherBuild.status == WorkflowConstants.STATUS_BUILD_COMPLETE) || (patcherBuild.status == WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE)}">
-			<c:set value='${AlloyLanguageUtil.format("this-patch-has-not-passed-qa-testing-are-you-sure-you-want-to-release-this-patch-to-the-customer")}' var="releaseConfirmMessage" />
+			<c:set value='${LanguageUtil.get(request, "this-patch-has-not-passed-qa-testing-are-you-sure-you-want-to-release-this-patch-to-the-customer")}' var="releaseConfirmMessage" />
 
 			<c:if test="${PatcherBuildUtil.isTestingPassed(patcherBuild)}">
-				<c:set value='${AlloyLanguageUtil.format("are-you-sure-you-want-to-release-this-patch-to-the-customer")}' var="releaseConfirmMessage" />
+				<c:set value='${LanguageUtil.get(request, "are-you-sure-you-want-to-release-this-patch-to-the-customer")}' var="releaseConfirmMessage" />
 			</c:if>
 
 			<portlet:actionURL var="releasePatcherBuildURL">
@@ -473,7 +473,7 @@
 
 			<liferay-ui:search-container-column-text
 				name="status"
-				value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherBuildKeyVersion.getStatus()))}"
+				value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuildKeyVersion.getStatus())) + ">" %>'
 			/>
 		</liferay-ui:search-container-row>
 

@@ -68,7 +68,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="patcher-status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(childPatcherBuild.getStatus()))}"
+			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(childPatcherBuild.getStatus())) + ">" %>'
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -100,7 +100,7 @@
 					<portlet:param name="id" value="${childPatcherBuild.patcherBuildId}" />
 				</portlet:renderURL>
 
-				<c:set value='${AlloyLanguageUtil.formatUnicode("view-fixes-for-build-id-x", childPatcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
+				<c:set value='${UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", childPatcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
 
 				<c:if test="${PatcherPermission.contains(themeDisplay, childPatcherBuild, PatcherActionKeys.FIXES, childPatcherBuild.userId)}">
 					<liferay-ui:icon

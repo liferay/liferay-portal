@@ -82,7 +82,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="patcher-status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherFix.getStatus()))}"
+			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) + ">" %>'
 		/>
 
 		<portlet:renderURL var="editPatcherFixCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -91,7 +91,7 @@
 			<portlet:param name="id" value="${patcherFix.patcherFixId}" />
 		</portlet:renderURL>
 
-		<c:set value='${AlloyLanguageUtil.formatUnicode("edit-engineer-comments")}' var="editPatcherFixCommentsFieldURLTitle" />
+		<c:set value='${UnicodeLanguageUtil.get(request, "edit-engineer-comments")}' var="editPatcherFixCommentsFieldURLTitle" />
 
 		<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherFixCommentsFieldURL}', '${editPatcherFixCommentsFieldURLTitle}', true, 800)" var="editPatcherFixCommentsFieldURL" />
 
@@ -114,7 +114,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="type"
-			value="${AlloyLanguageUtil.format(PatcherFixConstantsMethods.getTypeLabel(patcherFix.getType()))}"
+			value="<%= LanguageUtil.get(request, PatcherFixConstants.getTypeLabel(patcherFix.getType())) %>"
 		/>
 	</liferay-ui:search-container-row>
 

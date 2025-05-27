@@ -115,7 +115,7 @@
 
 			<liferay-ui:search-container-column-text
 				name="status"
-				value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherFixPack.getStatus()))}"
+				value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFixPack.getStatus())) + ">" %>'
 			/>
 
 			<liferay-ui:search-container-column-text

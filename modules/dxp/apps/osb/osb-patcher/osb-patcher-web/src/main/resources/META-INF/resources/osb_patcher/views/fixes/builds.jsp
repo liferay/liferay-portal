@@ -107,7 +107,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherBuild.getStatus()))}"
+			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getStatus())) + ">" %>'
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -132,7 +132,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="qa-status"
-			value="${AlloyLanguageUtil.format(WorkflowConstantsMethods.getStatusLabel(patcherBuild.getQaStatus()))}"
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getQaStatus())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text

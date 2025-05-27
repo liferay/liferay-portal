@@ -88,12 +88,12 @@
 
 		<liferay-ui:search-container-column-text
 			name="status"
-			value="${AlloyLanguageUtil.format(WorkflowConstants.getStatusLabel(patcherFix.getStatus()))}"
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="type"
-			value="${AlloyLanguageUtil.format(PatcherFixConstants.getTypeLabel(patcherFix.getType()))}"
+			value="<%= LanguageUtil.get(request, PatcherFixConstants.getTypeLabel(patcherFix.getType())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
