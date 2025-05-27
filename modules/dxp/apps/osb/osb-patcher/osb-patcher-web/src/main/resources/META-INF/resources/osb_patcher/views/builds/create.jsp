@@ -131,7 +131,7 @@
 		'<portlet:namespace />checkForExistingHotfix',
 		function() {
 			if (patcherProductVersionId.value == ${PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_QUARTERLY_RELEASES)}) {
-				_getUseExistingHotfixValue();
+				getUseExistingHotfixValue();
 			} else {
 				submitForm(document.<portlet:namespace />fm);
 			}
@@ -145,12 +145,12 @@
 		function(productVersionId) {
 			Liferay.Patcher.populateProjectVersionField(productVersionId, select, ${patcherProjectVersionsJSON});
 
-			_getTicketSuggestionFields();
+			getTicketSuggestionFields();
 		},
 		['aui-base', 'liferay-portlet-url']
 	);
 
-	function _getTicketSuggestionFields() {
+	function getTicketSuggestionFields() {
 		var projectVersionId = patcherProjectVersionId.value ? patcherProjectVersionId.value : 0;
 
 		Liferay.Service(
@@ -171,7 +171,7 @@
 		);
 	}
 
-	function _getUseExistingHotfixValue() {
+	function getUseExistingHotfixValue() {
 		Liferay.Service('/osb-patcher-portlet.builds/hotfixExists',
 			{
 				projectVersionId: patcherProjectVersionId.value,
@@ -199,7 +199,7 @@
 		window,
 		'<portlet:namespace />projectVersionOnChange',
 		function(projectVersionId) {
-			_getTicketSuggestionFields();
+			getTicketSuggestionFields();
 		},
 		['aui-base', 'liferay-portlet-url']
 	);
@@ -252,7 +252,7 @@
 			YUI().use('event-valuechange', function(Y) {
 				Y.one('#<portlet:namespace />patcherBuildName').on('valuechange', function(e) {
 					if (patcherProductVersionId && patcherProjectVersionId) {
-						_getTicketSuggestionFields();
+						getTicketSuggestionFields();
 					}
 				});
 			});
