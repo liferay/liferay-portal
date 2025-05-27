@@ -447,11 +447,10 @@ public class PatcherScanUtil {
 			patcherFixesSelection);
 
 		StringBundler sb = new StringBundler(
-			(25 * patcherBuildTickets.size()) + 3);
+			(25 * patcherBuildTickets.size()) + 4);
 
-		sb.append(
-			"<div style=\"border:1px solid gray; height:300px; " +
-				"overflow-y:scroll;\">");
+		sb.append("<div style=\"border:1px solid gray; height:300px; ");
+		sb.append("overflow-y:scroll;\">");
 
 		while (!patcherBuildTickets.isEmpty()) {
 			PatcherFix patcherFix = PatcherFixUtil.getPatcherFix(
