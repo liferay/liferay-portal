@@ -34,13 +34,12 @@ public class PatcherPermission {
 			return true;
 		}
 
-		if ((name.indexOf(CharPool.PERIOD) != -1) && (ownerId > 0)) {
-			if (permissionChecker.hasOwnerPermission(
-					permissionChecker.getCompanyId(), name, primKey, ownerId,
-					actionId)) {
+		if ((name.indexOf(CharPool.PERIOD) != -1) && (ownerId > 0) &&
+			permissionChecker.hasOwnerPermission(
+				permissionChecker.getCompanyId(), name, primKey, ownerId,
+				actionId)) {
 
-				return true;
-			}
+			return true;
 		}
 
 		return permissionChecker.hasPermission(
