@@ -652,7 +652,8 @@ public class PatcherBuildUtil {
 	}
 
 	public static String getQuarterReleaseBuildPath(String path) {
-		return path.replace("fix-packs", "portal/hotfix");
+		return com.liferay.petra.string.StringUtil.replace(
+			path, "fix-packs", "portal/hotfix");
 	}
 
 	public static List<PatcherBuild> getRelatedPatcherBuilds(
@@ -1189,6 +1190,10 @@ public class PatcherBuildUtil {
 				hotfixFileName, patcherBuild, quarterReleasePath);
 		}
 		catch (FileNotFoundException fileNotFoundException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(fileNotFoundException);
+			}
+
 			HelpCenterUtil.addAttachmentComment(
 				hotfixFileName, patcherBuild, path);
 		}

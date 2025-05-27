@@ -221,6 +221,10 @@ public class PatcherUtil {
 			return pubsubMessageData.toStringUtf8();
 		}
 		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
 			subscriber.close();
 		}
 
@@ -732,6 +736,10 @@ public class PatcherUtil {
 			indexerClass.getField(Field.GROUP_ID);
 		}
 		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
 			searchContext.setGroupIds(null);
 		}
 
