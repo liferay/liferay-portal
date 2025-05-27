@@ -31,7 +31,7 @@ public class PatcherConstants {
 
 	public static final String INVALID_TICKET_KEY = "LPS-";
 
-	public static final String LIFERAY_HOTFIX_FILENAME_REGEX =
+	public static final String LIFERAY_HOTFIX_FILE_NAME_REGEX =
 		"\\/([A-Za-z0-9\\.\\s-]*\\.(lpkg|zip))$";
 
 	public static final String LIFERAY_HOTFIX_ID_REGEX = "(\\d+)(?=\\.zip)";
