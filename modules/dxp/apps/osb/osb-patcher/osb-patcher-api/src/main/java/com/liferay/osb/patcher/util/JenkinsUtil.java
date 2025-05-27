@@ -27,7 +27,9 @@ import com.liferay.osb.patcher.service.PatcherFixComponentLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -43,8 +45,6 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.text.DateFormat;
@@ -261,7 +261,9 @@ public class JenkinsUtil {
 			"fix.pack.customer.ticket", patcherBuild.getSupportTicket());
 		jenkinsRequestParameters.put(
 			"fix.pack.fixed.issues",
-			StringUtil.merge(PatcherBuildUtil.getFixedIssues(patcherBuild)));
+			StringUtil.merge(
+				PatcherBuildUtil.getFixedIssues(patcherBuild),
+				StringPool.COMMA));
 		jenkinsRequestParameters.put("fix.pack.id", String.valueOf(fixPackId));
 
 		String gitRevision = StringPool.BLANK;
@@ -342,8 +344,8 @@ public class JenkinsUtil {
 						JENKINS_LOAD_BALANCER_BASE_INVOCATION_URL,
 					"invoked.job.batch.size", "1");
 
-			mostAvailableMasterURL = mostAvailableMasterURL.replace(
-				"http", "https");
+			mostAvailableMasterURL = StringUtil.replace(
+				mostAvailableMasterURL, "http", "https");
 
 			return mostAvailableMasterURL + ".liferay.com";
 		}
@@ -860,7 +862,7 @@ public class JenkinsUtil {
 
 		sendAgentJenkinsPatcherBuildRequest(
 			themeDisplay, user, patcherProjectVersion, mainPatcherFix,
-			StringUtil.merge(patcherFixIds));
+			StringUtil.merge(patcherFixIds, StringPool.COMMA));
 	}
 
 	protected static void sendAgentJenkinsPatcherBuildRequest(

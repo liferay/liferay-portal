@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -95,9 +96,8 @@ public class HelpCenterUtil {
 					PortletPropsValues.HELP_CENTER_GET_ACCOUNT_API_ENDPOINT);
 		options.setPost(true);
 
-		String response = HttpUtil.URLtoString(options);
-
-		response = response.replace(StringPool.QUOTE, StringPool.BLANK);
+		String response = StringUtil.removeSubstring(
+			HttpUtil.URLtoString(options), StringPool.QUOTE);
 
 		Pattern pattern = Pattern.compile(
 			PatcherConstants.HELP_CENTER_ACCOUNT_ID_REGEX);
