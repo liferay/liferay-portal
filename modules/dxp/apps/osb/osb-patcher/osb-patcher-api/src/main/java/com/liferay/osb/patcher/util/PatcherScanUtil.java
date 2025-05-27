@@ -466,8 +466,7 @@ public class PatcherScanUtil {
 					return patcherFixIds;
 				}
 
-				sb.append("NO MATCH FOUND");
-				sb.append("</div>");
+				sb.append("NO MATCH FOUND</div>");
 
 				String msg = sb.toString();
 
@@ -496,8 +495,7 @@ public class PatcherScanUtil {
 				sb.append(
 					LanguageUtil.get(
 						LocaleUtil.getMostRelevantLocale(), "process"));
-				sb.append(StringPool.COLON);
-				sb.append("<br />");
+				sb.append(":<br />");
 				sb.append(msg);
 
 				_log.error(sb.toString());
@@ -515,16 +513,10 @@ public class PatcherScanUtil {
 
 				sb = new StringBundler(12);
 
-				sb.append("PICKED UP FIX ID WITH EXCLUDED ANCESTOR(S)");
-				sb.append("<br />");
-				sb.append("FIX ID");
-				sb.append(StringPool.COLON);
+				sb.append("PICKED UP FIX ID WITH EXCLUDED ANCESTOR(S)<br />");
+				sb.append("FIX ID:");
 				sb.append(patcherFix.getPatcherFixId());
-				sb.append("<br />");
-				sb.append("<br />");
-				sb.append("EXCLUDED ANCESTOR(S)");
-				sb.append(StringPool.COLON);
-				sb.append("<br />");
+				sb.append("<br /><br />EXCLUDED ANCESTOR(S):<br />");
 
 				List<Long> excludedAncestorIds = new ArrayList<>();
 
@@ -556,36 +548,19 @@ public class PatcherScanUtil {
 
 			patcherBuildTickets.removeAll(patcherFixTickets);
 
-			sb.append("FOUND");
-			sb.append(StringPool.COLON);
-			sb.append("<br />");
-			sb.append("ID");
-			sb.append(StringPool.COLON);
-			sb.append(StringPool.SPACE);
+			sb.append("FOUND:<br />ID: ");
 			sb.append(latestPatcherFix.getPatcherFixId());
-			sb.append("<br />");
-			sb.append("NAME");
-			sb.append(StringPool.COLON);
-			sb.append(StringPool.SPACE);
-			sb.append(StringPool.QUOTE);
+			sb.append("<br />NAME: \"");
 			sb.append(
 				StringUtil.replace(
 					latestPatcherFix.getName(), StringPool.COMMA,
 					StringPool.COMMA_AND_SPACE));
-			sb.append(StringPool.QUOTE);
-			sb.append("<br />");
-			sb.append("REMOVING TICKETS FROM PHRASE");
-			sb.append(StringPool.DOUBLE_PERIOD);
-			sb.append("<br /><br />");
-			sb.append("NEW PHRASE");
-			sb.append(StringPool.COLON);
-			sb.append("<br />");
-			sb.append(StringPool.QUOTE);
+			sb.append("\"<br />REMOVING TICKETS FROM PHRASE..<br /><br />");
+			sb.append("NEW PHRASE:<br />\"");
 			sb.append(
 				StringUtil.merge(
 					patcherBuildTickets, StringPool.COMMA_AND_SPACE));
-			sb.append(StringPool.QUOTE);
-			sb.append("<br /><br />");
+			sb.append("\"<br /><br />");
 		}
 
 		patcherFixIds.addAll(patcherFixPackFixIds);

@@ -117,8 +117,7 @@ public class HelpCenterUtil {
 		Http.Options options = new Http.Options();
 
 		String uploadTokenURL =
-			PortletPropsValues.HELP_CENTER_FILE_REPO_URL +
-				StringPool.FORWARD_SLASH + "token";
+			PortletPropsValues.HELP_CENTER_FILE_REPO_URL + "/token";
 
 		String dirPath =
 			PortletPropsValues.HELP_CENTER_TOKEN_TICKET_DIR +
@@ -137,8 +136,7 @@ public class HelpCenterUtil {
 		throws Exception {
 
 		String uploadURL =
-			PortletPropsValues.HELP_CENTER_FILE_REPO_URL +
-				StringPool.FORWARD_SLASH + "upload";
+			PortletPropsValues.HELP_CENTER_FILE_REPO_URL + "/upload";
 
 		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableChunkNumber", 1);

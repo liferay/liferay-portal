@@ -750,8 +750,8 @@ public class JenkinsUtil {
 		}
 
 		if (Validator.isNull(PortletPropsValues.JENKINS_URL)) {
-			return "the-build-cannot-send-request-because-the-jenkins-url-" +
-				"is-not-set";
+			return "the-build-cannot-send-request-because-the-jenkins-url-is-" +
+				"not-set";
 		}
 
 		return StringPool.BLANK;

@@ -337,8 +337,8 @@ public class PatcherBuildUtil {
 
 			return CounterLocalServiceUtil.increment(
 				StringBundler.concat(
-					PatcherBuild.class.getName(), StringPool.POUND, "Security",
-					StringPool.POUND, supportTicket, StringPool.POUND,
+					PatcherBuild.class.getName(), "#Security#", supportTicket,
+					StringPool.POUND,
 					String.valueOf(
 						PatcherProjectVersionUtil.getPatcherProductVersionId(
 							patcherProjectVersionId))));
