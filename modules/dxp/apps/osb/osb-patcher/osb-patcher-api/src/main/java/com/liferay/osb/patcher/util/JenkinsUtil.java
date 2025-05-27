@@ -31,6 +31,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -521,10 +522,8 @@ public class JenkinsUtil {
 		String patcherFixJenkinsResults = patcherFix.getJenkinsResults();
 
 		if (Validator.isNull(patcherFixJenkinsResults)) {
-			JSONArray newJenkinsResultJSONArray =
-				JSONFactoryUtil.createJSONArray();
-
-			newJenkinsResultJSONArray.put(newJenkinsResultJSONObject);
+			JSONArray newJenkinsResultJSONArray = JSONUtil.put(
+				newJenkinsResultJSONObject);
 
 			patcherFix.setJenkinsResults(newJenkinsResultJSONArray.toString());
 
@@ -724,16 +723,14 @@ public class JenkinsUtil {
 		sendJenkinsRequest(user, options);
 	}
 
-	public static JSONObject toJenkinsResult(String status, String statusURL)
-		throws Exception {
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		jsonObject.put("jobName", parseJobName(statusURL));
-		jsonObject.put("status", status);
-		jsonObject.put("statusURL", statusURL);
-
-		return jsonObject;
+	public static JSONObject toJenkinsResult(String status, String statusURL) {
+		return JSONUtil.put(
+			"jobName", parseJobName(statusURL)
+		).put(
+			"status", status
+		).put(
+			"statusURL", statusURL
+		);
 	}
 
 	public static String validateJenkinsSetup() throws Exception {
