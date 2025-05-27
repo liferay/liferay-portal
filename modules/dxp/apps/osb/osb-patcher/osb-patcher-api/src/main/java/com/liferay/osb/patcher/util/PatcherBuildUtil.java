@@ -522,7 +522,7 @@ public class PatcherBuildUtil {
 
 	public static String getLiferayHotfixFileName(String fileName) {
 		Pattern pattern = Pattern.compile(
-			PatcherConstants.LIFERAY_HOTFIX_FILENAME_REGEX);
+			PatcherConstants.LIFERAY_HOTFIX_FILE_NAME_REGEX);
 
 		Matcher matcher = pattern.matcher(fileName);
 
