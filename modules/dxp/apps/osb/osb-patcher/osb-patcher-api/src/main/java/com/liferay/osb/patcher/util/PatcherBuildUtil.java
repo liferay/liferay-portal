@@ -6,7 +6,6 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.alloy.mvc.AlloyServiceInvoker;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
 import com.liferay.osb.patcher.constants.PatcherConstants;
@@ -17,11 +16,12 @@ import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
-import com.liferay.osb.patcher.model.impl.PatcherBuildModelImpl;
 import com.liferay.osb.patcher.service.PatcherAccountLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.osb.patcher.util.comparator.PatcherBuildCreateDateComparator;
+import com.liferay.osb.patcher.util.comparator.PatcherBuildKeyVersionComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -44,8 +44,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -75,16 +73,9 @@ public class PatcherBuildUtil {
 
 		double keyVersion = PatcherBuildConstants.KEY_VERSION_DEFAULT;
 
-		AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
-			PatcherBuild.class.getName());
-
 		List<PatcherBuild> patcherBuilds =
-			alloyServiceInvoker.executeDynamicQuery(
-				new Object[] {
-					"patcherProjectVersionId", patcherProjectVersionId, "name",
-					name, "accountEntryCode", accountEntryCode,
-					"latestKeyBuild", true
-				});
+			PatcherBuildLocalServiceUtil.getPatcherBuilds(
+				patcherProjectVersionId, name, true, accountEntryCode);
 
 		if (!patcherBuilds.isEmpty()) {
 			List<Long> patcherBuildPatcherFixIds = new ArrayList<>();
@@ -265,34 +256,10 @@ public class PatcherBuildUtil {
 			long patcherAccountId, long patcherProductVersionId)
 		throws Exception {
 
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		DynamicQuery patcherBuildDynamicQuery =
-			patcherBuildAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {
-					"patcherProductVersionId", patcherProductVersionId
-				});
-
-		Property patcherBuildIdProperty = PropertyFactoryUtil.forName(
-			"patcherBuildId");
-
-		List<Long> patcherAccountPatcherBuildIds =
-			getPatcherAccountPatcherBuildIds(patcherAccountId);
-
-		if (patcherAccountPatcherBuildIds.isEmpty()) {
-			return null;
-		}
-
-		patcherBuildDynamicQuery.add(
-			patcherBuildIdProperty.in(patcherAccountPatcherBuildIds));
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherBuildModelImpl.TABLE_NAME, "modifiedDate", false);
-
 		List<PatcherBuild> patcherAccountPatcherBuilds =
-			patcherBuildAlloyServiceInvoker.executeDynamicQuery(
-				patcherBuildDynamicQuery, 0, 1, obc);
+			PatcherBuildLocalServiceUtil.getPatcherBuilds(
+				patcherAccountId, patcherProductVersionId, 0, 1,
+				PatcherBuildCreateDateComparator.getInstance(false));
 
 		if (patcherAccountPatcherBuilds.isEmpty()) {
 			return null;
@@ -301,15 +268,9 @@ public class PatcherBuildUtil {
 		return patcherAccountPatcherBuilds.get(0);
 	}
 
-	public static PatcherBuild fetchPatcherBuildByLatestKeyBuild(String key)
-		throws Exception {
-
-		AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
-			PatcherBuild.class.getName());
-
+	public static PatcherBuild fetchPatcherBuildByLatestKeyBuild(String key) {
 		List<PatcherBuild> patcherBuilds =
-			alloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"key", key, "latestKeyBuild", true});
+			PatcherBuildLocalServiceUtil.getPatcherBuilds(key, true);
 
 		if (!patcherBuilds.isEmpty()) {
 			return patcherBuilds.get(0);
@@ -319,18 +280,10 @@ public class PatcherBuildUtil {
 	}
 
 	public static PatcherBuild fetchPatcherBuildByLatestSupportTicketBuild(
-			String supportTicket)
-		throws Exception {
-
-		AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
-			PatcherBuild.class.getName());
+		String supportTicket) {
 
 		List<PatcherBuild> patcherBuilds =
-			alloyServiceInvoker.executeDynamicQuery(
-				new Object[] {
-					"supportTicket", supportTicket, "latestSupportTicketBuild",
-					true
-				});
+			PatcherBuildLocalServiceUtil.getPatcherBuilds(true, supportTicket);
 
 		if (!patcherBuilds.isEmpty()) {
 			return patcherBuilds.get(0);
@@ -340,22 +293,11 @@ public class PatcherBuildUtil {
 	}
 
 	public static PatcherBuild fetchPatcherBuildByNextKeyVersion(
-			PatcherBuild patcherBuild, boolean older)
-		throws Exception {
-
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		DynamicQuery patcherBuildKeyVersionDynamicQuery =
-			buildPatcherBuildKeyVersionDynamicQuery(patcherBuild, older);
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherBuildModelImpl.TABLE_NAME, "keyVersion", !older);
+		PatcherBuild patcherBuild, boolean older) {
 
 		List<PatcherBuild> patcherBuilds =
-			patcherBuildAlloyServiceInvoker.executeDynamicQuery(
-				patcherBuildKeyVersionDynamicQuery, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, obc);
+			PatcherBuildLocalServiceUtil.getPatcherBuildsByKey(
+				patcherBuild.getKey(), patcherBuild.getKeyVersion(), older);
 
 		if (patcherBuilds.isEmpty()) {
 			return null;
@@ -364,38 +306,19 @@ public class PatcherBuildUtil {
 		return patcherBuilds.get(0);
 	}
 
-	public static List<PatcherBuild> fetchPatcherBuildsByKey(String key)
-		throws Exception {
-
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherBuildModelImpl.TABLE_NAME, "keyVersion", false);
-
-		return patcherBuildAlloyServiceInvoker.executeDynamicQuery(
-			new Object[] {"key", key}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			obc);
+	public static List<PatcherBuild> fetchPatcherBuildsByKey(String key) {
+		return PatcherBuildLocalServiceUtil.getPatcherBuilds(
+			key, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			PatcherBuildKeyVersionComparator.getInstance(false));
 	}
 
 	public static PatcherBuild fetchPatcherBuildSupportTicketVersion(
-			PatcherBuild patcherBuild, boolean older)
-		throws Exception {
-
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		DynamicQuery patcherBuildSupportTicketVersionDynamicQuery =
-			buildPatcherBuildSupportTicketVersionDynamicQuery(
-				patcherBuild, older);
-
-		OrderByComparator obc = OrderByComparatorFactoryUtil.create(
-			PatcherBuildModelImpl.TABLE_NAME, "supportTicketVersion", !older);
+		PatcherBuild patcherBuild, boolean older) {
 
 		List<PatcherBuild> patcherBuilds =
-			patcherBuildAlloyServiceInvoker.executeDynamicQuery(
-				patcherBuildSupportTicketVersionDynamicQuery, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, obc);
+			PatcherBuildLocalServiceUtil.getPatcherBuildsByKey(
+				patcherBuild.getSupportTicket(),
+				patcherBuild.getSupportTicketVersion(), older);
 
 		if (patcherBuilds.isEmpty()) {
 			return null;
@@ -454,15 +377,13 @@ public class PatcherBuildUtil {
 			long patcherProjectVersionId, String tickets)
 		throws Exception {
 
-		String patcherBuildName = PatcherUtil.preparePatcherName(tickets);
-
-		List<String> patcherBuildTokens = PatcherUtil.sortTokens(
-			patcherBuildName);
-
 		DynamicQuery patcherBuildDynamicQuery =
 			PatcherBuildLocalServiceUtil.dynamicQuery();
 
 		Property nameProperty = PropertyFactoryUtil.forName("name");
+
+		List<String> patcherBuildTokens = PatcherUtil.sortTokens(
+			PatcherUtil.preparePatcherName(tickets));
 
 		patcherBuildDynamicQuery.add(
 			nameProperty.eq(StringUtil.merge(patcherBuildTokens)));
@@ -486,10 +407,7 @@ public class PatcherBuildUtil {
 
 		patcherBuildDynamicQuery.add(disjunction);
 
-		AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
-			PatcherBuild.class.getName());
-
-		return alloyServiceInvoker.executeDynamicQuery(
+		return PatcherBuildLocalServiceUtil.dynamicQuery(
 			patcherBuildDynamicQuery);
 	}
 
@@ -1039,12 +957,18 @@ public class PatcherBuildUtil {
 			AlloyController alloyController)
 		throws Exception {
 
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
+		Calendar calendar = new GregorianCalendar();
+
+		calendar.add(Calendar.HOUR, -3);
 
 		List<PatcherBuild> patcherBuilds =
-			patcherBuildAlloyServiceInvoker.executeDynamicQuery(
-				buildInactivePatcherBuildsDynamicQuery());
+			PatcherBuildLocalServiceUtil.getPatcherBuilds(
+				calendar.getTime(), false,
+				new int[] {
+					WorkflowConstants.STATUS_BUILD_COMPILING,
+					WorkflowConstants.STATUS_BUILD_MERGING,
+					WorkflowConstants.STATUS_BUILD_MERGING_ONLY
+				});
 
 		if (patcherBuilds.isEmpty()) {
 			return;
@@ -1140,12 +1064,9 @@ public class PatcherBuildUtil {
 			jenkinsStatusJSONString);
 
 		if (jenkinsStatusJSONObject.has("statusURL")) {
-			AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
-				PatcherBuild.class.getName());
-
 			List<PatcherBuild> patcherBuilds =
-				alloyServiceInvoker.executeDynamicQuery(
-					new Object[] {"patcherFixId", patcherFixId});
+				PatcherBuildLocalServiceUtil.getPatcherBuildsByPatcherFixId(
+					patcherFixId);
 
 			for (PatcherBuild patcherBuild : patcherBuilds) {
 				if (!isLatestPatcherBuild(patcherBuild)) {
@@ -1168,12 +1089,9 @@ public class PatcherBuildUtil {
 
 		List<String> messages = new ArrayList<>();
 
-		AlloyServiceInvoker alloyServiceInvoker = new AlloyServiceInvoker(
-			PatcherBuild.class.getName());
-
 		List<PatcherBuild> patcherBuilds =
-			alloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"patcherFixId", patcherFixId});
+			PatcherBuildLocalServiceUtil.getPatcherBuildsByPatcherFixId(
+				patcherFixId);
 
 		for (PatcherBuild patcherBuild : patcherBuilds) {
 			if (!isLatestPatcherBuild(patcherBuild)) {
@@ -1732,24 +1650,18 @@ public class PatcherBuildUtil {
 			String accountEntryCode)
 		throws Exception {
 
-		AlloyServiceInvoker patcherAccountAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherAccount.class.getName());
+		PatcherAccount patcherAccount =
+			PatcherAccountLocalServiceUtil.fetchPatcherAccount(
+				accountEntryCode);
 
-		List<PatcherAccount> patcherAccounts =
-			patcherAccountAlloyServiceInvoker.executeDynamicQuery(
-				new Object[] {"accountEntryCode", accountEntryCode});
-
-		if (!patcherAccounts.isEmpty()) {
-			PatcherAccount patcherAccount = patcherAccounts.get(0);
-
+		if (patcherAccount != null) {
 			PatcherBuildLocalServiceUtil.addPatcherAccountPatcherBuild(
 				patcherAccount.getPatcherAccountId(), patcherBuildId);
 
 			return;
 		}
 
-		PatcherAccount patcherAccount =
-			PatcherAccountLocalServiceUtil.createPatcherAccount(0);
+		patcherAccount = PatcherAccountLocalServiceUtil.createPatcherAccount(0);
 
 		patcherAccount.setPatcherAccountId(alloyController.increment());
 		patcherAccount.setAccountEntryId(
@@ -1764,95 +1676,6 @@ public class PatcherBuildUtil {
 
 		PatcherBuildLocalServiceUtil.addPatcherAccountPatcherBuild(
 			patcherAccount.getPatcherAccountId(), patcherBuildId);
-	}
-
-	protected static DynamicQuery buildInactivePatcherBuildsDynamicQuery()
-		throws Exception {
-
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		DynamicQuery patcherBuildsDynamicQuery =
-			patcherBuildAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {"notified", false});
-
-		Calendar calendar = new GregorianCalendar();
-
-		calendar.add(Calendar.HOUR, -3);
-
-		Property modifiedDateProperty = PropertyFactoryUtil.forName(
-			"modifiedDate");
-
-		patcherBuildsDynamicQuery.add(
-			modifiedDateProperty.lt(calendar.getTime()));
-
-		Property statusProperty = PropertyFactoryUtil.forName("status");
-
-		patcherBuildsDynamicQuery.add(
-			statusProperty.in(
-				new int[] {
-					WorkflowConstants.STATUS_BUILD_COMPILING,
-					WorkflowConstants.STATUS_BUILD_MERGING,
-					WorkflowConstants.STATUS_BUILD_MERGING_ONLY
-				}));
-
-		return patcherBuildsDynamicQuery;
-	}
-
-	protected static DynamicQuery buildPatcherBuildKeyVersionDynamicQuery(
-			PatcherBuild patcherBuild, boolean older)
-		throws Exception {
-
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		DynamicQuery patcherBuildDynamicQuery =
-			patcherBuildAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {"key", patcherBuild.getKey()});
-
-		Property keyVersionProperty = PropertyFactoryUtil.forName("keyVersion");
-
-		if (older) {
-			patcherBuildDynamicQuery.add(
-				keyVersionProperty.lt(patcherBuild.getKeyVersion()));
-		}
-		else {
-			patcherBuildDynamicQuery.add(
-				keyVersionProperty.gt(patcherBuild.getKeyVersion()));
-		}
-
-		return patcherBuildDynamicQuery;
-	}
-
-	protected static DynamicQuery
-			buildPatcherBuildSupportTicketVersionDynamicQuery(
-				PatcherBuild patcherBuild, boolean older)
-		throws Exception {
-
-		AlloyServiceInvoker patcherBuildAlloyServiceInvoker =
-			new AlloyServiceInvoker(PatcherBuild.class.getName());
-
-		DynamicQuery patcherBuildDynamicQuery =
-			patcherBuildAlloyServiceInvoker.buildDynamicQuery(
-				new Object[] {
-					"supportTicket", patcherBuild.getSupportTicket()
-				});
-
-		Property supportTicketVersionProperty = PropertyFactoryUtil.forName(
-			"supportTicketVersion");
-
-		if (older) {
-			patcherBuildDynamicQuery.add(
-				supportTicketVersionProperty.lt(
-					patcherBuild.getSupportTicketVersion()));
-		}
-		else {
-			patcherBuildDynamicQuery.add(
-				supportTicketVersionProperty.gt(
-					patcherBuild.getSupportTicketVersion()));
-		}
-
-		return patcherBuildDynamicQuery;
 	}
 
 	protected static boolean containsIncompletePatcherFix(
