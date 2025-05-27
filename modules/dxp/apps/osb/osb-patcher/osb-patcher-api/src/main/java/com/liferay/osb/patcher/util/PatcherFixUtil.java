@@ -19,7 +19,9 @@ import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherFixCreateDateComparator;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -33,8 +35,6 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -334,7 +334,7 @@ public class PatcherFixUtil {
 
 		return PatcherUtil.generatePatcherKey(
 			PatcherFix.class.getName(), patcherProjectVersionId,
-			StringUtil.merge(PatcherUtil.sortTokens(name)));
+			StringUtil.merge(PatcherUtil.sortTokens(name), StringPool.COMMA));
 	}
 
 	public static String generateKey(
@@ -343,7 +343,7 @@ public class PatcherFixUtil {
 
 		return PatcherUtil.generatePatcherKey(
 			PatcherFix.class.getName(), patcherProjectVersionId, key,
-			StringUtil.merge(PatcherUtil.sortTokens(name)));
+			StringUtil.merge(PatcherUtil.sortTokens(name), StringPool.COMMA));
 	}
 
 	public static Map<String, Set<String>> getComponentDependencies(
@@ -351,10 +351,11 @@ public class PatcherFixUtil {
 
 		Map<String, Set<String>> componentDependencies = new HashMap<>();
 
-		String[] phrases = StringUtil.split(dependencies);
+		List<String> phrases = StringUtil.split(dependencies);
 
 		for (String phrase : phrases) {
-			String[] componentNames = StringUtil.split(phrase, "->");
+			String[] componentNames =
+				com.liferay.portal.kernel.util.StringUtil.split(phrase, "->");
 
 			String dependentComponentName = componentNames[0];
 
@@ -576,13 +577,13 @@ public class PatcherFixUtil {
 		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
 
 		for (PatcherFix patcherFix : patcherFixesSelection) {
-			String[] tickets = StringUtil.split(patcherFix.getName());
+			List<String> tickets = StringUtil.split(patcherFix.getName());
 
 			if (!containsAllTickets(patcherBuildTickets, tickets)) {
 				continue;
 			}
 
-			patcherFixRadix.addPatcherFix(tickets.length, patcherFix);
+			patcherFixRadix.addPatcherFix(tickets.size(), patcherFix);
 		}
 
 		return patcherFixRadix;
@@ -596,7 +597,7 @@ public class PatcherFixUtil {
 		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
 
 		for (PatcherFix patcherFix : patcherFixesSelection) {
-			String[] tickets1 = StringUtil.split(patcherFix.getName());
+			List<String> tickets1 = StringUtil.split(patcherFix.getName());
 
 			if (!containsAllTickets(patcherBuildTickets, tickets1)) {
 				continue;
@@ -609,7 +610,7 @@ public class PatcherFixUtil {
 				continue;
 			}
 
-			patcherFixRadix.addPatcherFix(tickets1.length, patcherFix);
+			patcherFixRadix.addPatcherFix(tickets1.size(), patcherFix);
 		}
 
 		return patcherFixRadix;
@@ -911,7 +912,7 @@ public class PatcherFixUtil {
 	}
 
 	protected static boolean containsAllTickets(
-		List<String> patcherBuildTickets, String[] tickets) {
+		List<String> patcherBuildTickets, List<String> tickets) {
 
 		for (String ticket : tickets) {
 			if (!patcherBuildTickets.contains(ticket)) {

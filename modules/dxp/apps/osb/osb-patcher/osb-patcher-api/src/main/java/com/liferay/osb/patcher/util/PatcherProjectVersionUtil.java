@@ -17,6 +17,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -246,10 +247,9 @@ public class PatcherProjectVersionUtil {
 		if (isPrivatePatcherProjectVersionCommittish(
 				patcherProjectVersionCommittish)) {
 
-			siblingPatcherProjectVersionCommittish =
-				patcherProjectVersionCommittish.replace(
-					PatcherProjectVersionConstants.PRIVATE_NAME_SUFFIX,
-					StringPool.BLANK);
+			siblingPatcherProjectVersionCommittish = StringUtil.removeSubstring(
+				patcherProjectVersionCommittish,
+				PatcherProjectVersionConstants.PRIVATE_NAME_SUFFIX);
 		}
 		else {
 			siblingPatcherProjectVersionCommittish =

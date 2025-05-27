@@ -13,14 +13,14 @@ import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -135,7 +135,8 @@ public class PatcherScanUtil {
 		if (!tickets.isEmpty()) {
 			patcherFixIds = scanPatcherFixIdsByTickets(
 				patcherBuildName, patcherFixPackFixIds, patcherProjectVersionId,
-				StringUtil.merge(tickets), patcherFixesSelection);
+				StringUtil.merge(tickets, StringPool.COMMA),
+				patcherFixesSelection);
 		}
 		else {
 			patcherFixIds = patcherFixPackFixIds;
@@ -169,8 +170,8 @@ public class PatcherScanUtil {
 			}
 
 			List<Long> patcherFixIds = scanPatcherFixIdsByProjectVersionId(
-				StringUtil.merge(foundTickets), patcherProjectVersionId,
-				patcherFixesSelection);
+				StringUtil.merge(foundTickets, StringPool.COMMA),
+				patcherProjectVersionId, patcherFixesSelection);
 
 			patcherProjectVersionIdPatcherFixIdsMap.put(
 				patcherProjectVersionId, patcherFixIds);
@@ -576,10 +577,9 @@ public class PatcherScanUtil {
 		List<String> patcherFixTickets = new ArrayList<>();
 
 		for (PatcherFix patcherFix : patcherFixesSelection) {
-			String[] tickets = StringUtil.split(patcherFix.getName());
-
 			if (!PatcherFixUtil.containsAllTickets(
-					patcherBuildTickets, tickets)) {
+					patcherBuildTickets,
+					StringUtil.split(patcherFix.getName()))) {
 
 				continue;
 			}
@@ -630,11 +630,13 @@ public class PatcherScanUtil {
 			foundPatcherFixTickets.removeAll(missingTickets);
 
 			if (patcherFixPackFixNamePatcherFixPackFixMap.containsKey(
-					StringUtil.merge(foundPatcherFixTickets))) {
+					StringUtil.merge(
+						foundPatcherFixTickets, StringPool.COMMA))) {
 
 				PatcherFix patcherFixPackFix =
 					patcherFixPackFixNamePatcherFixPackFixMap.get(
-						StringUtil.merge(foundPatcherFixTickets));
+						StringUtil.merge(
+							foundPatcherFixTickets, StringPool.COMMA));
 
 				patcherFixPackFixIds.remove(
 					patcherFixPackFix.getPatcherFixId());

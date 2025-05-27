@@ -22,6 +22,7 @@ import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildCreateDateComparator;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildKeyVersionComparator;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -44,7 +45,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -337,9 +337,8 @@ public class PatcherBuildUtil {
 				StringBundler.concat(
 					PatcherBuild.class.getName(), "#Security#", supportTicket,
 					StringPool.POUND,
-					String.valueOf(
-						PatcherProjectVersionUtil.getPatcherProductVersionId(
-							patcherProjectVersionId))));
+					PatcherProjectVersionUtil.getPatcherProductVersionId(
+						patcherProjectVersionId)));
 		}
 
 		long rootPatcherProjectVersionId =
@@ -1611,8 +1610,8 @@ public class PatcherBuildUtil {
 		for (long conflictPatcherFixId : conflictPatcherFixIds) {
 			PatcherUtil.addMessage(
 				StringBundler.concat(
-					"The fixes ", String.valueOf(patcherFixId), " and ",
-					String.valueOf(conflictPatcherFixId), " conflict."),
+					"The fixes ", patcherFixId, " and ", conflictPatcherFixId,
+					" conflict."),
 				messages);
 
 			List<Long> parentPatcherFixIds = new ArrayList<>();
@@ -1632,8 +1631,7 @@ public class PatcherBuildUtil {
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
-					"The conflict fix ",
-					String.valueOf(childPatcherFix.getPatcherFixId()),
+					"The conflict fix ", childPatcherFix.getPatcherFixId(),
 					" with name ", childPatcherFix.getName(), " was created."),
 				messages);
 		}
@@ -2041,10 +2039,8 @@ public class PatcherBuildUtil {
 
 		PatcherUtil.addMessage(
 			StringBundler.concat(
-				"The fix ",
-				String.valueOf(longestTicketPatcherFix.getPatcherFixId()),
-				" was added to the build ",
-				String.valueOf(patcherBuild.getPatcherBuildId())),
+				"The fix ", longestTicketPatcherFix.getPatcherFixId(),
+				" was added to the build ", patcherBuild.getPatcherBuildId()),
 			messages);
 
 		List<Long> parentPatcherFixIds =
@@ -2104,8 +2100,7 @@ public class PatcherBuildUtil {
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
-					"The patch for build ",
-					String.valueOf(patcherBuild.getPatcherBuildId()),
+					"The patch for build ", patcherBuild.getPatcherBuildId(),
 					" with name ", patcherBuild.getName(), " was successful."),
 				messages);
 		}
@@ -2114,8 +2109,7 @@ public class PatcherBuildUtil {
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
-					"The patch for build ",
-					String.valueOf(patcherBuild.getPatcherBuildId()),
+					"The patch for build ", patcherBuild.getPatcherBuildId(),
 					" with name ", patcherBuild.getName(), " has a conflict."),
 				messages);
 
@@ -2219,8 +2213,7 @@ public class PatcherBuildUtil {
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
-					"The patch for build ",
-					String.valueOf(patcherBuild.getPatcherBuildId()),
+					"The patch for build ", patcherBuild.getPatcherBuildId(),
 					" with name ", patcherBuild.getName(), " failed."),
 				messages);
 		}
