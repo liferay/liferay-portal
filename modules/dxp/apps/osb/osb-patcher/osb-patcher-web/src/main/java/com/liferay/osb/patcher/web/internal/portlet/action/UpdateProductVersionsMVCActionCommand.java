@@ -1,0 +1,54 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.osb.patcher.web.internal.portlet.action;
+
+import com.liferay.osb.patcher.constants.PatcherPortletKeys;
+import com.liferay.osb.patcher.service.PatcherProductVersionLocalService;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.util.ParamUtil;
+
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Eudaldo Alonso
+ */
+@Component(
+	property = {
+		"jakarta.portlet.name=" + PatcherPortletKeys.PATCHER,
+		"mvc.command.name=/patcher/update_product_versions"
+	},
+	service = MVCActionCommand.class
+)
+public class UpdateProductVersionsMVCActionCommand
+	extends BaseMVCActionCommand {
+
+	@Override
+	protected void doProcessAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		long patcherProductVersionId = ParamUtil.getLong(
+			actionRequest, "patcherProductVersionId");
+		String name = ParamUtil.getString(actionRequest, "name");
+		int fixDeliveryMethod = ParamUtil.getInteger(
+			actionRequest, "fixDeliveryMethod");
+		String moduleFolderName = ParamUtil.getString(
+			actionRequest, "moduleFolderName");
+
+		_patcherProductVersionLocalService.updatePatcherProductVersion(
+			patcherProductVersionId, name, fixDeliveryMethod, moduleFolderName);
+	}
+
+	@Reference
+	private PatcherProductVersionLocalService
+		_patcherProductVersionLocalService;
+
+}
