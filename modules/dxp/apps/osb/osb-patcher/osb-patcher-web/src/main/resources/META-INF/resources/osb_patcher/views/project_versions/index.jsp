@@ -141,7 +141,7 @@
 						<portlet:param name="controller" value="project_versions" />
 						<portlet:param name="action" value="delete" />
 						<portlet:param name="id" value="${patcherProjectVersion.patcherProjectVersionId}" />
-						<portlet:param name="redirect" value="${alloySearchResult.portletURL}" />
+						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon-delete

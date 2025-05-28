@@ -75,7 +75,7 @@
 						<portlet:param name="controller" value="fix_components" />
 						<portlet:param name="action" value="delete" />
 						<portlet:param name="id" value="${patcherFixComponent.patcherFixComponentId}" />
-						<portlet:param name="redirect" value="${alloySearchResult.portletURL}" />
+						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon-delete

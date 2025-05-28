@@ -172,7 +172,7 @@
 						<portlet:param name="controller" value="builds" />
 						<portlet:param name="action" value="test" />
 						<portlet:param name="id" value="${patcherFixPack.patcherBuildId}" />
-						<portlet:param name="redirect" value="${alloySearchResult.portletURL}" />
+						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon
@@ -188,7 +188,7 @@
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="delete" />
 						<portlet:param name="id" value="${patcherFixPack.patcherFixPackId}" />
-						<portlet:param name="redirect" value="${alloySearchResult.portletURL}" />
+						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon-delete
