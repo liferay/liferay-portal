@@ -7,6 +7,10 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+PatcherProductVersionsDisplayContext patcherProductVersionsDisplayContext = new PatcherProductVersionsDisplayContext(request, renderRequest, renderResponse);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="product-versions" />
 </liferay-util:include>
@@ -34,14 +38,8 @@
 </aui:form>
 
 <liferay-ui:search-container
-	emptyResultsMessage="there-are-no-product-versions"
-	iteratorURL="${alloySearchResult.portletURL}"
-	total="${alloySearchResult.size}"
+	searchContainer="<%= patcherProductVersionsDisplayContext.getSearchContainer() %>"
 >
-	<liferay-ui:search-container-results
-		results="${alloySearchResult.baseModels}"
-	/>
-
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherProductVersion"
 		escapedModel="<%= true %>"
