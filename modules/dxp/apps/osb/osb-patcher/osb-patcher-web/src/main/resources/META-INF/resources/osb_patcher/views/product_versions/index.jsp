@@ -15,27 +15,9 @@ PatcherProductVersionsDisplayContext patcherProductVersionsDisplayContext = new 
 	<liferay-util:param name="tabs1" value="product-versions" />
 </liferay-util:include>
 
-<aui:button-row>
-	<portlet:renderURL var="createPatcherProductVersionURL">
-		<portlet:param name="controller" value="product_versions" />
-		<portlet:param name="action" value="create" />
-	</portlet:renderURL>
-
-	<aui:button href="${createPatcherProductVersionURL}" value="create-product-version" />
-</aui:button-row>
-
-<portlet:renderURL var="viewPatcherProductVersionsURL">
-	<portlet:param name="controller" value="product_versions" />
-	<portlet:param name="action" value="index" />
-</portlet:renderURL>
-
-<aui:form action="${viewPatcherProductVersionsURL}" method="get" name="fm">
-	<aui:fieldset>
-		<aui:input inlineField="${true}" label="" name="keywords" size="30" title="search-product-versions" type="text" />
-
-		<aui:button type="submit" value="search" />
-	</aui:fieldset>
-</aui:form>
+<clay:management-toolbar
+	managementToolbarDisplayContext="<%= new PatcherProductVersionsManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, patcherProductVersionsDisplayContext.getSearchContainer()) %>"
+/>
 
 <liferay-ui:search-container
 	searchContainer="<%= patcherProductVersionsDisplayContext.getSearchContainer() %>"
