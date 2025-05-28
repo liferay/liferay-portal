@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -8,7 +8,7 @@ package com.liferay.osb.patcher.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.osb.patcher.constants.PatcherActionKeys;
-import com.liferay.osb.patcher.web.internal.permission.resource.PatcherPermission;
+import com.liferay.osb.patcher.permission.resource.PatcherPermission;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -18,7 +18,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderResponse;
+
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -43,7 +45,8 @@ public class PatcherDisplayContext {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "accounts"));
 				navigationItem.setHref(
-					_getPortletURL(), "controller", "accounts");
+					_getPortletURL(), "mvcRenderCommandName",
+					"/patcher/index_accounts");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "accounts"));
 			}
@@ -51,7 +54,8 @@ public class PatcherDisplayContext {
 			navigationItem -> {
 				navigationItem.setActive(Objects.equals(_getTabs1(), "fixes"));
 				navigationItem.setHref(
-					_getPortletURL(), "controller", "builds");
+					_getPortletURL(), "mvcRenderCommandName",
+					"/patcher/index_fixes");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "fixes"));
 			}
@@ -60,7 +64,8 @@ public class PatcherDisplayContext {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "qa-builds"));
 				navigationItem.setHref(
-					_getPortletURL(), "controller", "fixes");
+					_getPortletURL(), "mvcRenderCommandName",
+					"/patcher/index_builds");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "qa-builds"));
 			}
@@ -69,29 +74,32 @@ public class PatcherDisplayContext {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "fix-components"));
 				navigationItem.setHref(
-					_getPortletURL(), "controller", "fix_components");
+					_getPortletURL(), "mvcRenderCommandName",
+					"/patcher/index_fix_components");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "fix-components"));
 			}
 		).add(
 			() -> PatcherPermission.contains(
-				_themeDisplay, "fix_packs", PatcherActionKeys.INDEX),
+				_themeDisplay.getPermissionChecker(), "fix_packs", PatcherActionKeys.INDEX),
 			navigationItem -> {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "fix-packs"));
 				navigationItem.setHref(
-					_getPortletURL(), "controller", "fix_packs");
+					_getPortletURL(), "mvcRenderCommandName",
+					"/patcher/index_fix_packs");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "fix-packs"));
 			}
 		).add(
 			() -> PatcherPermission.contains(
-				_themeDisplay, "product_versions", PatcherActionKeys.INDEX),
+				_themeDisplay.getPermissionChecker(), "product_versions", PatcherActionKeys.INDEX),
 			navigationItem -> {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "product-versions"));
 				navigationItem.setHref(
-					_getPortletURL(), "controller", "product_versions");
+					_getPortletURL(), "mvcRenderCommandName",
+					"/patcher/index_product_versions");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "product-versions"));
 			}
@@ -100,7 +108,8 @@ public class PatcherDisplayContext {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "project-versions"));
 				navigationItem.setHref(
-					_getPortletURL(), "controller", "project_versions");
+					_getPortletURL(), "mvcRenderCommandName",
+					"/patcher/index_project_versions");
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "project-versions"));
 			}
