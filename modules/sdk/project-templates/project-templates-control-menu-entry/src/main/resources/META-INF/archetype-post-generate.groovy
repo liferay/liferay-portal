@@ -7,6 +7,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
+throw new IllegalArgumentException("Test")
+
 Path projectPath = Paths.get(request.outputDirectory, request.artifactId)
 
 Path buildGradlePath = projectPath.resolve("build.gradle")
