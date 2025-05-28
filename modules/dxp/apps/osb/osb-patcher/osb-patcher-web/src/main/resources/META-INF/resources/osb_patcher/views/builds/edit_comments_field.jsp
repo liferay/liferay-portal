@@ -7,15 +7,15 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
-<aui:model-context bean="${patcherBuild}" model="<%= PatcherBuild.class %>" />
+<aui:model-context bean="<%= patcherBuild %>" model="<%= PatcherBuild.class %>" />
 
 <portlet:actionURL var="updatePatcherBuildCommentsFieldURL">
 	<portlet:param name="controller" value="builds" />
 	<portlet:param name="action" value="updateCommentsField" />
 </portlet:actionURL>
 
-<aui:form action="${updatePatcherBuildCommentsFieldURL}" method="post">
-	<aui:input name="id" type="hidden" value="${patcherBuild.patcherBuildId}" />
+<aui:form action="<%= updatePatcherBuildCommentsFieldURL %>" method="post">
+	<aui:input name="id" type="hidden" value="<%= patcherBuild.patcherBuildId %>" />
 
 	<aui:input name="comments" />
 

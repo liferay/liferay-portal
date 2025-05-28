@@ -9,39 +9,39 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-builds"
-	total="${fn:length(childPatcherBuilds)}"
+	total="<%= fn:length(childPatcherBuilds) %>"
 >
 	<liferay-ui:search-container-results
-		results="${childPatcherBuilds}"
+		results="<%= childPatcherBuilds %>"
 	/>
 
-	<c:set value="${fn:length(childPatcherBuilds)}" var="resultsTotal" />
+	<c:set value="<%= fn:length(childPatcherBuilds) %>" var="resultsTotal" />
 
 	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherBuild"
-		escapedModel="${true}"
+		escapedModel="<%= true %>"
 		keyProperty="patcherBuildId"
 		modelVar="childPatcherBuild"
 	>
 		<portlet:renderURL var="viewChildPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 			<portlet:param name="controller" value="builds" />
 			<portlet:param name="action" value="childBuilds" />
-			<portlet:param name="id" value="${parentPatcherBuild.patcherBuildId}" />
+			<portlet:param name="id" value="<%= parentPatcherBuild.patcherBuildId %>" />
 		</portlet:renderURL>
 
 		<portlet:renderURL var="viewPatcherBuildURL">
 			<portlet:param name="controller" value="builds" />
 			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="${childPatcherBuild.patcherBuildId}" />
-			<portlet:param name="redirect" value="${viewChildPatcherBuildsURL}" />
+			<portlet:param name="id" value="<%= childPatcherBuild.patcherBuildId %>" />
+			<portlet:param name="redirect" value="<%= viewChildPatcherBuildsURL %>" />
 		</portlet:renderURL>
 
 		<liferay-ui:search-container-column-text
 			name="build-id"
 		>
-			<a class="clean-link" href="${viewPatcherBuildURL}" onClick="event.preventDefault(); ${renderResponse.namespace}navigateWindow("${viewPatcherBuildURL}");">${childPatcherBuild.patcherBuildId}</a>
+			<a class="clean-link" href="<%= viewPatcherBuildURL %>" onClick="event.preventDefault(); <%= renderResponse.namespace %>navigateWindow("<%= viewPatcherBuildURL %>");"><%= childPatcherBuild.patcherBuildId %></a>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
@@ -52,18 +52,18 @@
 		<liferay-ui:search-container-column-text
 			name="name"
 		>
-			<c:set value="${StringUtil.split(childPatcherBuild.getName())}" var="jiraTickets" />
+			<c:set value="<%= StringUtil.split(childPatcherBuild.getName()) %>" var="jiraTickets" />
 
-			<c:forEach items="${jiraTickets}" var="jiraTicket" varStatus="jiraTicketStatus">
-				<a class="nobr" href="${PortletPropsValues.JIRA_URL}/${jiraTicket}" target="_blank">${jiraTicket}</a>${(!jiraTicketStatus.last) ? StringPool.COMMA : StringPool.BLANK}
+			<c:forEach items="<%= jiraTickets %>" var="jiraTicket" varStatus="jiraTicketStatus">
+				<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
 			</c:forEach>
 		</liferay-ui:search-container-column-text>
 
-		<c:set value="${PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(childPatcherBuild.getPatcherProjectVersionId())}" var="patcherProjectVersion" />
+		<c:set value="<%= PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(childPatcherBuild.getPatcherProjectVersionId()) %>" var="patcherProjectVersion" />
 
 		<liferay-ui:search-container-column-text
 			name="project-version"
-			value="${patcherProjectVersion.name}"
+			value="<%= patcherProjectVersion.name %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -74,19 +74,19 @@
 		<liferay-ui:search-container-column-text
 			name="jenkins"
 		>
-			<c:set value="${JenkinsUtil.getJenkinsResults(childPatcherBuild)}" var="jenkinsResults" />
+			<c:set value="<%= JenkinsUtil.getJenkinsResults(childPatcherBuild) %>" var="jenkinsResults" />
 
-			<c:forEach items="${jenkinsResults}" var="jenkinsResult">
+			<c:forEach items="<%= jenkinsResults %>" var="jenkinsResult">
 				<clay:link
 					cssClass="nobr"
-					href="${jenkinsResult.statusURL}"
+					href="<%= jenkinsResult.statusURL %>"
 					target="_blank"
-					title="${jenkinsResult.jobName}"
+					title="<%= jenkinsResult.jobName %>"
 				/>
 			</c:forEach>
 		</liferay-ui:search-container-column-text>
 
-		<c:set value="${PatcherFixLocalServiceUtil.getPatcherFix(childPatcherBuild.getPatcherFixId())}" var="patcherFix" />
+		<c:set value="<%= PatcherFixLocalServiceUtil.getPatcherFix(childPatcherBuild.getPatcherFixId()) %>" var="patcherFix" />
 
 		<liferay-ui:search-container-column-text
 			align="right"
@@ -97,17 +97,17 @@
 				<portlet:renderURL var="viewPatcherBuildPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 					<portlet:param name="controller" value="builds" />
 					<portlet:param name="action" value="fixes" />
-					<portlet:param name="id" value="${childPatcherBuild.patcherBuildId}" />
+					<portlet:param name="id" value="<%= childPatcherBuild.patcherBuildId %>" />
 				</portlet:renderURL>
 
-				<c:set value='${UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", childPatcherBuild.patcherBuildId)}' var="viewPatcherFixesURLTitle" />
+				<c:set value='<%= UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", childPatcherBuild.patcherBuildId) %>' var="viewPatcherFixesURLTitle" />
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, childPatcherBuild, PatcherActionKeys.FIXES, childPatcherBuild.userId)}">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, childPatcherBuild, PatcherActionKeys.FIXES, childPatcherBuild.userId) %>">
 					<liferay-ui:icon
 						image="view"
 						message="view-fixes"
 						method="get"
-						url="${viewPatcherBuildPatcherFixesURL}"
+						url="<%= viewPatcherBuildPatcherFixesURL %>"
 					/>
 				</c:if>
 			</liferay-ui:icon-menu>
@@ -115,7 +115,7 @@
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator
-		paginate="${false}"
+		paginate="<%= false %>"
 	/>
 
 	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>

@@ -17,16 +17,16 @@
 		<portlet:param name="action" value="create" />
 	</portlet:renderURL>
 
-	<aui:button href="${createPatcherFixComponentURL}" value="create-fix-component" />
+	<aui:button href="<%= createPatcherFixComponentURL %>" value="create-fix-component" />
 </aui:button-row>
 
 <portlet:renderURL var="viewPatcherFixComponentsURL">
 	<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_components" />
 </portlet:renderURL>
 
-<aui:form action="${viewPatcherFixComponentsURL}" method="get" name="fm">
+<aui:form action="<%= viewPatcherFixComponentsURL %>" method="get" name="fm">
 	<aui:fieldset>
-		<aui:input inlineField="${true}" label="" name="keywords" size="30" title="search-fix-components" type="text" />
+		<aui:input inlineField="<%= true %>" label="" name="keywords" size="30" title="search-fix-components" type="text" />
 
 		<aui:button type="submit" value="search" />
 	</aui:fieldset>
@@ -34,16 +34,16 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fix-components"
-	iteratorURL="${alloySearchResult.portletURL}"
-	total="${alloySearchResult.size}"
+	iteratorURL="<%= alloySearchResult.getPortletURL() %>"
+	total="<%= alloySearchResult.getSize() %>"
 >
 	<liferay-ui:search-container-results
-		results="${alloySearchResult.baseModels}"
+		results="<%= alloySearchResult.getBaseModels() %>"
 	/>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFixComponent"
-		escapedModel="${true}"
+		escapedModel="<%= true %>"
 		keyProperty="patcherFixComponentId"
 		modelVar="patcherFixComponent"
 	>
@@ -55,30 +55,30 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFixComponent, PatcherActionKeys.EDIT, patcherFixComponent.userId)}">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFixComponent, PatcherActionKeys.EDIT, patcherFixComponent.getUserId()) %>">
 					<portlet:renderURL var="editPatcherFixComponentURL">
 						<portlet:param name="controller" value="fix_components" />
 						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="${patcherFixComponent.patcherFixComponentId}" />
+						<portlet:param name="id" value="<%= patcherFixComponent.getPatcherFixComponentId() %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
 						image="edit"
 						method="get"
-						url="${editPatcherFixComponentURL}"
+						url="<%= editPatcherFixComponentURL %>"
 					/>
 				</c:if>
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherFixComponent, ActionKeys.DELETE, patcherFixComponent.userId)}">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFixComponent, ActionKeys.DELETE, patcherFixComponent.getUserId()) %>">
 					<portlet:actionURL var="deletePatcherFixComponentURL">
 						<portlet:param name="controller" value="fix_components" />
 						<portlet:param name="action" value="delete" />
-						<portlet:param name="id" value="${patcherFixComponent.patcherFixComponentId}" />
+						<portlet:param name="id" value="<%= patcherFixComponent.getPatcherFixComponentId() %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon-delete
-						url="${deletePatcherFixComponentURL}"
+						url="<%= deletePatcherFixComponentURL %>"
 					/>
 				</c:if>
 			</liferay-ui:icon-menu>

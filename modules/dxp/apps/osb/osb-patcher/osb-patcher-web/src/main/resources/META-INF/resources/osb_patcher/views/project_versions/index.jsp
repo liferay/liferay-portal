@@ -14,9 +14,9 @@
 <div class="layout">
 	<div class="layout-content">
 		<clay:col>
-			<aui:select label="product-version" name="patcherProductVersionId" onChange="${renderResponse.namespace}productVersionOnChange(this.value);" showEmptyOption="${true}">
-				<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
-					<aui:option label="${patcherProductVersion.name}" value="${patcherProductVersion.patcherProductVersionId}" />
+			<aui:select label="product-version" name="patcherProductVersionId" onChange='<%= renderResponse.namespace + "productVersionOnChange(this.value);" %>' showEmptyOption="<%= true %>">
+				<c:forEach items="<%= patcherProductVersions %>" var="patcherProductVersion">
+					<aui:option label="<%= patcherProductVersion.getName() %>" value="<%= patcherProductVersion.getPatcherProductVersionId() %>" />
 				</c:forEach>
 
 				<aui:option label="any" value="0" />
@@ -25,15 +25,15 @@
 	</div>
 </div>
 
-<c:if test="${permissionChecker.isCompanyAdmin()}">
+<c:if test="<%= permissionChecker.isCompanyAdmin() %>">
 	<aui:button-row>
 		<portlet:renderURL var="createPatcherProjectVersionURL">
 			<portlet:param name="controller" value="project_versions" />
 			<portlet:param name="action" value="create" />
-			<portlet:param name="patcherProductVersionId" value="${patcherProductVersionId}" />
+			<portlet:param name="patcherProductVersionId" value="<%= patcherProductVersionId %>" />
 		</portlet:renderURL>
 
-		<aui:button href="${createPatcherProjectVersionURL}" value="create-project-version" />
+		<aui:button href="<%= createPatcherProjectVersionURL %>" value="create-project-version" />
 	</aui:button-row>
 </c:if>
 
@@ -41,11 +41,11 @@
 	<portlet:param name="mvcRenderCommandName" value="/patcher/index_project_versions" />
 </portlet:renderURL>
 
-<aui:form action="${viewPatcherProjectVersionsURL}" method="get" name="fm">
-	<aui:input name="patcherProductVersionId" type="hidden" value="${patcherProductVersionId}" />
+<aui:form action="<%= viewPatcherProjectVersionsURL %>" method="get" name="fm">
+	<aui:input name="patcherProductVersionId" type="hidden" value="<%= patcherProductVersionId %>" />
 
 	<aui:fieldset>
-		<aui:input inlineField="${true}" label="" name="keywords" size="30" title="search-project-versions" type="text" />
+		<aui:input inlineField="<%= true %>" label="" name="keywords" size="30" title="search-project-versions" type="text" />
 
 		<aui:button type="submit" value="search" />
 	</aui:fieldset>
@@ -53,29 +53,29 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-project-versions"
-	iteratorURL="${alloySearchResult.portletURL}"
-	total="${alloySearchResult.size}"
+	iteratorURL="<%= alloySearchResult.getPortletURL() %>"
+	total="<%= alloySearchResult.getSize() %>"
 >
 	<liferay-ui:search-container-results
-		results="${alloySearchResult.baseModels}"
+		results="<%= alloySearchResult.getBaseModels() %>"
 	/>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherProjectVersion"
-		escapedModel="${true}"
+		escapedModel="<%= true %>"
 		keyProperty="patcherProjectVersionId"
 		modelVar="patcherProjectVersion"
 	>
 		<liferay-ui:search-container-column-text
 			name="product-version"
-			value="${PatcherProductVersionUtil.fetchPatcherProductVersionName(patcherProjectVersion.getPatcherProductVersionId())}"
+			value="<%= PatcherProductVersionUtil.fetchPatcherProductVersionName(patcherProjectVersion.getPatcherProductVersionId()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			property="name"
 		/>
 
-		<c:if test="${permissionChecker.isCompanyAdmin()}">
+		<c:if test="<%= permissionChecker.isCompanyAdmin() %>">
 			<liferay-ui:search-container-column-text
 				name="combined-branch"
 				property="combinedBranch"
@@ -94,7 +94,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="root-project-version"
-			value="${PatcherProjectVersionUtil.getRootPatcherProjectVersionName(patcherProjectVersion)}"
+			value="<%= PatcherProjectVersionUtil.getRootPatcherProjectVersionName(patcherProjectVersion) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -103,48 +103,48 @@
 			<portlet:renderURL var="viewPatcherProjectVersionFixedIssuesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 				<portlet:param name="controller" value="project_versions" />
 				<portlet:param name="action" value="fixedIssues" />
-				<portlet:param name="id" value="${patcherProjectVersion.patcherProjectVersionId}" />
+				<portlet:param name="id" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
 			</portlet:renderURL>
 
-			<c:set value='${UnicodeLanguageUtil.get(request, "fixed-issues")}' var="viewPatcherProjectVersionFixedIssuesURLTitle" />
+			<c:set value='<%= UnicodeLanguageUtil.get(request, "fixed-issues") %>' var="viewPatcherProjectVersionFixedIssuesURLTitle" />
 
-			<c:set value="javascript:Liferay.Patcher.openWindow('${viewPatcherProjectVersionFixedIssuesURL}', '${viewPatcherProjectVersionFixedIssuesURLTitle}', true, 1000, 1);" var="viewPatcherProjectVersionFixedIssuesURL" />
+			<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + viewPatcherProjectVersionFixedIssuesURL %>', '<%= viewPatcherProjectVersionFixedIssuesURLTitle + "', true, 1000, 1);" %>' var="viewPatcherProjectVersionFixedIssuesURL" />
 
-			<c:set value="${PatcherUtil.getTicketsCount(patcherProjectVersion.fixedIssues)}" var="ticketsCount" />
+			<c:set value="<%= PatcherUtil.getTicketsCount(patcherProjectVersion.getFixedIssues()) %>" var="ticketsCount" />
 
-			<c:set value='${ticketsCount} ${LanguageUtil.get(request, "tickets")}' var="tickets" />
+			<c:set value='<%= ticketsCount %> <%= LanguageUtil.get(request, "tickets") %>' var="tickets" />
 
-			<a class="nobr" href="${viewPatcherProjectVersionFixedIssuesURL}" title="${patcherProjectVersionFixedIssuesCount}">${ticketsCount > 0 ? tickets : ""} </a>
+			<a class="nobr" href="<%= viewPatcherProjectVersionFixedIssuesURL %>" title="<%= patcherProjectVersionFixedIssuesCount %>"><%= ticketsCount > 0 ? tickets : "" %> </a>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherProjectVersion, PatcherActionKeys.EDIT, patcherProductVersion.userId)}">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, PatcherActionKeys.EDIT, patcherProductVersion.getUserId()) %>">
 					<portlet:renderURL var="editPatcherProjectVersionURL">
 						<portlet:param name="controller" value="project_versions" />
 						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="${patcherProjectVersion.patcherProjectVersionId}" />
+						<portlet:param name="id" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
 						image="edit"
 						method="get"
-						url="${editPatcherProjectVersionURL}"
+						url="<%= editPatcherProjectVersionURL %>"
 					/>
 				</c:if>
 
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherProjectVersion, ActionKeys.DELETE, patcherProductVersion.userId)}">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, ActionKeys.DELETE, patcherProductVersion.getUserId()) %>">
 					<portlet:actionURL var="deletePatcherProjectVersionURL">
 						<portlet:param name="controller" value="project_versions" />
 						<portlet:param name="action" value="delete" />
-						<portlet:param name="id" value="${patcherProjectVersion.patcherProjectVersionId}" />
+						<portlet:param name="id" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon-delete
-						url="${deletePatcherProjectVersionURL}"
+						url="<%= deletePatcherProjectVersionURL %>"
 					/>
 				</c:if>
 			</liferay-ui:icon-menu>
@@ -161,7 +161,7 @@
 		function(productVersionId) {
 			var namespace = '<portlet:namespace />';
 
-			window.location.href = Liferay.Patcher.updateProductVersionId('${viewPatcherProjectVersionsURL}', productVersionId, namespace);
+			window.location.href = Liferay.Patcher.updateProductVersionId('<%= viewPatcherProjectVersionsURL %>', productVersionId, namespace);
 		},
 		['aui-base']
 	);

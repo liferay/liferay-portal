@@ -44,7 +44,7 @@
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherProductVersion"
-		escapedModel="${true}"
+		escapedModel="<%= true %>"
 		keyProperty="patcherProductVersionId"
 		modelVar="patcherProductVersion"
 	>
@@ -54,7 +54,7 @@
 
 		<liferay-ui:search-container-column-text
 			name="fix-delivery-method"
-			value="${PatcherProductVersionConstantsMethods.getTypeLabel(patcherProductVersion.fixDeliveryMethod)}"
+			value="<%= PatcherProductVersionConstants.getTypeLabel(patcherProductVersion.getFixDeliveryMethod()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -66,17 +66,17 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="${PatcherPermission.contains(themeDisplay, patcherProductVersion, PatcherActionKeys.EDIT, patcherProductVersion.userId)}">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProductVersion, PatcherActionKeys.EDIT, patcherProductVersion.getUserId()) %>">
 					<portlet:renderURL var="editPatcherProductVersionURL">
 						<portlet:param name="controller" value="product_versions" />
 						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="${patcherProductVersion.patcherProductVersionId}" />
+						<portlet:param name="id" value="<%= String.valueOf(patcherProductVersion.getPatcherProductVersionId()) %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
 						image="edit"
 						method="get"
-						url="${editPatcherProductVersionURL}"
+						url="<%= editPatcherProductVersionURL %>"
 					/>
 				</c:if>
 			</liferay-ui:icon-menu>

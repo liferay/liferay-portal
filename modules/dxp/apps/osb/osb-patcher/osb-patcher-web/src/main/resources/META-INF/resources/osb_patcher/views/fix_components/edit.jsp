@@ -12,30 +12,30 @@
 </liferay-util:include>
 
 <liferay-util:include page="/osb_patcher/views/header.jsp" servletContext="<%= application %>">
-	<liferay-util:param name="title" value="${patcherFixComponent.name}" />
+	<liferay-util:param name="title" value="<%= patcherFixComponent.getName() %>" />
 	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_fix_components" />
 </liferay-util:include>
 
-<aui:model-context bean="${patcherFixComponent}" model="<%= PatcherFixComponent.class %>" />
+<aui:model-context bean="<%= patcherFixComponent %>" model="<%= PatcherFixComponent.class %>" />
 
 <portlet:actionURL var="updatePatcherFixComponentURL">
 	<portlet:param name="controller" value="fix_components" />
 	<portlet:param name="action" value="update" />
 </portlet:actionURL>
 
-<aui:form action="${updatePatcherFixComponentURL}" method="post">
+<aui:form action="<%= updatePatcherFixComponentURL %>" method="post">
 	<portlet:renderURL var="viewPatcherFixComponentsURL">
 		<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_components" />
 	</portlet:renderURL>
 
-	<aui:input name="redirect" type="hidden" value="${viewPatcherFixComponentsURL}" />
-	<aui:input name="id" type="hidden" value="${patcherFixComponent.patcherFixComponentId}" />
+	<aui:input name="redirect" type="hidden" value="<%= viewPatcherFixComponentsURL %>" />
+	<aui:input name="id" type="hidden" value="<%= patcherFixComponent.getPatcherFixComponentId() %>" />
 
-	<aui:input label="name" name="patcherFixComponentName" type="text" value="${patcherFixComponent.name}" />
+	<aui:input label="name" name="patcherFixComponentName" type="text" value="<%= patcherFixComponent.getName() %>" />
 
 	<aui:button-row>
 		<aui:button type="submit" value="update" />
 
-		<aui:button href="${viewPatcherFixComponentsURL}" value="cancel" />
+		<aui:button href="<%= viewPatcherFixComponentsURL %>" value="cancel" />
 	</aui:button-row>
 </aui:form>

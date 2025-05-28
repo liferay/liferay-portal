@@ -9,7 +9,7 @@
 	<div class="clearfix lfr-pagination">
 		<small class="search-results">
 			<c:choose>
-				<c:when test="${resultsTotal == 1}">
+				<c:when test="<%= resultsTotal == 1 %>">
 					<liferay-ui:message arguments="<%= resultsTotal %>" key="showing-x-result" />
 				</c:when>
 				<c:otherwise>

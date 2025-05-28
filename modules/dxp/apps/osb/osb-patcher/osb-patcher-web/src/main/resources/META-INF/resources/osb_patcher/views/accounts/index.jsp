@@ -19,7 +19,7 @@
 	<clay:col>
 		<aui:form action="" method="get" name="fm">
 			<aui:fieldset cssClass="account-search" id="searchFieldset">
-				<aui:input inlineField="${true}" label="" name="accountEntryCode" placeholder="find-account" size="30" title="find-account" type="text" />
+				<aui:input inlineField="<%= true %>" label="" name="accountEntryCode" placeholder="find-account" size="30" title="find-account" type="text" />
 			</aui:fieldset>
 		</aui:form>
 	</clay:col>
@@ -38,10 +38,10 @@
 		<portlet:renderURL var="createPatcherBuildURL">
 			<portlet:param name="controller" value="builds" />
 			<portlet:param name="action" value="create" />
-			<portlet:param name="redirect" value="${viewPatcherAccountsURL}" />
+			<portlet:param name="redirect" value="<%= viewPatcherAccountsURL %>" />
 		</portlet:renderURL>
 
-		<aui:button disabled='${!PatcherPermission.contains(themeDisplay, "builds", PatcherActionKeys.CREATE)}' href="${createPatcherBuildURL}" value="create-build-for-new-account" />
+		<aui:button disabled='<%= !PatcherPermission.contains(themeDisplay, "builds", PatcherActionKeys.CREATE) %>' href="<%= createPatcherBuildURL %>" value="create-build-for-new-account" />
 	</clay:col>
 </aui:button-row>
 
@@ -56,7 +56,7 @@
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherAccount"
-		escapedModel="${true}"
+		escapedModel="<%= true %>"
 		keyProperty="patcherAccountId"
 		modelVar="patcherAccount"
 	>
@@ -65,112 +65,112 @@
 				<portlet:renderURL var="viewPatcherAccountURL">
 					<portlet:param name="controller" value="accounts" />
 					<portlet:param name="action" value="view" />
-					<portlet:param name="patcherBuildAccountEntryCode" value="${patcherAccount.accountEntryCode}" />
+					<portlet:param name="patcherBuildAccountEntryCode" value="<%= patcherAccount.accountEntryCode %>" />
 				</portlet:renderURL>
 
-				<a href="${viewPatcherAccountURL}">
-					<c:out value="${patcherAccount.accountEntryCode}" />
+				<a href="<%= viewPatcherAccountURL %>">
+					<c:out value="<%= patcherAccount.accountEntryCode %>" />
 				</a>
 			</h5>
 
-			<c:set value="${PatcherProductVersionUtil.getPatcherProductVersions(patcherAccount)}" var="patcherProductVersions" />
+			<c:set value="<%= PatcherProductVersionUtil.getPatcherProductVersions(patcherAccount) %>" var="patcherProductVersions" />
 
 			<table class="account-table">
-				<c:forEach items="${patcherProductVersions}" var="patcherProductVersion">
+				<c:forEach items="<%= patcherProductVersions %>" var="patcherProductVersion">
 					<tr>
 						<td class="slim">
 							<portlet:renderURL var="viewPatcherAccountPatcherProductVersionURL">
 								<portlet:param name="controller" value="accounts" />
 								<portlet:param name="action" value="view" />
-								<portlet:param name="patcherBuildAccountEntryCode" value="${patcherAccount.accountEntryCode}" />
-								<portlet:param name="patcherProductVersionId" value="${patcherProductVersion.patcherProductVersionId}" />
+								<portlet:param name="patcherBuildAccountEntryCode" value="<%= patcherAccount.accountEntryCode %>" />
+								<portlet:param name="patcherProductVersionId" value="<%= patcherProductVersion.patcherProductVersionId %>" />
 							</portlet:renderURL>
 
-							<a href="${viewPatcherAccountPatcherProductVersionURL}">
-								<c:out value="${patcherProductVersion.name}" />
+							<a href="<%= viewPatcherAccountPatcherProductVersionURL %>">
+								<c:out value="<%= patcherProductVersion.name %>" />
 							</a>
 						</td>
 
-						<c:set value="${PatcherBuildUtil.fetchLastModifiedPatcherBuild(patcherAccount.patcherAccountId, patcherProductVersion.patcherProductVersionId)}" var="patcherBuild" />
+						<c:set value="<%= PatcherBuildUtil.fetchLastModifiedPatcherBuild(patcherAccount.patcherAccountId, patcherProductVersion.patcherProductVersionId) %>" var="patcherBuild" />
 
 						<td class="slim">
-							<c:set value="${PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherBuild.patcherProjectVersionId)}" var="patcherProjectVersion" />
+							<c:set value="<%= PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherBuild.patcherProjectVersionId) %>" var="patcherProjectVersion" />
 
-							<c:out value="${patcherProjectVersion.name}" />
+							<c:out value="<%= patcherProjectVersion.name %>" />
 						</td>
 						<td class="wide">
-							<c:set value="${PatcherFixPackUtil.getPatcherFixPackNames(patcherBuild.name)}" var="patcherFixPackNames" />
+							<c:set value="<%= PatcherFixPackUtil.getPatcherFixPackNames(patcherBuild.name) %>" var="patcherFixPackNames" />
 
-							<c:forEach items="${patcherFixPackNames}" var="patcherFixPackName">
-								<c:out value="${patcherFixPackName}" />
+							<c:forEach items="<%= patcherFixPackNames %>" var="patcherFixPackName">
+								<c:out value="<%= patcherFixPackName %>" />
 							</c:forEach>
 
-							<c:set value="${PatcherUtil.getTickets(patcherBuild.name)}" var="tickets" />
+							<c:set value="<%= PatcherUtil.getTickets(patcherBuild.name) %>" var="tickets" />
 
-							<c:if test="${!patcherFixPackNames.isEmpty() && !tickets.isEmpty()}">
+							<c:if test="<%= !patcherFixPackNames.isEmpty() && !tickets.isEmpty() %>">
 								+
 							</c:if>
 
 							<c:choose>
-								<c:when test="${tickets.size() > 4}">
-									<liferay-ui:message arguments="${tickets.size()}" key="x-tickets" />
+								<c:when test="<%= tickets.size() > 4 %>">
+									<liferay-ui:message arguments="<%= tickets.size() %>" key="x-tickets" />
 								</c:when>
 								<c:otherwise>
-									<c:out value="${ListUtil.toString(tickets, StringPool.BLANK, StringPool.COMMA_AND_SPACE)}" />
+									<c:out value="<%= ListUtil.toString(tickets, StringPool.BLANK, StringPool.COMMA_AND_SPACE) %>" />
 								</c:otherwise>
 							</c:choose>
 						</td>
 						<td class="slim">
 							<fmt:formatDate
 								pattern="yyyy-MM-dd HH:mm:ss"
-								timeZone="${timeZone}"
-								value="${patcherBuild.statusDate}"
+								timeZone="<%= timeZone %>"
+								value="<%= patcherBuild.statusDate %>"
 								var="statusDataDate"
 							/>
 
 							<fmt:formatDate
 								pattern="yyyy-MM-dd HH:mm:ss z"
-								timeZone="${timeZone}"
-								value="${patcherBuild.statusDate}"
+								timeZone="<%= timeZone %>"
+								value="<%= patcherBuild.statusDate %>"
 								var="statusDisplayDate"
 							/>
 
-							<span class="relative-date" data-date="${statusDataDate}" title="${statusDisplayDate}">
-								<c:out value="${statusDisplayDate}" />
+							<span class="relative-date" data-date="<%= statusDataDate %>" title="<%= statusDisplayDate %>">
+								<c:out value="<%= statusDisplayDate %>" />
 							</span>
 						</td>
 						<td>
 							<c:choose>
-								<c:when test="${PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild)}">
+								<c:when test="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) %>">
 									<c:set var="relevantStatusActionLink">
-										(<clay:link href='${patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL}/${patcherBuild.fileName}' label="download" target="_blank" />)
+										(<clay:link href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL %>/<%= patcherBuild.fileName %>' label="download" target="_blank" />)
 									</c:set>
 
 									<c:set value="passed" var="statusCSSClass" />
 								</c:when>
-								<c:when test="${(patcherBuild.status == WorkflowConstants.STATUS_BUILD_FAILED) || (patcherBuild.status == WorkflowConstants.STATUS_BUILD_FAILED_MERGING_ONLY)}">
+								<c:when test="<%= (patcherBuild.status == WorkflowConstants.STATUS_BUILD_FAILED) || (patcherBuild.status == WorkflowConstants.STATUS_BUILD_FAILED_MERGING_ONLY) %>">
 									<c:set value="" var="relevantStatusActionLink" />
 
-									<c:set value="${JenkinsUtil.getJenkinsResults(patcherBuild)}" var="jenkinsResults" />
+									<c:set value="<%= JenkinsUtil.getJenkinsResults(patcherBuild) %>" var="jenkinsResults" />
 
-									<c:forEach items="${jenkinsResults}" var="jenkinsResult">
-										<c:set value="${jenkinsResult.jobName}" var="jenkinsJobName" />
+									<c:forEach items="<%= jenkinsResults %>" var="jenkinsResult">
+										<c:set value="<%= jenkinsResult.jobName %>" var="jenkinsJobName" />
 
-										<c:if test='${jenkinsJobName.contains("hotfix")}'>
+										<c:if test='<%= jenkinsJobName.contains("hotfix") %>'>
 											<c:set var="relevantStatusActionLink">
-												(<clay:link href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
+												(<clay:link href="<%= jenkinsResult.statusURL %>" label="check-log" target="_blank" />)
 											</c:set>
 										</c:if>
 
-										<c:if test='${(jenkinsJobName.contains("dist")) && ((empty relevantStatusActionLink) || (relevantStatusActionLink.contains("agent")))}'>
+										<c:if test='<%= jenkinsJobName.contains("dist") && ((empty relevantStatusActionLink) || relevantStatusActionLink.contains("agent")) %>'>
 											<c:set var="relevantStatusActionLink">
-												(<clay:link href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
+												(<clay:link href="<%= jenkinsResult.statusURL %>" label="check-log" target="_blank" />)
 											</c:set>
 										</c:if>
 
-										<c:if test='${(jenkinsJobName.contains("agent")) && (empty relevantStatusActionLink)}'>
+										<c:if test='<%= jenkinsJobName.contains("agent") && (empty relevantStatusActionLink) %>'>
 											<c:set var="relevantStatusActionLink">
-												(<clay:link href="${jenkinsResult.statusURL}" label="check-log" target="_blank" />)
+												(<clay:link href="<%= jenkinsResult.statusURL %>" label="check-log" target="_blank" />)
 											</c:set>
 										</c:if>
 									</c:forEach>
@@ -184,14 +184,14 @@
 								</c:otherwise>
 							</c:choose>
 
-							<span class="${statusCSSClass}"><c:out value="${LanguageUtil.get(request, patcherBuildStatusLabel)}" /></span> ${relevantStatusActionLink}
+							<span class="<%= statusCSSClass %>"><c:out value="<%= LanguageUtil.get(request, patcherBuildStatusLabel) %>" /></span> <%= relevantStatusActionLink %>
 						</td>
 						<td>
 							<c:choose>
-								<c:when test="${PatcherBuildUtil.isTestingPassed(patcherBuild)}">
+								<c:when test="<%= PatcherBuildUtil.isTestingPassed(patcherBuild) %>">
 									<c:set value="passed" var="qaStatusCSSClass" />
 								</c:when>
-								<c:when test="${PatcherBuildUtil.isTestingFailed(patcherBuild)}">
+								<c:when test="<%= PatcherBuildUtil.isTestingFailed(patcherBuild) %>">
 									<c:set value="failed" var="qaStatusCSSClass" />
 								</c:when>
 								<c:otherwise>
@@ -200,11 +200,11 @@
 							</c:choose>
 
 							<c:choose>
-								<c:when test="${(patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY)}">
-									<c:set value="${JenkinsUtil.getJenkinsResults(patcherBuild)}" var="jenkinsResults" />
+								<c:when test="<%= (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED_SMOKE_ONLY) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED) || (patcherBuild.qaStatus == WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY) %>">
+									<c:set value="<%= JenkinsUtil.getJenkinsResults(patcherBuild) %>" var="jenkinsResults" />
 
 									<c:set var="relevantQAStatusActionLink">
-										(<clay:link href="${jenkinsResults[0].statusURL}" label="view-results" target="_blank" />)
+										(<clay:link href="<%= jenkinsResults[0].statusURL %>" label="view-results" target="_blank" />)
 									</c:set>
 								</c:when>
 								<c:otherwise>
@@ -212,7 +212,7 @@
 								</c:otherwise>
 							</c:choose>
 
-							<span class="${qaStatusCSSClass}"><c:out value="${LanguageUtil.get(request, patcherBuildQAStatusLabel)}" /></span> ${relevantQAStatusActionLink}
+							<span class="<%= qaStatusCSSClass %>"><c:out value="<%= LanguageUtil.get(request, patcherBuildQAStatusLabel) %>" /></span> <%= relevantQAStatusActionLink %>
 						</td>
 					</tr>
 				</c:forEach>
@@ -234,7 +234,7 @@
 		function(productVersionId) {
 			var namespace = '<portlet:namespace />';
 
-			window.location.href = Liferay.Patcher.updateProductVersionId('${viewPatcherAccountsURL}', productVersionId, namespace);
+			window.location.href = Liferay.Patcher.updateProductVersionId('<%= viewPatcherAccountsURL %>', productVersionId, namespace);
 		},
 		['aui-base']
 	);
@@ -252,7 +252,7 @@
 						node.text(relativeTime);
 					}
 				);
-			}
+			 }
 
 			AUI().use(
 				'autocomplete', 'autocomplete-filters', 'liferay-portlet-url',
@@ -262,9 +262,9 @@
 						<portlet:param name="action" value="index" />
 					</portlet:renderURL>
 
-					var patcherAccountsJSONURL = Liferay.PortletURL.createURL('${viewPatcherAccountsURL}.json');
+					var patcherAccountsJSONURL = Liferay.PortletURL.createURL('<%= viewPatcherAccountsURL %>.json');
 
-					patcherAccountsJSONURL.setPortletId('${PatcherPortletKeys.PATCHER}');
+					patcherAccountsJSONURL.setPortletId('<%= PatcherPortletKeys.PATCHER %>');
 
 					patcherAccountsJSONURL.setParameter('limit', 10000);
 
@@ -349,9 +349,9 @@
 								<portlet:param name="action" value="index" />
 							</portlet:renderURL>
 
-							var viewPatcherAccountURL = Liferay.PortletURL.createURL('${viewPatcherAccountURL}');
+							var viewPatcherAccountURL = Liferay.PortletURL.createURL('<%= viewPatcherAccountURL %>');
 
-							viewPatcherAccountURL.setPortletId('${PatcherPortletKeys.PATCHER}');
+							viewPatcherAccountURL.setPortletId('<%= PatcherPortletKeys.PATCHER %>');
 
 							viewPatcherAccountURL.setParameter('accountEntryCode', event.result.text);
 

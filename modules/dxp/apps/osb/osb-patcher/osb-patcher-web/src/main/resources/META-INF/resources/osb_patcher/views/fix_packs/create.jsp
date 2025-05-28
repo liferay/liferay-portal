@@ -18,40 +18,40 @@
 	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_fix_packs" />
 </liferay-util:include>
 
-<aui:model-context bean="${patcherFixPack}" model="<%= PatcherFixPack.class %>" />
+<aui:model-context bean="<%= patcherFixPack %>" model="<%= PatcherFixPack.class %>" />
 
 <portlet:actionURL var="addPatcherFixPackURL">
 	<portlet:param name="controller" value="fix_packs" />
 	<portlet:param name="action" value="add" />
 </portlet:actionURL>
 
-<aui:form action="${addPatcherFixPackURL}" method="post">
+<aui:form action="<%= addPatcherFixPackURL %>" method="post">
 	<portlet:renderURL var="viewPatcherFixPacksURL">
 		<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_packs" />
 	</portlet:renderURL>
 
-	<aui:input name="redirect" type="hidden" value="${viewPatcherFixPacksURL}" />
+	<aui:input name="redirect" type="hidden" value="<%= viewPatcherFixPacksURL %>" />
 
-	<aui:select label="project-version" name="patcherProjectVersionId" onChange="${renderResponse.namespace}patcherFixPackFieldsOnChange();" required="${true}" showEmptyOption="${true}">
-		<c:forEach items="${patcherProjectVersions}" var="patcherProjectVersion">
-			<aui:option label="${patcherProjectVersion.name}" value="${patcherProjectVersion.patcherProjectVersionId}" />
+	<aui:select label="project-version" name="patcherProjectVersionId" onChange='<%= renderResponse.namespace + "patcherFixPackFieldsOnChange();" %>' required="<%= true %>" showEmptyOption="<%= true %>">
+		<c:forEach items="<%= patcherProjectVersions %>" var="patcherProjectVersion">
+			<aui:option label="<%= patcherProjectVersion.name %>" value="<%= patcherProjectVersion.patcherProjectVersionId %>" />
 		</c:forEach>
 	</aui:select>
 
-	<aui:select label="component" name="patcherFixComponentId" onChange="${renderResponse.namespace}patcherFixPackFieldsOnChange();" required="${true}" showEmptyOption="${true}">
-		<c:forEach items="${patcherFixComponents}" var="patcherFixComponent">
-			<aui:option value="${patcherFixComponent.patcherFixComponentId}">${patcherFixComponent.name}</aui:option>
+	<aui:select label="component" name="patcherFixComponentId" onChange='<%= renderResponse.namespace + "patcherFixPackFieldsOnChange();" %>' required="<%= true %>" showEmptyOption="<%= true %>">
+		<c:forEach items="<%= patcherFixComponents %>" var="patcherFixComponent">
+			<aui:option value="<%= patcherFixComponent.patcherFixComponentId %>"><%= patcherFixComponent.name %></aui:option>
 		</c:forEach>
 	</aui:select>
 
-	<span class="aui-helper-hidden displaying-version" id="${renderResponse.namespace}displayingVersion">
+	<span class="aui-helper-hidden displaying-version" id="<%= renderResponse.namespace %>displayingVersion">
 		<aui:input label="initial-version" name="patcherFixPackVersion" type="text" value="" />
 	</span>
 
 	<aui:button-row>
 		<aui:button type="submit" value="add" />
 
-		<aui:button href="${(not empty redirect) ? redirect : viewPatcherFixPacksURL}" value="cancel" />
+		<aui:button href="<%= (not empty redirect) ? redirect : viewPatcherFixPacksURL %>" value="cancel" />
 	</aui:button-row>
 </aui:form>
 
@@ -74,7 +74,7 @@
 				return;
 			}
 
-			var filteredPatcherFixPacks = JSON.parse('${filteredPatcherFixPacksJSON}');
+			var filteredPatcherFixPacks = JSON.parse('<%= filteredPatcherFixPacksJSON %>');
 
 			for (var i in filteredPatcherFixPacks) {
 				var filteredPatcherFixPack = filteredPatcherFixPacks[i];

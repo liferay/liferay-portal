@@ -16,25 +16,25 @@
 	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_fix_components" />
 </liferay-util:include>
 
-<aui:model-context bean="${patcherFixComponent}" model="<%= PatcherFixComponent.class %>" />
+<aui:model-context bean="<%= patcherFixComponent %>" model="<%= PatcherFixComponent.class %>" />
 
 <portlet:actionURL var="addPatcherFixComponentURL">
 	<portlet:param name="controller" value="fix_components" />
 	<portlet:param name="action" value="add" />
 </portlet:actionURL>
 
-<aui:form action="${addPatcherFixComponentURL}" method="post">
+<aui:form action="<%= addPatcherFixComponentURL %>" method="post">
 	<portlet:renderURL var="viewPatcherFixComponentsURL">
 		<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_components" />
 	</portlet:renderURL>
 
-	<aui:input name="redirect" type="hidden" value="${viewPatcherFixComponentsURL}" />
+	<aui:input name="redirect" type="hidden" value="<%= viewPatcherFixComponentsURL %>" />
 
 	<aui:input label="name" name="patcherFixComponentName" type="text" />
 
 	<aui:button-row>
 		<aui:button type="submit" value="add" />
 
-		<aui:button href="${viewPatcherFixComponentsURL}" value="cancel" />
+		<aui:button href="<%= viewPatcherFixComponentsURL %>" value="cancel" />
 	</aui:button-row>
 </aui:form>

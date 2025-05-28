@@ -9,43 +9,43 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fixes"
-	total="${fn:length(patcherFixes)}"
+	total="<%= fn:length(patcherFixes) %>"
 >
 	<liferay-ui:search-container-results
-		results="${patcherFixes}"
+		results="<%= patcherFixes %>"
 	/>
 
-	<c:set value="${fn:length(patcherFixes)}" var="resultsTotal" />
+	<c:set value="<%= fn:length(patcherFixes) %>" var="resultsTotal" />
 
 	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFix"
-		escapedModel="${true}"
+		escapedModel="<%= true %>"
 		keyProperty="patcherFixId"
 		modelVar="patcherFix"
 	>
 		<portlet:renderURL var="viewPatcherFixPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 			<portlet:param name="controller" value="fixes" />
 			<portlet:param name="action" value="fixes" />
-			<portlet:param name="id" value="${childPatcherFix.patcherFixId}" />
+			<portlet:param name="id" value="<%= childPatcherFix.patcherFixId %>" />
 		</portlet:renderURL>
 
 		<portlet:renderURL var="viewPatcherFixURL">
 			<portlet:param name="controller" value="fixes" />
 			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="${patcherFix.patcherFixId}" />
-			<portlet:param name="redirect" value="${viewPatcherFixPatcherFixesURL}" />
+			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="redirect" value="<%= viewPatcherFixPatcherFixesURL %>" />
 		</portlet:renderURL>
 
-		<c:set value='javascript:${renderResponse.namespace}navigateWindow("${viewPatcherFixURL}");' var="viewPatcherFixPopUpURL" />
+		<c:set value='<%= "javascript:" + renderResponse.namespace %>navigateWindow("<%= viewPatcherFixURL + ""); " %>' var="viewPatcherFixPopUpURL" />
 
 		<liferay-ui:search-container-column-text>
-			<c:if test="${patcherFix.obsolete}">
+			<c:if test="<%= patcherFix.obsolete %>">
 				<liferay-ui:icon
 					image="../common/activate"
 					message="this-fix-is-obsolete"
-					url="${viewPatcherFixPopUpURL}"
+					url="<%= viewPatcherFixPopUpURL %>"
 				/>
 			</c:if>
 		</liferay-ui:search-container-column-text>
@@ -53,16 +53,16 @@
 		<liferay-ui:search-container-column-text
 			name="fix-id"
 		>
-			<a class="clean-link" href="${viewPatcherFixURL}" onClick="event.preventDefault(); ${renderResponse.namespace}navigateWindow("${viewPatcherFixURL}");">${patcherFix.patcherFixId}</a>
+			<a class="clean-link" href="<%= viewPatcherFixURL %>" onClick="event.preventDefault(); <%= renderResponse.namespace %>navigateWindow("<%= viewPatcherFixURL %>");"><%= patcherFix.patcherFixId %></a>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
 			name="content"
 		>
-			<c:set value="${StringUtil.split(patcherFix.getName())}" var="jiraTickets" />
+			<c:set value="<%= StringUtil.split(patcherFix.getName()) %>" var="jiraTickets" />
 
-			<c:forEach items="${jiraTickets}" var="jiraTicket" varStatus="jiraTicketStatus">
-				<a class="nobr" href="${PortletPropsValues.JIRA_URL}/${jiraTicket}" target="_blank">${jiraTicket}</a>${(!jiraTicketStatus.last) ? StringPool.COMMA : StringPool.BLANK}
+			<c:forEach items="<%= jiraTickets %>" var="jiraTicket" varStatus="jiraTicketStatus">
+				<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
 			</c:forEach>
 		</liferay-ui:search-container-column-text>
 
@@ -71,13 +71,13 @@
 			property="keyVersion"
 		/>
 
-		<c:set value="${PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherFix.getPatcherProjectVersionId())}" var="patcherProjectVersion" />
+		<c:set value="<%= PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherFix.getPatcherProjectVersionId()) %>" var="patcherProjectVersion" />
 
 		<liferay-ui:search-container-column-text
-			href="${PatcherFixUtil.getPatcherFixGitHubURL(patcherFix.getPatcherFixId())}"
+			href="<%= PatcherFixUtil.getPatcherFixGitHubURL(patcherFix.getPatcherFixId()) %>"
 			name="git-hash"
 			target="_blank"
-			value="${fn:substring(patcherFix.gitHash, 0, 10)}"
+			value="<%= fn:substring(patcherFix.gitHash, 0, 10) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -88,26 +88,26 @@
 		<portlet:renderURL var="editPatcherFixCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 			<portlet:param name="controller" value="fixes" />
 			<portlet:param name="action" value="editCommentsField" />
-			<portlet:param name="id" value="${patcherFix.patcherFixId}" />
+			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
 		</portlet:renderURL>
 
-		<c:set value='${UnicodeLanguageUtil.get(request, "edit-engineer-comments")}' var="editPatcherFixCommentsFieldURLTitle" />
+		<c:set value='<%= UnicodeLanguageUtil.get(request, "edit-engineer-comments") %>' var="editPatcherFixCommentsFieldURLTitle" />
 
-		<c:set value="javascript:Liferay.Patcher.openWindow('${editPatcherFixCommentsFieldURL}', '${editPatcherFixCommentsFieldURLTitle}', true, 800)" var="editPatcherFixCommentsFieldURL" />
+		<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + editPatcherFixCommentsFieldURL %>', '<%= editPatcherFixCommentsFieldURLTitle + "', true, 800)" %>' var="editPatcherFixCommentsFieldURL" />
 
-		<c:set value="${StringUtil.shorten(patcherFix.comments, 75)}" var="shortenedPatcherFixComments" />
+		<c:set value="<%= StringUtil.shorten(patcherFix.comments, 75) %>" var="shortenedPatcherFixComments" />
 
 		<liferay-ui:search-container-column-text
 			name="engineer-comments"
 		>
 			<c:choose>
-				<c:when test="${PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherFix.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK)}">
-					<a href="${editPatcherFixCommentsFieldURL}">
-						${shortenedPatcherFixComments}
+				<c:when test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherFix.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+					<a href="<%= editPatcherFixCommentsFieldURL %>">
+						<%= shortenedPatcherFixComments %>
 					</a>
 				</c:when>
 				<c:otherwise>
-					${shortenedPatcherFixComments}
+					<%= shortenedPatcherFixComments %>
 				</c:otherwise>
 			</c:choose>
 		</liferay-ui:search-container-column-text>
@@ -119,7 +119,7 @@
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator
-		paginate="${false}"
+		paginate="<%= false %>"
 	/>
 
 	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
