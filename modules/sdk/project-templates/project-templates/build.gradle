@@ -68,7 +68,7 @@ dependencies {
 	compileOnly group: "org.apache.maven.archetype", name: "archetype-common", version: "2.4"
 
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.api", version: "1.0.201"
-	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.control.menu.entry", version: "1.0.199"
+	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.control.menu.entry", version: "1.0.201"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.form.field", version: "1.0.203"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.fragment", version: "1.0.198"
 	projectTemplates group: "com.liferay", name: "com.liferay.project.templates.layout.template", version: "1.0.195"
