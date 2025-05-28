@@ -15,8 +15,7 @@
 
 <liferay-util:include page="/osb_patcher/views/header.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="title" value="view-build" />
-	<liferay-util:param name="controller" value="builds" />
-	<liferay-util:param name="action" value="index" />
+	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_builds" />
 </liferay-util:include>
 
 <aui:model-context bean="${patcherBuild}" model="<%= PatcherBuild.class %>" />

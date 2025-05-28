@@ -11,8 +11,7 @@
 	<c:if test="${empty param.redirect}">
 		<c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) %>">
 			<portlet:renderURL var="backURL">
-				<portlet:param name="controller" value="${param.controller}" />
-				<portlet:param name="action" value="${param.action}" />
+				<portlet:param name="mvcRenderCommandName" value="${param.mvcRenderCommandName}" />
 			</portlet:renderURL>
 		</c:if>
 	</c:if>

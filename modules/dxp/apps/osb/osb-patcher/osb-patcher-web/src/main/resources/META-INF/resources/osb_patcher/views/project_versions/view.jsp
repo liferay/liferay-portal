@@ -13,8 +13,7 @@
 
 <liferay-util:include page="/osb_patcher/views/header.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="title" value="${patcherProjectVersion.name}" />
-	<liferay-util:param name="controller" value="project_versions" />
-	<liferay-util:param name="action" value="index" />
+	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_project_versions" />
 </liferay-util:include>
 
 <aui:model-context bean="${patcherProjectVersion}" model="<%= PatcherProjectVersion.class %>" />
