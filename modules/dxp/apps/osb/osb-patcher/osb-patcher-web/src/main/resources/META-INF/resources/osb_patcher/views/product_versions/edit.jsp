@@ -7,6 +7,12 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+long patcherProductVersionId = ParamUtil.getLong(request, "patcherProductVersionId");
+
+PatcherProductVersion patcherProductVersion = PatcherProductVersionLocalServiceUtil.fetchPatcherProductVersion(patcherProductVersionId);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="product-versions" />
 </liferay-util:include>
@@ -18,10 +24,7 @@
 
 <aui:model-context bean="<%= patcherProductVersion %>" model="<%= PatcherProductVersion.class %>" />
 
-<portlet:actionURL var="updatePatcherProductVersionURL">
-	<portlet:param name="controller" value="product_versions" />
-	<portlet:param name="action" value="update" />
-</portlet:actionURL>
+<portlet:actionURL name="/patcher/update_product_versions" var="updatePatcherProductVersionURL" />
 
 <aui:form action="<%= updatePatcherProductVersionURL %>" method="post">
 	<portlet:renderURL var="viewPatcherProductVersionsURL">

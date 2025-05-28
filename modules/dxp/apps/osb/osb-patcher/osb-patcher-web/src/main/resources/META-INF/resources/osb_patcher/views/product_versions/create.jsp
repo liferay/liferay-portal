@@ -16,12 +16,9 @@
 	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_product_versions" />
 </liferay-util:include>
 
-<aui:model-context bean="<%= patcherProductVersion %>" model="<%= PatcherProductVersion.class %>" />
+<aui:model-context bean="<%= null %>" model="<%= PatcherProductVersion.class %>" />
 
-<portlet:actionURL var="addPatcherProductVersionURL">
-	<portlet:param name="controller" value="product_versions" />
-	<portlet:param name="action" value="add" />
-</portlet:actionURL>
+<portlet:actionURL name="/patcher/add_product_versions" var="addPatcherProductVersionURL" />
 
 <aui:form action="<%= addPatcherProductVersionURL %>" method="post">
 	<portlet:renderURL var="viewPatcherProductVersionsURL">
