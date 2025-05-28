@@ -27,8 +27,7 @@
 
 <aui:form action="${updatePatcherFixURL}" method="post" name="fm">
 	<portlet:renderURL var="viewPatcherFixesURL">
-		<portlet:param name="controller" value="fixes" />
-		<portlet:param name="action" value="index" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/index_fixes" />
 	</portlet:renderURL>
 
 	<aui:input name="redirect" type="hidden" value="${viewPatcherFixesURL}" />

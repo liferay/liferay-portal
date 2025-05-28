@@ -36,8 +36,7 @@
 </aui:button-row>
 
 <portlet:renderURL var="viewPatcherFixesURL">
-	<portlet:param name="controller" value="fixes" />
-	<portlet:param name="action" value="index" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/index_fixes" />
 </portlet:renderURL>
 
 <aui:form action="${viewPatcherFixesURL}" method="get" name="fm">

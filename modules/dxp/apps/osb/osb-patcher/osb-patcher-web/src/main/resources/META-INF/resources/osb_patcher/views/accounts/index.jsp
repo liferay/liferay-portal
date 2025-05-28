@@ -12,8 +12,7 @@
 </liferay-util:include>
 
 <portlet:renderURL var="viewPatcherAccountsURL">
-	<portlet:param name="controller" value="accounts" />
-	<portlet:param name="action" value="index" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/index_accounts" />
 </portlet:renderURL>
 
 <aui:button-row>

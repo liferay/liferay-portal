@@ -21,8 +21,7 @@
 </aui:button-row>
 
 <portlet:renderURL var="viewPatcherFixPacksURL">
-	<portlet:param name="controller" value="fix_packs" />
-	<portlet:param name="action" value="index" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_packs" />
 </portlet:renderURL>
 
 <aui:form action="${viewPatcherFixPacksURL}" method="get" name="fm">

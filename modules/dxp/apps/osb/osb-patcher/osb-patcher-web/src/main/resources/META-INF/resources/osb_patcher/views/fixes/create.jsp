@@ -29,8 +29,7 @@
 
 <aui:form action="${addPatcherFixURL}" method="post" name="fm">
 	<portlet:renderURL var="viewPatcherFixesURL">
-		<portlet:param name="controller" value="fixes" />
-		<portlet:param name="action" value="index" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/index_fixes" />
 		<portlet:param name="patcherProductVersionId" value="${patcherProductVersionId}" />
 	</portlet:renderURL>
 

@@ -91,8 +91,7 @@
 		<aui:button type="submit" value="update" />
 
 		<portlet:renderURL var="viewPatcherBuildsURL">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="index" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/index_builds" />
 		</portlet:renderURL>
 
 		<aui:button href="${(not empty redirect) ? redirect : viewPatcherBuildsURL}" value="cancel" />

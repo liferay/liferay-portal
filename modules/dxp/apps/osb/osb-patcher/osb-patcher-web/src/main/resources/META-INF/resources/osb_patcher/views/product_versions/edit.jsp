@@ -25,8 +25,7 @@
 
 <aui:form action="${updatePatcherProductVersionURL}" method="post">
 	<portlet:renderURL var="viewPatcherProductVersionsURL">
-		<portlet:param name="controller" value="product_versions" />
-		<portlet:param name="action" value="index" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/index_product_versions" />
 	</portlet:renderURL>
 
 	<aui:input name="redirect" type="hidden" value="${viewPatcherProductVersionsURL}" />

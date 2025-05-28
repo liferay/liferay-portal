@@ -25,8 +25,7 @@
 
 <aui:form action="${addPatcherFixComponentURL}" method="post">
 	<portlet:renderURL var="viewPatcherFixComponentsURL">
-		<portlet:param name="controller" value="fix_components" />
-		<portlet:param name="action" value="index" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_components" />
 	</portlet:renderURL>
 
 	<aui:input name="redirect" type="hidden" value="${viewPatcherFixComponentsURL}" />

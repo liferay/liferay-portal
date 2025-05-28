@@ -38,8 +38,7 @@
 </c:if>
 
 <portlet:renderURL var="viewPatcherProjectVersionsURL">
-	<portlet:param name="controller" value="project_versions" />
-	<portlet:param name="action" value="index" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/index_project_versions" />
 </portlet:renderURL>
 
 <aui:form action="${viewPatcherProjectVersionsURL}" method="get" name="fm">

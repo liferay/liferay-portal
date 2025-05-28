@@ -12,8 +12,7 @@
 </liferay-util:include>
 
 <portlet:renderURL var="viewPatcherBuildsURL">
-	<portlet:param name="controller" value="builds" />
-	<portlet:param name="action" value="index" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/index_builds" />
 </portlet:renderURL>
 
 <aui:form action="${viewPatcherBuildsURL}" method="get" name="fm">
