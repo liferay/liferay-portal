@@ -47,7 +47,7 @@
 <aui:form action="${viewPatcherAccountURL}" method="get" name="fm">
 	<liferay-ui:search-toggle
 		buttonLabel="search"
-		displayTerms="${displayTerms}"
+		displayTerms="<%= new DisplayTerms(renderRequest) %>"
 		id="toggle_id_patcher_build_search"
 	>
 		<div class="layout">

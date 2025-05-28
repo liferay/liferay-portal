@@ -28,7 +28,7 @@
 <aui:form action="${viewPatcherFixPacksURL}" method="get" name="fm">
 	<liferay-ui:search-toggle
 		buttonLabel="search"
-		displayTerms="${displayTerms}"
+		displayTerms="<%= new DisplayTerms(renderRequest) %>"
 		id="toggle_id_patcher_fix_pack_search"
 	>
 		<div class="layout">
