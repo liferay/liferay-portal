@@ -15,45 +15,9 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 	<liferay-util:param name="tabs1" value="project-versions" />
 </liferay-util:include>
 
-<div class="layout">
-	<div class="layout-content">
-		<clay:col>
-			<aui:select label="product-version" name="patcherProductVersionId" onChange='<%= renderResponse.namespace + "productVersionOnChange(this.value);" %>' showEmptyOption="<%= true %>">
-				<c:forEach items="<%= patcherProductVersions %>" var="patcherProductVersion">
-					<aui:option label="<%= patcherProductVersion.getName() %>" value="<%= patcherProductVersion.getPatcherProductVersionId() %>" />
-				</c:forEach>
-
-				<aui:option label="any" value="0" />
-			</aui:select>
-		</clay:col>
-	</div>
-</div>
-
-<c:if test="<%= permissionChecker.isCompanyAdmin() %>">
-	<aui:button-row>
-		<portlet:renderURL var="createPatcherProjectVersionURL">
-			<portlet:param name="controller" value="project_versions" />
-			<portlet:param name="action" value="create" />
-			<portlet:param name="patcherProductVersionId" value="<%= patcherProductVersionId %>" />
-		</portlet:renderURL>
-
-		<aui:button href="<%= createPatcherProjectVersionURL %>" value="create-project-version" />
-	</aui:button-row>
-</c:if>
-
-<portlet:renderURL var="viewPatcherProjectVersionsURL">
-	<portlet:param name="mvcRenderCommandName" value="/patcher/index_project_versions" />
-</portlet:renderURL>
-
-<aui:form action="<%= viewPatcherProjectVersionsURL %>" method="get" name="fm">
-	<aui:input name="patcherProductVersionId" type="hidden" value="<%= patcherProductVersionId %>" />
-
-	<aui:fieldset>
-		<aui:input inlineField="<%= true %>" label="" name="keywords" size="30" title="search-project-versions" type="text" />
-
-		<aui:button type="submit" value="search" />
-	</aui:fieldset>
-</aui:form>
+<clay:management-toolbar
+	managementToolbarDisplayContext="<%= new PatcherProjectVersionsManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, patcherProjectVersionsDisplayContext.getSearchContainer()) %>"
+/>
 
 <liferay-ui:search-container
 	searchContainer="<%= patcherProjectVersionsDisplayContext.getSearchContainer() %>"
@@ -151,16 +115,3 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 
 	<liferay-ui:search-iterator />
 </liferay-ui:search-container>
-
-<aui:script>
-	Liferay.provide(
-		window,
-		'<portlet:namespace />productVersionOnChange',
-		function(productVersionId) {
-			var namespace = '<portlet:namespace />';
-
-			window.location.href = Liferay.Patcher.updateProductVersionId('<%= viewPatcherProjectVersionsURL %>', productVersionId, namespace);
-		},
-		['aui-base']
-	);
-</aui:script>
