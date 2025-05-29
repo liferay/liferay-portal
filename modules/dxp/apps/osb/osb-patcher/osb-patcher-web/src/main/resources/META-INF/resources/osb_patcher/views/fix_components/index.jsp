@@ -15,26 +15,9 @@ PatcherFixComponentsDisplayContext patcherFixComponentsDisplayContext = new Patc
 	<liferay-util:param name="tabs1" value="fix-components" />
 </liferay-util:include>
 
-<aui:button-row>
-	<portlet:renderURL var="createPatcherFixComponentURL">
-		<portlet:param name="controller" value="fix_components" />
-		<portlet:param name="action" value="create" />
-	</portlet:renderURL>
-
-	<aui:button href="<%= createPatcherFixComponentURL %>" value="create-fix-component" />
-</aui:button-row>
-
-<portlet:renderURL var="viewPatcherFixComponentsURL">
-	<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_components" />
-</portlet:renderURL>
-
-<aui:form action="<%= viewPatcherFixComponentsURL %>" method="get" name="fm">
-	<aui:fieldset>
-		<aui:input inlineField="<%= true %>" label="" name="keywords" size="30" title="search-fix-components" type="text" />
-
-		<aui:button type="submit" value="search" />
-	</aui:fieldset>
-</aui:form>
+<clay:management-toolbar
+	managementToolbarDisplayContext="<%= new PatcherFixComponentsManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, patcherFixComponentsDisplayContext.getSearchContainer()) %>"
+/>
 
 <liferay-ui:search-container
 	searchContainer="<%= patcherFixComponentsDisplayContext.getSearchContainer() %>"
