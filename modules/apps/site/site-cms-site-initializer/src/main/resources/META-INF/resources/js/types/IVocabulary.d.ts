@@ -6,7 +6,7 @@
 export interface IVocabulary {
 	actions?: Actions;
 	assetLibraries: AssetLibraryType[];
-	assetTypes: AssetType[];
+	assetTypes?: AssetType[];
 	description?: string;
 	description_i18n?: {
 		[key: string]: string;

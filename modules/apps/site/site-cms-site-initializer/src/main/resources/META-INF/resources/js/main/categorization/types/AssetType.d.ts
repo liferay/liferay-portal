@@ -4,7 +4,9 @@
  */
 
 type AssetType = {
+	icon?: string;
 	required: boolean;
+	subtype: string;
 	type: string;
-	typeId?: number;
+	typeId: string;
 };

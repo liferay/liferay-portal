@@ -5,17 +5,16 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectFolder;
-import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
-import com.liferay.object.service.ObjectFolderLocalServiceUtil;
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -39,38 +38,37 @@ public class EditVocabularyDisplayContext {
 		_themeDisplay = themeDisplay;
 	}
 
-	public List<Map<String, String>> getClassNameIdOptions()
-		throws PortalException {
+	public List<AssetRendererFactory<?>> getAvailableAssetRendererFactories() {
+		return ListUtil.filter(
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
+				_themeDisplay.getCompanyId()),
+			AssetRendererFactory::isCategorizable);
+	}
 
+	public List<Map<String, String>> getClassNameIdOptions() {
 		List<Map<String, String>> selectOptions = new ArrayList<>();
 
-		List<ObjectFolder> objectFolders = new ArrayList<>();
+		List<AssetRendererFactory<?>> availableAssetRendererFactories =
+			getAvailableAssetRendererFactories();
 
-		objectFolders.add(
-			ObjectFolderLocalServiceUtil.getObjectFolderByExternalReferenceCode(
-				"L_CMS_CONTENT_STRUCTURES", _themeDisplay.getCompanyId()));
-		objectFolders.add(
-			ObjectFolderLocalServiceUtil.getObjectFolderByExternalReferenceCode(
-				"L_CMS_FILE_TYPES", _themeDisplay.getCompanyId()));
+		for (AssetRendererFactory<?> availableAssetRendererFactory :
+				availableAssetRendererFactories) {
 
-		for (ObjectFolder objectFolder : objectFolders) {
-			for (ObjectDefinition objectDefinition :
-					ObjectDefinitionLocalServiceUtil.
-						getObjectFolderObjectDefinitions(
-							objectFolder.getObjectFolderId())) {
-
-				selectOptions.add(
-					HashMapBuilder.put(
-						"restricted", Boolean.FALSE.toString()
-					).put(
-						"type", objectDefinition.getLabelCurrentValue()
-					).put(
-						"typeId",
-						String.valueOf(
-							PortalUtil.getClassNameId(
-								objectDefinition.getClassName()))
-					).build());
-			}
+			selectOptions.add(
+				HashMapBuilder.put(
+					"icon", availableAssetRendererFactory.getIconCssClass()
+				).put(
+					"restricted", Boolean.FALSE.toString()
+				).put(
+					"type",
+					ResourceActionsUtil.getModelResource(
+						_themeDisplay.getLocale(),
+						availableAssetRendererFactory.getClassName())
+				).put(
+					"typeId",
+					String.valueOf(
+						availableAssetRendererFactory.getClassNameId())
+				).build());
 		}
 
 		return selectOptions;
@@ -78,7 +76,7 @@ public class EditVocabularyDisplayContext {
 
 	public Map<String, Object> getReactData() throws Exception {
 		return HashMapBuilder.<String, Object>put(
-			"availableAssetTypes", getClassNameIdOptions()
+			"assetTypes", getClassNameIdOptions()
 		).put(
 			"backURL",
 			PortalUtil.getLayoutFullURL(
