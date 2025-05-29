@@ -41,39 +41,6 @@
 		-->
 
 		<echo>prepare-tck</echo>
-
-		<exec dir="${tck.home}/.." executable="git">
-			<arg line="clean" />
-			<arg line="-fdx" />
-		</exec>
-
-		<if>
-			<not>
-				<equals arg1="${tck.branch.name}" arg2="master" />
-			</not>
-			<then>
-				<exec dir="${tck.home}/.." executable="git">
-					<arg line="branch" />
-					<arg line="-D" />
-					<arg line="${tck.branch.name}" />
-				</exec>
-
-				<exec dir="${tck.home}/.." executable="git">
-					<arg line="pull" />
-					<arg line="upstream" />
-					<arg line="${tck.branch.name}" />
-				</exec>
-			</then>
-		</if>
-
-		<exec dir="${tck.home}/.." executable="git">
-			<arg line="checkout" />
-			<arg line="${tck.branch.name}" />
-		</exec>
-
-		<exec dir="${tck.home}/.." executable="git">
-			<arg line="status" />
-		</exec>
 	</target>
 
 	<target name="prepare-tck-app-server">
