@@ -221,7 +221,6 @@ export default function EditAssociatedAssetTypes({
 					<label>{Liferay.Language.get('asset-types')}</label>
 
 					<ClayMultiSelect
-						aria-label="Asset Type Selector"
 						disabled={allAssetTypesSelected}
 						items={allAssetTypesSelected ? [] : selectedItems}
 						onItemsChange={(items: Structure[]) => {
