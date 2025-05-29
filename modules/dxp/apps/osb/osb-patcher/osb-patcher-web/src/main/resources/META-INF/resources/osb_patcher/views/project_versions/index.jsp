@@ -7,6 +7,10 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new PatcherProjectVersionsDisplayContext(request, renderRequest, renderResponse);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="project-versions" />
 </liferay-util:include>
@@ -52,14 +56,8 @@
 </aui:form>
 
 <liferay-ui:search-container
-	emptyResultsMessage="there-are-no-project-versions"
-	iteratorURL="<%= alloySearchResult.getPortletURL() %>"
-	total="<%= alloySearchResult.getSize() %>"
+	searchContainer="<%= patcherProjectVersionsDisplayContext.getSearchContainer() %>"
 >
-	<liferay-ui:search-container-results
-		results="<%= alloySearchResult.getBaseModels() %>"
-	/>
-
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherProjectVersion"
 		escapedModel="<%= true %>"
