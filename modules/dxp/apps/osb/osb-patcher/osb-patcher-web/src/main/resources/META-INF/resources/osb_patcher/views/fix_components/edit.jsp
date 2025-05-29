@@ -7,6 +7,12 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+long patcherFixComponentId = ParamUtil.getLong(request, "patcherFixComponentId");
+
+PatcherFixComponent patcherFixComponent = PatcherFixComponentLocalServiceUtil.fetchPatcherFixComponent(patcherFixComponentId);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="fix-components" />
 </liferay-util:include>
@@ -18,10 +24,7 @@
 
 <aui:model-context bean="<%= patcherFixComponent %>" model="<%= PatcherFixComponent.class %>" />
 
-<portlet:actionURL var="updatePatcherFixComponentURL">
-	<portlet:param name="controller" value="fix_components" />
-	<portlet:param name="action" value="update" />
-</portlet:actionURL>
+<portlet:actionURL name="/patcher/update_fix_components" var="updatePatcherFixComponentURL" />
 
 <aui:form action="<%= updatePatcherFixComponentURL %>" method="post">
 	<portlet:renderURL var="viewPatcherFixComponentsURL">
@@ -29,9 +32,9 @@
 	</portlet:renderURL>
 
 	<aui:input name="redirect" type="hidden" value="<%= viewPatcherFixComponentsURL %>" />
-	<aui:input name="id" type="hidden" value="<%= patcherFixComponent.getPatcherFixComponentId() %>" />
+	<aui:input name="patcherFixComponentId" type="hidden" value="<%= patcherFixComponent.getPatcherFixComponentId() %>" />
 
-	<aui:input label="name" name="patcherFixComponentName" type="text" value="<%= patcherFixComponent.getName() %>" />
+	<aui:input name="name" type="text" value="<%= patcherFixComponent.getName() %>" />
 
 	<aui:button-row>
 		<aui:button type="submit" value="update" />
