@@ -7,18 +7,23 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
-<c:set value='<%= (BrowserSnifferUtil.isChrome(request) && windowState.equals(LiferayWindowState.POP_UP)) ? request.getHeader(HttpHeaders.REFERER) : "javascript:history.go(-1);" %>' var="backURL" />
-
 <liferay-ui:header
-	backURL="${backURL}"
+	backURL='<%= (BrowserSnifferUtil.isChrome(request) && windowState.equals(LiferayWindowState.POP_UP)) ? request.getHeader(HttpHeaders.REFERER) : "javascript:history.go(-1);" %>'
 	title="error"
 />
 
-<c:choose>
-	<c:when test="${fn:length(pattern) > 0}">
-		<liferay-ui:message arguments="${arguments}" key="${pattern}" />
-	</c:when>
-	<c:otherwise>
-		<liferay-ui:message key="an-unexpected-error-occurred" />
-	</c:otherwise>
-</c:choose>
+<liferay-ui:error exception="<%= PortalException.class %>">
+
+	<%
+	PortalException portalException = (PortalException)errorException;
+	%>
+
+	<c:choose>
+		<c:when test="<%= Validator.isNotNull(portalException.getMessage()) %>">
+			<liferay-ui:message key="<%= portalException.getMessage() %>" />
+		</c:when>
+		<c:otherwise>
+			<liferay-ui:message key="an-unexpected-error-occurred" />
+		</c:otherwise>
+	</c:choose>
+</liferay-ui:error>
