@@ -7,6 +7,10 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+PatcherFixComponentsDisplayContext patcherFixComponentsDisplayContext = new PatcherFixComponentsDisplayContext(request, renderRequest, renderResponse);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="fix-components" />
 </liferay-util:include>
@@ -33,14 +37,8 @@
 </aui:form>
 
 <liferay-ui:search-container
-	emptyResultsMessage="there-are-no-fix-components"
-	iteratorURL="<%= alloySearchResult.getPortletURL() %>"
-	total="<%= alloySearchResult.getSize() %>"
+	searchContainer="<%= patcherFixComponentsDisplayContext.getSearchContainer() %>"
 >
-	<liferay-ui:search-container-results
-		results="<%= alloySearchResult.getBaseModels() %>"
-	/>
-
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFixComponent"
 		escapedModel="<%= true %>"
