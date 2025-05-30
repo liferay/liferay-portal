@@ -62,32 +62,33 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 		<liferay-ui:search-container-column-text
 			name="fixed-issues"
 		>
-			<portlet:renderURL var="viewPatcherProjectVersionFixedIssuesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-				<portlet:param name="controller" value="project_versions" />
-				<portlet:param name="action" value="fixedIssues" />
-				<portlet:param name="id" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
-			</portlet:renderURL>
 
-			<c:set value='<%= UnicodeLanguageUtil.get(request, "fixed-issues") %>' var="viewPatcherProjectVersionFixedIssuesURLTitle" />
+			<%
+			int ticketsCount = PatcherUtil.getTicketsCount(patcherProjectVersion.getFixedIssues());
+			%>
 
-			<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + viewPatcherProjectVersionFixedIssuesURL %>', '<%= viewPatcherProjectVersionFixedIssuesURLTitle + "', true, 1000, 1);" %>' var="viewPatcherProjectVersionFixedIssuesURL" />
+			<c:if test="<%= ticketsCount > 0 %>">
+				<portlet:renderURL var="viewPatcherProjectVersionFixedIssuesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+					<portlet:param name="mvcRenderCommandName" value="/patcher/view_project_versions_fixed_issues" />
+					<portlet:param name="patcherProjectVersionId" value="<%= String.valueOf(patcherProjectVersion.getPatcherProjectVersionId()) %>" />
+				</portlet:renderURL>
 
-			<c:set value="<%= PatcherUtil.getTicketsCount(patcherProjectVersion.getFixedIssues()) %>" var="ticketsCount" />
-
-			<c:set value='<%= ticketsCount %> <%= LanguageUtil.get(request, "tickets") %>' var="tickets" />
-
-			<a class="nobr" href="<%= viewPatcherProjectVersionFixedIssuesURL %>" title="<%= patcherProjectVersionFixedIssuesCount %>"><%= ticketsCount > 0 ? tickets : "" %> </a>
+				<clay:button
+					displayType="link"
+					label='<%= LanguageUtil.format(request, "x-tickets", ticketsCount) %>'
+					onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + viewPatcherProjectVersionFixedIssuesURL + "');" %>'
+				/>
+			</c:if>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, PatcherActionKeys.EDIT, patcherProductVersion.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, PatcherActionKeys.EDIT, patcherProjectVersion.getUserId()) %>">
 					<portlet:renderURL var="editPatcherProjectVersionURL">
-						<portlet:param name="controller" value="project_versions" />
-						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_project_versions" />
+						<portlet:param name="patcherProjectVersionId" value="<%= String.valueOf(patcherProjectVersion.getPatcherProjectVersionId()) %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
@@ -97,11 +98,9 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, ActionKeys.DELETE, patcherProductVersion.getUserId()) %>">
-					<portlet:actionURL var="deletePatcherProjectVersionURL">
-						<portlet:param name="controller" value="project_versions" />
-						<portlet:param name="action" value="delete" />
-						<portlet:param name="id" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, ActionKeys.DELETE, patcherProjectVersion.getUserId()) %>">
+					<portlet:actionURL name="/patcher/delete_project_versions" var="deletePatcherProjectVersionURL">
+						<portlet:param name="patcherProjectVersionId" value="<%= String.valueOf(patcherProjectVersion.getPatcherProjectVersionId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
@@ -115,3 +114,12 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 
 	<liferay-ui:search-iterator />
 </liferay-ui:search-container>
+
+<aui:script>
+	function <portlet:namespace />handleClick(url) {
+		Liferay.Util.openModal({
+			title: '<liferay-ui:message key="tickets" />',
+			url: url,
+		});
+	}
+</aui:script>

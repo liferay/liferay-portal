@@ -7,6 +7,12 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+long patcherProjectVersionId = ParamUtil.getLong(request, "patcherProjectVersionId");
+
+PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherProjectVersionId);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="project-versions" />
 </liferay-util:include>
@@ -16,22 +22,20 @@
 	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_project_versions" />
 </liferay-util:include>
 
-<aui:model-context bean="<%= patcherProjectVersion %>" model="<%= PatcherProjectVersion.class %>" />
-
-<aui:field-wrapper name="name">
+<aui:field-wrapper label="name">
 	<%= patcherProjectVersion.getName() %>
 </aui:field-wrapper>
 
 <c:if test="<%= permissionChecker.isCompanyAdmin() %>">
-	<aui:field-wrapper name="combined-branch">
+	<aui:field-wrapper label="combined-branch">
 		<%= patcherProjectVersion.getCombinedBranch() %>
 	</aui:field-wrapper>
 </c:if>
 
-<aui:field-wrapper name="tag-name">
+<aui:field-wrapper label="tag-name">
 	<%= patcherProjectVersion.getCommittish() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="repositoryName">
+<aui:field-wrapper label="repository-name">
 	<%= patcherProjectVersion.getRepositoryName() %>
 </aui:field-wrapper>

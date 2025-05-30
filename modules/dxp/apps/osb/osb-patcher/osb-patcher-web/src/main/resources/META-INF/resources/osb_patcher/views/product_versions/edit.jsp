@@ -32,7 +32,7 @@ PatcherProductVersion patcherProductVersion = PatcherProductVersionLocalServiceU
 	</portlet:renderURL>
 
 	<aui:input name="redirect" type="hidden" value="<%= viewPatcherProductVersionsURL %>" />
-	<aui:input name="id" type="hidden" value="<%= patcherProductVersion.getPatcherProductVersionId() %>" />
+	<aui:input name="patcherProductVersionId" type="hidden" value="<%= patcherProductVersion.getPatcherProductVersionId() %>" />
 
 	<aui:input name="name" />
 

@@ -7,21 +7,33 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
-<c:forEach items="${StringUtil.split(tickets)}" var="token" varStatus="tokenStatus">
+<%
+long patcherProjectVersionId = ParamUtil.getLong(request, "patcherProjectVersionId");
+
+PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherProjectVersionId);
+
+for (String ticket : StringUtil.split(patcherProjectVersion.getFixedIssues())) {
+%>
+
 	<c:choose>
-		<c:when test="${PatcherFixPackUtil.containsPatcherFixPackName(token)}">
-			<c:set value="${PatcherFixPackUtil.getPatcherFixPack(token, GetterUtil.getLong(patcherProjectVersionId))}" var="patcherFixPack" />
+		<c:when test="<%= PatcherFixPackUtil.containsPatcherFixPackName(ticket) %>">
+
+			<%
+			PatcherFixPack patcherFixPack = PatcherFixPackUtil.getPatcherFixPack(ticket, patcherProjectVersionId);
+			%>
 
 			<portlet:renderURL var="viewPatcherFixPackURL">
-				<portlet:param name="controller" value="fix_packs" />
-				<portlet:param name="action" value="view" />
-				<portlet:param name="id" value="${patcherFixPack.patcherFixPackId}" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/view_fix_packs" />
+				<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 			</portlet:renderURL>
 
-			<a class="nobr" href="${viewPatcherFixPackURL}">${token}</a>${(!tokenStatus.last) ? StringPool.COMMA : StringPool.BLANK}
+			<a class="nobr" href="<%= viewPatcherFixPackURL %>"><%= ticket %></a>,
 		</c:when>
 		<c:otherwise>
-			<a class="nobr" href="${PortletPropsValues.JIRA_URL}/${token}" target="_blank">${token}</a>${(!tokenStatus.last) ? StringPool.COMMA : StringPool.BLANK}
+			<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= ticket %>" target="_blank"><%= ticket %></a>,
 		</c:otherwise>
 	</c:choose>
-</c:forEach>
+
+<%
+}
+%>
