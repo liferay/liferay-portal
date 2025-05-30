@@ -129,6 +129,8 @@ public class PatcherProjectVersionsDisplayContext {
 		SearchContext searchContext = SearchContextFactory.getInstance(
 			_httpServletRequest);
 
+		searchContext.setAttribute(
+			"patcherProductVersionId", getPatcherProductVersionId());
 		searchContext.setEnd(patcherProjectVersionSearchContainer.getEnd());
 		searchContext.setGroupIds(null);
 		searchContext.setSorts(
