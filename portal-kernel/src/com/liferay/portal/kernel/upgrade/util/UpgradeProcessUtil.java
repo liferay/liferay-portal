@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.version.Version;
 
 import java.sql.Connection;
@@ -88,6 +87,36 @@ public class UpgradeProcessUtil {
 		}
 	}
 
+	public static Set<String> getPreupgradedServiceTables(Connection connection)
+		throws Exception {
+
+		Set<String> tableNames = new HashSet<>();
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select data_ from ServiceComponent where buildNamespace like ?"))) {
+
+			preparedStatement.setString(1, "%com.liferay%");
+
+			DBInspector dbInspector = new DBInspector(connection);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					Matcher matcher = _createTablePattern.matcher(
+						resultSet.getString(1));
+
+					while (matcher.find()) {
+						String tableName = resultSet.getString("TABLE_NAME");
+
+						tableNames.add(dbInspector.normalizeName(tableName));
+					}
+				}
+			}
+		}
+
+		return tableNames;
+	}
+
 	public static List<UpgradeProcess> initUpgradeProcesses(
 		ClassLoader classLoader, String[] upgradeProcessClassNames) {
 
@@ -136,36 +165,6 @@ public class UpgradeProcessUtil {
 		}
 
 		return false;
-	}
-
-	public static Set<String> getPreupgradedServiceTables(Connection connection) throws Exception {
-		Set<String> tableNames = new HashSet<>();
-
-		try (PreparedStatement preparedStatement =
-				 connection.prepareStatement(
-					 StringBundler.concat(
-						 "select data_ from ServiceComponent where buildNamespace like ?"))){
-
-			preparedStatement.setString(1, "%com.liferay%");
-
-			DBInspector dbInspector = new DBInspector(connection);
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while(resultSet.next()) {
-					Matcher matcher = _createTablePattern.matcher(
-						resultSet.getString(1));
-
-					while (matcher.find()) {
-
-						String tableName = resultSet.getString("TABLE_NAME");
-
-						tableNames.add(dbInspector.normalizeName(tableName));
-					}
-				}
-			}
-		}
-
-		return tableNames;
 	}
 
 	public static void setCreateIGImageDocumentType(
@@ -228,10 +227,9 @@ public class UpgradeProcessUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradeProcessUtil.class);
 
+	private static boolean _createIGImageDocumentType;
 	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
-
-	private static boolean _createIGImageDocumentType;
 	private static final Map<Long, String> _languageIds = new HashMap<>();
 
 }

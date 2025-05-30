@@ -11,22 +11,25 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 import java.io.InputStream;
+
 import java.net.URL;
+
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+
 /**
  * @author Jorge Avalos
  */
-
 public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 	@Override
@@ -35,20 +38,20 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 	}
 
 	private void _checkDatabaseState() throws Exception {
-		if (StartupHelperUtil.isDBNew()) {
+		if (StartupHelperUtil.isDBNew() ||
+			(PortalUpgradeProcess.getCurrentSchemaVersion(connection) !=
+				PortalUpgradeProcess.getLatestSchemaVersion())) {
+
 			return;
 		}
 
-		if (PortalUpgradeProcess.getCurrentSchemaVersion(connection) !=
-				 PortalUpgradeProcess.getLatestSchemaVersion()) {
-			return;
-		}
-
-		Set<String> preupgradedServiceTables = UpgradeProcessUtil.getPreupgradedServiceTables(connection);
+		Set<String> preupgradedServiceTables =
+			UpgradeProcessUtil.getPreupgradedServiceTables(connection);
 
 		if (preupgradedServiceTables.isEmpty()) {
 			return;
 		}
+
 		Set<String> databaseTables = _getDatabaseTables();
 
 		Set<String> serviceTables = _fetchModuleTables();
@@ -60,7 +63,9 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 			missingTables.removeAll(databaseTables);
 
-			throw new Exception("Missing tables detected:\n"+ missingTables + "\nPlease resolve these tables to continue the upgrade");
+			throw new Exception(
+				"Missing tables detected:\n" + missingTables +
+					"\nPlease resolve these tables to continue the upgrade");
 		}
 
 		Set<String> incompleteTables = new HashSet<>(databaseTables);
@@ -68,10 +73,10 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 		incompleteTables.retainAll(serviceTables);
 
 		if (!incompleteTables.isEmpty()) {
-			throw new Exception("Incomplete tables detected:\n"+ incompleteTables + "\nPlease remove these tables to continue the upgrade");
+			throw new Exception(
+				"Incomplete tables detected:\n" + incompleteTables +
+					"\nPlease remove these tables to continue the upgrade");
 		}
-
-
 	}
 
 	private Set<String> _fetchModuleTables() throws Exception {
@@ -81,11 +86,15 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 		for (Bundle bundle : bundleContext.getBundles()) {
 			String symbolicName = bundle.getSymbolicName();
-			if (!symbolicName.startsWith("com.liferay") || !symbolicName.contains("service")) {
+
+			if (!symbolicName.startsWith("com.liferay") ||
+				!symbolicName.contains("service")) {
+
 				continue;
 			}
 
 			URL url = bundle.getResource("/META-INF/sql/tables.sql");
+
 			if (url == null) {
 				continue;
 			}
@@ -100,8 +109,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 					tableNames.add(tableName);
 				}
 			}
-	}
-
+		}
 
 		return tableNames;
 	}
@@ -114,21 +122,21 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 		_dbInspector = new DBInspector(connection);
 
 		try (ResultSet resultSet = databaseMetaData.getTables(
-			_dbInspector.getCatalog(), _dbInspector.getSchema(), null,
-				new String[]{"TABLE"})) {
-				while (resultSet.next()) {
-					String tableName = resultSet.getString("TABLE_NAME");
+				_dbInspector.getCatalog(), _dbInspector.getSchema(), null,
+				new String[] {"TABLE"})) {
 
-					tableNames.add(_dbInspector.normalizeName(tableName));
-				}
+			while (resultSet.next()) {
+				String tableName = resultSet.getString("TABLE_NAME");
+
+				tableNames.add(_dbInspector.normalizeName(tableName));
 			}
+		}
+
 		return tableNames;
 	}
 
-			private static final Pattern _createTablePattern = Pattern.compile(
+	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
-
 	private static DBInspector _dbInspector;
-
 
 }
