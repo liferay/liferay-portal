@@ -39,8 +39,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 	private void _checkDatabaseState() throws Exception {
 		if (StartupHelperUtil.isDBNew() ||
-			(PortalUpgradeProcess.getCurrentSchemaVersion(connection) !=
-				PortalUpgradeProcess.getLatestSchemaVersion())) {
+			PortalUpgradeProcess.isInLatestSchemaVersion(connection)) {
 
 			return;
 		}
@@ -52,37 +51,41 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 			return;
 		}
 
-		Set<String> databaseTables = _getDatabaseTables();
+		DBInspector dbInspector = new DBInspector(connection);
 
-		Set<String> serviceTables = _fetchModuleTables();
+		Set<String> databaseTables = new HashSet<>(dbInspector.getTableNames(null));
 
-		serviceTables.removeAll(preupgradedServiceTables);
-
-		if (!databaseTables.containsAll(serviceTables)) {
-			Set<String> missingTables = new HashSet<>(serviceTables);
+		if (!databaseTables.containsAll(preupgradedServiceTables)) {
+			Set<String> missingTables = new HashSet<>(preupgradedServiceTables);
 
 			missingTables.removeAll(databaseTables);
 
 			throw new Exception(
 				"Missing tables detected:\n" + missingTables +
-					"\nPlease resolve these tables to continue the upgrade");
+					"\nPlease fix these tables to continue the upgrade");
 		}
 
-		Set<String> incompleteTables = new HashSet<>(databaseTables);
+		Set<String> targetVersionTables = _fetchTargetVersionTables();
 
-		incompleteTables.retainAll(serviceTables);
+		targetVersionTables.removeAll(preupgradedServiceTables);
 
-		if (!incompleteTables.isEmpty()) {
+		Set<String> previousUpgradeStaleTables = new HashSet<>(databaseTables);
+
+		previousUpgradeStaleTables.retainAll(targetVersionTables);
+
+		if (!previousUpgradeStaleTables.isEmpty()) {
 			throw new Exception(
-				"Incomplete tables detected:\n" + incompleteTables +
+				"Stale tables from a previous upgrade detected:\n" + previousUpgradeStaleTables +
 					"\nPlease remove these tables to continue the upgrade");
 		}
 	}
 
-	private Set<String> _fetchModuleTables() throws Exception {
+	private Set<String> _fetchTargetVersionTables() throws Exception {
 		Set<String> tableNames = new HashSet<>();
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		DBInspector dbInspector = new DBInspector(connection);
 
 		for (Bundle bundle : bundleContext.getBundles()) {
 			String symbolicName = bundle.getSymbolicName();
@@ -102,41 +105,17 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 			try (InputStream inputStream = url.openStream()) {
 				Matcher matcher = _createTablePattern.matcher(
 					StringUtil.read(inputStream));
-
-				String tableName = _dbInspector.normalizeName(matcher.group(1));
-
 				while (matcher.find()) {
-					tableNames.add(tableName);
+					tableNames.add(dbInspector.normalizeName(matcher.group(1)));
 				}
 			}
 		}
-
 		return tableNames;
 	}
 
-	private Set<String> _getDatabaseTables() throws Exception {
-		Set<String> tableNames = new HashSet<>();
 
-		DatabaseMetaData databaseMetaData = connection.getMetaData();
-
-		_dbInspector = new DBInspector(connection);
-
-		try (ResultSet resultSet = databaseMetaData.getTables(
-				_dbInspector.getCatalog(), _dbInspector.getSchema(), null,
-				new String[] {"TABLE"})) {
-
-			while (resultSet.next()) {
-				String tableName = resultSet.getString("TABLE_NAME");
-
-				tableNames.add(_dbInspector.normalizeName(tableName));
-			}
-		}
-
-		return tableNames;
-	}
 
 	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
-	private static DBInspector _dbInspector;
 
 }

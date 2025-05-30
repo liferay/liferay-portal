@@ -96,7 +96,7 @@ public class UpgradeProcessUtil {
 				StringBundler.concat(
 					"select data_ from ServiceComponent where buildNamespace like ?"))) {
 
-			preparedStatement.setString(1, "%com.liferay%");
+			preparedStatement.setString(1, "com.liferay%");
 
 			DBInspector dbInspector = new DBInspector(connection);
 
@@ -106,9 +106,7 @@ public class UpgradeProcessUtil {
 						resultSet.getString(1));
 
 					while (matcher.find()) {
-						String tableName = resultSet.getString("TABLE_NAME");
-
-						tableNames.add(dbInspector.normalizeName(tableName));
+						tableNames.add(dbInspector.normalizeName(resultSet.getString("TABLE_NAME")));
 					}
 				}
 			}
