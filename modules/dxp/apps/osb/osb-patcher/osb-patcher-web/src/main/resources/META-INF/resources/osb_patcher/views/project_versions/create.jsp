@@ -101,7 +101,7 @@
 
 		var productVersionId = A.one('#<portlet:namespace />patcherProductVersionId').val();
 
-		var combined = A.one('#<portlet:namespace />combinedBranchCheckbox').attr('checked');
+		var combined = A.one('#<portlet:namespace />combinedBranch').attr('checked');
 
 		var marketplaceReleasePatcherProductVersionIds = <%= marketplaceReleasePatcherProductVersionIds %>;
 
@@ -110,7 +110,7 @@
 		}
 		else {
 			A.one('#<portlet:namespace />displayingHide').hide();
-			A.one('#<portlet:namespace />hideCheckbox').attr('checked', false);
+			A.one('#<portlet:namespace />hide').attr('checked', false);
 		}
 	}
 </aui:script>
