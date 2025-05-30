@@ -6,11 +6,14 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.ServiceComponent;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -19,7 +22,12 @@ import com.liferay.portal.verify.PreupgradeVerifyDatabaseState;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
+import java.net.URL;
 import java.sql.Connection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -28,6 +36,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Jorge Avalos
@@ -60,6 +70,19 @@ public class PreupgradeVerifyDatabaseStateTest
 		}
 	}
 
+	@Override
+	@Test
+	public void testVerify() throws Exception {
+		try {
+			super.testVerify();
+		}
+		catch (Exception exception) {
+				_verifyException(
+					exception,
+					"Stale tables from a previous upgrade detected:");
+		}
+	}
+
 	@Test
 	public void testVerifyPreupgradeMissingTable() throws Exception {
 		long serviceComponentId = RandomTestUtil.nextLong();
@@ -72,7 +95,7 @@ public class PreupgradeVerifyDatabaseStateTest
 
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
 
-		serviceComponent.setData("<![CDATA[create table PreupgradeTestTable (");
+		serviceComponent.setData("<![CDATA[create table TestTable (");
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
 
@@ -81,9 +104,13 @@ public class PreupgradeVerifyDatabaseStateTest
 		}
 		catch (Exception exception) {
 			_verifyException(
-				exception, "Missing tables detected:\n[preupgradetesttable]");
+				exception, "Missing tables detected:\n[testtable]");
+		}
+		finally {
+			_serviceComponentLocalService.deleteServiceComponent(serviceComponent);
 		}
 	}
+
 
 	@Override
 	protected VerifyProcess getVerifyProcess() {
