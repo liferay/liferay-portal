@@ -10,20 +10,22 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.URLUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URL;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.liferay.portal.kernel.util.URLUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -56,15 +58,14 @@ public class DBResourceUtil {
 			"/com/liferay/portal/tools/sql/dependencies/portal-tables.sql");
 	}
 
-	public static Set<String> getPreupgradedServiceTables(
-		Connection connection)
+	public static Set<String> getPreupgradedServiceTables(Connection connection)
 		throws Exception {
 
 		Set<String> tableNames = new HashSet<>();
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-			"select data_ from ServiceComponent where buildNamespace " +
-			"like ?")) {
+				"select data_ from ServiceComponent where buildNamespace " +
+					"like ?")) {
 
 			preparedStatement.setString(1, "com.liferay%");
 
@@ -86,7 +87,9 @@ public class DBResourceUtil {
 		return tableNames;
 	}
 
-	public static Set<String> getTargetVersionTables(Connection connection) throws Exception {
+	public static Set<String> getTargetVersionTables(Connection connection)
+		throws Exception {
+
 		Set<String> tableNames = new HashSet<>();
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();

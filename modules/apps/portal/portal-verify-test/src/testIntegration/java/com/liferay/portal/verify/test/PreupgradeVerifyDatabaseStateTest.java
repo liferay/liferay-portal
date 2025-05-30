@@ -6,14 +6,11 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.ServiceComponent;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -23,7 +20,6 @@ import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.sql.Connection;
-
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -71,9 +67,8 @@ public class PreupgradeVerifyDatabaseStateTest
 			super.testVerify();
 		}
 		catch (Exception exception) {
-				_verifyException(
-					exception,
-					"Stale tables from a previous upgrade detected:");
+			_verifyException(
+				exception, "Stale tables from a previous upgrade detected:");
 		}
 	}
 
@@ -101,10 +96,10 @@ public class PreupgradeVerifyDatabaseStateTest
 				exception, "Missing tables detected:\n[testtable]");
 		}
 		finally {
-			_serviceComponentLocalService.deleteServiceComponent(serviceComponent);
+			_serviceComponentLocalService.deleteServiceComponent(
+				serviceComponent);
 		}
 	}
-
 
 	@Override
 	protected VerifyProcess getVerifyProcess() {

@@ -8,20 +8,10 @@ package com.liferay.portal.verify;
 import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DBInspector;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
-import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
-import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
-
-import java.net.URL;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 /**
  * @author Jorge Avalos
@@ -62,7 +52,8 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 					"\nPlease fix these tables to continue the upgrade");
 		}
 
-		Set<String> targetVersionTables = DBResourceUtil.getTargetVersionTables(connection);
+		Set<String> targetVersionTables = DBResourceUtil.getTargetVersionTables(
+			connection);
 
 		targetVersionTables.removeAll(preupgradedServiceTables);
 
@@ -77,8 +68,5 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 						"\nPlease remove these tables to continue the upgrade");
 		}
 	}
-
-	private static final Pattern _createTablePattern = Pattern.compile(
-		"create table (\\S*) \\(");
 
 }
