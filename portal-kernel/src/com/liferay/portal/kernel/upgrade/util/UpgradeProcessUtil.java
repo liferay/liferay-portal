@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.version.Version;
 
 import java.sql.Connection;
@@ -93,8 +92,8 @@ public class UpgradeProcessUtil {
 		Set<String> tableNames = new HashSet<>();
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select data_ from ServiceComponent where buildNamespace like ?"))) {
+				"select data_ from ServiceComponent where buildNamespace " +
+					"like ?")) {
 
 			preparedStatement.setString(1, "com.liferay%");
 
@@ -106,7 +105,9 @@ public class UpgradeProcessUtil {
 						resultSet.getString(1));
 
 					while (matcher.find()) {
-						tableNames.add(dbInspector.normalizeName(resultSet.getString("TABLE_NAME")));
+						tableNames.add(
+							dbInspector.normalizeName(
+								resultSet.getString("TABLE_NAME")));
 					}
 				}
 			}
