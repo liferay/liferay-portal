@@ -22,12 +22,8 @@ import com.liferay.portal.verify.PreupgradeVerifyDatabaseState;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
-import java.net.URL;
 import java.sql.Connection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -36,8 +32,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 /**
  * @author Jorge Avalos

@@ -5,16 +5,27 @@
 
 package com.liferay.portal.db;
 
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.liferay.portal.kernel.util.URLUtil;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Mariano Álvaro Sáiz
@@ -45,6 +56,69 @@ public class DBResourceUtil {
 			"/com/liferay/portal/tools/sql/dependencies/portal-tables.sql");
 	}
 
+	public static Set<String> getPreupgradedServiceTables(
+		Connection connection)
+		throws Exception {
+
+		Set<String> tableNames = new HashSet<>();
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+			"select data_ from ServiceComponent where buildNamespace " +
+			"like ?")) {
+
+			preparedStatement.setString(1, "com.liferay%");
+
+			DBInspector dbInspector = new DBInspector(connection);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					Matcher matcher = _createTablePattern.matcher(
+						resultSet.getString(1));
+
+					while (matcher.find()) {
+						tableNames.add(
+							dbInspector.normalizeName(matcher.group(1)));
+					}
+				}
+			}
+		}
+
+		return tableNames;
+	}
+
+	public static Set<String> getTargetVersionTables(Connection connection) throws Exception {
+		Set<String> tableNames = new HashSet<>();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		DBInspector dbInspector = new DBInspector(connection);
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			String symbolicName = bundle.getSymbolicName();
+
+			if (!symbolicName.startsWith("com.liferay") ||
+				!symbolicName.contains("service")) {
+
+				continue;
+			}
+
+			URL url = bundle.getResource("/META-INF/sql/tables.sql");
+
+			if (url == null) {
+				continue;
+			}
+
+			Matcher matcher = _createTablePattern.matcher(
+				URLUtil.toString(url));
+
+			while (matcher.find()) {
+				tableNames.add(dbInspector.normalizeName(matcher.group(1)));
+			}
+		}
+
+		return tableNames;
+	}
+
 	private static String _read(Bundle bundle, String path) {
 		URL resource = bundle.getResource(path);
 
@@ -67,5 +141,8 @@ public class DBResourceUtil {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DBResourceUtil.class);
+
+	private static final Pattern _createTablePattern = Pattern.compile(
+		"create table (\\S*) \\(");
 
 }

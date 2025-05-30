@@ -5,6 +5,7 @@
 
 package com.liferay.portal.verify;
 
+import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
@@ -40,7 +41,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 		}
 
 		Set<String> preupgradedServiceTables =
-			UpgradeProcessUtil.getPreupgradedServiceTables(connection);
+			DBResourceUtil.getPreupgradedServiceTables(connection);
 
 		if (preupgradedServiceTables.isEmpty()) {
 			return;
@@ -61,7 +62,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 					"\nPlease fix these tables to continue the upgrade");
 		}
 
-		Set<String> targetVersionTables = _fetchTargetVersionTables();
+		Set<String> targetVersionTables = DBResourceUtil.getTargetVersionTables(connection);
 
 		targetVersionTables.removeAll(preupgradedServiceTables);
 
@@ -75,39 +76,6 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 					previousUpgradeStaleTables +
 						"\nPlease remove these tables to continue the upgrade");
 		}
-	}
-
-	private Set<String> _fetchTargetVersionTables() throws Exception {
-		Set<String> tableNames = new HashSet<>();
-
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		DBInspector dbInspector = new DBInspector(connection);
-
-		for (Bundle bundle : bundleContext.getBundles()) {
-			String symbolicName = bundle.getSymbolicName();
-
-			if (!symbolicName.startsWith("com.liferay") ||
-				!symbolicName.contains("service")) {
-
-				continue;
-			}
-
-			URL url = bundle.getResource("/META-INF/sql/tables.sql");
-
-			if (url == null) {
-				continue;
-			}
-
-			Matcher matcher = _createTablePattern.matcher(
-				URLUtil.toString(url));
-
-			while (matcher.find()) {
-				tableNames.add(dbInspector.normalizeName(matcher.group(1)));
-			}
-		}
-
-		return tableNames;
 	}
 
 	private static final Pattern _createTablePattern = Pattern.compile(
