@@ -107,7 +107,7 @@ public class UpgradeProcessUtil {
 					while (matcher.find()) {
 						tableNames.add(
 							dbInspector.normalizeName(
-								resultSet.getString("TABLE_NAME")));
+								matcher.group(1)));
 					}
 				}
 			}
