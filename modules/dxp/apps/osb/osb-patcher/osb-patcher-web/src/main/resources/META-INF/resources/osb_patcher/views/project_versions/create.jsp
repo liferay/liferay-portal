@@ -104,7 +104,7 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 
 		var patcherProductVersionId = A.one('#<portlet:namespace />patcherProductVersionId').val();
 
-		if (dxp70AndNewerPatcherProductVersionIds.indexOf(Number(patcherProductVersionId)) < 0) {
+		if (dxp70AndNewerPatcherProductVersionIds.indexOf(patcherProductVersionId) < 0) {
 			A.one('#<portlet:namespace />displayingFixedIssues').hide();
 			A.one('#<portlet:namespace />fixedIssues').val('');
 		}
@@ -122,7 +122,7 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 
 		var marketplaceReleasePatcherProductVersionIds = <%= patcherProjectVersionsDisplayContext.getMarketplaceReleasePatcherProductVersionIdsJSONArray() %>;
 
-		if (marketplaceReleasePatcherProductVersionIds.includes(parseInt(productVersionId)) && !combined) {
+		if (marketplaceReleasePatcherProductVersionIds.includes(productVersionId) && !combined) {
 			A.one('#<portlet:namespace />displayingHide').show();
 		}
 		else {
