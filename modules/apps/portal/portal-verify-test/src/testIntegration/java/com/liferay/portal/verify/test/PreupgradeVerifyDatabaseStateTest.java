@@ -22,6 +22,7 @@ import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.sql.Connection;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,29 +68,34 @@ public class PreupgradeVerifyDatabaseStateTest
 	@Override
 	@Test
 	public void testVerify() throws Exception {
-		Exception thrownException = null;
+		Exception exception1 = null;
 
 		try {
 			super.testVerify();
 		}
-		catch (Exception exception) {
-			thrownException = exception;
+		catch (Exception exception2) {
+			exception1 = exception2;
 		}
 		finally {
-			try(Connection connection = DataAccess.getConnection()) {
+			try (Connection connection = DataAccess.getConnection()) {
 				DBInspector dbInspector = new DBInspector(connection);
 
-				Set<String> databaseTables = new HashSet<>(dbInspector.getTableNames(null));
+				Set<String> databaseTables = new HashSet<>(
+					dbInspector.getTableNames(null));
 
 				Set<String> targetVersionTables = DBResourceUtil.getTargetVersionTables(
 					connection);
 
+				targetVersionTables.removeAll(DBResourceUtil.getPreupgradedServiceTables(connection));
+
 				databaseTables.retainAll(targetVersionTables);
+
 				_verifyException(
-					thrownException, "Stale tables from a previous upgrade detected:\n" + databaseTables);
+					exception1,
+					"Stale tables from a previous upgrade detected:\n" +
+						databaseTables);
 			}
 		}
-
 	}
 
 	@Test
@@ -108,20 +114,20 @@ public class PreupgradeVerifyDatabaseStateTest
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
 
-		Exception thrownException = null;
+		Exception exception1 = null;
 
 		try {
 			super.testVerify();
 		}
-		catch (Exception exception) {
-			thrownException = exception;
+		catch (Exception exception2) {
+			exception1 = exception2;
 		}
 		finally {
 			_serviceComponentLocalService.deleteServiceComponent(
 				serviceComponent);
 		}
-		_verifyException(
-			thrownException, "Missing tables detected:\n[testtable]");
+
+		_verifyException(exception1, "Missing tables detected:\n[testtable]");
 	}
 
 	@Override
