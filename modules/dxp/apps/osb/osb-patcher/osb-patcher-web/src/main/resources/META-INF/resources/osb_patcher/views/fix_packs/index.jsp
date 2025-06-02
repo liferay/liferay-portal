@@ -7,6 +7,10 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPacksDisplayContext(request, renderRequest, renderResponse);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="fix-packs" />
 </liferay-util:include>
@@ -71,14 +75,8 @@
 </aui:form>
 
 <liferay-ui:search-container
-	emptyResultsMessage="there-are-no-fix-packs"
-	iteratorURL="<%= alloySearchResult.portletURL %>"
-	total="<%= alloySearchResult.size %>"
+	searchContainer="<%= patcherFixPacksDisplayContext.getSearchContainer() %>"
 >
-	<liferay-ui:search-container-results
-		results="<%= alloySearchResult.baseModels %>"
-	/>
-
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFixPack"
 		escapedModel="<%= true %>"
