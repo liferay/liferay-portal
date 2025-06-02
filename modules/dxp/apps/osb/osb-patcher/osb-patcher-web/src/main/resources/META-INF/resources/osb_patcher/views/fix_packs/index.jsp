@@ -124,19 +124,6 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 						url="<%= testPatcherFixPackURL %>"
 					/>
 				</c:if>
-
-				<c:if test="<%= false %>">
-					<portlet:actionURL var="deletePatcherFixPackURL">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="delete" />
-						<portlet:param name="id" value="<%= patcherFixPack.patcherFixPackId %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon-delete
-						url="<%= deletePatcherFixPackURL %>"
-					/>
-				</c:if>
 			</liferay-ui:icon-menu>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
