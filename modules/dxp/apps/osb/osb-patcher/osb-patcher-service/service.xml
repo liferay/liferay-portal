@@ -338,6 +338,10 @@
 		<finder name="Version" return-type="Collection">
 			<finder-column name="version" />
 		</finder>
+		<finder name="PFCI_PPVI" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="patcherProjectVersionId" />
+		</finder>
 		<finder name="PFCI_V" return-type="Collection">
 			<finder-column name="patcherFixComponentId" />
 			<finder-column name="version" />
