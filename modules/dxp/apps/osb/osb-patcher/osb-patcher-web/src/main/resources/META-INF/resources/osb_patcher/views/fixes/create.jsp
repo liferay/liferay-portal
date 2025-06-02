@@ -34,11 +34,6 @@
 	</portlet:renderURL>
 
 	<aui:input name="redirect" type="hidden" value="<%= viewPatcherFixesURL %>" />
-	<aui:input name="id" type="hidden" value="<%= patcherFix.patcherFixId %>" />
-
-	<aui:field-wrapper name="version">
-		<%= patcherFix.keyVersion %>
-	</aui:field-wrapper>
 
 	<aui:select label="product-version" name="patcherProductVersionId" onChange='<%= renderResponse.namespace + "productVersionOnChange(this.value);" %>' required="<%= true %>" showEmptyOption="<%= true %>">
 		<c:forEach items="<%= patcherProductVersions %>" var="patcherProductVersion">
@@ -48,13 +43,13 @@
 
 	<aui:select label="project-version" name="patcherProjectVersionId" required="<%= true %>" />
 
-	<aui:input inputCssClass="osb-patcher-input-wide" label="content" name="patcherFixName" type="textarea" value="<%= patcherFix.name %>" />
+	<aui:input inputCssClass="osb-patcher-input-wide" label="content" name="patcherFixName" type="textarea" />
 
 	<aui:input label="branch-name" name="committish" />
 
 	<aui:input label="github-url" name="gitRemoteURL" />
 
-	<aui:input name="workaround" type="checkbox" value="<%= patcherFix.type == PatcherFixConstants.TYPE_WORKAROUND %>" />
+	<aui:input name="workaround" type="checkbox" />
 
 	<aui:button-row>
 		<aui:button type="submit" value="add" />
