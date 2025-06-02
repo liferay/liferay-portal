@@ -247,19 +247,6 @@ PatcherFixesDisplayContext patcherFixesDisplayContext = new PatcherFixesDisplayC
 					/>
 				</c:if>
 
-				<c:if test="<%= false && (patcherFix.type != PatcherFixConstants.TYPE_FIX_PACK) %>">
-					<portlet:actionURL var="deletePatcherFixURL">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="delete" />
-						<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon-delete
-						url="<%= deletePatcherFixURL %>"
-					/>
-				</c:if>
-
 				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EXCLUDE, patcherFix.userId) && (patcherFix.type != PatcherFixConstants.TYPE_EXCLUDED) && (patcherFix.type != PatcherFixConstants.TYPE_FIX_PACK) %>">
 					<portlet:actionURL var="excludePatcherFixURL">
 						<portlet:param name="controller" value="fixes" />
