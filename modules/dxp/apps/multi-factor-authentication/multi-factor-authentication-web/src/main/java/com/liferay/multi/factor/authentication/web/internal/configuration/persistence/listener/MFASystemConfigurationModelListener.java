@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -55,6 +56,12 @@ public class MFASystemConfigurationModelListener
 		_companyLocalService.forEachCompanyId(
 			companyId -> {
 				try {
+					long userId = PrincipalThreadLocal.getUserId();
+
+					if (userId == 0) {
+						return;
+					}
+
 					MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
 						_configurationProvider.getCompanyConfiguration(
 							MFAEmailOTPConfiguration.class, companyId);

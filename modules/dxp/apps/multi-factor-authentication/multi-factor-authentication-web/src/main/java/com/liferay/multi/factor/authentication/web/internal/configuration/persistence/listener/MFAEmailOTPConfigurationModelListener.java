@@ -52,6 +52,10 @@ public class MFAEmailOTPConfigurationModelListener
 
 			long userId = PrincipalThreadLocal.getUserId();
 
+			if (userId == 0) {
+				return;
+			}
+
 			_userNotificationEventLocalService.sendUserNotificationEvents(
 				userId, ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 				UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
