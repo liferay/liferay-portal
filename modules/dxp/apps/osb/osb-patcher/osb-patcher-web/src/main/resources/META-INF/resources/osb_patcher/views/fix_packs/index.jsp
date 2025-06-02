@@ -15,64 +15,9 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 	<liferay-util:param name="tabs1" value="fix-packs" />
 </liferay-util:include>
 
-<aui:button-row>
-	<portlet:renderURL var="createPatcherFixPackURL">
-		<portlet:param name="controller" value="fix_packs" />
-		<portlet:param name="action" value="create" />
-	</portlet:renderURL>
-
-	<aui:button disabled='<%= !PatcherPermission.contains(themeDisplay, "fix_packs", PatcherActionKeys.CREATE) %>' href="<%= createPatcherFixPackURL %>" value="create-fix-pack" />
-</aui:button-row>
-
-<portlet:renderURL var="viewPatcherFixPacksURL">
-	<portlet:param name="mvcRenderCommandName" value="/patcher/index_fix_packs" />
-</portlet:renderURL>
-
-<aui:form action="<%= viewPatcherFixPacksURL %>" method="get" name="fm">
-	<liferay-ui:search-toggle
-		buttonLabel="search"
-		displayTerms="<%= new DisplayTerms(renderRequest) %>"
-		id="toggle_id_patcher_fix_pack_search"
-	>
-		<div class="layout">
-			<div class="layout-content">
-				<clay:col>
-					<aui:input label="name" name="name" size="30" title="search-fix-packs" type="text" />
-				</clay:col>
-			</div>
-		</div>
-
-		<div class="layout">
-			<div class="layout-content">
-				<clay:col>
-					<aui:select label="status" name="statusFilter" showEmptyOption="<%= true %>">
-						<aui:option label="<%= WorkflowConstants.LABEL_FIX_PACK_FROZEN %>" value="<%= WorkflowConstants.STATUS_FIX_PACK_FROZEN %>" />
-						<aui:option label="<%= WorkflowConstants.LABEL_FIX_PACK_RELEASED %>" value="<%= WorkflowConstants.STATUS_FIX_PACK_RELEASED %>" />
-						<aui:option label="<%= WorkflowConstants.LABEL_FIX_PACK_UNDER_DEVELOPMENT %>" value="<%= WorkflowConstants.STATUS_FIX_PACK_UNDER_DEVELOPMENT %>" />
-					</aui:select>
-				</clay:col>
-
-				<clay:col>
-					<aui:select label="component" name="patcherFixComponentIdFilter" showEmptyOption="<%= true %>">
-						<c:forEach items="<%= patcherFixComponents %>" var="patcherFixComponent">
-							<aui:option value="<%= patcherFixComponent.patcherFixComponentId %>">
-								<%= patcherFixComponent.name %>
-							</aui:option>
-						</c:forEach>
-					</aui:select>
-				</clay:col>
-
-				<clay:col>
-					<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="<%= true %>">
-						<c:forEach items="<%= patcherProjectVersions %>" var="patcherProjectVersion">
-							<aui:option label="<%= patcherProjectVersion.name %>" value="<%= patcherProjectVersion.patcherProjectVersionId %>" />
-						</c:forEach>
-					</aui:select>
-				</clay:col>
-			</div>
-		</div>
-	</liferay-ui:search-toggle>
-</aui:form>
+<clay:management-toolbar
+	managementToolbarDisplayContext="<%= new PatcherFixPacksManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, patcherFixPacksDisplayContext.getSearchContainer()) %>"
+/>
 
 <liferay-ui:search-container
 	searchContainer="<%= patcherFixPacksDisplayContext.getSearchContainer() %>"
