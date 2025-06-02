@@ -7,6 +7,24 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+String redirect = ParamUtil.getString(request, "redirect");
+
+long patcherFixPackId = ParamUtil.getLong(request, "patcherFixPackId");
+
+PatcherFixPack patcherFixPack = PatcherFixPackLocalServiceUtil.fetchPatcherFixPack(patcherFixPackId);
+
+PatcherFixComponent patcherFixComponent = PatcherFixComponentLocalServiceUtil.fetchPatcherFixComponent(patcherFixPack.getPatcherFixComponentId());
+
+PatcherFix mainPatcherFix = null;
+
+PatcherBuild patcherBuild = PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherFixPack.getPatcherBuildId());
+
+if (patcherBuild != null) {
+	mainPatcherFix = PatcherFixLocalServiceUtil.getPatcherFix(patcherBuild.getPatcherFixId());
+}
+%>
+
 <c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) %>">
 	<liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 		<liferay-util:param name="tabs1" value="fix-packs" />
@@ -18,67 +36,68 @@
 	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_fix_packs" />
 </liferay-util:include>
 
-<c:if test="<%= Validator.isNotNull(mainPatcherFix.getGitHash()) %>">
-	<aui:field-wrapper name="git-hash">
-		<a href="<%= gitHubURL %>" target="_blank"><%= mainPatcherFix.getGitHash() %></a>
+<c:if test="<%= (mainPatcherFix != null) && Validator.isNotNull(mainPatcherFix.getGitHash()) %>">
+	<aui:field-wrapper label="git-hash">
+		<a href="<%= PatcherFixUtil.getPatcherFixGitHubURL(mainPatcherFix.getPatcherFixId()) %>" target="_blank"><%= mainPatcherFix.getGitHash() %></a>
 	</aui:field-wrapper>
 </c:if>
 
-<aui:field-wrapper name="name">
+<aui:field-wrapper label="name">
 	<%= patcherFixPack.getName() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="component">
+<aui:field-wrapper label="component">
 	<%= patcherFixComponent.getName() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="version">
+<aui:field-wrapper label="version">
 	<%= patcherFixPack.getVersion() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="status">
-	<%= patcherFixPackStatus %>
+<aui:field-wrapper label="status">
+	<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherFixPack.getStatus()) %>" />
 </aui:field-wrapper>
 
-<aui:field-wrapper name="build-status">
-	<%= patcherBuildStatus %>
-</aui:field-wrapper>
-
-<c:if test="<%= Validator.isNotNull(mainPatcherBuild.getQAStatus()) %>">
-	<aui:field-wrapper name="qa-status">
-		<%= patcherBuildQAStatus %>
+<c:if test="<%= patcherBuild != null %>">
+	<aui:field-wrapper label="build-status">
+		<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getStatus()) %>" />
 	</aui:field-wrapper>
 </c:if>
 
-<aui:field-wrapper name="released-date">
+<c:if test="<%= (patcherBuild != null) && Validator.isNotNull(patcherBuild.getQaStatus()) %>">
+	<aui:field-wrapper label="qa-status">
+		<liferay-ui:message key="<%= PatcherBuildUtil.getQAStatusLabel(patcherFixPack.getPatcherBuildId()) %>" />
+	</aui:field-wrapper>
+</c:if>
+
+<aui:field-wrapper label="released-date">
 	<fmt:formatDate
 		value="<%= patcherFixPack.getReleasedDate() %>"
 	/>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="requirements">
+<aui:field-wrapper label="requirements">
 	<%= patcherFixPack.getRequirements() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="new-issues">
-	<%= newTickets %>
+<aui:field-wrapper label="new-issues">
+	<%= StringUtil.merge(PatcherUtil.getNewTickets(patcherFixPack), StringPool.COMMA_AND_SPACE) %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="overridden-issues">
-	<%= overriddenTickets %>
+<aui:field-wrapper label="overridden-issues">
+	<%= StringUtil.merge(PatcherUtil.getOverriddenTickets(patcherFixPack), StringPool.COMMA_AND_SPACE) %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="oldest-fix-date">
+<aui:field-wrapper label="oldest-fix-date">
 	<fmt:formatDate
-		value="<%= oldestPatcherFixDate %>"
+		value="<%= PatcherFixUtil.getOldestPatcherFixCreateDate(patcherFixPack.getPatcherFixPackId()) %>"
 	/>
 </aui:field-wrapper>
 
 <aui:button-row>
 	<portlet:renderURL var="viewPatcherFixPackURL">
-		<portlet:param name="controller" value="fix_packs" />
-		<portlet:param name="action" value="view" />
-		<portlet:param name="id" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId() %>" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/view_fix_packs" />
+		<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 
 		<c:if test="<%= Validator.isNotNull(redirect) %>">
 			<portlet:param name="redirect" value="<%= redirect %>" />
@@ -86,29 +105,25 @@
 	</portlet:renderURL>
 
 	<portlet:renderURL var="editPatcherFixPackURL">
-		<portlet:param name="controller" value="fix_packs" />
-		<portlet:param name="action" value="edit" />
-		<portlet:param name="id" value="<%= patcherFixPack.getPatcherFixPackId() %>" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_packs" />
+		<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 		<portlet:param name="redirect" value="<%= viewPatcherFixPackURL %>" />
 	</portlet:renderURL>
 
 	<aui:button href="<%= editPatcherFixPackURL %>" value="edit" />
 
-	<c:if test="<%= patcherFixPack.patcherBuildId > 0 %>">
+	<c:if test="<%= patcherFixPack.getPatcherBuildId() > 0 %>">
 		<portlet:renderURL var="viewPatcherBuildURL">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="<%= patcherFixPack.getPatcherBuildId() %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherFixPack.getPatcherBuildId()) %>" />
 		</portlet:renderURL>
 
 		<aui:button href="<%= viewPatcherBuildURL %>" value="view-build" />
 	</c:if>
 
-	<c:if test="<%= mainPatcherBuild.status == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-		<portlet:actionURL var="testPatcherFixPackURL">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="test" />
-			<portlet:param name="id" value="<%= patcherFixPack.getPatcherBuildId() %>" />
+	<c:if test="<%= (patcherBuild != null) && (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE) %>">
+		<portlet:actionURL name="/patcher/test_builds" var="testPatcherFixPackURL">
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherFixPack.getPatcherBuildId()) %>" />
 			<portlet:param name="redirect" value="<%= viewPatcherFixPackURL %>" />
 		</portlet:actionURL>
 
@@ -116,11 +131,15 @@
 	</c:if>
 </aui:button-row>
 
-<aui:field-wrapper name="fixes-in-fix-pack" />
+<aui:field-wrapper label="fixes-in-fix-pack" />
+
+<%
+List<PatcherFix> patcherFixes = PatcherFixLocalServiceUtil.getPatcherFixPackPatcherFixes(patcherFixPack.getPatcherFixPackId());
+%>
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fixes"
-	total="<%= fn:length(patcherFixes) %>"
+	total="<%= patcherFixes.size() %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= patcherFixes %>"
@@ -133,9 +152,8 @@
 		modelVar="patcherFix"
 	>
 		<portlet:renderURL var="viewPatcherFixURL">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="<%= patcherFix.getPatcherFixId() %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes" />
+			<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 		</portlet:renderURL>
 
 		<liferay-ui:search-container-column-text
@@ -147,11 +165,17 @@
 		<liferay-ui:search-container-column-text
 			name="name"
 		>
-			<c:set value="<%= StringUtil.split(patcherFix.getName()) %>" var="tokens" />
 
-			<c:forEach items="<%= tokens %>" var="token" varStatus="tokenStatus">
-				<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= token %>" target="_blank"><%= token %></a><%= (!tokenStatus.last) ? StringPool.COMMA : StringPool.BLANK %>
-			</c:forEach>
+			<%
+			for (String token : StringUtil.split(patcherFix.getName())) {
+			%>
+
+				<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= token %>" target="_blank"><%= token %></a>,
+
+			<%
+			}
+			%>
+
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
@@ -163,7 +187,7 @@
 			href="<%= PatcherFixUtil.getPatcherFixGitHubURL(patcherFix.getPatcherFixId()) %>"
 			name="git-hash"
 			target="_blank"
-			value="<%= fn:substring(patcherFix.gitHash, 0, 10) %>"
+			value="<%= patcherFix.getGitHash() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -172,15 +196,16 @@
 
 		<liferay-ui:search-container-column-text
 			name="status"
-			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) + ">" %>'
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) %>"
 		/>
-
-		<c:set value="<%= LanguageUtil.get(request, WorkflowConstantsMethods.getStatusLabel(patcherFix.getFixPackStatus())) %>" var="fixPackStatus" />
 
 		<liferay-ui:search-container-column-text
 			name="fix-pack-status"
-			value="<%= (patcherFix.fixPackStatus > 0) ? fixPackStatus : StringPool.BLANK %>"
-		/>
+		>
+			<c:if test="<%= patcherFix.getFixPackStatus() > 0 %>">
+				<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherFix.getFixPackStatus()) %>" />
+			</c:if>
+		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
 			name="type"
@@ -191,11 +216,10 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT, patcherFix.userId) && patcherFix.latestFix %>">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT, patcherFix.getUserId()) && patcherFix.getLatestFix() %>">
 					<portlet:renderURL var="editPatcherFixURL">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fixes" />
+						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
@@ -205,36 +229,27 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.userId) %>">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
 					<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="editFixPackFields" />
-						<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_pack_fields_fixes" />
+						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 					</portlet:renderURL>
 
-					<c:set value='<%= UnicodeLanguageUtil.get(request, "edit-fix-packs") %>' var="editPatcherFixFixPackFieldsURLTitle" />
-
-					<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + editPatcherFixFixPackFieldsURL %>', '<%= editPatcherFixFixPackFieldsURLTitle + "', true, 800)" %>' var="editPatcherFixFixPackFieldsURL" />
-
-					<liferay-ui:icon
-						image="edit"
-						message="edit-fix-packs"
-						method="get"
-						url="<%= editPatcherFixFixPackFieldsURL %>"
+					<clay:button
+						displayType="link"
+						label='<%= LanguageUtil.get(request, "edit-fix-packs") %>'
+						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + editPatcherFixFixPackFieldsURL + "');" %>'
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.SET_FIX_PACK_FIELDS, patcherFix.userId) %>">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.SET_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
 					<portlet:renderURL var="viewPatcherFixPackURL">
-						<portlet:param name="controller" value="fix_packs" />
-						<portlet:param name="action" value="view" />
-						<portlet:param name="id" value="<%= patcherFixPack.patcherFixPackId %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/view_fix_packs" />
+						<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 					</portlet:renderURL>
 
-					<portlet:actionURL var="setFixPackFieldsURL">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="setFixPackFields" />
-						<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+					<portlet:actionURL name="/patcher/set_fix_pack_fields_fixes" var="setFixPackFieldsURL">
+						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 						<portlet:param name="redirect" value="<%= viewPatcherFixPackURL %>" />
 					</portlet:actionURL>
 
@@ -246,10 +261,8 @@
 				</c:if>
 
 				<c:if test="<%= false %>">
-					<portlet:actionURL var="deletePatcherFixURL">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="delete" />
-						<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+					<portlet:actionURL name="/patcher/delete_fixes" var="deletePatcherFixURL">
+						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
@@ -266,35 +279,36 @@
 	/>
 </liferay-ui:search-container>
 
-<c:if test="<%= not empty prerequisitePatcherFixPacks %>">
-	<aui:field-wrapper name="dependencies" />
+<%
+Set<PatcherFixPack> prerequisitePatcherFixPacks = PatcherFixPackUtil.getPrerequisitePatcherFixPacks(patcherFixPack.getPatcherFixPackId());
+%>
+
+<c:if test="<%= !prerequisitePatcherFixPacks.isEmpty() %>">
+	<aui:field-wrapper label="dependencies" />
 
 	<liferay-ui:search-container
-		total="<%= fn:length(prerequisitePatcherFixPacks) %>"
+		total="<%= prerequisitePatcherFixPacks.size() %>"
 	>
 		<liferay-ui:search-container-results
-			results="<%= prerequisitePatcherFixPacks %>"
+			results="<%= ListUtil.fromCollection(prerequisitePatcherFixPacks) %>"
 		/>
 
 		<liferay-ui:search-container-row
 			className="com.liferay.osb.patcher.model.PatcherFixPack"
 			escapedModel="<%= true %>"
 			keyProperty="patcherFixPackId"
-			modelVar="patcherFixPack"
+			modelVar="curPatcherFixPack"
 		>
 			<portlet:renderURL var="viewPatcherFixPackURL">
-				<portlet:param name="controller" value="fix_packs" />
-				<portlet:param name="action" value="view" />
-				<portlet:param name="id" value="<%= patcherFixPack.patcherFixPackId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/view_fix_packs" />
+				<portlet:param name="patcherFixPackId" value="<%= String.valueOf(curPatcherFixPack.getPatcherFixPackId()) %>" />
 			</portlet:renderURL>
 
 			<liferay-ui:search-container-column-text
 				href="<%= viewPatcherFixPackURL %>"
 				name="name"
-				value="<%= patcherFixPack.name %>"
+				value="<%= curPatcherFixPack.getName() %>"
 			/>
-
-			<c:set value="<%= PatcherFixComponentLocalServiceUtil.getPatcherFixComponent(patcherFixPack.getPatcherFixComponentId()) %>" var="patcherFixComponent" />
 
 			<liferay-ui:search-container-column-text
 				name="component"
@@ -303,10 +317,12 @@
 
 			<liferay-ui:search-container-column-text
 				name="version"
-				value="<%= patcherFixPack.getVersion() %>"
+				value="<%= String.valueOf(curPatcherFixPack.getVersion()) %>"
 			/>
 
-			<c:set value="<%= PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(patcherFixPack.getPatcherProjectVersionId()) %>" var="patcherProjectVersion" />
+			<%
+			PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersion(curPatcherFixPack.getPatcherProjectVersionId());
+			%>
 
 			<liferay-ui:search-container-column-text
 				name="project-version"
@@ -315,14 +331,14 @@
 
 			<liferay-ui:search-container-column-text
 				name="status"
-				value='<%= LanguageUtil.get(WorkflowConstants.getStatusLabel(patcherFixPack.getStatus())) + ">" %>'
+				value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(curPatcherFixPack.getStatus())) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
 				name="released-date"
 			>
 				<fmt:formatDate
-					value="<%= patcherFixPack.getReleasedDate() %>"
+					value="<%= curPatcherFixPack.getReleasedDate() %>"
 				/>
 			</liferay-ui:search-container-column-text>
 		</liferay-ui:search-container-row>
@@ -332,3 +348,12 @@
 		/>
 	</liferay-ui:search-container>
 </c:if>
+
+<aui:script>
+	function <portlet:namespace />handleClick(url) {
+		Liferay.Util.openModal({
+			title: '<liferay-ui:message key="edit-fix-packs" />',
+			url: url,
+		});
+	}
+</aui:script>

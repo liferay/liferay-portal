@@ -7,6 +7,10 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+String redirect = ParamUtil.getString(request, "redirect");
+%>
+
 <c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) %>">
 	<liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 		<liferay-util:param name="tabs1" value="fix-packs" />
@@ -18,12 +22,9 @@
 	<liferay-util:param name="mvcRenderCommandName" value="/patcher/index_fix_packs" />
 </liferay-util:include>
 
-<aui:model-context bean="<%= patcherFixPack %>" model="<%= PatcherFixPack.class %>" />
+<aui:model-context bean="<%= null %>" model="<%= PatcherFixPack.class %>" />
 
-<portlet:actionURL var="addPatcherFixPackURL">
-	<portlet:param name="controller" value="fix_packs" />
-	<portlet:param name="action" value="add" />
-</portlet:actionURL>
+<portlet:actionURL name="/patcher/add_fix_packs" var="addPatcherFixPackURL" />
 
 <aui:form action="<%= addPatcherFixPackURL %>" method="post">
 	<portlet:renderURL var="viewPatcherFixPacksURL">
@@ -32,26 +33,42 @@
 
 	<aui:input name="redirect" type="hidden" value="<%= viewPatcherFixPacksURL %>" />
 
-	<aui:select label="project-version" name="patcherProjectVersionId" onChange='<%= renderResponse.namespace + "patcherFixPackFieldsOnChange();" %>' required="<%= true %>" showEmptyOption="<%= true %>">
-		<c:forEach items="<%= patcherProjectVersions %>" var="patcherProjectVersion">
-			<aui:option label="<%= patcherProjectVersion.name %>" value="<%= patcherProjectVersion.patcherProjectVersionId %>" />
-		</c:forEach>
+	<aui:select label="project-version" name="patcherProjectVersionId" onChange='<%= liferayPortletResponse.getNamespace() + "patcherFixPackFieldsOnChange();" %>' required="<%= true %>" showEmptyOption="<%= true %>">
+
+		<%
+		for (PatcherProjectVersion patcherProjectVersion : PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions()) {
+		%>
+
+			<aui:option label="<%= patcherProjectVersion.getName() %>" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
+
+		<%
+		}
+		%>
+
 	</aui:select>
 
-	<aui:select label="component" name="patcherFixComponentId" onChange='<%= renderResponse.namespace + "patcherFixPackFieldsOnChange();" %>' required="<%= true %>" showEmptyOption="<%= true %>">
-		<c:forEach items="<%= patcherFixComponents %>" var="patcherFixComponent">
-			<aui:option value="<%= patcherFixComponent.patcherFixComponentId %>"><%= patcherFixComponent.name %></aui:option>
-		</c:forEach>
+	<aui:select label="component" name="patcherFixComponentId" onChange='<%= liferayPortletResponse.getNamespace() + "patcherFixPackFieldsOnChange();" %>' required="<%= true %>" showEmptyOption="<%= true %>">
+
+		<%
+		for (PatcherFixComponent patcherFixComponent : PatcherFixComponentLocalServiceUtil.getPatcherFixComponents()) {
+		%>
+
+			<aui:option label="<%= patcherFixComponent.getName() %>" value="<%= patcherFixComponent.getPatcherFixComponentId() %>" />
+
+		<%
+		}
+		%>
+
 	</aui:select>
 
-	<span class="aui-helper-hidden displaying-version" id="<%= renderResponse.namespace %>displayingVersion">
-		<aui:input label="initial-version" name="patcherFixPackVersion" type="text" value="" />
+	<span class="aui-helper-hidden displaying-version" id="<portlet:namespace />displayingVersion">
+		<aui:input label="initial-version" name="version" type="text" value="" />
 	</span>
 
 	<aui:button-row>
 		<aui:button type="submit" value="add" />
 
-		<aui:button href="<%= (not empty redirect) ? redirect : viewPatcherFixPacksURL %>" value="cancel" />
+		<aui:button href="<%= Validator.isNotNull(redirect) ? redirect : viewPatcherFixPacksURL %>" value="cancel" />
 	</aui:button-row>
 </aui:form>
 
@@ -74,7 +91,7 @@
 				return;
 			}
 
-			var filteredPatcherFixPacks = JSON.parse('<%= filteredPatcherFixPacksJSON %>');
+			var filteredPatcherFixPacks = JSON.parse('<%= HtmlUtil.escapeJS(JSONFactoryUtil.looseSerialize(PatcherFixPackUtil.getFilteredPatcherFixPacksByComponentAndProjectVersion())) %>');
 
 			for (var i in filteredPatcherFixPacks) {
 				var filteredPatcherFixPack = filteredPatcherFixPacks[i];

@@ -29,39 +29,42 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 		modelVar="patcherFixPack"
 	>
 		<portlet:renderURL var="viewPatcherFixPackURL">
-			<portlet:param name="controller" value="fix_packs" />
-			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="<%= patcherFixPack.patcherFixPackId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fix_packs" />
+			<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 		</portlet:renderURL>
 
 		<liferay-ui:search-container-column-text
 			href="<%= viewPatcherFixPackURL %>"
 			name="name"
-			value="<%= patcherFixPack.name %>"
+			value="<%= patcherFixPack.getName() %>"
 		/>
 
-		<c:set value="<%= PatcherFixComponentLocalServiceUtil.fetchPatcherFixComponent(patcherFixPack.getPatcherFixComponentId()) %>" var="patcherFixComponent" />
+		<%
+		PatcherFixComponent patcherFixComponent = PatcherFixComponentLocalServiceUtil.fetchPatcherFixComponent(patcherFixPack.getPatcherFixComponentId());
+		%>
 
 		<liferay-ui:search-container-column-text
 			name="component"
-			value="<%= patcherFixComponent.name %>"
+			value="<%= patcherFixComponent.getName() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="version"
-			value="<%= patcherFixPack.version %>"
+			value="<%= String.valueOf(patcherFixPack.getVersion()) %>"
 		/>
 
-		<c:set value="<%= PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherFixPack.getPatcherProjectVersionId()) %>" var="patcherProjectVersion" />
+		<%
+		PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherFixPack.getPatcherProjectVersionId());
+		%>
 
 		<liferay-ui:search-container-column-text
 			name="project-version"
-			value="<%= patcherProjectVersion.name %>"
+			value="<%= patcherProjectVersion.getName() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="status"
-			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFixPack.getStatus())) + ">" %>'
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFixPack.getStatus())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -73,33 +76,36 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 			name="released-date"
 		>
 			<fmt:formatDate
-				value="<%= patcherFixPack.releasedDate %>"
+				value="<%= patcherFixPack.getReleasedDate() %>"
 			/>
 		</liferay-ui:search-container-column-text>
 
-		<c:set value="<%= PatcherUtil.getNewTickets(patcherFixPack) %>" var="newTickets" />
+		<%
+		List<String> newTickets = PatcherUtil.getNewTickets(patcherFixPack);
+		%>
 
 		<liferay-ui:search-container-column-text
 			name="new-issues"
-			value="<%= fn:length(newTickets) %>"
+			value="<%= String.valueOf(newTickets.size()) %>"
 		/>
 
-		<c:set value="<%= PatcherUtil.getOverriddenTickets(patcherFixPack) %>" var="overriddenTickets" />
+		<%
+		List<String> overriddenTickets = PatcherUtil.getOverriddenTickets(patcherFixPack);
+		%>
 
 		<liferay-ui:search-container-column-text
 			name="overridden-issues"
-			value="<%= fn:length(overriddenTickets) %>"
+			value="<%= String.valueOf(overriddenTickets.size()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFixPack, PatcherActionKeys.EDIT, patcherFixPack.userId) %>">
+				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFixPack, PatcherActionKeys.EDIT, patcherFixPack.getUserId()) %>">
 					<portlet:renderURL var="editPatcherFixPackURL">
-						<portlet:param name="controller" value="fix_packs" />
-						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="<%= patcherFixPack.patcherFixPackId %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_packs" />
+						<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
@@ -109,11 +115,13 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 					/>
 				</c:if>
 
-				<c:if test="<%= patcherBuild.status == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-					<portlet:actionURL var="testPatcherFixPackURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="test" />
-						<portlet:param name="id" value="<%= patcherFixPack.patcherBuildId %>" />
+				<%
+				PatcherBuild patcherBuild = PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherFixPack.getPatcherBuildId());
+				%>
+
+				<c:if test="<%= (patcherBuild != null) && (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE) %>">
+					<portlet:actionURL name="/patcher/test_builds" var="testPatcherFixPackURL">
+						<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 

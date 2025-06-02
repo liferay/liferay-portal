@@ -7,6 +7,31 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+String redirect = ParamUtil.getString(request, "redirect");
+long patcherFixPackId = ParamUtil.getLong(request, "patcherFixPackId");
+
+PatcherFix patcherFix = null;
+String gitHubURL = StringPool.BLANK;
+Map<String, String> jenkinsRequestParameters = null;
+
+PatcherFixPack patcherFixPack = PatcherFixPackLocalServiceUtil.fetchPatcherFixPack(patcherFixPackId);
+
+PatcherBuild patcherBuild = PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherFixPack.getPatcherBuildId());
+
+if (patcherBuild != null) {
+	patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(patcherBuild.getPatcherFixId());
+
+	gitHubURL = PatcherFixUtil.getPatcherFixGitHubURL(patcherFix.getPatcherFixId());
+
+	jenkinsRequestParameters = JenkinsUtil.getDistJenkinsRequestParameters(patcherBuild);
+
+	if (patcherBuild.getPatcherProductVersionId() != PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_PORTAL_6X)) {
+		jenkinsRequestParameters.put("git.revision", patcherFix.getGitHash());
+	}
+}
+%>
+
 <c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) %>">
 	<liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 		<liferay-util:param name="tabs1" value="fix-packs" />
@@ -20,10 +45,7 @@
 
 <aui:model-context bean="<%= patcherFixPack %>" model="<%= PatcherFixPack.class %>" />
 
-<portlet:actionURL var="updatePatcherFixPackURL">
-	<portlet:param name="controller" value="fix_packs" />
-	<portlet:param name="action" value="update" />
-</portlet:actionURL>
+<portlet:actionURL name="/patcher/update_fix_packs" var="updatePatcherFixPackURL" />
 
 <aui:form action="<%= updatePatcherFixPackURL %>" method="post">
 	<portlet:renderURL var="viewPatcherFixPacksURL">
@@ -31,49 +53,69 @@
 	</portlet:renderURL>
 
 	<aui:input name="redirect" type="hidden" value="<%= viewPatcherFixPacksURL %>" />
-	<aui:input name="id" type="hidden" value="<%= patcherFixPack.patcherFixPackId %>" />
+	<aui:input name="patcherFixPackId" type="hidden" value="<%= patcherFixPack.getPatcherFixPackId() %>" />
 
-	<c:set value="<%= patcherFixPack.patcherFixPackId > 0 %>" var="disabled" />
+	<c:set value="<%= patcherFixPack.getPatcherFixPackId() > 0 %>" var="disabled" />
 
-	<aui:field-wrapper name="git-hash">
-		<a href="<%= gitHubURL %>" target="_blank"><%= patcherFix.gitHash %></a>
-	</aui:field-wrapper>
+	<c:if test="<%= patcherFix != null %>">
+		<aui:field-wrapper label="git-hash">
+			<a href="<%= gitHubURL %>" target="_blank"><%= patcherFix.getGitHash() %></a>
+		</aui:field-wrapper>
+	</c:if>
 
 	<aui:select disabled="<%= true %>" label="project-version" name="patcherProjectVersionId" required="<%= true %>" showEmptyOption="<%= true %>">
-		<c:forEach items="<%= patcherProjectVersions %>" var="patcherProjectVersion">
-			<aui:option label="<%= patcherProjectVersion.name %>" value="<%= patcherProjectVersion.patcherProjectVersionId %>" />
-		</c:forEach>
+
+		<%
+		for (PatcherProjectVersion patcherProjectVersion : PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions()) {
+		%>
+
+			<aui:option label="<%= patcherProjectVersion.getName() %>" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
+
+		<%
+		}
+		%>
+
 	</aui:select>
 
 	<aui:select disabled="<%= true %>" label="component" name="patcherFixComponentId" required="<%= true %>" showEmptyOption="<%= true %>">
-		<c:forEach items="<%= patcherFixComponents %>" var="patcherFixComponent">
-			<aui:option value="<%= patcherFixComponent.patcherFixComponentId %>"><%= patcherFixComponent.name %></aui:option>
-		</c:forEach>
+
+		<%
+		for (PatcherFixComponent patcherFixComponent : PatcherFixComponentLocalServiceUtil.getPatcherFixComponents()) {
+		%>
+
+			<aui:option label="<%= patcherFixComponent.getName() %>" value="<%= patcherFixComponent.getPatcherFixComponentId() %>" />
+
+		<%
+		}
+		%>
+
 	</aui:select>
 
-	<aui:input name="patcherFixPackVersion" type="hidden" value="<%= patcherFixPack.version %>" />
+	<aui:input name="version" type="hidden" value="<%= patcherFixPack.getVersion() %>" />
 
-	<aui:field-wrapper name="version">
-		<%= patcherFixPack.version %>
+	<aui:field-wrapper label="version">
+		<%= patcherFixPack.getVersion() %>
 	</aui:field-wrapper>
 
-	<c:set value="<%= patcherFixPack.status == WorkflowConstants.STATUS_FIX_PACK_RELEASED %>" var="released" />
+	<%
+	boolean released = patcherFixPack.getStatus() == WorkflowConstants.STATUS_FIX_PACK_RELEASED;
+	%>
 
 	<aui:select disabled="<%= released %>" name="status" showEmptyOption="<%= false %>">
-		<c:if test="<%= patcherFixPack.status != WorkflowConstants.STATUS_FIX_PACK_RELEASED %>">
+		<c:if test="<%= patcherFixPack.getStatus() != WorkflowConstants.STATUS_FIX_PACK_RELEASED %>">
 			<aui:option label="<%= WorkflowConstants.LABEL_FIX_PACK_UNDER_DEVELOPMENT %>" value="<%= WorkflowConstants.STATUS_FIX_PACK_UNDER_DEVELOPMENT %>" />
 			<aui:option label="<%= WorkflowConstants.LABEL_FIX_PACK_FROZEN %>" value="<%= WorkflowConstants.STATUS_FIX_PACK_FROZEN %>" />
 		</c:if>
 
-		<c:if test="<%= patcherFixPack.status != WorkflowConstants.STATUS_FIX_PACK_UNDER_DEVELOPMENT %>">
+		<c:if test="<%= patcherFixPack.getStatus() != WorkflowConstants.STATUS_FIX_PACK_UNDER_DEVELOPMENT %>">
 			<aui:option label="<%= WorkflowConstants.LABEL_FIX_PACK_RELEASED %>" value="<%= WorkflowConstants.STATUS_FIX_PACK_RELEASED %>" />
 		</c:if>
 	</aui:select>
 
-	<c:if test="<%= patcherFixPack.releasedDate != null %>">
-		<aui:field-wrapper name="released-date">
+	<c:if test="<%= patcherFixPack.getReleasedDate() != null %>">
+		<aui:field-wrapper label="released-date">
 			<fmt:formatDate
-				value="<%= patcherFixPack.releasedDate %>"
+				value="<%= patcherFixPack.getReleasedDate() %>"
 			/>
 		</aui:field-wrapper>
 	</c:if>
@@ -83,35 +125,30 @@
 	<aui:button-row>
 		<aui:button disabled="<%= released %>" type="submit" value="update" />
 
-		<aui:button href="<%= (not empty redirect) ? redirect : viewPatcherFixPacksURL %>" value="cancel" />
+		<aui:button href="<%= Validator.isNotNull(redirect) ? redirect : viewPatcherFixPacksURL %>" value="cancel" />
 
-		<c:if test="<%= not empty patcherFix.gitHash %>">
-			<portlet:actionURL var="buildPatcherBuildURL">
-				<portlet:param name="controller" value="fix_packs" />
-				<portlet:param name="action" value="build" />
-				<portlet:param name="id" value="<%= patcherFixPack.patcherFixPackId %>" />
+		<c:if test="<%= (patcherFix != null) && Validator.isNotNull(patcherFix.getGitHash()) %>">
+			<portlet:actionURL name="/patcher/build_fix_packs" var="buildPatcherBuildURL">
+				<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherFixPacksURL %>" />
 			</portlet:actionURL>
 
 			<aui:button href="<%= buildPatcherBuildURL %>" value="build" />
 		</c:if>
 
-		<c:if test="<%= patcherFixPack.patcherBuildId > 0 %>">
+		<c:if test="<%= patcherFixPack.getPatcherBuildId() > 0 %>">
 			<portlet:renderURL var="viewPatcherBuildURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="view" />
-				<portlet:param name="id" value="<%= patcherFixPack.patcherBuildId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
+				<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherFixPack.getPatcherBuildId()) %>" />
 			</portlet:renderURL>
 
 			<aui:button href="<%= viewPatcherBuildURL %>" value="view-build" />
 		</c:if>
 
-		<c:if test="<%= (patcherFixPack.status == WorkflowConstants.STATUS_FIX_PACK_FROZEN) && (empty patcherFix.gitHash) %>">
-			<portlet:actionURL var="mergePatcherFixPackURL">
-				<portlet:param name="controller" value="fix_packs" />
-				<portlet:param name="action" value="setBuild" />
-				<portlet:param name="id" value="<%= patcherFixPack.patcherFixPackId %>" />
-				<portlet:param name="redirect" value="<%= (not empty redirect) ? redirect : viewPatcherFixPacksURL %>" />
+		<c:if test="<%= (patcherFixPack.getStatus() == WorkflowConstants.STATUS_FIX_PACK_FROZEN) && (patcherFix != null) && Validator.isNull(patcherFix.getGitHash()) %>">
+			<portlet:actionURL name="/patcher/set_build_fix_packs" var="mergePatcherFixPackURL">
+				<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
+				<portlet:param name="redirect" value="<%= Validator.isNotNull(redirect) ? redirect : viewPatcherFixPacksURL %>" />
 			</portlet:actionURL>
 
 			<aui:button href="<%= mergePatcherFixPackURL %>" value="merge" />
@@ -119,38 +156,45 @@
 	</aui:button-row>
 </aui:form>
 
-<c:if test="<%= not empty jenkinsRequestParameters %>">
+<c:if test="<%= (jenkinsRequestParameters != null) && !jenkinsRequestParameters.isEmpty() %>">
 	<div class="layout">
 		<div class="layout-content">
 			<clay:col
 				size="4"
 			>
-				<aui:field-wrapper name="jenkins-request-parameters" />
+				<aui:field-wrapper label="jenkins-request-parameters" />
 			</clay:col>
 
 			<clay:col
 				size="8"
 			>
-				<aui:field-wrapper name="value" />
+				<aui:field-wrapper label="value" />
 			</clay:col>
 		</div>
 	</div>
 
-	<c:forEach items="<%= jenkinsRequestParameters %>" var="jenkinsRequestParameter">
+	<%
+	for (Map.Entry<String, String> jenkinsRequestParameter : jenkinsRequestParameters.entrySet()) {
+	%>
+
 		<div class="layout">
 			<div class="layout-content">
 				<clay:col
 					size="4"
 				>
-					<%= jenkinsRequestParameter.key %>
+					<%= jenkinsRequestParameter.getKey() %>
 				</clay:col>
 
 				<clay:col
 					size="8"
 				>
-					<%= jenkinsRequestParameter.value %>
+					<%= jenkinsRequestParameter.getValue() %>
 				</clay:col>
 			</div>
 		</div>
-	</c:forEach>
+
+	<%
+	}
+	%>
+
 </c:if>
