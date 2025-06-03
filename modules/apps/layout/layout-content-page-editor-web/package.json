@@ -35,6 +35,7 @@
 		"@liferay/marketplace-js-components-web": "*",
 		"axe-core": "^4.9.1",
 		"classnames": "2.3.1",
+		"frontend-editor-ckeditor-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"item-selector-taglib": "*",

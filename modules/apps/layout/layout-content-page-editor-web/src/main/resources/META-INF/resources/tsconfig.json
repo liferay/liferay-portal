@@ -1,5 +1,5 @@
 {
-	"@generated": "36581dd8acc0832c796f63fb3c88fd675cdaef1d",
+	"@generated": "438a1f1e7e322b0b291fc60c47ef45100c12f042",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -34,6 +34,9 @@
 			],
 			"@liferay/marketplace-js-components-web": [
 				"../../../../../../../marketplace/marketplace-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"frontend-editor-ckeditor-web": [
+				"../../../../../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"frontend-js-components-web": [
 				"../../../../../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/index.ts"
@@ -84,6 +87,9 @@
 		},
 		{
 			"path": "../../../../../../../marketplace/marketplace-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../../../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
