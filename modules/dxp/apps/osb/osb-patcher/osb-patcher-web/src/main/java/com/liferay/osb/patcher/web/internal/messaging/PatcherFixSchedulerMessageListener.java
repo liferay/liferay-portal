@@ -5,13 +5,11 @@
 
 package com.liferay.osb.patcher.web.internal.messaging;
 
-import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.osb.patcher.util.PatcherAlloyControllerImpl;
-import com.liferay.osb.patcher.util.PatcherMockAlloyControllerImpl;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.osb.patcher.util.PortletPropsValues;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 /**
  * @author Zsolt Balogh
@@ -19,30 +17,29 @@ import com.liferay.portal.kernel.messaging.Message;
 public class PatcherFixSchedulerMessageListener extends BaseMessageListener {
 
 	public static PatcherFixSchedulerMessageListener getInstance(
-		AlloyController alloyController) {
+		ThemeDisplay themeDisplay) {
 
-		_instance.setAlloyController(
-			new PatcherMockAlloyControllerImpl(
-				(PatcherAlloyControllerImpl)alloyController));
+		_patcherFixSchedulerMessageListener.setThemeDisplay(themeDisplay);
 
-		return _instance;
+		return _patcherFixSchedulerMessageListener;
 	}
 
-	public void setAlloyController(AlloyController alloyController) {
-		_alloyController = alloyController;
+	public void setThemeDisplay(ThemeDisplay themeDisplay) {
+		_themeDisplay = themeDisplay;
 	}
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		PatcherUtil.processOSBPatcherStatusFiles(
-			_alloyController, PortletPropsValues.OSB_PATCHER_STATUS_FIX_PATH);
+			PortletPropsValues.OSB_PATCHER_STATUS_FIX_PATH, _themeDisplay);
 
-		PatcherUtil.notifyUsersInactivePatcherBaseModels(_alloyController);
+		PatcherUtil.notifyUsersInactivePatcherBaseModels(_themeDisplay);
 	}
 
-	private static final PatcherFixSchedulerMessageListener _instance =
-		new PatcherFixSchedulerMessageListener();
+	private static final PatcherFixSchedulerMessageListener
+		_patcherFixSchedulerMessageListener =
+			new PatcherFixSchedulerMessageListener();
 
-	private AlloyController _alloyController;
+	private ThemeDisplay _themeDisplay;
 
 }

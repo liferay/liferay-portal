@@ -21,7 +21,7 @@ import com.google.pubsub.v1.PullRequest;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
-import com.liferay.alloy.mvc.AlloyController;
+import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
@@ -29,7 +29,6 @@ import com.liferay.osb.patcher.model.PatcherFixPack;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
-import com.liferay.osb.patcher.web.internal.constants.PatcherConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -51,7 +50,6 @@ import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.ServiceBeanMethodInvocationFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
@@ -61,8 +59,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-
-import java.lang.reflect.Method;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -371,16 +367,16 @@ public class PatcherUtil {
 	}
 
 	public static void notifyUsersInactivePatcherBaseModels(
-			AlloyController alloyController)
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
-		PatcherBuildUtil.notifyUsersInactivePatcherBuilds(alloyController);
+		PatcherBuildUtil.notifyUsersInactivePatcherBuilds(themeDisplay);
 
-		PatcherFixUtil.notifyUsersInactivePatcherFixes(alloyController);
+		PatcherFixUtil.notifyUsersInactivePatcherFixes(themeDisplay);
 	}
 
 	public static void pollIndexState(
-			AlloyController alloyController, String className, long classPK,
+			String className, long classPK, ThemeDisplay themeDisplay,
 			Object... attributes)
 		throws Exception {
 
@@ -390,7 +386,7 @@ public class PatcherUtil {
 		attributesMap.put(Field.ENTRY_CLASS_PK, classPK);
 
 		for (int i = 0; i < _POLL_INDEX_MAX_COUNT; i++) {
-			Hits hits = search(alloyController, className, attributesMap, null);
+			Hits hits = search(className, attributesMap, null, themeDisplay);
 
 			Document[] documents = hits.getDocs();
 
@@ -423,11 +419,8 @@ public class PatcherUtil {
 			new String[] {StringPool.BLANK, StringPool.BLANK});
 	}
 
-	public static void processOSBPatcherMessageQueue(
-			AlloyController alloyController)
+	public static void processOSBPatcherMessageQueue(ThemeDisplay themeDisplay)
 		throws Exception {
-
-		ThemeDisplay themeDisplay = alloyController.getThemeDisplay();
 
 		long defaultUserId = UserLocalServiceUtil.getDefaultUserId(
 			themeDisplay.getCompanyId());
@@ -478,36 +471,11 @@ public class PatcherUtil {
 				return;
 			}
 
-			long userId = jenkinsStatusJSONObject.getLong("patcherUserId");
-
-			User user = UserLocalServiceUtil.fetchUser(userId);
-
-			if (user != null) {
-				alloyController.setUser(user);
-			}
-
-			try {
-				Class<?> clazz = PatcherBuildUtil.class;
-
-				Method processOSBPatcherStatusMessageMethod =
-					clazz.getDeclaredMethod(
-						"processOSBPatcherBuildCompileJenkinsStatus",
-						new Class<?>[] {
-							AlloyController.class, User.class, long.class,
-							String.class
-						});
-
-				ServiceBeanMethodInvocationFactoryUtil.proceed(
-					null, clazz, processOSBPatcherStatusMessageMethod,
-					new Object[] {
-						alloyController, user, GetterUtil.getLong(patcherId),
-						jenkinsStatusJSONString
-					},
-					new String[] {"transactionAdvice"});
-			}
-			catch (Exception exception) {
-				_log.error(exception);
-			}
+			PatcherBuildUtil.processOSBPatcherBuildCompileJenkinsStatus(
+				UserLocalServiceUtil.fetchUser(
+					jenkinsStatusJSONObject.getLong("patcherUserId")),
+				GetterUtil.getLong(patcherId), jenkinsStatusJSONString,
+				themeDisplay);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -519,54 +487,29 @@ public class PatcherUtil {
 	}
 
 	public static void processOSBPatcherStatusFiles(
-			AlloyController alloyController, String path)
+			String path, ThemeDisplay themeDisplay)
 		throws Exception {
-
-		ThemeDisplay themeDisplay = alloyController.getThemeDisplay();
 
 		long defaultUserId = UserLocalServiceUtil.getDefaultUserId(
 			themeDisplay.getCompanyId());
 
-		Class<?> clazz = null;
-
-		String lockClassName = null;
-
-		String methodName = null;
+		String lockClassName = PatcherFix.class.getName();
 
 		if (path.equals(
 				PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_PATH)) {
 
-			clazz = PatcherBuildUtil.class;
-
 			lockClassName = PatcherBuild.class.getName() + "_Jenkins";
-
-			methodName = "processOSBPatcherBuildCompileJenkinsStatus";
 		}
 		else if (path.equals(
 					PortletPropsValues.
 						OSB_PATCHER_STATUS_BUILD_JENKINS_TEST_PATH)) {
 
-			clazz = PatcherBuildUtil.class;
-
 			lockClassName = PatcherBuild.class.getName() + "_Jenkins_Test";
-
-			methodName = "processOSBPatcherBuildTestJenkinsStatus";
 		}
 		else if (path.equals(
 					PortletPropsValues.OSB_PATCHER_STATUS_BUILD_PATH)) {
 
-			clazz = PatcherBuildUtil.class;
-
 			lockClassName = PatcherBuild.class.getName() + "_Build";
-
-			methodName = "processOSBPatcherBuildMergeJenkinsStatus";
-		}
-		else {
-			clazz = PatcherFixUtil.class;
-
-			lockClassName = PatcherFix.class.getName();
-
-			methodName = "processOSBPatcherFixAddJenkinsStatus";
 		}
 
 		if (LockLocalServiceUtil.hasLock(
@@ -629,47 +572,38 @@ public class PatcherUtil {
 
 				User user = UserLocalServiceUtil.fetchUser(userId);
 
-				if (user != null) {
-					alloyController.setUser(user);
-				}
-
 				try {
-					if (methodName.equals(
-							"processOSBPatcherFixAddJenkinsStatus")) {
+					if (path.equals(
+							PortletPropsValues.
+								OSB_PATCHER_STATUS_BUILD_JENKINS_PATH)) {
 
-						Method processOSBPatcherStatusFileMethod =
-							clazz.getDeclaredMethod(
-								methodName,
-								new Class<?>[] {
-									AlloyController.class, long.class,
-									String.class
-								});
+						PatcherBuildUtil.
+							processOSBPatcherBuildCompileJenkinsStatus(
+								user, GetterUtil.getLong(patcherId),
+								jenkinsStatusJSONString, themeDisplay);
+					}
+					else if (path.equals(
+								PortletPropsValues.
+									OSB_PATCHER_STATUS_BUILD_JENKINS_TEST_PATH)) {
 
-						ServiceBeanMethodInvocationFactoryUtil.proceed(
-							null, clazz, processOSBPatcherStatusFileMethod,
-							new Object[] {
-								alloyController, GetterUtil.getLong(patcherId),
-								jenkinsStatusJSONString
-							},
-							new String[] {"transactionAdvice"});
+						PatcherBuildUtil.
+							processOSBPatcherBuildTestJenkinsStatus(
+								user, GetterUtil.getLong(patcherId),
+								jenkinsStatusJSONString);
+					}
+					else if (path.equals(
+								PortletPropsValues.
+									OSB_PATCHER_STATUS_BUILD_PATH)) {
+
+						PatcherBuildUtil.
+							processOSBPatcherBuildMergeJenkinsStatus(
+								user, GetterUtil.getLong(patcherId),
+								jenkinsStatusJSONString, themeDisplay);
 					}
 					else {
-						Method processOSBPatcherStatusFileMethod =
-							clazz.getDeclaredMethod(
-								methodName,
-								new Class<?>[] {
-									AlloyController.class, User.class,
-									long.class, String.class
-								});
-
-						ServiceBeanMethodInvocationFactoryUtil.proceed(
-							null, clazz, processOSBPatcherStatusFileMethod,
-							new Object[] {
-								alloyController, user,
-								GetterUtil.getLong(patcherId),
-								jenkinsStatusJSONString
-							},
-							new String[] {"transactionAdvice"});
+						PatcherFixUtil.processOSBPatcherFixAddJenkinsStatus(
+							GetterUtil.getLong(patcherId),
+							jenkinsStatusJSONString, themeDisplay);
 					}
 				}
 				catch (Exception exception) {
@@ -687,8 +621,8 @@ public class PatcherUtil {
 	}
 
 	public static Hits search(
-			AlloyController alloyController, String className,
-			Map<String, Serializable> attributes, String keywords)
+			String className, Map<String, Serializable> attributes,
+			String keywords, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		Class<?> clazz = Class.forName(className);
@@ -706,8 +640,6 @@ public class PatcherUtil {
 		if ((attributes != null) && !attributes.isEmpty()) {
 			searchContext.setAttributes(attributes);
 		}
-
-		ThemeDisplay themeDisplay = alloyController.getThemeDisplay();
 
 		searchContext.setCompanyId(themeDisplay.getCompanyId());
 		searchContext.setGroupIds(new long[] {themeDisplay.getScopeGroupId()});

@@ -5,7 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyController;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
 import com.liferay.osb.patcher.constants.PatcherConstants;
@@ -19,6 +18,7 @@ import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherAccountLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
+import com.liferay.osb.patcher.service.PatcherFixRelLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildCreateDateComparator;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildKeyVersionComparator;
@@ -37,7 +37,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -53,7 +56,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,9 +68,9 @@ import java.util.regex.Pattern;
 public class PatcherBuildUtil {
 
 	public static PatcherBuild addPatcherFixPackMainBuild(
-			AlloyController alloyController, User user,
-			long patcherProjectVersionId, String name, String accountEntryCode,
-			int status, List<Long> relatedPatcherFixIds)
+			User user, long patcherProjectVersionId, String name,
+			String accountEntryCode, int status,
+			List<Long> relatedPatcherFixIds, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		List<PatcherBuild> patcherBuilds =
@@ -106,16 +108,18 @@ public class PatcherBuildUtil {
 					mainPatcherFix.setStatus(
 						WorkflowConstants.STATUS_FIX_ADDING);
 
-					alloyController.updateModelIgnoreRequest(mainPatcherFix);
+					PatcherFixLocalServiceUtil.updatePatcherFix(mainPatcherFix);
 
 					workflowPatcherBuildMerging(
-						alloyController, user, patcherBuild,
-						isMergeOnly(patcherBuild));
+						user, patcherBuild, isMergeOnly(patcherBuild),
+						themeDisplay);
 
-					alloyController.updateModelIgnoreRequest(patcherBuild);
+					patcherBuild =
+						PatcherBuildLocalServiceUtil.updatePatcherBuild(
+							patcherBuild);
 
 					JenkinsUtil.sendAgentJenkinsRequest(
-						user, patcherBuild, alloyController.getThemeDisplay());
+						user, patcherBuild, themeDisplay);
 				}
 
 				return patcherBuild;
@@ -131,8 +135,8 @@ public class PatcherBuildUtil {
 
 		if (patcherAccount == null) {
 			addPatcherAccountPatcherBuild(
-				alloyController, patcherBuild.getPatcherBuildId(),
-				accountEntryCode);
+				patcherBuild.getPatcherBuildId(), accountEntryCode,
+				themeDisplay);
 
 			patcherAccount = PatcherAccountLocalServiceUtil.getPatcherAccount(
 				accountEntryCode);
@@ -140,7 +144,7 @@ public class PatcherBuildUtil {
 
 		patcherBuild.setPatcherAccountId(patcherAccount.getPatcherAccountId());
 
-		patcherBuild.setPatcherBuildId(alloyController.increment());
+		patcherBuild.setPatcherBuildId(CounterLocalServiceUtil.increment());
 		patcherBuild.setPatcherProductVersionId(
 			PatcherProjectVersionUtil.getPatcherProductVersionId(
 				patcherProjectVersionId));
@@ -155,20 +159,21 @@ public class PatcherBuildUtil {
 		patcherBuild.setType(PatcherBuildConstants.TYPE_FIX_PACK);
 		patcherBuild.setQaStatus(WorkflowConstants.STATUS_PENDING);
 
-		setStatus(alloyController, user, patcherBuild, status);
+		setStatus(user, patcherBuild, status, themeDisplay);
 
 		patcherBuild = setLatestPatcherBuild(
-			alloyController, patcherBuild, patcherBuild.getKey(),
+			patcherBuild, patcherBuild.getKey(),
 			patcherBuild.getSupportTicket());
 
-		alloyController.updateModelIgnoreRequest(
-			patcherBuild, "patcherBuildId", patcherBuild.getPatcherBuildId());
+		patcherBuild.setPatcherBuildId(patcherBuild.getPatcherBuildId());
+
+		patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+			patcherBuild);
 
 		updatePatcherBuildFixes(
-			alloyController, user, patcherBuild, relatedPatcherFixIds);
+			user, patcherBuild, relatedPatcherFixIds, themeDisplay);
 
-		JenkinsUtil.sendAgentJenkinsRequest(
-			user, patcherBuild, alloyController.getThemeDisplay());
+		JenkinsUtil.sendAgentJenkinsRequest(user, patcherBuild, themeDisplay);
 
 		return patcherBuild;
 	}
@@ -201,7 +206,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static void deletePatcherBuildAndChildBuilds(
-			AlloyController alloyController, PatcherBuild patcherBuild)
+			PatcherBuild patcherBuild)
 		throws Exception {
 
 		if (patcherBuild.getKeyVersion() !=
@@ -214,7 +219,8 @@ public class PatcherBuildUtil {
 				oldPatcherBuild.setLatestKeyBuild(true);
 				oldPatcherBuild.setLatestSupportTicketBuild(true);
 
-				alloyController.updateModelIgnoreRequest(oldPatcherBuild);
+				PatcherBuildLocalServiceUtil.updatePatcherBuild(
+					oldPatcherBuild);
 			}
 		}
 
@@ -226,15 +232,14 @@ public class PatcherBuildUtil {
 				PatcherBuildRelUtil.deletePatcherBuildRelsByChildPatcherBuildId(
 					childPatcherBuild.getPatcherBuildId());
 
-				deletePatcherBuildAndChildBuilds(
-					alloyController, childPatcherBuild);
+				deletePatcherBuildAndChildBuilds(childPatcherBuild);
 			}
 		}
 
 		PatcherAccountLocalServiceUtil.clearPatcherBuildPatcherAccounts(
 			patcherBuild.getPatcherBuildId());
 
-		PatcherFixLocalServiceUtil.clearPatcherBuildPatcherFixs(
+		PatcherFixLocalServiceUtil.clearPatcherBuildPatcherFixes(
 			patcherBuild.getPatcherBuildId());
 
 		PatcherBuildLocalServiceUtil.deletePatcherBuild(patcherBuild);
@@ -243,7 +248,7 @@ public class PatcherBuildUtil {
 			patcherBuild.getPatcherFixId());
 
 		if (PatcherFixUtil.isDeletable(mainPatcherFix)) {
-			PatcherFixUtil.deletePatcherFix(alloyController, mainPatcherFix);
+			PatcherFixUtil.deletePatcherFix(mainPatcherFix);
 		}
 	}
 
@@ -928,7 +933,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static void notifyUsersInactivePatcherBuilds(
-			AlloyController alloyController)
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		Calendar calendar = new GregorianCalendar();
@@ -952,12 +957,11 @@ public class PatcherBuildUtil {
 			User user = UserLocalServiceUtil.getUser(patcherBuild.getUserId());
 
 			EmailUtil.sendPatcherTimeoutEmail(
-				patcherBuild, user.getEmailAddress(),
-				alloyController.getThemeDisplay());
+				patcherBuild, user.getEmailAddress(), themeDisplay);
 
 			patcherBuild.setNotified(true);
 
-			alloyController.updateModelIgnoreRequest(patcherBuild);
+			PatcherBuildLocalServiceUtil.updatePatcherBuild(patcherBuild);
 		}
 	}
 
@@ -966,8 +970,8 @@ public class PatcherBuildUtil {
 		rollbackFor = Exception.class
 	)
 	public static void processOSBPatcherBuildCompileJenkinsStatus(
-			AlloyController alloyController, User user, long patcherBuildId,
-			String jenkinsStatusJSONString)
+			User user, long patcherBuildId, String jenkinsStatusJSONString,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		PatcherBuild patcherBuild =
@@ -983,8 +987,7 @@ public class PatcherBuildUtil {
 			jenkinsStatusJSONObject.has("statusURL")) {
 
 			PatcherFixUtil.updatePatcherFixJenkinsResult(
-				alloyController, jenkinsStatusJSONObject,
-				patcherBuild.getPatcherFixId());
+				jenkinsStatusJSONObject, patcherBuild.getPatcherFixId());
 
 			return;
 		}
@@ -996,31 +999,30 @@ public class PatcherBuildUtil {
 
 		if (exitValue == 0) {
 			setStatus(
-				alloyController, user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_COMPLETE);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_COMPLETE,
+				themeDisplay);
 
-			workflowCompletedPatcherBuildQAStatus(
-				alloyController, user, patcherBuild);
+			workflowCompletedPatcherBuildQAStatus(patcherBuild);
 
 			fileName = jenkinsStatusJSONObject.getString("fileName");
 			sourceName = jenkinsStatusJSONObject.getString("sourceName");
 		}
 		else {
 			setStatus(
-				alloyController, user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_FAILED);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_FAILED,
+				themeDisplay);
 		}
 
 		patcherBuild.setFileName(fileName);
 		patcherBuild.setSourceName(sourceName);
 
-		alloyController.updateModelIgnoreRequest(patcherBuild);
+		patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+			patcherBuild);
 
 		PatcherFixUtil.updatePatcherFixJenkinsResult(
-			alloyController, jenkinsStatusJSONObject,
-			patcherBuild.getPatcherFixId());
+			jenkinsStatusJSONObject, patcherBuild.getPatcherFixId());
 
-		sendTestJenkinsRequest(alloyController, user, patcherBuild);
+		sendTestJenkinsRequest(user, patcherBuild, themeDisplay);
 	}
 
 	@Transactional(
@@ -1028,8 +1030,8 @@ public class PatcherBuildUtil {
 		rollbackFor = Exception.class
 	)
 	public static void processOSBPatcherBuildMergeJenkinsStatus(
-			AlloyController alloyController, User user, long patcherFixId,
-			String jenkinsStatusJSONString)
+			User user, long patcherFixId, String jenkinsStatusJSONString,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		validateOSBPatcherBuildMergeJenkinsStatus(
@@ -1049,8 +1051,7 @@ public class PatcherBuildUtil {
 				}
 
 				PatcherFixUtil.updatePatcherFixJenkinsResult(
-					alloyController, jenkinsStatusJSONObject,
-					patcherBuild.getPatcherFixId());
+					jenkinsStatusJSONObject, patcherBuild.getPatcherFixId());
 			}
 
 			return;
@@ -1074,9 +1075,8 @@ public class PatcherBuildUtil {
 			}
 
 			updatePatcherBuildStatus(
-				alloyController, user, patcherBuild,
-				osbPatcherServletOutcome.getStatus(),
-				osbPatcherServletOutcome.getResult(), messages);
+				user, patcherBuild, osbPatcherServletOutcome.getStatus(),
+				osbPatcherServletOutcome.getResult(), messages, themeDisplay);
 		}
 	}
 
@@ -1085,8 +1085,7 @@ public class PatcherBuildUtil {
 		rollbackFor = Exception.class
 	)
 	public static void processOSBPatcherBuildTestJenkinsStatus(
-			AlloyController alloyController, User user, long patcherBuildId,
-			String jenkinsStatusJSONString)
+			User user, long patcherBuildId, String jenkinsStatusJSONString)
 		throws Exception {
 
 		PatcherBuild patcherBuild =
@@ -1103,8 +1102,7 @@ public class PatcherBuildUtil {
 
 		for (int i = 0; i < resultsJSONArray.length(); i++) {
 			PatcherFixUtil.updatePatcherFixJenkinsResult(
-				alloyController, jenkinsStatusJSONObject,
-				patcherBuild.getPatcherFixId());
+				jenkinsStatusJSONObject, patcherBuild.getPatcherFixId());
 		}
 
 		if (jenkinsStatusJSONObject.has("status")) {
@@ -1134,12 +1132,14 @@ public class PatcherBuildUtil {
 			}
 		}
 
-		alloyController.updateModelIgnoreRequest(patcherBuild);
+		PatcherBuildLocalServiceUtil.updatePatcherBuild(patcherBuild);
 	}
 
-	public static void reindexRelatedModels(
-			AlloyController alloyController, PatcherBuild patcherBuild)
+	public static void reindexRelatedModels(PatcherBuild patcherBuild)
 		throws Exception {
+
+		Indexer<PatcherAccount> indexer = IndexerRegistryUtil.getIndexer(
+			PatcherAccount.class);
 
 		List<PatcherAccount> patcherBuildPatcherAccounts =
 			PatcherAccountLocalServiceUtil.getPatcherBuildPatcherAccounts(
@@ -1148,7 +1148,7 @@ public class PatcherBuildUtil {
 		for (PatcherAccount patcherBuildPatcherAccount :
 				patcherBuildPatcherAccounts) {
 
-			alloyController.indexModel(patcherBuildPatcherAccount);
+			indexer.reindex(patcherBuildPatcherAccount);
 		}
 	}
 
@@ -1196,18 +1196,18 @@ public class PatcherBuildUtil {
 	}
 
 	public static void saveParentPatcherBuild(
-			AlloyController alloyController, PatcherBuild parentPatcherBuild,
-			String accountEntryCode)
+			PatcherBuild parentPatcherBuild, String accountEntryCode,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		parentPatcherBuild = setLatestPatcherBuild(
-			alloyController, parentPatcherBuild, parentPatcherBuild.getKey(),
+			parentPatcherBuild, parentPatcherBuild.getKey(),
 			parentPatcherBuild.getSupportTicket());
 
 		if (parentPatcherBuild.isNew()) {
 			addPatcherAccountPatcherBuild(
-				alloyController, parentPatcherBuild.getPatcherBuildId(),
-				accountEntryCode);
+				parentPatcherBuild.getPatcherBuildId(), accountEntryCode,
+				themeDisplay);
 
 			PatcherAccount patcherAccount =
 				PatcherAccountLocalServiceUtil.getPatcherAccount(
@@ -1223,25 +1223,24 @@ public class PatcherBuildUtil {
 			parentPatcherBuild.setPatcherFixId(0L);
 		}
 
-		alloyController.updateModelIgnoreRequest(
-			parentPatcherBuild, "patcherBuildId",
+		parentPatcherBuild.setPatcherBuildId(
 			parentPatcherBuild.getPatcherBuildId());
+
+		PatcherBuildLocalServiceUtil.updatePatcherBuild(parentPatcherBuild);
 	}
 
 	public static void sendTestJenkinsRequest(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild)
+			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (patcherBuild.getType() == PatcherBuildConstants.TYPE_OFFICIAL) {
 			JenkinsUtil.sendTestJenkinsRequest(
-				user, patcherBuild, alloyController.getThemeDisplay());
+				user, patcherBuild, themeDisplay);
 		}
 	}
 
 	public static PatcherBuild setLatestPatcherBuild(
-			AlloyController alloyController, PatcherBuild patcherBuild,
-			String key, String supportTicket)
+			PatcherBuild patcherBuild, String key, String supportTicket)
 		throws Exception {
 
 		if (!patcherBuild.isNew() ||
@@ -1263,8 +1262,11 @@ public class PatcherBuildUtil {
 				patcherBuild.setKeyVersion(
 					BigDecimalUtil.add(latestKeyBuild.getKeyVersion(), 0.1));
 
-				alloyController.updateModelIgnoreRequest(
-					latestKeyBuild, "latestKeyBuild", false);
+				latestKeyBuild.setLatestBuild(false);
+
+				latestKeyBuild =
+					PatcherBuildLocalServiceUtil.updatePatcherBuild(
+						latestKeyBuild);
 			}
 
 			patcherBuild.setLatestSupportTicketBuild(false);
@@ -1287,17 +1289,20 @@ public class PatcherBuildUtil {
 				BigDecimalUtil.add(
 					latestSupportTicketBuild.getSupportTicketVersion(), 0.1));
 
-			alloyController.updateModelIgnoreRequest(
-				latestKeyBuild, "latestKeyBuild", false,
-				"latestSupportTicketBuild", false);
+			latestKeyBuild.setLatestBuild(false);
+			latestKeyBuild.setLatestSupportTicketBuild(false);
+
+			latestKeyBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+				latestKeyBuild);
 		}
 		else {
 			if (latestKeyBuild != null) {
 				patcherBuild.setKeyVersion(
 					BigDecimalUtil.add(latestKeyBuild.getKeyVersion(), 0.1));
 
-				alloyController.updateModelIgnoreRequest(
-					latestKeyBuild, "latestKeyBuild", false);
+				latestKeyBuild.setLatestKeyBuild(false);
+
+				PatcherBuildLocalServiceUtil.updatePatcherBuild(latestKeyBuild);
 			}
 
 			if (latestSupportTicketBuild != null) {
@@ -1306,9 +1311,10 @@ public class PatcherBuildUtil {
 						latestSupportTicketBuild.getSupportTicketVersion(),
 						0.1));
 
-				alloyController.updateModelIgnoreRequest(
-					latestSupportTicketBuild, "latestSupportTicketBuild",
-					false);
+				latestSupportTicketBuild.setLatestSupportTicketBuild(false);
+
+				PatcherBuildLocalServiceUtil.updatePatcherBuild(
+					latestSupportTicketBuild);
 			}
 		}
 
@@ -1316,19 +1322,17 @@ public class PatcherBuildUtil {
 	}
 
 	public static void setStatus(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild, int status)
+			User user, PatcherBuild patcherBuild, int status,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		patcherBuild.setStatus(status);
 
-		workflowParentPatcherBuild(alloyController, user, patcherBuild);
+		workflowParentPatcherBuild(user, patcherBuild, themeDisplay);
 	}
 
 	public static void workflowCompletedPatcherBuildQAStatus(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild)
-		throws Exception {
+		PatcherBuild patcherBuild) {
 
 		if (patcherBuild.getType() == PatcherBuildConstants.TYPE_OFFICIAL) {
 			if (isSmokeTestOnly(patcherBuild)) {
@@ -1355,8 +1359,8 @@ public class PatcherBuildUtil {
 	}
 
 	public static void workflowParentPatcherBuild(
-			AlloyController alloyController, User user,
-			PatcherBuild childPatcherBuild)
+			User user, PatcherBuild childPatcherBuild,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (!childPatcherBuild.isChildBuild()) {
@@ -1395,22 +1399,22 @@ public class PatcherBuildUtil {
 			}
 		}
 
-		alloyController.updateModelIgnoreRequest(parentPatcherBuild);
+		parentPatcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+			parentPatcherBuild);
 
 		if (status == WorkflowConstants.STATUS_BUILD_COMPILING) {
 			JenkinsUtil.sendDistJenkinsRequest(
-				user, parentPatcherBuild, alloyController.getThemeDisplay());
+				user, parentPatcherBuild, themeDisplay);
 		}
 		else if (status == WorkflowConstants.STATUS_BUILD_COMPLETE) {
-			workflowCompletedPatcherBuildQAStatus(
-				alloyController, user, parentPatcherBuild);
+			workflowCompletedPatcherBuildQAStatus(parentPatcherBuild);
 
-			sendTestJenkinsRequest(alloyController, user, parentPatcherBuild);
+			sendTestJenkinsRequest(user, parentPatcherBuild, themeDisplay);
 		}
 	}
 
 	public static List<PatcherFix> workflowPatcherBuildIncompleteFixesToPending(
-			AlloyController alloyController, PatcherBuild patcherBuild)
+			PatcherBuild patcherBuild)
 		throws Exception {
 
 		List<PatcherFix> pendingPatcherFixes = new ArrayList<>();
@@ -1441,7 +1445,9 @@ public class PatcherBuildUtil {
 						WorkflowConstants.STATUS_FIX_ADDING);
 				}
 
-				alloyController.updateModelIgnoreRequest(incompletePatcherFix);
+				incompletePatcherFix =
+					PatcherFixLocalServiceUtil.updatePatcherFix(
+						incompletePatcherFix);
 			}
 
 			pendingPatcherFixes.add(incompletePatcherFix);
@@ -1451,25 +1457,24 @@ public class PatcherBuildUtil {
 	}
 
 	public static void workflowPatcherBuildMerging(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild, boolean mergeOnly)
+			User user, PatcherBuild patcherBuild, boolean mergeOnly,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (mergeOnly) {
 			setStatus(
-				alloyController, user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_MERGING_ONLY);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_MERGING_ONLY,
+				themeDisplay);
 		}
 		else {
 			setStatus(
-				alloyController, user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_MERGING);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_MERGING,
+				themeDisplay);
 		}
 	}
 
 	public static List<BaseModel<?>>
 			workflowRelatedPatcherBuildsToPendingStatus(
-				AlloyController alloyController,
 				PatcherBuild parentPatcherBuild, boolean mergeOnly)
 		throws Exception {
 
@@ -1486,8 +1491,7 @@ public class PatcherBuildUtil {
 
 		for (PatcherBuild patcherBuild : patcherBuilds) {
 			List<PatcherFix> pendingPatcherFixes =
-				workflowPatcherBuildIncompleteFixesToPending(
-					alloyController, patcherBuild);
+				workflowPatcherBuildIncompleteFixesToPending(patcherBuild);
 
 			sendToJenkinsBaseModels.addAll(pendingPatcherFixes);
 
@@ -1503,7 +1507,8 @@ public class PatcherBuildUtil {
 
 			patcherBuild.setStatus(status);
 
-			alloyController.updateModelIgnoreRequest(patcherBuild);
+			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+				patcherBuild);
 
 			if (patcherBuild.isChildBuild() ||
 				!PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)) {
@@ -1516,8 +1521,7 @@ public class PatcherBuildUtil {
 	}
 
 	protected static List<PatcherFix> addChildPatcherFixes(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild, long patcherFixId,
+			User user, PatcherBuild patcherBuild, long patcherFixId,
 			List<Long> conflictPatcherFixIds, List<String> messages)
 		throws Exception {
 
@@ -1538,7 +1542,7 @@ public class PatcherBuildUtil {
 			String sortedTickets = getSortedTickets(parentPatcherFixIds);
 
 			PatcherFix childPatcherFix = PatcherFixUtil.addPatcherFix(
-				alloyController, user, parentPatcherFixIds,
+				user, parentPatcherFixIds,
 				patcherBuild.getPatcherProjectVersionId(), sortedTickets,
 				PatcherFixConstants.TYPE_GENERATED,
 				WorkflowConstants.STATUS_FIX_CONFLICT);
@@ -1556,8 +1560,8 @@ public class PatcherBuildUtil {
 	}
 
 	protected static void addPatcherAccountPatcherBuild(
-			AlloyController alloyController, long patcherBuildId,
-			String accountEntryCode)
+			long patcherBuildId, String accountEntryCode,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		PatcherAccount patcherAccount =
@@ -1573,16 +1577,17 @@ public class PatcherBuildUtil {
 
 		patcherAccount = PatcherAccountLocalServiceUtil.createPatcherAccount(0);
 
-		patcherAccount.setPatcherAccountId(alloyController.increment());
+		patcherAccount.setPatcherAccountId(CounterLocalServiceUtil.increment());
 		patcherAccount.setAccountEntryId(
 			HelpCenterUtil.fetchAccountEntryId(accountEntryCode));
 		patcherAccount.setAccountEntryCode(accountEntryCode);
 
-		alloyController.updateModelIgnoreRequest(patcherAccount);
+		patcherAccount = PatcherAccountLocalServiceUtil.updatePatcherAccount(
+			patcherAccount);
 
 		PatcherUtil.pollIndexState(
-			alloyController, PatcherAccount.class.getName(),
-			patcherAccount.getPatcherAccountId());
+			PatcherAccount.class.getName(),
+			patcherAccount.getPatcherAccountId(), themeDisplay);
 
 		PatcherBuildLocalServiceUtil.addPatcherAccountPatcherBuild(
 			patcherAccount.getPatcherAccountId(), patcherBuildId);
@@ -1687,7 +1692,7 @@ public class PatcherBuildUtil {
 
 	protected static Map<Long, List<Long>>
 			rebaseOtherProjectVersionPatcherFixes(
-				AlloyController alloyController, User user,
+				User user,
 				Map<Long, List<Long>> patcherProjectVersionIdPatcherFixIdsMap,
 				long patcherBuildProjectVersionId)
 		throws Exception {
@@ -1732,8 +1737,7 @@ public class PatcherBuildUtil {
 					patcherFix.getPatcherProjectVersionId());
 
 				PatcherFix rebasePatcherFix = PatcherFixUtil.addPatcherFix(
-					alloyController, user,
-					ListUtil.toList(new long[] {patcherFixId}),
+					user, ListUtil.fromArray(patcherFixId),
 					rebaseToPatcherProjectVersionId, patcherFix.getName(),
 					PatcherFixConstants.TYPE_REBASE,
 					WorkflowConstants.STATUS_FIX_REBASING);
@@ -1769,11 +1773,11 @@ public class PatcherBuildUtil {
 	}
 
 	protected static void updatePatcherBuildFixes(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild, List<Long> patcherFixIds)
+			User user, PatcherBuild patcherBuild, List<Long> patcherFixIds,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
-		PatcherFixLocalServiceUtil.clearPatcherBuildPatcherFixs(
+		PatcherFixLocalServiceUtil.clearPatcherBuildPatcherFixes(
 			patcherBuild.getPatcherBuildId());
 
 		for (long patcherFixId : patcherFixIds) {
@@ -1787,7 +1791,7 @@ public class PatcherBuildUtil {
 			patcherBuild.setPatcherFixId(patcherFixIds.get(0));
 
 			updatePatcherBuildStatusMergeComplete(
-				alloyController, user, patcherBuild);
+				user, patcherBuild, themeDisplay);
 
 			return;
 		}
@@ -1825,28 +1829,28 @@ public class PatcherBuildUtil {
 				mainPatcherFix.setJenkinsResults(StringPool.BLANK);
 				mainPatcherFix.setStatus(WorkflowConstants.STATUS_FIX_ADDING);
 
-				alloyController.updateModelIgnoreRequest(mainPatcherFix);
+				mainPatcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+					mainPatcherFix);
 			}
 			else {
 				mainPatcherFix = PatcherFixUtil.addNewPatcherFix(
-					alloyController, user,
-					PatcherFixConstants.KEY_VERSION_DEFAULT, patcherFixIds,
-					patcherBuild.getPatcherProjectVersionId(),
+					user, PatcherFixConstants.KEY_VERSION_DEFAULT,
+					patcherFixIds, patcherBuild.getPatcherProjectVersionId(),
 					patcherBuild.getName(), type,
 					WorkflowConstants.STATUS_FIX_ADDING);
 			}
 		}
 		else {
 			mainPatcherFix = PatcherFixUtil.addPatcherFix(
-				alloyController, user, patcherFixIds,
-				patcherBuild.getPatcherProjectVersionId(),
+				user, patcherFixIds, patcherBuild.getPatcherProjectVersionId(),
 				patcherBuild.getName(), type,
 				WorkflowConstants.STATUS_FIX_ADDING);
 		}
 
 		patcherBuild.setPatcherFixId(mainPatcherFix.getPatcherFixId());
 
-		alloyController.updateModelIgnoreRequest(patcherBuild);
+		patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+			patcherBuild);
 
 		PatcherFixLocalServiceUtil.addPatcherBuildPatcherFix(
 			patcherBuild.getPatcherBuildId(), mainPatcherFix.getPatcherFixId());
@@ -1860,7 +1864,7 @@ public class PatcherBuildUtil {
 					patcherBuild)) {
 
 				updatePatcherBuildStatusMergeComplete(
-					alloyController, user, patcherBuild);
+					user, patcherBuild, themeDisplay);
 			}
 		}
 	}
@@ -1917,9 +1921,10 @@ public class PatcherBuildUtil {
 	}
 
 	protected static void updatePatcherBuildStatus(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild, int osbPatcherServletOutcomeStatus,
-			String osbPatcherServletOutcomeResult, List<String> messages)
+			User user, PatcherBuild patcherBuild,
+			int osbPatcherServletOutcomeStatus,
+			String osbPatcherServletOutcomeResult, List<String> messages,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (osbPatcherServletOutcomeStatus ==
@@ -1932,10 +1937,10 @@ public class PatcherBuildUtil {
 
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 
-			alloyController.updateModelIgnoreRequest(patcherFix);
+			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 
 			updatePatcherBuildStatusMergeComplete(
-				alloyController, user, patcherBuild);
+				user, patcherBuild, themeDisplay);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
@@ -1969,13 +1974,13 @@ public class PatcherBuildUtil {
 					conflictPatcherFixIdsEntry.getValue());
 
 				List<PatcherFix> childPatcherFixes = addChildPatcherFixes(
-					alloyController, user, patcherBuild, patcherFixId,
-					conflictPatcherFixIds, messages);
+					user, patcherBuild, patcherFixId, conflictPatcherFixIds,
+					messages);
 
 				updatePatcherBuildsPatcherFixes(
 					patcherBuild, childPatcherFixes, messages);
 
-				reindexRelatedModels(alloyController, patcherBuild);
+				reindexRelatedModels(patcherBuild);
 			}
 
 			List<PatcherFix> patcherBuildPatcherFixes =
@@ -2004,8 +2009,7 @@ public class PatcherBuildUtil {
 
 				for (PatcherBuild curPatcherBuild : patcherBuilds) {
 					JenkinsUtil.sendAgentJenkinsRequest(
-						user, curPatcherBuild,
-						alloyController.getThemeDisplay());
+						user, curPatcherBuild, themeDisplay);
 				}
 
 				return;
@@ -2017,7 +2021,7 @@ public class PatcherBuildUtil {
 
 			mainPatcherFix.setStatus(WorkflowConstants.STATUS_FIX_CONFLICT);
 
-			alloyController.updateModelIgnoreRequest(mainPatcherFix);
+			PatcherFixLocalServiceUtil.updatePatcherFix(mainPatcherFix);
 
 			if ((patcherBuild.getStatus() ==
 					WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
@@ -2025,16 +2029,18 @@ public class PatcherBuildUtil {
 					WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY)) {
 
 				setStatus(
-					alloyController, user, patcherBuild,
-					WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY);
+					user, patcherBuild,
+					WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY,
+					themeDisplay);
 			}
 			else {
 				setStatus(
-					alloyController, user, patcherBuild,
-					WorkflowConstants.STATUS_BUILD_CONFLICT);
+					user, patcherBuild, WorkflowConstants.STATUS_BUILD_CONFLICT,
+					themeDisplay);
 			}
 
-			alloyController.updateModelIgnoreRequest(patcherBuild);
+			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+				patcherBuild);
 		}
 		else {
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
@@ -2042,13 +2048,14 @@ public class PatcherBuildUtil {
 
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
 
-			alloyController.updateModelIgnoreRequest(patcherFix);
+			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 
 			setStatus(
-				alloyController, user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_FAILED);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_FAILED,
+				themeDisplay);
 
-			alloyController.updateModelIgnoreRequest(patcherBuild);
+			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+				patcherBuild);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
@@ -2059,26 +2066,28 @@ public class PatcherBuildUtil {
 	}
 
 	protected static void updatePatcherBuildStatusMergeComplete(
-			AlloyController alloyController, User user,
-			PatcherBuild patcherBuild)
+			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (isMergeOnly(patcherBuild)) {
 			setStatus(
-				alloyController, user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY);
+				user, patcherBuild,
+				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY,
+				themeDisplay);
 
-			alloyController.updateModelIgnoreRequest(patcherBuild);
+			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+				patcherBuild);
 		}
 		else {
 			setStatus(
-				alloyController, user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_COMPILING);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_COMPILING,
+				themeDisplay);
 
-			alloyController.updateModelIgnoreRequest(patcherBuild);
+			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+				patcherBuild);
 
 			JenkinsUtil.sendDistJenkinsRequest(
-				user, patcherBuild, alloyController.getThemeDisplay());
+				user, patcherBuild, themeDisplay);
 		}
 	}
 
