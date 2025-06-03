@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -1957,12 +1958,11 @@ public class PatcherBuildUtil {
 					" with name ", patcherBuild.getName(), " has a conflict."),
 				messages);
 
-			flexjson.JSONDeserializer jsonDeserializer =
-				new flexjson.JSONDeserializer<HashMap<String, Object>>();
+			JSONDeserializer<Map<String, Object>> jsonDeserializer =
+				JSONFactoryUtil.createJSONDeserializer();
 
-			HashMap<String, Object> conflictPatcherFixIdsMap =
-				(HashMap<String, Object>)jsonDeserializer.deserialize(
-					osbPatcherServletOutcomeResult, HashMap.class);
+			Map<String, Object> conflictPatcherFixIdsMap =
+				jsonDeserializer.deserialize(osbPatcherServletOutcomeResult);
 
 			for (Map.Entry<String, Object> conflictPatcherFixIdsEntry :
 					conflictPatcherFixIdsMap.entrySet()) {
