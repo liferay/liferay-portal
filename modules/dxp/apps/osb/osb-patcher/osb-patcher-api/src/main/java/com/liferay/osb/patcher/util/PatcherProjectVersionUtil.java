@@ -45,8 +45,7 @@ public class PatcherProjectVersionUtil {
 	}
 
 	public static List<String> getCumulativePatcherProjectVersionFixedIssues(
-			PatcherProjectVersion patcherProjectVersion)
-		throws Exception {
+		PatcherProjectVersion patcherProjectVersion) {
 
 		Pattern pattern = Pattern.compile(PatcherConstants.FIX_PACK_TAG_REGEX);
 
@@ -158,8 +157,7 @@ public class PatcherProjectVersionUtil {
 	}
 
 	public static Map<Long, List<PatcherProjectVersion>>
-			getPatcherProductVersionIdPatcherProjectVersions()
-		throws Exception {
+		getPatcherProductVersionIdPatcherProjectVersions() {
 
 		Map<Long, List<PatcherProjectVersion>> patcherProjectVersionsMap =
 			new HashMap<>();
@@ -239,8 +237,7 @@ public class PatcherProjectVersionUtil {
 	}
 
 	public static PatcherProjectVersion getSiblingPatcherProjectVersion(
-			String patcherProjectVersionCommittish)
-		throws Exception {
+		String patcherProjectVersionCommittish) {
 
 		String siblingPatcherProjectVersionCommittish;
 
@@ -326,8 +323,7 @@ public class PatcherProjectVersionUtil {
 	}
 
 	public static boolean isPrivatePatcherProjectVersionCommittish(
-			String patcherProjectVersionCommittish)
-		throws Exception {
+		String patcherProjectVersionCommittish) {
 
 		return patcherProjectVersionCommittish.contains(
 			PatcherProjectVersionConstants.PRIVATE_NAME_SUFFIX);

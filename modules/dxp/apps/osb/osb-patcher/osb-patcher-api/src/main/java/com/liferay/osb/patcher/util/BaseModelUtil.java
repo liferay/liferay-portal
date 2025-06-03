@@ -59,8 +59,7 @@ public class BaseModelUtil {
 	}
 
 	public static List<Long> fetchBaseModelsPrimaryIds(
-			List<BaseModel<?>> baseModels)
-		throws Exception {
+		List<BaseModel<?>> baseModels) {
 
 		List<Long> baseModelIds = new ArrayList<>();
 

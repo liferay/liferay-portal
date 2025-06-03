@@ -112,8 +112,8 @@ public class PatcherUtil {
 		return DigesterUtil.digestHex(StringUtil.toUpperCase(key));
 	}
 
-	public static List<String> getCurrentTickets(PatcherFixPack patcherFixPack)
-		throws Exception {
+	public static List<String> getCurrentTickets(
+		PatcherFixPack patcherFixPack) {
 
 		List<String> currentTickets = new ArrayList<>();
 
@@ -231,9 +231,7 @@ public class PatcherUtil {
 		return null;
 	}
 
-	public static List<String> getOldTickets(PatcherFixPack patcherFixPack)
-		throws Exception {
-
+	public static List<String> getOldTickets(PatcherFixPack patcherFixPack) {
 		List<String> oldTickets = new ArrayList<>();
 
 		List<PatcherFixPack> patcherFixPackVersions =
@@ -247,8 +245,7 @@ public class PatcherUtil {
 	}
 
 	public static List<String> getOverriddenTickets(
-			PatcherFixPack patcherFixPack)
-		throws Exception {
+		PatcherFixPack patcherFixPack) {
 
 		List<String> overriddenTickets = getOldTickets(patcherFixPack);
 
@@ -257,9 +254,7 @@ public class PatcherUtil {
 		return sortTokens(overriddenTickets);
 	}
 
-	public static Map<String, Object> getPropertiesMap(Object... properties)
-		throws Exception {
-
+	public static Map<String, Object> getPropertiesMap(Object... properties) {
 		Map<String, Object> propertiesMap = new HashMap<>();
 
 		for (int i = 0; i < properties.length; i += 2) {
@@ -272,7 +267,7 @@ public class PatcherUtil {
 		return propertiesMap;
 	}
 
-	public static List<String> getTickets(String name) throws Exception {
+	public static List<String> getTickets(String name) {
 		List<String> tickets = new ArrayList<>();
 
 		List<String> tokens = getTokens(name);
@@ -293,13 +288,13 @@ public class PatcherUtil {
 		return tickets;
 	}
 
-	public static int getTicketsCount(String name) throws Exception {
+	public static int getTicketsCount(String name) {
 		List<String> tickets = getTickets(name);
 
 		return tickets.size();
 	}
 
-	public static List<String> getTokens(String name) throws Exception {
+	public static List<String> getTokens(String name) {
 		return ListUtil.fromArray(StringUtil.split(name));
 	}
 
@@ -334,13 +329,12 @@ public class PatcherUtil {
 		return true;
 	}
 
-	public static boolean isPatcherTickets(String name) throws Exception {
+	public static boolean isPatcherTickets(String name) {
 		return isPatcherTickets(name, PatcherConstants.TICKET_NAME_ALL_REGEX);
 	}
 
 	public static boolean isPatcherTickets(
-			String name, long patcherProductVersionId)
-		throws Exception {
+		String name, long patcherProductVersionId) {
 
 		if (patcherProductVersionId ==
 				PatcherProductVersionUtil.getPatcherProductVersionId(
@@ -354,8 +348,8 @@ public class PatcherUtil {
 		return isPatcherTickets(name);
 	}
 
-	public static boolean isPatcherTickets(String name, String ticketNameRegex)
-		throws Exception {
+	public static boolean isPatcherTickets(
+		String name, String ticketNameRegex) {
 
 		name = unprepareKeywords(name);
 
@@ -408,7 +402,7 @@ public class PatcherUtil {
 		}
 	}
 
-	public static String prepareKeywords(String keywords) throws Exception {
+	public static String prepareKeywords(String keywords) {
 		if (Validator.isNull(keywords)) {
 			return StringPool.BLANK;
 		}
@@ -419,7 +413,7 @@ public class PatcherUtil {
 			StringPool.QUOTE;
 	}
 
-	public static String preparePatcherName(String name) throws Exception {
+	public static String preparePatcherName(String name) {
 		if (Validator.isNull(name)) {
 			return StringPool.BLANK;
 		}
@@ -746,13 +740,11 @@ public class PatcherUtil {
 		return indexer.search(searchContext);
 	}
 
-	public static List<String> sortTokens(List<String> tokens)
-		throws Exception {
-
+	public static List<String> sortTokens(List<String> tokens) {
 		return sortTokens(StringUtil.merge(tokens));
 	}
 
-	public static List<String> sortTokens(String name) throws Exception {
+	public static List<String> sortTokens(String name) {
 		if (Validator.isNull(name)) {
 			return Collections.emptyList();
 		}
@@ -766,7 +758,7 @@ public class PatcherUtil {
 		return tokens;
 	}
 
-	public static String unprepareKeywords(String keywords) throws Exception {
+	public static String unprepareKeywords(String keywords) {
 		if (Validator.isNull(keywords)) {
 			return StringPool.BLANK;
 		}

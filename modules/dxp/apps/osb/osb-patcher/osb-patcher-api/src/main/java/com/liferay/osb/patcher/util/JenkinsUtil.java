@@ -143,9 +143,8 @@ public class JenkinsUtil {
 	}
 
 	public static Map<String, String> getAgentJenkinsRequestParameters(
-			PatcherProjectVersion patcherProjectVersion, PatcherFix patcherFix,
-			Map<String, String> jenkinsRequestParameters)
-		throws Exception {
+		PatcherProjectVersion patcherProjectVersion, PatcherFix patcherFix,
+		Map<String, String> jenkinsRequestParameters) {
 
 		jenkinsRequestParameters.put(
 			"osb.patcher.baseCommittish",
@@ -374,7 +373,7 @@ public class JenkinsUtil {
 		return jobName;
 	}
 
-	public static String getStatusURL(JSONObject jsonObject) throws Exception {
+	public static String getStatusURL(JSONObject jsonObject) {
 		return jsonObject.getString("statusURL");
 	}
 
@@ -389,8 +388,7 @@ public class JenkinsUtil {
 	}
 
 	public static Map<String, String> getTestJenkinsRequestParameters(
-			PatcherBuild patcherBuild)
-		throws Exception {
+		PatcherBuild patcherBuild) {
 
 		return HashMapBuilder.put(
 			"patcher.build.file.name",
@@ -435,8 +433,7 @@ public class JenkinsUtil {
 	}
 
 	public static boolean isValidSendAgentJenkinsRequest(
-			ThemeDisplay themeDisplay, PatcherFix patcherFix)
-		throws Exception {
+		ThemeDisplay themeDisplay, PatcherFix patcherFix) {
 
 		if ((patcherFix == null) ||
 			((themeDisplay != null) &&
@@ -451,8 +448,7 @@ public class JenkinsUtil {
 	}
 
 	public static boolean isValidSendDistJenkinsRequest(
-			ThemeDisplay themeDisplay, PatcherBuild patcherBuild)
-		throws Exception {
+		ThemeDisplay themeDisplay, PatcherBuild patcherBuild) {
 
 		PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
 			patcherBuild.getPatcherFixId());
@@ -481,8 +477,7 @@ public class JenkinsUtil {
 	}
 
 	public static boolean isValidSendTestJenkinsRequest(
-			ThemeDisplay themeDisplay, PatcherBuild patcherBuild)
-		throws Exception {
+		ThemeDisplay themeDisplay, PatcherBuild patcherBuild) {
 
 		if ((themeDisplay == null) ||
 			!PatcherPermission.contains(
@@ -735,7 +730,7 @@ public class JenkinsUtil {
 		);
 	}
 
-	public static String validateJenkinsSetup() throws Exception {
+	public static String validateJenkinsSetup() {
 		if (Validator.isNull(
 				PortletPropsValues.JENKINS_BUILD_WITH_PARAMETERS_PATH)) {
 

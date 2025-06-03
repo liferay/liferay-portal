@@ -248,8 +248,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static PatcherBuild fetchLastModifiedPatcherBuild(
-			long patcherAccountId, long patcherProductVersionId)
-		throws Exception {
+		long patcherAccountId, long patcherProductVersionId) {
 
 		List<PatcherBuild> patcherAccountPatcherBuilds =
 			PatcherBuildLocalServiceUtil.getPatcherBuilds(
@@ -370,8 +369,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static List<PatcherBuild> getEquivalentPatcherBuilds(
-			long patcherProjectVersionId, String tickets)
-		throws Exception {
+		long patcherProjectVersionId, String tickets) {
 
 		DynamicQuery patcherBuildDynamicQuery =
 			PatcherBuildLocalServiceUtil.dynamicQuery();
@@ -503,8 +501,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static PatcherBuild getLatestEquivalentPatcherBuild(
-			long patcherProjectVersionId, String tickets)
-		throws Exception {
+		long patcherProjectVersionId, String tickets) {
 
 		List<PatcherBuild> patcherBuilds = getEquivalentPatcherBuilds(
 			patcherProjectVersionId, tickets);
@@ -619,8 +616,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static List<Long> getPatcherAccountPatcherBuildIds(
-			long patcherAccountId)
-		throws Exception {
+		long patcherAccountId) {
 
 		List<Long> patcherAccountPatcherBuildIds = new ArrayList<>();
 
@@ -638,9 +634,7 @@ public class PatcherBuildUtil {
 		return patcherAccountPatcherBuildIds;
 	}
 
-	public static String getQAStatusLabel(long patcherBuildId)
-		throws Exception {
-
+	public static String getQAStatusLabel(long patcherBuildId) {
 		PatcherBuild patcherBuild =
 			PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherBuildId);
 
@@ -657,8 +651,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static List<PatcherBuild> getRelatedPatcherBuilds(
-			PatcherBuild patcherBuild)
-		throws Exception {
+		PatcherBuild patcherBuild) {
 
 		List<PatcherBuild> relatedPatcherBuilds = new ArrayList<>();
 
@@ -676,8 +669,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static List<Long> getRelatedPatcherBuildsPatcherFixIds(
-			PatcherBuild patcherBuild)
-		throws Exception {
+		PatcherBuild patcherBuild) {
 
 		List<Long> relatedPatcherBuildFixIds = new ArrayList<>();
 
@@ -698,9 +690,7 @@ public class PatcherBuildUtil {
 		return relatedPatcherBuildFixIds;
 	}
 
-	public static String getSupportTicketURL(String supportTicket)
-		throws Exception {
-
+	public static String getSupportTicketURL(String supportTicket) {
 		if (Validator.isNumber(supportTicket)) {
 			return PortletPropsValues.HELP_CENTER_URL +
 				StringPool.FORWARD_SLASH + supportTicket;
@@ -711,8 +701,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static boolean hasEquivalentPatcherBuild(
-			long patcherProjectVersionId, String tickets)
-		throws Exception {
+		long patcherProjectVersionId, String tickets) {
 
 		List<PatcherBuild> patcherBuilds = getEquivalentPatcherBuilds(
 			patcherProjectVersionId, tickets);
@@ -773,9 +762,7 @@ public class PatcherBuildUtil {
 		return patcherBuild.isLatestKeyBuild();
 	}
 
-	public static boolean isMergeComplete(PatcherBuild patcherBuild)
-		throws Exception {
-
+	public static boolean isMergeComplete(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getStatus() ==
 				WorkflowConstants.STATUS_BUILD_COMPILING) ||
 			(patcherBuild.getStatus() ==
@@ -787,9 +774,7 @@ public class PatcherBuildUtil {
 		return false;
 	}
 
-	public static boolean isMergeConflict(PatcherBuild patcherBuild)
-		throws Exception {
-
+	public static boolean isMergeConflict(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getStatus() ==
 				WorkflowConstants.STATUS_BUILD_CONFLICT) ||
 			(patcherBuild.getStatus() ==
@@ -801,9 +786,7 @@ public class PatcherBuildUtil {
 		return false;
 	}
 
-	public static boolean isMergeOnly(PatcherBuild patcherBuild)
-		throws Exception {
-
+	public static boolean isMergeOnly(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getStatus() ==
 				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY) ||
 			(patcherBuild.getStatus() ==
@@ -823,9 +806,7 @@ public class PatcherBuildUtil {
 		return false;
 	}
 
-	public static boolean isMerging(PatcherBuild patcherBuild)
-		throws Exception {
-
+	public static boolean isMerging(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getStatus() ==
 				WorkflowConstants.STATUS_BUILD_MERGING) ||
 			(patcherBuild.getStatus() ==
@@ -878,9 +859,7 @@ public class PatcherBuildUtil {
 		return true;
 	}
 
-	public static boolean isRebaseConflict(PatcherBuild patcherBuild)
-		throws Exception {
-
+	public static boolean isRebaseConflict(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getStatus() ==
 				WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT) ||
 			(patcherBuild.getStatus() ==
@@ -1200,9 +1179,8 @@ public class PatcherBuildUtil {
 	}
 
 	public static void removePreviousMainFixVersionsFromBuildsFixes(
-			long patcherBuildId, PatcherFix patcherFix,
-			List<Long> patcherBuildPatcherFixIds)
-		throws Exception {
+		long patcherBuildId, PatcherFix patcherFix,
+		List<Long> patcherBuildPatcherFixIds) {
 
 		List<Long> previousVersionPatcherFixIds =
 			PatcherFixUtil.getPreviousVersionsPatcherFixIds(patcherFix);
@@ -1620,9 +1598,7 @@ public class PatcherBuildUtil {
 		return !incompletePatcherFixes.isEmpty();
 	}
 
-	protected static PatcherFix getLatestPatcherFix(PatcherFix patcherFix)
-		throws Exception {
-
+	protected static PatcherFix getLatestPatcherFix(PatcherFix patcherFix) {
 		if (patcherFix.getType() == PatcherFixConstants.TYPE_EXCLUDED) {
 			return patcherFix;
 		}
@@ -1666,9 +1642,7 @@ public class PatcherBuildUtil {
 		return longArray;
 	}
 
-	protected static String getSortedTickets(List<Long> patcherFixIds)
-		throws Exception {
-
+	protected static String getSortedTickets(List<Long> patcherFixIds) {
 		List<String> tickets = new ArrayList<>();
 
 		for (long patcherFixId : patcherFixIds) {
@@ -1892,9 +1866,8 @@ public class PatcherBuildUtil {
 	}
 
 	protected static void updatePatcherBuildsPatcherFixes(
-			PatcherBuild patcherBuild, List<PatcherFix> childPatcherFixes,
-			List<String> messages)
-		throws Exception {
+		PatcherBuild patcherBuild, List<PatcherFix> childPatcherFixes,
+		List<String> messages) {
 
 		PatcherFix longestTicketPatcherFix =
 			PatcherFixUtil.fetchLongestTicketPatcherFix(childPatcherFixes);
