@@ -5,7 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.alloy.mvc.AlloyController;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
@@ -16,6 +15,7 @@ import com.liferay.osb.patcher.model.PatcherFixRel;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
+import com.liferay.osb.patcher.service.PatcherFixRelLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherFixCreateDateComparator;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -53,9 +53,8 @@ import java.util.Set;
 public class PatcherFixUtil {
 
 	public static PatcherFix addNewPatcherFix(
-			AlloyController alloyController, User user, double keyVersion,
-			List<Long> parentPatcherFixIds, long patcherProjectVersionId,
-			String name, int type, int status)
+			User user, double keyVersion, List<Long> parentPatcherFixIds,
+			long patcherProjectVersionId, String name, int type, int status)
 		throws Exception {
 
 		PatcherFix newPatcherFix = PatcherFixLocalServiceUtil.createPatcherFix(
@@ -74,7 +73,8 @@ public class PatcherFixUtil {
 		newPatcherFix.setLatestFix(true);
 		newPatcherFix.setStatus(status);
 
-		alloyController.updateModelIgnoreRequest(newPatcherFix);
+		newPatcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+			newPatcherFix);
 
 		PatcherFixRelUtil.addPatcherFixRel(
 			newPatcherFix.getPatcherFixId(), parentPatcherFixIds);
@@ -83,9 +83,8 @@ public class PatcherFixUtil {
 	}
 
 	public static PatcherFix addPatcherFix(
-			AlloyController alloyController, User user,
-			List<Long> parentPatcherFixIds, long patcherProjectVersionId,
-			String name, int type, int status)
+			User user, List<Long> parentPatcherFixIds,
+			long patcherProjectVersionId, String name, int type, int status)
 		throws Exception {
 
 		double keyVersion = PatcherFixConstants.KEY_VERSION_DEFAULT;
@@ -130,15 +129,16 @@ public class PatcherFixUtil {
 
 			existingPatcherFix.setLatestFix(false);
 
-			alloyController.updateModelIgnoreRequest(existingPatcherFix);
+			existingPatcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+				existingPatcherFix);
 
 			keyVersion = BigDecimalUtil.add(
 				existingPatcherFix.getKeyVersion(), 0.1);
 		}
 
 		return addNewPatcherFix(
-			alloyController, user, keyVersion, parentPatcherFixIds,
-			patcherProjectVersionId, name, type, status);
+			user, keyVersion, parentPatcherFixIds, patcherProjectVersionId,
+			name, type, status);
 	}
 
 	public static boolean containsIncompleteRebasePatcherFix(
@@ -215,8 +215,7 @@ public class PatcherFixUtil {
 		return false;
 	}
 
-	public static void deletePatcherFix(
-			AlloyController alloyController, PatcherFix patcherFix)
+	public static void deletePatcherFix(PatcherFix patcherFix)
 		throws Exception {
 
 		if (patcherFix.getKeyVersion() !=
@@ -238,10 +237,9 @@ public class PatcherFixUtil {
 					oldPatcherFix.setType(PatcherFixConstants.TYPE_EXCLUDED);
 				}
 
-				updateObsolete(
-					alloyController, oldPatcherFix, patcherFixExcluded);
+				updateObsolete(oldPatcherFix, patcherFixExcluded);
 
-				alloyController.updateModel(oldPatcherFix);
+				PatcherFixLocalServiceUtil.updatePatcherFix(oldPatcherFix);
 			}
 		}
 
@@ -732,7 +730,7 @@ public class PatcherFixUtil {
 	}
 
 	public static void notifyUsersInactivePatcherFixes(
-			AlloyController alloyController)
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		Calendar calendar = new GregorianCalendar();
@@ -756,12 +754,11 @@ public class PatcherFixUtil {
 			User user = UserLocalServiceUtil.getUser(patcherFix.getUserId());
 
 			EmailUtil.sendPatcherTimeoutEmail(
-				patcherFix, user.getEmailAddress(),
-				alloyController.getThemeDisplay());
+				patcherFix, user.getEmailAddress(), themeDisplay);
 
 			patcherFix.setNotified(true);
 
-			alloyController.updateModelIgnoreRequest(patcherFix);
+			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 		}
 	}
 
@@ -770,8 +767,7 @@ public class PatcherFixUtil {
 		rollbackFor = Exception.class
 	)
 	public static void processOSBPatcherFixAddJenkinsStatus(
-			AlloyController alloyController, long patcherFixId,
-			String servletStatus)
+			long patcherFixId, String servletStatus, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
@@ -783,8 +779,7 @@ public class PatcherFixUtil {
 			servletStatus);
 
 		if (servletStatusJSONObject.has("statusURL")) {
-			updatePatcherFixJenkinsResult(
-				alloyController, servletStatusJSONObject, patcherFix);
+			updatePatcherFixJenkinsResult(servletStatusJSONObject, patcherFix);
 
 			return;
 		}
@@ -799,15 +794,13 @@ public class PatcherFixUtil {
 
 		if (patcherFix.getType() == PatcherFixConstants.TYPE_REBASE) {
 			updatePatcherFixRebaseStatus(
-				alloyController, patcherFix,
-				osbPatcherServletOutcome.getStatus(),
-				osbPatcherServletOutcome.getResult(), messages);
+				patcherFix, osbPatcherServletOutcome.getStatus(),
+				osbPatcherServletOutcome.getResult(), messages, themeDisplay);
 		}
 		else {
 			updatePatcherFixStatus(
-				alloyController, patcherFix,
-				osbPatcherServletOutcome.getStatus(),
-				osbPatcherServletOutcome.getResult(), messages);
+				patcherFix, osbPatcherServletOutcome.getStatus(),
+				osbPatcherServletOutcome.getResult(), messages, themeDisplay);
 		}
 	}
 
@@ -816,35 +809,37 @@ public class PatcherFixUtil {
 			patcherFixIds, PatcherFixLocalServiceUtil::getPatcherFix);
 	}
 
-	public static void updateObsolete(
-			AlloyController alloyController, PatcherFix patcherFix,
-			boolean obsolete)
+	public static void updateObsolete(PatcherFix patcherFix, boolean obsolete)
 		throws Exception {
 
-		alloyController.updateModelIgnoreRequest(
-			patcherFix, "obsolete", obsolete);
+		patcherFix.setObsolete(obsolete);
+
+		patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 
 		List<PatcherFix> patcherFixDescendants =
 			PatcherFixRelUtil.getPatcherFixDescendants(patcherFix);
 
 		for (PatcherFix patcherFixDescendant : patcherFixDescendants) {
 			if (obsolete) {
-				alloyController.updateModelIgnoreRequest(
-					patcherFixDescendant, "obsolete", true);
+				patcherFixDescendant.setObsolete(true);
+
+				patcherFixDescendant =
+					PatcherFixLocalServiceUtil.updatePatcherFix(
+						patcherFixDescendant);
 
 				continue;
 			}
 
-			alloyController.updateModelIgnoreRequest(
-				patcherFixDescendant, "obsolete",
+			patcherFixDescendant.setObsolete(
 				PatcherFixRelUtil.hasObsoletePatcherFixAncestor(
 					patcherFixDescendant));
+
+			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFixDescendant);
 		}
 	}
 
 	public static void updatePatcherFixJenkinsResult(
-			AlloyController alloyController, JSONObject jenkinsStatusJSONObject,
-			long patcherFixId)
+			JSONObject jenkinsStatusJSONObject, long patcherFixId)
 		throws Exception {
 
 		if (patcherFixId == 0) {
@@ -854,13 +849,11 @@ public class PatcherFixUtil {
 		PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
 			patcherFixId);
 
-		updatePatcherFixJenkinsResult(
-			alloyController, jenkinsStatusJSONObject, patcherFix);
+		updatePatcherFixJenkinsResult(jenkinsStatusJSONObject, patcherFix);
 	}
 
 	public static void updatePatcherFixJenkinsResult(
-			AlloyController alloyController, JSONObject jenkinsStatusJSONObject,
-			PatcherFix patcherFix)
+			JSONObject jenkinsStatusJSONObject, PatcherFix patcherFix)
 		throws Exception {
 
 		if (patcherFix == null) {
@@ -875,7 +868,7 @@ public class PatcherFixUtil {
 
 		JenkinsUtil.putJenkinsResult(patcherFix, jenkinsResultJSONObject);
 
-		alloyController.updateModelIgnoreRequest(patcherFix);
+		PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 	}
 
 	public static void validateDelete(PatcherFix patcherFix) throws Exception {
@@ -943,11 +936,9 @@ public class PatcherFixUtil {
 	}
 
 	protected static void updatePatcherFixPatcherBuildRebaseStatus(
-			AlloyController alloyController, PatcherFix patcherFix,
-			int osbPatcherServletOutcomeStatus, List<String> messages)
+			PatcherFix patcherFix, int osbPatcherServletOutcomeStatus,
+			List<String> messages, ThemeDisplay themeDisplay)
 		throws Exception {
-
-		ThemeDisplay themeDisplay = alloyController.getThemeDisplay();
 
 		List<PatcherBuild> patcherBuilds =
 			PatcherBuildLocalServiceUtil.getPatcherFixPatcherBuilds(
@@ -975,10 +966,10 @@ public class PatcherFixUtil {
 				}
 
 				PatcherBuildUtil.setStatus(
-					alloyController, themeDisplay.getUser(), patcherBuild,
-					status);
+					themeDisplay.getUser(), patcherBuild, status, themeDisplay);
 
-				alloyController.updateModelIgnoreRequest(patcherBuild);
+				patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
+					patcherBuild);
 
 				if (status == WorkflowConstants.STATUS_BUILD_COMPILING) {
 					JenkinsUtil.sendDistJenkinsRequest(
@@ -1004,22 +995,20 @@ public class PatcherFixUtil {
 				}
 
 				PatcherBuildUtil.setStatus(
-					alloyController, themeDisplay.getUser(), patcherBuild,
-					status);
+					themeDisplay.getUser(), patcherBuild, status, themeDisplay);
 			}
 			else {
 				PatcherBuildUtil.setStatus(
-					alloyController, themeDisplay.getUser(), patcherBuild,
-					status);
+					themeDisplay.getUser(), patcherBuild, status, themeDisplay);
 			}
 
-			alloyController.updateModelIgnoreRequest(patcherBuild);
+			PatcherBuildLocalServiceUtil.updatePatcherBuild(patcherBuild);
 		}
 	}
 
 	protected static void updatePatcherFixPatcherBuilds(
-			AlloyController alloyController, PatcherFix patcherFix,
-			List<String> messages)
+			PatcherFix patcherFix, List<String> messages,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		List<PatcherBuild> patcherBuilds =
@@ -1055,11 +1044,9 @@ public class PatcherFixUtil {
 				patcherFixIds.add(patcherBuild.getPatcherFixId());
 			}
 
-			ThemeDisplay themeDisplay = alloyController.getThemeDisplay();
-
 			PatcherBuildUtil.updatePatcherBuildFixes(
-				alloyController, themeDisplay.getUser(), patcherBuild,
-				patcherFixIds);
+				themeDisplay.getUser(), patcherBuild, patcherFixIds,
+				themeDisplay);
 
 			JenkinsUtil.sendAgentJenkinsRequest(
 				themeDisplay.getUser(), patcherBuild, themeDisplay);
@@ -1073,9 +1060,9 @@ public class PatcherFixUtil {
 	}
 
 	protected static void updatePatcherFixRebaseStatus(
-			AlloyController alloyController, PatcherFix patcherFix,
-			int osbPatcherServletOutcomeStatus,
-			String osbPatcherServletOutcomeResult, List<String> messages)
+			PatcherFix patcherFix, int osbPatcherServletOutcomeStatus,
+			String osbPatcherServletOutcomeResult, List<String> messages,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (osbPatcherServletOutcomeStatus ==
@@ -1094,12 +1081,11 @@ public class PatcherFixUtil {
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
 		}
 
-		alloyController.updateModelIgnoreRequest(patcherFix);
+		patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 
 		PatcherUtil.pollIndexState(
-			alloyController, PatcherFix.class.getName(),
-			patcherFix.getPatcherFixId(), "status",
-			WorkflowConstants.STATUS_FIX_COMPLETE);
+			PatcherFix.class.getName(), patcherFix.getPatcherFixId(),
+			themeDisplay, "status", WorkflowConstants.STATUS_FIX_COMPLETE);
 
 		PatcherUtil.addMessage(
 			StringBundler.concat(
@@ -1108,14 +1094,13 @@ public class PatcherFixUtil {
 			messages);
 
 		updatePatcherFixPatcherBuildRebaseStatus(
-			alloyController, patcherFix, osbPatcherServletOutcomeStatus,
-			messages);
+			patcherFix, osbPatcherServletOutcomeStatus, messages, themeDisplay);
 	}
 
 	protected static void updatePatcherFixStatus(
-			AlloyController alloyController, PatcherFix patcherFix,
-			int osbPatcherServletOutcomeStatus,
-			String osbPatcherServletOutcomeResult, List<String> messages)
+			PatcherFix patcherFix, int osbPatcherServletOutcomeStatus,
+			String osbPatcherServletOutcomeResult, List<String> messages,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		if (osbPatcherServletOutcomeStatus ==
@@ -1125,12 +1110,12 @@ public class PatcherFixUtil {
 
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
 
-			alloyController.updateModelIgnoreRequest(patcherFix);
+			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+				patcherFix);
 
 			PatcherUtil.pollIndexState(
-				alloyController, PatcherFix.class.getName(),
-				patcherFix.getPatcherFixId(), "status",
-				WorkflowConstants.STATUS_FIX_COMPLETE);
+				PatcherFix.class.getName(), patcherFix.getPatcherFixId(),
+				themeDisplay, "status", WorkflowConstants.STATUS_FIX_COMPLETE);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
@@ -1138,13 +1123,13 @@ public class PatcherFixUtil {
 					patcherFix.getName(), " was successfully added."),
 				messages);
 
-			updatePatcherFixPatcherBuilds(
-				alloyController, patcherFix, messages);
+			updatePatcherFixPatcherBuilds(patcherFix, messages, themeDisplay);
 		}
 		else {
 			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
 
-			alloyController.updateModelIgnoreRequest(patcherFix);
+			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+				patcherFix);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
