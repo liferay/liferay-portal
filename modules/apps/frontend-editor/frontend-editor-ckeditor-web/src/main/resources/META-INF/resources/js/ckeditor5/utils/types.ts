@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {EditorConfig} from 'ckeditor5';
+import {BalloonEditor, ClassicEditor, EditorConfig} from 'ckeditor5';
 
 export enum EEditorConfigPreset {
 	BASIC = 'basic',
@@ -31,3 +31,5 @@ export interface LiferayEditorConfig extends EditorConfig {
 	itemSelectorEventName?: string;
 	preset?: EEditorConfigPreset;
 }
+
+export type TEditor = BalloonEditor | ClassicEditor;
