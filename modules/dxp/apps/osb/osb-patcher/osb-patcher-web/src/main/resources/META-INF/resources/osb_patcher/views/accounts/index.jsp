@@ -7,6 +7,10 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccountsDisplayContext(request, renderRequest, renderResponse);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="accounts" />
 </liferay-util:include>
@@ -46,14 +50,8 @@
 </aui:button-row>
 
 <liferay-ui:search-container
-	emptyResultsMessage="there-are-no-accounts"
-	iteratorURL="${alloySearchResult.portletURL}"
-	total="${alloySearchResult.size}"
+	searchContainer="<%= patcherAccountsDisplayContext.getSearchContainer() %>"
 >
-	<liferay-ui:search-container-results
-		results="${alloySearchResult.baseModels}"
-	/>
-
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherAccount"
 		escapedModel="<%= true %>"
