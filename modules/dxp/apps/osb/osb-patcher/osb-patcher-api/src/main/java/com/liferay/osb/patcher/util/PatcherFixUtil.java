@@ -187,9 +187,7 @@ public class PatcherFixUtil {
 		return false;
 	}
 
-	public static boolean containsPatcherFixComment(long patcherBuildId)
-		throws Exception {
-
+	public static boolean containsPatcherFixComment(long patcherBuildId) {
 		List<PatcherFix> patcherFixes =
 			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuildId);
@@ -203,9 +201,7 @@ public class PatcherFixUtil {
 		return false;
 	}
 
-	public static boolean containsPatcherFixWorkaround(long patcherBuildId)
-		throws Exception {
-
+	public static boolean containsPatcherFixWorkaround(long patcherBuildId) {
 		List<PatcherFix> patcherFixes =
 			PatcherFixLocalServiceUtil.getPatcherBuildPatcherFixes(
 				patcherBuildId);
@@ -256,8 +252,7 @@ public class PatcherFixUtil {
 	}
 
 	public static PatcherFix fetchLongestTicketPatcherFix(
-			List<PatcherFix> patcherFixes)
-		throws Exception {
+		List<PatcherFix> patcherFixes) {
 
 		PatcherFix longestTicketPatcherFix = null;
 
@@ -276,9 +271,7 @@ public class PatcherFixUtil {
 		return longestTicketPatcherFix;
 	}
 
-	public static PatcherFix fetchPatcherFixByLatestFix(String key)
-		throws Exception {
-
+	public static PatcherFix fetchPatcherFixByLatestFix(String key) {
 		List<PatcherFix> patcherFixes = getFilteredPatcherFixes(key, true);
 
 		if (!patcherFixes.isEmpty()) {
@@ -469,8 +462,7 @@ public class PatcherFixUtil {
 	}
 
 	public static List<PatcherFix> getPatcherFixesSelection(
-			long patcherProjectVersionId, boolean includeAnyStatusRebaseFixes)
-		throws Exception {
+		long patcherProjectVersionId, boolean includeAnyStatusRebaseFixes) {
 
 		List<PatcherFix> filteredPatcherFixes = new ArrayList<>();
 
@@ -570,9 +562,8 @@ public class PatcherFixUtil {
 	}
 
 	public static PatcherFixRadix getPatcherFixRadix(
-			long patcherProjectVersionId, List<String> patcherBuildTickets,
-			List<PatcherFix> patcherFixesSelection)
-		throws Exception {
+		long patcherProjectVersionId, List<String> patcherBuildTickets,
+		List<PatcherFix> patcherFixesSelection) {
 
 		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
 
@@ -590,9 +581,8 @@ public class PatcherFixUtil {
 	}
 
 	public static PatcherFixRadix getPatcherFixRadix(
-			long patcherProjectVersionId, List<String> patcherBuildTickets,
-			List<PatcherFix> patcherFixesSelection, String[] ticketsFilter)
-		throws Exception {
+		long patcherProjectVersionId, List<String> patcherBuildTickets,
+		List<PatcherFix> patcherFixesSelection, String[] ticketsFilter) {
 
 		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
 
@@ -694,8 +684,7 @@ public class PatcherFixUtil {
 	}
 
 	public static boolean isCoveredPatcherFixTickets(
-			PatcherFix patcherFix, List<PatcherFix> patcherFixPackPatcherFixes)
-		throws Exception {
+		PatcherFix patcherFix, List<PatcherFix> patcherFixPackPatcherFixes) {
 
 		for (PatcherFix patcherFixPackPatcherFix : patcherFixPackPatcherFixes) {
 			List<String> patcherFixPackPatcherFixTickets =
@@ -738,7 +727,7 @@ public class PatcherFixUtil {
 		return false;
 	}
 
-	public static boolean isMainPatcherFix(long patcherFixId) throws Exception {
+	public static boolean isMainPatcherFix(long patcherFixId) {
 		return PatcherBuildLocalServiceUtil.hasPatcherFixes(patcherFixId);
 	}
 
@@ -939,9 +928,7 @@ public class PatcherFixUtil {
 		return false;
 	}
 
-	protected static List<Long> getPatcherFixIds(PatcherBuild patcherBuild)
-		throws Exception {
-
+	protected static List<Long> getPatcherFixIds(PatcherBuild patcherBuild) {
 		List<Long> patcherFixIds = new ArrayList<>();
 
 		List<PatcherFix> patcherFixes =

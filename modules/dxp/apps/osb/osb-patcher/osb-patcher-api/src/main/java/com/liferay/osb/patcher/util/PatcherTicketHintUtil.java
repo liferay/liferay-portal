@@ -22,8 +22,7 @@ import java.util.Arrays;
 public class PatcherTicketHintUtil {
 
 	public static String getPatcherTicketHintList(
-			long productVersionId, String tickets, long projectVersionId)
-		throws Exception {
+		long productVersionId, String tickets, long projectVersionId) {
 
 		PatcherTicketHint patcherTicketHint =
 			PatcherTicketHintLocalServiceUtil.

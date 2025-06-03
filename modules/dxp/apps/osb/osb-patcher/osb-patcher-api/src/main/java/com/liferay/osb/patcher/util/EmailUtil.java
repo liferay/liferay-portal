@@ -148,15 +148,11 @@ public class EmailUtil {
 		return string;
 	}
 
-	protected static String getBodyEmailTemplate(String templateName)
-		throws Exception {
-
+	protected static String getBodyEmailTemplate(String templateName) {
 		return getEmailTemplate(templateName + "_body.tmpl");
 	}
 
-	protected static String getDownloadHotfixURL(PatcherBuild patcherBuild)
-		throws Exception {
-
+	protected static String getDownloadHotfixURL(PatcherBuild patcherBuild) {
 		if (PatcherBuildUtil.isCompleteOrReady(patcherBuild) &&
 			Validator.isNotNull(patcherBuild.getFileName())) {
 
@@ -180,9 +176,7 @@ public class EmailUtil {
 		return StringPool.BLANK;
 	}
 
-	protected static String getEmailTemplate(String templateName)
-		throws Exception {
-
+	protected static String getEmailTemplate(String templateName) {
 		ClassLoader portletClassLoader = EmailUtil.class.getClassLoader();
 
 		URL url = portletClassLoader.getResource(
@@ -356,9 +350,7 @@ public class EmailUtil {
 		return StringPool.BLANK;
 	}
 
-	protected static String getSubjectEmailTemplate(String templateName)
-		throws Exception {
-
+	protected static String getSubjectEmailTemplate(String templateName) {
 		return getEmailTemplate(templateName + "_subject.tmpl");
 	}
 

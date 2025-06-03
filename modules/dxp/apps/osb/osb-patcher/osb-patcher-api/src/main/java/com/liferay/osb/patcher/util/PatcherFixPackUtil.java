@@ -36,9 +36,7 @@ import java.util.regex.Pattern;
  */
 public class PatcherFixPackUtil {
 
-	public static boolean containsPatcherFixPackName(String name)
-		throws Exception {
-
+	public static boolean containsPatcherFixPackName(String name) {
 		List<String> patcherFixPackNames = getPatcherFixPackNames(name);
 
 		if (!patcherFixPackNames.isEmpty()) {
@@ -88,8 +86,7 @@ public class PatcherFixPackUtil {
 	}
 
 	public static PatcherFixPack fetchPatcherFixPackVersion(
-			PatcherFixPack patcherFixPack, boolean older)
-		throws Exception {
+		PatcherFixPack patcherFixPack, boolean older) {
 
 		List<PatcherFixPack> patcherFixPackVersions = getPatcherFixPackVersions(
 			patcherFixPack, older);
@@ -102,8 +99,7 @@ public class PatcherFixPackUtil {
 	}
 
 	public static List<PatcherFixPack>
-			getFilteredPatcherFixPacksByComponentAndProjectVersion()
-		throws Exception {
+		getFilteredPatcherFixPacksByComponentAndProjectVersion() {
 
 		List<PatcherFixPack> filteredPatcherFixPacks = new ArrayList<>();
 
@@ -153,9 +149,7 @@ public class PatcherFixPackUtil {
 			patcherProjectVersionId, name);
 	}
 
-	public static List<String> getPatcherFixPackNames(String name)
-		throws Exception {
-
+	public static List<String> getPatcherFixPackNames(String name) {
 		List<String> patcherFixPackNames = new ArrayList<>();
 
 		List<String> tokens = PatcherUtil.getTokens(name);
@@ -175,9 +169,7 @@ public class PatcherFixPackUtil {
 		return patcherFixPackNames;
 	}
 
-	public static int getPatcherFixPackNamesCount(String name)
-		throws Exception {
-
+	public static int getPatcherFixPackNamesCount(String name) {
 		List<String> patcherFixPackNames = getPatcherFixPackNames(name);
 
 		return patcherFixPackNames.size();

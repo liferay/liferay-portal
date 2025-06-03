@@ -571,9 +571,8 @@ public class PatcherScanUtil {
 	}
 
 	protected static List<String> scanPatcherFixTicketsByProjectVersionId(
-			List<String> patcherBuildTickets, long patcherProjectVersionId,
-			List<PatcherFix> patcherFixesSelection)
-		throws Exception {
+		List<String> patcherBuildTickets, long patcherProjectVersionId,
+		List<PatcherFix> patcherFixesSelection) {
 
 		List<String> patcherFixTickets = new ArrayList<>();
 
