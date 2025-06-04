@@ -15,7 +15,6 @@ import com.liferay.item.selector.criteria.url.criterion.URLItemSelectorCriterion
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.item.selector.criterion.LayoutItemSelectorCriterion;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -44,13 +43,17 @@ import org.osgi.service.component.annotations.Reference;
 	service = EditorConfigContributor.class
 )
 public class FragmentEntryLinkRichTextEditorConfigContributor
-	extends BaseEditorConfigContributor {
+	extends BaseFragmentEntryLinkEditorConfigContributor {
 
 	@Override
 	public void populateConfigJSONObject(
 		JSONObject jsonObject, Map<String, Object> inputEditorTaglibAttributes,
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
+
+		super.populateConfigJSONObject(
+			jsonObject, inputEditorTaglibAttributes, themeDisplay,
+			requestBackedPortletURLFactory);
 
 		PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
 			requestBackedPortletURLFactory, "_EDITOR_NAME_selectItem",
