@@ -10,11 +10,18 @@ import com.liferay.osb.patcher.service.base.PatcherAccountLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import java.util.Date;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -25,6 +32,29 @@ import org.osgi.service.component.annotations.Component;
 )
 public class PatcherAccountLocalServiceImpl
 	extends PatcherAccountLocalServiceBaseImpl {
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherAccount addPatcherAccount(
+			long userId, long accountEntryId, String accountEntryCode)
+		throws PortalException {
+
+		PatcherAccount patcherAccount = patcherAccountPersistence.create(
+			counterLocalService.increment());
+
+		User user = _userLocalService.getUser(userId);
+
+		patcherAccount.setCompanyId(user.getCompanyId());
+		patcherAccount.setUserId(user.getUserId());
+		patcherAccount.setUserName(user.getFullName());
+
+		patcherAccount.setCreateDate(new Date());
+		patcherAccount.setModifiedDate(new Date());
+		patcherAccount.setAccountEntryId(accountEntryId);
+		patcherAccount.setAccountEntryCode(accountEntryCode);
+
+		return patcherAccount;
+	}
 
 	@Override
 	public PatcherAccount fetchPatcherAccount(String accountEntryCode) {
@@ -53,5 +83,8 @@ public class PatcherAccountLocalServiceImpl
 
 	@Reference
 	private CustomSQL _customSQL;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
