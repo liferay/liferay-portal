@@ -911,17 +911,11 @@ public class JenkinsUtil {
 	}
 
 	protected static void validateJenkinsRequestKey(
-			BaseModel<?> baseModel, String jenkinsStatusJSONString)
+			BaseModel<?> baseModel, String jenkinsStatusJSONString,
+			String requestKey)
 		throws Exception {
 
-		if (baseModel == null) {
-			throw new Exception("the-base-model-is-null");
-		}
-
-		String baseModelRequestKey = BaseModelUtil.fetchBaseModelRequestKey(
-			baseModel);
-
-		if (Validator.isNull(baseModelRequestKey)) {
+		if (Validator.isNull(requestKey)) {
 			throw new Exception(
 				"The base model with ID " +
 					GetterUtil.getLong(baseModel.getPrimaryKeyObj()) +
@@ -935,15 +929,14 @@ public class JenkinsUtil {
 			"patcherRequestKey");
 
 		if (Validator.isNull(jenkinsStatusRequestKey) ||
-			!StringUtil.equalsIgnoreCase(
-				jenkinsStatusRequestKey, baseModelRequestKey)) {
+			!StringUtil.equalsIgnoreCase(jenkinsStatusRequestKey, requestKey)) {
 
 			StringBundler sb = new StringBundler(6);
 
 			sb.append("The base model ID ");
 			sb.append(GetterUtil.getLong(baseModel.getPrimaryKeyObj()));
 			sb.append(" with request key ");
-			sb.append(baseModelRequestKey);
+			sb.append(requestKey);
 			sb.append(" is not contained in the status file ");
 			sb.append(jenkinsStatusJSONString);
 

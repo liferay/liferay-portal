@@ -754,7 +754,8 @@ public class PatcherFixUtil {
 			User user = UserLocalServiceUtil.getUser(patcherFix.getUserId());
 
 			EmailUtil.sendPatcherTimeoutEmail(
-				patcherFix, user.getEmailAddress(), themeDisplay);
+				patcherFix, user.getEmailAddress(), themeDisplay,
+				patcherFix.getUserId());
 
 			patcherFix.setNotified(true);
 
@@ -1143,8 +1144,12 @@ public class PatcherFixUtil {
 			PatcherFix patcherFix, String jenkinsStatusJSONString)
 		throws Exception {
 
+		if (patcherFix == null) {
+			throw new Exception("the-base-model-is-null");
+		}
+
 		JenkinsUtil.validateJenkinsRequestKey(
-			patcherFix, jenkinsStatusJSONString);
+			patcherFix, jenkinsStatusJSONString, patcherFix.getRequestKey());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(PatcherFixUtil.class);

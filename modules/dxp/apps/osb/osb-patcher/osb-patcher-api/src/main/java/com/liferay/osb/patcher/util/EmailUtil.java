@@ -114,28 +114,59 @@ public class EmailUtil {
 		subscriptionSender.flushNotificationsAsync();
 	}
 
-	public static void sendPatcherStatusEmail(
+	public static void sendPatcherEmail(
 			BaseModel<?> baseModel, String emailAddress,
-			ThemeDisplay themeDisplay)
+			String templateNameSuffix, ThemeDisplay themeDisplay, long userId)
 		throws Exception {
 
-		Integer baseModelStatus = BaseModelUtil.fetchBaseModelStatus(baseModel);
-
-		if (baseModelStatus == null) {
+		if (Validator.isNull(templateNameSuffix)) {
 			return;
 		}
 
-		sendPatcherEmail(
-			baseModel, emailAddress,
-			WorkflowConstants.getStatusLabel(baseModelStatus), themeDisplay);
+		StringBundler sb = new StringBundler(4);
+
+		sb.append("email_");
+
+		Class<?> modelClass = baseModel.getModelClass();
+
+		sb.append(
+			applyTextFormatterFormats(
+				modelClass.getSimpleName(), TextFormatter.L, TextFormatter.K,
+				TextFormatter.N));
+
+		sb.append(StringPool.UNDERLINE);
+		sb.append(
+			applyTextFormatterFormats(
+				templateNameSuffix, TextFormatter.B, TextFormatter.N));
+
+		String body = getBodyEmailTemplate(sb.toString());
+
+		String subject = getSubjectEmailTemplate(sb.toString());
+
+		Map<String, String> contextAttributes = getPatcherContextAttributes(
+			baseModel, themeDisplay);
+
+		sendEmail(themeDisplay, emailAddress, body, subject, contextAttributes);
+
+		if ((baseModel instanceof WorkflowedModel workflowedModel) &&
+			(workflowedModel.getStatusByUserId() != userId)) {
+
+			User user = UserLocalServiceUtil.getUser(
+				workflowedModel.getStatusByUserId());
+
+			sendEmail(
+				themeDisplay, user.getEmailAddress(), body, subject,
+				contextAttributes);
+		}
 	}
 
 	public static void sendPatcherTimeoutEmail(
 			BaseModel<?> baseModel, String emailAddress,
-			ThemeDisplay themeDisplay)
+			ThemeDisplay themeDisplay, long userId)
 		throws Exception {
 
-		sendPatcherEmail(baseModel, emailAddress, "timeout", themeDisplay);
+		sendPatcherEmail(
+			baseModel, emailAddress, "timeout", themeDisplay, userId);
 	}
 
 	protected static String applyTextFormatterFormats(
@@ -352,55 +383,6 @@ public class EmailUtil {
 
 	protected static String getSubjectEmailTemplate(String templateName) {
 		return getEmailTemplate(templateName + "_subject.tmpl");
-	}
-
-	protected static void sendPatcherEmail(
-			BaseModel<?> baseModel, String emailAddress,
-			String templateNameSuffix, ThemeDisplay themeDisplay)
-		throws Exception {
-
-		if (Validator.isNull(templateNameSuffix)) {
-			return;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append("email_");
-
-		Class<?> modelClass = baseModel.getModelClass();
-
-		sb.append(
-			applyTextFormatterFormats(
-				modelClass.getSimpleName(), TextFormatter.L, TextFormatter.K,
-				TextFormatter.N));
-
-		sb.append(StringPool.UNDERLINE);
-		sb.append(
-			applyTextFormatterFormats(
-				templateNameSuffix, TextFormatter.B, TextFormatter.N));
-
-		String body = getBodyEmailTemplate(sb.toString());
-
-		String subject = getSubjectEmailTemplate(sb.toString());
-
-		Map<String, String> contextAttributes = getPatcherContextAttributes(
-			baseModel, themeDisplay);
-
-		sendEmail(themeDisplay, emailAddress, body, subject, contextAttributes);
-
-		if (baseModel instanceof WorkflowedModel) {
-			Long statusByUserId = BaseModelUtil.fetchBaseModelStatusByUserId(
-				baseModel);
-			Long userId = BaseModelUtil.fetchBaseModelUserId(baseModel);
-
-			if (statusByUserId != userId) {
-				User user = UserLocalServiceUtil.getUser(statusByUserId);
-
-				sendEmail(
-					themeDisplay, user.getEmailAddress(), body, subject,
-					contextAttributes);
-			}
-		}
 	}
 
 	private static String _getDisplayURL(
