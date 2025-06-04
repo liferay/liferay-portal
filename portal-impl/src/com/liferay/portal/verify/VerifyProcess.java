@@ -122,7 +122,7 @@ public abstract class VerifyProcess extends BaseDBProcess {
 		}
 	}
 
-	protected Set<String> getPortalTableNames() throws Exception {
+	protected static Set<String> getPortalTableNames() throws Exception {
 		if (_portalTableNames != null) {
 			return _portalTableNames;
 		}
@@ -160,6 +160,6 @@ public abstract class VerifyProcess extends BaseDBProcess {
 	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
 
-	private Set<String> _portalTableNames;
+	private static Set<String> _portalTableNames;
 
 }

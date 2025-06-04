@@ -5,9 +5,17 @@
 
 package com.liferay.portal.verify;
 
+import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Jorge Avalos
@@ -23,6 +31,29 @@ public class PreupgradeVerifyDatabaseCharacterSet
 			throw new VerifyException(
 				"Unsupported database character set: " +
 					db.getCharacterSet(connection));
+		}
+
+		if(db.getDBType() == (DBType.MYSQL) || db.getDBType() == (DBType.MARIADB)) {
+			try(PreparedStatement preparedStatement = connection.prepareStatement("select character_set_name, collation_name, table_name from information_schema.columns join information_schema.schemata on information_schema.columns.table_schema = information_schema.schemata.schema_name where information_schema.columns.table_schema = database() and information_schema.columns.collation_name is not null and (information_schema.columns.character_set_name != information_schema.schemata.default_character_set_name or information_schema.columns.collation_name != information_schema.schemata.default_collation_name)")){
+				ResultSet resultSet = preparedStatement.executeQuery();
+				while(resultSet.next()) {
+
+					Set<String> portalTables =
+						DBResourceUtil.getPreupgradedServiceTables(connection);
+
+					portalTables.addAll(DBResourceUtil.getTargetVersionTables(connection));
+
+					portalTables.addAll(VerifyProcess.getPortalTableNames());
+
+					String tableName = resultSet.getString("table_name");
+
+					if(portalTables.contains(tableName)) {
+						throw new VerifyException(
+							"Mixed database character set and collation:\n" + resultSet.getString("character_set_name") +
+							resultSet.getString("collation_name") + "on " +  tableName);
+					}
+				}
+			}
 		}
 	}
 
