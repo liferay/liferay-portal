@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -48,7 +47,6 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -59,7 +57,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -179,33 +176,6 @@ public class PatcherBuildUtil {
 		return patcherBuild;
 	}
 
-	public static boolean containsIncompleteRebasePatcherFix(
-			PatcherBuild patcherBuild)
-		throws Exception {
-
-		return PatcherFixUtil.containsIncompleteRebasePatcherFix(
-			PatcherFixUtil.getPatcherFixIds(patcherBuild));
-	}
-
-	public static boolean containsOtherPatcherProjectVersionIds(
-			long patcherBuildProjectVersionId,
-			Set<Long> patcherProjectVersionIds)
-		throws Exception {
-
-		for (long patcherProjectVersionId : patcherProjectVersionIds) {
-			if ((patcherBuildProjectVersionId == patcherProjectVersionId) ||
-				PatcherProjectVersionUtil.isSiblingPatcherProjectVersionIds(
-					patcherBuildProjectVersionId, patcherProjectVersionId)) {
-
-				continue;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
 	public static void deletePatcherBuildAndChildBuilds(
 			PatcherBuild patcherBuild)
 		throws Exception {
@@ -310,21 +280,6 @@ public class PatcherBuildUtil {
 		return PatcherBuildLocalServiceUtil.getPatcherBuilds(
 			key, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			PatcherBuildKeyVersionComparator.getInstance(false));
-	}
-
-	public static PatcherBuild fetchPatcherBuildSupportTicketVersion(
-		PatcherBuild patcherBuild, boolean older) {
-
-		List<PatcherBuild> patcherBuilds =
-			PatcherBuildLocalServiceUtil.getPatcherBuildsByKey(
-				patcherBuild.getSupportTicket(),
-				patcherBuild.getSupportTicketVersion(), older);
-
-		if (patcherBuilds.isEmpty()) {
-			return null;
-		}
-
-		return patcherBuilds.get(0);
 	}
 
 	public static long generateHotfixId(
@@ -780,18 +735,6 @@ public class PatcherBuildUtil {
 		return false;
 	}
 
-	public static boolean isMergeConflict(PatcherBuild patcherBuild) {
-		if ((patcherBuild.getStatus() ==
-				WorkflowConstants.STATUS_BUILD_CONFLICT) ||
-			(patcherBuild.getStatus() ==
-				WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	public static boolean isMergeOnly(PatcherBuild patcherBuild) {
 		if ((patcherBuild.getStatus() ==
 				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY) ||
@@ -805,18 +748,6 @@ public class PatcherBuildUtil {
 				WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT_MERGING_ONLY) ||
 			(patcherBuild.getStatus() ==
 				WorkflowConstants.STATUS_BUILD_REBASING_MERGING_ONLY)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	public static boolean isMerging(PatcherBuild patcherBuild) {
-		if ((patcherBuild.getStatus() ==
-				WorkflowConstants.STATUS_BUILD_MERGING) ||
-			(patcherBuild.getStatus() ==
-				WorkflowConstants.STATUS_BUILD_MERGING_ONLY)) {
 
 			return true;
 		}
@@ -863,18 +794,6 @@ public class PatcherBuildUtil {
 		}
 
 		return true;
-	}
-
-	public static boolean isRebaseConflict(PatcherBuild patcherBuild) {
-		if ((patcherBuild.getStatus() ==
-				WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT) ||
-			(patcherBuild.getStatus() ==
-				WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT_MERGING_ONLY)) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	public static boolean isSmokeTestOnly(PatcherBuild patcherBuild) {
@@ -1197,99 +1116,6 @@ public class PatcherBuildUtil {
 		}
 	}
 
-	public static void saveParentPatcherBuild(
-			PatcherBuild parentPatcherBuild, String accountEntryCode,
-			ThemeDisplay themeDisplay)
-		throws Exception {
-
-		parentPatcherBuild = setLatestPatcherBuild(
-			parentPatcherBuild, parentPatcherBuild.getKey(),
-			parentPatcherBuild.getSupportTicket());
-
-		if (parentPatcherBuild.isNew()) {
-			addPatcherAccountPatcherBuild(
-				parentPatcherBuild.getPatcherBuildId(), accountEntryCode,
-				themeDisplay);
-
-			PatcherAccount patcherAccount =
-				PatcherAccountLocalServiceUtil.getPatcherAccount(
-					accountEntryCode);
-
-			parentPatcherBuild.setPatcherAccountId(
-				patcherAccount.getPatcherAccountId());
-		}
-
-		if (!PatcherProjectVersionUtil.isCombinedBranchPatcherProjectVersion(
-				parentPatcherBuild.getPatcherProjectVersionId())) {
-
-			parentPatcherBuild.setPatcherFixId(0L);
-		}
-
-		parentPatcherBuild.setPatcherBuildId(
-			parentPatcherBuild.getPatcherBuildId());
-
-		PatcherBuildLocalServiceUtil.updatePatcherBuild(parentPatcherBuild);
-	}
-
-	@Transactional(
-		isolation = Isolation.PORTAL, propagation = Propagation.REQUIRES_NEW,
-		rollbackFor = Exception.class
-	)
-	public static void savePatcherBuild(
-			User user, PatcherBuild parentPatcherBuild,
-			Map<Long, List<Long>> patcherProjectVersionIdPatcherFixIdsMap,
-			boolean mergeOnly, String accountEntryCode,
-			ThemeDisplay themeDisplay)
-		throws Exception {
-
-		saveParentPatcherBuild(
-			parentPatcherBuild, accountEntryCode, themeDisplay);
-
-		patcherProjectVersionIdPatcherFixIdsMap =
-			rebaseOtherProjectVersionPatcherFixes(
-				user, patcherProjectVersionIdPatcherFixIdsMap,
-				parentPatcherBuild.getPatcherProjectVersionId());
-
-		for (Map.Entry<Long, List<Long>> entry :
-				patcherProjectVersionIdPatcherFixIdsMap.entrySet()) {
-
-			PatcherBuild patcherBuild = parentPatcherBuild;
-
-			if (!PatcherProjectVersionUtil.
-					isCombinedBranchPatcherProjectVersion(
-						parentPatcherBuild.getPatcherProjectVersionId()) &&
-				(parentPatcherBuild.getType() !=
-					PatcherBuildConstants.TYPE_FIX_PACK) &&
-				!PatcherBuildRelUtil.hasParentPatcherBuilds(
-					parentPatcherBuild)) {
-
-				patcherBuild = saveChildPatcherBuild(
-					parentPatcherBuild, entry.getValue(), entry.getKey());
-			}
-
-			updatePatcherBuildFixes(
-				user, patcherBuild, entry.getValue(), themeDisplay);
-		}
-
-		List<BaseModel<?>> sendToJenkinsBaseModels =
-			workflowRelatedPatcherBuildsToPendingStatus(
-				parentPatcherBuild, mergeOnly);
-
-		for (BaseModel<?> sendToJenkinsBaseModel : sendToJenkinsBaseModels) {
-			if ((sendToJenkinsBaseModel instanceof PatcherBuild patcherBuild) &&
-				(patcherBuild.getStatus() ==
-					WorkflowConstants.STATUS_BUILD_COMPILING)) {
-
-				JenkinsUtil.sendDistJenkinsRequest(
-					user, patcherBuild, themeDisplay);
-			}
-			else {
-				JenkinsUtil.sendAgentJenkinsRequest(
-					user, sendToJenkinsBaseModel, themeDisplay);
-			}
-		}
-	}
-
 	public static void sendTestJenkinsRequest(
 			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
 		throws Exception {
@@ -1534,53 +1360,6 @@ public class PatcherBuildUtil {
 		}
 	}
 
-	public static List<BaseModel<?>>
-			workflowRelatedPatcherBuildsToPendingStatus(
-				PatcherBuild parentPatcherBuild, boolean mergeOnly)
-		throws Exception {
-
-		List<BaseModel<?>> sendToJenkinsBaseModels = new ArrayList<>();
-
-		List<PatcherBuild> patcherBuilds = new ArrayList<>();
-
-		if (PatcherBuildRelUtil.hasChildPatcherBuilds(parentPatcherBuild)) {
-			patcherBuilds = PatcherBuildRelUtil.getChildPatcherBuilds(
-				parentPatcherBuild);
-		}
-
-		patcherBuilds.add(parentPatcherBuild);
-
-		for (PatcherBuild patcherBuild : patcherBuilds) {
-			List<PatcherFix> pendingPatcherFixes =
-				workflowPatcherBuildIncompleteFixesToPending(patcherBuild);
-
-			sendToJenkinsBaseModels.addAll(pendingPatcherFixes);
-
-			int status = 0;
-
-			if (patcherBuild.isChildBuild()) {
-				status = getNextPatcherBuildWorkflowStatus(patcherBuild, true);
-			}
-			else {
-				status = getNextPatcherBuildWorkflowStatus(
-					patcherBuild, mergeOnly);
-			}
-
-			patcherBuild.setStatus(status);
-
-			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
-				patcherBuild);
-
-			if (patcherBuild.isChildBuild() ||
-				!PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild)) {
-
-				sendToJenkinsBaseModels.add(patcherBuild);
-			}
-		}
-
-		return sendToJenkinsBaseModels;
-	}
-
 	protected static List<PatcherFix> addChildPatcherFixes(
 			User user, PatcherBuild patcherBuild, long patcherFixId,
 			List<Long> conflictPatcherFixIds, List<String> messages)
@@ -1749,160 +1528,6 @@ public class PatcherBuildUtil {
 		}
 
 		return false;
-	}
-
-	protected static Map<Long, List<Long>>
-			rebaseOtherProjectVersionPatcherFixes(
-				User user,
-				Map<Long, List<Long>> patcherProjectVersionIdPatcherFixIdsMap,
-				long patcherBuildProjectVersionId)
-		throws Exception {
-
-		List<PatcherFix> rebasePatcherFixes = new ArrayList<>();
-		List<Long> rebasedPatcherProjectVersionIds = new ArrayList<>();
-
-		for (Map.Entry<Long, List<Long>> entry :
-				patcherProjectVersionIdPatcherFixIdsMap.entrySet()) {
-
-			long patcherProjectVersionId = entry.getKey();
-
-			if ((patcherProjectVersionId == patcherBuildProjectVersionId) ||
-				PatcherProjectVersionUtil.isSiblingPatcherProjectVersionIds(
-					patcherProjectVersionId, patcherBuildProjectVersionId)) {
-
-				continue;
-			}
-
-			long rebaseToPatcherProjectVersionId = patcherBuildProjectVersionId;
-
-			if (PatcherProjectVersionUtil.isPrivatePatcherProjectVersion(
-					patcherProjectVersionId) &&
-				!PatcherProjectVersionUtil.isPrivatePatcherProjectVersion(
-					patcherBuildProjectVersionId)) {
-
-				PatcherProjectVersion privatePatcherProjectVersion =
-					PatcherProjectVersionUtil.getSiblingPatcherProjectVersion(
-						patcherBuildProjectVersionId);
-
-				rebaseToPatcherProjectVersionId =
-					privatePatcherProjectVersion.getPatcherProjectVersionId();
-			}
-
-			List<Long> patcherFixIds = entry.getValue();
-
-			for (long patcherFixId : patcherFixIds) {
-				PatcherFix patcherFix =
-					PatcherFixLocalServiceUtil.getPatcherFix(patcherFixId);
-
-				rebasedPatcherProjectVersionIds.add(
-					patcherFix.getPatcherProjectVersionId());
-
-				PatcherFix rebasePatcherFix = PatcherFixUtil.addPatcherFix(
-					user, ListUtil.fromArray(patcherFixId),
-					rebaseToPatcherProjectVersionId, patcherFix.getName(),
-					PatcherFixConstants.TYPE_REBASE,
-					WorkflowConstants.STATUS_FIX_REBASING);
-
-				rebasePatcherFixes.add(rebasePatcherFix);
-			}
-		}
-
-		for (long rebasedPatcherProjectVersionId :
-				rebasedPatcherProjectVersionIds) {
-
-			patcherProjectVersionIdPatcherFixIdsMap.remove(
-				rebasedPatcherProjectVersionId);
-		}
-
-		for (PatcherFix rebasePatcherFix : rebasePatcherFixes) {
-			List<Long> patcherFixIds = new ArrayList<>();
-
-			if (patcherProjectVersionIdPatcherFixIdsMap.containsKey(
-					rebasePatcherFix.getPatcherProjectVersionId())) {
-
-				patcherFixIds = patcherProjectVersionIdPatcherFixIdsMap.get(
-					rebasePatcherFix.getPatcherProjectVersionId());
-			}
-
-			patcherFixIds.add(rebasePatcherFix.getPatcherFixId());
-
-			patcherProjectVersionIdPatcherFixIdsMap.put(
-				rebasePatcherFix.getPatcherProjectVersionId(), patcherFixIds);
-		}
-
-		return patcherProjectVersionIdPatcherFixIdsMap;
-	}
-
-	protected static PatcherBuild saveChildPatcherBuild(
-			PatcherBuild parentPatcherBuild, List<Long> patcherFixIds,
-			long patcherProjectVersionId)
-		throws Exception {
-
-		StringBundler sb = new StringBundler(patcherFixIds.size() * 2);
-
-		for (long patcherFixId : patcherFixIds) {
-			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
-				patcherFixId);
-
-			sb.append(patcherFix.getName());
-
-			sb.append(StringPool.COMMA);
-		}
-
-		String patcherBuildName = StringUtil.merge(
-			PatcherUtil.sortTokens(sb.toString()));
-
-		PatcherAccount patcherAccount =
-			PatcherAccountLocalServiceUtil.getPatcherAccount(
-				parentPatcherBuild.getPatcherAccountId());
-
-		String key = generateKey(
-			patcherProjectVersionId, patcherBuildName,
-			patcherAccount.getAccountEntryCode(), parentPatcherBuild.getKey());
-
-		if (PatcherBuildRelUtil.hasChildPatcherBuilds(parentPatcherBuild)) {
-			List<PatcherBuild> childPatcherBuilds =
-				PatcherBuildRelUtil.getChildPatcherBuilds(parentPatcherBuild);
-
-			for (PatcherBuild childPatcherBuild : childPatcherBuilds) {
-				if (StringUtil.equalsIgnoreCase(
-						childPatcherBuild.getKey(), key)) {
-
-					childPatcherBuild.setQaStatus(
-						parentPatcherBuild.getQaStatus());
-
-					return childPatcherBuild;
-				}
-			}
-		}
-
-		PatcherBuild childPatcherBuild =
-			PatcherBuildLocalServiceUtil.createPatcherBuild(0);
-
-		childPatcherBuild.setPatcherAccountId(
-			patcherAccount.getPatcherAccountId());
-		childPatcherBuild.setPatcherProductVersionId(
-			parentPatcherBuild.getPatcherProductVersionId());
-		childPatcherBuild.setPatcherProjectVersionId(patcherProjectVersionId);
-		childPatcherBuild.setName(patcherBuildName);
-		childPatcherBuild.setKey(key);
-		childPatcherBuild.setType(parentPatcherBuild.getType());
-		childPatcherBuild.setSupportTicket(
-			parentPatcherBuild.getSupportTicket());
-		childPatcherBuild.setChildBuild(true);
-		childPatcherBuild.setQaStatus(parentPatcherBuild.getQaStatus());
-
-		childPatcherBuild = setLatestPatcherBuild(
-			childPatcherBuild, key, parentPatcherBuild.getSupportTicket());
-
-		childPatcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
-			childPatcherBuild);
-
-		PatcherBuildRelUtil.addPatcherBuildRel(
-			childPatcherBuild.getPatcherBuildId(),
-			parentPatcherBuild.getPatcherBuildId());
-
-		return childPatcherBuild;
 	}
 
 	protected static void updatePatcherBuildFixes(

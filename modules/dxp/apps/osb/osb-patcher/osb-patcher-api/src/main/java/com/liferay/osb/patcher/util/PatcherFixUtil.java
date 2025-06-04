@@ -141,25 +141,6 @@ public class PatcherFixUtil {
 			name, type, status);
 	}
 
-	public static boolean containsIncompleteRebasePatcherFix(
-			List<Long> patcherFixIds)
-		throws Exception {
-
-		for (long patcherFixId : patcherFixIds) {
-			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
-				patcherFixId);
-
-			if ((patcherFix.getType() == PatcherFixConstants.TYPE_REBASE) &&
-				(patcherFix.getStatus() !=
-					WorkflowConstants.STATUS_FIX_COMPLETE)) {
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	public static boolean containsNewerVersionPatcherFixIds(
 			List<Long> patcherFixIds, long patcherFixId)
 		throws Exception {
