@@ -1426,15 +1426,10 @@ public class PatcherBuildUtil {
 			return;
 		}
 
-		patcherAccount = PatcherAccountLocalServiceUtil.createPatcherAccount(0);
-
-		patcherAccount.setPatcherAccountId(CounterLocalServiceUtil.increment());
-		patcherAccount.setAccountEntryId(
-			HelpCenterUtil.fetchAccountEntryId(accountEntryCode));
-		patcherAccount.setAccountEntryCode(accountEntryCode);
-
-		patcherAccount = PatcherAccountLocalServiceUtil.updatePatcherAccount(
-			patcherAccount);
+		patcherAccount = PatcherAccountLocalServiceUtil.addPatcherAccount(
+			themeDisplay.getUserId(),
+			HelpCenterUtil.fetchAccountEntryId(accountEntryCode),
+			accountEntryCode);
 
 		PatcherUtil.pollIndexState(
 			PatcherAccount.class.getName(),
