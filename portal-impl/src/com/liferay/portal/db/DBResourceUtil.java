@@ -105,14 +105,13 @@ public class DBResourceUtil {
 				continue;
 			}
 
-			URL url = bundle.getResource("/META-INF/sql/tables.sql");
+			String tableSQL = getModuleTablesSQL(bundle);
 
-			if (url == null) {
+			if (tableSQL == null) {
 				continue;
 			}
 
-			Matcher matcher = _createTablePattern.matcher(
-				URLUtil.toString(url));
+			Matcher matcher = _createTablePattern.matcher(tableSQL);
 
 			while (matcher.find()) {
 				tableNames.add(dbInspector.normalizeName(matcher.group(1)));
