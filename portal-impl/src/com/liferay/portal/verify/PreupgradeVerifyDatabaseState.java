@@ -51,22 +51,6 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 				"Missing tables detected:\n" + missingTables +
 					"\nPlease fix these tables to continue the upgrade");
 		}
-
-		Set<String> targetVersionTables = DBResourceUtil.getTargetVersionTables(
-			connection);
-
-		targetVersionTables.removeAll(preupgradedServiceTables);
-
-		Set<String> previousUpgradeStaleTables = new HashSet<>(databaseTables);
-
-		previousUpgradeStaleTables.retainAll(targetVersionTables);
-
-		if (!previousUpgradeStaleTables.isEmpty()) {
-			throw new Exception(
-				"Stale tables from a previous upgrade detected:\n" +
-					previousUpgradeStaleTables +
-						"\nPlease remove these tables to continue the upgrade");
-		}
 	}
 
 }

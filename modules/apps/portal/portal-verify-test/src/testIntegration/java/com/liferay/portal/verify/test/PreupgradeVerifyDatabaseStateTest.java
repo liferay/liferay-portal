@@ -6,8 +6,6 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.db.DBResourceUtil;
-import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
@@ -22,9 +20,6 @@ import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.sql.Connection;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -62,39 +57,6 @@ public class PreupgradeVerifyDatabaseStateTest
 		try (Connection connection = DataAccess.getConnection()) {
 			PortalUpgradeProcess.updateSchemaVersion(
 				connection, _currentSchemaVersion);
-		}
-	}
-
-	@Override
-	@Test
-	public void testVerify() throws Exception {
-		Exception exception1 = null;
-
-		try {
-			super.testVerify();
-		}
-		catch (Exception exception2) {
-			exception1 = exception2;
-		}
-		finally {
-			try (Connection connection = DataAccess.getConnection()) {
-				DBInspector dbInspector = new DBInspector(connection);
-
-				Set<String> databaseTables = new HashSet<>(
-					dbInspector.getTableNames(null));
-
-				Set<String> targetVersionTables = DBResourceUtil.getTargetVersionTables(
-					connection);
-
-				targetVersionTables.removeAll(DBResourceUtil.getPreupgradedServiceTables(connection));
-
-				databaseTables.retainAll(targetVersionTables);
-
-				_verifyException(
-					exception1,
-					"Stale tables from a previous upgrade detected:\n" +
-						databaseTables);
-			}
 		}
 	}
 
