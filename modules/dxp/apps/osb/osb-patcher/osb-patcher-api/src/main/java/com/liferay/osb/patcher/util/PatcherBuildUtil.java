@@ -109,7 +109,13 @@ public class PatcherBuildUtil {
 					mainPatcherFix.setStatus(
 						WorkflowConstants.STATUS_FIX_ADDING);
 
-					PatcherFixLocalServiceUtil.updatePatcherFix(mainPatcherFix);
+					mainPatcherFix = PatcherFixLocalServiceUtil.updateStatus(
+						themeDisplay.getUserId(),
+						mainPatcherFix.getPatcherFixId(),
+						WorkflowConstants.STATUS_FIX_ADDING);
+
+					PatcherFixUtil.sendStatusEmail(
+						mainPatcherFix, themeDisplay);
 
 					workflowPatcherBuildMerging(
 						user, patcherBuild, isMergeOnly(patcherBuild),
@@ -189,11 +195,8 @@ public class PatcherBuildUtil {
 				patcherBuild, true);
 
 			if (oldPatcherBuild != null) {
-				oldPatcherBuild.setLatestKeyBuild(true);
-				oldPatcherBuild.setLatestSupportTicketBuild(true);
-
 				PatcherBuildLocalServiceUtil.updatePatcherBuild(
-					oldPatcherBuild);
+					oldPatcherBuild.getPatcherBuildId(), true, true);
 			}
 		}
 
@@ -895,9 +898,8 @@ public class PatcherBuildUtil {
 				patcherBuild, user.getEmailAddress(), themeDisplay,
 				patcherBuild.getUserId());
 
-			patcherBuild.setNotified(true);
-
-			PatcherBuildLocalServiceUtil.updatePatcherBuild(patcherBuild);
+			PatcherBuildLocalServiceUtil.updateNotified(
+				patcherBuild.getPatcherBuildId(), true);
 		}
 	}
 
@@ -1313,7 +1315,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static List<PatcherFix> workflowPatcherBuildIncompleteFixesToPending(
-			PatcherBuild patcherBuild)
+			PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		List<PatcherFix> pendingPatcherFixes = new ArrayList<>();
@@ -1333,20 +1335,20 @@ public class PatcherBuildUtil {
 			if (incompletePatcherFix.getStatus() ==
 					WorkflowConstants.STATUS_FIX_FAILED) {
 
+				int status = WorkflowConstants.STATUS_FIX_ADDING;
+
 				if (Validator.isNull(incompletePatcherFix.getGitHash()) ||
 					Validator.isNull(incompletePatcherFix.getGitRemoteURL())) {
 
-					incompletePatcherFix.setStatus(
-						WorkflowConstants.STATUS_FIX_REBASING);
-				}
-				else {
-					incompletePatcherFix.setStatus(
-						WorkflowConstants.STATUS_FIX_ADDING);
+					status = WorkflowConstants.STATUS_FIX_REBASING;
 				}
 
-				incompletePatcherFix =
-					PatcherFixLocalServiceUtil.updatePatcherFix(
-						incompletePatcherFix);
+				incompletePatcherFix = PatcherFixLocalServiceUtil.updateStatus(
+					themeDisplay.getUserId(),
+					incompletePatcherFix.getPatcherFixId(), status);
+
+				PatcherFixUtil.sendStatusEmail(
+					incompletePatcherFix, themeDisplay);
 			}
 
 			pendingPatcherFixes.add(incompletePatcherFix);
@@ -1373,7 +1375,8 @@ public class PatcherBuildUtil {
 
 	protected static List<PatcherFix> addChildPatcherFixes(
 			User user, PatcherBuild patcherBuild, long patcherFixId,
-			List<Long> conflictPatcherFixIds, List<String> messages)
+			List<Long> conflictPatcherFixIds, List<String> messages,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		List<PatcherFix> childPatcherFixes = new ArrayList<>();
@@ -1396,7 +1399,7 @@ public class PatcherBuildUtil {
 				user, parentPatcherFixIds,
 				patcherBuild.getPatcherProjectVersionId(), sortedTickets,
 				PatcherFixConstants.TYPE_GENERATED,
-				WorkflowConstants.STATUS_FIX_CONFLICT);
+				WorkflowConstants.STATUS_FIX_CONFLICT, themeDisplay);
 
 			childPatcherFixes.add(childPatcherFix);
 
@@ -1588,26 +1591,26 @@ public class PatcherBuildUtil {
 						mainPatcherFix.getPatcherFixId(), patcherFixIds);
 				}
 
-				mainPatcherFix.setGitHash(StringPool.BLANK);
-				mainPatcherFix.setJenkinsResults(StringPool.BLANK);
-				mainPatcherFix.setStatus(WorkflowConstants.STATUS_FIX_ADDING);
-
 				mainPatcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
-					mainPatcherFix);
+					themeDisplay.getUserId(), mainPatcherFix.getPatcherFixId(),
+					StringPool.BLANK, StringPool.BLANK,
+					WorkflowConstants.STATUS_FIX_ADDING);
+
+				PatcherFixUtil.sendStatusEmail(mainPatcherFix, themeDisplay);
 			}
 			else {
 				mainPatcherFix = PatcherFixUtil.addNewPatcherFix(
 					user, PatcherFixConstants.KEY_VERSION_DEFAULT,
 					patcherFixIds, patcherBuild.getPatcherProjectVersionId(),
 					patcherBuild.getName(), type,
-					WorkflowConstants.STATUS_FIX_ADDING);
+					WorkflowConstants.STATUS_FIX_ADDING, themeDisplay);
 			}
 		}
 		else {
 			mainPatcherFix = PatcherFixUtil.addPatcherFix(
 				user, patcherFixIds, patcherBuild.getPatcherProjectVersionId(),
 				patcherBuild.getName(), type,
-				WorkflowConstants.STATUS_FIX_ADDING);
+				WorkflowConstants.STATUS_FIX_ADDING, themeDisplay);
 		}
 
 		patcherBuild.setPatcherFixId(mainPatcherFix.getPatcherFixId());
@@ -1695,11 +1698,12 @@ public class PatcherBuildUtil {
 			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
 				patcherBuild.getPatcherFixId());
 
-			patcherFix.setGitHash(osbPatcherServletOutcomeResult);
+			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+				themeDisplay.getUserId(), patcherFix.getPatcherFixId(),
+				osbPatcherServletOutcomeResult, patcherFix.getJenkinsResults(),
+				WorkflowConstants.STATUS_FIX_COMPLETE);
 
-			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
-
-			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
+			PatcherFixUtil.sendStatusEmail(patcherFix, themeDisplay);
 
 			updatePatcherBuildStatusMergeComplete(user, patcherBuild);
 
@@ -1735,7 +1739,7 @@ public class PatcherBuildUtil {
 
 				List<PatcherFix> childPatcherFixes = addChildPatcherFixes(
 					user, patcherBuild, patcherFixId, conflictPatcherFixIds,
-					messages);
+					messages, themeDisplay);
 
 				updatePatcherBuildsPatcherFixes(
 					patcherBuild, childPatcherFixes, messages);
@@ -1774,13 +1778,11 @@ public class PatcherBuildUtil {
 				return;
 			}
 
-			PatcherFix mainPatcherFix =
-				PatcherFixLocalServiceUtil.getPatcherFix(
-					patcherBuild.getPatcherFixId());
+			PatcherFix mainPatcherFix = PatcherFixLocalServiceUtil.updateStatus(
+				themeDisplay.getUserId(), patcherBuild.getPatcherFixId(),
+				WorkflowConstants.STATUS_FIX_CONFLICT);
 
-			mainPatcherFix.setStatus(WorkflowConstants.STATUS_FIX_CONFLICT);
-
-			PatcherFixLocalServiceUtil.updatePatcherFix(mainPatcherFix);
+			PatcherFixUtil.sendStatusEmail(mainPatcherFix, themeDisplay);
 
 			if ((patcherBuild.getStatus() ==
 					WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
@@ -1801,12 +1803,11 @@ public class PatcherBuildUtil {
 				patcherBuild);
 		}
 		else {
-			PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
-				patcherBuild.getPatcherFixId());
+			PatcherFix patcherFix = PatcherFixLocalServiceUtil.updateStatus(
+				themeDisplay.getUserId(), patcherBuild.getPatcherFixId(),
+				WorkflowConstants.STATUS_FIX_FAILED);
 
-			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
-
-			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
+			PatcherFixUtil.sendStatusEmail(patcherFix, themeDisplay);
 
 			setStatus(
 				user, patcherBuild, WorkflowConstants.STATUS_BUILD_FAILED);
