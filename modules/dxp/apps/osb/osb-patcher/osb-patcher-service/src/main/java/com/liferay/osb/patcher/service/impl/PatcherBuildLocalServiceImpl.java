@@ -11,6 +11,9 @@ import com.liferay.osb.patcher.util.comparator.PatcherBuildKeyVersionComparator;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildSupportTicketVersionComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.Date;
@@ -153,6 +156,37 @@ public class PatcherBuildLocalServiceImpl
 	@Override
 	public boolean hasPatcherFixes(long patcherFixId) {
 		return patcherBuildPersistence.containsPatcherFixes(patcherFixId);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updateNotified(long patcherBuildId, boolean notified)
+		throws PortalException {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setNotified(notified);
+
+		return patcherBuildPersistence.update(patcherBuild);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updatePatcherBuild(
+			long patcherBuildId, boolean latestKeyBuild,
+			boolean latestSupportTicketBuild)
+		throws PortalException {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setLatestKeyBuild(latestKeyBuild);
+		patcherBuild.setLatestSupportTicketBuild(latestSupportTicketBuild);
+
+		return patcherBuildPersistence.update(patcherBuild);
 	}
 
 }
