@@ -958,7 +958,8 @@ public class PatcherBuildUtil {
 			User user = UserLocalServiceUtil.getUser(patcherBuild.getUserId());
 
 			EmailUtil.sendPatcherTimeoutEmail(
-				patcherBuild, user.getEmailAddress(), themeDisplay);
+				patcherBuild, user.getEmailAddress(), themeDisplay,
+				patcherBuild.getUserId());
 
 			patcherBuild.setNotified(true);
 
@@ -1275,14 +1276,12 @@ public class PatcherBuildUtil {
 				parentPatcherBuild, mergeOnly);
 
 		for (BaseModel<?> sendToJenkinsBaseModel : sendToJenkinsBaseModels) {
-			long status = BaseModelUtil.fetchBaseModelStatus(
-				sendToJenkinsBaseModel);
-
-			if ((sendToJenkinsBaseModel instanceof PatcherBuild) &&
-				(status == WorkflowConstants.STATUS_BUILD_COMPILING)) {
+			if ((sendToJenkinsBaseModel instanceof PatcherBuild patcherBuild) &&
+				(patcherBuild.getStatus() ==
+					WorkflowConstants.STATUS_BUILD_COMPILING)) {
 
 				JenkinsUtil.sendDistJenkinsRequest(
-					user, (PatcherBuild)sendToJenkinsBaseModel, themeDisplay);
+					user, patcherBuild, themeDisplay);
 			}
 			else {
 				JenkinsUtil.sendAgentJenkinsRequest(
@@ -2228,25 +2227,41 @@ public class PatcherBuildUtil {
 			PatcherBuild patcherBuild, String jenkinsStatusJSONString)
 		throws Exception {
 
+		if (patcherBuild == null) {
+			throw new Exception("the-base-model-is-null");
+		}
+
 		JenkinsUtil.validateJenkinsRequestKey(
-			patcherBuild, jenkinsStatusJSONString);
+			patcherBuild, jenkinsStatusJSONString,
+			patcherBuild.getRequestKey());
 	}
 
 	protected static void validateOSBPatcherBuildMergeJenkinsStatus(
 			long patcherFixId, String jenkinsStatusJSONString)
 		throws Exception {
 
+		PatcherFix patcherFix = PatcherFixLocalServiceUtil.getPatcherFix(
+			patcherFixId);
+
+		if (patcherFix == null) {
+			throw new Exception("the-base-model-is-null");
+		}
+
 		JenkinsUtil.validateJenkinsRequestKey(
-			PatcherFixLocalServiceUtil.getPatcherFix(patcherFixId),
-			jenkinsStatusJSONString);
+			patcherFix, jenkinsStatusJSONString, patcherFix.getRequestKey());
 	}
 
 	protected static void validateOSBPatcherBuildTestJenkinsStatus(
 			PatcherBuild patcherBuild, String jenkinsStatusJSONString)
 		throws Exception {
 
+		if (patcherBuild == null) {
+			throw new Exception("the-base-model-is-null");
+		}
+
 		JenkinsUtil.validateJenkinsRequestKey(
-			patcherBuild, jenkinsStatusJSONString);
+			patcherBuild, jenkinsStatusJSONString,
+			patcherBuild.getRequestKey());
 
 		JSONObject jenkinsStatusJSONObject = JSONFactoryUtil.createJSONObject(
 			jenkinsStatusJSONString);
