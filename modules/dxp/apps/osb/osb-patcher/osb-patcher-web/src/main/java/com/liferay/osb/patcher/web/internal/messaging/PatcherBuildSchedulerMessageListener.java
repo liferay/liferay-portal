@@ -5,13 +5,11 @@
 
 package com.liferay.osb.patcher.web.internal.messaging;
 
-import com.liferay.alloy.mvc.AlloyController;
-import com.liferay.osb.patcher.util.PatcherAlloyControllerImpl;
-import com.liferay.osb.patcher.util.PatcherMockAlloyControllerImpl;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.osb.patcher.util.PortletPropsValues;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 /**
  * @author Zsolt Balogh
@@ -19,38 +17,37 @@ import com.liferay.portal.kernel.messaging.Message;
 public class PatcherBuildSchedulerMessageListener extends BaseMessageListener {
 
 	public static PatcherBuildSchedulerMessageListener getInstance(
-		AlloyController alloyController) {
+		ThemeDisplay themeDisplay) {
 
-		_instance.setAlloyController(
-			new PatcherMockAlloyControllerImpl(
-				(PatcherAlloyControllerImpl)alloyController));
+		_patcherBuildSchedulerMessageListener.setThemeDisplay(themeDisplay);
 
-		return _instance;
+		return _patcherBuildSchedulerMessageListener;
 	}
 
-	public void setAlloyController(AlloyController alloyController) {
-		_alloyController = alloyController;
+	public void setThemeDisplay(ThemeDisplay themeDisplay) {
+		_themeDisplay = themeDisplay;
 	}
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		PatcherUtil.processOSBPatcherMessageQueue(_alloyController);
+		PatcherUtil.processOSBPatcherMessageQueue(_themeDisplay);
 
 		PatcherUtil.processOSBPatcherStatusFiles(
-			_alloyController,
-			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_PATH);
+			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_PATH,
+			_themeDisplay);
 
 		PatcherUtil.processOSBPatcherStatusFiles(
-			_alloyController,
-			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_TEST_PATH);
+			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_TEST_PATH,
+			_themeDisplay);
 
 		PatcherUtil.processOSBPatcherStatusFiles(
-			_alloyController, PortletPropsValues.OSB_PATCHER_STATUS_BUILD_PATH);
+			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_PATH, _themeDisplay);
 	}
 
-	private static final PatcherBuildSchedulerMessageListener _instance =
-		new PatcherBuildSchedulerMessageListener();
+	private static final PatcherBuildSchedulerMessageListener
+		_patcherBuildSchedulerMessageListener =
+			new PatcherBuildSchedulerMessageListener();
 
-	private AlloyController _alloyController;
+	private ThemeDisplay _themeDisplay;
 
 }
