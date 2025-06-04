@@ -861,15 +861,14 @@ public class PatcherFixUtil {
 			return;
 		}
 
-		String status = jenkinsStatusJSONObject.getString("status");
-		String statusURL = jenkinsStatusJSONObject.getString("statusURL");
-
 		JSONObject jenkinsResultJSONObject = JenkinsUtil.toJenkinsResult(
-			status, statusURL);
+			jenkinsStatusJSONObject.getString("status"),
+			jenkinsStatusJSONObject.getString("statusURL"));
 
-		JenkinsUtil.putJenkinsResult(patcherFix, jenkinsResultJSONObject);
-
-		PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
+		PatcherFixLocalServiceUtil.updateJenkinsResults(
+			patcherFix.getPatcherFixId(),
+			JenkinsUtil.getJenkinsResults(
+				patcherFix.getJenkinsResults(), jenkinsResultJSONObject));
 	}
 
 	public static void validateDelete(PatcherFix patcherFix) throws Exception {
