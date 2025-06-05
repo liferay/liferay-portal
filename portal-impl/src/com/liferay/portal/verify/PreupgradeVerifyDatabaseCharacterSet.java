@@ -75,7 +75,7 @@ public class PreupgradeVerifyDatabaseCharacterSet
 								"Mixed database character set and collation:\n",
 								resultSet.getString("character_set_name"),
 								StringPool.FORWARD_SLASH,
-								resultSet.getString("collation_name"), "on ",
+								resultSet.getString("collation_name"), " on ",
 								tableName));
 					}
 				}

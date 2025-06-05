@@ -97,14 +97,6 @@ public class PreupgradeVerifyDatabaseStateTest
 		return new PreupgradeVerifyDatabaseState();
 	}
 
-	private void _verifyException(Exception exception, String expectedMessage)
-		throws Exception {
-
-		String message = exception.getMessage();
-
-		Assert.assertTrue(message.contains(expectedMessage));
-	}
-
 	private static final Version _TEST_SCHEMA_VERSION = new Version(0, 0, 0);
 
 	private static Version _currentSchemaVersion;
