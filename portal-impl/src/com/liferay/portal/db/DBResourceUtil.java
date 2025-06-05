@@ -86,6 +86,33 @@ public class DBResourceUtil {
 		return tableNames;
 	}
 
+	public static Set<String> getPortalTableNames() throws Exception {
+		if (_portalTableNames != null) {
+			return _portalTableNames;
+		}
+
+		Matcher matcher = _createTablePattern.matcher(
+			DBResourceUtil.getPortalTablesSQL());
+
+		Set<String> tableNames = new HashSet<>();
+
+		while (matcher.find()) {
+			String match = matcher.group(1);
+
+			tableNames.add(StringUtil.toLowerCase(match));
+		}
+
+		_portalTableNames = tableNames;
+
+		return tableNames;
+	}
+
+	public boolean isPortalTableName(String tableName) throws Exception {
+		Set<String> portalTableNames = DBResourceUtil.getPortalTableNames();
+
+		return portalTableNames.contains(StringUtil.toLowerCase(tableName));
+	}
+
 	public static Set<String> getTargetVersionTables(Connection connection)
 		throws Exception {
 
@@ -145,5 +172,8 @@ public class DBResourceUtil {
 
 	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
+
+	private static Set<String> _portalTableNames;
+
 
 }

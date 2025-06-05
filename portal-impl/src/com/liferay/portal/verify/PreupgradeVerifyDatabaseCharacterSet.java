@@ -61,7 +61,7 @@ public class PreupgradeVerifyDatabaseCharacterSet
 					portalTables.addAll(
 						DBResourceUtil.getTargetVersionTables(connection));
 
-					portalTables.addAll(VerifyProcess.getPortalTableNames());
+					portalTables.addAll(DBResourceUtil.getPortalTableNames());
 
 					DBInspector dbInspector = new DBInspector(connection);
 

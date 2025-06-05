@@ -93,26 +93,7 @@ public abstract class VerifyProcess extends BaseDBProcess {
 		verifyProcess.verify();
 	}
 
-	protected static Set<String> getPortalTableNames() throws Exception {
-		if (_portalTableNames != null) {
-			return _portalTableNames;
-		}
 
-		Matcher matcher = _createTablePattern.matcher(
-			DBResourceUtil.getPortalTablesSQL());
-
-		Set<String> tableNames = new HashSet<>();
-
-		while (matcher.find()) {
-			String match = matcher.group(1);
-
-			tableNames.add(StringUtil.toLowerCase(match));
-		}
-
-		_portalTableNames = tableNames;
-
-		return tableNames;
-	}
 
 	protected void doVerify() throws Exception {
 	}
@@ -149,16 +130,7 @@ public abstract class VerifyProcess extends BaseDBProcess {
 		return false;
 	}
 
-	protected boolean isPortalTableName(String tableName) throws Exception {
-		Set<String> portalTableNames = getPortalTableNames();
 
-		return portalTableNames.contains(StringUtil.toLowerCase(tableName));
-	}
 
 	private static final Log _log = LogFactoryUtil.getLog(VerifyProcess.class);
-
-	private static final Pattern _createTablePattern = Pattern.compile(
-		"create table (\\S*) \\(");
-	private static Set<String> _portalTableNames;
-
 }
