@@ -3588,7 +3588,7 @@ public class ServiceBuilder {
 		if (propsFile.exists()) {
 			Properties properties = PropertiesUtil.load(_read(propsFile));
 
-			if (!_buildNumberIncrement) {
+			if (!_buildNumberIncrement || !_hasModifiedSQLFiles()) {
 				buildDate = GetterUtil.getLong(
 					properties.getProperty("build.date"));
 				buildNumber = GetterUtil.getLong(
@@ -5964,6 +5964,16 @@ public class ServiceBuilder {
 	private boolean _hasHttpMethods(JavaClass javaClass) {
 		for (JavaMethod javaMethod : _getMethods(javaClass)) {
 			if (javaMethod.isPublic() && isCustomMethod(javaMethod)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasModifiedSQLFiles() {
+		for (String modifiedFileName : _modifiedFileNames) {
+			if (modifiedFileName.endsWith(".sql")) {
 				return true;
 			}
 		}
