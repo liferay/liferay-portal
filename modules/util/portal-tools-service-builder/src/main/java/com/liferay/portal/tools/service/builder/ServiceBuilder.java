@@ -4507,7 +4507,7 @@ public class ServiceBuilder {
 					content.substring(0, x) + newCreateTableString +
 						content.substring(y + 2);
 
-				_write(sqlFile, content);
+				ToolsUtil.writeFileRaw(sqlFile, content, _modifiedFileNames);
 			}
 		}
 		else if (addMissingTables) {
@@ -8073,7 +8073,7 @@ public class ServiceBuilder {
 		Files.createFile(file.toPath());
 	}
 
-	private void _write(File file, String s) throws IOException {
+	private void _write(File file, String s) throws Exception {
 		Path path = file.toPath();
 
 		Files.createDirectories(path.getParent());
