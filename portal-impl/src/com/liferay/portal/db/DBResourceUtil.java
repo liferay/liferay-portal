@@ -8,6 +8,7 @@ package com.liferay.portal.db;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -54,7 +55,7 @@ public class DBResourceUtil {
 			String symbolicName = bundle.getSymbolicName();
 
 			if (!symbolicName.startsWith("com.liferay") ||
-				!symbolicName.contains("service")) {
+				!BundleUtil.isLiferayServiceBundle(bundle)) {
 
 				continue;
 			}
