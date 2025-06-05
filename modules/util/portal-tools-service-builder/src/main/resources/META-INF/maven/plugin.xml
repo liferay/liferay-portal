@@ -255,7 +255,7 @@
 			<groupId>com.liferay</groupId>
 			<artifactId>org.apache.logging.log4j.core</artifactId>
 			<type>jar</type>
-			<version>2.17.1.LIFERAY-PATCHED-1</version>
+			<version>2.17.1.LIFERAY-PATCHED-2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.liferay</groupId>
