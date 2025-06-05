@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Delivery Catalog API
 Bundle-SymbolicName: com.liferay.headless.commerce.delivery.catalog.api
-Bundle-Version: 25.0.1
+Bundle-Version: 25.1.0
 Export-Package:\
 	com.liferay.headless.commerce.delivery.catalog.dto.v1_0,\
 	com.liferay.headless.commerce.delivery.catalog.dto.v1_0.converter,\
