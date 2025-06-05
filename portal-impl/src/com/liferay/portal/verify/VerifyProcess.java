@@ -7,26 +7,20 @@ package com.liferay.portal.verify;
 
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.Connection;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This abstract class should be extended for startup processes that verify the
@@ -93,8 +87,6 @@ public abstract class VerifyProcess extends BaseDBProcess {
 		verifyProcess.verify();
 	}
 
-
-
 	protected void doVerify() throws Exception {
 	}
 
@@ -130,7 +122,6 @@ public abstract class VerifyProcess extends BaseDBProcess {
 		return false;
 	}
 
-
-
 	private static final Log _log = LogFactoryUtil.getLog(VerifyProcess.class);
+
 }
