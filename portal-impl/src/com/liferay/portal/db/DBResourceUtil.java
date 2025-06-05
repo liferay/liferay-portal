@@ -41,6 +41,40 @@ public class DBResourceUtil {
 		return _read(bundle, "/META-INF/sql/sequences.sql");
 	}
 
+	public static Set<String> getModuleTables(Connection connection)
+		throws Exception {
+
+		Set<String> tableNames = new HashSet<>();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		DBInspector dbInspector = new DBInspector(connection);
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			String symbolicName = bundle.getSymbolicName();
+
+			if (!symbolicName.startsWith("com.liferay") ||
+				!symbolicName.contains("service")) {
+
+				continue;
+			}
+
+			String tableSQL = getModuleTablesSQL(bundle);
+
+			if (tableSQL == null) {
+				continue;
+			}
+
+			Matcher matcher = _createTablePattern.matcher(tableSQL);
+
+			while (matcher.find()) {
+				tableNames.add(dbInspector.normalizeName(matcher.group(1)));
+			}
+		}
+
+		return tableNames;
+	}
+
 	public static String getModuleTablesSQL(Bundle bundle) {
 		return _read(bundle, "/META-INF/sql/tables.sql");
 	}
@@ -77,7 +111,8 @@ public class DBResourceUtil {
 			"/com/liferay/portal/tools/sql/dependencies/portal-tables.sql");
 	}
 
-	public static Set<String> getPreupgradedServiceComponentTables(Connection connection)
+	public static Set<String> getPreupgradedServiceComponentTables(
+			Connection connection)
 		throws Exception {
 
 		Set<String> tableNames = new HashSet<>();
@@ -100,40 +135,6 @@ public class DBResourceUtil {
 							dbInspector.normalizeName(matcher.group(1)));
 					}
 				}
-			}
-		}
-
-		return tableNames;
-	}
-
-	public static Set<String> getModuleTables(Connection connection)
-		throws Exception {
-
-		Set<String> tableNames = new HashSet<>();
-
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		DBInspector dbInspector = new DBInspector(connection);
-
-		for (Bundle bundle : bundleContext.getBundles()) {
-			String symbolicName = bundle.getSymbolicName();
-
-			if (!symbolicName.startsWith("com.liferay") ||
-				!symbolicName.contains("service")) {
-
-				continue;
-			}
-
-			String tableSQL = getModuleTablesSQL(bundle);
-
-			if (tableSQL == null) {
-				continue;
-			}
-
-			Matcher matcher = _createTablePattern.matcher(tableSQL);
-
-			while (matcher.find()) {
-				tableNames.add(dbInspector.normalizeName(matcher.group(1)));
 			}
 		}
 

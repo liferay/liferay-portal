@@ -94,32 +94,6 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 	}
 
 	@Test
-	public void testVerifyUnsupportedCharacterSet() throws Exception {
-		Assume.assumeTrue(
-			(_db.getDBType() == DBType.MYSQL) ||
-			(_db.getDBType() == DBType.MARIADB) ||
-			(_db.getDBType() == DBType.POSTGRESQL));
-
-		Exception exception1 = null;
-
-		try {
-			InfrastructureUtil.setDataSource(
-				_unsupportedCharacterSetDataSource);
-
-			testVerify();
-
-			Assert.fail();
-		}
-		catch (Exception exception2) {
-			exception1 = exception2;
-		}
-		finally {
-			InfrastructureUtil.setDataSource(_dataSource);
-			_verifyException(exception1, "Unsupported database character set: ");
-		}
-	}
-
-	@Test
 	public void testVerifyMixedCharacterSet() throws Exception {
 		Assume.assumeTrue(
 			(_db.getDBType() == DBType.MYSQL) ||
@@ -139,8 +113,9 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
 
-		_db.runSQL("create table TestTable (testColumn VARCHAR(75) primary key) "+
-				   "COLLATE utf8_bin");
+		_db.runSQL(
+			"create table TestTable (testColumn VARCHAR(75) primary key) " +
+				"COLLATE utf8_bin");
 
 		Exception exception1 = null;
 
@@ -156,10 +131,35 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 
 			_db.runSQL("drop table TestTable");
 
-			_verifyException(exception1, "Mixed database character set and collation:\n");
+			_verifyException(
+				exception1, "Mixed database character set and collation:\n");
 		}
 	}
 
+	@Test
+	public void testVerifyUnsupportedCharacterSet() throws Exception {
+		Assume.assumeTrue(
+			(_db.getDBType() == DBType.MYSQL) ||
+			(_db.getDBType() == DBType.MARIADB) ||
+			(_db.getDBType() == DBType.POSTGRESQL));
+
+		Exception exception1 = null;
+
+		try {
+			InfrastructureUtil.setDataSource(
+				_unsupportedCharacterSetDataSource);
+
+			testVerify();
+		}
+		catch (Exception exception2) {
+			exception1 = exception2;
+		}
+		finally {
+			InfrastructureUtil.setDataSource(_dataSource);
+			_verifyException(
+				exception1, "Unsupported database character set: ");
+		}
+	}
 
 	@Override
 	protected VerifyProcess getVerifyProcess() {
@@ -172,11 +172,21 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			"unsupported_character_set_db");
 	}
 
+	private void _verifyException(Exception exception, String expectedMessage) {
+		Assert.assertNotNull(exception);
+
+		String message = exception.getMessage();
+
+		Assert.assertTrue(message.contains(expectedMessage));
+	}
+
 	private static Connection _connection;
 	private static DataSource _dataSource;
 	private static DB _db;
-	private static DataSource _unsupportedCharacterSetDataSource;
+
 	@Inject
 	private static ServiceComponentLocalService _serviceComponentLocalService;
+
+	private static DataSource _unsupportedCharacterSetDataSource;
 
 }

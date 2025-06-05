@@ -87,9 +87,14 @@ public class PreupgradeVerifyDatabaseStateTest
 		finally {
 			_serviceComponentLocalService.deleteServiceComponent(
 				serviceComponent);
-		}
 
-		_verifyException(exception1, "Missing tables detected:\n[testtable]");
+			Assert.assertNotNull(exception1);
+
+			String message = exception1.getMessage();
+
+			Assert.assertTrue(
+				message.contains("Missing tables detected:\n[testtable]"));
+		}
 	}
 
 	@Override

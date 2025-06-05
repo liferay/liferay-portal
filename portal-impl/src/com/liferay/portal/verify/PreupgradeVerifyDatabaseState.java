@@ -43,7 +43,8 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 			dbInspector.getTableNames(null));
 
 		if (!databaseTables.containsAll(preupgradedServiceComponentTables)) {
-			Set<String> missingTables = new HashSet<>(preupgradedServiceComponentTables);
+			Set<String> missingTables = new HashSet<>(
+				preupgradedServiceComponentTables);
 
 			missingTables.removeAll(databaseTables);
 

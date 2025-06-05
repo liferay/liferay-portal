@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.sql.DataSource;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -86,16 +85,6 @@ public abstract class BaseVerifyProcessTestCase {
 		VerifyProcess verifyProcess = getVerifyProcess();
 
 		verifyProcess.verify();
-	}
-
-	protected void _verifyException(Exception exception, String expectedMessage)
-		throws Exception {
-
-		Assert.assertNotNull(exception);
-
-		String message = exception.getMessage();
-
-		Assert.assertTrue(message.contains(expectedMessage));
 	}
 
 	protected abstract VerifyProcess getVerifyProcess();
