@@ -14,6 +14,7 @@ dependencies {
 	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:captcha:captcha-api")
 	compileOnly project(":apps:document-library:document-library-api")
+	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:headless:headless-admin-user:headless-admin-user-api")
 	compileOnly project(":apps:headless:headless-common-spi")
 	compileOnly project(":apps:object:object-api")
