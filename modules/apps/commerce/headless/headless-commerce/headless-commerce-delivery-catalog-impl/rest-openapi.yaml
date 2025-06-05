@@ -1059,6 +1059,8 @@ components:
                     type: string
                 quantity:
                     type: string
+                required:
+                    type: boolean
                 skuId:
                     example: 30130
                     format: int64
