@@ -77,7 +77,7 @@ public class DBResourceUtil {
 			"/com/liferay/portal/tools/sql/dependencies/portal-tables.sql");
 	}
 
-	public static Set<String> getPreupgradedServiceTables(Connection connection)
+	public static Set<String> getPreupgradedServiceComponentTables(Connection connection)
 		throws Exception {
 
 		Set<String> tableNames = new HashSet<>();
@@ -106,7 +106,7 @@ public class DBResourceUtil {
 		return tableNames;
 	}
 
-	public static Set<String> getTargetVersionTables(Connection connection)
+	public static Set<String> getModuleTables(Connection connection)
 		throws Exception {
 
 		Set<String> tableNames = new HashSet<>();

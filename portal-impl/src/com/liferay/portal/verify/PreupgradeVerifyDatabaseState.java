@@ -30,10 +30,10 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 			return;
 		}
 
-		Set<String> preupgradedServiceTables =
-			DBResourceUtil.getPreupgradedServiceTables(connection);
+		Set<String> preupgradedServiceComponentTables =
+			DBResourceUtil.getPreupgradedServiceComponentTables(connection);
 
-		if (preupgradedServiceTables.isEmpty()) {
+		if (preupgradedServiceComponentTables.isEmpty()) {
 			return;
 		}
 
@@ -42,8 +42,8 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 		Set<String> databaseTables = new HashSet<>(
 			dbInspector.getTableNames(null));
 
-		if (!databaseTables.containsAll(preupgradedServiceTables)) {
-			Set<String> missingTables = new HashSet<>(preupgradedServiceTables);
+		if (!databaseTables.containsAll(preupgradedServiceComponentTables)) {
+			Set<String> missingTables = new HashSet<>(preupgradedServiceComponentTables);
 
 			missingTables.removeAll(databaseTables);
 
