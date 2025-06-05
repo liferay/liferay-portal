@@ -137,7 +137,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 	}
 
 	@Test
-	public void testVerifyUnsupportedCharacterSet() throws Exception {
+	public void testVerifyUnsupportedCharacterSet() {
 		Assume.assumeTrue(
 			(_db.getDBType() == DBType.MYSQL) ||
 			(_db.getDBType() == DBType.MARIADB) ||

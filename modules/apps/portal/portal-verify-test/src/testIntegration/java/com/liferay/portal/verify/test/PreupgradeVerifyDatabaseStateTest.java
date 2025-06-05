@@ -61,7 +61,7 @@ public class PreupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPreupgradeMissingTable() throws Exception {
+	public void testVerifyPreupgradeMissingTable() {
 		long serviceComponentId = RandomTestUtil.nextLong();
 
 		ServiceComponent serviceComponent =
