@@ -7,7 +7,7 @@
 	<description/>
 	<groupId>com.liferay</groupId>
 	<artifactId>com.liferay.portal.tools.service.builder</artifactId>
-	<version>1.0.502</version>
+	<version>1.0.503</version>
 	<goalPrefix>service-builder</goalPrefix>
 	<isolatedRealm>false</isolatedRealm>
 	<inheritedByDefault>true</inheritedByDefault>
@@ -399,7 +399,7 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<type>jar</type>
-			<version>2.15.1</version>
+			<version>2.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>jalopy</groupId>

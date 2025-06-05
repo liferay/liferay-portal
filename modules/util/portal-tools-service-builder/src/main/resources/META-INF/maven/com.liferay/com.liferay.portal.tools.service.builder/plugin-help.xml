@@ -7,7 +7,7 @@
 	<description/>
 	<groupId>com.liferay</groupId>
 	<artifactId>com.liferay.portal.tools.service.builder</artifactId>
-	<version>1.0.502</version>
+	<version>1.0.503</version>
 	<goalPrefix>service-builder</goalPrefix>
 	<mojos>
 		<mojo>
