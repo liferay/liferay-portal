@@ -5,7 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.liferay.jenkins.results.parser.LoadBalancerUtil;
 import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.JenkinsConstants;
 import com.liferay.osb.patcher.constants.PatcherActionKeys;
@@ -352,12 +351,7 @@ public class JenkinsUtil {
 			Validator.isNotNull(
 				patcherConfiguration.jenkinsLoadBalancerBaseInvocationURL())) {
 
-			String mostAvailableMasterURL =
-				LoadBalancerUtil.getMostAvailableMasterURL(
-					"base.invocation.url",
-					PortletPropsValues.
-						JENKINS_LOAD_BALANCER_BASE_INVOCATION_URL,
-					"invoked.job.batch.size", "1");
+			String mostAvailableMasterURL = "";
 
 			mostAvailableMasterURL = StringUtil.replace(
 				mostAvailableMasterURL, "http", "https");

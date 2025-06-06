@@ -5,22 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.api.gax.rpc.UnaryCallable;
-import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
-import com.google.cloud.pubsub.v1.stub.SubscriberStub;
-import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Empty;
-import com.google.pubsub.v1.AcknowledgeRequest;
-import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.PullRequest;
-import com.google.pubsub.v1.PullResponse;
-import com.google.pubsub.v1.ReceivedMessage;
-
 import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
@@ -145,89 +129,6 @@ public class PatcherUtil {
 				patcherConfiguration.patcherPubsubCredentialFilePath())) {
 
 			return null;
-		}
-
-		ServiceAccountCredentials serviceAccountCredentials =
-			ServiceAccountCredentials.fromStream(
-				new FileInputStream(
-					PortletPropsValues.
-						OSB_PATCHER_PUBSUB_CREDENTIAL_FILE_PATH));
-
-		CredentialsProvider credentialsProvider =
-			FixedCredentialsProvider.create(serviceAccountCredentials);
-
-		SubscriberStubSettings.Builder subscriberStubSettingsBuilder =
-			SubscriberStubSettings.newBuilder();
-
-		subscriberStubSettingsBuilder.setCredentialsProvider(
-			credentialsProvider);
-		subscriberStubSettingsBuilder.setTransportChannelProvider(
-			SubscriberStubSettings.defaultGrpcTransportProviderBuilder(
-			).setMaxInboundMessageSize(
-				20 * 1024 * 1024
-			).build());
-
-		SubscriberStubSettings subscriberStubSettings =
-			subscriberStubSettingsBuilder.build();
-
-		SubscriberStub subscriber = null;
-
-		try {
-			subscriber = GrpcSubscriberStub.create(subscriberStubSettings);
-
-			String subscriptionName = ProjectSubscriptionName.format(
-				PortletPropsValues.OSB_PATCHER_PUBSUB_PROJECT_ID,
-				PortletPropsValues.OSB_PATCHER_PUBSUB_SUBSCRIPTION_ID);
-
-			PullRequest.Builder pullRequestBuilder = PullRequest.newBuilder();
-
-			pullRequestBuilder.setMaxMessages(1);
-			pullRequestBuilder.setSubscription(subscriptionName);
-
-			PullRequest pullRequest = pullRequestBuilder.build();
-
-			UnaryCallable<PullRequest, PullResponse> pullUnaryCallable =
-				subscriber.pullCallable();
-
-			PullResponse pullResponse = pullUnaryCallable.call(pullRequest);
-
-			List<ReceivedMessage> receivedMessageList =
-				pullResponse.getReceivedMessagesList();
-
-			ReceivedMessage receivedMessage = receivedMessageList.get(0);
-
-			List<String> acknowledgeIds = new ArrayList<>();
-
-			acknowledgeIds.add(receivedMessage.getAckId());
-
-			AcknowledgeRequest.Builder acknowledgeRequestBuilder =
-				AcknowledgeRequest.newBuilder();
-
-			acknowledgeRequestBuilder.setSubscription(subscriptionName);
-			acknowledgeRequestBuilder.addAllAckIds(acknowledgeIds);
-
-			AcknowledgeRequest acknowledgeRequest =
-				acknowledgeRequestBuilder.build();
-
-			UnaryCallable<AcknowledgeRequest, Empty> acknowledgeUnaryCallable =
-				subscriber.acknowledgeCallable();
-
-			acknowledgeUnaryCallable.call(acknowledgeRequest);
-
-			subscriber.close();
-
-			PubsubMessage pubsubMessage = receivedMessage.getMessage();
-
-			ByteString pubsubMessageData = pubsubMessage.getData();
-
-			return pubsubMessageData.toStringUtf8();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-
-			subscriber.close();
 		}
 
 		return null;
