@@ -5,65 +5,82 @@
 
 package com.liferay.osb.patcher.internal.instance.lifecycle;
 
-import com.liferay.osb.patcher.util.PortletKeys;
+import com.liferay.osb.patcher.constants.PatcherPortletKeys;
+import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.dao.orm.Criterion;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.util.BasePortalLifecycle;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.model.ResourceAction;
-import com.liferay.portal.model.ResourceConstants;
-import com.liferay.portal.model.ResourcePermission;
-import com.liferay.portal.model.Role;
-import com.liferay.portal.model.RoleConstants;
-import com.liferay.portal.security.permission.ResourceActionsUtil;
-import com.liferay.portal.service.ResourceActionLocalServiceUtil;
-import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
-import com.liferay.portal.service.RoleLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.util.PortalUtil;
 
 import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Ethan Bustad
  */
+@Component(service = PortalInstanceLifecycleListener.class)
 public class OSBPatcherServletContextListener
-	extends BasePortalLifecycle implements ServletContextListener {
+	extends BasePortalInstanceLifecycleListener {
 
 	@Override
-	public void contextDestroyed(ServletContextEvent servletContextEvent) {
-		portalDestroy();
-	}
+	public void portalInstanceRegistered(Company company) throws Exception {
+		deleteOSBPatcherResourceActions();
 
-	@Override
-	public void contextInitialized(ServletContextEvent servletContextEvent) {
-		_servletContext = servletContextEvent.getServletContext();
+		deleteOSBPatcherResourcePermissions();
 
-		registerPortalLifecycle();
+		Class<?> clazz = getClass();
+
+		ClassLoader classLoader = clazz.getClassLoader();
+
+		importResourceActions(classLoader);
+
+		InputStream inputStream = classLoader.getResourceAsStream(
+			"/com/liferay/osb/patcher/dependencies/roles.xml");
+
+		String xml = new String(FileUtil.getBytes(inputStream));
+
+		Document document = SAXReaderUtil.read(xml);
+
+		Element rootElement = document.getRootElement();
+
+		List<Element> roleElements = rootElement.elements("role");
+
+		for (Element roleElement : roleElements) {
+			addRole(roleElement);
+		}
 	}
 
 	protected void addRole(Element roleElement) throws Exception {
-		long companyId = PortalUtil.getDefaultCompanyId();
+		long companyId = _portal.getDefaultCompanyId();
 
 		String roleName = roleElement.elementText("name");
 
 		boolean organizationRole = GetterUtil.getBoolean(
 			roleElement.elementText("organization-role"));
 
-		Role role = RoleLocalServiceUtil.fetchRole(companyId, roleName);
+		Role role = _roleLocalService.fetchRole(companyId, roleName);
 
 		if (role == null) {
 			int type = RoleConstants.TYPE_REGULAR;
@@ -72,8 +89,8 @@ public class OSBPatcherServletContextListener
 				type = RoleConstants.TYPE_ORGANIZATION;
 			}
 
-			role = RoleLocalServiceUtil.addRole(
-				UserLocalServiceUtil.getDefaultUserId(companyId), null, 0,
+			role = _roleLocalService.addRole(
+				null, _userLocalService.getDefaultUserId(companyId), null, 0,
 				roleName, null, null, type, null, null);
 		}
 
@@ -103,7 +120,7 @@ public class OSBPatcherServletContextListener
 				actionIds.add(actionKeyElement.getText());
 			}
 
-			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+			_resourcePermissionLocalService.setResourcePermissions(
 				companyId, name, scope, primKey, role.getRoleId(),
 				actionIds.toArray(new String[0]));
 		}
@@ -111,64 +128,32 @@ public class OSBPatcherServletContextListener
 
 	protected void deleteOSBPatcherResourceActions() throws Exception {
 		DynamicQuery resourceActionDynamicQuery =
-			DynamicQueryFactoryUtil.forClass(ResourceAction.class);
+			_resourceActionLocalService.dynamicQuery();
 
 		resourceActionDynamicQuery.add(getOSBPatcherResourceCriterion());
 
 		List<ResourceAction> resourceActions =
-			ResourceActionLocalServiceUtil.dynamicQuery(
+			_resourceActionLocalService.dynamicQuery(
 				resourceActionDynamicQuery);
 
 		for (ResourceAction resourceAction : resourceActions) {
-			ResourceActionLocalServiceUtil.deleteResourceAction(resourceAction);
+			_resourceActionLocalService.deleteResourceAction(resourceAction);
 		}
 	}
 
 	protected void deleteOSBPatcherResourcePermissions() throws Exception {
 		DynamicQuery resourcePermissionDynamicQuery =
-			DynamicQueryFactoryUtil.forClass(ResourcePermission.class);
+			_resourcePermissionLocalService.dynamicQuery();
 
 		resourcePermissionDynamicQuery.add(getOSBPatcherResourceCriterion());
 
 		List<ResourcePermission> resourcePermissions =
-			ResourcePermissionLocalServiceUtil.dynamicQuery(
+			_resourcePermissionLocalService.dynamicQuery(
 				resourcePermissionDynamicQuery);
 
 		for (ResourcePermission resourcePermission : resourcePermissions) {
-			ResourcePermissionLocalServiceUtil.deleteResourcePermission(
+			_resourcePermissionLocalService.deleteResourcePermission(
 				resourcePermission);
-		}
-	}
-
-	@Override
-	protected void doPortalDestroy() throws Exception {
-	}
-
-	@Override
-	protected void doPortalInit() throws Exception {
-		deleteOSBPatcherResourceActions();
-
-		deleteOSBPatcherResourcePermissions();
-
-		Class<?> clazz = getClass();
-
-		ClassLoader classLoader = clazz.getClassLoader();
-
-		importResourceActions(classLoader);
-
-		InputStream inputStream = classLoader.getResourceAsStream(
-			"/com/liferay/osb/patcher/dependencies/roles.xml");
-
-		String xml = new String(FileUtil.getBytes(inputStream));
-
-		Document document = SAXReaderUtil.read(xml);
-
-		Element rootElement = document.getRootElement();
-
-		List<Element> roleElements = rootElement.elements("role");
-
-		for (Element roleElement : roleElements) {
-			addRole(roleElement);
 		}
 	}
 
@@ -176,7 +161,7 @@ public class OSBPatcherServletContextListener
 		Criterion criterion1 = RestrictionsFactoryUtil.like(
 			"name", "com.liferay.osb.patcher%");
 		Criterion criterion2 = RestrictionsFactoryUtil.eq(
-			"name", PortletKeys.OSB_PATCHER);
+			"name", PatcherPortletKeys.PATCHER);
 
 		return RestrictionsFactoryUtil.or(criterion1, criterion2);
 	}
@@ -184,16 +169,16 @@ public class OSBPatcherServletContextListener
 	protected void importResourceActions(ClassLoader classLoader)
 		throws Exception {
 
-		String servletContextName = _servletContext.getServletContextName();
-
-		ResourceActionsUtil.read(
-			servletContextName, classLoader, "resource-actions/default.xml");
+		ResourceActionsUtil.populateModelResources(
+			classLoader, "resource-actions/default.xml");
+		ResourceActionsUtil.populatePortletResources(
+			classLoader, "resource-actions/default.xml");
 
 		for (String portletId : _PORTLET_IDS) {
 			List<String> portletActions =
 				ResourceActionsUtil.getPortletResourceActions(portletId);
 
-			ResourceActionLocalServiceUtil.checkResourceActions(
+			_resourceActionLocalService.checkResourceActions(
 				portletId, portletActions);
 
 			List<String> modelNames =
@@ -203,14 +188,27 @@ public class OSBPatcherServletContextListener
 				List<String> modelActions =
 					ResourceActionsUtil.getModelResourceActions(modelName);
 
-				ResourceActionLocalServiceUtil.checkResourceActions(
+				_resourceActionLocalService.checkResourceActions(
 					modelName, modelActions);
 			}
 		}
 	}
 
-	private static final String[] _PORTLET_IDS = {PortletKeys.OSB_PATCHER};
+	private static final String[] _PORTLET_IDS = {PatcherPortletKeys.PATCHER};
 
-	private ServletContext _servletContext;
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
