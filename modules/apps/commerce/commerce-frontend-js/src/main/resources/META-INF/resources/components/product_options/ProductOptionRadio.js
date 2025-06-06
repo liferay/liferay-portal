@@ -102,6 +102,10 @@ const ProductOptionRadio = ({
 					],
 		});
 
+		if (defaultProductOptionValue) {
+			handleChange(selectedProductOption);
+		}
+
 		return () =>
 			isFromMiniCart
 				? setSkuOptionsAtomState({
