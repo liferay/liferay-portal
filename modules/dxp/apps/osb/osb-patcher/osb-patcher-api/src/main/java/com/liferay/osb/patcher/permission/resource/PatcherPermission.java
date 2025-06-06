@@ -10,10 +10,9 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
@@ -22,6 +21,21 @@ import java.util.List;
  * @author Zsolt Balogh
  */
 public class PatcherPermission {
+
+	public static boolean contains(
+		PermissionChecker permissionChecker, BaseModel<?> scopeBaseModel,
+		String actionId, long ownerId) {
+
+		if (scopeBaseModel == null) {
+			return false;
+		}
+
+		return contains(
+			permissionChecker, GroupThreadLocal.getGroupId(),
+			scopeBaseModel.getModelClassName(),
+			GetterUtil.getLong(scopeBaseModel.getPrimaryKeyObj()),
+			formatAction(actionId), ownerId);
+	}
 
 	public static boolean contains(
 		PermissionChecker permissionChecker, long groupId, String name,
@@ -47,41 +61,12 @@ public class PatcherPermission {
 	}
 
 	public static boolean contains(
-		ThemeDisplay themeDisplay, BaseModel<?> scopeBaseModel, String actionId,
-		long ownerId) {
-
-		if (scopeBaseModel == null) {
-			return false;
-		}
+		PermissionChecker permissionChecker, String controller, String action) {
 
 		return contains(
-			getPermissionChecker(themeDisplay), themeDisplay.getScopeGroupId(),
-			scopeBaseModel.getModelClassName(),
-			GetterUtil.getLong(scopeBaseModel.getPrimaryKeyObj()),
-			formatAction(actionId), ownerId);
-	}
-
-	public static boolean contains(
-		ThemeDisplay themeDisplay, String controller, String action) {
-
-		return contains(
-			getPermissionChecker(themeDisplay),
-			themeDisplay.getScopeGroupId(), PatcherPortletKeys.PATCHER,
-			themeDisplay.getScopeGroupId(),
+			permissionChecker, GroupThreadLocal.getGroupId(),
+			PatcherPortletKeys.PATCHER, GroupThreadLocal.getGroupId(),
 			formatActionId(controller, action), 0);
-	}
-
-	public static PermissionChecker getPermissionChecker(
-		ThemeDisplay themeDisplay) {
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		if (permissionChecker == null) {
-			permissionChecker = themeDisplay.getPermissionChecker();
-		}
-
-		return permissionChecker;
 	}
 
 	protected static String formatAction(String action) {

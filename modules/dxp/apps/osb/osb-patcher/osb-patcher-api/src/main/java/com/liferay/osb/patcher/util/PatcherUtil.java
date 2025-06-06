@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.lock.service.LockLocalServiceUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -474,8 +473,7 @@ public class PatcherUtil {
 			PatcherBuildUtil.processOSBPatcherBuildCompileJenkinsStatus(
 				UserLocalServiceUtil.fetchUser(
 					jenkinsStatusJSONObject.getLong("patcherUserId")),
-				GetterUtil.getLong(patcherId), jenkinsStatusJSONString,
-				themeDisplay);
+				GetterUtil.getLong(patcherId), jenkinsStatusJSONString);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -580,7 +578,7 @@ public class PatcherUtil {
 						PatcherBuildUtil.
 							processOSBPatcherBuildCompileJenkinsStatus(
 								user, GetterUtil.getLong(patcherId),
-								jenkinsStatusJSONString, themeDisplay);
+								jenkinsStatusJSONString);
 					}
 					else if (path.equals(
 								PortletPropsValues.

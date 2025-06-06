@@ -36,7 +36,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -433,13 +433,12 @@ public class JenkinsUtil {
 	}
 
 	public static boolean isValidSendAgentJenkinsRequest(
-		ThemeDisplay themeDisplay, PatcherFix patcherFix) {
+		PatcherFix patcherFix) {
 
 		if ((patcherFix == null) ||
-			((themeDisplay != null) &&
-			 !PatcherPermission.contains(
-				 themeDisplay, patcherFix, PatcherActionKeys.SEND_REQUEST,
-				 patcherFix.getUserId()))) {
+			!PatcherPermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), patcherFix,
+				PatcherActionKeys.SEND_REQUEST, patcherFix.getUserId())) {
 
 			return false;
 		}
@@ -448,7 +447,7 @@ public class JenkinsUtil {
 	}
 
 	public static boolean isValidSendDistJenkinsRequest(
-		ThemeDisplay themeDisplay, PatcherBuild patcherBuild) {
+		PatcherBuild patcherBuild) {
 
 		PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
 			patcherBuild.getPatcherFixId());
@@ -461,10 +460,10 @@ public class JenkinsUtil {
 			PatcherFixPack patcherFixPack =
 				PatcherFixPackUtil.fetchPatcherFixPack(patcherBuild);
 
-			if ((themeDisplay != null) && (patcherFixPack != null) &&
+			if ((patcherFixPack != null) &&
 				PatcherPermission.contains(
-					themeDisplay, patcherFixPack,
-					PatcherActionKeys.SEND_REQUEST,
+					PermissionThreadLocal.getPermissionChecker(),
+					patcherFixPack, PatcherActionKeys.SEND_REQUEST,
 					patcherFixPack.getUserId())) {
 
 				return true;
@@ -477,12 +476,11 @@ public class JenkinsUtil {
 	}
 
 	public static boolean isValidSendTestJenkinsRequest(
-		ThemeDisplay themeDisplay, PatcherBuild patcherBuild) {
+		PatcherBuild patcherBuild) {
 
-		if ((themeDisplay == null) ||
-			!PatcherPermission.contains(
-				themeDisplay, patcherBuild, PatcherActionKeys.SEND_REQUEST,
-				patcherBuild.getUserId())) {
+		if (!PatcherPermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), patcherBuild,
+				PatcherActionKeys.SEND_REQUEST, patcherBuild.getUserId())) {
 
 			return false;
 		}
@@ -568,7 +566,7 @@ public class JenkinsUtil {
 	}
 
 	public static void sendAgentJenkinsRequest(
-			User user, BaseModel<?> baseModel, ThemeDisplay themeDisplay)
+			User user, BaseModel<?> baseModel)
 		throws Exception {
 
 		if (baseModel instanceof PatcherBuild) {
@@ -596,13 +594,12 @@ public class JenkinsUtil {
 
 			PatcherFixLocalServiceUtil.updatePatcherFix(mainPatcherFix);
 
-			sendAgentJenkinsPatcherBuildRequest(
-				themeDisplay, user, patcherBuild);
+			sendAgentJenkinsPatcherBuildRequest(user, patcherBuild);
 		}
 		else if (baseModel instanceof PatcherFix) {
 			PatcherFix patcherFix = (PatcherFix)baseModel;
 
-			if (!isValidSendAgentJenkinsRequest(themeDisplay, patcherFix)) {
+			if (!isValidSendAgentJenkinsRequest(patcherFix)) {
 				return;
 			}
 
@@ -617,15 +614,15 @@ public class JenkinsUtil {
 			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
 				patcherFix);
 
-			sendAgentJenkinsPatcherFixRequest(themeDisplay, user, patcherFix);
+			sendAgentJenkinsPatcherFixRequest(user, patcherFix);
 		}
 	}
 
 	public static void sendDistJenkinsRequest(
-			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
+			User user, PatcherBuild patcherBuild)
 		throws Exception {
 
-		if (!isValidSendDistJenkinsRequest(themeDisplay, patcherBuild)) {
+		if (!isValidSendDistJenkinsRequest(patcherBuild)) {
 			return;
 		}
 
@@ -684,11 +681,11 @@ public class JenkinsUtil {
 	}
 
 	public static void sendTestJenkinsRequest(
-			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
+			User user, PatcherBuild patcherBuild)
 		throws Exception {
 
 		if (!PortletPropsValues.OSB_PATCHER_TESTS_ENABLED ||
-			!isValidSendTestJenkinsRequest(themeDisplay, patcherBuild)) {
+			!isValidSendTestJenkinsRequest(patcherBuild)) {
 
 			return;
 		}
@@ -829,7 +826,7 @@ public class JenkinsUtil {
 	}
 
 	protected static void sendAgentJenkinsPatcherBuildRequest(
-			ThemeDisplay themeDisplay, User user, PatcherBuild patcherBuild)
+			User user, PatcherBuild patcherBuild)
 		throws Exception {
 
 		PatcherProjectVersion patcherProjectVersion =
@@ -856,17 +853,16 @@ public class JenkinsUtil {
 		}
 
 		sendAgentJenkinsPatcherBuildRequest(
-			themeDisplay, user, patcherProjectVersion, mainPatcherFix,
+			user, patcherProjectVersion, mainPatcherFix,
 			StringUtil.merge(patcherFixIds, StringPool.COMMA));
 	}
 
 	protected static void sendAgentJenkinsPatcherBuildRequest(
-			ThemeDisplay themeDisplay, User user,
-			PatcherProjectVersion patcherProjectVersion, PatcherFix patcherFix,
-			String patcherFixIds)
+			User user, PatcherProjectVersion patcherProjectVersion,
+			PatcherFix patcherFix, String patcherFixIds)
 		throws Exception {
 
-		if (!isValidSendAgentJenkinsRequest(themeDisplay, patcherFix)) {
+		if (!isValidSendAgentJenkinsRequest(patcherFix)) {
 			return;
 		}
 
@@ -888,7 +884,7 @@ public class JenkinsUtil {
 	}
 
 	protected static void sendAgentJenkinsPatcherFixRequest(
-			ThemeDisplay themeDisplay, User user, PatcherFix patcherFix)
+			User user, PatcherFix patcherFix)
 		throws Exception {
 
 		Http.Options options = new Http.Options();
