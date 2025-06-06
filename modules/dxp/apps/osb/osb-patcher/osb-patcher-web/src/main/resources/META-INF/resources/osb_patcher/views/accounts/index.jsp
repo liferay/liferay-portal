@@ -213,17 +213,6 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 		return result.accountEntryCode || '';
 	}
 
-	Liferay.provide(
-		window,
-		'<portlet:namespace />productVersionOnChange',
-		function(productVersionId) {
-			var namespace = '<portlet:namespace />';
-
-			window.location.href = Liferay.Patcher.updateProductVersionId('<%= viewPatcherAccountsURL %>', productVersionId, namespace);
-		},
-		['aui-base']
-	);
-
 	Liferay.on(
 		'allPortletsReady',
 		function(event) {
