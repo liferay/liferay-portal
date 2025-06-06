@@ -36,7 +36,7 @@ PatcherFixComponentsDisplayContext patcherFixComponentsDisplayContext = new Patc
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFixComponent, PatcherActionKeys.EDIT, patcherFixComponent.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFixComponent, PatcherActionKeys.EDIT, patcherFixComponent.getUserId()) %>">
 					<portlet:renderURL var="editPatcherFixComponentURL">
 						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_components" />
 						<portlet:param name="patcherFixComponentId" value="<%= String.valueOf(patcherFixComponent.getPatcherFixComponentId()) %>" />
@@ -49,7 +49,7 @@ PatcherFixComponentsDisplayContext patcherFixComponentsDisplayContext = new Patc
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFixComponent, ActionKeys.DELETE, patcherFixComponent.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFixComponent, ActionKeys.DELETE, patcherFixComponent.getUserId()) %>">
 					<portlet:actionURL name="/patcher/delete_fix_components" var="deletePatcherFixComponentURL">
 						<portlet:param name="patcherFixComponentId" value="<%= String.valueOf(patcherFixComponent.getPatcherFixComponentId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />

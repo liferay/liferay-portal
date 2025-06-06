@@ -85,7 +85,7 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, PatcherActionKeys.EDIT, patcherProjectVersion.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherProjectVersion, PatcherActionKeys.EDIT, patcherProjectVersion.getUserId()) %>">
 					<portlet:renderURL var="editPatcherProjectVersionURL">
 						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_project_versions" />
 						<portlet:param name="patcherProjectVersionId" value="<%= String.valueOf(patcherProjectVersion.getPatcherProjectVersionId()) %>" />
@@ -98,7 +98,7 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProjectVersion, ActionKeys.DELETE, patcherProjectVersion.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherProjectVersion, ActionKeys.DELETE, patcherProjectVersion.getUserId()) %>">
 					<portlet:actionURL name="/patcher/delete_project_versions" var="deletePatcherProjectVersionURL">
 						<portlet:param name="patcherProjectVersionId" value="<%= String.valueOf(patcherProjectVersion.getPatcherProjectVersionId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />

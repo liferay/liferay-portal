@@ -948,21 +948,21 @@ public class PatcherFixUtil {
 				}
 
 				PatcherBuildUtil.setStatus(
-					themeDisplay.getUser(), patcherBuild, status, themeDisplay);
+					themeDisplay.getUser(), patcherBuild, status);
 
 				patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
 					patcherBuild);
 
 				if (status == WorkflowConstants.STATUS_BUILD_COMPILING) {
 					JenkinsUtil.sendDistJenkinsRequest(
-						themeDisplay.getUser(), patcherBuild, themeDisplay);
+						themeDisplay.getUser(), patcherBuild);
 				}
 				else if ((status ==
 							WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
 						 (status == WorkflowConstants.STATUS_BUILD_MERGING)) {
 
 					JenkinsUtil.sendAgentJenkinsRequest(
-						themeDisplay.getUser(), patcherBuild, themeDisplay);
+						themeDisplay.getUser(), patcherBuild);
 				}
 
 				continue;
@@ -977,11 +977,11 @@ public class PatcherFixUtil {
 				}
 
 				PatcherBuildUtil.setStatus(
-					themeDisplay.getUser(), patcherBuild, status, themeDisplay);
+					themeDisplay.getUser(), patcherBuild, status);
 			}
 			else {
 				PatcherBuildUtil.setStatus(
-					themeDisplay.getUser(), patcherBuild, status, themeDisplay);
+					themeDisplay.getUser(), patcherBuild, status);
 			}
 
 			PatcherBuildLocalServiceUtil.updatePatcherBuild(patcherBuild);
@@ -1031,7 +1031,7 @@ public class PatcherFixUtil {
 				themeDisplay);
 
 			JenkinsUtil.sendAgentJenkinsRequest(
-				themeDisplay.getUser(), patcherBuild, themeDisplay);
+				themeDisplay.getUser(), patcherBuild);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(

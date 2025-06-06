@@ -18,9 +18,9 @@ import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherFixComponent;
 import com.liferay.osb.patcher.model.PatcherFixPack;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
+import com.liferay.osb.patcher.permission.resource.PatcherPermission;
 import com.liferay.osb.patcher.service.PatcherFixComponentLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
-import com.liferay.osb.patcher.web.internal.permission.resource.PatcherPermission;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -75,7 +75,8 @@ public class PatcherFixPacksManagementToolbarDisplayContext
 				WebKeys.THEME_DISPLAY);
 
 		if (!PatcherPermission.contains(
-				themeDisplay, "fix_packs", PatcherActionKeys.CREATE)) {
+				themeDisplay.getPermissionChecker(), "fix_packs",
+				PatcherActionKeys.CREATE)) {
 
 			return null;
 		}

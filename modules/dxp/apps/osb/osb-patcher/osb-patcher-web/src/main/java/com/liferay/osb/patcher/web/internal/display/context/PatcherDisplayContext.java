@@ -81,7 +81,8 @@ public class PatcherDisplayContext {
 			}
 		).add(
 			() -> PatcherPermission.contains(
-				_themeDisplay.getPermissionChecker(), "fix_packs", PatcherActionKeys.INDEX),
+				_themeDisplay.getPermissionChecker(), "fix_packs",
+				PatcherActionKeys.INDEX),
 			navigationItem -> {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "fix-packs"));
@@ -93,7 +94,8 @@ public class PatcherDisplayContext {
 			}
 		).add(
 			() -> PatcherPermission.contains(
-				_themeDisplay.getPermissionChecker(), "product_versions", PatcherActionKeys.INDEX),
+				_themeDisplay.getPermissionChecker(), "product_versions",
+				PatcherActionKeys.INDEX),
 			navigationItem -> {
 				navigationItem.setActive(
 					Objects.equals(_getTabs1(), "product-versions"));

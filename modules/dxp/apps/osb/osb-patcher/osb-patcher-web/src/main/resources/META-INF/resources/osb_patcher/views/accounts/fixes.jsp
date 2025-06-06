@@ -114,7 +114,7 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EXCLUDE, patcherFix.userId) && (patcherFix.type != PatcherFixConstants.TYPE_EXCLUDED) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EXCLUDE, patcherFix.userId) && (patcherFix.type != PatcherFixConstants.TYPE_EXCLUDED) %>">
 					<portlet:actionURL var="excludePatcherFixURL">
 						<portlet:param name="controller" value="fixes" />
 						<portlet:param name="action" value="exclude" />

@@ -41,7 +41,7 @@
 			<portlet:param name="redirect" value="<%= viewPatcherAccountsURL %>" />
 		</portlet:renderURL>
 
-		<aui:button disabled='<%= !PatcherPermission.contains(themeDisplay, "builds", PatcherActionKeys.CREATE) %>' href="<%= createPatcherBuildURL %>" value="create-build-for-new-account" />
+		<aui:button disabled='<%= !PatcherPermission.contains(permissionChecker, "builds", PatcherActionKeys.CREATE) %>' href="<%= createPatcherBuildURL %>" value="create-build-for-new-account" />
 	</clay:col>
 </aui:button-row>
 

@@ -102,7 +102,7 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFixPack, PatcherActionKeys.EDIT, patcherFixPack.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFixPack, PatcherActionKeys.EDIT, patcherFixPack.getUserId()) %>">
 					<portlet:renderURL var="editPatcherFixPackURL">
 						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_packs" />
 						<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />

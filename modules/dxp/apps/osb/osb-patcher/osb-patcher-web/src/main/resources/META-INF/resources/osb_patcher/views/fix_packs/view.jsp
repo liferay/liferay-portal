@@ -216,7 +216,7 @@ List<PatcherFix> patcherFixes = PatcherFixLocalServiceUtil.getPatcherFixPackPatc
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT, patcherFix.getUserId()) && patcherFix.getLatestFix() %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT, patcherFix.getUserId()) && patcherFix.getLatestFix() %>">
 					<portlet:renderURL var="editPatcherFixURL">
 						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fixes" />
 						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
@@ -229,7 +229,7 @@ List<PatcherFix> patcherFixes = PatcherFixLocalServiceUtil.getPatcherFixPackPatc
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
 					<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_pack_fields_fixes" />
 						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
@@ -242,7 +242,7 @@ List<PatcherFix> patcherFixes = PatcherFixLocalServiceUtil.getPatcherFixPackPatc
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.SET_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.SET_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
 					<portlet:renderURL var="viewPatcherFixPackURL">
 						<portlet:param name="mvcRenderCommandName" value="/patcher/view_fix_packs" />
 						<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />

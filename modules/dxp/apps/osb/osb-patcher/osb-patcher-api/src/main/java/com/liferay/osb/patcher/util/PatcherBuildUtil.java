@@ -116,8 +116,7 @@ public class PatcherBuildUtil {
 						PatcherBuildLocalServiceUtil.updatePatcherBuild(
 							patcherBuild);
 
-					JenkinsUtil.sendAgentJenkinsRequest(
-						user, patcherBuild, themeDisplay);
+					JenkinsUtil.sendAgentJenkinsRequest(user, patcherBuild);
 				}
 
 				return patcherBuild;
@@ -157,7 +156,7 @@ public class PatcherBuildUtil {
 		patcherBuild.setType(PatcherBuildConstants.TYPE_FIX_PACK);
 		patcherBuild.setQaStatus(WorkflowConstants.STATUS_PENDING);
 
-		setStatus(user, patcherBuild, status, themeDisplay);
+		setStatus(user, patcherBuild, status);
 
 		patcherBuild = setLatestPatcherBuild(
 			patcherBuild, patcherBuild.getKey(),
@@ -171,7 +170,7 @@ public class PatcherBuildUtil {
 		updatePatcherBuildFixes(
 			user, patcherBuild, relatedPatcherFixIds, themeDisplay);
 
-		JenkinsUtil.sendAgentJenkinsRequest(user, patcherBuild, themeDisplay);
+		JenkinsUtil.sendAgentJenkinsRequest(user, patcherBuild);
 
 		return patcherBuild;
 	}
@@ -891,8 +890,7 @@ public class PatcherBuildUtil {
 		rollbackFor = Exception.class
 	)
 	public static void processOSBPatcherBuildCompileJenkinsStatus(
-			User user, long patcherBuildId, String jenkinsStatusJSONString,
-			ThemeDisplay themeDisplay)
+			User user, long patcherBuildId, String jenkinsStatusJSONString)
 		throws Exception {
 
 		PatcherBuild patcherBuild =
@@ -920,8 +918,7 @@ public class PatcherBuildUtil {
 
 		if (exitValue == 0) {
 			setStatus(
-				user, patcherBuild, WorkflowConstants.STATUS_BUILD_COMPLETE,
-				themeDisplay);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_COMPLETE);
 
 			workflowCompletedPatcherBuildQAStatus(patcherBuild);
 
@@ -930,8 +927,7 @@ public class PatcherBuildUtil {
 		}
 		else {
 			setStatus(
-				user, patcherBuild, WorkflowConstants.STATUS_BUILD_FAILED,
-				themeDisplay);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_FAILED);
 		}
 
 		patcherBuild.setFileName(fileName);
@@ -943,7 +939,7 @@ public class PatcherBuildUtil {
 		PatcherFixUtil.updatePatcherFixJenkinsResult(
 			jenkinsStatusJSONObject, patcherBuild.getPatcherFixId());
 
-		sendTestJenkinsRequest(user, patcherBuild, themeDisplay);
+		sendTestJenkinsRequest(user, patcherBuild);
 	}
 
 	@Transactional(
@@ -1117,12 +1113,11 @@ public class PatcherBuildUtil {
 	}
 
 	public static void sendTestJenkinsRequest(
-			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
+			User user, PatcherBuild patcherBuild)
 		throws Exception {
 
 		if (patcherBuild.getType() == PatcherBuildConstants.TYPE_OFFICIAL) {
-			JenkinsUtil.sendTestJenkinsRequest(
-				user, patcherBuild, themeDisplay);
+			JenkinsUtil.sendTestJenkinsRequest(user, patcherBuild);
 		}
 	}
 
@@ -1209,13 +1204,12 @@ public class PatcherBuildUtil {
 	}
 
 	public static void setStatus(
-			User user, PatcherBuild patcherBuild, int status,
-			ThemeDisplay themeDisplay)
+			User user, PatcherBuild patcherBuild, int status)
 		throws Exception {
 
 		patcherBuild.setStatus(status);
 
-		workflowParentPatcherBuild(user, patcherBuild, themeDisplay);
+		workflowParentPatcherBuild(user, patcherBuild);
 	}
 
 	public static void workflowCompletedPatcherBuildQAStatus(
@@ -1246,8 +1240,7 @@ public class PatcherBuildUtil {
 	}
 
 	public static void workflowParentPatcherBuild(
-			User user, PatcherBuild childPatcherBuild,
-			ThemeDisplay themeDisplay)
+			User user, PatcherBuild childPatcherBuild)
 		throws Exception {
 
 		if (!childPatcherBuild.isChildBuild()) {
@@ -1290,13 +1283,12 @@ public class PatcherBuildUtil {
 			parentPatcherBuild);
 
 		if (status == WorkflowConstants.STATUS_BUILD_COMPILING) {
-			JenkinsUtil.sendDistJenkinsRequest(
-				user, parentPatcherBuild, themeDisplay);
+			JenkinsUtil.sendDistJenkinsRequest(user, parentPatcherBuild);
 		}
 		else if (status == WorkflowConstants.STATUS_BUILD_COMPLETE) {
 			workflowCompletedPatcherBuildQAStatus(parentPatcherBuild);
 
-			sendTestJenkinsRequest(user, parentPatcherBuild, themeDisplay);
+			sendTestJenkinsRequest(user, parentPatcherBuild);
 		}
 	}
 
@@ -1350,13 +1342,12 @@ public class PatcherBuildUtil {
 
 		if (mergeOnly) {
 			setStatus(
-				user, patcherBuild, WorkflowConstants.STATUS_BUILD_MERGING_ONLY,
-				themeDisplay);
+				user, patcherBuild,
+				WorkflowConstants.STATUS_BUILD_MERGING_ONLY);
 		}
 		else {
 			setStatus(
-				user, patcherBuild, WorkflowConstants.STATUS_BUILD_MERGING,
-				themeDisplay);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_MERGING);
 		}
 	}
 
@@ -1548,8 +1539,7 @@ public class PatcherBuildUtil {
 
 			patcherBuild.setPatcherFixId(patcherFixIds.get(0));
 
-			updatePatcherBuildStatusMergeComplete(
-				user, patcherBuild, themeDisplay);
+			updatePatcherBuildStatusMergeComplete(user, patcherBuild);
 
 			return;
 		}
@@ -1621,8 +1611,7 @@ public class PatcherBuildUtil {
 			if (isPreviousPatcherBuildMainFixEqualsCurrentBuildMainFix(
 					patcherBuild)) {
 
-				updatePatcherBuildStatusMergeComplete(
-					user, patcherBuild, themeDisplay);
+				updatePatcherBuildStatusMergeComplete(user, patcherBuild);
 			}
 		}
 	}
@@ -1697,8 +1686,7 @@ public class PatcherBuildUtil {
 
 			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 
-			updatePatcherBuildStatusMergeComplete(
-				user, patcherBuild, themeDisplay);
+			updatePatcherBuildStatusMergeComplete(user, patcherBuild);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
@@ -1765,8 +1753,7 @@ public class PatcherBuildUtil {
 				}
 
 				for (PatcherBuild curPatcherBuild : patcherBuilds) {
-					JenkinsUtil.sendAgentJenkinsRequest(
-						user, curPatcherBuild, themeDisplay);
+					JenkinsUtil.sendAgentJenkinsRequest(user, curPatcherBuild);
 				}
 
 				return;
@@ -1787,13 +1774,12 @@ public class PatcherBuildUtil {
 
 				setStatus(
 					user, patcherBuild,
-					WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY,
-					themeDisplay);
+					WorkflowConstants.STATUS_BUILD_CONFLICT_MERGING_ONLY);
 			}
 			else {
 				setStatus(
-					user, patcherBuild, WorkflowConstants.STATUS_BUILD_CONFLICT,
-					themeDisplay);
+					user, patcherBuild,
+					WorkflowConstants.STATUS_BUILD_CONFLICT);
 			}
 
 			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
@@ -1808,8 +1794,7 @@ public class PatcherBuildUtil {
 			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
 
 			setStatus(
-				user, patcherBuild, WorkflowConstants.STATUS_BUILD_FAILED,
-				themeDisplay);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_FAILED);
 
 			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
 				patcherBuild);
@@ -1823,28 +1808,25 @@ public class PatcherBuildUtil {
 	}
 
 	protected static void updatePatcherBuildStatusMergeComplete(
-			User user, PatcherBuild patcherBuild, ThemeDisplay themeDisplay)
+			User user, PatcherBuild patcherBuild)
 		throws Exception {
 
 		if (isMergeOnly(patcherBuild)) {
 			setStatus(
 				user, patcherBuild,
-				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY,
-				themeDisplay);
+				WorkflowConstants.STATUS_BUILD_COMPLETE_MERGING_ONLY);
 
 			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
 				patcherBuild);
 		}
 		else {
 			setStatus(
-				user, patcherBuild, WorkflowConstants.STATUS_BUILD_COMPILING,
-				themeDisplay);
+				user, patcherBuild, WorkflowConstants.STATUS_BUILD_COMPILING);
 
 			patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
 				patcherBuild);
 
-			JenkinsUtil.sendDistJenkinsRequest(
-				user, patcherBuild, themeDisplay);
+			JenkinsUtil.sendDistJenkinsRequest(user, patcherBuild);
 		}
 	}
 

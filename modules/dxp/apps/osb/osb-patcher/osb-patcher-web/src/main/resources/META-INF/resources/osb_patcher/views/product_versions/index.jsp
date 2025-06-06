@@ -46,7 +46,7 @@ PatcherProductVersionsDisplayContext patcherProductVersionsDisplayContext = new 
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, patcherProductVersion, PatcherActionKeys.EDIT, patcherProductVersion.getUserId()) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherProductVersion, PatcherActionKeys.EDIT, patcherProductVersion.getUserId()) %>">
 					<portlet:renderURL var="editPatcherProductVersionURL">
 						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_product_versions" />
 						<portlet:param name="patcherProductVersionId" value="<%= String.valueOf(patcherProductVersion.getPatcherProductVersionId()) %>" />

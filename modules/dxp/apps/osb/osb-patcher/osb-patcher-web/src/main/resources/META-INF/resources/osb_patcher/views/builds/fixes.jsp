@@ -99,7 +99,7 @@
 			name="engineer-comments"
 		>
 			<c:choose>
-				<c:when test="<%= PatcherPermission.contains(themeDisplay, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherFix.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+				<c:when test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherFix.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 					<a href="<%= editPatcherFixCommentsFieldURL %>">
 						<%= shortenedPatcherFixComments %>
 					</a>

@@ -102,7 +102,7 @@
 
 				<c:set value='<%= UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", childPatcherBuild.patcherBuildId) %>' var="viewPatcherFixesURLTitle" />
 
-				<c:if test="<%= PatcherPermission.contains(themeDisplay, childPatcherBuild, PatcherActionKeys.FIXES, childPatcherBuild.userId) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, childPatcherBuild, PatcherActionKeys.FIXES, childPatcherBuild.userId) %>">
 					<liferay-ui:icon
 						image="view"
 						message="view-fixes"
