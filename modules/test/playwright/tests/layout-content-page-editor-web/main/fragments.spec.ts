@@ -47,6 +47,7 @@ const test = mergeTests(
 	displayPageTemplatesPagesTest,
 	documentLibraryPagesTest,
 	featureFlagsTest({
+		'LPD-11235': {enabled: true},
 		'LPD-17564': {enabled: true},
 		'LPD-39304': {enabled: true},
 		'LPS-178052': {enabled: true},
@@ -59,6 +60,15 @@ const test = mergeTests(
 	objectPagesTest,
 	pageEditorPagesTest,
 	pageManagementSiteTest
+);
+
+const testWithCKEditor4 = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-17564': {enabled: true},
+		'LPD-39304': {enabled: true},
+		'LPS-178052': {enabled: true},
+	})
 );
 
 const testWithPrivatePages = mergeTests(
@@ -1619,6 +1629,140 @@ test.describe('Multiselect Fragment', () => {
 	);
 });
 
+// Remove when the feature flag LPD-11235 is removed
+
+testWithCKEditor4.describe('Paragraph Fragment with CKEditor 4', () => {
+	testWithCKEditor4(
+		'Can edit text editable with CKEditor 4',
+		{tag: ['@LPS-127732']},
+		async ({apiHelpers, page, pageEditorPage, site}) => {
+
+			// Create page with a paragraph fragment and go to edit mode
+
+			const fragmentId = getRandomString();
+
+			const fragment = getFragmentDefinition({
+				id: fragmentId,
+				key: 'BASIC_COMPONENT-paragraph',
+			});
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([fragment]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			// Check paragraph editable can be edited
+
+			await pageEditorPage.editTextEditable(
+				fragmentId,
+				'element-text',
+				'New editable fragment text'
+			);
+
+			await expect(
+				page.getByText('New editable fragment text')
+			).toBeAttached();
+		}
+	);
+
+	testWithCKEditor4(
+		'Can use CKEditor options when editing a rich text editable with CKEditor 4',
+		{tag: ['@LPS-127732']},
+		async ({apiHelpers, page, pageEditorPage, site}) => {
+
+			// Create page with a paragraph fragment and go to edit mode
+
+			const fragmentId = getRandomString();
+
+			const fragment = getFragmentDefinition({
+				id: fragmentId,
+				key: 'BASIC_COMPONENT-paragraph',
+			});
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([fragment]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			// Open editor options
+
+			await pageEditorPage.selectEditable(fragmentId, 'element-text');
+
+			const editable = pageEditorPage.getEditable({
+				editableId: 'element-text',
+				fragmentId,
+			});
+
+			await editable.click();
+
+			await editable.locator('.cke_editable_inline').click();
+
+			await page.keyboard.press('ControlOrMeta+KeyA');
+
+			// Check that the button is visible and works
+
+			await expect(page.getByTitle('Right')).toBeVisible();
+
+			await page.getByTitle('Right').click();
+
+			expect(
+				await page
+					.locator('.ae-editable p')
+					.evaluate((element) => element.style.textAlign)
+			).toBe('right');
+		}
+	);
+
+	testWithCKEditor4(
+		'Editor config contributor client extension is applied with CKEditor 4',
+		{tag: ['@LPD-54262']},
+		async ({apiHelpers, page, pageEditorPage, site}) => {
+
+			// Create page with a paragraph fragment and go to edit mode
+
+			const fragmentId = getRandomString();
+
+			const fragment = getFragmentDefinition({
+				id: fragmentId,
+				key: 'BASIC_COMPONENT-paragraph',
+			});
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([fragment]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			// Open editor options
+
+			await pageEditorPage.selectEditable(fragmentId, 'element-text');
+
+			const editable = pageEditorPage.getEditable({
+				editableId: 'element-text',
+				fragmentId,
+			});
+
+			await editable.dblclick();
+
+			await editable.locator('.cke_editable_inline').dblclick();
+
+			// Assert "Insert Video" button is visible as provided by the CX
+
+			await page.getByText('A paragraph').selectText();
+
+			await expect(page.getByTitle('Insert Video')).toBeInViewport();
+		}
+	);
+});
+
 test.describe('Paragraph Fragment', () => {
 	test(
 		'Can edit text editable',
@@ -1689,19 +1833,22 @@ test.describe('Paragraph Fragment', () => {
 
 			await editable.click();
 
-			await editable.locator('.cke_editable_inline').click();
+			await editable.locator('[contenteditable="true"]').click();
 
 			await page.keyboard.press('ControlOrMeta+KeyA');
 
+			const toolbar = page.locator('.ck-toolbar');
+
+			await toolbar.waitFor();
+
 			// Check that the button is visible and works
 
-			await expect(page.getByTitle('Right')).toBeVisible();
-
-			await page.getByTitle('Right').click();
+			await toolbar.getByLabel('Text alignment', {exact: true}).click();
+			await toolbar.getByLabel('Align right', {exact: true}).click();
 
 			expect(
 				await page
-					.locator('.ae-editable p')
+					.locator('.ck-editor__editable p')
 					.evaluate((element) => element.style.textAlign)
 			).toBe('right');
 		}
@@ -1740,13 +1887,15 @@ test.describe('Paragraph Fragment', () => {
 
 			await editable.dblclick();
 
-			await editable.locator('.cke_editable_inline').dblclick();
+			await editable.locator('[contenteditable="true"]').dblclick();
 
-			// Assert "Insert Video" button is visible as provided by the CX
+			// Assert "Accessibility Help" button is visible as provided by the CX
 
 			await page.getByText('A paragraph').selectText();
 
-			await expect(page.getByTitle('Insert Video')).toBeInViewport();
+			await expect(
+				page.getByLabel('Accessibility help')
+			).toBeInViewport();
 		}
 	);
 });
