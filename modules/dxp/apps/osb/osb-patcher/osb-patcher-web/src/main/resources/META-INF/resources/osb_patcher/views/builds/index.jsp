@@ -320,7 +320,7 @@
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL %>/<%= patcherBuild.fileName %>'
+			href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>'
 			name="hotfix"
 			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(patcherBuild.fileName) : StringPool.BLANK %>"
 		/>

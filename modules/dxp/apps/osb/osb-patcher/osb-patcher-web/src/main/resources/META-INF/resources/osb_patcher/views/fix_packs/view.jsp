@@ -170,7 +170,7 @@ List<PatcherFix> patcherFixes = PatcherFixLocalServiceUtil.getPatcherFixPackPatc
 			for (String token : StringUtil.split(patcherFix.getName())) {
 			%>
 
-				<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= token %>" target="_blank"><%= token %></a>,
+				<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= token %>" target="_blank"><%= token %></a>,
 
 			<%
 			}

@@ -30,7 +30,7 @@ for (String ticket : StringUtil.split(patcherProjectVersion.getFixedIssues())) {
 			<a class="nobr" href="<%= viewPatcherFixPackURL %>"><%= ticket %></a>,
 		</c:when>
 		<c:otherwise>
-			<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= ticket %>" target="_blank"><%= ticket %></a>,
+			<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= ticket %>" target="_blank"><%= ticket %></a>,
 		</c:otherwise>
 	</c:choose>
 

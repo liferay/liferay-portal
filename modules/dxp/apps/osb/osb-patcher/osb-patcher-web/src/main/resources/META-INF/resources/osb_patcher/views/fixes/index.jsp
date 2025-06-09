@@ -166,7 +166,7 @@
 						<a class="nobr" href="<%= viewPatcherFixPackURL %>"><%= token %></a>,
 					</c:when>
 					<c:otherwise>
-						<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= token %>" target="_blank"><%= token %></a>,
+						<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= token %>" target="_blank"><%= token %></a>,
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>

@@ -143,7 +143,7 @@
 							<c:choose>
 								<c:when test="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) %>">
 									<c:set var="relevantStatusActionLink">
-										(<clay:link href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL %>/<%= patcherBuild.fileName %>' label="download" target="_blank" />)
+										(<clay:link href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>' label="download" target="_blank" />)
 									</c:set>
 
 									<c:set value="passed" var="statusCSSClass" />

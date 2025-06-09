@@ -62,7 +62,7 @@
 			<c:set value="<%= StringUtil.split(patcherFix.getName()) %>" var="jiraTickets" />
 
 			<c:forEach items="<%= jiraTickets %>" var="jiraTicket" varStatus="jiraTicketStatus">
-				<a class="nobr" href="<%= PortletPropsValues.JIRA_URL %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
+				<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
 			</c:forEach>
 		</liferay-ui:search-container-column-text>
 

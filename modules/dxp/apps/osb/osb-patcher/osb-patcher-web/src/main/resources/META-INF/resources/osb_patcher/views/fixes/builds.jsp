@@ -72,7 +72,7 @@
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL %>/<%= patcherBuild.fileName %>'
+			href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>'
 			name="hotfix"
 			target="_blank"
 			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(patcherBuild.fileName) : StringPool.BLANK %>"
@@ -193,7 +193,7 @@
 						url="<%= smokeTestPatcherBuildURL %>"
 					/>
 
-					<c:set value='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL %>/<%= patcherBuild.fileName %>' var="hotfixURL" />
+					<c:set value='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>' var="hotfixURL" />
 
 					<liferay-ui:icon
 						image="download"

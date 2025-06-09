@@ -87,7 +87,7 @@
 
 	<c:if test="<%= patcherBuild.status == WorkflowConstants.STATUS_BUILD_FAILED %>">
 		<clay:link
-			href="<%= PortletPropsValues.TROUBLESHOOTING_URL %>"
+			href="<%= patcherConfiguration.troubleshootingURL() %>"
 			target="_blank"
 			title="troubleshooting-guide"
 		/>
@@ -140,14 +140,14 @@
 			<pre>patching-tool.sh install hotfix-<%= PatcherBuildUtil.getHotfixIdByFileName(patcherBuild.fileName) %></pre>
 		</c:when>
 		<c:otherwise>
-			<a href="<%= PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL %>/<%= patcherBuild.fileName %>" target="_blank"><%= not empty patcherBuild.fileName ? downloadURLLabel : StringPool.BLANK %></a>
+			<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>" target="_blank"><%= not empty patcherBuild.fileName ? downloadURLLabel : StringPool.BLANK %></a>
 		</c:otherwise>
 	</c:choose>
 </aui:field-wrapper>
 
 <c:if test="<%= not empty patcherBuild.sourceName %>">
 	<aui:field-wrapper name="sourceZip">
-		<a href="<%= PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL %>/<%= patcherBuild.sourceName %>" target="_blank"><%= downloadURLLabel %></a>
+		<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.sourceName %>" target="_blank"><%= downloadURLLabel %></a>
 	</aui:field-wrapper>
 </c:if>
 
@@ -164,7 +164,7 @@
 			/>
 
 			<clay:link
-				href="<%= PortletPropsValues.INFO_MODIFY_TICKETS_LIST_URL %>"
+				href="<%= patcherConfiguration.infoModifyTicketsListURL() %>"
 				label="click-here-to-find-out-why-the-ticket-list-changed"
 				target="_blank"
 			/>

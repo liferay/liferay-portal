@@ -5,10 +5,12 @@
 
 package com.liferay.osb.patcher.web.internal.messaging;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.util.PatcherUtil;
-import com.liferay.osb.patcher.util.PortletPropsValues;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 /**
@@ -30,8 +32,12 @@ public class PatcherFixSchedulerMessageListener extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		PatcherUtil.processOSBPatcherStatusFiles(
-			PortletPropsValues.OSB_PATCHER_STATUS_FIX_PATH, _themeDisplay);
+			patcherConfiguration.patcherStatusFixPath(), _themeDisplay);
 
 		PatcherUtil.notifyUsersInactivePatcherBaseModels(_themeDisplay);
 	}

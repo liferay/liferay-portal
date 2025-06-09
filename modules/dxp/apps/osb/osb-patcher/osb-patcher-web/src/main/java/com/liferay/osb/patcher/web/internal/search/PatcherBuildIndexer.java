@@ -5,6 +5,7 @@
 
 package com.liferay.osb.patcher.web.internal.search;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
@@ -15,8 +16,8 @@ import com.liferay.osb.patcher.service.PatcherAccountLocalService;
 import com.liferay.osb.patcher.service.PatcherBuildLocalService;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalService;
 import com.liferay.osb.patcher.util.PatcherUtil;
-import com.liferay.osb.patcher.util.PortletPropsValues;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -72,12 +73,16 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 				"patcherProductVersionId", patcherProductVersionId);
 		}
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, searchContext.getCompanyId());
+
 		if (GetterUtil.getBoolean(
 				searchContext.getAttribute("advancedSearch"))) {
 
 			contextQuery.addRequiredTerm("childBuild", false);
 
-			if (PortletPropsValues.OSB_PATCHER_SCANNING_ENABLED) {
+			if (patcherConfiguration.patcherScanningEnabled()) {
 				contextQuery.addRequiredTerm("latestSupportTicketBuild", true);
 			}
 			else {
@@ -101,7 +106,7 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 
 			contextQuery.addRequiredTerm("childBuild", false);
 
-			if (PortletPropsValues.OSB_PATCHER_SCANNING_ENABLED) {
+			if (patcherConfiguration.patcherScanningEnabled()) {
 				contextQuery.addRequiredTerm("latestSupportTicketBuild", true);
 			}
 			else {
@@ -152,7 +157,7 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 		else {
 			contextQuery.addRequiredTerm("childBuild", false);
 
-			if (PortletPropsValues.OSB_PATCHER_SCANNING_ENABLED) {
+			if (patcherConfiguration.patcherScanningEnabled()) {
 				contextQuery.addRequiredTerm("latestSupportTicketBuild", true);
 			}
 			else {
@@ -220,10 +225,15 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 
 		document.addKeyword("childBuild", patcherBuild.isChildBuild());
 		document.addText("comments", patcherBuild.getComments());
+
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, patcherBuild.getCompanyId());
+
 		document.addText(
 			"downloadURL",
-			PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL +
-				StringPool.SLASH + patcherBuild.getFileName());
+			patcherConfiguration.patcherBuildDownloadURL() + StringPool.SLASH +
+				patcherBuild.getFileName());
 
 		if (Validator.isNotNull(patcherBuild.getFileName())) {
 			document.addKeyword("hotfixId", patcherBuild.getHotfixId());
