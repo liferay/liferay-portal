@@ -3589,18 +3589,18 @@ public class ServiceBuilder {
 		if (propsFile.exists()) {
 			Properties properties = PropertiesUtil.load(_read(propsFile));
 
-			if (!_buildNumberIncrement || !_hasModifiedSQLFiles() ||
-				_hasLocalChanges(propsFile)) {
+			if (_buildNumberIncrement && _hasModifiedSQLFiles() &&
+				!_hasLocalChanges(propsFile)) {
 
+				buildNumber =
+					GetterUtil.getLong(properties.getProperty("build.number")) +
+						1;
+			}
+			else {
 				buildDate = GetterUtil.getLong(
 					properties.getProperty("build.date"));
 				buildNumber = GetterUtil.getLong(
 					properties.getProperty("build.number"));
-			}
-			else {
-				buildNumber =
-					GetterUtil.getLong(properties.getProperty("build.number")) +
-						1;
 			}
 		}
 
