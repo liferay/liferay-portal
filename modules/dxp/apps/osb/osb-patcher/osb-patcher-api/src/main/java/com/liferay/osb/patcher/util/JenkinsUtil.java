@@ -6,6 +6,7 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.jenkins.results.parser.LoadBalancerUtil;
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.JenkinsConstants;
 import com.liferay.osb.patcher.constants.PatcherActionKeys;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
@@ -30,12 +31,14 @@ import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -69,14 +72,18 @@ public class JenkinsUtil {
 				PatcherFix patcherFix, String patcherFixIds)
 		throws Exception {
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class,
+				patcherProjectVersion.getCompanyId());
+
 		Map<String, String> jenkinsRequestParameters = HashMapBuilder.put(
 			"osb.patcher.fixId", String.valueOf(patcherFix.getPatcherFixId())
 		).put(
 			"osb.patcher.fixIds", patcherFixIds
 		).put(
 			"osb.patcher.type",
-			PortletPropsValues.
-				OSB_PATCHER_SHARED_REQUEST_BUILD_PATCH_PATCHER_TYPE
+			patcherConfiguration.patcherSharedRequestBuildPatchPatcherType()
 		).build();
 
 		if (!patcherProjectVersion.isCombinedBranch()) {
@@ -87,7 +94,7 @@ public class JenkinsUtil {
 
 			if (siblingMainPatcherFix != null) {
 				siblingCommittish =
-					PortletPropsValues.OSB_PATCHER_GIT_TAG_PREFIX +
+					patcherConfiguration.patcherGitTagPrefix() +
 						siblingMainPatcherFix.getPatcherFixId();
 			}
 			else {
@@ -134,9 +141,14 @@ public class JenkinsUtil {
 			"osb.patcher.fixIds", String.valueOf(patcherFix.getPatcherFixId()));
 		jenkinsRequestParameters.put(
 			"osb.patcher.gitRemoteURL", patcherFix.getGitRemoteURL());
+
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, patcherFix.getCompanyId());
+
 		jenkinsRequestParameters.put(
 			"osb.patcher.type",
-			PortletPropsValues.OSB_PATCHER_SHARED_REQUEST_ADD_FIX_PATCHER_TYPE);
+			patcherConfiguration.patcherSharedRequestAddFixPatcherType());
 
 		return getAgentJenkinsRequestParameters(
 			patcherProjectVersion, patcherFix, jenkinsRequestParameters);
@@ -332,9 +344,13 @@ public class JenkinsUtil {
 	}
 
 	public static String getJenkinsURL() throws Exception {
-		if (PortletPropsValues.JENKINS_LOAD_BALANCER_ENABLED &&
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
+		if (patcherConfiguration.jenkinsLoadBalancerEnabled() &&
 			Validator.isNotNull(
-				PortletPropsValues.JENKINS_LOAD_BALANCER_BASE_INVOCATION_URL)) {
+				patcherConfiguration.jenkinsLoadBalancerBaseInvocationURL())) {
 
 			String mostAvailableMasterURL =
 				LoadBalancerUtil.getMostAvailableMasterURL(
@@ -349,7 +365,7 @@ public class JenkinsUtil {
 			return mostAvailableMasterURL + ".liferay.com";
 		}
 
-		return PortletPropsValues.JENKINS_URL;
+		return patcherConfiguration.jenkinsURL();
 	}
 
 	public static String getJobName(JSONObject jenkinsResultJSONObject)
@@ -388,7 +404,8 @@ public class JenkinsUtil {
 	}
 
 	public static Map<String, String> getTestJenkinsRequestParameters(
-		PatcherBuild patcherBuild) {
+			PatcherBuild patcherBuild)
+		throws Exception {
 
 		return HashMapBuilder.put(
 			"patcher.build.file.name",
@@ -656,24 +673,28 @@ public class JenkinsUtil {
 	public static void sendJenkinsRequest(User user, Http.Options options)
 		throws Exception {
 
-		if (!PortletPropsValues.OSB_PATCHER_JENKINS_REQUESTS_ENABLED) {
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, user.getCompanyId());
+
+		if (!patcherConfiguration.patcherJenkinsRequestsEnabled()) {
 			return;
 		}
 
 		String credentials =
-			PortletPropsValues.JENKINS_ADMIN_USERNAME + StringPool.COLON +
-				PortletPropsValues.JENKINS_ADMIN_USER_TOKEN;
+			patcherConfiguration.jenkinsAdminUserName() + StringPool.COLON +
+				patcherConfiguration.jenkinsAdminUserToken();
 
 		options.addHeader(
 			"Authorization", "Basic " + Base64.encode(credentials.getBytes()));
 
 		options.addPart("patcher.user.id", String.valueOf(user.getUserId()));
-		options.addPart("token", PortletPropsValues.JENKINS_TOKEN);
+		options.addPart("token", patcherConfiguration.jenkinsToken());
 
 		String jenkinsURL = getJenkinsURL();
 
 		options.setLocation(
-			jenkinsURL + PortletPropsValues.JENKINS_BUILD_WITH_PARAMETERS_PATH);
+			jenkinsURL + patcherConfiguration.jenkinsBuildWithParametersPath());
 
 		options.setPost(true);
 
@@ -684,7 +705,11 @@ public class JenkinsUtil {
 			User user, PatcherBuild patcherBuild)
 		throws Exception {
 
-		if (!PortletPropsValues.OSB_PATCHER_TESTS_ENABLED ||
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, patcherBuild.getCompanyId());
+
+		if (!patcherConfiguration.patcherTestsEnabled() ||
 			!isValidSendTestJenkinsRequest(patcherBuild)) {
 
 			return;
@@ -727,20 +752,24 @@ public class JenkinsUtil {
 		);
 	}
 
-	public static String validateJenkinsSetup() {
+	public static String validateJenkinsSetup() throws Exception {
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		if (Validator.isNull(
-				PortletPropsValues.JENKINS_BUILD_WITH_PARAMETERS_PATH)) {
+				patcherConfiguration.jenkinsBuildWithParametersPath())) {
 
 			return "the-build-cannot-send-request-because-the-jenkins-build-" +
 				"with-parameters-path-is-not-set";
 		}
 
-		if (Validator.isNull(PortletPropsValues.JENKINS_TOKEN)) {
+		if (Validator.isNull(patcherConfiguration.jenkinsToken())) {
 			return "the-build-cannot-send-request-because-the-jenkins-token-" +
 				"is-not-set";
 		}
 
-		if (Validator.isNull(PortletPropsValues.JENKINS_URL)) {
+		if (Validator.isNull(patcherConfiguration.jenkinsURL())) {
 			return "the-build-cannot-send-request-because-the-jenkins-url-is-" +
 				"not-set";
 		}

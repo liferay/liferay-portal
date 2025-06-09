@@ -5,11 +5,14 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.service.PatcherAccountLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -43,9 +46,13 @@ public class HelpCenterUtil {
 
 		Http.Options options = new Http.Options();
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		String login =
-			PortletPropsValues.HELP_CENTER_API_USERNAME + ":" +
-				PortletPropsValues.HELP_CENTER_API_PASSWORD;
+			patcherConfiguration.helpCenterApiUserName() + ":" +
+				patcherConfiguration.helpCenterApiPassword();
 
 		options.addHeader(
 			"Authorization", "Basic " + Base64.encode(login.getBytes()));
@@ -60,17 +67,20 @@ public class HelpCenterUtil {
 
 		options.addPart("fileName", fileName);
 		options.addPart(
-			"fileRepositoryId", PortletPropsValues.HELP_CENTER_FILE_REPO_ID);
+			"fileRepositoryId", patcherConfiguration.helpCenterFileRepoId());
 		options.addPart("fileSize", String.valueOf(file.length()));
 		options.addPart("regionRestricted", "false");
 		options.addPart("type", "1");
 		options.addPart("zendeskTicketId", patcherBuild.getSupportTicket());
 
+		String helpCenterTicketAttachmentApiEndpoint =
+			patcherConfiguration.helpCenterTicketAttachmentApiEndpoint();
+
 		options.setLocation(
-			PortletPropsValues.HELP_CENTER_JSONWS_URL +
+			patcherConfiguration.helpCenterJsonwsURL() +
 				StringPool.FORWARD_SLASH +
-					PortletPropsValues.
-						HELP_CENTER_TICKET_ATTACHMENT_API_ENDPOINT);
+					helpCenterTicketAttachmentApiEndpoint);
+
 		options.setPost(true);
 
 		return HttpUtil.URLtoString(options);
@@ -81,9 +91,13 @@ public class HelpCenterUtil {
 
 		Http.Options options = new Http.Options();
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		String login =
-			PortletPropsValues.HELP_CENTER_API_USERNAME + ":" +
-				PortletPropsValues.HELP_CENTER_API_PASSWORD;
+			patcherConfiguration.helpCenterApiUserName() + ":" +
+				patcherConfiguration.helpCenterApiPassword();
 
 		options.addHeader(
 			"Authorization", "Basic " + Base64.encode(login.getBytes()));
@@ -91,9 +105,9 @@ public class HelpCenterUtil {
 		options.addPart("code", accountEntryCode);
 
 		options.setLocation(
-			PortletPropsValues.HELP_CENTER_JSONWS_URL +
+			patcherConfiguration.helpCenterJsonwsURL() +
 				StringPool.FORWARD_SLASH +
-					PortletPropsValues.HELP_CENTER_GET_ACCOUNT_API_ENDPOINT);
+					patcherConfiguration.helpCenterGetAccountApiEndpoint());
 		options.setPost(true);
 
 		String response = StringUtil.removeSubstring(
@@ -116,11 +130,15 @@ public class HelpCenterUtil {
 
 		Http.Options options = new Http.Options();
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		String uploadTokenURL =
-			PortletPropsValues.HELP_CENTER_FILE_REPO_URL + "/token";
+			patcherConfiguration.helpCenterFileRepoURL() + "/token";
 
 		String dirPath =
-			PortletPropsValues.HELP_CENTER_TOKEN_TICKET_DIR +
+			patcherConfiguration.helpCenterTokenTicketDir() +
 				StringPool.FORWARD_SLASH + supportTicket;
 
 		uploadTokenURL = HttpComponentsUtil.addParameter(
@@ -135,8 +153,12 @@ public class HelpCenterUtil {
 			File file, String fileName, String supportTicket)
 		throws Exception {
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		String uploadURL =
-			PortletPropsValues.HELP_CENTER_FILE_REPO_URL + "/upload";
+			patcherConfiguration.helpCenterFileRepoURL() + "/upload";
 
 		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableChunkNumber", 1);

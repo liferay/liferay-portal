@@ -5,6 +5,7 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherProjectVersionConstants;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
@@ -14,7 +15,9 @@ import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherProjectVersionNameComparator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -157,10 +160,15 @@ public class PatcherProjectVersionUtil {
 	}
 
 	public static Map<Long, List<PatcherProjectVersion>>
-		getPatcherProductVersionIdPatcherProjectVersions() {
+			getPatcherProductVersionIdPatcherProjectVersions()
+		throws Exception {
 
 		Map<Long, List<PatcherProjectVersion>> patcherProjectVersionsMap =
 			new HashMap<>();
+
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
 
 		List<PatcherProductVersion> patcherProductVersions =
 			PatcherProductVersionLocalServiceUtil.getPatcherProductVersions(
@@ -175,7 +183,7 @@ public class PatcherProjectVersionUtil {
 			List<PatcherProjectVersion> patcherProjectVersions =
 				PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions(
 					patcherProductVersionId,
-					PortletPropsValues.OSB_PATCHER_LIFERAY_PORTAL_REPOSITORY,
+					patcherConfiguration.patcherLiferayPortalRepository(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					PatcherProjectVersionNameComparator.getInstance(true));
 

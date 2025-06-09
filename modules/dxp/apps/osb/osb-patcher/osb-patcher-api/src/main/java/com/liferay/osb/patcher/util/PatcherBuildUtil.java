@@ -6,6 +6,7 @@
 package com.liferay.osb.patcher.util;
 
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
@@ -24,6 +25,7 @@ import com.liferay.osb.patcher.util.comparator.PatcherBuildCreateDateComparator;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildKeyVersionComparator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -40,6 +42,7 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.transaction.Isolation;
@@ -506,7 +509,8 @@ public class PatcherBuildUtil {
 	}
 
 	public static PatcherBuild getLatestEquivalentPatcherBuild(
-		long patcherProjectVersionId, String tickets) {
+			long patcherProjectVersionId, String tickets)
+		throws Exception {
 
 		List<PatcherBuild> patcherBuilds = getEquivalentPatcherBuilds(
 			patcherProjectVersionId, tickets);
@@ -695,13 +699,19 @@ public class PatcherBuildUtil {
 		return relatedPatcherBuildFixIds;
 	}
 
-	public static String getSupportTicketURL(String supportTicket) {
+	public static String getSupportTicketURL(String supportTicket)
+		throws Exception {
+
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		if (Validator.isNumber(supportTicket)) {
-			return PortletPropsValues.HELP_CENTER_URL +
+			return patcherConfiguration.helpCenterURL() +
 				StringPool.FORWARD_SLASH + supportTicket;
 		}
 
-		return PortletPropsValues.LESA_URL + StringPool.FORWARD_SLASH +
+		return patcherConfiguration.lesaURL() + StringPool.FORWARD_SLASH +
 			supportTicket;
 	}
 
@@ -759,8 +769,14 @@ public class PatcherBuildUtil {
 		return false;
 	}
 
-	public static boolean isLatestPatcherBuild(PatcherBuild patcherBuild) {
-		if (PortletPropsValues.OSB_PATCHER_SCANNING_ENABLED) {
+	public static boolean isLatestPatcherBuild(PatcherBuild patcherBuild)
+		throws Exception {
+
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
+		if (patcherConfiguration.patcherScanningEnabled()) {
 			return patcherBuild.isLatestSupportTicketBuild();
 		}
 
@@ -1156,8 +1172,12 @@ public class PatcherBuildUtil {
 		String hotfixFileName = getLiferayHotfixFileName(
 			patcherBuild.getFileName());
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, patcherBuild.getCompanyId());
+
 		String path =
-			PortletPropsValues.HOTFIX_MOUNT_PATH + StringPool.FORWARD_SLASH +
+			patcherConfiguration.hotfixMountPath() + StringPool.FORWARD_SLASH +
 				patcherBuild.getFileName();
 
 		String quarterReleasePath = getQuarterReleaseBuildPath(path);

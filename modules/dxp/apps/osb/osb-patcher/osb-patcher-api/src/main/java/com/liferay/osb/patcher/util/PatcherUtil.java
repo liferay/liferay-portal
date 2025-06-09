@@ -21,6 +21,7 @@ import com.google.pubsub.v1.PullRequest;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
@@ -31,6 +32,7 @@ import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -44,6 +46,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DigesterUtil;
@@ -56,7 +59,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.lock.service.LockLocalServiceUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -64,6 +66,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -133,9 +136,13 @@ public class PatcherUtil {
 		return sortTokens(newTickets);
 	}
 
-	public static String getNextPatcherBuilderStatusMsg() throws IOException {
+	public static String getNextPatcherBuilderStatusMsg() throws Exception {
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		if (Validator.isNull(
-				PortletPropsValues.OSB_PATCHER_PUBSUB_CREDENTIAL_FILE_PATH)) {
+				patcherConfiguration.patcherPubsubCredentialFilePath())) {
 
 			return null;
 		}
@@ -303,12 +310,16 @@ public class PatcherUtil {
 			return StringPool.BLANK;
 		}
 
-		if (Validator.isNull(PortletPropsValues.LIFERAY_USERS_PROFILE_URL)) {
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
+		if (Validator.isNull(patcherConfiguration.liferayUsersProfileURL())) {
 			return user.getDisplayURL(themeDisplay);
 		}
 
 		return StringUtil.replace(
-			PortletPropsValues.LIFERAY_USERS_PROFILE_URL,
+			patcherConfiguration.liferayUsersProfileURL(),
 			"${liferay:screenName}", user.getScreenName());
 	}
 
@@ -493,20 +504,28 @@ public class PatcherUtil {
 
 		String lockClassName = PatcherFix.class.getName();
 
-		if (path.equals(
-				PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_PATH)) {
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, themeDisplay.getCompanyId());
 
+		String patcherStatusPath = patcherConfiguration.patcherStatusPath();
+
+		String patcherStatusBuildJenkinsPath =
+			patcherStatusPath +
+				patcherConfiguration.patcherStatusBuildJenkinsPath();
+		String patcherStatusBuildJenkinsTestPath =
+			patcherStatusPath +
+				patcherConfiguration.patcherStatusBuildJenkinsTestPath();
+		String patcherStatusBuildPath =
+			patcherStatusPath + patcherConfiguration.patcherStatusBuildPath();
+
+		if (Objects.equals(path, patcherStatusBuildJenkinsPath)) {
 			lockClassName = PatcherBuild.class.getName() + "_Jenkins";
 		}
-		else if (path.equals(
-					PortletPropsValues.
-						OSB_PATCHER_STATUS_BUILD_JENKINS_TEST_PATH)) {
-
+		else if (Objects.equals(path, patcherStatusBuildJenkinsTestPath)) {
 			lockClassName = PatcherBuild.class.getName() + "_Jenkins_Test";
 		}
-		else if (path.equals(
-					PortletPropsValues.OSB_PATCHER_STATUS_BUILD_PATH)) {
-
+		else if (Objects.equals(path, patcherStatusBuildPath)) {
 			lockClassName = PatcherBuild.class.getName() + "_Build";
 		}
 
@@ -571,28 +590,21 @@ public class PatcherUtil {
 				User user = UserLocalServiceUtil.fetchUser(userId);
 
 				try {
-					if (path.equals(
-							PortletPropsValues.
-								OSB_PATCHER_STATUS_BUILD_JENKINS_PATH)) {
-
+					if (Objects.equals(path, patcherStatusBuildJenkinsPath)) {
 						PatcherBuildUtil.
 							processOSBPatcherBuildCompileJenkinsStatus(
 								user, GetterUtil.getLong(patcherId),
 								jenkinsStatusJSONString);
 					}
-					else if (path.equals(
-								PortletPropsValues.
-									OSB_PATCHER_STATUS_BUILD_JENKINS_TEST_PATH)) {
+					else if (Objects.equals(
+								path, patcherStatusBuildJenkinsTestPath)) {
 
 						PatcherBuildUtil.
 							processOSBPatcherBuildTestJenkinsStatus(
 								user, GetterUtil.getLong(patcherId),
 								jenkinsStatusJSONString);
 					}
-					else if (path.equals(
-								PortletPropsValues.
-									OSB_PATCHER_STATUS_BUILD_PATH)) {
-
+					else if (Objects.equals(path, patcherStatusBuildPath)) {
 						PatcherBuildUtil.
 							processOSBPatcherBuildMergeJenkinsStatus(
 								user, GetterUtil.getLong(patcherId),

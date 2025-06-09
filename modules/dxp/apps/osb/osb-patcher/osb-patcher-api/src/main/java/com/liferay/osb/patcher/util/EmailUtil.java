@@ -5,12 +5,14 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherPortletKeys;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -183,7 +185,9 @@ public class EmailUtil {
 		return getEmailTemplate(templateName + "_body.tmpl");
 	}
 
-	protected static String getDownloadHotfixURL(PatcherBuild patcherBuild) {
+	protected static String getDownloadHotfixURL(PatcherBuild patcherBuild)
+		throws Exception {
+
 		if (PatcherBuildUtil.isCompleteOrReady(patcherBuild) &&
 			Validator.isNotNull(patcherBuild.getFileName())) {
 
@@ -195,7 +199,12 @@ public class EmailUtil {
 				sb.append("https://releases-cdn.liferay.com/dxp/hotfix");
 			}
 			else {
-				sb.append(PortletPropsValues.OSB_PATCHER_BUILD_DOWNLOAD_URL);
+				PatcherConfiguration patcherConfiguration =
+					ConfigurationProviderUtil.getCompanyConfiguration(
+						PatcherConfiguration.class,
+						patcherBuild.getCompanyId());
+
+				sb.append(patcherConfiguration.patcherBuildDownloadURL());
 			}
 
 			sb.append(StringPool.SLASH);
@@ -305,10 +314,16 @@ public class EmailUtil {
 					patcherBuild,
 					WorkflowConstants.STATUS_BUILD_REBASE_CONFLICT,
 					themeDisplay));
+
+			PatcherConfiguration patcherConfiguration =
+				ConfigurationProviderUtil.getCompanyConfiguration(
+					PatcherConfiguration.class, themeDisplay.getCompanyId());
+
 			contextAttributes.put(
 				"[$VIEW_TROUBLESHOOTING_URL$]",
 				TextFormatter.format(
-					PortletPropsValues.TROUBLESHOOTING_URL, TextFormatter.J));
+					patcherConfiguration.troubleshootingURL(),
+					TextFormatter.J));
 		}
 
 		if (baseModel instanceof PatcherFix) {

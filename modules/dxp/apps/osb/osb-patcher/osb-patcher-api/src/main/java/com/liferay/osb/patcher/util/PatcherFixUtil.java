@@ -5,6 +5,7 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
@@ -22,6 +23,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -505,7 +507,12 @@ public class PatcherFixUtil {
 
 		StringBundler sb = new StringBundler(8);
 
-		sb.append(PortletPropsValues.GITHUB_URL);
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, patcherFix.getCompanyId());
+
+		sb.append(patcherConfiguration.githubURL());
+
 		sb.append(StringPool.SLASH);
 
 		PatcherProjectVersion patcherProjectVersion =
@@ -517,7 +524,7 @@ public class PatcherFixUtil {
 		sb.append("/compare/");
 		sb.append(patcherProjectVersion.getCommittish());
 		sb.append(StringPool.TRIPLE_PERIOD);
-		sb.append(PortletPropsValues.OSB_PATCHER_GIT_TAG_PREFIX);
+		sb.append(patcherConfiguration.patcherGitTagPrefix());
 		sb.append(patcherFix.getPatcherFixId());
 
 		return sb.toString();

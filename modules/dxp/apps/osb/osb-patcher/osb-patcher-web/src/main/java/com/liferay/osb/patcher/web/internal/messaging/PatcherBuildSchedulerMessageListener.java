@@ -5,10 +5,12 @@
 
 package com.liferay.osb.patcher.web.internal.messaging;
 
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.util.PatcherUtil;
-import com.liferay.osb.patcher.util.PortletPropsValues;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 /**
@@ -32,16 +34,20 @@ public class PatcherBuildSchedulerMessageListener extends BaseMessageListener {
 	protected void doReceive(Message message) throws Exception {
 		PatcherUtil.processOSBPatcherMessageQueue(_themeDisplay);
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+
 		PatcherUtil.processOSBPatcherStatusFiles(
-			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_PATH,
+			patcherConfiguration.patcherStatusBuildJenkinsPath(),
 			_themeDisplay);
 
 		PatcherUtil.processOSBPatcherStatusFiles(
-			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_JENKINS_TEST_PATH,
+			patcherConfiguration.patcherStatusBuildJenkinsTestPath(),
 			_themeDisplay);
 
 		PatcherUtil.processOSBPatcherStatusFiles(
-			PortletPropsValues.OSB_PATCHER_STATUS_BUILD_PATH, _themeDisplay);
+			patcherConfiguration.patcherStatusBuildPath(), _themeDisplay);
 	}
 
 	private static final PatcherBuildSchedulerMessageListener
