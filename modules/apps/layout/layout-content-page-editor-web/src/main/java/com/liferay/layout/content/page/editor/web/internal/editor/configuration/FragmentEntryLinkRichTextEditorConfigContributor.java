@@ -16,6 +16,7 @@ import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortlet
 import com.liferay.layout.item.selector.criterion.LayoutItemSelectorCriterion;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -63,31 +64,58 @@ public class FragmentEntryLinkRichTextEditorConfigContributor
 			getImageItemSelectorCriterion(), getURLItemSelectorCriterion());
 
 		jsonObject.put(
-			"allowedContent",
-			StringBundler.concat(
-				_getAllowedContentText(),
-				" a[*](*); div[*](*){text-align}; img[*](*){*}; p[*](*); ",
-				_getAllowedContentLists(), _getAllowedContentTable(),
-				" span[*](*){*}; ")
-		).put(
-			"autoParagraph", false
-		).put(
 			"documentBrowseLinkUrl", itemSelectorURL.toString()
-		).put(
-			"extraPlugins", getExtraPluginsLists()
 		).put(
 			"filebrowserImageBrowseLinkUrl", imageSelectorURL.toString()
 		).put(
 			"filebrowserImageBrowseUrl", imageSelectorURL.toString()
-		).put(
-			"removePlugins", getRemovePluginsLists()
-		).put(
-			"skin", "moono-lisa"
-		).put(
-			"spritemap", themeDisplay.getPathThemeSpritemap()
-		).put(
-			"toolbars", _getToolbarsJSONObject(themeDisplay.getLocale())
 		);
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-11235")) {
+			jsonObject.put(
+				"editorType", "ckeditor5"
+			).put(
+				"preset", "advanced"
+			).put(
+				"toolbar",
+				JSONUtil.put(
+					"items",
+					new String[] {
+						"undo", "redo", "|", "style", "|", "heading", "|",
+						"bold", "italic", "underline", "strikethrough", "|",
+						"fontColor", "fontBackgroundColor", "|", "removeFormat",
+						"|", "numberedList", "bulletedList", "|", "indent",
+						"outdent", "|", "blockQuote", "|", "link",
+						"insertTable", "imageSelector", "|", "horizontalLine",
+						"|", "alignment"
+					}
+				).put(
+					"shouldNotGroupWhenFull", true
+				)
+			);
+		}
+		else {
+			jsonObject.put(
+				"allowedContent",
+				StringBundler.concat(
+					_getAllowedContentText(),
+					" a[*](*); div[*](*){text-align}; img[*](*){*}; p[*](*); ",
+					_getAllowedContentLists(), _getAllowedContentTable(),
+					" span[*](*){*}; ")
+			).put(
+				"autoParagraph", false
+			).put(
+				"extraPlugins", getExtraPluginsLists()
+			).put(
+				"removePlugins", getRemovePluginsLists()
+			).put(
+				"skin", "moono-lisa"
+			).put(
+				"spritemap", themeDisplay.getPathThemeSpritemap()
+			).put(
+				"toolbars", _getToolbarsJSONObject(themeDisplay.getLocale())
+			);
+		}
 	}
 
 	protected String getExtraPluginsLists() {
