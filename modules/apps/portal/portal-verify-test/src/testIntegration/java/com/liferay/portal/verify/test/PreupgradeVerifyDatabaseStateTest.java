@@ -65,11 +65,9 @@ public class PreupgradeVerifyDatabaseStateTest
 
 	@Test
 	public void testVerifyPreupgradeMissingTable() throws SQLException {
-		long serviceComponentId = RandomTestUtil.nextLong();
-
 		ServiceComponent serviceComponent =
 			_serviceComponentLocalService.createServiceComponent(
-				serviceComponentId);
+				RandomTestUtil.nextLong());
 
 		DBInspector dbInspector = new DBInspector(DataAccess.getConnection());
 
@@ -83,7 +81,7 @@ public class PreupgradeVerifyDatabaseStateTest
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
 
 		try {
-			super.testVerify();
+			testVerify();
 
 			Assert.fail();
 		}

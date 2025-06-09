@@ -6,8 +6,10 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
@@ -103,18 +105,25 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			_serviceComponentLocalService.createServiceComponent(
 				RandomTestUtil.nextLong());
 
+		DBInspector dbInspector = new DBInspector(DataAccess.getConnection());
+
+		String tableName = dbInspector.normalizeName("TestTable");
+
 		serviceComponent.setMvccVersion(0);
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
-		serviceComponent.setData("<![CDATA[create table TestTable (");
+		serviceComponent.setData(
+			StringBundler.concat("<![CDATA[create table ", tableName, " ("));
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
 
 		_db.runSQL(
-			"create table TestTable (testColumn VARCHAR(75) primary key) " +
-				"COLLATE utf8_bin");
+			StringBundler.concat(
+				"create table ", tableName,
+				" (testColumn VARCHAR(75) primary key) ", "COLLATE utf8_bin"));
 
 		try {
-			super.testVerify();
+			testVerify();
+
 			Assert.fail();
 		}
 		catch (Exception exception) {
@@ -125,7 +134,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			_serviceComponentLocalService.deleteServiceComponent(
 				serviceComponent);
 
-			_db.runSQL("drop table TestTable");
+			_db.runSQL("drop table " + tableName);
 		}
 	}
 
