@@ -44,7 +44,7 @@ export default function getEditorProcessor(
 	getEditorWrapper = defaultGetEditorWrapper,
 	render: RenderFunction = defaultRender
 ) {
-	const state: State = INITIAL_STATE;
+	let state: State = INITIAL_STATE;
 
 	return {
 		createEditor: (
@@ -102,6 +102,27 @@ export default function getEditorProcessor(
 			else {
 				initEditor(editorConfig);
 			}
+		},
+
+		destroyEditor: (
+			element: HTMLElement,
+			editableConfig: EditableConfig
+		) => {
+			if (!state.editor) {
+				return;
+			}
+
+			const lastValue = state.editor.getData();
+
+			state.callbacks.changeCallback?.(lastValue);
+
+			state.editor.destroy();
+
+			if (state.element) {
+				render(state.element, lastValue, editableConfig);
+			}
+
+			state = INITIAL_STATE;
 		},
 
 		render: (
