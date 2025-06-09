@@ -31,12 +31,18 @@ type State = {
 	};
 	editor: TEditor | null;
 	element: HTMLElement | null;
+	eventHandlers: {
+		callback: (...args: any[]) => void;
+		emitter: any;
+		event: string;
+	}[];
 };
 
 const INITIAL_STATE = {
 	callbacks: {},
 	editor: null,
 	element: null,
+	eventHandlers: [],
 };
 
 export default function getEditorProcessor(
@@ -45,6 +51,43 @@ export default function getEditorProcessor(
 	render: RenderFunction = defaultRender
 ) {
 	let state: State = INITIAL_STATE;
+
+	const onBlurEditor = (editor: TEditor) => {
+		const {changeCallback, destroyCallback} = state.callbacks;
+
+		if (changeCallback) {
+			changeCallback(editor.getData()).finally(() => destroyCallback?.());
+		}
+		else if (destroyCallback) {
+			requestAnimationFrame(() => destroyCallback());
+		}
+	};
+
+	const createEventHandlers = () => {
+		if (!state.editor) {
+			return [];
+		}
+
+		const onFocusEditor = (
+			event: Event,
+			name: string,
+			isFocused: boolean
+		) => {
+			if (!state.editor || isFocused) {
+				return;
+			}
+
+			onBlurEditor(state.editor);
+		};
+
+		return [
+			{
+				callback: onFocusEditor,
+				emitter: state.editor.ui.focusTracker,
+				event: 'change:isFocused',
+			},
+		];
+	};
 
 	return {
 		createEditor: (
@@ -84,6 +127,14 @@ export default function getEditorProcessor(
 
 							state.editor = editor;
 							editor.focus();
+
+							state.eventHandlers = createEventHandlers()!;
+
+							state.eventHandlers.forEach(
+								({callback, emitter, event}) => {
+									emitter.on?.(event, callback);
+								}
+							);
 						},
 					},
 					editorWrapper
@@ -117,6 +168,10 @@ export default function getEditorProcessor(
 			state.callbacks.changeCallback?.(lastValue);
 
 			state.editor.destroy();
+
+			state.eventHandlers.forEach(({callback, emitter, event}) => {
+				emitter.off(event, callback);
+			});
 
 			if (state.element) {
 				render(state.element, lastValue, editableConfig);
