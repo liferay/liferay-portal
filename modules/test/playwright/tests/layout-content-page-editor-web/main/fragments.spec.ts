@@ -1127,7 +1127,7 @@ test.describe('HTML Fragment', () => {
 
 			// Check value is loaded in the page correctly
 
-			await expect(page.getByText('test html')).toBeAttached();
+			await expect(page.getByText('test html')).toHaveCount(1);
 
 			// Check value is loaded in the editor correctly
 
@@ -1182,7 +1182,7 @@ test.describe('HTML Fragment', () => {
 				value: '<div class="text-success"><h1>test html</h1></div>',
 			});
 
-			await expect(page.getByText('test html')).toBeAttached();
+			await expect(page.getByText('test html')).toHaveCount(1);
 		}
 	);
 });
@@ -1823,6 +1823,8 @@ test.describe('Slider Fragment', () => {
 		// Change the number of slides
 
 		const slide = page.locator('[aria-roledescription="slide"]');
+
+		await slide.first().waitFor();
 
 		expect(await slide.all()).toHaveLength(3);
 
