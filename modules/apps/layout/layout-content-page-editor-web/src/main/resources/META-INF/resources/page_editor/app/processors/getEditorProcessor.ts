@@ -6,6 +6,7 @@
 import {render as renderElement} from '@liferay/frontend-js-react-web';
 import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import {CKEditor5BalloonEditor, TEditor} from 'frontend-editor-ckeditor-web';
+import {loadEditorClientExtensions} from 'frontend-js-web';
 
 import {EditableConfig} from '../../types/editables/EditableValue';
 import {config} from '../config/index';
@@ -89,7 +90,18 @@ export default function getEditorProcessor(
 				);
 			};
 
-			initEditor(editorConfig);
+			const editorTransformerURLs = editorConfig.editorTransformerURLs;
+
+			if (editorTransformerURLs) {
+				initEditorWithClientExtensions({
+					editorConfig,
+					element,
+					initEditor,
+				});
+			}
+			else {
+				initEditor(editorConfig);
+			}
 		},
 
 		render: (
@@ -119,4 +131,32 @@ function defaultRender(element: HTMLElement, value: string) {
 	if (!isNullOrUndefined(value)) {
 		element.innerHTML = value;
 	}
+}
+
+function initEditorWithClientExtensions({
+	editorConfig,
+	element,
+	initEditor,
+}: {
+	editorConfig: EditorConfig;
+	element: HTMLElement;
+	initEditor: (config: EditorConfig) => void;
+}) {
+	const loadingIndicator = document.createElement('span');
+
+	loadingIndicator.classList.add('loading-animation');
+	loadingIndicator.setAttribute('aria-hidden', 'true');
+
+	element?.appendChild(loadingIndicator);
+
+	loadEditorClientExtensions({
+		config: editorConfig,
+		onLoad: ({transformedConfig}: {transformedConfig: EditorConfig}) => {
+			if (loadingIndicator) {
+				loadingIndicator.remove();
+			}
+
+			initEditor(transformedConfig);
+		},
+	});
 }
