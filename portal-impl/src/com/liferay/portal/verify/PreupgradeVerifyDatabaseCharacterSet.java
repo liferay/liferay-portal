@@ -34,8 +34,8 @@ public class PreupgradeVerifyDatabaseCharacterSet
 					db.getCharacterSet(connection));
 		}
 
-		if (!(db.getDBType() == DBType.MYSQL) ||
-			!(db.getDBType() == DBType.MARIADB)) return;
+		if ((db.getDBType() == DBType.MYSQL) ||
+			(db.getDBType() == DBType.MARIADB)) {
 
 			Set<String> portalTables =
 				DBResourceUtil.getServiceComponentModuleTableNames(connection);
@@ -79,6 +79,7 @@ public class PreupgradeVerifyDatabaseCharacterSet
 					}
 				}
 			}
+		}
 	}
 
 	@Override

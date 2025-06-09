@@ -119,7 +119,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 		_db.runSQL(
 			StringBundler.concat(
 				"create table ", tableName,
-				" (testColumn VARCHAR(75) primary key) ", "COLLATE utf8_bin"));
+				" (testColumn VARCHAR(75) primary key) COLLATE utf8_bin"));
 
 		try {
 			testVerify();
