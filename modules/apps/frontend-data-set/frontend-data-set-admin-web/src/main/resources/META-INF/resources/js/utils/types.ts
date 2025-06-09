@@ -93,10 +93,12 @@ export interface IDateFilter extends IFilter {
 
 export interface IField {
 	children?: Array<IField>;
+	filterable: boolean;
 	format?: EFieldFormat;
 	id?: string;
 	label?: string;
 	name: string;
+	parentName?: string;
 	selected?: boolean;
 	sortable?: boolean;
 	type?: string;

@@ -61,8 +61,9 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 	[EFilterType.DATE_RANGE]: {
 		Component: DateRangeFilterFormContent,
 		availableFieldsFilter: (item: IField) =>
-			item.format === EFieldFormat.DATE ||
-			item.format === EFieldFormat.DATE_TIME,
+			(item.format === EFieldFormat.DATE ||
+				item.format === EFieldFormat.DATE_TIME) &&
+			item.filterable,
 		displayType: () => Liferay.Language.get('date-filter'),
 		fdsViewRelationship: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTERS,
 		fdsViewRelationshipId: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTERS_ID,
@@ -72,8 +73,9 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 	[EFilterType.SELECTION]: {
 		Component: SelectionFilterFormContent,
 		availableFieldsFilter: (item: IField) =>
-			(item.type === EFieldType.STRING && !item.format) ||
-			item.type === EFieldType.INTEGER,
+			((item.type === EFieldType.STRING && !item.format) ||
+				item.type === EFieldType.INTEGER) &&
+			item.filterable,
 		displayType: (filter: IFilter | undefined) => {
 			if (filter?.sourceType === ESelectionFilterSourceType.ITEM_PROXY) {
 				return Liferay.Language.get('system-filter');
@@ -325,16 +327,16 @@ function Filters({
 		const availableFilterTypeFields = JSON.parse(JSON.stringify(fields));
 
 		visit(availableFilterTypeFields, (field: IFieldTreeItem) => {
-			if (
-				!FILTER_TYPES[filterType as EFilterType].availableFieldsFilter(
+			const availableFieldsFilter =
+				FILTER_TYPES[filterType as EFilterType].availableFieldsFilter(
 					field
-				)
-			) {
+				);
+
+			if (!availableFieldsFilter) {
 				field.disabled = true;
 			}
 			else {
 				availableFieldsListLength++;
-
 				field.disabled = false;
 			}
 		});
