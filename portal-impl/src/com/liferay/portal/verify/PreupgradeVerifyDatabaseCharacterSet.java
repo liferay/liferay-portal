@@ -56,7 +56,7 @@ public class PreupgradeVerifyDatabaseCharacterSet
 
 				while (resultSet.next()) {
 					Set<String> portalTables =
-						DBResourceUtil.getPreupgradedServiceComponentTables(
+						DBResourceUtil.getServiceComponentModuleTableNames(
 							connection);
 
 					portalTables.addAll(DBResourceUtil.getPortalTableNames());

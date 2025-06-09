@@ -31,7 +31,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 		}
 
 		Set<String> preupgradedServiceComponentTables =
-			DBResourceUtil.getPreupgradedServiceComponentTables(connection);
+			DBResourceUtil.getServiceComponentModuleTableNames(connection);
 
 		if (preupgradedServiceComponentTables.isEmpty()) {
 			return;

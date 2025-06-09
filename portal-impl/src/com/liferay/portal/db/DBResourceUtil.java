@@ -112,7 +112,7 @@ public class DBResourceUtil {
 			"/com/liferay/portal/tools/sql/dependencies/portal-tables.sql");
 	}
 
-	public static Set<String> getPreupgradedServiceComponentTables(
+	public static Set<String> getServiceComponentModuleTableNames(
 			Connection connection)
 		throws Exception {
 
