@@ -42,7 +42,7 @@ public class DBResourceUtil {
 		return _read(bundle, "/META-INF/sql/sequences.sql");
 	}
 
-	public static Set<String> getModuleTables(Connection connection)
+	public static Set<String> getModuleTableNames(Connection connection)
 		throws Exception {
 
 		Set<String> tableNames = new HashSet<>();

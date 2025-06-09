@@ -43,7 +43,7 @@ public class PreupgradeVerifyDatabaseCharacterSet
 			portalTables.addAll(DBResourceUtil.getPortalTableNames(connection));
 
 			portalTables.addAll(
-				DBResourceUtil.getModuleTables(connection));
+				DBResourceUtil.getModuleTableNames(connection));
 
 			String sql = StringBundler.concat(
 				"select character_set_name, collation_name, table_name from ",
