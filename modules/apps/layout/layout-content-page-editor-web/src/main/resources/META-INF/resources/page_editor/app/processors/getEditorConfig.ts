@@ -6,6 +6,8 @@
 import {LiferayEditorConfig, TEditor} from 'frontend-editor-ckeditor-web';
 import {openSelectionModal} from 'frontend-js-components-web';
 
+import EmptyAltImagePlugin from './plugins/EmptyAltImagePlugin';
+
 export type EditorConfig = LiferayEditorConfig & {
 	documentBrowseLinkUrl: string;
 	editorTransformerURLs: string;
@@ -24,8 +26,15 @@ export default function getEditorConfig({
 	initialData: string;
 	itemSelectorEventName: string;
 }) {
+	const toolbarItems = Array.isArray(editorConfig.toolbar)
+		? editorConfig.toolbar
+		: editorConfig.toolbar?.items;
+
 	return {
 		...editorConfig,
+		...(toolbarItems?.includes('imageSelector') && {
+			extraPlugins: [EmptyAltImagePlugin],
+		}),
 		documentBrowseLinkCallback: (
 			editor: TEditor,
 			url: string,
