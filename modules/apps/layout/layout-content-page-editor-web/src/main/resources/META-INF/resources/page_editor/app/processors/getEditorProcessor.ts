@@ -63,10 +63,30 @@ export default function getEditorProcessor(
 		}
 	};
 
-	const createEventHandlers = () => {
+	const createEventHandlers = (
+		editorName: string,
+		itemSelectorEventName: string
+	) => {
 		if (!state.editor) {
 			return [];
 		}
+
+		// For the cases where we open the item selector we need to make sure that
+		// the editor is destroyed. Since the focus listener does not work for these cases
+		// we have to setup an additional listener.
+
+		const onClickOutside = (event: Event) => {
+			const target = event.target as Element;
+
+			if (
+				state.editor &&
+				!target.closest(`[name="${editorName}"]`) &&
+				(target.closest('.page-editor__toolbar') ||
+					target.closest('.page-editor__wrapper'))
+			) {
+				onBlurEditor(state.editor);
+			}
+		};
 
 		const onFocusEditor = (
 			event: Event,
@@ -77,10 +97,27 @@ export default function getEditorProcessor(
 				return;
 			}
 
+			// Ignoring the blur event, because we don't want to destroy the editor
+			// when opening the item selector.
+
+			if (document.getElementById(itemSelectorEventName)) {
+				document.addEventListener('click', onClickOutside);
+
+				return;
+			}
+
 			onBlurEditor(state.editor);
 		};
 
 		return [
+			{
+				callback: onClickOutside,
+				emitter: {
+					off: (event: string, callback: () => void) =>
+						document.removeEventListener(event, callback),
+				},
+				event: 'click',
+			},
 			{
 				callback: onFocusEditor,
 				emitter: state.editor.ui.focusTracker,
@@ -128,7 +165,10 @@ export default function getEditorProcessor(
 							state.editor = editor;
 							editor.focus();
 
-							state.eventHandlers = createEventHandlers()!;
+							state.eventHandlers = createEventHandlers(
+								editorName,
+								itemSelectorEventName
+							)!;
 
 							state.eventHandlers.forEach(
 								({callback, emitter, event}) => {
