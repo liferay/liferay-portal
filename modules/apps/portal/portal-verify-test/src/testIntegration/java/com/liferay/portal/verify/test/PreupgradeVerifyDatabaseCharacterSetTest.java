@@ -99,11 +99,9 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			(_db.getDBType() == DBType.MYSQL) ||
 			(_db.getDBType() == DBType.MARIADB));
 
-		long serviceComponentId = RandomTestUtil.nextLong();
-
 		ServiceComponent serviceComponent =
 			_serviceComponentLocalService.createServiceComponent(
-				serviceComponentId);
+				RandomTestUtil.nextLong());
 
 		serviceComponent.setMvccVersion(0);
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
