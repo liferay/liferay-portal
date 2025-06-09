@@ -9,6 +9,7 @@ import {useId} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
+import {EDITABLE_TYPES} from '../../config/constants/editableTypes';
 import {TEXT_EDITABLE_TYPES} from '../../config/constants/textEditableTypes';
 import {
 	useGetContent,
@@ -187,6 +188,10 @@ const FragmentContent = ({
 						);
 
 						editable.element.classList.add('page-editor__editable');
+
+						if (editable.type === EDITABLE_TYPES['rich-text']) {
+							editable.element.classList.add('ck-content');
+						}
 
 						if (TEXT_EDITABLE_TYPES.has(editable.type)) {
 							editable.element.setAttribute(
