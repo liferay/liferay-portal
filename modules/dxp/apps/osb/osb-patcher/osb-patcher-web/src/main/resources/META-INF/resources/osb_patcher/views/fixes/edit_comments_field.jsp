@@ -7,21 +7,28 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+long patcherFixId = ParamUtil.getLong(request, "patcherFixId");
+
+PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(patcherFixId);
+%>
+
 <aui:model-context bean="<%= patcherFix %>" model="<%= PatcherFix.class %>" />
 
-<portlet:actionURL var="updatePatcherFixCommentsFieldURL">
-	<portlet:param name="controller" value="fixes" />
-	<portlet:param name="action" value="updateCommentsField" />
-</portlet:actionURL>
+<portlet:actionURL name="/patcher/update_comments_field_fixes" var="updatePatcherFixCommentsFieldURL" />
 
-<aui:form action="<%= updatePatcherFixCommentsFieldURL %>" method="post">
-	<aui:input name="id" type="hidden" value="<%= patcherFix.patcherFixId %>" />
+<liferay-frontend:edit-form
+	action="<%= updatePatcherFixCommentsFieldURL %>"
+	fluid="<%= true %>"
+	method="post"
+>
+	<aui:input name="patcherFixId" type="hidden" value="<%= patcherFix.getPatcherFixId() %>" />
 
-	<aui:input name="comments" />
+	<liferay-frontend:edit-form-body>
+		<aui:input name="comments" />
+	</liferay-frontend:edit-form-body>
 
-	<aui:button-row>
-		<aui:button type="submit" />
-
-		<aui:button onClick="Liferay.Patcher.closeWindow();" value="cancel" />
-	</aui:button-row>
-</aui:form>
+	<liferay-frontend:edit-form-footer>
+		<liferay-frontend:edit-form-buttons />
+	</liferay-frontend:edit-form-footer>
+</liferay-frontend:edit-form>

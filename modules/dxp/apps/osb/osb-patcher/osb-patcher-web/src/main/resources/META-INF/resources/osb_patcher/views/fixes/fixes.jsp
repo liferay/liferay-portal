@@ -7,15 +7,25 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+long patcherFixId = ParamUtil.getLong(request, "patcherFixId");
+
+PatcherFix childPatcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(patcherFixId);
+
+List<PatcherFix> patcherFixes = PatcherFixUtil.getParentPatcherFixes(childPatcherFix);
+%>
+
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fixes"
-	total="<%= fn:length(patcherFixes) %>"
+	total="<%= patcherFixes.size() %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= patcherFixes %>"
 	/>
 
-	<c:set value="<%= fn:length(patcherFixes) %>" var="resultsTotal" />
+	<%
+	int resultsTotal = patcherFixes.size();
+	%>
 
 	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
@@ -26,26 +36,23 @@
 		modelVar="patcherFix"
 	>
 		<portlet:renderURL var="viewPatcherFixPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="fixes" />
-			<portlet:param name="id" value="<%= childPatcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_fixes" />
+			<portlet:param name="patcherFixId" value="<%= String.valueOf(childPatcherFix.getPatcherFixId()) %>" />
 		</portlet:renderURL>
 
 		<portlet:renderURL var="viewPatcherFixURL">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes" />
+			<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 			<portlet:param name="redirect" value="<%= viewPatcherFixPatcherFixesURL %>" />
 		</portlet:renderURL>
 
-		<c:set value='<%= "javascript:" + renderResponse.namespace %>navigateWindow("<%= viewPatcherFixURL + ""); " %>' var="viewPatcherFixPopUpURL" />
-
 		<liferay-ui:search-container-column-text>
-			<c:if test="<%= patcherFix.obsolete %>">
-				<liferay-ui:icon
-					image="../common/activate"
-					message="this-fix-is-obsolete"
-					url="<%= viewPatcherFixPopUpURL %>"
+			<c:if test="<%= patcherFix.isObsolete() %>">
+				<clay:button
+					displayType="link"
+					icon="warning"
+					onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow(" + viewPatcherFixURL + "); " %>'
+					title='<%= LanguageUtil.get(request, "this-fix-is-obsolete") %>'
 				/>
 			</c:if>
 		</liferay-ui:search-container-column-text>
@@ -53,7 +60,12 @@
 		<liferay-ui:search-container-column-text
 			name="fix-id"
 		>
-			<a class="clean-link" href="<%= viewPatcherFixURL %>" onClick="event.preventDefault(); <%= renderResponse.namespace %>navigateWindow("<%= viewPatcherFixURL %>");"><%= patcherFix.patcherFixId %></a>
+			<clay:link
+				cssClass="clean-link"
+				href="javascript:void(0);"
+				label="<%= String.valueOf(patcherFix.getPatcherFixId()) %>"
+				onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow(" + viewPatcherFixURL + "); " %>'
+			/>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
@@ -61,9 +73,16 @@
 		>
 			<c:set value="<%= StringUtil.split(patcherFix.getName()) %>" var="jiraTickets" />
 
-			<c:forEach items="<%= jiraTickets %>" var="jiraTicket" varStatus="jiraTicketStatus">
+			<%
+			for (String jiraTicket : StringUtil.split(patcherFix.getName())) {
+			%>
+
 				<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
-			</c:forEach>
+
+			<%
+			}
+			%>
+
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
@@ -71,46 +90,22 @@
 			property="keyVersion"
 		/>
 
-		<c:set value="<%= PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherFix.getPatcherProjectVersionId()) %>" var="patcherProjectVersion" />
-
 		<liferay-ui:search-container-column-text
 			href="<%= PatcherFixUtil.getPatcherFixGitHubURL(patcherFix.getPatcherFixId()) %>"
 			name="git-hash"
 			target="_blank"
-			value="<%= fn:substring(patcherFix.gitHash, 0, 10) %>"
+			value="<%= patcherFix.getGitHash() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="patcher-status"
-			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) + ">" %>'
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) %>"
 		/>
-
-		<portlet:renderURL var="editPatcherFixCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="editCommentsField" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
-		</portlet:renderURL>
-
-		<c:set value='<%= UnicodeLanguageUtil.get(request, "edit-engineer-comments") %>' var="editPatcherFixCommentsFieldURLTitle" />
-
-		<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + editPatcherFixCommentsFieldURL %>', '<%= editPatcherFixCommentsFieldURLTitle + "', true, 800)" %>' var="editPatcherFixCommentsFieldURL" />
-
-		<c:set value="<%= StringUtil.shorten(patcherFix.comments, 75) %>" var="shortenedPatcherFixComments" />
 
 		<liferay-ui:search-container-column-text
 			name="engineer-comments"
-		>
-			<c:choose>
-				<c:when test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherFix.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<a href="<%= editPatcherFixCommentsFieldURL %>">
-						<%= shortenedPatcherFixComments %>
-					</a>
-				</c:when>
-				<c:otherwise>
-					<%= shortenedPatcherFixComments %>
-				</c:otherwise>
-			</c:choose>
-		</liferay-ui:search-container-column-text>
+			value="<%= com.liferay.portal.kernel.util.StringUtil.shorten(patcherFix.getComments(), 75) %>"
+		/>
 
 		<liferay-ui:search-container-column-text
 			name="type"
@@ -126,13 +121,9 @@
 </liferay-ui:search-container>
 
 <aui:script>
-	Liferay.provide(
-		window,
-		'<portlet:namespace />navigateWindow',
-		function(targetURL) {
-			window.location.href = targetURL;
-		}
-	);
+	function <portlet:namespace />navigateWindow(targetURL) {
+		window.location.href = targetURL;
+	}
 
 	AUI().ready(
 		function() {

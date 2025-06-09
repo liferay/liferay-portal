@@ -7,6 +7,20 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+PatcherViewFixesDisplayContext patcherViewFixesDisplayContext = new PatcherViewFixesDisplayContext(request, renderRequest, renderResponse);
+
+String redirect = ParamUtil.getString(request, "redirect");
+
+PatcherFix patcherFix = patcherViewFixesDisplayContext.getPatcherFix();
+
+PatcherFix latestPatcherFix = null;
+
+if (!patcherFix.isLatestFix()) {
+	latestPatcherFix = PatcherFixUtil.fetchPatcherFixByLatestFix(patcherFix.getKey());
+}
+%>
+
 <c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) %>">
 	<liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 		<liferay-util:param name="tabs1" value="fixes" />
@@ -21,92 +35,114 @@
 <aui:model-context bean="<%= patcherFix %>" model="<%= PatcherFix.class %>" />
 
 <portlet:renderURL var="viewPatcherFixURL">
-	<portlet:param name="controller" value="fixes" />
-	<portlet:param name="action" value="view" />
-	<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes" />
+	<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 
-	<c:if test="<%= not empty redirect %>">
+	<c:if test="<%= Validator.isNotNull(redirect) %>">
 		<portlet:param name="redirect" value="<%= redirect %>" />
 	</c:if>
 </portlet:renderURL>
 
-<c:if test="<%= !patcherFix.latestFix %>">
+<c:if test="<%= !patcherFix.isLatestFix() %>">
 	<liferay-ui:message key="this-is-not-the-latest-fix-version-view-the-latest-fix-here" />
 
 	<portlet:renderURL var="viewLatestPatcherFixURL">
-		<portlet:param name="controller" value="fixes" />
-		<portlet:param name="action" value="view" />
-		<portlet:param name="id" value="<%= latestPatcherFix.patcherFixId %>" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes" />
+		<portlet:param name="patcherFixId" value="<%= String.valueOf(latestPatcherFix.getPatcherFixId()) %>" />
 		<portlet:param name="redirect" value="<%= viewPatcherFixURL %>" />
 	</portlet:renderURL>
 
 	<a href="<%= viewLatestPatcherFixURL %>">
-		<%= latestPatcherFix.patcherFixId %>
+		<%= latestPatcherFix.getPatcherFixId() %>
 	</a>
 </c:if>
 
-<aui:field-wrapper name="modifiedDate">
+<aui:field-wrapper label="modified-date">
 	<fmt:formatDate
 		type="both"
-		value="<%= patcherFix.modifiedDate %>"
+		value="<%= patcherFix.getModifiedDate() %>"
 	/>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="statusDate">
+<aui:field-wrapper label="status-date">
 	<fmt:formatDate
 		type="both"
-		value="<%= patcherFix.statusDate %>"
+		value="<%= patcherFix.getStatusDate() %>"
 	/>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="createdBy">
-	<%= patcherFix.userName %>
+<aui:field-wrapper label="created-by">
+	<%= patcherFix.getUserName() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="statusUpdatedBy">
-	<%= patcherFix.statusByUserName %>
+<aui:field-wrapper label="status-updated-by">
+	<%= patcherFix.getStatusByUserName() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="fixId">
-	<%= patcherFix.patcherFixId %>
+<aui:field-wrapper label="fix-id">
+	<%= patcherFix.getPatcherFixId() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="version">
-	<%= patcherFix.keyVersion %>
+<aui:field-wrapper label="version">
+	<%= patcherFix.getKeyVersion() %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="patcher-status">
-	<%= patcherFixStatus %>
+<aui:field-wrapper label="patcher-status">
+	<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherFix.getStatus()) %>" />
 </aui:field-wrapper>
 
 <aui:select disabled="<%= true %>" label="product-version" name="patcherProductVersionId" showEmptyOption="<%= true %>">
-	<c:forEach items="<%= patcherProductVersions %>" var="patcherProductVersion">
+
+	<%
+	for (PatcherProductVersion patcherProductVersion : PatcherProductVersionUtil.getPatcherProductVersions()) {
+	%>
+
 		<aui:option label="<%= patcherProductVersion.getName() %>" value="<%= patcherProductVersion.getPatcherProductVersionId() %>" />
-	</c:forEach>
+
+	<%
+	}
+	%>
+
 </aui:select>
 
 <aui:select disabled="<%= true %>" label="project-version" name="patcherProjectVersionId" showEmptyOption="<%= false %>">
-	<c:forEach items="<%= patcherProjectVersions %>" var="patcherProjectVersion">
-		<aui:option label="<%= patcherProjectVersion.name %>" value="<%= patcherProjectVersion.patcherProjectVersionId %>" />
-	</c:forEach>
+
+	<%
+	for (PatcherProjectVersion patcherProjectVersion : PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions()) {
+	%>
+
+		<aui:option label="<%= patcherProjectVersion.getName() %>" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
+
+	<%
+	}
+	%>
+
 </aui:select>
 
-<aui:field-wrapper name="git-hash">
-	<a href="<%= gitHubURL %>" target="_blank"><%= patcherFix.gitHash %></a>
+<aui:field-wrapper label="git-hash">
+	<a href="<%= PatcherFixUtil.getPatcherFixGitHubURL(patcherFix.getPatcherFixId()) %>" target="_blank"><%= patcherFix.getGitHash() %></a>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="jenkins">
-	<c:forEach items="<%= jenkinsResults %>" var="jenkinsResult">
+<aui:field-wrapper label="jenkins">
+
+	<%
+	for (Map<String, String> jenkinsResult : JenkinsUtil.getJenkinsResults(patcherFix)) {
+	%>
+
 		<clay:link
 			cssClass="nobr"
-			href="<%= jenkinsResult.statusURL %>"
+			href='<%= jenkinsResult.get("statusURL") %>'
 			target="_blank"
-			title="<%= jenkinsResult.jobName %>"
+			title='<%= jenkinsResult.get("jobName") %>'
 		/>
-	</c:forEach>
+
+	<%
+	}
+	%>
+
 </aui:field-wrapper>
 
-<aui:input inputCssClass="osb-patcher-input-wide osb-patcher-read-only" label="content" name="patcherFixName" readonly="<%= true %>" type="textarea" value="<%= patcherFix.name %>" />
+<aui:input inputCssClass="osb-patcher-input-wide osb-patcher-read-only" label="content" name="patcherFixName" readonly="<%= true %>" type="textarea" value="<%= patcherFix.getName() %>" />
 
 <aui:input inputCssClass="osb-patcher-read-only" label="branch-name" name="committish" readonly="<%= true %>" type="text" />
 
@@ -122,11 +158,10 @@
 </aui:select>
 
 <aui:button-row>
-	<c:if test="<%= patcherFix.latestFix %>">
+	<c:if test="<%= patcherFix.isLatestFix() %>">
 		<portlet:renderURL var="editPatcherFixURL">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="edit" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/edit_fixes" />
+			<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 			<portlet:param name="redirect" value="<%= viewPatcherFixURL %>" />
 		</portlet:renderURL>
 
@@ -135,62 +170,59 @@
 
 	<c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) %>">
 		<portlet:renderURL var="viewPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="builds" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds_fixes" />
+			<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 		</portlet:renderURL>
 
-		<c:set value='<%= UnicodeLanguageUtil.format(request, "view-builds-for-fix-id-x", patcherFix.patcherFixId) %>' var="viewPatcherBuildsURLTitle" />
-
-		<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + viewPatcherBuildsURL %>', '<%= viewPatcherBuildsURLTitle + "', true, 1000);" %>' var="viewPatcherBuildsURL" />
-
-		<aui:button onClick="<%= viewPatcherBuildsURL %>" value="view-builds" />
+		<clay:button
+			displayType="secondary"
+			label='<%= LanguageUtil.get(request, "view-builds") %>'
+			onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-builds-for-fix-id-x", patcherFix.getPatcherFixId()) + "', '" + viewPatcherBuildsURL + "');" %>'
+		/>
 
 		<portlet:renderURL var="viewPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="fixes" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_fixes" />
+			<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 		</portlet:renderURL>
 
-		<c:set value='<%= UnicodeLanguageUtil.format(request, "view-fixes-for-fix-id-x", patcherFix.patcherFixId) %>' var="viewPatcherFixesURLTitle" />
+		<clay:button
+			displayType="secondary"
+			label='<%= LanguageUtil.get(request, "view-fixes") %>'
+			onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-fixes-for-fix-id-x", patcherFix.getPatcherFixId()) + "', '" + viewPatcherFixesURL + "');" %>'
+		/>
 
-		<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + viewPatcherFixesURL %>', '<%= viewPatcherFixesURLTitle + "', true, 1000);" %>' var="viewPatcherFixesURL" />
-
-		<aui:button onClick="<%= viewPatcherFixesURL %>" value="view-fixes" />
-
-		<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.userId) && (patcherFix.patcherFixId > 0) %>">
+		<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.getUserId()) && (patcherFix.getPatcherFixId() > 0) %>">
 			<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-				<portlet:param name="controller" value="fixes" />
-				<portlet:param name="action" value="editFixPackFields" />
-				<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_pack_fields_fixes" />
+				<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 			</portlet:renderURL>
 
-			<c:set value='<%= UnicodeLanguageUtil.get(request, "edit-fix-packs") %>' var="editPatcherFixFixPackFieldsURLTitle" />
-
-			<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + editPatcherFixFixPackFieldsURL %>', '<%= editPatcherFixFixPackFieldsURLTitle + "', true, 800)" %>' var="editPatcherFixFixPackFieldsURL" />
-
-			<aui:button onClick="<%= editPatcherFixFixPackFieldsURL %>" value="edit-fix-packs" />
+			<clay:button
+				displayType="secondary"
+				label='<%= LanguageUtil.get(request, "edit-fix-packs") %>'
+				onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.get(request, "edit-fix-packs") + "', '" + editPatcherFixFixPackFieldsURL + "');" %>'
+			/>
 		</c:if>
 	</c:if>
 </aui:button-row>
 
-<c:if test="<%= alloySearchResult.size > 1 %>">
-	<aui:field-wrapper name="fix-versions" />
+<%
+SearchContainer<PatcherFix> patcherFixSearchContainer = patcherViewFixesDisplayContext.getSearchContainer();
+%>
+
+<c:if test="<%= patcherFixSearchContainer.getTotal() > 1 %>">
+	<aui:field-wrapper label="fix-versions" />
 
 	<liferay-ui:search-container
-		total="<%= alloySearchResult.size %>"
+		searchContainer="<%= patcherFixSearchContainer %>"
 	>
-		<liferay-ui:search-container-results
-			results="<%= alloySearchResult.baseModels %>"
-		/>
-
 		<liferay-ui:search-container-row
 			className="com.liferay.osb.patcher.model.PatcherFix"
 			escapedModel="<%= true %>"
 			keyProperty="patcherFixId"
 			modelVar="patcherFixKeyVersion"
 		>
-			<c:if test="<%= patcherFix.patcherFixId == patcherFixKeyVersion.patcherFixId %>">
+			<c:if test="<%= patcherFix.getPatcherFixId() == patcherFixKeyVersion.getPatcherFixId() %>">
 				<liferay-ui:search-container-row-parameter
 					name="className"
 					value="selected"
@@ -198,13 +230,12 @@
 			</c:if>
 
 			<portlet:renderURL var="viewPatcherFixKeyVersionURL">
-				<portlet:param name="controller" value="fixes" />
-				<portlet:param name="action" value="view" />
-				<portlet:param name="id" value="<%= patcherFixKeyVersion.patcherFixId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes" />
+				<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFixKeyVersion.getPatcherFixId()) %>" />
 			</portlet:renderURL>
 
 			<liferay-ui:search-container-column-text
-				href="<%= (patcherFix.patcherFixId != patcherFixKeyVersion.patcherFixId) ? viewPatcherFixKeyVersionURL : null %>"
+				href="<%= (patcherFix.getPatcherFixId() != patcherFixKeyVersion.getPatcherFixId()) ? viewPatcherFixKeyVersionURL : null %>"
 				name="fix-id"
 				property="patcherFixId"
 			/>
@@ -221,8 +252,8 @@
 				<liferay-ui:user-display
 					displayStyle="<%= 1 %>"
 					url="<%= PatcherUtil.getUserDisplayURL(themeDisplay, patcherFixKeyVersion.getUserId()) %>"
-					userId="<%= patcherFixKeyVersion.userId %>"
-					userName="<%= patcherFixKeyVersion.userName %>"
+					userId="<%= patcherFixKeyVersion.getUserId() %>"
+					userName="<%= patcherFixKeyVersion.getUserName() %>"
 				/>
 			</liferay-ui:search-container-column-text>
 
@@ -231,7 +262,7 @@
 			>
 				<fmt:formatDate
 					type="both"
-					value="<%= patcherFixKeyVersion.modifiedDate %>"
+					value="<%= patcherFixKeyVersion.getModifiedDate() %>"
 				/>
 			</liferay-ui:search-container-column-text>
 
@@ -239,7 +270,7 @@
 				href="<%= PatcherFixUtil.getPatcherFixGitHubURL(patcherFixKeyVersion.getPatcherFixId()) %>"
 				name="git-hash"
 				target="_blank"
-				value="<%= fn:substring(patcherFixKeyVersion.gitHash, 0, 10) %>"
+				value="<%= patcherFixKeyVersion.getGitHash() %>"
 			/>
 
 			<liferay-ui:search-container-column-text
@@ -260,12 +291,19 @@
 </c:if>
 
 <aui:script>
+	function <portlet:namespace />handleClick(title, url) {
+		Liferay.Util.openModal({
+			title: title,
+			url: url,
+		});
+	}
+
 	YUI().ready(
 		'aui-popover',
 		function(Y) {
 			var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-			var tickets = document.getElementById('_1_WAR_osbpatcherportlet_patcherFixName');
-			var trigger = Y.one('#_1_WAR_osbpatcherportlet_patcherFixName');
+			var tickets = document.getElementById('<portlet:namespace />patcherFixName');
+			var trigger = Y.one('#<portlet:namespace />patcherFixName');
 
 			Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger)
 		}

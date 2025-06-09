@@ -7,15 +7,25 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+long patcherFixId = ParamUtil.getLong(request, "patcherFixId");
+
+PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(patcherFixId);
+
+List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPatcherBuilds(patcherFixId);
+%>
+
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-builds"
-	total="<%= fn:length(patcherBuilds) %>"
+	total="<%= patcherBuilds.size() %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= patcherBuilds %>"
 	/>
 
-	<c:set value="<%= fn:length(patcherBuilds) %>" var="resultsTotal" />
+	<%
+	int resultsTotal = patcherBuilds.size();
+	%>
 
 	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
@@ -26,56 +36,75 @@
 		modelVar="patcherBuild"
 	>
 		<portlet:renderURL var="viewPatcherFixPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="builds" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds_fixes" />
+			<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 		</portlet:renderURL>
-
-		<portlet:renderURL var="viewPatcherBuildPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="fixes" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
-			<portlet:param name="redirect" value="<%= viewPatcherFixPatcherBuildsURL %>" />
-		</portlet:renderURL>
-
-		<c:set value='<%= "javascript:" + renderResponse.namespace %>navigateWindow("<%= viewPatcherBuildPatcherFixesURL + ""); " %>' var="viewPatcherBuildPatcherFixesPopUpURL" />
-
-		<c:set value="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.userId) %>" var="fixes" />
 
 		<liferay-ui:search-container-column-text>
-			<c:if test="<%= PatcherBuildUtil.isObsolete(patcherBuild.patcherBuildId) %>">
-				<liferay-ui:icon
-					image="../common/activate"
-					message="this-build-is-obsolete"
-					url="<%= fixes ? viewPatcherBuildPatcherFixesPopUpURL : StringPool.BLANK %>"
-				/>
+			<c:if test="<%= PatcherBuildUtil.isObsolete(patcherBuild.getPatcherBuildId()) %>">
+				<c:choose>
+					<c:when test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.getUserId()) %>">
+						<portlet:renderURL var="viewPatcherBuildPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+							<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_builds" />
+							<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
+							<portlet:param name="redirect" value="<%= viewPatcherFixPatcherBuildsURL %>" />
+						</portlet:renderURL>
+
+						<liferay-ui:icon
+							image="../common/activate"
+							message="this-build-is-obsolete"
+							onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow(" + viewPatcherBuildPatcherFixesURL + "); " %>'
+							url="javascript:void(0);"
+						/>
+					</c:when>
+					<c:otherwise>
+						<liferay-ui:icon
+							image="../common/activate"
+							message="this-build-is-obsolete"
+						/>
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 
 			<liferay-ui:icon
-				image='<%= PatcherFixUtil.containsPatcherFixWorkaround(patcherBuild.patcherBuildId) ? "../api/exception" : StringPool.BLANK %>'
+				image='<%= PatcherFixUtil.containsPatcherFixWorkaround(patcherBuild.getPatcherBuildId()) ? "../api/exception" : StringPool.BLANK %>'
 				message="this-build-contains-workaround-fixes"
 			/>
 		</liferay-ui:search-container-column-text>
 
 		<portlet:renderURL var="viewPatcherBuildURL">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 			<portlet:param name="redirect" value="<%= viewPatcherFixPatcherBuildsURL %>" />
 		</portlet:renderURL>
 
 		<liferay-ui:search-container-column-text
 			name="build-id"
 		>
-			<a class="clean-link" href="<%= viewPatcherBuildURL %>" onClick="event.preventDefault(); <%= renderResponse.namespace %>navigateWindow("<%= viewPatcherBuildURL %>");"><%= patcherBuild.patcherBuildId %></a>
+			<clay:button
+				displayType="link"
+				icon="warning"
+				onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow(" + viewPatcherBuildURL + "); " %>'
+				title="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>"
+			/>
 		</liferay-ui:search-container-column-text>
+
+		<%
+		String fileName = patcherBuild.getFileName();
+
+		String hotfixURL = "https://releases-cdn.liferay.com/dxp/hotfix/" + fileName;
+
+		if (!fileName.contains("/liferay-dxp-")) {
+			hotfixURL = patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName;
+		}
+		%>
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>'
+			href="<%= hotfixURL %>"
 			name="hotfix"
 			target="_blank"
-			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(patcherBuild.fileName) : StringPool.BLANK %>"
+			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(patcherBuild.getFileName()) : StringPool.BLANK %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -90,39 +119,47 @@
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href="<%= PatcherBuildUtil.getSupportTicketURL(patcherBuild.supportTicket) %>"
+			href="<%= PatcherBuildUtil.getSupportTicketURL(patcherBuild.getSupportTicket()) %>"
 			name="support-ticket"
 			target="_blank"
-			value="<%= patcherBuild.supportTicket %>"
+			value="<%= patcherBuild.getSupportTicket() %>"
 		/>
 
-		<c:set value="<%= PatcherFixLocalServiceUtil.fetchPatcherFix(patcherBuild.getPatcherFixId()) %>" var="patcherFix" />
+		<%
+		PatcherFix curPatcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(patcherBuild.getPatcherFixId());
+		%>
 
 		<liferay-ui:search-container-column-text
 			href="<%= PatcherFixUtil.getPatcherFixGitHubURL(patcherBuild.getPatcherFixId()) %>"
 			name="git-hash"
 			target="_blank"
-			value="<%= fn:substring(patcherFix.gitHash, 0, 10) %>"
+			value="<%= curPatcherFix.getGitHash() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="status"
-			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getStatus())) + ">" %>'
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getStatus())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="jenkins"
 		>
-			<c:set value="<%= JenkinsUtil.getJenkinsResults(patcherBuild) %>" var="jenkinsResults" />
 
-			<c:forEach items="<%= jenkinsResults %>" var="jenkinsResult">
+			<%
+			for (Map<String, String> jenkinsResult : JenkinsUtil.getJenkinsResults(patcherBuild)) {
+			%>
+
 				<clay:link
 					cssClass="nobr"
-					href="<%= jenkinsResult.statusURL %>"
+					href='<%= jenkinsResult.get("statusURL") %>'
 					target="_blank"
-					title="<%= jenkinsResult.jobName %>"
+					title='<%= jenkinsResult.get("jobName") %>'
 				/>
-			</c:forEach>
+
+			<%
+			}
+			%>
+
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
@@ -144,16 +181,9 @@
 			align="right"
 		>
 			<liferay-ui:icon-menu>
-				<c:set value="<%= JenkinsUtil.isValidJenkinsSetup() %>" var="isValidJenkinsSetup" />
-
-				<c:set value="<%= JenkinsUtil.isValidSendDistJenkinsRequest(themeDisplay, patcherBuild) %>" var="isValidSendDistJenkinsRequest" />
-
-				<c:if test="<%= (not empty patcherFix.gitHash) && isValidJenkinsSetup && isValidSendDistJenkinsRequest %>">
-					<portlet:actionURL var="buildPatcherBuildURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="build" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
-						<portlet:param name="redirect" value="<%= viewPatcherBuildsURL %>" />
+				<c:if test="<%= Validator.isNotNull(patcherFix.getGitHash()) && JenkinsUtil.isValidJenkinsSetup() && JenkinsUtil.isValidSendDistJenkinsRequest(patcherBuild) %>">
+					<portlet:actionURL name="/patcher/build_builds" var="buildPatcherBuildURL">
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon
@@ -164,12 +194,9 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= patcherBuild.status == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-					<portlet:actionURL var="testPatcherBuildURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="test" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
-						<portlet:param name="redirect" value="<%= viewPatcherBuildsURL %>" />
+				<c:if test="<%= patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
+					<portlet:actionURL name="/patcher/test_builds" var="testPatcherBuildURL">
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon
@@ -179,11 +206,8 @@
 						url="<%= testPatcherBuildURL %>"
 					/>
 
-					<portlet:actionURL var="smokeTestPatcherBuildURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="smokeTest" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
-						<portlet:param name="redirect" value="<%= viewPatcherBuildsURL %>" />
+					<portlet:actionURL name="/patcher/smoke_test_builds" var="smokeTestPatcherBuildURL">
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 					</portlet:actionURL>
 
 					<liferay-ui:icon
@@ -192,8 +216,6 @@
 						method="get"
 						url="<%= smokeTestPatcherBuildURL %>"
 					/>
-
-					<c:set value='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>' var="hotfixURL" />
 
 					<liferay-ui:icon
 						image="download"
@@ -212,13 +234,9 @@
 </liferay-ui:search-container>
 
 <aui:script>
-	Liferay.provide(
-		window,
-		'<portlet:namespace />navigateWindow',
-		function(targetURL) {
-			window.location.href = targetURL;
-		}
-	);
+	function <portlet:namespace />navigateWindow(targetURL) {
+		window.location.href = targetURL;
+	}
 
 	AUI().ready(
 		function() {
