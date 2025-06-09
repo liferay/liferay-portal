@@ -136,8 +136,6 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			(_db.getDBType() == DBType.MARIADB) ||
 			(_db.getDBType() == DBType.POSTGRESQL));
 
-		Exception exception1 = null;
-
 		try {
 			InfrastructureUtil.setDataSource(
 				_unsupportedCharacterSetDataSource);
@@ -145,11 +143,9 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			testVerify();
 
 			Assert.fail();
-
 		}
 		catch (Exception exception) {
-			_verifyException(
-				exception1, "Unsupported database character set: ");
+			_verifyException(exception, "Unsupported database character set: ");
 		}
 		finally {
 			InfrastructureUtil.setDataSource(_dataSource);

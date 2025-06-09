@@ -31,20 +31,18 @@ public class PreupgradeVerifyDatabaseCharacterSet
 		if (!db.isSupportsCharacterSet(connection)) {
 			throw new VerifyException(
 				"Unsupported database character set: " +
-				db.getCharacterSet(connection));
+					db.getCharacterSet(connection));
 		}
 
 		if (!(db.getDBType() == DBType.MYSQL) ||
 			!(db.getDBType() == DBType.MARIADB)) {
 
 			Set<String> portalTables =
-				DBResourceUtil.getServiceComponentModuleTableNames(
-					connection);
+				DBResourceUtil.getServiceComponentModuleTableNames(connection);
 
 			portalTables.addAll(DBResourceUtil.getPortalTableNames(connection));
 
-			portalTables.addAll(
-				DBResourceUtil.getModuleTableNames(connection));
+			portalTables.addAll(DBResourceUtil.getModuleTableNames(connection));
 
 			String sql = StringBundler.concat(
 				"select character_set_name, collation_name, table_name from ",
@@ -59,18 +57,17 @@ public class PreupgradeVerifyDatabaseCharacterSet
 				"information_schema.schemata.default_collation_name)");
 
 			try (PreparedStatement preparedStatement =
-					 connection.prepareStatement(sql)) {
+					connection.prepareStatement(sql)) {
 
 				ResultSet resultSet = preparedStatement.executeQuery();
 
 				while (resultSet.next()) {
-
 					DBInspector dbInspector = new DBInspector(connection);
 
 					String tableName = resultSet.getString("table_name");
 
 					if (portalTables.contains(
-						dbInspector.normalizeName(tableName))) {
+							dbInspector.normalizeName(tableName))) {
 
 						throw new VerifyException(
 							StringBundler.concat(

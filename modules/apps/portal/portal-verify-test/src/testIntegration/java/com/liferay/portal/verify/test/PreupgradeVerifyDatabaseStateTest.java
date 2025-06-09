@@ -73,31 +73,28 @@ public class PreupgradeVerifyDatabaseStateTest
 
 		DBInspector dbInspector = new DBInspector(DataAccess.getConnection());
 
-
-		String  tableName = dbInspector.normalizeName("TestTable");
-
+		String tableName = dbInspector.normalizeName("TestTable");
 
 		serviceComponent.setMvccVersion(0);
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
 		serviceComponent.setData(
-			StringBundler.concat("<![CDATA[create table " ,tableName, " ("));
+			StringBundler.concat("<![CDATA[create table ", tableName, " ("));
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
+
 		try {
+			super.testVerify();
 
-		super.testVerify();
-
-		Assert.fail();
-
+			Assert.fail();
 		}
 		catch (Exception exception) {
-
 			Assert.assertNotNull(exception);
 
 			String message = exception.getMessage();
 
 			Assert.assertTrue(
-				message.contains("Missing tables detected:\n"+tableName));		}
+				message.contains("Missing tables detected:\n" + tableName));
+		}
 		finally {
 			_serviceComponentLocalService.deleteServiceComponent(
 				serviceComponent);

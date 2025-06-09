@@ -30,6 +30,9 @@ import java.util.concurrent.Future;
  * @author Hugo Huijser
  */
 public abstract class VerifyProcess extends BaseDBProcess {
+
+	public static final int NEVER = 0;
+
 	public void verify() throws VerifyException {
 		long start = System.currentTimeMillis();
 
