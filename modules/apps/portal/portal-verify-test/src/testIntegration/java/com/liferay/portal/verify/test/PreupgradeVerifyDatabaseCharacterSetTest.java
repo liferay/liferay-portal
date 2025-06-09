@@ -113,22 +113,19 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			"create table TestTable (testColumn VARCHAR(75) primary key) " +
 				"COLLATE utf8_bin");
 
-		Exception exception1 = null;
-
 		try {
 			super.testVerify();
+			Assert.fail();
 		}
-		catch (Exception exception2) {
-			exception1 = exception2;
+		catch (Exception exception) {
+			_verifyException(
+				exception, "Mixed database character set and collation:");
 		}
 		finally {
 			_serviceComponentLocalService.deleteServiceComponent(
 				serviceComponent);
 
 			_db.runSQL("drop table TestTable");
-
-			_verifyException(
-				exception1, "Mixed database character set and collation:\n");
 		}
 	}
 
@@ -146,15 +143,16 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 				_unsupportedCharacterSetDataSource);
 
 			testVerify();
+
+			Assert.fail();
+
 		}
-		catch (Exception exception2) {
-			exception1 = exception2;
+		catch (Exception exception) {
+			_verifyException(
+				exception1, "Unsupported database character set: ");
 		}
 		finally {
 			InfrastructureUtil.setDataSource(_dataSource);
-
-			_verifyException(
-				exception1, "Unsupported database character set: ");
 		}
 	}
 

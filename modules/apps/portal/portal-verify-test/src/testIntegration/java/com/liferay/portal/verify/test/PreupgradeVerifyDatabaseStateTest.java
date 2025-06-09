@@ -6,6 +6,8 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
@@ -20,6 +22,7 @@ import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -61,37 +64,43 @@ public class PreupgradeVerifyDatabaseStateTest
 	}
 
 	@Test
-	public void testVerifyPreupgradeMissingTable() {
+	public void testVerifyPreupgradeMissingTable() throws SQLException {
 		long serviceComponentId = RandomTestUtil.nextLong();
 
 		ServiceComponent serviceComponent =
 			_serviceComponentLocalService.createServiceComponent(
 				serviceComponentId);
 
+		DBInspector dbInspector = new DBInspector(DataAccess.getConnection());
+
+
+		String  tableName = dbInspector.normalizeName("TestTable");
+
+
 		serviceComponent.setMvccVersion(0);
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
-		serviceComponent.setData("<![CDATA[create table TestTable (");
+		serviceComponent.setData(
+			StringBundler.concat("<![CDATA[create table " ,tableName, " ("));
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
-
-		Exception exception1 = null;
-
 		try {
-			super.testVerify();
+
+		super.testVerify();
+
+		Assert.fail();
+
 		}
-		catch (Exception exception2) {
-			exception1 = exception2;
-		}
+		catch (Exception exception) {
+
+			Assert.assertNotNull(exception);
+
+			String message = exception.getMessage();
+
+			Assert.assertTrue(
+				message.contains("Missing tables detected:\n"+tableName));		}
 		finally {
 			_serviceComponentLocalService.deleteServiceComponent(
 				serviceComponent);
-
-			Assert.assertNotNull(exception1);
-
-			String message = exception1.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Missing tables detected:\n[testtable]"));
 		}
 	}
 
