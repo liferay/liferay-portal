@@ -106,9 +106,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 				serviceComponentId);
 
 		serviceComponent.setMvccVersion(0);
-
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
-
 		serviceComponent.setData("<![CDATA[create table TestTable (");
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
@@ -156,6 +154,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 		}
 		finally {
 			InfrastructureUtil.setDataSource(_dataSource);
+
 			_verifyException(
 				exception1, "Unsupported database character set: ");
 		}

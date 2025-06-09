@@ -48,7 +48,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 			missingTables.removeAll(databaseTables);
 
-			throw new Exception(
+			throw new VerifyException(
 				"Missing tables detected:\n" + missingTables +
 					"\nPlease fix these tables to continue the upgrade");
 		}

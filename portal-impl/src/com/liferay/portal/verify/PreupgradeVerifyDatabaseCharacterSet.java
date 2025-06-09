@@ -34,8 +34,16 @@ public class PreupgradeVerifyDatabaseCharacterSet
 					db.getCharacterSet(connection));
 		}
 
-		if ((db.getDBType() == DBType.MYSQL) ||
-			(db.getDBType() == DBType.MARIADB)) {
+		if (!(db.getDBType() == DBType.MYSQL) || !(db.getDBType() == DBType.MARIADB)) return;
+
+			Set<String> portalTables =
+				DBResourceUtil.getServiceComponentModuleTableNames(
+					connection);
+
+			portalTables.addAll(DBResourceUtil.getPortalTableNames(connection));
+
+			portalTables.addAll(
+				DBResourceUtil.getModuleTables(connection));
 
 			String sql = StringBundler.concat(
 				"select character_set_name, collation_name, table_name from ",
@@ -55,14 +63,6 @@ public class PreupgradeVerifyDatabaseCharacterSet
 				ResultSet resultSet = preparedStatement.executeQuery();
 
 				while (resultSet.next()) {
-					Set<String> portalTables =
-						DBResourceUtil.getServiceComponentModuleTableNames(
-							connection);
-
-					portalTables.addAll(DBResourceUtil.getPortalTableNames());
-
-					portalTables.addAll(
-						DBResourceUtil.getModuleTables(connection));
 
 					DBInspector dbInspector = new DBInspector(connection);
 
@@ -82,7 +82,6 @@ public class PreupgradeVerifyDatabaseCharacterSet
 				}
 			}
 		}
-	}
 
 	@Override
 	protected boolean isSkipDBPartitions() {

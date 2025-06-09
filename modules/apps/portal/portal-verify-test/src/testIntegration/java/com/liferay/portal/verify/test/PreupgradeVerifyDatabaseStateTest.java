@@ -69,9 +69,7 @@ public class PreupgradeVerifyDatabaseStateTest
 				serviceComponentId);
 
 		serviceComponent.setMvccVersion(0);
-
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
-
 		serviceComponent.setData("<![CDATA[create table TestTable (");
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);

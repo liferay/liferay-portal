@@ -86,7 +86,9 @@ public class DBResourceUtil {
 			"/com/liferay/portal/tools/sql/dependencies/indexes.sql");
 	}
 
-	public static Set<String> getPortalTableNames() throws Exception {
+	public static Set<String> getPortalTableNames(Connection connection)
+		throws Exception {
+
 		if (_portalTableNames != null) {
 			return _portalTableNames;
 		}
@@ -96,9 +98,9 @@ public class DBResourceUtil {
 		Set<String> tableNames = new HashSet<>();
 
 		while (matcher.find()) {
-			String match = matcher.group(1);
+			DBInspector dbInspector = new DBInspector(connection);
 
-			tableNames.add(StringUtil.toLowerCase(match));
+			tableNames.add(dbInspector.normalizeName(matcher.group(1)));
 		}
 
 		_portalTableNames = tableNames;
@@ -120,9 +122,7 @@ public class DBResourceUtil {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select data_ from ServiceComponent where buildNamespace " +
-					"like ?")) {
-
-			preparedStatement.setString(1, "com.liferay%");
+					"like 'com.liferay%'")) {
 
 			DBInspector dbInspector = new DBInspector(connection);
 
@@ -140,12 +140,6 @@ public class DBResourceUtil {
 		}
 
 		return tableNames;
-	}
-
-	public static boolean isPortalTableName(String tableName) throws Exception {
-		Set<String> portalTableNames = getPortalTableNames();
-
-		return portalTableNames.contains(StringUtil.toLowerCase(tableName));
 	}
 
 	private static String _read(Bundle bundle, String path) {
@@ -173,6 +167,6 @@ public class DBResourceUtil {
 
 	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
-	private static Set<String> _portalTableNames;
+	private static volatile Set<String> _portalTableNames;
 
 }
