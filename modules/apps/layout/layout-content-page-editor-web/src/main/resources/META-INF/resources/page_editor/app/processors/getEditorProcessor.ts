@@ -11,6 +11,7 @@ import {loadEditorClientExtensions} from 'frontend-js-web';
 import {EditableConfig} from '../../types/editables/EditableValue';
 import {config} from '../config/index';
 import getEditorConfig, {EditorConfig} from './getEditorConfig';
+import setCursorPosition, {Position} from './setCursorPosition';
 
 type ChangeCallback = (data: string) => Promise<void>;
 
@@ -156,7 +157,8 @@ export default function getEditorProcessor(
 		createEditor: (
 			element: HTMLElement,
 			changeCallback: ChangeCallback,
-			destroyCallback: DestroyCallback
+			destroyCallback: DestroyCallback,
+			clickPosition: Position
 		) => {
 			state.callbacks = {changeCallback, destroyCallback};
 			state.element = element;
@@ -190,6 +192,8 @@ export default function getEditorProcessor(
 
 							state.editor = editor;
 							editor.focus();
+
+							setCursorPosition(editor, clickPosition);
 
 							state.eventHandlers = createEventHandlers(
 								editorName,
