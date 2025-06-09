@@ -71,7 +71,7 @@ public class PreupgradeVerifyDatabaseCharacterSet
 
 						throw new VerifyException(
 							StringBundler.concat(
-								"Mixed database character set and collation:\n",
+								"Mixed database character set and collation: ",
 								resultSet.getString("character_set_name"),
 								StringPool.FORWARD_SLASH,
 								resultSet.getString("collation_name"), " on ",
