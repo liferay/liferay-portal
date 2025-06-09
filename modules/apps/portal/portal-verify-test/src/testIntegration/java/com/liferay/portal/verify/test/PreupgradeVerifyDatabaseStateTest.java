@@ -68,7 +68,7 @@ public class PreupgradeVerifyDatabaseStateTest
 			_serviceComponentLocalService.createServiceComponent(
 				serviceComponentId);
 
-		serviceComponent.setMvccVersion(RandomTestUtil.nextLong());
+		serviceComponent.setMvccVersion(0);
 
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
 
