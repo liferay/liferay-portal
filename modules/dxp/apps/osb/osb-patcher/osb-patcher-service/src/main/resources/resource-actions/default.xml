@@ -6,15 +6,15 @@
 		<portlet-name>1</portlet-name>
 		<permissions>
 			<supports>
-				<action-key>ADD_BY_NAME#BUILDS</action-key>
-				<action-key>ADD_BY_NAME#PROJECT_VERSIONS</action-key>
-				<action-key>ADD_TO_PAGE</action-key>
 				<action-key>ADD#BUILDS</action-key>
 				<action-key>ADD#FIX_COMPONENTS</action-key>
 				<action-key>ADD#FIX_PACKS</action-key>
 				<action-key>ADD#FIXES</action-key>
 				<action-key>ADD#PRODUCT_VERSIONS</action-key>
 				<action-key>ADD#PROJECT_VERSIONS</action-key>
+				<action-key>ADD_BY_NAME#BUILDS</action-key>
+				<action-key>ADD_BY_NAME#PROJECT_VERSIONS</action-key>
+				<action-key>ADD_TO_PAGE</action-key>
 				<action-key>CONFIGURATION</action-key>
 				<action-key>CREATE#BUILDS</action-key>
 				<action-key>CREATE#FIX_COMPONENTS</action-key>
@@ -24,9 +24,9 @@
 				<action-key>CREATE#PROJECT_VERSIONS</action-key>
 				<action-key>INDEX#ACCOUNTS</action-key>
 				<action-key>INDEX#BUILDS</action-key>
-				<action-key>INDEX#FIXES</action-key>
 				<action-key>INDEX#FIX_COMPONENTS</action-key>
 				<action-key>INDEX#FIX_PACKS</action-key>
+				<action-key>INDEX#FIXES</action-key>
 				<action-key>INDEX#PRODUCT_VERSIONS</action-key>
 				<action-key>INDEX#PROJECT_VERSIONS</action-key>
 				<action-key>PERMISSIONS</action-key>
@@ -39,14 +39,14 @@
 			<site-member-defaults />
 			<guest-defaults />
 			<guest-unsupported>
-				<action-key>ADD_BY_NAME#BUILDS</action-key>
-				<action-key>ADD_BY_NAME#PROJECT_VERSIONS</action-key>
-				<action-key>ADD_TO_PAGE</action-key>
 				<action-key>ADD#BUILDS</action-key>
 				<action-key>ADD#FIX_COMPONENTS</action-key>
 				<action-key>ADD#FIX_PACKS</action-key>
 				<action-key>ADD#FIXES</action-key>
 				<action-key>ADD#PROJECT_VERSIONS</action-key>
+				<action-key>ADD_BY_NAME#BUILDS</action-key>
+				<action-key>ADD_BY_NAME#PROJECT_VERSIONS</action-key>
+				<action-key>ADD_TO_PAGE</action-key>
 				<action-key>CONFIGURATION</action-key>
 				<action-key>CREATE#BUILDS</action-key>
 				<action-key>CREATE#FIX_COMPONENTS</action-key>
@@ -55,9 +55,9 @@
 				<action-key>CREATE#PROJECT_VERSIONS</action-key>
 				<action-key>INDEX#ACCOUNTS</action-key>
 				<action-key>INDEX#BUILDS</action-key>
-				<action-key>INDEX#FIXES</action-key>
 				<action-key>INDEX#FIX_COMPONENTS</action-key>
 				<action-key>INDEX#FIX_PACKS</action-key>
+				<action-key>INDEX#FIXES</action-key>
 				<action-key>INDEX#PROJECT_VERSIONS</action-key>
 				<action-key>PERMISSIONS</action-key>
 				<action-key>SAVE_BY_NAME#FIXES</action-key>
@@ -94,9 +94,9 @@
 		</portlet-ref>
 		<permissions>
 			<supports>
-				<action-key>CONFIGURATION</action-key>
 				<action-key>BUILD</action-key>
 				<action-key>CHILD_BUILDS</action-key>
+				<action-key>CONFIGURATION</action-key>
 				<action-key>CONTENT</action-key>
 				<action-key>DELETE</action-key>
 				<action-key>EDIT</action-key>
@@ -116,9 +116,9 @@
 			<site-member-defaults />
 			<guest-defaults />
 			<guest-unsupported>
-				<action-key>CONFIGURATION</action-key>
 				<action-key>BUILD</action-key>
 				<action-key>CHILD_BUILDS</action-key>
+				<action-key>CONFIGURATION</action-key>
 				<action-key>CONTENT</action-key>
 				<action-key>DELETE</action-key>
 				<action-key>EDIT</action-key>
