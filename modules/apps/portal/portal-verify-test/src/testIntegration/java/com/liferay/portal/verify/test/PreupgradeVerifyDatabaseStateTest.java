@@ -86,8 +86,6 @@ public class PreupgradeVerifyDatabaseStateTest
 			Assert.fail();
 		}
 		catch (Exception exception) {
-			Assert.assertNotNull(exception);
-
 			String message = exception.getMessage();
 
 			Assert.assertTrue(
