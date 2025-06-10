@@ -5,9 +5,7 @@
 
 package com.liferay.asset.categories.internal.service.messaging;
 
-import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRel;
 import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalService;
-import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -18,8 +16,6 @@ import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.util.MapUtil;
-
-import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -63,19 +59,14 @@ public class AssetCategoryAssetEntriesReindexMessageListener
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		List<AssetEntry> assetEntries = _getAssetEntries(
-			message.getLong("categoryId"));
-
-		_assetEntryLocalService.reindex(assetEntries);
-	}
-
-	private List<AssetEntry> _getAssetEntries(long assetCategoryId) {
-		return TransformUtil.transform(
-			_assetEntryAssetCategoryRelLocalService.
-				getAssetEntryAssetCategoryRelsByAssetCategoryId(
-					assetCategoryId),
-			assetEntryAssetCategoryRel -> _assetEntryLocalService.fetchEntry(
-					assetEntryAssetCategoryRel.getAssetEntryId()));
+		_assetEntryLocalService.reindex(
+			TransformUtil.transform(
+				_assetEntryAssetCategoryRelLocalService.
+					getAssetEntryAssetCategoryRelsByAssetCategoryId(
+						message.getLong("categoryId")),
+				assetEntryAssetCategoryRel ->
+					_assetEntryLocalService.fetchEntry(
+						assetEntryAssetCategoryRel.getAssetEntryId())));
 	}
 
 	@Reference
