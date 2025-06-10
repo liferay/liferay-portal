@@ -63,15 +63,13 @@ public class AssetCategoryAssetEntriesReindexMessageListener
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		List<AssetEntry> assetEntries = _getAssetEntriesByAssetCategoryId(
+		List<AssetEntry> assetEntries = _getAssetEntries(
 			message.getLong("categoryId"));
 
 		_assetEntryLocalService.reindex(assetEntries);
 	}
 
-	private List<AssetEntry> _getAssetEntriesByAssetCategoryId(
-		long assetCategoryId) {
-
+	private List<AssetEntry> _getAssetEntries(long assetCategoryId) {
 		List<AssetEntryAssetCategoryRel> assetEntryAssetCategoryRels =
 			_assetEntryAssetCategoryRelLocalService.
 				getAssetEntryAssetCategoryRelsByAssetCategoryId(
@@ -80,11 +78,11 @@ public class AssetCategoryAssetEntriesReindexMessageListener
 		return TransformUtil.transform(
 			assetEntryAssetCategoryRels,
 			assetEntryAssetCategoryRel -> {
-				AssetEntry entry = _assetEntryLocalService.fetchEntry(
+				AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 					assetEntryAssetCategoryRel.getAssetEntryId());
 
-				if (entry != null) {
-					return entry;
+				if (assetEntry != null) {
+					return assetEntry;
 				}
 
 				return null;
