@@ -7,15 +7,18 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+long patcherBuildId = ParamUtil.getLong(request, "patcherBuildId");
+
+PatcherBuild patcherBuild = PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherBuildId);
+%>
+
 <aui:model-context bean="<%= patcherBuild %>" model="<%= PatcherBuild.class %>" />
 
-<portlet:actionURL var="updatePatcherBuildQAFieldsURL">
-	<portlet:param name="controller" value="builds" />
-	<portlet:param name="action" value="updateQAFields" />
-</portlet:actionURL>
+<portlet:actionURL name="/patcher/update_qa_fields_builds" var="updatePatcherBuildQAFieldsURL" />
 
 <aui:form action="<%= updatePatcherBuildQAFieldsURL %>" method="post">
-	<aui:input name="id" type="hidden" value="<%= patcherBuild.patcherBuildId %>" />
+	<aui:input name="patcherBuildId" type="hidden" value="<%= patcherBuild.getPatcherBuildId() %>" />
 
 	<aui:select name="qaStatus" showEmptyOption="<%= false %>">
 		<aui:option label="<%= WorkflowConstants.LABEL_BUILD_QA_ANALYSIS_NEEDED %>" value="<%= WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_NEEDED %>" />
@@ -39,6 +42,6 @@
 	<aui:button-row>
 		<aui:button type="submit" />
 
-		<aui:button onClick="Liferay.Patcher.closeWindow();" value="cancel" />
+		<aui:button value="cancel" />
 	</aui:button-row>
 </aui:form>

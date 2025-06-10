@@ -21,11 +21,10 @@
 <aui:model-context bean="<%= patcherBuild %>" model="<%= PatcherBuild.class %>" />
 
 <portlet:renderURL var="viewPatcherBuildURL">
-	<portlet:param name="controller" value="builds" />
-	<portlet:param name="action" value="view" />
-	<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
+	<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 
-	<c:if test="<%= not empty redirect %>">
+	<c:if test="<%= Validator.isNotNull(redirect) %>">
 		<portlet:param name="redirect" value="<%= redirect %>" />
 	</c:if>
 </portlet:renderURL>
@@ -34,9 +33,8 @@
 	<liferay-ui:message key="this-is-not-the-latest-build-version-view-the-latest-build-here" />
 
 	<portlet:renderURL var="viewLatestPatcherBuildURL">
-		<portlet:param name="controller" value="builds" />
-		<portlet:param name="action" value="view" />
-		<portlet:param name="id" value="<%= latestPatcherBuild.patcherBuildId %>" />
+		<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
+		<portlet:param name="patcherBuildId" value="<%= latestPatcherBuild.getPatcherBuildId() %>" />
 		<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 	</portlet:renderURL>
 
@@ -45,44 +43,44 @@
 	</a>
 </c:if>
 
-<aui:field-wrapper name="createDate">
+<aui:field-wrapper label="create-date">
 	<fmt:formatDate
 		type="both"
 		value="<%= patcherBuild.createDate %>"
 	/>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="modifiedDate">
+<aui:field-wrapper label="modified-date">
 	<fmt:formatDate
 		type="both"
 		value="<%= patcherBuild.modifiedDate %>"
 	/>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="statusDate">
+<aui:field-wrapper label="status-date">
 	<fmt:formatDate
 		type="both"
 		value="<%= patcherBuild.statusDate %>"
 	/>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="createdBy">
+<aui:field-wrapper label="created-by">
 	<%= patcherBuild.userName %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="statusUpdatedBy">
+<aui:field-wrapper label="status-updated-by">
 	<%= patcherBuild.statusByUserName %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="buildId">
+<aui:field-wrapper label="build-id">
 	<%= patcherBuild.patcherBuildId %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="version">
+<aui:field-wrapper label="version">
 	<%= patcherBuild.keyVersion %>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="status">
+<aui:field-wrapper label="status">
 	<%= patcherBuildStatus %>
 
 	<c:if test="<%= patcherBuild.status == WorkflowConstants.STATUS_BUILD_FAILED %>">
@@ -94,11 +92,11 @@
 	</c:if>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="qa-status">
+<aui:field-wrapper label="qa-status">
 	<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getQaStatus()) %>" />
 </aui:field-wrapper>
 
-<aui:field-wrapper name="qa-comments">
+<aui:field-wrapper label="qa-comments">
 	<%= patcherBuild.qaComments %>
 </aui:field-wrapper>
 
@@ -114,11 +112,11 @@
 	</c:forEach>
 </aui:select>
 
-<aui:field-wrapper name="git-hash">
+<aui:field-wrapper label="git-hash">
 	<a href="<%= gitHubURL %>" target="_blank"><%= gitHash %></a>
 </aui:field-wrapper>
 
-<aui:field-wrapper name="jenkins">
+<aui:field-wrapper label="jenkins">
 	<c:forEach items="<%= jenkinsResults %>" var="jenkinsResult">
 		<clay:link
 			cssClass="nobr"
@@ -131,7 +129,7 @@
 
 <c:set value='<%= LanguageUtil.get(request, "download") %>' var="downloadURLLabel" />
 
-<aui:field-wrapper name="hotfix">
+<aui:field-wrapper label="hotfix">
 	<c:choose>
 		<c:when test='<%= patcherBuild.fileName.contains("/liferay-dxp-") %>'>
 			<a href="https://releases-cdn.liferay.com/dxp/hotfix/<%= patcherBuild.fileName %>" target="_blank">https://releases-cdn.liferay.com/dxp/hotfix/<%= patcherBuild.fileName %></a><br />
@@ -146,7 +144,7 @@
 </aui:field-wrapper>
 
 <c:if test="<%= not empty patcherBuild.sourceName %>">
-	<aui:field-wrapper name="sourceZip">
+	<aui:field-wrapper label="source-zip">
 		<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.sourceName %>" target="_blank"><%= downloadURLLabel %></a>
 	</aui:field-wrapper>
 </c:if>
@@ -173,13 +171,12 @@
 </c:if>
 
 <portlet:renderURL var="viewPatcherAccountPatcherProductVersionURL">
-	<portlet:param name="controller" value="accounts" />
-	<portlet:param name="action" value="view" />
+	<portlet:param name="mvcRenderCommandName" value="/patcher/view_accounts" />
 	<portlet:param name="patcherBuildAccountEntryCode" value="<%= patcherBuildAccountEntryCode %>" />
 	<portlet:param name="patcherProductVersionId" value="<%= patcherBuild.patcherProductVersionId %>" />
 </portlet:renderURL>
 
-<aui:field-wrapper name="account-code">
+<aui:field-wrapper label="account-code">
 	<clay:link
 		href="<%= viewPatcherAccountPatcherProductVersionURL %>"
 		title="<%= patcherBuildAccountEntryCode %>"
@@ -199,9 +196,8 @@
 <aui:button-row>
 	<c:if test="<%= PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) && !PatcherBuildRelUtil.hasParentPatcherBuilds(patcherBuild) %>">
 		<portlet:renderURL var="editPatcherBuildURL">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="edit" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/edit_builds" />
+			<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 			<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 		</portlet:renderURL>
 
@@ -210,9 +206,8 @@
 
 	<c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) && !PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild) %>">
 		<portlet:renderURL var="viewPatcherBuildPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="fixes" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_builds" />
+			<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 		</portlet:renderURL>
 
 		<c:set value='<%= UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", patcherBuild.patcherBuildId) %>' var="viewPatcherFixesURLTitle" />
@@ -224,9 +219,8 @@
 
 	<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.CHILD_BUILDS, patcherBuild.userId) && PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild) %>">
 		<portlet:renderURL var="viewChildPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="childBuilds" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_child_builds_builds" />
+			<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 		</portlet:renderURL>
 
 		<c:set value='<%= UnicodeLanguageUtil.format(request, "view-child-builds-for-build-id-x", patcherBuild.patcherBuildId) %>' var="viewPatcherBuildsURLTitle" />
@@ -241,8 +235,7 @@
 	>
 		<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.userId) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 			<portlet:renderURL var="createPatcherBuildTemplateURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="create" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/create_builds" />
 				<portlet:param name="templatePatcherBuildId" value="<%= patcherBuild.patcherBuildId %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 			</portlet:renderURL>
@@ -257,9 +250,8 @@
 
 		<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 			<portlet:renderURL var="editPatcherBuildCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="editCommentsField" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/edit_comments_field_builds" />
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 			</portlet:renderURL>
 
 			<c:set value='<%= UnicodeLanguageUtil.format(request, "edit-engineer-comments-for-build-id-x", patcherBuild.patcherBuildId) %>' var="editPatcherBuildCommentsFieldURLTitle" />
@@ -276,9 +268,8 @@
 
 		<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 			<portlet:renderURL var="editPatcherBuildQAFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="editQAFields" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/edit_qa_fields_builds" />
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 			</portlet:renderURL>
 
 			<c:set value='<%= UnicodeLanguageUtil.format(request, "edit-qa-status-for-build-id-x", patcherBuild.patcherBuildId) %>' var="editPatcherBuildQAFieldsURLTitle" />
@@ -300,10 +291,8 @@
 		<c:set value="<%= JenkinsUtil.isValidSendDistJenkinsRequest(themeDisplay, patcherBuild) %>" var="isValidSendDistJenkinsRequest" />
 
 		<c:if test="<%= sendRequestPermission && isValidJenkinsSetup && isValidSendDistJenkinsRequest && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-			<portlet:actionURL var="buildPatcherBuildURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="build" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:actionURL name="/patcher/build_builds" var="buildPatcherBuildURL">
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 			</portlet:actionURL>
 
@@ -316,10 +305,8 @@
 		</c:if>
 
 		<c:if test="<%= patcherBuild.status == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-			<portlet:actionURL var="testPatcherBuildURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="test" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:actionURL name="/patcher/test_builds" var="testPatcherBuildURL">
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 			</portlet:actionURL>
 
@@ -330,10 +317,8 @@
 				url="<%= testPatcherBuildURL %>"
 			/>
 
-			<portlet:actionURL var="smokeTestPatcherBuildURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="smokeTest" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:actionURL name="/patcher/smoke_test_builds" var="smokeTestPatcherBuildURL">
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 			</portlet:actionURL>
 
@@ -352,10 +337,8 @@
 				<c:set value='<%= LanguageUtil.get(request, "are-you-sure-this-patch-is-ready-for-release") %>' var="releaseConfirmMessage" />
 			</c:if>
 
-			<portlet:actionURL var="releasePatcherBuildURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="readyForRelease" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:actionURL name="/patcher/ready_for_release_builds" var="releasePatcherBuildURL">
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 			</portlet:actionURL>
 
@@ -375,10 +358,8 @@
 				<c:set value='<%= LanguageUtil.get(request, "are-you-sure-you-want-to-release-this-patch-to-the-customer") %>' var="releaseConfirmMessage" />
 			</c:if>
 
-			<portlet:actionURL var="releasePatcherBuildURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="releaseManually" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:actionURL name="/patcher/realease_manually_builds" var="releasePatcherBuildURL">
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.getPatcherBuildId() %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 			</portlet:actionURL>
 
@@ -390,10 +371,8 @@
 				url="javascript:"
 			/>
 
-			<portlet:actionURL var="releasePatcherBuildURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="releaseToHelpCenter" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:actionURL name="/patcher/release_to_help_center_builds" var="releasePatcherBuildURL">
+				<portlet:param name="patcherBuildId" value="<%= patcherBuild.patcherBuildId %>" />
 				<portlet:param name="redirect" value="<%= viewPatcherBuildURL %>" />
 			</portlet:actionURL>
 
@@ -409,7 +388,7 @@
 </aui:button-row>
 
 <c:if test="<%= alloySearchResult.size > 1 %>">
-	<aui:field-wrapper name="build-versions" />
+	<aui:field-wrapper label="build-versions" />
 
 	<liferay-ui:search-container
 		iteratorURL="<%= alloySearchResult.portletURL %>"
@@ -433,9 +412,8 @@
 			</c:if>
 
 			<portlet:renderURL var="viewPatcherBuildKeyVersionURL">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="view" />
-				<portlet:param name="id" value="<%= patcherBuildKeyVersion.patcherBuildId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
+				<portlet:param name="patcherBuildId" value="<%= patcherBuildKeyVersion.getPatcherBuildId() %>" />
 			</portlet:renderURL>
 
 			<liferay-ui:search-container-column-text
@@ -472,7 +450,7 @@
 
 			<liferay-ui:search-container-column-text
 				name="status"
-				value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuildKeyVersion.getStatus())) + ">" %>'
+				value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuildKeyVersion.getStatus())) %>"
 			/>
 		</liferay-ui:search-container-row>
 

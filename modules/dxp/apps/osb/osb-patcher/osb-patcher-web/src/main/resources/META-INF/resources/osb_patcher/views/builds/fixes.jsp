@@ -9,13 +9,15 @@
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-fixes"
-	total="<%= fn:length(patcherFixes) %>"
+	total="<%= patcherFixes.size() %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= patcherFixes %>"
 	/>
 
-	<c:set value="<%= fn:length(patcherFixes) %>" var="resultsTotal" />
+	<%
+	int resultsTotal = patcherFixes.size();
+	%>
 
 	<%@ include file="/osb_patcher/views/show_results_count.jspf" %>
 
@@ -26,26 +28,23 @@
 		modelVar="patcherFix"
 	>
 		<portlet:renderURL var="viewPatcherBuildPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="fixes" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_builds" />
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 		</portlet:renderURL>
 
 		<portlet:renderURL var="viewPatcherFixURL">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes" />
+			<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
 			<portlet:param name="redirect" value="<%= viewPatcherBuildPatcherFixesURL %>" />
 		</portlet:renderURL>
-
-		<c:set value='<%= "javascript:" + renderResponse.namespace %>navigateWindow("<%= viewPatcherFixURL + "")" %>' var="viewPatcherFixPopUpURL" />
 
 		<liferay-ui:search-container-column-text>
 			<c:if test="<%= patcherFix.obsolete %>">
 				<liferay-ui:icon
 					image="../common/activate"
 					message="this-fix-is-obsolete"
-					url="<%= viewPatcherFixPopUpURL %>"
+					onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow(" + viewPatcherFixURL + ")" %>'
+					url="javascript:void(0);"
 				/>
 			</c:if>
 		</liferay-ui:search-container-column-text>
@@ -80,13 +79,12 @@
 
 		<liferay-ui:search-container-column-text
 			name="status"
-			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) + ">" %>'
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherFix.getStatus())) %>"
 		/>
 
 		<portlet:renderURL var="editPatcherFixCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="fixes" />
-			<portlet:param name="action" value="editCommentsField" />
-			<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/edit_comments_field_fixes" />
+			<portlet:param name="patcherFixId" value="<%= patcherFix.getPatcherFixId() %>" />
 		</portlet:renderURL>
 
 		<c:set value='<%= UnicodeLanguageUtil.get(request, "edit-engineer-comments") %>' var="editPatcherFixCommentsFieldURLTitle" />
@@ -121,9 +119,8 @@
 			<liferay-ui:icon-menu>
 				<c:if test="<%= (patcherFix.status == WorkflowConstants.STATUS_FIX_FAILED) || (patcherFix.status == WorkflowConstants.STATUS_FIX_CONFLICT) %>">
 					<portlet:renderURL var="editPatcherFixURL">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fixes" />
+						<portlet:param name="patcherFixId" value="<%= patcherFix.getPatcherFixId() %>" />
 						<portlet:param name="redirect" value="<%= viewPatcherBuildPatcherFixesURL %>" />
 					</portlet:renderURL>
 
@@ -135,10 +132,8 @@
 				</c:if>
 
 				<c:if test='<%= PatcherPermissions.contains(themeDisplay, patcherFix, "exclude") && (patcherFix.type != PatcherFixConstants.TYPE_EXCLUDED) %>'>
-					<portlet:actionURL var="excludePatcherFixURL">
-						<portlet:param name="controller" value="fixes" />
-						<portlet:param name="action" value="exclude" />
-						<portlet:param name="id" value="<%= patcherFix.patcherFixId %>" />
+					<portlet:actionURL name="/patcher/exclude_fixes" var="excludePatcherFixURL">
+						<portlet:param name="patcherFixId" value="<%= patcherFix.getPatcherFixId() %>" />
 						<portlet:param name="redirect" value="<%= viewPatcherBuildPatcherFixesURL %>" />
 					</portlet:actionURL>
 
@@ -160,13 +155,9 @@
 </liferay-ui:search-container>
 
 <aui:script>
-	Liferay.provide(
-		window,
-		'<portlet:namespace />navigateWindow',
-		function(targetURL) {
-			window.location.href = targetURL;
-		}
-	);
+	function <portlet:namespace />navigateWindow(targetURL) {
+		window.location.href = targetURL;
+	}
 
 	AUI().ready(
 		function() {

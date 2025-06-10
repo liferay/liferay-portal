@@ -21,7 +21,7 @@
 		displayTerms="<%= new DisplayTerms(renderRequest) %>"
 		id="toggle_id_patcher_build_search"
 	>
-		<aui:input name="patcherProductVersionId" type="hidden" value="<%= patcherProductVersionId %>" />
+		<aui:input name="patcherProductVersionId" type="hidden" value='<%= ParamUtil.getLong(request, "patcherProductVersionId") %>' />
 
 		<div class="layout">
 			<div class="layout-content">
@@ -91,9 +91,17 @@
 
 				<clay:col>
 					<aui:select label="project-version" name="patcherProjectVersionIdFilter" showEmptyOption="<%= true %>">
-						<c:forEach items="<%= patcherProjectVersions %>" var="patcherProjectVersion">
-							<aui:option label="<%= patcherProjectVersion.name %>" value="<%= patcherProjectVersion.patcherProjectVersionId %>" />
-						</c:forEach>
+
+						<%
+						for (PatcherProjectVersion patcherProjectVersion : PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions()) {
+						%>
+
+							<aui:option label="<%= patcherProjectVersion.getName() %>" value="<%= patcherProjectVersion.getPatcherProjectVersionId() %>" />
+
+						<%
+						}
+						%>
+
 					</aui:select>
 				</clay:col>
 			</div>
@@ -118,48 +126,46 @@
 	>
 		<liferay-ui:search-container-row-parameter
 			name="className"
-			value='<%= "patcher-build-type-" + PatcherBuildConstantsMethods.getTypeLabel(patcherBuild.type) %>'
+			value='<%= "patcher-build-type-" + PatcherBuildConstants.getTypeLabel(patcherBuild.getType()) %>'
 		/>
 
 		<portlet:renderURL var="viewPatcherBuildPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="fixes" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_builds" />
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 		</portlet:renderURL>
 
-		<c:set value='<%= UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", patcherBuild.patcherBuildId) %>' var="viewPatcherFixesURLTitle" />
-
-		<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + viewPatcherBuildPatcherFixesURL %>', '<%= viewPatcherFixesURLTitle + "', true, 1000);" %>' var="viewPatcherBuildPatcherFixesURL" />
-
-		<c:set value="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.userId) %>" var="fixes" />
+		<%
+		boolean hasPermissions = PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.getUserId());
+		%>
 
 		<liferay-ui:search-container-column-text
 			cssClass="osb-patcher-search-container-column-text-icon"
 		>
 			<liferay-ui:icon
-				image='<%= PatcherBuildUtil.isObsolete(patcherBuild.patcherBuildId) ? "../common/activate" : StringPool.BLANK %>'
+				image='<%= PatcherBuildUtil.isObsolete(patcherBuild.getPatcherBuildId()) ? "../common/activate" : StringPool.BLANK %>'
 				message="this-build-is-obsolete"
-				url="<%= fixes ? viewPatcherBuildPatcherFixesURL : StringPool.BLANK %>"
+				onClick='<%= hasPermissions ? liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + viewPatcherBuildPatcherFixesURL + "');" : StringPool.BLANK %>'
+				url='<%= hasPermissions ? "javascript:void(0);" : StringPool.BLANK %>'
 			/>
 
 			<liferay-ui:icon
-				image='<%= PatcherFixUtil.containsPatcherFixWorkaround(patcherBuild.patcherBuildId) ? "../api/exception" : StringPool.BLANK %>'
+				image='<%= PatcherFixUtil.containsPatcherFixWorkaround(patcherBuild.getPatcherBuildId()) ? "../api/exception" : StringPool.BLANK %>'
 				message="this-build-contains-workaround-fixes"
-				url="<%= fixes ? viewPatcherBuildPatcherFixesURL : StringPool.BLANK %>"
+				onClick='<%= hasPermissions ? liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + viewPatcherBuildPatcherFixesURL + "');" : StringPool.BLANK %>'
+				url='<%= hasPermissions ? "javascript:void(0);" : StringPool.BLANK %>'
 			/>
 
 			<liferay-ui:icon
-				image='<%= PatcherFixUtil.containsPatcherFixComment(patcherBuild.patcherBuildId) ? "../common/message" : StringPool.BLANK %>'
+				image='<%= PatcherFixUtil.containsPatcherFixComment(patcherBuild.getPatcherBuildId()) ? "../common/message" : StringPool.BLANK %>'
 				message="this-build-contains-fixes-with-comments"
-				url="<%= fixes ? viewPatcherBuildPatcherFixesURL : StringPool.BLANK %>"
+				onClick='<%= hasPermissions ? liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-fixes-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + viewPatcherBuildPatcherFixesURL + "');" : StringPool.BLANK %>'
+				url='<%= hasPermissions ? "javascript:void(0);" : StringPool.BLANK %>'
 			/>
 		</liferay-ui:search-container-column-text>
 
 		<portlet:renderURL var="viewPatcherBuildURL">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="view" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
-			<portlet:param name="redirect" value="<%= viewPatcherAccountURL %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 		</portlet:renderURL>
 
 		<liferay-ui:search-container-column-text
@@ -180,10 +186,10 @@
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href="<%= PatcherBuildUtil.getSupportTicketURL(patcherBuild.supportTicket) %>"
+			href="<%= PatcherBuildUtil.getSupportTicketURL(patcherBuild.getSupportTicket()) %>"
 			name="support-ticket"
 			target="_blank"
-			value="<%= patcherBuild.supportTicket %>"
+			value="<%= patcherBuild.getSupportTicket() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -191,7 +197,9 @@
 			property="keyVersion"
 		/>
 
-		<c:set value="<%= PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherBuild.getPatcherProjectVersionId()) %>" var="patcherProjectVersion" />
+		<%
+		PatcherProjectVersion patcherProjectVersion = PatcherProjectVersionLocalServiceUtil.fetchPatcherProjectVersion(patcherBuild.getPatcherProjectVersionId());
+		%>
 
 		<liferay-ui:search-container-column-text
 			name="product-version"
@@ -200,88 +208,77 @@
 
 		<liferay-ui:search-container-column-text
 			name="project-version"
-			value="<%= patcherProjectVersion.name %>"
+			value="<%= patcherProjectVersion.getName() %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="content"
 		>
 			<portlet:renderURL var="viewPatcherBuildContentURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-				<portlet:param name="controller" value="builds" />
-				<portlet:param name="action" value="content" />
-				<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+				<portlet:param name="mvcRenderCommandName" value="/patcher/view_content_builds" />
+				<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 			</portlet:renderURL>
 
-			<c:set value='<%= LanguageUtil.get(request, "content") %>' var="viewPatcherBuildContentURLTitle" />
-
-			<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + viewPatcherBuildContentURL %>', '<%= viewPatcherBuildContentURLTitle + "', true, 1000, 1);" %>' var="viewPatcherBuildContentURL" />
-
-			<c:set value="<%= patcherBuild.getName() %>" var="patcherBuildName" />
-
-			<c:set value="<%= PatcherFixPackUtil.getPatcherFixPackNamesCount(patcherBuildName) %>" var="patcherFixPackNamesCount" />
-
-			<c:set value='<%= LanguageUtil.get(request, "fix-packs") %>' var="fixPacksLabel" />
-
-			<c:set value="<%= PatcherUtil.getTicketsCount(patcherBuildName) %>" var="ticketsCount" />
-
-			<c:set value='<%= LanguageUtil.get(request, "tickets") %>' var="ticketsLabel" />
-
-			<a class="nobr" href="<%= viewPatcherBuildContentURL %>" title="<%= patcherBuildName %>">
-				<%= patcherFixPackNamesCount %> <%= fixPacksLabel %> + <%= ticketsCount %> <%= ticketsLabel %>
-			</a>
+			<clay:button
+				cssClass="nobr"
+				displayType="link"
+				label='<%= PatcherFixPackUtil.getPatcherFixPackNamesCount(patcherBuild.getName()) + " " + LanguageUtil.get(request, "fix-packs") + " " + PatcherUtil.getTicketsCount(patcherBuild.getName()) + " " + LanguageUtil.get(request, "tickets") %>'
+				onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + LanguageUtil.get(request, "content") + "', '" + viewPatcherBuildContentURL + "');" %>'
+			/>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
 			name="status-date"
 		>
 			<fmt:formatDate
-				value="<%= patcherBuild.statusDate %>"
+				value="<%= patcherBuild.getStatusDate() %>"
 			/>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
 			name="patcher-status"
-			value='<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getStatus())) + ">" %>'
+			value="<%= LanguageUtil.get(request, WorkflowConstants.getStatusLabel(patcherBuild.getStatus())) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
 			name="jenkins"
 		>
-			<c:set value="<%= JenkinsUtil.getJenkinsResults(patcherBuild) %>" var="jenkinsResults" />
 
-			<c:forEach items="<%= jenkinsResults %>" var="jenkinsResult">
+			<%
+			for (Map<String, String> jenkinsResult : JenkinsUtil.getJenkinsResults(patcherBuild)) {
+			%>
+
 				<clay:link
 					cssClass="nobr"
-					href="<%= jenkinsResult.statusURL %>"
+					href='<%= jenkinsResult.get("statusURL") %>'
 					target="_blank"
-					title="<%= jenkinsResult.jobName %>"
+					title='<%= jenkinsResult.get("jobName") %>'
 				/>
-			</c:forEach>
+
+			<%
+			}
+			%>
+
 		</liferay-ui:search-container-column-text>
 
 		<portlet:renderURL var="editPatcherBuildCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="editCommentsField" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/edit_comments_field_builds" />
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 		</portlet:renderURL>
-
-		<c:set value='<%= LanguageUtil.format(request, "edit-engineer-comments-for-build-id-x", patcherBuild.patcherBuildId) %>' var="editPatcherBuildCommentsFieldURLTitle" />
-
-		<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + editPatcherBuildCommentsFieldURL %>', '<%= editPatcherBuildCommentsFieldURLTitle + "', true, 800)" %>' var="editPatcherBuildCommentsFieldURL" />
 
 		<liferay-ui:search-container-column-text
 			name="engineer-comments"
 		>
-			<c:set value="<%= StringUtil.shorten(patcherBuild.comments, 75) %>" var="shortenedPatcherBuildComments" />
-
 			<c:choose>
-				<c:when test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<a href="<%= editPatcherBuildCommentsFieldURL %>">
-						<%= shortenedPatcherBuildComments %>
-					</a>
+				<c:when test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.getUserId()) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+					<clay:button
+						displayType="link"
+						label="<%= com.liferay.portal.kernel.util.StringUtil.shorten(patcherBuild.getComments(), 75) %>"
+						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "edit-engineer-comments-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + editPatcherBuildCommentsFieldURL + "');" %>'
+					/>
 				</c:when>
 				<c:otherwise>
-					<%= shortenedPatcherBuildComments %>
+					<%= com.liferay.portal.kernel.util.StringUtil.shorten(patcherBuild.getComments(), 75) %>
 				</c:otherwise>
 			</c:choose>
 		</liferay-ui:search-container-column-text>
@@ -292,37 +289,36 @@
 		/>
 
 		<portlet:renderURL var="editPatcherBuildQAFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="controller" value="builds" />
-			<portlet:param name="action" value="editQAFields" />
-			<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+			<portlet:param name="mvcRenderCommandName" value="/patcher/edit_qa_fields_builds" />
+			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 		</portlet:renderURL>
-
-		<c:set value='<%= UnicodeLanguageUtil.format(request, "edit-qa-status-for-build-id-x", patcherBuild.patcherBuildId) %>' var="editPatcherBuildQAFieldsURLTitle" />
-
-		<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + editPatcherBuildQAFieldsURL %>', '<%= editPatcherBuildQAFieldsURLTitle + "', true, 800)" %>' var="editPatcherBuildQAFieldsURL" />
 
 		<liferay-ui:search-container-column-text
 			name="qa-comments"
 		>
-			<c:set value="<%= StringUtil.shorten(patcherBuild.qaComments, 75) %>" var="shortenedPatcherBuildQAComments" />
-
 			<c:choose>
-				<c:when test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<a href="<%= editPatcherBuildQAFieldsURL %>">
-						<%= shortenedPatcherBuildQAComments %>
-					</a>
+				<c:when test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.getUserId()) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+					<clay:button
+						displayType="link"
+						label="<%= com.liferay.portal.kernel.util.StringUtil.shorten(patcherBuild.getQaComments(), 75) %>"
+						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "edit-qa-status-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + editPatcherBuildQAFieldsURL + "');" %>'
+					/>
 				</c:when>
 				<c:otherwise>
-					<%= shortenedPatcherBuildQAComments %>
+					<%= com.liferay.portal.kernel.util.StringUtil.shorten(patcherBuild.getQaComments(), 75) %>
 				</c:otherwise>
 			</c:choose>
 		</liferay-ui:search-container-column-text>
 
+		<%
+		String fileName = patcherBuild.getFileName();
+		%>
+
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href='<%= patcherBuild.fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.fileName %>'
+			href='<%= fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName %>'
 			name="hotfix"
-			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(patcherBuild.fileName) : StringPool.BLANK %>"
+			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(fileName) : StringPool.BLANK %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -331,12 +327,10 @@
 			<liferay-ui:icon-menu
 				cssClass="osb-patcher-icon-menu"
 			>
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.userId) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.getUserId()) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 					<portlet:renderURL var="editPatcherBuildURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="edit" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
-						<portlet:param name="redirect" value="<%= viewPatcherAccountURL %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_builds" />
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
@@ -346,12 +340,10 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.userId) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.getUserId()) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 					<portlet:renderURL var="createPatcherBuildTemplateURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="create" />
-						<portlet:param name="templatePatcherBuildId" value="<%= patcherBuild.patcherBuildId %>" />
-						<portlet:param name="redirect" value="<%= viewPatcherAccountURL %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/create_builds" />
+						<portlet:param name="templatePatcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 					</portlet:renderURL>
 
 					<liferay-ui:icon
@@ -362,7 +354,7 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.getUserId()) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 					<liferay-ui:icon
 						image="edit"
 						message="edit-engineer-comments"
@@ -371,7 +363,7 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.userId) && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.getUserId()) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
 					<liferay-ui:icon
 						image="edit"
 						message="edit-qa-status"
@@ -380,17 +372,9 @@
 					/>
 				</c:if>
 
-				<c:set value="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.SEND_REQUEST, patcherBuild.userId) %>" var="sendRequestPermission" />
-
-				<c:set value="<%= JenkinsUtil.isValidJenkinsSetup() %>" var="isValidJenkinsSetup" />
-
-				<c:set value="<%= JenkinsUtil.isValidSendDistJenkinsRequest(themeDisplay, patcherBuild) %>" var="isValidSendDistJenkinsRequest" />
-
-				<c:if test="<%= sendRequestPermission && isValidJenkinsSetup && isValidSendDistJenkinsRequest && (patcherBuild.type != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<portlet:actionURL var="buildPatcherBuildURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="build" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.SEND_REQUEST, patcherBuild.getUserId()) && JenkinsUtil.isValidJenkinsSetup() && JenkinsUtil.isValidSendDistJenkinsRequest(patcherBuild) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
+					<portlet:actionURL name="/patcher/build_builds" var="buildPatcherBuildURL">
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
@@ -402,11 +386,9 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= patcherBuild.status == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-					<portlet:actionURL var="testPatcherBuildURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="test" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+				<c:if test="<%= patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
+					<portlet:actionURL name="/patcher/test_builds" var="testPatcherBuildURL">
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
@@ -417,10 +399,8 @@
 						url="<%= testPatcherBuildURL %>"
 					/>
 
-					<portlet:actionURL var="smokeTestPatcherBuildURL">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="smokeTest" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+					<portlet:actionURL name="/patcher/smoke_test_builds" var="smokeTestPatcherBuildURL">
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 						<portlet:param name="redirect" value="<%= currentURL %>" />
 					</portlet:actionURL>
 
@@ -432,7 +412,7 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.userId) && !PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.FIXES, patcherBuild.getUserId()) && !PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild) %>">
 					<liferay-ui:icon
 						image="view"
 						message="view-fixes"
@@ -441,22 +421,18 @@
 					/>
 				</c:if>
 
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.CHILD_BUILDS, patcherBuild.userId) && PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild) %>">
+				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.CHILD_BUILDS, patcherBuild.getUserId()) && PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild) %>">
 					<portlet:renderURL var="viewChildPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="controller" value="builds" />
-						<portlet:param name="action" value="childBuilds" />
-						<portlet:param name="id" value="<%= patcherBuild.patcherBuildId %>" />
+						<portlet:param name="mvcRenderCommandName" value="/patcher/view_child_builds_builds" />
+						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 					</portlet:renderURL>
-
-					<c:set value='<%= UnicodeLanguageUtil.formatUnicode("view-child-builds-for-build-id-x", patcherBuild.patcherBuildId) %>' var="viewPatcherBuildsURLTitle" />
-
-					<c:set value='<%= "javascript:Liferay.Patcher.openWindow('" + viewChildPatcherBuildsURL %>', '<%= viewPatcherBuildsURLTitle + "', true, 1000);" %>' var="viewChildPatcherBuildsURL" />
 
 					<liferay-ui:icon
 						image="view"
 						message="view-child-builds"
 						method="get"
-						url="<%= viewChildPatcherBuildsURL %>"
+						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-child-builds-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + viewChildPatcherBuildsURL + "')" %>'
+						url="javascript:void(0);"
 					/>
 				</c:if>
 			</liferay-ui:icon-menu>
@@ -465,3 +441,12 @@
 
 	<liferay-ui:search-iterator />
 </liferay-ui:search-container>
+
+<aui:script>
+	function <portlet:namespace />handleClick(title, url) {
+		Liferay.Util.openModal({
+			title: title,
+			url: url,
+		});
+	}
+</aui:script>
