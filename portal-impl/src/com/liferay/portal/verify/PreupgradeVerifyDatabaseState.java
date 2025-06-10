@@ -20,10 +20,6 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
-		_checkDatabaseState();
-	}
-
-	private void _checkDatabaseState() throws Exception {
 		if (StartupHelperUtil.isDBNew() ||
 			PortalUpgradeProcess.isInLatestSchemaVersion(connection)) {
 
