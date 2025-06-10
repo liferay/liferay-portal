@@ -13,6 +13,7 @@ import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
@@ -96,8 +97,8 @@ public class PatcherScanUtil {
 					"failed-building-a-patch-for-tickets"));
 			sb.append("<br />");
 			sb.append(
-				StringUtil.replace(
-					patcherBuild.getName(), StringPool.COMMA,
+				com.liferay.portal.kernel.util.StringUtil.replace(
+					patcherBuild.getName(), CharPool.COMMA,
 					StringPool.COMMA_AND_SPACE));
 			sb.append("<br /><br />");
 			sb.append(
@@ -479,8 +480,8 @@ public class PatcherScanUtil {
 						"failed-building-a-patch-for-tickets"));
 				sb.append("<br />");
 				sb.append(
-					StringUtil.replace(
-						patcherBuildName, StringPool.COMMA,
+					com.liferay.portal.kernel.util.StringUtil.replace(
+						patcherBuildName, CharPool.COMMA,
 						StringPool.COMMA_AND_SPACE));
 				sb.append("<br /><br />");
 				sb.append(
@@ -553,8 +554,8 @@ public class PatcherScanUtil {
 			sb.append(latestPatcherFix.getPatcherFixId());
 			sb.append("<br />NAME: \"");
 			sb.append(
-				StringUtil.replace(
-					latestPatcherFix.getName(), StringPool.COMMA,
+				com.liferay.portal.kernel.util.StringUtil.replace(
+					latestPatcherFix.getName(), CharPool.COMMA,
 					StringPool.COMMA_AND_SPACE));
 			sb.append("\"<br />REMOVING TICKETS FROM PHRASE..<br /><br />");
 			sb.append("NEW PHRASE:<br />\"");
