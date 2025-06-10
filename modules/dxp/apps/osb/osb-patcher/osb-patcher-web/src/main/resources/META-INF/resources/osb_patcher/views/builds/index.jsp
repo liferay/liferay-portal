@@ -7,6 +7,10 @@
 
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
+<%
+PatcherBuildsDisplayContext patcherBuildsDisplayContext = new PatcherBuildsDisplayContext(request, renderRequest, renderResponse);
+%>
+
 <liferay-util:include page="/osb_patcher/views/toolbar.jsp" servletContext="<%= application %>">
 	<liferay-util:param name="tabs1" value="qa-builds" />
 </liferay-util:include>
@@ -110,14 +114,8 @@
 </aui:form>
 
 <liferay-ui:search-container
-	emptyResultsMessage="there-are-no-builds"
-	iteratorURL="<%= alloySearchResult.portletURL %>"
-	total="<%= alloySearchResult.size %>"
+	searchContainer="<%= patcherBuildsDisplayContext.getSearchContainer() %>"
 >
-	<liferay-ui:search-container-results
-		results="<%= alloySearchResult.baseModels %>"
-	/>
-
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherBuild"
 		escapedModel="<%= true %>"
