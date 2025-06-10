@@ -10,9 +10,6 @@ package com.liferay.portal.kernel.messaging;
  */
 public interface DestinationNames {
 
-	public static final String ASSET_CATEGORY_ASSET_ENTRIES_REINDEX =
-		"liferay/asset_category_asset_entries_reindex";
-
 	public static final String ASYNC_SERVICE = "liferay/async_service";
 
 	public static final String BACKGROUND_TASK = "liferay/background_task";

@@ -5,6 +5,7 @@
 
 package com.liferay.asset.categories.internal.service.messaging;
 
+import com.liferay.asset.categories.internal.constants.AssetCategoryDestinationNames;
 import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -12,7 +13,6 @@ import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
-import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Manuel Rives
  */
 @Component(
-	property = "destination.name=" + DestinationNames.ASSET_CATEGORY_ASSET_ENTRIES_REINDEX,
+	property = "destination.name=" + AssetCategoryDestinationNames.ASSET_CATEGORY_ASSET_ENTRIES_REINDEX,
 	service = MessageListener.class
 )
 public class AssetCategoryAssetEntriesReindexMessageListener
@@ -39,7 +39,8 @@ public class AssetCategoryAssetEntriesReindexMessageListener
 		DestinationConfiguration destinationConfiguration =
 			new DestinationConfiguration(
 				DestinationConfiguration.DESTINATION_TYPE_SERIAL,
-				DestinationNames.ASSET_CATEGORY_ASSET_ENTRIES_REINDEX);
+				AssetCategoryDestinationNames.
+					ASSET_CATEGORY_ASSET_ENTRIES_REINDEX);
 
 		Destination destination = _destinationFactory.createDestination(
 			destinationConfiguration);

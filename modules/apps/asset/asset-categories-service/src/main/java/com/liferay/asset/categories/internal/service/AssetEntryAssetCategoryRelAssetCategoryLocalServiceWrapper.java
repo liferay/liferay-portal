@@ -5,6 +5,7 @@
 
 package com.liferay.asset.categories.internal.service;
 
+import com.liferay.asset.categories.internal.constants.AssetCategoryDestinationNames;
 import com.liferay.asset.categories.internal.util.comparator.AssetEntryAssetCategoryRelAssetCategoryIdComparator;
 import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRel;
 import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalService;
@@ -16,7 +17,6 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -174,7 +174,8 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 				message.put("categoryId", assetCategoryId);
 
 				_messageBus.sendMessage(
-					DestinationNames.ASSET_CATEGORY_ASSET_ENTRIES_REINDEX,
+					AssetCategoryDestinationNames.
+						ASSET_CATEGORY_ASSET_ENTRIES_REINDEX,
 					message);
 
 				return null;
