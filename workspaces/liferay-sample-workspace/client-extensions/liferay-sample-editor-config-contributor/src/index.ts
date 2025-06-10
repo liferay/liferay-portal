@@ -26,6 +26,8 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 				label: 'A dropdown with a custom icon',
 			},
 			separator,
+			'alignment',
+			separator,
 			{
 
 				// This dropdown has the icon disabled and a text label instead.
