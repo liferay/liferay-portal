@@ -76,27 +76,38 @@ String redirect = ParamUtil.getString(request, "redirect");
 	Liferay.provide(
 		window,
 		'<portlet:namespace />patcherFixPackFieldsOnChange',
-		function() {
+		function () {
 			var A = AUI();
 
-			var patcherFixComponentId = A.one('#<portlet:namespace />patcherFixComponentId').val();
+			var patcherFixComponentId = A.one(
+				'#<portlet:namespace />patcherFixComponentId'
+			).val();
 
-			if ((patcherFixComponentId == null) || (patcherFixComponentId <= 0)) {
+			if (patcherFixComponentId == null || patcherFixComponentId <= 0) {
 				return;
 			}
 
-			var patcherProjectVersionId = A.one('#<portlet:namespace />patcherProjectVersionId').val();
+			var patcherProjectVersionId = A.one(
+				'#<portlet:namespace />patcherProjectVersionId'
+			).val();
 
-			if ((patcherProjectVersionId == null) || (patcherProjectVersionId <= 0)) {
+			if (patcherProjectVersionId == null || patcherProjectVersionId <= 0) {
 				return;
 			}
 
-			var filteredPatcherFixPacks = JSON.parse('<%= HtmlUtil.escapeJS(JSONFactoryUtil.looseSerialize(PatcherFixPackUtil.getFilteredPatcherFixPacksByComponentAndProjectVersion())) %>');
+			var filteredPatcherFixPacks = JSON.parse(
+				'<%= HtmlUtil.escapeJS(JSONFactoryUtil.looseSerialize(PatcherFixPackUtil.getFilteredPatcherFixPacksByComponentAndProjectVersion())) %>'
+			);
 
 			for (var i in filteredPatcherFixPacks) {
 				var filteredPatcherFixPack = filteredPatcherFixPacks[i];
 
-				if ((filteredPatcherFixPack.patcherFixComponentId == patcherFixComponentId) && (filteredPatcherFixPack.patcherProjectVersionId == patcherProjectVersionId)) {
+				if (
+					filteredPatcherFixPack.patcherFixComponentId ==
+						patcherFixComponentId &&
+					filteredPatcherFixPack.patcherProjectVersionId ==
+						patcherProjectVersionId
+				) {
 					A.one('#<portlet:namespace />patcherFixPackVersion').val('');
 
 					A.one('#<portlet:namespace />displayingVersion').hide();

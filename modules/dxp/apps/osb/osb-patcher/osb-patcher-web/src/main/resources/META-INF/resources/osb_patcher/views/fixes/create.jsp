@@ -76,35 +76,42 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 %>
 
 <aui:script>
-	var select = document.getElementById("<portlet:namespace />patcherProjectVersionId");
+	var select = document.getElementById(
+		'<portlet:namespace />patcherProjectVersionId'
+	);
 
 	Liferay.provide(
 		window,
 		'<portlet:namespace />productVersionOnChange',
-		function(productVersionId) {
-			Liferay.Patcher.populateProjectVersionField(productVersionId, select, <%= patcherProjectVersionsJSONObject %>);
+		function (productVersionId) {
+			Liferay.Patcher.populateProjectVersionField(
+				productVersionId,
+				select,
+				<%= patcherProjectVersionsJSONObject %>
+			);
 		},
 		['aui-base']
 	);
 
-	AUI().ready(
-		function() {
-			var A = AUI();
+	AUI().ready(function () {
+		var A = AUI();
 
-			var productVersionId = A.one('#<portlet:namespace />patcherProductVersionId').val();
+		var productVersionId = A.one(
+			'#<portlet:namespace />patcherProductVersionId'
+		).val();
 
-			Liferay.Patcher.populateProjectVersionField(productVersionId, select, <%= patcherProjectVersionsJSONObject %>);
-		}
-	);
+		Liferay.Patcher.populateProjectVersionField(
+			productVersionId,
+			select,
+			<%= patcherProjectVersionsJSONObject %>
+		);
+	});
 
-	YUI().ready(
-		'aui-popover',
-		function(Y) {
-			var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-			var tickets = document.getElementById('<portlet:namespace />name');
-			var trigger = Y.one('#<portlet:namespace />name');
+	YUI().ready('aui-popover', function (Y) {
+		var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
+		var tickets = document.getElementById('<portlet:namespace />name');
+		var trigger = Y.one('#<portlet:namespace />name');
 
-			Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger)
-		}
-	);
+		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
+	});
 </aui:script>

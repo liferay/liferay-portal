@@ -164,15 +164,31 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 %>
 
 <aui:script>
-	var mergeOnly = document.getElementById("<portlet:namespace />mergeOnly");
-	var patcherBuildName = document.getElementById("<portlet:namespace />patcherBuildName");
-	var patcherProductVersionId = document.getElementById("<portlet:namespace />patcherProductVersionId");
-	var patcherProjectVersionId = document.getElementById("<portlet:namespace />patcherProjectVersionId");
-	var regressionTextArea = document.getElementById("<portlet:namespace />regressionTicketList");
-	var securityTextArea = document.getElementById("<portlet:namespace />securityTicketList");
-	var select = document.getElementById("<portlet:namespace />patcherProjectVersionId");
-	var troubleshootingTextArea = document.getElementById("<portlet:namespace />troubleshootingTicketList");
-	var useExistingHotfix = document.getElementById("<portlet:namespace />useExistingHotfix");
+	var mergeOnly = document.getElementById('<portlet:namespace />mergeOnly');
+	var patcherBuildName = document.getElementById(
+		'<portlet:namespace />patcherBuildName'
+	);
+	var patcherProductVersionId = document.getElementById(
+		'<portlet:namespace />patcherProductVersionId'
+	);
+	var patcherProjectVersionId = document.getElementById(
+		'<portlet:namespace />patcherProjectVersionId'
+	);
+	var regressionTextArea = document.getElementById(
+		'<portlet:namespace />regressionTicketList'
+	);
+	var securityTextArea = document.getElementById(
+		'<portlet:namespace />securityTicketList'
+	);
+	var select = document.getElementById(
+		'<portlet:namespace />patcherProjectVersionId'
+	);
+	var troubleshootingTextArea = document.getElementById(
+		'<portlet:namespace />troubleshootingTicketList'
+	);
+	var useExistingHotfix = document.getElementById(
+		'<portlet:namespace />useExistingHotfix'
+	);
 
 	<portlet:renderURL var="buildsControllerURL">
 		<portlet:param name="mvcRenderCommandName" value="/patcher/get_ticket_suggestion_fields_builds" />
@@ -181,10 +197,14 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 	Liferay.provide(
 		window,
 		'<portlet:namespace />checkForExistingHotfix',
-		function() {
-			if (patcherProductVersionId.value == <%= PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_QUARTERLY_RELEASES) %>) {
+		function () {
+			if (
+				patcherProductVersionId.value ==
+				<%= PatcherProductVersionUtil.getPatcherProductVersionId(PatcherProductVersionConstants.LABEL_PRODUCT_VERSION_QUARTERLY_RELEASES) %>
+			) {
 				getUseExistingHotfixValue();
-			} else {
+			}
+			else {
 				submitForm(document.<portlet:namespace />fm);
 			}
 		},
@@ -194,8 +214,12 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 	Liferay.provide(
 		window,
 		'<portlet:namespace />productVersionOnChange',
-		function(productVersionId) {
-			Liferay.Patcher.populateProjectVersionField(productVersionId, select, <%= patcherProjectVersionsJSONObject %>);
+		function (productVersionId) {
+			Liferay.Patcher.populateProjectVersionField(
+				productVersionId,
+				select,
+				<%= patcherProjectVersionsJSONObject %>
+			);
 
 			getTicketSuggestionFields();
 		},
@@ -203,7 +227,9 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 	);
 
 	function getTicketSuggestionFields() {
-		var projectVersionId = patcherProjectVersionId.value ? patcherProjectVersionId.value : 0;
+		var projectVersionId = patcherProjectVersionId.value
+			? patcherProjectVersionId.value
+			: 0;
 
 		const formData = Liferay.Util.objectToFormData({
 			tickets: patcherBuildName.value,
@@ -217,13 +243,17 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 				body: formData,
 				method: 'POST',
 			}
-		).then((response) => {
-			return response.json();
-		}).then((data) => {
-			regressionTextArea.value = data.regression
-			securityTextArea.value = data.security
-			troubleshootingTextArea.value = String(responseData.troubleshooting).replaceAll(' ', '')
-		});
+		)
+			.then((response) => {
+				return response.json();
+			})
+			.then((data) => {
+				regressionTextArea.value = data.regression;
+				securityTextArea.value = data.security;
+				troubleshootingTextArea.value = String(
+					responseData.troubleshooting
+				).replaceAll(' ', '');
+			});
 	}
 
 	function getUseExistingHotfixValue() {
@@ -238,27 +268,30 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 				body: formData,
 				method: 'POST',
 			}
-		).then((response) => {
-			return response.json();
-		}).then((data) => {
-			if (data.hotfixExists == true) {
-				var alertMessage = '<liferay-ui:message key="a-hotfix-with-these-parameters-is-already-available-would-you-like-to-use-it-click-ok-to-use-the-existing-hotfix-or-cancel-to-start-the-normal-build-process" />';
+		)
+			.then((response) => {
+				return response.json();
+			})
+			.then((data) => {
+				if (data.hotfixExists == true) {
+					var alertMessage =
+						'<liferay-ui:message key="a-hotfix-with-these-parameters-is-already-available-would-you-like-to-use-it-click-ok-to-use-the-existing-hotfix-or-cancel-to-start-the-normal-build-process" />';
 
-				if (confirm(alertMessage)) {
-					mergeOnly.value = true;
+					if (confirm(alertMessage)) {
+						mergeOnly.value = true;
 
-					useExistingHotfix.value = true;
+						useExistingHotfix.value = true;
+					}
 				}
-			}
 
-			submitForm(document.<portlet:namespace />fm);
-		});
+				submitForm(document.<portlet:namespace />fm);
+			});
 	}
 
 	Liferay.provide(
 		window,
 		'<portlet:namespace />projectVersionOnChange',
-		function(projectVersionId) {
+		function (projectVersionId) {
 			getTicketSuggestionFields();
 		},
 		['aui-base', 'liferay-portlet-url']
@@ -267,11 +300,13 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 	Liferay.provide(
 		window,
 		'<portlet:namespace />troubleshootAddOnClick',
-		function() {
+		function () {
 			if (patcherBuildName.value) {
-				patcherBuildName.value = patcherBuildName.value + "," + troubleshootingTextArea.value
-			} else {
-				patcherBuildName.value = troubleshootingTextArea.value
+				patcherBuildName.value =
+					patcherBuildName.value + ',' + troubleshootingTextArea.value;
+			}
+			else {
+				patcherBuildName.value = troubleshootingTextArea.value;
 			}
 		},
 		['aui-base']
@@ -280,8 +315,9 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 	Liferay.provide(
 		window,
 		'<portlet:namespace />securityAddOnClick',
-		function() {
-			patcherBuildName.value = patcherBuildName.value + "," + securityTextArea.value
+		function () {
+			patcherBuildName.value =
+				patcherBuildName.value + ',' + securityTextArea.value;
 		},
 		['aui-base']
 	);
@@ -289,55 +325,63 @@ JSONObject patcherProjectVersionsJSONObject = JSONFactoryUtil.createJSONObject(J
 	Liferay.provide(
 		window,
 		'<portlet:namespace />regressionAddOnClick',
-		function() {
-			patcherBuildName.value = patcherBuildName.value + "," + regressionTextArea.value
+		function () {
+			patcherBuildName.value =
+				patcherBuildName.value + ',' + regressionTextArea.value;
 		},
 		['aui-base']
 	);
 
-	AUI().ready(
-		function() {
-			var A = AUI();
+	AUI().ready(function () {
+		var A = AUI();
 
-			var productVersionId = A.one('#<portlet:namespace />patcherProductVersionId').val();
+		var productVersionId = A.one(
+			'#<portlet:namespace />patcherProductVersionId'
+		).val();
 
-			Liferay.Patcher.populateProjectVersionField(productVersionId, select, <%= patcherProjectVersionsJSONObject %>);
+		Liferay.Patcher.populateProjectVersionField(
+			productVersionId,
+			select,
+			<%= patcherProjectVersionsJSONObject %>
+		);
 
-			var projectVersionId = <%= patcherProjectVersionId %>;
+		var projectVersionId = <%= patcherProjectVersionId %>;
 
-			if (projectVersionId > 0) {
-				A.one('#<portlet:namespace />patcherProjectVersionId').val(projectVersionId);
-			}
+		if (projectVersionId > 0) {
+			A.one('#<portlet:namespace />patcherProjectVersionId').val(
+				projectVersionId
+			);
+		}
 
-			YUI().use('event-valuechange', function(Y) {
-				Y.one('#<portlet:namespace />patcherBuildName').on('valuechange', function(e) {
+		YUI().use('event-valuechange', function (Y) {
+			Y.one('#<portlet:namespace />patcherBuildName').on(
+				'valuechange',
+				function (e) {
 					if (patcherProductVersionId && patcherProjectVersionId) {
 						getTicketSuggestionFields();
 					}
-				});
-			});
-		}
-	);
+				}
+			);
+		});
+	});
 
-	YUI().ready(
-		'aui-popover',
-		function(Y) {
-			var align_points = [Y.WidgetPositionAlign.BL, Y.WidgetPositionAlign.BR];
-			var tickets = document.getElementById('<portlet:namespace />patcherBuildName');
-			var trigger = Y.one('#<portlet:namespace />patcherBuildName');
+	YUI().ready('aui-popover', function (Y) {
+		var align_points = [Y.WidgetPositionAlign.BL, Y.WidgetPositionAlign.BR];
+		var tickets = document.getElementById(
+			'<portlet:namespace />patcherBuildName'
+		);
+		var trigger = Y.one('#<portlet:namespace />patcherBuildName');
 
-			Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger)
-		}
-	);
+		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
+	});
 
-	YUI().ready(
-		'aui-popover',
-		function(Y) {
-			var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-			var tickets = document.getElementById('<portlet:namespace />troubleshootingTicketList');
-			var trigger = Y.one('#<portlet:namespace />troubleshootingTicketList');
+	YUI().ready('aui-popover', function (Y) {
+		var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
+		var tickets = document.getElementById(
+			'<portlet:namespace />troubleshootingTicketList'
+		);
+		var trigger = Y.one('#<portlet:namespace />troubleshootingTicketList');
 
-			Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger)
-		}
-	);
+		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
+	});
 </aui:script>

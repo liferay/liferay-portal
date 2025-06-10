@@ -1,145 +1,176 @@
-AUI().use(
-	function(A) {
-		Liferay.namespace('Patcher');
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
 
-		Liferay.Patcher = {
-			closeWindow: function() {
-				var dialog = Liferay.Util.getWindow();
+AUI().use((A) => {
+	Liferay.namespace('Patcher');
 
-				if (dialog) {
-					dialog.hide();
-				}
-			},
-			compareTicket: function(a, b) {
-				var aParts = a.split('-');
-				var bParts = b.split('-');
+	Liferay.Patcher = {
+		closeWindow () {
+			const dialog = Liferay.Util.getWindow();
 
-				if (aParts[0] != bParts[0]) {
-					return aParts[0] > bParts[0] ? 1 : -1;
-				}
+			if (dialog) {
+				dialog.hide();
+			}
+		},
+		compareTicket (a, b) {
+			const aParts = a.split('-');
+			const bParts = b.split('-');
 
-				if ((aParts.length == 1) || (bParts.length == 1)) {
-					return bParts.length - aParts.length;
-				}
+			if (aParts[0] != bParts[0]) {
+				return aParts[0] > bParts[0] ? 1 : -1;
+			}
 
-				return parseInt(aParts[1]) - parseInt(bParts[1]);
-			},
-			getTicketLink: function(className, ticket, title) {
-				if (ticket.toUpperCase() != ticket) {
-					return ticket;
-				}
+			if (aParts.length == 1 || bParts.length == 1) {
+				return bParts.length - aParts.length;
+			}
 
-				var ticketURL = 'https://liferay.atlassian.net/browse/' + ticket;
+			return parseInt(aParts[1]) - parseInt(bParts[1]);
+		},
+		getTicketLink (className, ticket, title) {
+			if (ticket.toUpperCase() != ticket) {
+				return ticket;
+			}
 
-				if (className) {
-					var productVersionElement = querySelector('patcherProductVersionId');
-					var productVersionId = productVersionElement.value;
-					var projectVersionElement = querySelector('patcherProjectVersionId');
-					var projectVersionId = projectVersionElement.value;
+			let ticketURL = 'https://liferay.atlassian.net/browse/' + ticket;
 
-					var params = {
-						advancedSearch: true,
-						andOperator: true,
-						hideOldFixVersions: true,
-						patcherFixName: ticket,
-						patcherProductVersionId: productVersionId,
-						patcherProjectVersionIdFilter: projectVersionId
-					};
-
-					ticketURL = 'https://patcher.liferay.com/group/guest/patching/-/osb_patcher?' + getQueryString(params);
-				}
-
-				if (!title) {
-					title = ticket;
-				}
-
-				return '<a class="nowrap ' + className + '" href="' + ticketURL + '" title="' + title + '" target="_blank">' + ticket + '</a>';
-			},
-			getTicketLinks: function(text) {
-				return text.split(',').map(function(x) { return x.trim(); }).sort(Liferay.Patcher.compareTicket).map(Liferay.Patcher.getTicketLink.bind(null, '')).join(', ');
-			},
-			getTicketLinksPopover: function(Y, align_points, tickets, trigger) {
-				var popover = new Y.Popover(
-					{
-						align: {
-							node: trigger,
-							points: align_points
-						},
-						headerContent: 'JIRA Links',
-						bodyContent: Liferay.Patcher.getTicketLinks(tickets.value),
-						position: 'right',
-						visible: false,
-						zIndex: 1
-					}
-				).render();
-
-				trigger.on(
-					'click',
-					function() {
-						popover.set('visible', !popover.get('visible'));
-						popover.set('bodyContent', Liferay.Patcher.getTicketLinks(tickets.value));
-					}
+			if (className) {
+				const productVersionElement = querySelector(
+					'patcherProductVersionId'
 				);
-
-				trigger.on(
-					'change',
-					function() {
-						popover.set('bodyContent', Liferay.Patcher.getTicketLinks(tickets.value));
-					}
+				const productVersionId = productVersionElement.value;
+				const projectVersionElement = querySelector(
+					'patcherProjectVersionId'
 				);
-			},
-			openWindow: function(url, title, modal, width) {
-				Liferay.Util.openWindow(
-					{
-						dialog: {
-							align: Liferay.Util.Window.ALIGN_CENTER,
-							modal: modal,
-							width: width
-						},
-						title: title,
-						uri: url
-					}
+				const projectVersionId = projectVersionElement.value;
+
+				const params = {
+					advancedSearch: true,
+					andOperator: true,
+					hideOldFixVersions: true,
+					patcherFixName: ticket,
+					patcherProductVersionId: productVersionId,
+					patcherProjectVersionIdFilter: projectVersionId,
+				};
+
+				ticketURL =
+					'https://patcher.liferay.com/group/guest/patching/-/osb_patcher?' +
+					getQueryString(params);
+			}
+
+			if (!title) {
+				title = ticket;
+			}
+
+			return (
+				'<a class="nowrap ' +
+				className +
+				'" href="' +
+				ticketURL +
+				'" title="' +
+				title +
+				'" target="_blank">' +
+				ticket +
+				'</a>'
+			);
+		},
+		getTicketLinks (text) {
+			return text
+				.split(',')
+				.map((x) => {
+					return x.trim();
+				})
+				.sort(Liferay.Patcher.compareTicket)
+				.map(Liferay.Patcher.getTicketLink.bind(null, ''))
+				.join(', ');
+		},
+		getTicketLinksPopover (Y, align_points, tickets, trigger) {
+			const popover = new Y.Popover({
+				align: {
+					node: trigger,
+					points: align_points,
+				},
+				headerContent: 'JIRA Links',
+				bodyContent: Liferay.Patcher.getTicketLinks(tickets.value),
+				position: 'right',
+				visible: false,
+				zIndex: 1,
+			}).render();
+
+			trigger.on('click', () => {
+				popover.set('visible', !popover.get('visible'));
+				popover.set(
+					'bodyContent',
+					Liferay.Patcher.getTicketLinks(tickets.value)
 				);
-			},
-			populateProjectVersionField: function(productVersionId, select, map) {
-				while (select.firstChild) {
-					select.removeChild(select.firstChild);
-				}
+			});
 
-				if (productVersionId && (productVersionId != 0)) {
-					var projectVersions = map[productVersionId];
+			trigger.on('change', () => {
+				popover.set(
+					'bodyContent',
+					Liferay.Patcher.getTicketLinks(tickets.value)
+				);
+			});
+		},
+		openWindow (url, title, modal, width) {
+			Liferay.Util.openWindow({
+				dialog: {
+					align: Liferay.Util.Window.ALIGN_CENTER,
+					modal,
+					width,
+				},
+				title,
+				uri: url,
+			});
+		},
+		populateProjectVersionField (productVersionId, select, map) {
+			while (select.firstChild) {
+				select.removeChild(select.firstChild);
+			}
 
-					for (var i = 0; i < projectVersions.length; i++) {
-						if (!projectVersions[i].hide) {
-							var option = document.createElement('option');
+			if (productVersionId && productVersionId != 0) {
+				const projectVersions = map[productVersionId];
 
-							option.innerHTML = projectVersions[i].name;
+				for (let i = 0; i < projectVersions.length; i++) {
+					if (!projectVersions[i].hide) {
+						const option = document.createElement('option');
 
-							option.value = projectVersions[i].patcherProjectVersionId;
+						option.innerHTML = projectVersions[i].name;
 
-							select.appendChild(option);
-						}
+						option.value =
+							projectVersions[i].patcherProjectVersionId;
+
+						select.appendChild(option);
 					}
 				}
-			},
-			updateProductVersionId: function(url, productVersionId, namespace) {
-				if (url.indexOf('patcherProductVersionId') === -1) {
-					if (url.indexOf('?') === -1) {
-						url += '?';
-					}
-					else {
-						url += '&';
-					}
-
-					var newurl = url + namespace + 'patcherProductVersionId=' + productVersionId;
+			}
+		},
+		updateProductVersionId (url, productVersionId, namespace) {
+			if (url.indexOf('patcherProductVersionId') === -1) {
+				if (url.indexOf('?') === -1) {
+					url += '?';
 				}
 				else {
-					var re = /patcherProductVersionId=[0-9]*/;
-
-					var newurl = url.replace(re, 'patcherProductVersionId=' + productVersionId);
+					url += '&';
 				}
-				return newurl;
+
+				var newurl =
+					url +
+					namespace +
+					'patcherProductVersionId=' +
+					productVersionId;
 			}
-		}
-	}
-);
+			else {
+				const re = /patcherProductVersionId=[0-9]*/;
+
+				var newurl = url.replace(
+					re,
+					'patcherProductVersionId=' + productVersionId
+				);
+			}
+
+			return newurl;
+		},
+	};
+});

@@ -299,14 +299,13 @@ SearchContainer<PatcherFix> patcherFixSearchContainer = patcherViewFixesDisplayC
 		});
 	}
 
-	YUI().ready(
-		'aui-popover',
-		function(Y) {
-			var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-			var tickets = document.getElementById('<portlet:namespace />patcherFixName');
-			var trigger = Y.one('#<portlet:namespace />patcherFixName');
+	YUI().ready('aui-popover', function (Y) {
+		var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
+		var tickets = document.getElementById(
+			'<portlet:namespace />patcherFixName'
+		);
+		var trigger = Y.one('#<portlet:namespace />patcherFixName');
 
-			Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger)
-		}
-	);
+		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
+	});
 </aui:script>

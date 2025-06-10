@@ -465,21 +465,20 @@
 	Liferay.provide(
 		window,
 		'<portlet:namespace />confirm',
-		function(message, url) {
+		function (message, url) {
 			if (confirm(message)) {
 				window.location.href = url;
 			}
 		}
 	);
 
-	YUI().ready(
-		'aui-popover',
-		function(Y) {
-			var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-			var tickets = document.getElementById('_1_WAR_osbpatcherportlet_patcherBuildName');
-			var trigger = Y.one('#_1_WAR_osbpatcherportlet_patcherBuildName');
+	YUI().ready('aui-popover', function (Y) {
+		var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
+		var tickets = document.getElementById(
+			'_1_WAR_osbpatcherportlet_patcherBuildName'
+		);
+		var trigger = Y.one('#_1_WAR_osbpatcherportlet_patcherBuildName');
 
-			Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger)
-		}
-	);
+		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
+	});
 </aui:script>

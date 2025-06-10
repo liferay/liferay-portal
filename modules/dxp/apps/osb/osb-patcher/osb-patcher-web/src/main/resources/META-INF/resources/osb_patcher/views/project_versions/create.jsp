@@ -90,21 +90,25 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 </aui:form>
 
 <aui:script>
-	AUI().ready(
-		function() {
-			<portlet:namespace />toggleFixedIssuesField();
-			<portlet:namespace />toggleHideCheckbox();
-		}
-	);
+	AUI().ready(function () {
+		<portlet:namespace />toggleFixedIssuesField();
+		<portlet:namespace />toggleHideCheckbox();
+	});
 
 	function <portlet:namespace />toggleFixedIssuesField() {
 		var A = AUI();
 
-		var dxp70AndNewerPatcherProductVersionIds = <%= patcherProjectVersionsDisplayContext.getDXP70AndNewerPatcherProductVersionIdsJSONArray() %>;
+		var dxp70AndNewerPatcherProductVersionIds =
+			<%= patcherProjectVersionsDisplayContext.getDXP70AndNewerPatcherProductVersionIdsJSONArray() %>;
 
-		var patcherProductVersionId = A.one('#<portlet:namespace />patcherProductVersionId').val();
+		var patcherProductVersionId = A.one(
+			'#<portlet:namespace />patcherProductVersionId'
+		).val();
 
-		if (dxp70AndNewerPatcherProductVersionIds.indexOf(patcherProductVersionId) < 0) {
+		if (
+			dxp70AndNewerPatcherProductVersionIds.indexOf(patcherProductVersionId) <
+			0
+		) {
 			A.one('#<portlet:namespace />displayingFixedIssues').hide();
 			A.one('#<portlet:namespace />fixedIssues').val('');
 		}
@@ -116,13 +120,21 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 	function <portlet:namespace />toggleHideCheckbox() {
 		var A = AUI();
 
-		var productVersionId = A.one('#<portlet:namespace />patcherProductVersionId').val();
+		var productVersionId = A.one(
+			'#<portlet:namespace />patcherProductVersionId'
+		).val();
 
-		var combined = A.one('#<portlet:namespace />combinedBranch').attr('checked');
+		var combined = A.one('#<portlet:namespace />combinedBranch').attr(
+			'checked'
+		);
 
-		var marketplaceReleasePatcherProductVersionIds = <%= patcherProjectVersionsDisplayContext.getMarketplaceReleasePatcherProductVersionIdsJSONArray() %>;
+		var marketplaceReleasePatcherProductVersionIds =
+			<%= patcherProjectVersionsDisplayContext.getMarketplaceReleasePatcherProductVersionIdsJSONArray() %>;
 
-		if (marketplaceReleasePatcherProductVersionIds.includes(productVersionId) && !combined) {
+		if (
+			marketplaceReleasePatcherProductVersionIds.includes(productVersionId) &&
+			!combined
+		) {
 			A.one('#<portlet:namespace />displayingHide').show();
 		}
 		else {

@@ -203,20 +203,17 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 </liferay-ui:search-container>
 
 <aui:script>
-	Liferay.on(
-		'allPortletsReady',
-		function(event) {
-			if (typeof moment !== 'undefined') {
-				AUI().all('.relative-date').each(
-					function(node, index, nodeList) {
-						var date = node.getData('date');
+	Liferay.on('allPortletsReady', function (event) {
+		if (typeof moment !== 'undefined') {
+			AUI()
+				.all('.relative-date')
+				.each(function (node, index, nodeList) {
+					var date = node.getData('date');
 
-						var relativeTime = moment(date).fromNow();
+					var relativeTime = moment(date).fromNow();
 
-						node.text(relativeTime);
-					}
-				);
-			}
+					node.text(relativeTime);
+				});
 		}
-	);
+	});
 </aui:script>
