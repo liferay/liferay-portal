@@ -34,49 +34,51 @@ public class PreupgradeVerifyDatabaseCharacterSet
 					db.getCharacterSet(connection));
 		}
 
-		if ((db.getDBType() == DBType.MYSQL) ||
-			(db.getDBType() == DBType.MARIADB)) {
+		if ((db.getDBType() != DBType.MYSQL) &&
+			(db.getDBType() != DBType.MARIADB)) {
 
-			Set<String> portalTables =
-				DBResourceUtil.getServiceComponentModuleTableNames(connection);
+			return;
+		}
 
-			portalTables.addAll(DBResourceUtil.getPortalTableNames(connection));
+		Set<String> portalTables =
+			DBResourceUtil.getServiceComponentModuleTableNames(connection);
 
-			portalTables.addAll(DBResourceUtil.getModuleTableNames(connection));
+		portalTables.addAll(DBResourceUtil.getPortalTableNames(connection));
 
-			String sql = StringBundler.concat(
-				"select character_set_name, collation_name, table_name from ",
-				"information_schema.columns join information_schema.schemata ",
-				"on information_schema.columns.table_schema = ",
-				"information_schema.schemata.schema_name where ",
-				"information_schema.columns.table_schema = database() and ",
-				"information_schema.columns.collation_name is not null and",
-				"(information_schema.columns.character_set_name != ",
-				"information_schema.schemata.default_character_set_name or ",
-				"information_schema.columns.collation_name != ",
-				"information_schema.schemata.default_collation_name)");
+		portalTables.addAll(DBResourceUtil.getModuleTableNames(connection));
 
-			try (PreparedStatement preparedStatement =
-					connection.prepareStatement(sql)) {
+		String sql = StringBundler.concat(
+			"select character_set_name, collation_name, table_name from ",
+			"information_schema.columns join information_schema.schemata on ",
+			"information_schema.columns.table_schema = ",
+			"information_schema.schemata.schema_name where ",
+			"information_schema.columns.table_schema = database() and ",
+			"information_schema.columns.collation_name is not null and",
+			"(information_schema.columns.character_set_name != ",
+			"information_schema.schemata.default_character_set_name or ",
+			"information_schema.columns.collation_name != ",
+			"information_schema.schemata.default_collation_name)");
 
-				ResultSet resultSet = preparedStatement.executeQuery();
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				sql)) {
 
-				while (resultSet.next()) {
-					DBInspector dbInspector = new DBInspector(connection);
+			ResultSet resultSet = preparedStatement.executeQuery();
 
-					String tableName = resultSet.getString("table_name");
+			while (resultSet.next()) {
+				DBInspector dbInspector = new DBInspector(connection);
 
-					if (portalTables.contains(
-							dbInspector.normalizeName(tableName))) {
+				String tableName = resultSet.getString("table_name");
 
-						throw new VerifyException(
-							StringBundler.concat(
-								"Mixed database character set and collation: ",
-								resultSet.getString("character_set_name"),
-								StringPool.FORWARD_SLASH,
-								resultSet.getString("collation_name"), " on ",
-								tableName));
-					}
+				if (portalTables.contains(
+						dbInspector.normalizeName(tableName))) {
+
+					throw new VerifyException(
+						StringBundler.concat(
+							"Mixed database character set and collation: ",
+							resultSet.getString("character_set_name"),
+							StringPool.FORWARD_SLASH,
+							resultSet.getString("collation_name"), " on ",
+							tableName));
 				}
 			}
 		}
