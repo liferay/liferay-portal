@@ -22,20 +22,12 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 <aui:button-row>
 	<clay:col>
 		<aui:form action="" method="get" name="fm">
-			<aui:fieldset cssClass="account-search" id="searchFieldset">
-				<aui:input inlineField="<%= true %>" label="" name="accountEntryCode" placeholder="find-account" size="30" title="find-account" type="text" />
-			</aui:fieldset>
+			<div class="py-3">
+				<react:component
+					module="{PatcherAccountsAutocomplete} from osb-patcher-web"
+				/>
+			</div>
 		</aui:form>
-	</clay:col>
-
-	<clay:col
-		cssClass="osb-patcher-loader-container"
-	>
-		<clay:container
-			cssClass="osb-patcher-loader"
-			id="loader"
-			name="loader"
-		/>
 	</clay:col>
 
 	<clay:col>
@@ -209,10 +201,6 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 </liferay-ui:search-container>
 
 <aui:script>
-	function <portlet:namespace />getText(result) {
-		return result.accountEntryCode || '';
-	}
-
 	Liferay.on(
 		'allPortletsReady',
 		function(event) {
@@ -226,112 +214,7 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 						node.text(relativeTime);
 					}
 				);
-			 }
-
-			AUI().use(
-				'autocomplete', 'autocomplete-filters', 'liferay-portlet-url',
-				function(A) {
-					<portlet:renderURL var="viewPatcherAccountsURL">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/index_accounts" />
-					</portlet:renderURL>
-
-					var patcherAccountsJSONURL = Liferay.PortletURL.createURL('<%= viewPatcherAccountsURL %>.json');
-
-					patcherAccountsJSONURL.setPortletId('<%= PatcherPortletKeys.PATCHER %>');
-
-					patcherAccountsJSONURL.setParameter('limit', 10000);
-
-					var loader = A.one("#<portlet:namespace />loader");
-
-					loader.hide();
-
-					var responseData;
-
-					var autoComplete = new A.AutoCompleteList(
-						{
-							activateFirstItem: true,
-							align: {
-								node: '#<portlet:namespace />searchFieldset input',
-								points: ['tl', 'bl']
-							},
-							inputNode: '#<portlet:namespace />accountEntryCode',
-							maxResults: 20,
-							minQueryLength: 0,
-							queryDelay: 0,
-							resultListLocator: 'data',
-							resultTextLocator: <portlet:namespace />getText,
-							source: function() {
-								var inputValue = A.one("#<portlet:namespace />accountEntryCode").get('value');
-
-								if (!inputValue) {
-									return;
-								}
-
-								var myAjaxRequest = A.io.request(
-									patcherAccountsJSONURL.toString(),
-									{
-										autoLoad: true,
-										data: {
-											<portlet:namespace />keywords:inputValue
-										},
-										dataType: 'json',
-										method: 'GET',
-										on: {
-											success:function() {
-												var results = [];
-
-												var data = this.get('responseData');
-
-												data.data.forEach(
-													function(d) {
-														if (results.length < 20) {
-															results.push({raw: d, display: d.accountEntryCode, text: d.accountEntryCode})
-														}
-													}
-												);
-
-												loader.hide();
-
-												autoComplete.fire("results", {data: data, query: inputValue, results: results});
-
-												responseData = data;
-											}
-										},
-										sync:false
-									}
-								);
-
-								loader.show();
-
-								myAjaxRequest.start();
-
-								return responseData;
-							}
-						}
-					);
-
-					autoComplete.render();
-
-					autoComplete.on(
-						'select',
-						function(event) {
-							event.preventDefault();
-
-							<portlet:renderURL var="viewPatcherAccountURL">
-								<portlet:param name="mvcRenderCommandName" value="/patcher/index_accounts" />
-							</portlet:renderURL>
-
-							var viewPatcherAccountURL = Liferay.PortletURL.createURL('<%= viewPatcherAccountURL %>');
-
-							viewPatcherAccountURL.setPortletId('<%= PatcherPortletKeys.PATCHER %>');
-
-							viewPatcherAccountURL.setParameter('accountEntryCode', event.result.text);
-
-							window.location.href = viewPatcherAccountURL.toString();
-						}
-					);
-				}
-			);
+			}
 		}
 	);
 </aui:script>
