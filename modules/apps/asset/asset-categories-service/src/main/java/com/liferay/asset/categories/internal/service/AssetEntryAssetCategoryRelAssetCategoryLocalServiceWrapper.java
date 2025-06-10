@@ -51,7 +51,7 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 			deleteAssetEntryAssetCategoryRelByAssetCategoryId(
 				category.getCategoryId());
 
-		_reindexCategoryAssetEntries(category.getCategoryId());
+		_reindexAssetCategoryAssetEntries(category.getCategoryId());
 
 		return super.deleteCategory(category, skipRebuildTree);
 	}
@@ -112,7 +112,7 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 			categoryId);
 
 		if (!Objects.equals(category.getName(), name)) {
-			_reindexCategoryAssetEntries(category.getCategoryId());
+			_reindexAssetCategoryAssetEntries(category.getCategoryId());
 		}
 
 		return super.updateCategory(
@@ -166,7 +166,7 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 			});
 	}
 
-	private void _reindexCategoryAssetEntries(long assetCategoryId) {
+	private void _reindexAssetCategoryAssetEntries(long assetCategoryId) {
 		TransactionCommitCallbackUtil.registerCallback(
 			() -> {
 				Message message = new Message();
