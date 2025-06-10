@@ -78,14 +78,8 @@ public class AssetCategoryAssetEntriesReindexMessageListener
 		return TransformUtil.transform(
 			assetEntryAssetCategoryRels,
 			assetEntryAssetCategoryRel -> {
-				AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+				return _assetEntryLocalService.fetchEntry(
 					assetEntryAssetCategoryRel.getAssetEntryId());
-
-				if (assetEntry != null) {
-					return assetEntry;
-				}
-
-				return null;
 			});
 	}
 
