@@ -166,12 +166,12 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 			});
 	}
 
-	private void _reindexCategoryAssetEntries(long categoryId) {
+	private void _reindexCategoryAssetEntries(long assetCategoryId) {
 		TransactionCommitCallbackUtil.registerCallback(
 			() -> {
 				Message message = new Message();
 
-				message.put("categoryId", categoryId);
+				message.put("categoryId", assetCategoryId);
 
 				_messageBus.sendMessage(
 					DestinationNames.ASSET_CATEGORY_ASSET_ENTRIES_REINDEX,
