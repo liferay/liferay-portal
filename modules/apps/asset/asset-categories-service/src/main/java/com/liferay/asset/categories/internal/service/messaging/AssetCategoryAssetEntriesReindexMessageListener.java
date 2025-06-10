@@ -70,13 +70,10 @@ public class AssetCategoryAssetEntriesReindexMessageListener
 	}
 
 	private List<AssetEntry> _getAssetEntries(long assetCategoryId) {
-		List<AssetEntryAssetCategoryRel> assetEntryAssetCategoryRels =
+		return TransformUtil.transform(
 			_assetEntryAssetCategoryRelLocalService.
 				getAssetEntryAssetCategoryRelsByAssetCategoryId(
-					assetCategoryId);
-
-		return TransformUtil.transform(
-			assetEntryAssetCategoryRels,
+					assetCategoryId),
 			assetEntryAssetCategoryRel -> _assetEntryLocalService.fetchEntry(
 					assetEntryAssetCategoryRel.getAssetEntryId()));
 	}
