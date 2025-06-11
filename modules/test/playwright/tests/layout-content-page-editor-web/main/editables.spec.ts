@@ -29,13 +29,10 @@ const test = mergeTests(
 );
 
 const testWithCKEditor4 = mergeTests(
-	apiHelpersTest,
+	test,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
-	}),
-	isolatedSiteTest,
-	loginTest(),
-	pageEditorPagesTest
+	})
 );
 
 // Remove when the feature flag LPD-11235 is removed
