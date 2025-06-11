@@ -11,6 +11,7 @@ dependencies {
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
+	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
