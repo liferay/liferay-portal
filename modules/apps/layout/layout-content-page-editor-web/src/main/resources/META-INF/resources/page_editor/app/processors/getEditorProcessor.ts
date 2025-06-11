@@ -248,7 +248,13 @@ export default function getEditorProcessor(
 			});
 
 			if (state.element) {
-				render(state.element, lastValue, editableConfig);
+				render(
+					state.element,
+					editorType === 'text'
+						? getEscapedTextFromHTML(lastValue)
+						: lastValue,
+					editableConfig
+				);
 			}
 
 			state = INITIAL_STATE;
@@ -281,6 +287,17 @@ function defaultRender(element: HTMLElement, value: string) {
 	if (!isNullOrUndefined(value)) {
 		element.innerHTML = value;
 	}
+}
+
+function getEscapedTextFromHTML(value: string) {
+	const div = document.createElement('div');
+
+	div.innerHTML = value;
+
+	return (div.textContent || '')
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;');
 }
 
 function initEditorWithClientExtensions({
