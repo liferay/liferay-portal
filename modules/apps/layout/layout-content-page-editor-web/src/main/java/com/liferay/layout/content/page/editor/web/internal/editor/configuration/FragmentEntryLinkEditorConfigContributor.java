@@ -15,6 +15,7 @@ import com.liferay.item.selector.criteria.url.criterion.URLItemSelectorCriterion
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.item.selector.criterion.LayoutItemSelectorCriterion;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
@@ -53,31 +54,49 @@ public class FragmentEntryLinkEditorConfigContributor
 		PortletURL itemSelectorURL = itemSelector.getItemSelectorURL(
 			requestBackedPortletURLFactory, "_EDITOR_NAME_selectItem",
 			getFileItemSelectorCriterion(), getLayoutItemSelectorURL());
+
 		PortletURL imageSelectorURL = itemSelector.getItemSelectorURL(
 			requestBackedPortletURLFactory, "_EDITOR_NAME_selectImage",
 			getImageItemSelectorCriterion(), getURLItemSelectorCriterion());
 
 		jsonObject.put(
-			"allowedContent", ""
-		).put(
-			"disallowedContent", "br"
-		).put(
 			"documentBrowseLinkUrl", itemSelectorURL.toString()
-		).put(
-			"enterMode", 2
-		).put(
-			"extraPlugins", getExtraPluginsLists()
 		).put(
 			"filebrowserImageBrowseLinkUrl", imageSelectorURL.toString()
 		).put(
 			"filebrowserImageBrowseUrl", imageSelectorURL.toString()
-		).put(
-			"removePlugins", getRemovePluginsLists()
-		).put(
-			"skin", "moono-lisa"
-		).put(
-			"toolbars", jsonFactory.createJSONObject()
 		);
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-11235")) {
+			jsonObject.put(
+				"preset", "basic"
+			).put(
+				"removePlugins",
+				new String[] {
+					"Bold", "GeneralHtmlSupport", "Italic", "Image", "Link",
+					"List", "Underline"
+				}
+			).put(
+				"toolbar", new String[0]
+			);
+		}
+		else {
+			jsonObject.put(
+				"allowedContent", ""
+			).put(
+				"disallowedContent", "br"
+			).put(
+				"enterMode", 2
+			).put(
+				"extraPlugins", getExtraPluginsLists()
+			).put(
+				"removePlugins", getRemovePluginsLists()
+			).put(
+				"skin", "moono-lisa"
+			).put(
+				"toolbars", jsonFactory.createJSONObject()
+			);
+		}
 	}
 
 	protected String getExtraPluginsLists() {
