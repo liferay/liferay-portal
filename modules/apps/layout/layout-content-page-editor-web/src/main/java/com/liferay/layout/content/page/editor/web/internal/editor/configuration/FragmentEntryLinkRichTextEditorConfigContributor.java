@@ -73,8 +73,6 @@ public class FragmentEntryLinkRichTextEditorConfigContributor
 
 		if (FeatureFlagManagerUtil.isEnabled("LPD-11235")) {
 			jsonObject.put(
-				"editorType", "ckeditor5"
-			).put(
 				"preset", "advanced"
 			).put(
 				"toolbar",

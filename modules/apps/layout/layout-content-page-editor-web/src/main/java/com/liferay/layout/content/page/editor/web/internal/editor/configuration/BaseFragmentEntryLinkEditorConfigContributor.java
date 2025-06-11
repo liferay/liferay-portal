@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -28,15 +29,22 @@ public class BaseFragmentEntryLinkEditorConfigContributor
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
-		EditorConfiguration editorConfiguration =
-			EditorConfigurationFactoryUtil.getEditorConfiguration(
-				StringPool.BLANK, StringPool.BLANK, "ckeditor5_balloon",
-				Collections.emptyMap(), themeDisplay,
-				requestBackedPortletURLFactory);
+		if (FeatureFlagManagerUtil.isEnabled("LPD-11235")) {
+			EditorConfiguration editorConfiguration =
+				EditorConfigurationFactoryUtil.getEditorConfiguration(
+					StringPool.BLANK, StringPool.BLANK, "ckeditor5_balloon",
+					Collections.emptyMap(), themeDisplay,
+					requestBackedPortletURLFactory);
 
-		JSONObject configJSONObject = editorConfiguration.getConfigJSONObject();
+			JSONObject configJSONObject =
+				editorConfiguration.getConfigJSONObject();
 
-		jsonObject.put("licenseKey", configJSONObject.getString("licenseKey"));
+			jsonObject.put(
+				"editorType", configJSONObject.getString("editorType")
+			).put(
+				"licenseKey", configJSONObject.getString("licenseKey")
+			);
+		}
 	}
 
 }
