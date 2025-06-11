@@ -128,6 +128,10 @@ export default function getEditorProcessor(
 			}
 			else if (data.keyCode === KEYCODES.ENTER) {
 				data.stopPropagation();
+
+				if (editorType === 'text') {
+					data.preventDefault();
+				}
 			}
 		};
 
