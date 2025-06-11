@@ -68,6 +68,12 @@ GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHel
 			<liferay-util:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
 			<liferay-util:param name="searchContainerId" value="<%= searchContainerId %>" />
 		</liferay-util:include>
+
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11309") %>'>
+			<liferay-frontend:component
+				module="{setupMocks} from exportimport-web"
+			/>
+		</c:if>
 	</c:otherwise>
 </c:choose>
 
