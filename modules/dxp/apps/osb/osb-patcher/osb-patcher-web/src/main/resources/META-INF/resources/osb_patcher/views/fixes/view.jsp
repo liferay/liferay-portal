@@ -285,6 +285,7 @@ SearchContainer<PatcherFix> patcherFixSearchContainer = patcherViewFixesDisplayC
 		</liferay-ui:search-container-row>
 
 		<liferay-ui:search-iterator
+			markupView="lexicon"
 			paginate="<%= false %>"
 		/>
 	</liferay-ui:search-container>

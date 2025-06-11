@@ -148,6 +148,7 @@
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator
+		markupView="lexicon"
 		paginate="<%= false %>"
 	/>
 
