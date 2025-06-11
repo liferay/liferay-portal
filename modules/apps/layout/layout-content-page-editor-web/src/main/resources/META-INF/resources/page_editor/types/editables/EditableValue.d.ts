@@ -13,3 +13,9 @@ export type EditableValue = {
 	config?: EditableConfig;
 	defaultValue?: string;
 } & LocalizedValue;
+
+export type LinkEditableValue = {
+	href?: LocalizedValue;
+	rel?: string;
+	target?: string;
+};

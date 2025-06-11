@@ -9,9 +9,9 @@ import {EditableValue} from '../../types/editables/EditableValue';
 import {config} from '../config/index';
 
 export function getEditableLocalizedValue(
-	editableValue: EditableValue,
+	editableValue: EditableValue | undefined,
 	languageId: Liferay.Language.Locale | null = null,
-	defaultValue = ''
+	defaultValue: string = ''
 ) {
 	let content;
 
