@@ -5,14 +5,20 @@
 
 import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 
+import {EditableConfig} from '../../types/editables/EditableValue';
+import {getAlloyEditorProcessor} from '../js-index';
 import {getEditableLinkValue} from '../utils/getEditableLinkValue';
-import getAlloyEditorProcessor from './getAlloyEditorProcessor';
 import {getLinkableEditableEditorWrapper} from './getLinkableEditableEditorWrapper';
 
 export default getAlloyEditorProcessor(
 	'text',
 	getLinkableEditableEditorWrapper,
-	(element, value, editableConfig = {}, languageId) => {
+	(
+		element: HTMLElement,
+		value: string,
+		editableConfig: EditableConfig = {},
+		languageId: Liferay.Language.Locale
+	) => {
 		const link = getEditableLinkValue(editableConfig, languageId);
 
 		if (link.href) {
