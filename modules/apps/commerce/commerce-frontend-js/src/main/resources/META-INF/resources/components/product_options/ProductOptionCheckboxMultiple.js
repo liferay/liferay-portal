@@ -117,6 +117,7 @@ const ProductOptionCheckboxMultiple = ({
 						...(skuOptionsAtomState[skuOptionsKey] || []),
 						{
 							key: productOption.key,
+							required: productOption.required,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
 							skuOptionValueNames,
@@ -164,6 +165,7 @@ const ProductOptionCheckboxMultiple = ({
 				if (skuOption.skuOptionKey === productOption.key) {
 					return {
 						key: productOption.key,
+						required: productOption.required,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
 						skuOptionValueNames: checked
@@ -198,6 +200,7 @@ const ProductOptionCheckboxMultiple = ({
 				...currentSkuOptions,
 				{
 					key: productOption.key,
+					required: productOption.required,
 					skuOptionKey: productOption.key,
 					skuOptionName: productOption.name,
 					skuOptionValueNames: [curProductOptionValue.name],
