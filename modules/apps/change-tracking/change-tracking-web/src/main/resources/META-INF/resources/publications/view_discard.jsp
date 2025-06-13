@@ -24,9 +24,19 @@ renderResponse.setTitle(LanguageUtil.get(request, "discard-changes"));
 		<clay:sheet-section>
 			<h2 class="sheet-title"><liferay-ui:message key="discarded-changes" /></h2>
 
-			<div class="sheet-text">
-				<liferay-ui:message key="the-following-changes-will-be-discarded" />
-			</div>
+			<clay:content-row>
+				<clay:content-col
+					expand="<%= true %>"
+				>
+					<div class="sheet-text">
+						<liferay-ui:message key="the-following-changes-will-be-discarded" />
+					</div>
+				</clay:content-col>
+
+				<clay:content-col>
+					<aui:input id="showHideable" inlineLabel="right" label='<%= LanguageUtil.get(request, "show-all-items") %>' name="show-hideable" onChange='<%= liferayPortletResponse.getNamespace() + "handleShowAllItemsToggleChange();" %>' type="toggle-switch" value="<%= viewRelatedEntriesDisplayContext.showHideable() %>" />
+				</clay:content-col>
+			</clay:content-row>
 
 			<div>
 				<react:component
@@ -43,3 +53,19 @@ renderResponse.setTitle(LanguageUtil.get(request, "discard-changes"));
 		</clay:sheet-footer>
 	</div>
 </div>
+
+<aui:script>
+	function <portlet:namespace />handleShowAllItemsToggleChange() {
+		var showHideableToggleState =
+			'<%= !viewRelatedEntriesDisplayContext.showHideable() %>';
+
+		let url = new URL(window.location.href);
+
+		url.searchParams.set(
+			'<portlet:namespace />showHideable',
+			showHideableToggleState
+		);
+
+		window.location.href = url;
+	}
+</aui:script>

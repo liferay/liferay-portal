@@ -37,6 +37,8 @@ public class ViewDiscardMVCRenderCommand implements MVCRenderCommand {
 	public String render(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
+		renderRequest.setAttribute("actionType", "discard");
+
 		ViewRelatedEntriesDisplayContext viewRelatedEntriesDisplayContext =
 			new ViewRelatedEntriesDisplayContext(
 				_ctCollectionLocalService, _ctDisplayRendererRegistry,
