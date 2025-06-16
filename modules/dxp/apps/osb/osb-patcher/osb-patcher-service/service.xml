@@ -219,7 +219,7 @@
 		<column name="childPatcherFixId" type="long" />
 		<column name="parentPatcherFixId" type="long" />
 	</entity>
-	<entity local-service="true" name="PatcherProductVersion" remote-service="false" table="PProductVersion">
+	<entity local-service="true" name="PatcherProductVersion" remote-service="false" table="OSBPatcher_PProductVersion">
 
 		<!-- PK fields -->
 
@@ -239,7 +239,7 @@
 		<column name="moduleFolderName" type="String" />
 		<column name="name" type="String" />
 	</entity>
-	<entity local-service="true" name="PatcherProjectVersion" remote-service="false" table="PProjectVersion">
+	<entity local-service="true" name="PatcherProjectVersion" remote-service="false" table="OSBPatcher_PProjectVersion">
 
 		<!-- PK fields -->
 
