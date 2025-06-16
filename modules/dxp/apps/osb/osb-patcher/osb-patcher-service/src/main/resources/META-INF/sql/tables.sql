@@ -19,6 +19,38 @@ create table OSBPatcher_PFixes_PFixPacks (
 	primary key (patcherFixId, patcherFixPackId)
 );
 
+create table OSBPatcher_PProductVersion (
+	mvccVersion LONG default 0 not null,
+	patcherProductVersionId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	fixDeliveryMethod INTEGER,
+	moduleFolderName VARCHAR(500) null,
+	name VARCHAR(75) null
+);
+
+create table OSBPatcher_PProjectVersion (
+	mvccVersion LONG default 0 not null,
+	patcherProjectVersionId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	patcherProductVersionId LONG,
+	rootPatcherProjectVersionId LONG,
+	combinedBranch BOOLEAN,
+	committish VARCHAR(150) null,
+	fixedIssues TEXT null,
+	hide BOOLEAN,
+	name VARCHAR(150) null,
+	productVersion INTEGER,
+	repositoryName VARCHAR(75) null
+);
+
 create table OSBPatcher_PatcherAccount (
 	mvccVersion LONG default 0 not null,
 	patcherAccountId LONG not null primary key,

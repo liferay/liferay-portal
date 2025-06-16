@@ -152,7 +152,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="childPatcherFixId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="parentPatcherFixId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
-	<class dynamic-update="true" name="com.liferay.osb.patcher.model.impl.PatcherProductVersionImpl" table="PProductVersion">
+	<class dynamic-update="true" name="com.liferay.osb.patcher.model.impl.PatcherProductVersionImpl" table="OSBPatcher_PProductVersion">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="patcherProductVersionId" type="long">
 			<generator class="assigned" />
 		</id>
@@ -166,7 +166,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="moduleFolderName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
-	<class dynamic-update="true" name="com.liferay.osb.patcher.model.impl.PatcherProjectVersionImpl" table="PProjectVersion">
+	<class dynamic-update="true" name="com.liferay.osb.patcher.model.impl.PatcherProjectVersionImpl" table="OSBPatcher_PProjectVersion">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="patcherProjectVersionId" type="long">
 			<generator class="assigned" />
 		</id>
