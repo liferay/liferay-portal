@@ -224,7 +224,7 @@ public class DispatchTriggerDisplayContextTest {
 			new MockLiferayPortletRenderResponse();
 
 		mockLiferayPortletRenderRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			mockLiferayPortletRenderResponse);
 
 		_mvcRenderCommand.render(

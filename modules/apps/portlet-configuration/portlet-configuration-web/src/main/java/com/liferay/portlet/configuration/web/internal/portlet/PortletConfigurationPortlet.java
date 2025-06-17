@@ -190,7 +190,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		}
 
 		PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG);
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		configurationAction.processAction(
 			portletConfig, actionRequest, actionResponse);
@@ -391,7 +391,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		_portletRequestThreadLocal.set(actionRequest);
 
 		actionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, getPortletConfig());
+			JavaConstants.JAKARTA_PORTLET_CONFIG, getPortletConfig());
 
 		super.processAction(actionRequest, actionResponse);
 	}
@@ -404,7 +404,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		_portletRequestThreadLocal.set(eventRequest);
 
 		eventRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, getPortletConfig());
+			JavaConstants.JAKARTA_PORTLET_CONFIG, getPortletConfig());
 
 		super.processEvent(eventRequest, eventResponse);
 	}
@@ -417,7 +417,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		_portletRequestThreadLocal.set(renderRequest);
 
 		renderRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, getPortletConfig());
+			JavaConstants.JAKARTA_PORTLET_CONFIG, getPortletConfig());
 
 		super.render(renderRequest, renderResponse);
 	}
@@ -469,7 +469,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 		_portletRequestThreadLocal.set(resourceRequest);
 
 		resourceRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, getPortletConfig());
+			JavaConstants.JAKARTA_PORTLET_CONFIG, getPortletConfig());
 
 		super.serveResource(resourceRequest, resourceResponse);
 	}

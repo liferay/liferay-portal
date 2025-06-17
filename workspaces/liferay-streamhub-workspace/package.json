@@ -1,0 +1,14 @@
+{
+	"devDependencies": {
+		"@liferay/eslint-plugin": "1.6.0",
+		"@liferay/prettier-plugin": "1.1.5",
+		"@liferay/stylelint-plugin": "1.1.0",
+		"@typescript-eslint/eslint-plugin": "^5.12.1",
+		"@typescript-eslint/parser": "^7.8.0",
+		"babel-eslint": "^10.1.0",
+		"eslint": "7.32.0",
+		"prettier": "3.2.5",
+		"typescript": "4.4.2"
+	},
+	"private": true
+}

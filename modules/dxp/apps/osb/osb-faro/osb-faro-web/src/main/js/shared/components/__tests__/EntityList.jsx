@@ -51,13 +51,13 @@ describe('EntityList', () => {
 
 		expect(
 			container.querySelectorAll(
-				'.lexicon-icon-individual-static-segment'
+				'.lexicon-icon-individual_static_segment'
 			).length
 		).toBe(2);
 
 		expect(
 			container.querySelectorAll(
-				'.lexicon-icon-individual-dynamic-segment'
+				'.lexicon-icon-individual_dynamic_segment'
 			).length
 		).toBe(1);
 	});

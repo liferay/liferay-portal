@@ -24,8 +24,8 @@ public class PublicationsRegularRolesUtil {
 	public static String[] getModelResourceActions(String role) {
 		if (Objects.equals(role, RoleConstants.PUBLICATIONS_ADMIN)) {
 			return new String[] {
-				ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW,
-				CTActionKeys.INVITE_USERS, CTActionKeys.PUBLISH
+				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
+				ActionKeys.VIEW, CTActionKeys.INVITE_USERS, CTActionKeys.PUBLISH
 			};
 		}
 		else if (Objects.equals(role, RoleConstants.PUBLICATIONS_EDITOR)) {

@@ -11,7 +11,7 @@ type TChannel = {
 	currencyCode?: string;
 	id?: number;
 	name?: string;
-	siteGroupId: number | string;
+	siteGroupId?: number | string;
 	type?: string;
 };
 

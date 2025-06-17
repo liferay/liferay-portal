@@ -236,7 +236,7 @@ public class DepotBreadcrumbEntryContributorTest {
 		mockPortletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, mockPortletRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, mockPortletRequest);
 
 		return mockHttpServletRequest;
 	}

@@ -136,5 +136,17 @@
 			"ja-JP": "この四半期ごとのリリースでは、基本機能および性能に重大な変更点はありません。",
 			"pt-BR": "Não há alterações significativas nos recursos e capacidades prontos para uso nesta versão trimestral (Quarterly Release)."
 		}
+	},
+	{
+		"key": "welcome-to-customer-portal",
+		"value": {
+			"en-US": "Welcome to Customer Portal"
+		}
+	},
+	{
+		"key": "welcome-x",
+		"value": {
+			"en-US": "Welcome, {0}"
+		}
 	}
 ]

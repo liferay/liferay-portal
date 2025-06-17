@@ -7,26 +7,20 @@ package com.liferay.portal.verify;
 
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.Connection;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This abstract class should be extended for startup processes that verify the
@@ -36,12 +30,6 @@ import java.util.regex.Pattern;
  * @author Hugo Huijser
  */
 public abstract class VerifyProcess extends BaseDBProcess {
-
-	public static final int ALWAYS = -1;
-
-	public static final int NEVER = 0;
-
-	public static final int ONCE = 1;
 
 	public void verify() throws VerifyException {
 		long start = System.currentTimeMillis();
@@ -122,44 +110,12 @@ public abstract class VerifyProcess extends BaseDBProcess {
 		}
 	}
 
-	protected Set<String> getPortalTableNames() throws Exception {
-		if (_portalTableNames != null) {
-			return _portalTableNames;
-		}
-
-		Matcher matcher = _createTablePattern.matcher(
-			DBResourceUtil.getPortalTablesSQL());
-
-		Set<String> tableNames = new HashSet<>();
-
-		while (matcher.find()) {
-			String match = matcher.group(1);
-
-			tableNames.add(StringUtil.toLowerCase(match));
-		}
-
-		_portalTableNames = tableNames;
-
-		return tableNames;
-	}
-
 	protected boolean isForceConcurrent(
 		Collection<? extends Callable<Void>> callables) {
 
 		return false;
 	}
 
-	protected boolean isPortalTableName(String tableName) throws Exception {
-		Set<String> portalTableNames = getPortalTableNames();
-
-		return portalTableNames.contains(StringUtil.toLowerCase(tableName));
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(VerifyProcess.class);
-
-	private static final Pattern _createTablePattern = Pattern.compile(
-		"create table (\\S*) \\(");
-
-	private Set<String> _portalTableNames;
 
 }

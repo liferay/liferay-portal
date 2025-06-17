@@ -5,25 +5,25 @@ const DATA_SOURCE_ARRAY = [
 	{
 		dataSources: [
 			{
-				iconName: 'csv-logo',
+				iconName: 'csv_logo',
 				iconSize: 'xl',
 				name: 'test',
 				url: '#'
 			},
 			{
-				iconName: 'csv-logo',
+				iconName: 'csv_logo',
 				iconSize: 'xl',
 				name: 'test1',
 				url: '#'
 			},
 			{
-				iconName: 'liferay-logo',
+				iconName: 'liferay_logo',
 				iconSize: 'xxl',
 				name: 'test 2',
 				url: '#'
 			},
 			{
-				iconName: 'csv-logo',
+				iconName: 'csv_logo',
 				iconSize: 'xl',
 				name: 'testing long text that should wrap',
 				url: '#'

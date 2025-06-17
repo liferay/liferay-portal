@@ -17,6 +17,12 @@ export class ProductPublisherPage {
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly optionsButton: Locator;
 	readonly page: Page;
+	readonly productCard: (productName: string) => Locator;
+	readonly productCardAddToCartButton: (productName: string) => Locator;
+	readonly productCardPrice: (
+		productName: string,
+		productPrice: string
+	) => Locator;
 	readonly productLink: (productName: string) => Promise<Locator>;
 	readonly productSku: (productSku: string) => Promise<Locator>;
 	readonly removeTagNameButton: (tagName: string) => Promise<Locator>;
@@ -49,6 +55,17 @@ export class ProductPublisherPage {
 			.locator('//section[contains(@id, "CPPublisherPortlet")]')
 			.getByLabel('Options');
 		this.page = page;
+		this.productCard = (productName: string) =>
+			this.page.locator('.product-card').filter({hasText: productName});
+		this.productCardAddToCartButton = (productName: string) =>
+			this.productCard(productName).getByRole('button', {
+				exact: true,
+				name: 'Add to Cart',
+			});
+		this.productCardPrice = (productName, productPrice) =>
+			this.productCard(productName).getByText(productPrice, {
+				exact: true,
+			});
 		this.productLink = async (productName: string) => {
 			return page.getByRole('link', {exact: true, name: productName});
 		};

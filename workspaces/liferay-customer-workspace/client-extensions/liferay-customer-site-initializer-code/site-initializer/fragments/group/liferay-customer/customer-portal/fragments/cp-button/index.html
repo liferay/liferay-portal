@@ -1,0 +1,21 @@
+<a class="btn cp-button ${configuration.size} btn-style-${configuration.style} btn-${configuration.type} [#if configuration.inverted]btn-inverted[/#if]" data-lfr-editable-id="link" data-lfr-editable-type="link" href="">
+	[#if configuration.iconLeft]
+		<span class="button-icon-left" data-lfr-editable-id="button-icon-left" data-lfr-editable-type="html">
+			<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+				<path d="M12.7335 7.16533C13.3326 7.56057 13.3326 8.43943 12.7335 8.83467L5.04928 13.905C4.38442 14.3437 3.49854 13.8668 3.49854 13.0703L3.49854 2.92969C3.49854 2.13315 4.38442 1.65633 5.04928 2.09502L12.7335 7.16533Z" fill="currentColor" />
+			</svg>
+		</span>
+	[/#if]
+
+	<span>
+		Button
+	</span>
+
+	[#if configuration.iconRight]
+		<span class="button-icon-right" data-lfr-editable-id="button-icon-right" data-lfr-editable-type="html">
+			<svg class="button-arrow-right" fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+				<path d="M11.243 10.9898L13.4805 8.75225C13.818 8.38038 13.8305 7.72413 13.4805 7.321L11.243 5.0835C10.193 4.15225 8.90234 5.57725 9.81172 6.51475L10.3336 7.03663H2.74609C1.41797 7.03663 1.41797 9.03663 2.74609 9.03663H10.3336L9.81172 9.5585C8.87734 10.5523 10.2773 11.9179 11.243 10.9898Z" fill="currentColor" />
+			</svg>
+		</span>
+	[/#if]
+</a>

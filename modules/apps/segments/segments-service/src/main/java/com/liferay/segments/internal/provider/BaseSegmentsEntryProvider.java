@@ -49,6 +49,7 @@ import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryRelLocalService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -427,7 +428,19 @@ public abstract class BaseSegmentsEntryProvider
 				new Long[0]
 			)
 		).put(
-			"birthDate", user.getBirthday()
+			"birthDate",
+			() -> {
+				try {
+					return user.getBirthday();
+				}
+				catch (Exception exception) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(exception);
+					}
+
+					return new Date(0);
+				}
+			}
 		).put(
 			"classPK", user.getUserId()
 		).put(

@@ -3,11 +3,11 @@
 		"active": true,
 		"externalReferenceCode": "CP-OBJECT-ACTION-6",
 		"label": {
-			"en_US": "Support Ticket Escalation Action"
+			"en_US": "Callback Form Submission Action"
 		},
-		"name": "supportTicketEscalationAction",
+		"name": "callbackFormSubmissionAction",
 		"objectActionExecutorKey": "notification",
 		"objectActionTriggerKey": "onAfterAdd",
-		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:SupportTicketEscalation$]"
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:CallbackRequest$]"
 	}
 ]

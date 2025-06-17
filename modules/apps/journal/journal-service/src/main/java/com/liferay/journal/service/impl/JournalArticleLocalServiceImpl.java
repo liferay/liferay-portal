@@ -382,6 +382,16 @@ public class JournalArticleLocalServiceImpl
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, user.getTimeZone(), null);
 
+		if (displayDate == null) {
+			Calendar calendar = CalendarFactoryUtil.getCalendar(
+				user.getTimeZone());
+
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+
+			displayDate = calendar.getTime();
+		}
+
 		Date expirationDate = null;
 		Date reviewDate = null;
 
@@ -935,7 +945,7 @@ public class JournalArticleLocalServiceImpl
 
 		checkArticlesByDisplayDate(date, checkInterval);
 
-		_companyPreviousCheckDate.put(companyId, date);
+		_companyIdPreviousCheckDate.put(companyId, date);
 	}
 
 	/**
@@ -4892,6 +4902,23 @@ public class JournalArticleLocalServiceImpl
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, user.getTimeZone(), null);
 
+		if (displayDate == null) {
+			displayDate = article.getDisplayDate();
+
+			if ((displayDate != null) && displayDate.before(new Date())) {
+				displayDate = article.getDisplayDate();
+			}
+			else {
+				Calendar calendar = CalendarFactoryUtil.getCalendar(
+					user.getTimeZone());
+
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+
+				displayDate = calendar.getTime();
+			}
+		}
+
 		Date expirationDate = null;
 		Date reviewDate = null;
 
@@ -6356,7 +6383,7 @@ public class JournalArticleLocalServiceImpl
 		checkArticlesByCompanyIdAndExpirationDate(
 			companyId, expirationDate, nextExpirationDate);
 
-		_companyPreviousCheckDate.computeIfAbsent(
+		_companyIdPreviousCheckDate.computeIfAbsent(
 			companyId,
 			key -> new Date(expirationDate.getTime() - checkInterval));
 	}
@@ -6364,7 +6391,7 @@ public class JournalArticleLocalServiceImpl
 	protected void checkArticlesByReviewDate(long companyId, Date reviewDate)
 		throws PortalException {
 
-		Date previousCheckDate = _companyPreviousCheckDate.get(companyId);
+		Date previousCheckDate = _companyIdPreviousCheckDate.get(companyId);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
@@ -8497,7 +8524,7 @@ public class JournalArticleLocalServiceImpl
 	@Reference
 	private CommentManager _commentManager;
 
-	private final Map<Long, Date> _companyPreviousCheckDate =
+	private final Map<Long, Date> _companyIdPreviousCheckDate =
 		new ConcurrentHashMap<>();
 
 	@Reference

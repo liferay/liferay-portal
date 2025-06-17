@@ -49,7 +49,7 @@ public class LayoutItemSelectorViewDisplayContext {
 		_privateLayout = privateLayout;
 
 		_renderResponse = (RenderResponse)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 	}
 
 	public String getItemSelectedEventName() {

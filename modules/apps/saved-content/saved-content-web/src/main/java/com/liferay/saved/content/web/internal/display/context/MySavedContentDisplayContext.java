@@ -50,7 +50,7 @@ public class MySavedContentDisplayContext {
 			liferayPortletRequest);
 
 		_renderResponse = (RenderResponse)_httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}

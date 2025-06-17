@@ -7,6 +7,7 @@ package com.liferay.dynamic.data.mapping.model.impl;
 
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 import java.util.Map;
@@ -234,11 +238,17 @@ public class DDMStructureCacheModel
 
 		ddmStructureImpl.resetOriginalValues();
 
-		ddmStructureImpl.setClassName(_className);
+		try {
+			_classNameMethodHandle.invokeExact(ddmStructureImpl, className);
 
-		ddmStructureImpl.setDDMForm(_ddmForm);
+			_ddmFormMethodHandle.invokeExact(ddmStructureImpl, ddmForm);
 
-		ddmStructureImpl.setDDMFormFieldsMap(_ddmFormFieldsMap);
+			_ddmFormFieldsMapMethodHandle.invokeExact(
+				ddmStructureImpl, ddmFormFieldsMap);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return ddmStructureImpl;
 	}
@@ -280,11 +290,13 @@ public class DDMStructureCacheModel
 		type = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
 
-		_className = (String)objectInput.readObject();
-		_ddmForm =
+		className = (String)objectInput.readObject();
+
+		ddmForm =
 			(com.liferay.dynamic.data.mapping.model.DDMForm)
 				objectInput.readObject();
-		_ddmFormFieldsMap = (Map)objectInput.readObject();
+
+		ddmFormFieldsMap = (Map)objectInput.readObject();
 	}
 
 	@Override
@@ -383,9 +395,11 @@ public class DDMStructureCacheModel
 		objectOutput.writeInt(type);
 		objectOutput.writeLong(lastPublishDate);
 
-		objectOutput.writeObject(_className);
-		objectOutput.writeObject(_ddmForm);
-		objectOutput.writeObject(_ddmFormFieldsMap);
+		objectOutput.writeObject(className);
+
+		objectOutput.writeObject(ddmForm);
+
+		objectOutput.writeObject(ddmFormFieldsMap);
 	}
 
 	public long mvccVersion;
@@ -411,8 +425,31 @@ public class DDMStructureCacheModel
 	public String storageType;
 	public int type;
 	public long lastPublishDate;
-	public String _className;
-	public com.liferay.dynamic.data.mapping.model.DDMForm _ddmForm;
-	public Map _ddmFormFieldsMap;
+	public volatile String className;
+	public volatile com.liferay.dynamic.data.mapping.model.DDMForm ddmForm;
+	public volatile Map ddmFormFieldsMap;
+
+	private static final MethodHandle _classNameMethodHandle;
+	private static final MethodHandle _ddmFormMethodHandle;
+	private static final MethodHandle _ddmFormFieldsMapMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_classNameMethodHandle = lookup.findSetter(
+				DDMStructureImpl.class, "_className", String.class);
+
+			_ddmFormMethodHandle = lookup.findSetter(
+				DDMStructureImpl.class, "_ddmForm",
+				com.liferay.dynamic.data.mapping.model.DDMForm.class);
+
+			_ddmFormFieldsMapMethodHandle = lookup.findSetter(
+				DDMStructureImpl.class, "_ddmFormFieldsMap", Map.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

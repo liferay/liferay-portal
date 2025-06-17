@@ -21,6 +21,7 @@ import {
 } from '../enums/Product';
 import {useGetVocabulariesAndCategories} from '../hooks/data/useGetVocabulariesAndCategories';
 import HeadlessCommerceAdminCatalogImpl from '../services/rest/HeadlessCommerceAdminCatalog';
+import {getRandomID} from '../utils/string';
 
 export type LicensePrice = {key: number; value: number};
 export type LicenseType = 'Perpetual' | 'Subscription';
@@ -75,8 +76,9 @@ export type NewAppInitialState = {
 		appType: ProductType;
 
 		liferayPackages: {
-			files: any[];
-			version: string;
+			file: any;
+			id: string;
+			versions: string[];
 		}[];
 		resourceRequirements: {
 			cpu?: string;
@@ -309,34 +311,23 @@ const reducer = (state: NewAppInitialState, action: AppActions) => {
 				tags?.includes(ProductTags.SOLUTION_PROFILE_APP_ICON)
 			);
 
-			const liferayPackages = Object.entries(
-				_product.productVirtualSettings.productVirtualSettingsFileEntries.reduce(
-					(acc, fileEntry) => {
-						const {version} = fileEntry;
-
-						if (!acc[version]) {
-							acc[version] = [];
+			const liferayPackages = _product.productVirtualSettings
+				? _product.productVirtualSettings.productVirtualSettingsFileEntries.map(
+						(fileEntry) => {
+							return {
+								file: {
+									error: false,
+									fileName: fileEntry.src,
+									id: getRandomID(),
+									readableSize: '',
+									src: fileEntry.src,
+								},
+								id: getRandomID(),
+								versions: fileEntry.version.split(','),
+							};
 						}
-
-						acc[version].push(fileEntry);
-
-						return acc;
-					},
-					{} as {[key: string]: {src: string; version: string}[]}
-				)
-			).map(([version, uploadedFiles = []]) => {
-				return {
-					files: uploadedFiles?.map((uploadedFile) => {
-						return {
-							error: false,
-							fileName: uploadedFile.src,
-							readableSize: '',
-							src: uploadedFile.src,
-						};
-					}),
-					version,
-				};
-			});
+					)
+				: [];
 
 			const categories = filterProductVocabularies(
 				_product,

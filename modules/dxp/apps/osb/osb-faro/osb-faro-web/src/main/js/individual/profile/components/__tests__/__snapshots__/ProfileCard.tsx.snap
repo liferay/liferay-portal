@@ -145,11 +145,11 @@ exports[`IndividualProfileCard should render 1`] = `
                   Dec 6, 2021
                 </span>
                 <svg
-                  class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                  class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#ac-event-icon"
+                    href="#ac_event_icon"
                   />
                 </svg>
                 <span
@@ -211,11 +211,11 @@ exports[`IndividualProfileCard should render 1`] = `
                   class="icon-group"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                    class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#ac-event-icon"
+                      href="#ac_event_icon"
                     />
                   </svg>
                   <span
@@ -231,11 +231,11 @@ exports[`IndividualProfileCard should render 1`] = `
 Chrome"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-display icon-root mainLighten28"
+                      class="lexicon-icon lexicon-icon-ac_display icon-root mainLighten28"
                       role="presentation"
                     >
                       <use
-                        href="#ac-display"
+                        href="#ac_display"
                       />
                     </svg>
                   </span>

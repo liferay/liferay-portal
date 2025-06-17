@@ -177,7 +177,7 @@ public class ActionUtil {
 			renderRequest, portletPreferences);
 
 		httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, renderRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, renderRequest);
 
 		return renderRequest;
 	}

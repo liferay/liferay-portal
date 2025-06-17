@@ -612,6 +612,13 @@ test.describe('Item Actions in Data Set fragment', () => {
 		const headlessItemActionPermissionKey = 'update';
 		const headlessItemNewLabel = getRandomString();
 
+		await test.step('Update Data Set with default sort', async () => {
+			await dataSetManagerApiHelpers.updateDataSet({
+				additionalAPIURLParameters: 'sort=id:asc',
+				erc: dataSetERC,
+			});
+		});
+
 		await test.step('Create Item Actions', async () => {
 			await dataSetManagerApiHelpers.createDataSetItemAction({
 				dataSetERC,

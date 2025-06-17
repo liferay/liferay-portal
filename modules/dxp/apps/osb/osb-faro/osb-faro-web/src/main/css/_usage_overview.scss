@@ -1,0 +1,44 @@
+.chart-bars {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+
+	.big-bar {
+		background: #5791ff;
+		border-radius: 4px;
+		height: 12px;
+		width: 95%;
+	}
+
+	.small-bar {
+		background: #b3cdff;
+		border-radius: 4px;
+		height: 24px;
+		width: 25%;
+	}
+}
+
+.donut-chart-item {
+	min-height: 150px;
+
+	.generic-pie-label {
+		fill: #333333;
+		font-size: 1.75rem;
+		font-weight: bold;
+	}
+}
+
+.gradient-opaque {
+	mask-image: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0.8) 0%,
+		rgba(0, 0, 0, 0) 100%
+	);
+}
+
+.saas-banner {
+	background-image: url('/o/osb-faro-web/dist/sprite.svg#ac_banner-usage');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}

@@ -227,7 +227,7 @@ public class DiffVersionComparatorTag extends IncludeTag {
 
 			RenderResponse renderResponse =
 				(RenderResponse)parentHttpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			PortletURL sourceURL = PortletURLBuilder.create(
 				PortletURLUtil.clone(_portletURL, renderResponse)

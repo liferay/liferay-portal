@@ -5,12 +5,14 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {liferayConfig} from '../../liferay.config';
 import {waitForAlert} from '../../utils/waitForAlert';
 
 export class AccountSettingsPage {
 	readonly accountSettingsMenuItem: Locator;
 	readonly currentPasswordInput: Locator;
 	private readonly displayMenuItem: Locator;
+	readonly formSubmitButton: Locator;
 	readonly languageSelect: Locator;
 	readonly membershipsMenuItem: Locator;
 	readonly multiFactorAuthentitacionNavigationItem: Locator;
@@ -36,7 +38,14 @@ export class AccountSettingsPage {
 		this.displayMenuItem = page.getByRole('link', {
 			name: 'Display Settings',
 		});
-		this.languageSelect = page.getByLabel('Language');
+		this.formSubmitButton = page
+			.locator(
+				'[name=_com_liferay_my_account_web_portlet_MyAccountPortlet_fm]'
+			)
+			.locator('button[type=submit]');
+		this.languageSelect = page.locator(
+			'id=_com_liferay_my_account_web_portlet_MyAccountPortlet_languageId'
+		);
 		this.membershipsMenuItem = page.getByRole('link', {
 			name: 'Memberships',
 		});
@@ -115,9 +124,29 @@ export class AccountSettingsPage {
 		await expect(this.page.getByLabel('Shared Secret')).toBeVisible();
 	}
 
-	async selectAccountLanguage(option: string) {
-		await this.languageSelect.selectOption(option);
-		await this.saveButton.click();
+	async selectAccountLanguage({
+		languageId,
+		navigate = false,
+	}: {
+		languageId: string;
+		navigate?: boolean;
+	}) {
+		if (navigate) {
+
+			// do not use `goToAccountSettings`, so this works in multiple locales
+
+			const accountSettingsPageURL =
+				'/group/control_panel/manage?p_p_id=com_liferay_my_account_web_portlet_MyAccountPortlet';
+
+			await this.page.goto(
+				`${liferayConfig.environment.baseUrl}${accountSettingsPageURL}`
+			);
+		}
+
+		await this.languageSelect.selectOption(languageId);
+		await this.formSubmitButton.click();
+
+		await this.page.locator('.alert-success').waitFor({state: 'visible'});
 	}
 
 	async setTimeZone(timeZone: string) {

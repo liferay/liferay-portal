@@ -204,7 +204,7 @@ public class ForgotPasswordMVCActionCommandTest {
 		mockLiferayPortletActionRequest.addParameter(
 			"login", _user.getEmailAddress());
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, null);
+			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.COMPANY_ID, TestPropsValues.getCompanyId());
 

@@ -63,7 +63,7 @@ public class SharingFileEntryContentDashboardItemAction
 		try {
 			PortletResponse portletResponse =
 				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			return PortletURLBuilder.createRenderURL(
 				_portal.getLiferayPortletResponse(portletResponse),

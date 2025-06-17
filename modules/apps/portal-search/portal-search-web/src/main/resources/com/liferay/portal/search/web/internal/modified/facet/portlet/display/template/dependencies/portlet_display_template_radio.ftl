@@ -20,6 +20,10 @@
 				onClick="Liferay.Search.FacetUtil.clearSelections(event);"
 			>
 				<strong>${languageUtil.get(locale, "clear")}</strong>
+
+				<span class="sr-only">
+					${languageUtil.format(locale, 'x-filter', 'modified-facet-portlet-instance-configuration-name')}
+				</span>
 			</@clay.button>
 		</#if>
 

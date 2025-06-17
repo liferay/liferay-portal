@@ -11,8 +11,10 @@ import com.liferay.portal.search.engine.adapter.ccr.UnfollowCCRResponse;
 /**
  * @author Bryan Engler
  */
-public interface UnfollowCCRRequestExecutor {
+public class UnfollowCCRRequestExecutor {
 
-	public UnfollowCCRResponse execute(UnfollowCCRRequest unfollowCCRRequest);
+	public UnfollowCCRResponse execute(UnfollowCCRRequest unfollowCCRRequest) {
+		throw new UnsupportedOperationException();
+	}
 
 }

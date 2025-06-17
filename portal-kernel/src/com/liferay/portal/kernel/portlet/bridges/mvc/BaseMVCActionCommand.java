@@ -73,7 +73,7 @@ public abstract class BaseMVCActionCommand implements MVCActionCommand {
 		ActionRequest actionRequest, ActionResponse actionResponse) {
 
 		PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG);
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		boolean addProcessActionSuccessMessage = GetterUtil.getBoolean(
 			portletConfig.getInitParameter("add-process-action-success-action"),

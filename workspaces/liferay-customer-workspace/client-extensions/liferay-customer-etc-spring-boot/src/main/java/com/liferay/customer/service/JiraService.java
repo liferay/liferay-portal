@@ -13,9 +13,6 @@ import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -125,11 +122,18 @@ public class JiraService extends BaseService {
 		return null;
 	}
 
-	@CacheEvict(
-		allEntries = true, value = {"affectedVersions", "issue", "issues"}
+	@CacheEvict(allEntries = true, value = "affectedVersions")
+	@Scheduled(
+		cron = "${liferay.customer.jira.service.affected.versions.cache.eviction.cron}"
 	)
-	@Scheduled(cron = "0 0 0 * * *")
-	public void scheduledCacheEviction() throws Exception {
+	public void scheduledAffectedVersionsCacheEviction() throws Exception {
+	}
+
+	@CacheEvict(allEntries = true, value = {"issue", "issues"})
+	@Scheduled(
+		cron = "${liferay.customer.jira.service.issues.cache.eviction.cron}"
+	)
+	public void scheduledIssuesCacheEviction() throws Exception {
 	}
 
 	@Cacheable("issues")
@@ -140,7 +144,7 @@ public class JiraService extends BaseService {
 			String sortOrder, boolean hasEarlyPublishAccess)
 		throws Exception {
 
-		StringBundler sb = new StringBundler(51);
+		StringBundler sb = new StringBundler(49);
 
 		sb.append("project = '");
 		sb.append(_jiraSecurityVulnerabilityProject);
@@ -150,26 +154,19 @@ public class JiraService extends BaseService {
 				_jiraSecurityVulnerabilityFieldPublishingStatus));
 		sb.append(" = 'Ready for Publishing'");
 
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-			"yyyy-MM-dd 00:00");
-
 		if (hasEarlyPublishAccess) {
 			sb.append(" AND ");
 			sb.append(
 				_getJQLCustomField(
 					_jiraSecurityVulnerabilityFieldPartnerPublishingDate));
-			sb.append(" <= '");
-			sb.append(dateTimeFormatter.format(LocalDateTime.now()));
-			sb.append("'");
+			sb.append(" <= now()");
 		}
 		else {
 			sb.append(" AND ");
 			sb.append(
 				_getJQLCustomField(
 					_jiraSecurityVulnerabilityFieldCustomerPublishingDate));
-			sb.append(" <= '");
-			sb.append(dateTimeFormatter.format(LocalDateTime.now()));
-			sb.append("'");
+			sb.append(" <= now()");
 		}
 
 		if (ArrayUtil.isNotEmpty(filterAffectedVersions)) {

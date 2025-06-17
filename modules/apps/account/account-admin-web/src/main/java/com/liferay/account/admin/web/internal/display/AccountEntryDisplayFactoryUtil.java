@@ -112,7 +112,7 @@ public class AccountEntryDisplayFactoryUtil {
 		return create(
 			accountEntryId,
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST));
+				JavaConstants.JAKARTA_PORTLET_REQUEST));
 	}
 
 	public static AccountEntryDisplay create(

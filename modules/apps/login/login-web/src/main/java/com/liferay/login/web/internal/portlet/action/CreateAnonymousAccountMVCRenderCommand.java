@@ -34,7 +34,7 @@ public class CreateAnonymousAccountMVCRenderCommand
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
 		PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG);
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		String portletName = portletConfig.getPortletName();
 

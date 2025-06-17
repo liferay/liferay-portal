@@ -6,4 +6,7 @@
 export const config = {
 	name: 'portal-language-override-web.main',
 	testDir: 'tests/portal-language-override-web/main',
+	use: {
+		testIdAttribute: 'data-qa-id',
+	},
 };

@@ -24,6 +24,7 @@ import com.liferay.source.formatter.parser.JavaParameter;
 import com.liferay.source.formatter.parser.JavaSignature;
 import com.liferay.source.formatter.parser.JavaTerm;
 import com.liferay.source.formatter.processor.SourceProcessor;
+import com.liferay.source.formatter.util.SourceFormatterUtil;
 
 import java.io.File;
 
@@ -576,27 +577,49 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 			return annotation;
 		}
 
+		String portletInitParamConfigTemplateString =
+			"javax.portlet.init-param.config-template=";
+		String portletPortletModeString = "javax.portlet.portlet-mode=";
+		String portletSupportsMimeTypeString =
+			"javax.portlet.supports.mime-type=text/html";
+		String portletVersionString = "javax.portlet.version=3.0";
+
+		if (isAttributeValue(
+				SourceFormatterUtil.JAKARTA_USED_BRANCH, absolutePath)) {
+
+			portletInitParamConfigTemplateString = StringUtil.replaceFirst(
+				portletInitParamConfigTemplateString, "javax.", "jakarta.");
+			portletPortletModeString = StringUtil.replaceFirst(
+				portletPortletModeString, "javax.", "jakarta.");
+			portletSupportsMimeTypeString = StringUtil.replaceFirst(
+				portletSupportsMimeTypeString, "javax.", "jakarta.");
+			portletVersionString = StringUtil.replace(
+				portletVersionString, new String[] {"javax.", "3.0"},
+				new String[] {"jakarta.", "4.0"});
+		}
+
 		String newPropertyAttribute = StringUtil.replace(
 			propertyAttribute,
 			new String[] {
-				"\"jakarta.portlet.supports.mime-type=text/html\",",
-				"\"jakarta.portlet.supports.mime-type=text/html\""
+				"\"" + portletSupportsMimeTypeString + "\",",
+				"\"" + portletSupportsMimeTypeString + "\""
 			},
 			new String[] {StringPool.BLANK, StringPool.BLANK});
 
 		if (newPropertyAttribute.contains(
-				"\"jakarta.portlet.init-param.config-template=") &&
-			!newPropertyAttribute.contains("jakarta.portlet.portlet-mode=")) {
+				"\"" + portletInitParamConfigTemplateString) &&
+			!newPropertyAttribute.contains(portletPortletModeString)) {
 
 			newPropertyAttribute = _addNewProperties(
 				newPropertyAttribute,
-				"\"jakarta.portlet.portlet-mode=text/html;config\"");
+				"\"" + portletPortletModeString + "text/html;config\"");
 		}
 
 		if (isAttributeValue(_CHECK_PORTLET_VERSION_KEY, absolutePath) &&
 			!absolutePath.contains("/modules/apps/archived/") &&
 			!absolutePath.contains("/modules/sdk/") &&
-			!newPropertyAttribute.contains("\"jakarta.portlet.version=4.0\"")) {
+			!newPropertyAttribute.contains(
+				"\"" + portletVersionString + "\"")) {
 
 			String serviceAttributeValue = getAnnotationAttributeValue(
 				annotation, "service");
@@ -613,7 +636,7 @@ public class JavaComponentAnnotationsCheck extends JavaAnnotationsCheck {
 
 			if (serviceAttributeValues.contains("Portlet.class")) {
 				newPropertyAttribute = _addNewProperties(
-					newPropertyAttribute, "\"jakarta.portlet.version=4.0\"");
+					newPropertyAttribute, "\"" + portletVersionString + "\"");
 			}
 		}
 

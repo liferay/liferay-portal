@@ -56,7 +56,7 @@ modules/apps/captcha/    @liferay-appsec
 modules/apps/change-set/
 modules/apps/change-tracking/    @liferay-site-management
 modules/apps/click-to-chat/    @liferay-site-management
-modules/apps/client-extension/
+modules/apps/client-extension/    @liferay-frontend
 modules/apps/comment/    @liferay-content-management
 modules/apps/commerce/    @liferay-commerce
 modules/apps/company/
@@ -109,7 +109,7 @@ modules/apps/headless/headless-admin-workflow/    @liferay-bpm
 modules/apps/headless/headless-batch-engine/    @liferay-headless
 modules/apps/headless/headless-builder/    @liferay-headless
 modules/apps/headless/headless-common-spi/
-modules/apps/headless/headless-delivery/    @liferay-page-management
+modules/apps/headless/headless-delivery/    @liferay-content-management
 modules/apps/headless/headless-discovery/    @liferay-headless
 modules/apps/headless/headless-form/    @liferay-bpm
 modules/apps/headless/headless-portal-instances/    @liferay-database-infra
@@ -186,8 +186,7 @@ modules/apps/list-type/
 modules/apps/locked-items/    @liferay-content-management
 modules/apps/login/    @liferay-appsec
 modules/apps/mail/
-modules/apps/map/
-modules/apps/map/map-google-maps    @liferay-page-management
+modules/apps/map    @liferay-frontend
 modules/apps/marketplace/    @liferay-commerce
 modules/apps/mentions/    @liferay-content-management
 modules/apps/message-boards/    @liferay-content-management
@@ -239,13 +238,17 @@ modules/apps/portal-search/    @liferay-search
 modules/apps/portal-security-audit/    @liferay-appsec
 modules/apps/portal-security-sso/    @liferay-appsec
 modules/apps/portal-security/    @liferay-appsec
+modules/apps/portal-security/portal-security-content-security-policy    @liferay-frontend
+modules/apps/portal-security/portal-security-content-security-policy-test    @liferay-frontend
 modules/apps/portal-settings/    @liferay-appsec
 modules/apps/portal-settings/portal-settings-api/    @liferay-platform-experience
 modules/apps/portal-settings/portal-settings-web/    @liferay-platform-experience
 modules/apps/portal-store/    @liferay-core-infra
 modules/apps/portal-template/    @liferay-core-infra
+modules/apps/portal-template/portal-template-react-renderer-api    @liferay-frontend
+modules/apps/portal-template/portal-template-react-renderer-impl    @liferay-frontend
 modules/apps/portal-transaction/    @liferay-core-infra
-modules/apps/portal-url-builder/    @liferay-site-management
+modules/apps/portal-url-builder/    @liferay-frontend
 modules/apps/portal-validation/
 modules/apps/portal-vulcan/    @liferay-headless
 modules/apps/portal-workflow/    @liferay-bpm
@@ -504,4 +507,5 @@ modules/util/portal-tools-service-builder-test-uad/    @liferay-core-infra
 modules/util/portal-tools-service-builder/    @liferay-core-infra
 modules/util/release-util/    @liferay-devtools
 modules/util/source-formatter/    @liferay-devtools
+util-taglib/    @liferay-frontend
 workspaces/liferay-marketplace-workspace/    @liferay-commerce

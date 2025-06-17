@@ -40,7 +40,7 @@ public class DefineObjectsTag3 extends DefineObjectsTag {
 
 		PortletConfig portletConfig =
 			(PortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		if (portletConfig != null) {
 			pageContext.setAttribute(
@@ -49,7 +49,7 @@ public class DefineObjectsTag3 extends DefineObjectsTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (portletRequest != null) {
 			if (lifecycle.equals(PortletRequest.ACTION_PHASE)) {
@@ -96,7 +96,7 @@ public class DefineObjectsTag3 extends DefineObjectsTag {
 
 		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		if (portletResponse == null) {
 			return SKIP_BODY;

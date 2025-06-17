@@ -83,10 +83,10 @@ public class ViewFileVersionContentDashboardItemVersionActionProviderTest {
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(mockHttpServletRequest));
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, mockLiferayResourceRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, mockLiferayResourceRequest);
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletRenderResponse());
 
 		ContentDashboardItemVersionAction contentDashboardItemVersionAction =

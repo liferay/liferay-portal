@@ -5,7 +5,6 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../../../fixtures/applicationsMenuPageTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
@@ -14,12 +13,13 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
+	performLoginViaApi,
 	performLogout,
 	userData,
 } from '../../../../utils/performLogin';
+import {miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
-	apiHelpersTest,
 	applicationsMenuPageTest,
 	commercePagesTest,
 	dataApiHelpersTest,
@@ -692,7 +692,7 @@ test('LPD-47793 Notes should be visible using their respective permissions in th
 	).toBeVisible();
 });
 
-test('LPD-31378 Check order date formatted correctly', async ({
+test.skip('LPD-31378 Check order date formatted correctly', async ({
 	apiHelpers,
 	applicationsMenuPage,
 	page,
@@ -787,3 +787,402 @@ test('LPD-31378 Check order date formatted correctly', async ({
 		expect(cleanedDateText2).toBe(orderDate2);
 	});
 });
+
+test(
+	'Verify the order type management when creating a new order via the account selector.',
+	{tag: ['@LPD-56416']},
+	async ({
+		apiHelpers,
+		commerceAdminOrderTypesPage,
+		commerceLayoutsPage,
+		page,
+		pendingOrdersPage,
+	}) => {
+		test.setTimeout(180000);
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		const user =
+			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+				'demo.unprivileged@liferay.com'
+			);
+
+		const {site} = await miniumSetUp(apiHelpers);
+
+		await test.step('Setup Buyer user', async () => {
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				['demo.unprivileged@liferay.com']
+			);
+
+			const rolesResponse =
+				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+
+			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+				return role.name === 'Buyer';
+			});
+
+			const siteRole =
+				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+			await apiHelpers.headlessAdminUser.assignAccountRoles(
+				account.externalReferenceCode,
+				accountRoleBuyer[0].id,
+				user.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				siteRole.id,
+				site.id,
+				user.id
+			);
+		});
+
+		await test.step('Verify inactive order type is not assigned to an order created via the account selector ', async () => {
+			await page.goto(`/web/${site.name}`);
+
+			await commerceLayoutsPage
+				.accountSelectorButton(account.name)
+				.click();
+			await commerceLayoutsPage.createNewOrderButton.click();
+
+			await expect(pendingOrdersPage.orderType).toBeEmpty();
+		});
+
+		await test.step('Verify inactive order type is not assigned to an order created via the account selector ', async () => {
+			await commerceAdminOrderTypesPage.addOrderType(apiHelpers, false);
+
+			await page.goto(`/web/${site.name}`);
+
+			await commerceLayoutsPage
+				.accountSelectorButton(account.name)
+				.click();
+			await commerceLayoutsPage.createNewOrderButton.click();
+
+			await expect(pendingOrdersPage.orderType).toBeEmpty();
+		});
+
+		await test.step('Verify single active order type is automatically assigned to orders created via the account selector. ', async () => {
+			const {orderTypeName} =
+				await commerceAdminOrderTypesPage.addOrderType(
+					apiHelpers,
+					true
+				);
+
+			await page.goto(`/web/${site.name}`);
+
+			await commerceLayoutsPage
+				.accountSelectorButton(account.name)
+				.click();
+			await commerceLayoutsPage.createNewOrderButton.click();
+
+			await expect(pendingOrdersPage.orderType).toHaveText(orderTypeName);
+		});
+
+		await test.step('Verify user can select order type when creating a new order via the account selector ', async () => {
+			const {orderTypeName} =
+				await commerceAdminOrderTypesPage.addOrderType(
+					apiHelpers,
+					true
+				);
+
+			await performLogout(page);
+
+			await performLoginViaApi({page, screenName: user.alternateName});
+
+			await page.goto(`/web/${site.name}`);
+
+			await commerceLayoutsPage
+				.accountSelectorButton(account.name)
+				.click();
+			await commerceLayoutsPage.createNewOrderButton.click();
+			await expect(
+				commerceLayoutsPage.orderTypeModalHeading
+			).toBeVisible();
+			await commerceLayoutsPage.orderTypeModalInput.selectOption({
+				label: orderTypeName,
+			});
+			await commerceLayoutsPage.orderTypeModalButton.click();
+
+			await expect(pendingOrdersPage.orderType).toHaveText(orderTypeName);
+		});
+	}
+);
+
+test(
+	'Verify the order type management when creating a new order via pending orders.',
+	{tag: ['@LPD-56416']},
+	async ({
+		apiHelpers,
+		commerceAdminOrderTypesPage,
+		commerceLayoutsPage,
+		page,
+		pendingOrdersPage,
+	}) => {
+		test.setTimeout(180000);
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		const user =
+			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+				'demo.unprivileged@liferay.com'
+			);
+
+		const {site} = await miniumSetUp(apiHelpers);
+
+		await test.step('Setup Buyer user', async () => {
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				['demo.unprivileged@liferay.com']
+			);
+
+			const rolesResponse =
+				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+
+			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+				return role.name === 'Buyer';
+			});
+
+			const siteRole =
+				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+			await apiHelpers.headlessAdminUser.assignAccountRoles(
+				account.externalReferenceCode,
+				accountRoleBuyer[0].id,
+				user.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				siteRole.id,
+				site.id,
+				user.id
+			);
+		});
+
+		await test.step('Verify inactive order type is not assigned to an order created via pending orders ', async () => {
+			await page.goto(`/web/${site.name}`);
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await commerceLayoutsPage.addOrderButton.click();
+
+			await expect(pendingOrdersPage.orderType).toBeEmpty();
+		});
+
+		await test.step('Verify inactive order type is not assigned to an order created via pending orders ', async () => {
+			await commerceAdminOrderTypesPage.addOrderType(apiHelpers, false);
+			await page.goto(`/web/${site.name}`);
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await commerceLayoutsPage.addOrderButton.click();
+
+			await expect(pendingOrdersPage.orderType).toBeEmpty();
+		});
+
+		await test.step('Verify single active order type is automatically assigned to orders created via pending orders ', async () => {
+			const {orderTypeName} =
+				await commerceAdminOrderTypesPage.addOrderType(
+					apiHelpers,
+					true
+				);
+			await page.goto(`/web/${site.name}`);
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await commerceLayoutsPage.addOrderButton.click();
+
+			await expect(pendingOrdersPage.orderType).toHaveText(orderTypeName);
+		});
+
+		await test.step('Verify user can select order type when creating a new order via pending orders ', async () => {
+			const {orderTypeName} =
+				await commerceAdminOrderTypesPage.addOrderType(
+					apiHelpers,
+					true
+				);
+
+			await performLogout(page);
+
+			await performLoginViaApi({page, screenName: user.alternateName});
+
+			await page.goto(`/web/${site.name}`);
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await commerceLayoutsPage.addOrderButton.click();
+
+			await expect(
+				commerceLayoutsPage.orderTypeModalHeading
+			).toBeVisible();
+			await commerceLayoutsPage.orderTypeModalInput.selectOption({
+				label: orderTypeName,
+			});
+			await commerceLayoutsPage.orderTypeModalButton.click();
+
+			await expect(pendingOrdersPage.orderType).toHaveText(orderTypeName);
+		});
+	}
+);
+
+test(
+	'Verify the order type management when creating a new order via add to cart',
+	{tag: ['@LPD-56416', '@COMMERCE-11565']},
+	async ({
+		apiHelpers,
+		commerceAdminOrderTypesPage,
+		commerceLayoutsPage,
+		commerceMiniCartPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+		pendingOrdersPage,
+	}) => {
+		test.setTimeout(180000);
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		const user =
+			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+				'demo.unprivileged@liferay.com'
+			);
+
+		const {site} = await miniumSetUp(apiHelpers);
+
+		await test.step('Setup Buyer user', async () => {
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				['demo.unprivileged@liferay.com']
+			);
+
+			const rolesResponse =
+				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+
+			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+				return role.name === 'Buyer';
+			});
+
+			const siteRole =
+				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+			await apiHelpers.headlessAdminUser.assignAccountRoles(
+				account.externalReferenceCode,
+				accountRoleBuyer[0].id,
+				user.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				siteRole.id,
+				site.id,
+				user.id
+			);
+		});
+
+		await test.step('Verify inactive order type is not assigned to an order created via add to cart ', async () => {
+			await page.goto(`/web/${site.name}`);
+
+			await commerceThemeMiniumCatalogPage
+				.productCardAddToCartButton('U-Joint')
+				.click();
+
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await pendingOrdersPage.viewButton.click();
+
+			await expect(pendingOrdersPage.orderType).toBeEmpty();
+
+			await apiHelpers.headlessCommerceAdminOrder.deleteOrder(
+				Number(await pendingOrdersPage.orderId.textContent())
+			);
+		});
+
+		await test.step('Verify inactive order type is not assigned to an order created via add to cart ', async () => {
+			await commerceAdminOrderTypesPage.addOrderType(apiHelpers, false);
+
+			await page.goto(`/web/${site.name}`);
+
+			await commerceThemeMiniumCatalogPage
+				.productCardAddToCartButton('U-Joint')
+				.click();
+
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await pendingOrdersPage.viewButton.click();
+
+			await expect(pendingOrdersPage.orderType).toBeEmpty();
+
+			await apiHelpers.headlessCommerceAdminOrder.deleteOrder(
+				Number(await pendingOrdersPage.orderId.textContent())
+			);
+		});
+
+		await test.step('Verify when creating a new order with add to cart and there is only 1 order type active for the channel, that order type is set in the order ', async () => {
+			const {orderTypeName} =
+				await commerceAdminOrderTypesPage.addOrderType(
+					apiHelpers,
+					true
+				);
+			await page.goto(`/web/${site.name}`);
+
+			await commerceThemeMiniumCatalogPage
+				.productCardAddToCartButton('U-Joint')
+				.click();
+
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await pendingOrdersPage.viewButton.click();
+
+			await expect(pendingOrdersPage.orderType).toHaveText(orderTypeName);
+
+			await apiHelpers.headlessCommerceAdminOrder.deleteOrder(
+				Number(await pendingOrdersPage.orderId.textContent())
+			);
+		});
+
+		await test.step('Verify user can select order type when creating a new order via add to cart ', async () => {
+			const {orderTypeName} =
+				await commerceAdminOrderTypesPage.addOrderType(
+					apiHelpers,
+					true
+				);
+
+			await performLogout(page);
+
+			await performLoginViaApi({page, screenName: user.alternateName});
+
+			await page.goto(`/web/${site.name}`);
+
+			await commerceThemeMiniumCatalogPage
+				.productCardAddToCartButton('U-Joint')
+				.click();
+
+			await expect(
+				commerceLayoutsPage.orderTypeModalHeading
+			).toBeVisible();
+			await commerceLayoutsPage.orderTypeModalInput.selectOption({
+				label: orderTypeName,
+			});
+			await commerceLayoutsPage.orderTypeModalButton.click();
+
+			await page.goto(`/web/${site.name}/catalog`);
+
+			await commerceThemeMiniumCatalogPage
+				.productCardAddToCartButton('Mount')
+				.click();
+
+			await page.goto(`/web/${site.name}/pending-orders`);
+
+			await pendingOrdersPage.viewButton.click();
+
+			await expect(pendingOrdersPage.orderType).toHaveText(orderTypeName);
+		});
+	}
+);

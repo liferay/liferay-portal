@@ -55,6 +55,22 @@ public interface WorkflowHandler<T> {
 			workflowContext.get(WorkflowConstants.CONTEXT_ENTRY_CLASS_PK));
 	}
 
+	public default long getEntryClassPK(
+			long companyId, HttpServletRequest httpServletRequest,
+			WorkflowTask workflowTask)
+		throws PortalException {
+
+		WorkflowInstance workflowInstance =
+			WorkflowInstanceManagerUtil.getWorkflowInstance(
+				companyId, workflowTask.getWorkflowInstanceId());
+
+		Map<String, Serializable> workflowContext =
+			workflowInstance.getWorkflowContext();
+
+		return GetterUtil.getLong(
+			workflowContext.get(WorkflowConstants.CONTEXT_ENTRY_CLASS_PK));
+	}
+
 	public String getIconCssClass();
 
 	public default String getNotificationLink(

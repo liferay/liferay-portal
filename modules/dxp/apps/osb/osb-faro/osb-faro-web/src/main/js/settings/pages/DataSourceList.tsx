@@ -278,7 +278,7 @@ const DataSourceList = ({className}) => {
 					icon={{
 						border: false,
 						size: Sizes.XXXLarge,
-						symbol: 'ac-satellite'
+						symbol: 'ac_satellite'
 					}}
 					primary
 					title={Liferay.Language.get('no-data-sources-connected')}

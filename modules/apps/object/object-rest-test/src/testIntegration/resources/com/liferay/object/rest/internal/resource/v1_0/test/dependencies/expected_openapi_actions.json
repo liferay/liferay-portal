@@ -242,8 +242,8 @@
 						"type": "string"
 					},
 					"fileURL": {
-						"type": "string",
-						"writeOnly": true
+						"description": "optional field that specifies the source of the file to be downloaded, can be embedded with nestedFields (the format of the nested field must be `<attachment field name>.fileURL`)",
+						"type": "string"
 					},
 					"folder": {
 						"$ref": "#/components/schemas/Folder"
@@ -497,6 +497,11 @@
 						"type": "string",
 						"x-parent-map": "properties",
 						"x-timeStorage": "convertToUTC"
+					},
+					"scopeId": {
+						"format": "int64",
+						"readOnly": true,
+						"type": "integer"
 					},
 					"scopeKey": {
 						"readOnly": true,

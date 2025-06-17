@@ -2,6 +2,10 @@
 
 .modal-body.inline-scroller {
 	max-height: 600px;
+
+	.loading-animation {
+		position: relative !important;
+	}
 }
 
 .dropzone {
@@ -19,4 +23,15 @@
 		background-color: $primary-l3;
 		outline-color: $primary;
 	}
+}
+
+.loading-message {
+	align-items: center;
+	background-color: $white;
+	display: flex;
+	inset: 0;
+	justify-content: center;
+	position: absolute;
+	top: 0;
+	z-index: 10;
 }

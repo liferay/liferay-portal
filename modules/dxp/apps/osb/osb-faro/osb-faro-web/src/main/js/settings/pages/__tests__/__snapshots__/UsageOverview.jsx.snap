@@ -403,7 +403,7 @@ exports[`UsageOverview should render 1`] = `
               href="#shortcut"
             />
           </svg>
-          Manage Subscriptions
+          Go to Customer Portal
           <span
             class="sr-only"
           >

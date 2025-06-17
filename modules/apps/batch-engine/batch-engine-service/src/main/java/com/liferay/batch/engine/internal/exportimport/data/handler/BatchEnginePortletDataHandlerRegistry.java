@@ -13,6 +13,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -117,8 +118,11 @@ public class BatchEnginePortletDataHandlerRegistry {
 					_batchEngineExportTaskService,
 					_batchEngineImportTaskExecutor,
 					_batchEngineImportTaskService,
-					(String)serviceReference.getProperty(
-						"batch.engine.task.item.delegate.class.name"),
+					GetterUtil.getObject(
+						(String)serviceReference.getProperty(
+							"batch.engine.task.item.delegate.class.name"),
+						() -> (String)serviceReference.getProperty(
+							"batch.engine.entity.class.name")),
 					(String)serviceReference.getProperty(
 						"batch.engine.task.item.delegate.item.class.name"),
 					exportImportVulcanBatchEngineTaskItemDelegate.getScope(),
@@ -133,6 +137,8 @@ public class BatchEnginePortletDataHandlerRegistry {
 						"batch.engine.task.item.delegate.item.class.name")
 				).put(
 					"jakarta.portlet.name", portletId
+				).put(
+					"service.ranking", Integer.MAX_VALUE
 				).build());
 		}
 

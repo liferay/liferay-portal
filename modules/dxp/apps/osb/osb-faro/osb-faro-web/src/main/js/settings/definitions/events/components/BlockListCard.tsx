@@ -354,7 +354,7 @@ const BlockListCard: React.FC<IBlockListCardProps> = ({
 						}
 					},
 					{
-						iconSymbol: hidden ? 'view' : 'ac-hidden',
+						iconSymbol: hidden ? 'view' : 'ac_hidden',
 						label: hidden
 							? Liferay.Language.get('set-to-show')
 							: Liferay.Language.get('set-to-hide'),
@@ -421,7 +421,7 @@ const BlockListCard: React.FC<IBlockListCardProps> = ({
 						icon={{
 							border: false,
 							size: Sizes.XXXLarge,
-							symbol: 'ac-satellite'
+							symbol: 'ac_satellite'
 						}}
 						title={Liferay.Language.get(
 							'there-are-no-events-blocked'
@@ -479,7 +479,7 @@ const BlockListCard: React.FC<IBlockListCardProps> = ({
 													hasUnhiddenEvent(
 														selectedItems
 													)
-														? 'ac-hidden'
+														? 'ac_hidden'
 														: 'view'
 												}
 											/>

@@ -5,9 +5,17 @@
 
 package com.liferay.portal.verify;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import java.util.Set;
 
 /**
  * @author Jorge Avalos
@@ -24,17 +32,65 @@ public class PreupgradeVerifyDatabaseCharacterSet
 				"Unsupported database character set: " +
 					db.getCharacterSet(connection));
 		}
+
+		if ((db.getDBType() != DBType.MARIADB) &&
+			(db.getDBType() != DBType.MYSQL)) {
+
+			return;
+		}
+
+		Set<String> tableNames =
+			DBResourceUtil.getServiceComponentModuleTableNames(connection);
+
+		tableNames.addAll(DBResourceUtil.getPortalTableNames(connection));
+		tableNames.addAll(DBResourceUtil.getModuleTableNames(connection));
+
+		String sql = StringBundler.concat(
+			"select distinct character_set_name, collation_name, table_name, ",
+			"default_character_set_name, default_collation_name from ",
+			"information_schema.columns join information_schema.schemata on ",
+			"information_schema.columns.table_schema = ",
+			"information_schema.schemata.schema_name where ",
+			"information_schema.columns.table_schema = database() and ",
+			"information_schema.columns.collation_name is not null and",
+			"(information_schema.columns.character_set_name != ",
+			"information_schema.schemata.default_character_set_name or ",
+			"information_schema.columns.collation_name != ",
+			"information_schema.schemata.default_collation_name)");
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				sql)) {
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				DBInspector dbInspector = new DBInspector(connection);
+
+				String tableName = resultSet.getString("table_name");
+
+				if (!tableNames.contains(
+						dbInspector.normalizeName(tableName))) {
+
+					continue;
+				}
+
+				throw new VerifyException(
+					StringBundler.concat(
+						"Mixed character set and collation: ", tableName,
+						" has ", resultSet.getString("character_set_name"),
+						" character set and ",
+						resultSet.getString("collation_name"),
+						" collation, but database has ",
+						resultSet.getString("default_character_set_name"),
+						" character set and ",
+						resultSet.getString("default_collation_name")));
+			}
+		}
 	}
 
 	@Override
 	protected boolean isSkipDBPartitions() {
-		DB db = DBManagerUtil.getDB();
-
-		if (db.getDBType() != DBType.MYSQL) {
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 }

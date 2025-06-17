@@ -99,7 +99,7 @@ public class PanelAppContentHelper {
 		LiferayPortletRequest liferayPortletRequest =
 			LiferayPortletUtil.getLiferayPortletRequest(
 				(PortletRequest)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST));
+					JavaConstants.JAKARTA_PORTLET_REQUEST));
 
 		if (liferayPortletRequest != null) {
 			return liferayPortletRequest.getOriginalHttpServletRequest();

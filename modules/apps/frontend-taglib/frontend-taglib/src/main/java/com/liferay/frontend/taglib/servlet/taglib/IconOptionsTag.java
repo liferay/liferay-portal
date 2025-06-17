@@ -200,14 +200,14 @@ public class IconOptionsTag extends IncludeTag {
 		HttpServletRequest httpServletRequest = getRequest();
 
 		return (PortletRequest)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 	}
 
 	private PortletResponse _getPortletResponse() {
 		HttpServletRequest httpServletRequest = getRequest();
 
 		return (PortletResponse)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception> _getUnsafeConsumer(

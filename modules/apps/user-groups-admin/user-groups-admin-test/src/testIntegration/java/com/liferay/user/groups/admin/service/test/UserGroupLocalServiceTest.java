@@ -8,8 +8,10 @@ package com.liferay.user.groups.admin.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.DuplicateUserGroupException;
 import com.liferay.portal.kernel.exception.DuplicateUserGroupExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.UserGroupNameException;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -107,6 +109,31 @@ public class UserGroupLocalServiceTest {
 
 		Assert.assertEquals(
 			userGroup1.getUserGroupId(), userGroup2.getUserGroupId());
+	}
+
+	@Test
+	public void testAddUserGroup() throws Exception {
+		UserGroup userGroup = _userGroupLocalService.addUserGroup(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			TestPropsValues.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null);
+
+		try {
+			_userGroupLocalService.addUserGroup(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				TestPropsValues.getCompanyId(), userGroup.getName(),
+				RandomTestUtil.randomString(), null);
+
+			Assert.fail();
+		}
+		catch (DuplicateUserGroupException duplicateUserGroupException) {
+			Assert.assertNotNull(duplicateUserGroupException);
+		}
+
+		_testAddUserGroupWithInvalidName(" ");
+		_testAddUserGroupWithInvalidName("1");
+		_testAddUserGroupWithInvalidName(RandomTestUtil.randomString() + '*');
+		_testAddUserGroupWithInvalidName(RandomTestUtil.randomString() + ',');
 	}
 
 	@Test
@@ -295,6 +322,22 @@ public class UserGroupLocalServiceTest {
 			TestPropsValues.getCompanyId(), keywords, params, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS,
 			UsersAdminUtil.getUserGroupOrderByComparator("name", "asc"));
+	}
+
+	private void _testAddUserGroupWithInvalidName(String name)
+		throws Exception {
+
+		try {
+			_userGroupLocalService.addUserGroup(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				TestPropsValues.getCompanyId(), name,
+				RandomTestUtil.randomString(), null);
+
+			Assert.fail();
+		}
+		catch (UserGroupNameException userGroupNameException) {
+			Assert.assertNotNull(userGroupNameException);
+		}
 	}
 
 	private static int _count;

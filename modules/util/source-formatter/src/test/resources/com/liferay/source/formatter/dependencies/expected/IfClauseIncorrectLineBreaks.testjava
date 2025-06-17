@@ -54,7 +54,11 @@ public class IfClauseIncorrectLineBreaks {
 		if ((thisIsAnIntegerWithARatherLongName1 ==
 				thisIsAnIntegerWithARatherLongName2) &&
 			test1.equals(test2)) {
+
+			return;
 		}
+
+		System.out.println("End of test.");
 	}
 
 }

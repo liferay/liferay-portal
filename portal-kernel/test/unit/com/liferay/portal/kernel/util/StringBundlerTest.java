@@ -817,13 +817,13 @@ public class StringBundlerTest {
 				ReflectionTestUtil.getFieldValue(
 					StringBundler.class, "_THREAD_LOCAL_BUFFER_LIMIT"));
 
-			ThreadLocal<Reference<StringBuilder>> threadLocal =
+			ThreadLocal<Reference<StringBuilder>> stringBuilderReference =
 				ReflectionTestUtil.getFieldValue(
-					StringBundler.class, "_stringBuilderThreadLocal");
+					StringBundler.class, "_stringBuilderReference");
 
-			Assert.assertNotNull(threadLocal);
+			Assert.assertNotNull(stringBuilderReference);
 
-			threadLocal.remove();
+			stringBuilderReference.remove();
 
 			StringBundler sb = new StringBundler();
 
@@ -834,7 +834,7 @@ public class StringBundlerTest {
 
 			Assert.assertEquals("1234", sb.toString());
 
-			Reference<StringBuilder> reference = threadLocal.get();
+			Reference<StringBuilder> reference = stringBuilderReference.get();
 
 			StringBuilder stringBuilder = reference.get();
 
@@ -845,7 +845,7 @@ public class StringBundlerTest {
 
 			Assert.assertEquals("12345", sb.toString());
 
-			reference = threadLocal.get();
+			reference = stringBuilderReference.get();
 
 			Assert.assertSame(stringBuilder, reference.get());
 
@@ -855,7 +855,7 @@ public class StringBundlerTest {
 
 			Assert.assertEquals("123456", sb.toString());
 
-			reference = threadLocal.get();
+			reference = stringBuilderReference.get();
 
 			Assert.assertSame(stringBuilder, reference.get());
 
@@ -911,7 +911,7 @@ public class StringBundlerTest {
 					StringBundler.class, "_THREAD_LOCAL_BUFFER_LIMIT"));
 			Assert.assertNull(
 				ReflectionTestUtil.getFieldValue(
-					StringBundler.class, "_stringBuilderThreadLocal"));
+					StringBundler.class, "_stringBuilderReference"));
 
 			StringBundler sb = new StringBundler();
 
@@ -924,7 +924,7 @@ public class StringBundlerTest {
 
 			Assert.assertNull(
 				ReflectionTestUtil.getFieldValue(
-					StringBundler.class, "_stringBuilderThreadLocal"));
+					StringBundler.class, "_stringBuilderReference"));
 		}
 		finally {
 			if (propertyValue != null) {

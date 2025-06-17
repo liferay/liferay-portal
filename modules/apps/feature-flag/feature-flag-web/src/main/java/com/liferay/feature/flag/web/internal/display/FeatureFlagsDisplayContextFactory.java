@@ -66,7 +66,7 @@ public class FeatureFlagsDisplayContextFactory {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		String displayStyle = ParamUtil.getString(
 			portletRequest, "displayStyle", "descriptive");
@@ -75,7 +75,7 @@ public class FeatureFlagsDisplayContextFactory {
 
 		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		LiferayPortletRequest liferayPortletRequest =
 			_portal.getLiferayPortletRequest(portletRequest);

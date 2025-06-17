@@ -523,6 +523,11 @@ public class KaleoDefinitionWrapper
 		model.setContent(content);
 	}
 
+	@Override
+	public void setContentAsXML(String contentAsXML) {
+		model.setContentAsXML(contentAsXML);
+	}
+
 	/**
 	 * Sets the create date of this kaleo definition.
 	 *

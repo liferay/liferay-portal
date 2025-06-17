@@ -49,7 +49,6 @@ const test = mergeTests(
 		'LPD-21926': {enabled: true},
 		'LPD-32050': {enabled: true},
 		'LPD-37927': {enabled: true},
-		'LPD-46393': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
@@ -69,7 +68,6 @@ const testWithCKEditor4 = mergeTests(
 		'LPD-21926': {enabled: true},
 		'LPD-32050': {enabled: true},
 		'LPD-37927': {enabled: true},
-		'LPD-46393': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
@@ -1350,6 +1348,37 @@ test.describe('File Upload Fragment', () => {
 					'Thank you. Your information was successfully received.'
 				)
 			).not.toBeVisible();
+
+			// Add another file and submit form
+
+			const displayPageFileChooserPromise =
+				page.waitForEvent('filechooser');
+
+			await fileUploadInput
+				.getByText('Select File', {exact: true})
+				.click();
+
+			const displayPageFileChooser = await displayPageFileChooserPromise;
+
+			await displayPageFileChooser.setFiles(
+				path.join(__dirname, '/dependencies/file_upload_image_2.jpg')
+			);
+
+			await page.getByRole('button', {name: 'Submit'}).click();
+
+			// Check that is edited correctly
+
+			await expect(
+				page.getByText(
+					'Thank you. Your information was successfully received.'
+				)
+			).toBeVisible();
+
+			await page.reload();
+
+			await expect(
+				fileUploadInput.getByText('file_upload_image_2')
+			).toBeVisible();
 		}
 	);
 
@@ -1543,7 +1572,10 @@ test.describe('File Upload Fragment', () => {
 			await page.getByRole('link', {name: 'FileUpload'}).click();
 
 			await expect(
-				page.getByRole('link', {name: 'file_upload_image_2'})
+				page.getByRole('link', {
+					exact: true,
+					name: 'file_upload_image_2',
+				})
 			).toBeVisible();
 		}
 	);
@@ -7497,11 +7529,13 @@ test.describe('Rich Text Fragment', () => {
 
 			await pageEditorPage.publishPage();
 
-			// Go to view mode, fill the inputs and submit de form
+			// Go to view mode
 
 			await page.goto(
 				`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
 			);
+
+			// Fill the description field and change its style
 
 			const descriptionField = page.locator('.ck-editor__editable');
 
@@ -7509,9 +7543,26 @@ test.describe('Rich Text Fragment', () => {
 
 			await descriptionField.fill('This is the student description');
 
+			await descriptionField.click();
+
+			await page.getByText('student description').selectText();
+
+			const toolbar = page.locator('.ck-toolbar');
+
+			await toolbar.waitFor();
+
+			// Check that the button is visible and works
+
+			await toolbar.getByLabel('Text alignment', {exact: true}).click();
+			await toolbar.getByLabel('Align right', {exact: true}).click();
+
+			// Fill the name field
+
 			const nameField = page.getByRole('textbox', {name: 'Name'});
 
 			await nameField.fill('Charlie');
+
+			// Submit the form
 
 			await page.getByText('Submit', {exact: true}).click();
 
@@ -7551,7 +7602,7 @@ test.describe('Rich Text Fragment', () => {
 				);
 
 			expect(items[0].description).toStrictEqual(
-				'<p>This is the student description</p>'
+				'<p style="text-align: right;">This is the student description</p>'
 			);
 
 			expect(items[0].name).toStrictEqual('Adam');

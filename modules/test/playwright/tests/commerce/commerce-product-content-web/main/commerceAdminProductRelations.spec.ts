@@ -84,3 +84,40 @@ test('LPD-13559 Bulk actions for product relations', async ({
 		commerceAdminProductDetailsProductRelationsPage.emptyTableMessage
 	).toBeVisible();
 });
+
+test('CanDeleteProductWithRelations', async ({
+	apiHelpers,
+	commerceAdminProductDetailsProductRelationsPage,
+	commerceAdminProductPage,
+}) => {
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+	const product1 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+	});
+	const product2 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+	});
+
+	await commerceAdminProductPage.gotoProduct(product1.name.en_US);
+
+	await commerceAdminProductDetailsProductRelationsPage.addSpareProductRelation();
+
+	await expect(
+		await commerceAdminProductDetailsProductRelationsPage.addProductRelationHeading(
+			product1.name.en_US
+		)
+	).toBeVisible();
+
+	await apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
+		product2.productId
+	);
+
+	await commerceAdminProductPage.gotoProduct(product1.name.en_US);
+
+	await expect(
+		await commerceAdminProductDetailsProductRelationsPage.addProductRelationHeading(
+			product2.name.en_US
+		)
+	).not.toBeVisible();
+});

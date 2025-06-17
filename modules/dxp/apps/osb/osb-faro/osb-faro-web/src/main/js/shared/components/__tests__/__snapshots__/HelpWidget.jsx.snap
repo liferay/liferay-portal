@@ -17,11 +17,11 @@ exports[`HelpWidget should render 1`] = `
         type="button"
       >
         <svg
-          class="lexicon-icon lexicon-icon-ac-question-mark icon-root"
+          class="lexicon-icon lexicon-icon-ac_question_mark icon-root"
           role="presentation"
         >
           <use
-            href="#ac-question-mark"
+            href="#ac_question_mark"
           />
         </svg>
       </button>

@@ -1,8 +1,8 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"externalReferenceCode": "OVERDUE-BUSINESS-EVENTS-NOTIFICATION-TEMPLATE",
-	"name": "Overdue Business Events Notification Template",
+	"externalReferenceCode": "CREATED-BUSINESS-EVENTS",
+	"name": "Created Business Events",
 	"recipientType": "email",
 	"recipients": [
 		{
@@ -13,12 +13,12 @@
 				"en-US": "Customer Portal"
 			},
 			"to": {
-				"en-US": "[%BUSINESSEVENT_AUTHOR_EMAIL_ADDRESS%]"
+				"en-US": "[%RECIPIENT_EMAILS%]"
 			}
 		}
 	],
 	"subject": {
-		"en_US": "Was your business event, [%BUSINESSEVENT_NAME%], successful?"
+		"en_US": "New Business Event - [%PROJECT_NAME%] - [%BUSINESSEVENT_EVENTTYPE%] - [%BUSINESSEVENT_NAME%]"
 	},
 	"type": "email"
 }

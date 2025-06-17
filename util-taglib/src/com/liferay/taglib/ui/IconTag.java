@@ -235,7 +235,7 @@ public class IconTag extends IncludeTag {
 
 			PortletResponse portletResponse =
 				(PortletResponse)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			String namespace = StringPool.BLANK;
 

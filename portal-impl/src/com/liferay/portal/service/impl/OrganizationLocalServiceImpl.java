@@ -44,6 +44,8 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.QueryConfig;
@@ -712,6 +714,7 @@ public class OrganizationLocalServiceImpl
 		return organizationFinder.findO_ByNoAssets();
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Organization getOrAddIncompleteOrganization(
 			String externalReferenceCode, long companyId, long userId,

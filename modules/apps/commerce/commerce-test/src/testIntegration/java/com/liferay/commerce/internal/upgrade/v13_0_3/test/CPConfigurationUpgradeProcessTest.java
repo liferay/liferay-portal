@@ -60,9 +60,10 @@ public class CPConfigurationUpgradeProcessTest {
 			commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
 			false);
 
-		_cpConfigurationListLocalService.forceDeleteCPConfigurationList(
+		_cpConfigurationListLocalService.deleteCPConfigurationList(
 			_cpConfigurationListLocalService.getMasterCPConfigurationList(
-				commerceCatalog.getGroupId()));
+				commerceCatalog.getGroupId()),
+			true);
 
 		_runUpgrade();
 

@@ -50,7 +50,8 @@ public class UpgradeLogAppender implements Appender {
 
 		if (logEvent.getLevel() == Level.ERROR) {
 			_upgradeRecorder.recordErrorMessage(
-				logEvent.getLoggerName(), formattedMessage);
+				logEvent.getLoggerName(), formattedMessage,
+				logEvent.getThrown());
 		}
 		else if (logEvent.getLevel() == Level.INFO) {
 			if (Objects.equals(

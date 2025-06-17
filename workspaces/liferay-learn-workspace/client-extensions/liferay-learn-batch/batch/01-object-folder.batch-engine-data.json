@@ -11,6 +11,13 @@
 	},
 	"items": [
 		{
+			"externalReferenceCode": "P2S3_ENABLEMENT_HUB",
+			"label": {
+				"en_US": "P2S3 Enablement Hub"
+			},
+			"name": "P2S3EnablementHub"
+		},
+		{
 			"externalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
 			"label": {
 				"en_US": "P2S3 Learning Management System"

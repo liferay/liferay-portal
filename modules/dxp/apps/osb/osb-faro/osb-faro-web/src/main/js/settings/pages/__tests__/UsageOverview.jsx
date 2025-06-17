@@ -366,7 +366,7 @@ describe('UsageOverview', () => {
 			<WrappedComponent {...defaultProps} project={mockProject} />
 		);
 
-		expect(queryByText('Manage Subscriptions')).toBeInTheDocument();
+		expect(queryByText('Go to Customer Portal')).toBeInTheDocument();
 	});
 
 	it('renders current usage message for BASIC PLAN', () => {

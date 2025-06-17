@@ -14,7 +14,7 @@
 <a class="bg-light d-inline-flex my-2 p-2 rounded text-decoration-none" href="<%= viewURL %>">Back</a>
 
 <%
-PortletRequest portletRequest = (PortletRequest)request.getAttribute(JavaConstants.JAVAX_PORTLET_REQUEST);
+PortletRequest portletRequest = (PortletRequest)request.getAttribute(JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 if (portletRequest != null) {
 	portletRequest.setAttribute("aui:form:portletNamespace", "<\u002fscript><scrIpt>alert(12451);<\u002fscRipt><script>");

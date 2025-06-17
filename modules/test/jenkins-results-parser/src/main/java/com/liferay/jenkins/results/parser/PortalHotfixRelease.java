@@ -27,53 +27,6 @@ import org.json.JSONObject;
  */
 public class PortalHotfixRelease {
 
-	public PortalHotfixRelease(JSONObject jsonObject) {
-		_portalHotfixReleaseURL = _getURL(
-			jsonObject.getString("portalHotfixURL"));
-
-		if (_portalHotfixReleaseURL == null) {
-			throw new RuntimeException("Unable to get Portal Hotfix URL");
-		}
-
-		URL portalReleaseURL = _getURL(
-			jsonObject.optString("portalReleaseURL"));
-
-		if (portalReleaseURL != null) {
-			_portalRelease = new PortalRelease(portalReleaseURL);
-		}
-		else {
-			_portalRelease = null;
-		}
-
-		URL portalFixpackURL = _getURL(
-			jsonObject.optString("portalFixpackURL"));
-
-		if (portalFixpackURL != null) {
-			_portalFixpackRelease = new PortalFixpackRelease(portalFixpackURL);
-		}
-		else {
-			_portalFixpackRelease = null;
-		}
-	}
-
-	public PortalHotfixRelease(URL portalHotfixReleaseURL) {
-		_portalHotfixReleaseURL = _getURL(
-			String.valueOf(portalHotfixReleaseURL));
-
-		_portalFixpackRelease = null;
-		_portalRelease = null;
-	}
-
-	public PortalHotfixRelease(
-		URL portalHotfixReleaseURL, PortalFixpackRelease portalFixpackRelease,
-		PortalRelease portalRelease) {
-
-		_portalHotfixReleaseURL = _getURL(
-			String.valueOf(portalHotfixReleaseURL));
-		_portalFixpackRelease = portalFixpackRelease;
-		_portalRelease = portalRelease;
-	}
-
 	public JSONObject getJSONObject() {
 		JSONObject jsonObject = new JSONObject();
 
@@ -81,16 +34,19 @@ public class PortalHotfixRelease {
 
 		if (portalFixpackRelease != null) {
 			jsonObject.put(
-				"portalFixpackURL", portalFixpackRelease.getPortalFixpackURL());
+				"portalFixpackURL",
+				String.valueOf(portalFixpackRelease.getPortalFixpackURL()));
 		}
 
-		jsonObject.put("portalHotfixURL", getPortalHotfixReleaseURL());
+		jsonObject.put(
+			"portalHotfixURL", String.valueOf(getPortalHotfixReleaseURL()));
 
 		PortalRelease portalRelease = getPortalRelease();
 
 		if (portalRelease != null) {
 			jsonObject.put(
-				"portalReleaseURL", portalRelease.getPortalBundleTomcatURL());
+				"portalReleaseURL",
+				String.valueOf(portalRelease.getPortalBundleTomcatURL()));
 		}
 
 		return jsonObject;
@@ -169,6 +125,47 @@ public class PortalHotfixRelease {
 
 	public PortalRelease getPortalRelease() {
 		return _portalRelease;
+	}
+
+	protected PortalHotfixRelease(JSONObject jsonObject) {
+		_portalHotfixReleaseURL = _getURL(
+			jsonObject.getString("portalHotfixURL"));
+
+		if (_portalHotfixReleaseURL == null) {
+			throw new RuntimeException("Unable to get Portal Hotfix URL");
+		}
+
+		URL portalFixpackURL = _getURL(
+			jsonObject.optString("portalFixpackURL"));
+
+		if (portalFixpackURL != null) {
+			_portalFixpackRelease =
+				PortalReleaseFactory.newPortalFixpackRelease(portalFixpackURL);
+		}
+		else {
+			_portalFixpackRelease = null;
+		}
+
+		URL portalReleaseURL = _getURL(
+			jsonObject.optString("portalReleaseURL"));
+
+		if (portalReleaseURL != null) {
+			_portalRelease = PortalReleaseFactory.newPortalRelease(
+				portalReleaseURL);
+		}
+		else {
+			_portalRelease = null;
+		}
+	}
+
+	protected PortalHotfixRelease(
+		URL portalHotfixReleaseURL, PortalFixpackRelease portalFixpackRelease,
+		PortalRelease portalRelease) {
+
+		_portalHotfixReleaseURL = _getURL(
+			String.valueOf(portalHotfixReleaseURL));
+		_portalFixpackRelease = portalFixpackRelease;
+		_portalRelease = portalRelease;
 	}
 
 	private Element _getFixpackDocumentationElement() {

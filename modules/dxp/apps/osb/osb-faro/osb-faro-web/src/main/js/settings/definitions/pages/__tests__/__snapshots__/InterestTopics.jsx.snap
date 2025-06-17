@@ -120,11 +120,11 @@ exports[`InterestTopics should render 1`] = `
                     href="/?field=keyword&page=1&sortOrder=DESC"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-order-arrow-ascending icon-root"
+                      class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#order-arrow-ascending"
+                        href="#order_arrow_ascending"
                       />
                     </svg>
                   </a>
@@ -417,11 +417,11 @@ exports[`InterestTopics should render with a member-specific message to add keyw
       class="no-results-icon"
     >
       <svg
-        class="lexicon-icon lexicon-icon-ac-satellite icon-root icon-size-xxxl"
+        class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
         role="presentation"
       >
         <use
-          href="#ac-satellite"
+          href="#ac_satellite"
         />
       </svg>
     </div>
@@ -450,11 +450,11 @@ exports[`InterestTopics should render with a message to add keywords if there ar
       class="no-results-icon"
     >
       <svg
-        class="lexicon-icon lexicon-icon-ac-satellite icon-root icon-size-xxxl"
+        class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
         role="presentation"
       >
         <use
-          href="#ac-satellite"
+          href="#ac_satellite"
         />
       </svg>
     </div>
@@ -496,11 +496,11 @@ exports[`InterestTopics should render with an empty state 1`] = `
       class="no-results-icon"
     >
       <svg
-        class="lexicon-icon lexicon-icon-ac-no-results-found icon-root icon-size-xxxl"
+        class="lexicon-icon lexicon-icon-ac_no_results_found icon-root icon-size-xxxl"
         role="presentation"
       >
         <use
-          href="#ac-no-results-found"
+          href="#ac_no_results_found"
         />
       </svg>
     </div>

@@ -44,10 +44,10 @@ public class ItemSelectorViewDescriptorRendererImpl<T>
 
 		PortletRequest portletRequest =
 			(PortletRequest)servletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 		PortletResponse portletResponse =
 			(PortletResponse)servletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		servletRequest.setAttribute(
 			ItemSelectorViewDescriptorRendererDisplayContext.class.getName(),

@@ -75,7 +75,7 @@ const TabsCard: React.FC<ITabsCardProps> = ({groupId}) => {
 					)}
 					small
 				>
-					<ClayIcon className='icon-root mr-2' symbol='ac-block' />
+					<ClayIcon className='icon-root mr-2' symbol='ac_block' />
 
 					{Liferay.Language.get('block-list')}
 				</ClayLink>

@@ -26,7 +26,7 @@ public class DB2SQLTransformerLogic extends BaseSQLTransformerLogic {
 
 		Function[] functions = {
 			getAggregationFunction(), getBooleanFunction(),
-			getCastClobTextFunction(), getCastFloatFunction(),
+			getCastClobTextFunction(), getCastDecimalFunction(),
 			getCastLongFunction(), getCastTextFunction(), getConcatFunction(),
 			getDropTableIfExistsTextFunction(), getIntegerDivisionFunction(),
 			getNullDateFunction(), _getCaseWhenThenFunction(),

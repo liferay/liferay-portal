@@ -8,8 +8,10 @@ package com.liferay.portal.workflow.kaleo.model.impl;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
@@ -31,6 +33,8 @@ import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionModel;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -46,6 +50,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1294,9 +1299,16 @@ public class KaleoDefinitionModelImpl
 
 		kaleoDefinitionCacheModel.active = isActive();
 
-		setContentAsXML(null);
+		try {
+			setContentAsXML(null);
 
-		kaleoDefinitionCacheModel._contentAsXML = getContentAsXML();
+			kaleoDefinitionCacheModel.contentAsXML =
+				(String)_contentAsXMLMethodHandle.invokeExact(
+					(KaleoDefinitionImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return kaleoDefinitionCacheModel;
 	}
@@ -1493,6 +1505,36 @@ public class KaleoDefinitionModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected final transient Consumer<String>
+		contentAsXMLUpdateEntityCacheConsumer = contentAsXML -> {
+			KaleoDefinitionCacheModel kaleoDefinitionCacheModel =
+				EntityCacheUtil.fetchCacheModel(
+					KaleoDefinitionImpl.class, _kaleoDefinitionId,
+					KaleoDefinitionCacheModel.class);
+
+			if ((kaleoDefinitionCacheModel != null) &&
+				(kaleoDefinitionCacheModel.getMvccVersion() ==
+					getMvccVersion())) {
+
+				kaleoDefinitionCacheModel.contentAsXML = contentAsXML;
+			}
+		};
+
+	private static final MethodHandle _contentAsXMLMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_contentAsXMLMethodHandle = lookup.findGetter(
+				KaleoDefinitionImpl.class, "_contentAsXML", String.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private KaleoDefinition _escapedModel;
 
 }

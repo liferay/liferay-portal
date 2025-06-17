@@ -216,6 +216,7 @@ public class ListTypeEntryLocalServiceImpl
 			externalReferenceCode, companyId, listTypeDefinitionId);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ListTypeEntry getOrAddIncompleteListTypeEntry(
 			long userId, long listTypeDefinitionId, String key)

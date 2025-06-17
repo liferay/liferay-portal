@@ -6,6 +6,7 @@
 package com.liferay.object.service.impl;
 
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
@@ -23,14 +24,18 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -110,6 +115,25 @@ public class ObjectEntryFolderLocalServiceImpl
 				serviceContext);
 		}
 		else {
+			if (FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+				ModelPermissions modelPermissions =
+					serviceContext.getModelPermissions();
+
+				if (modelPermissions == null) {
+					modelPermissions = ModelPermissionsFactory.create(
+						ObjectEntryFolder.class.getName());
+
+					serviceContext.setModelPermissions(modelPermissions);
+				}
+
+				modelPermissions.addRolePermissions(
+					DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+					ActionKeys.ADD_ENTRY, ActionKeys.VIEW);
+				modelPermissions.addRolePermissions(
+					DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
+					ActionKeys.ADD_ENTRY, ActionKeys.VIEW);
+			}
+
 			_resourceLocalService.addModelResources(
 				objectEntryFolder.getCompanyId(),
 				objectEntryFolder.getGroupId(), objectEntryFolder.getUserId(),

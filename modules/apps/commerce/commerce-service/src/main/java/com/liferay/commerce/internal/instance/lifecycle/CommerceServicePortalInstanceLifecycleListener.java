@@ -5,7 +5,7 @@
 
 package com.liferay.commerce.internal.instance.lifecycle;
 
-import com.liferay.commerce.helper.CommerceAccountRoleHelper;
+import com.liferay.commerce.helper.CommerceRoleHelper;
 import com.liferay.commerce.helper.CommerceSAPHelper;
 import com.liferay.commerce.payment.configuration.CommercePaymentEntryRefundTypeConfiguration;
 import com.liferay.petra.string.StringBundler;
@@ -53,7 +53,7 @@ public class CommerceServicePortalInstanceLifecycleListener
 		serviceContext.setUserId(_getAdminUserId(company.getCompanyId()));
 		serviceContext.setUuid(PortalUUIDUtil.generate());
 
-		_commerceAccountRoleHelper.checkCommerceAccountRoles(serviceContext);
+		_commerceRoleHelper.checkCommerceAccountRoles(serviceContext);
 
 		try {
 			Configuration[] configurations =
@@ -134,7 +134,7 @@ public class CommerceServicePortalInstanceLifecycleListener
 	}
 
 	@Reference
-	private CommerceAccountRoleHelper _commerceAccountRoleHelper;
+	private CommerceRoleHelper _commerceRoleHelper;
 
 	@Reference
 	private CommerceSAPHelper _commerceSAPHelper;

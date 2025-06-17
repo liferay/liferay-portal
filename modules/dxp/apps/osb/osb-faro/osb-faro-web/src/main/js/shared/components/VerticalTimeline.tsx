@@ -16,14 +16,14 @@ const DEVICE_ICONS_MAP = {
 		symbol: 'devices',
 		title: Liferay.Language.get('unknown-device')
 	},
-	desktop: {symbol: 'ac-display', title: Liferay.Language.get('desktop')},
+	desktop: {symbol: 'ac_display', title: Liferay.Language.get('desktop')},
 	mobile: {symbol: 'mobile-portrait', title: Liferay.Language.get('mobile')},
 	smartphone: {
 		symbol: 'mobile-portrait',
 		title: Liferay.Language.get('mobile')
 	},
 	tablet: {
-		symbol: 'ac-tablet-landscape',
+		symbol: 'ac_tablet_landscape',
 		title: Liferay.Language.get('tablet')
 	}
 };
@@ -193,7 +193,7 @@ const TimelinePanelBodyContentDetails: FC<{
 			<div className='icon-group'>
 				<ClayIcon
 					className='event-icon icon-root'
-					symbol='ac-event-icon'
+					symbol='ac_event_icon'
 				/>
 
 				<span className='item-count'>{itemCount}</span>
@@ -242,7 +242,7 @@ const TimelinePanelBodyContentText: FC<{
 				<>
 					<ClayIcon
 						className='event-icon icon-root'
-						symbol='ac-event-icon'
+						symbol='ac_event_icon'
 					/>
 
 					<span className='item-count'>{totalEvents}</span>

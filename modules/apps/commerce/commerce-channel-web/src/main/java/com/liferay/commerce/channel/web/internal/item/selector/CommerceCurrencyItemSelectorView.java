@@ -192,9 +192,9 @@ public class CommerceCurrencyItemSelectorView
 			_portletURL = portletURL;
 
 			_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 			_renderResponse = (RenderResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 		}
 
 		@Override
@@ -222,7 +222,7 @@ public class CommerceCurrencyItemSelectorView
 			SearchContainer<CommerceCurrency> entriesSearchContainer =
 				new SearchContainer<>(
 					(PortletRequest)_httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST),
+						JavaConstants.JAKARTA_PORTLET_REQUEST),
 					_portletURL, null, "no-entries-were-found");
 
 			ThemeDisplay themeDisplay =

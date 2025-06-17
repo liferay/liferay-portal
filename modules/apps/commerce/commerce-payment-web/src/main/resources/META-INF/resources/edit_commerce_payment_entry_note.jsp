@@ -15,14 +15,11 @@ CommercePaymentEntry commercePaymentEntry = commercePaymentEntryDisplayContext.g
 
 <portlet:actionURL name="/commerce_payment/edit_commerce_payment_entry" var="editCommercePaymentEntryNoteActionURL" />
 
-<commerce-ui:modal-content>
-	<aui:form action="<%= editCommercePaymentEntryNoteActionURL %>" cssClass="container-fluid container-fluid-max-xl p-0" method="post" name="fm">
-		<aui:input name="<%= Constants.CMD %>" type="hidden" value="updateNote" />
-		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
-		<aui:input name="commercePaymentEntryId" type="hidden" value="<%= commercePaymentEntry.getCommercePaymentEntryId() %>" />
+<aui:form action="<%= editCommercePaymentEntryNoteActionURL %>" cssClass="container-fluid container-fluid-max-xl p-4" method="post" name="fm">
+	<aui:input name="<%= Constants.CMD %>" type="hidden" value="updateNote" />
+	<aui:input name="commercePaymentEntryId" type="hidden" value="<%= commercePaymentEntry.getCommercePaymentEntryId() %>" />
 
-		<aui:model-context bean="<%= commercePaymentEntry %>" model="<%= CommercePaymentEntry.class %>" />
+	<aui:model-context bean="<%= commercePaymentEntry %>" model="<%= CommercePaymentEntry.class %>" />
 
-		<aui:input name="note" wrapperCssClass="form-group-item" />
-	</aui:form>
-</commerce-ui:modal-content>
+	<aui:input name="note" wrapperCssClass="form-group-item" />
+</aui:form>

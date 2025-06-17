@@ -212,7 +212,7 @@ public class SaveGroupConfigurationMVCActionCommandTest {
 		mockLiferayPortletActionRequest.addParameter(
 			"includeWebContent", String.valueOf(includeWebContent));
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletActionResponse());
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(user));

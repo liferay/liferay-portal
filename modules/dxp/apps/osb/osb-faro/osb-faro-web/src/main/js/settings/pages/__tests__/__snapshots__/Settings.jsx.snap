@@ -66,11 +66,11 @@ exports[`Setttings should render 1`] = `
                   class="icon-wrapper"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-ac-api icon-root"
+                    class="lexicon-icon lexicon-icon-ac_api icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#ac-api"
+                      href="#ac_api"
                     />
                   </svg>
                 </span>
@@ -110,11 +110,11 @@ exports[`Setttings should render 1`] = `
                   class="icon-wrapper"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-data-privacy-lock icon-root"
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#data-privacy-lock"
+                      href="#data_privacy_lock"
                     />
                   </svg>
                 </span>
@@ -132,11 +132,11 @@ exports[`Setttings should render 1`] = `
                   class="icon-wrapper"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-faro-data-source icon-root"
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#faro-data-source"
+                      href="#faro_data_source"
                     />
                   </svg>
                 </span>
@@ -165,11 +165,11 @@ exports[`Setttings should render 1`] = `
                   class="icon-wrapper"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-user-management icon-root"
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#user-management"
+                      href="#user_management"
                     />
                   </svg>
                 </span>
@@ -187,11 +187,11 @@ exports[`Setttings should render 1`] = `
                   class="icon-wrapper"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-ac-page icon-root"
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#ac-page"
+                      href="#ac_page"
                     />
                   </svg>
                 </span>

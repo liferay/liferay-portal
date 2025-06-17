@@ -34,7 +34,9 @@ import com.liferay.portal.search.engine.adapter.index.StatsIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.StatsIndexResponse;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexResponse;
+import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -149,6 +151,12 @@ public class OpenSearchIndexRequestExecutor implements IndexRequestExecutor {
 			updateIndexSettingsIndexRequest);
 	}
 
+	@Activate
+	protected void activate() {
+		_statsIndexRequestExecutor = new StatsIndexRequestExecutor(
+			_openSearchConnectionManager);
+	}
+
 	@Reference
 	private AnalyzeIndexRequestExecutor _analyzeIndexRequestExecutor;
 
@@ -182,12 +190,14 @@ public class OpenSearchIndexRequestExecutor implements IndexRequestExecutor {
 	private OpenIndexRequestExecutor _openIndexRequestExecutor;
 
 	@Reference
+	private OpenSearchConnectionManager _openSearchConnectionManager;
+
+	@Reference
 	private PutMappingIndexRequestExecutor _putMappingIndexRequestExecutor;
 
 	@Reference
 	private RefreshIndexRequestExecutor _refreshIndexRequestExecutor;
 
-	@Reference
 	private StatsIndexRequestExecutor _statsIndexRequestExecutor;
 
 	@Reference

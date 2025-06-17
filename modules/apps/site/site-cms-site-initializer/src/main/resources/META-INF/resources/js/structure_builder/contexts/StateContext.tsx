@@ -11,6 +11,8 @@ import React, {
 	useReducer,
 } from 'react';
 
+import {ReferencedStructure, Structure} from '../types/Structure';
+import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
 import {
 	Field,
@@ -31,32 +33,7 @@ import {
 
 const DEFAULT_STRUCTURE_LABEL = Liferay.Language.get('untitled-structure');
 
-type History = {
-	deletedFields: boolean;
-};
-
-type Status = 'new' | 'draft' | 'published';
-
-type Spaces = 'all' | string[];
-
-export type Uuid = string & {__brand: 'Uuid'};
-
-export type State = {
-	erc: string;
-	error: string | null;
-	fields: Map<Uuid, Field>;
-	history: History;
-	id: number | null;
-	invalids: Map<Uuid, Set<ValidationError>>;
-	label: Liferay.Language.LocalizedValue<string>;
-	name: string;
-	publishedFields: Set<Uuid>;
-	selection: Uuid[];
-	spaces: Spaces;
-	status: Status;
-	unsavedChanges: boolean;
-	uuid: Uuid;
-};
+export type State = Structure;
 
 const INITIAL_STATE: State = {
 	erc: '',
@@ -80,6 +57,11 @@ const INITIAL_STATE: State = {
 };
 
 type AddFieldAction = {field: Field; type: 'add-field'};
+
+type AddReferencedStructuresAction = {
+	ercs: string[];
+	type: 'add-referenced-structures';
+};
 
 type AddValidationError = {
 	error: ValidationError;
@@ -127,7 +109,7 @@ type UpdateStructureAction = {
 	erc?: string;
 	label?: Liferay.Language.LocalizedValue<string>;
 	name?: string;
-	spaces?: Spaces;
+	spaces?: State['spaces'];
 	type: 'update-structure';
 };
 
@@ -138,6 +120,7 @@ type ValidateAction = {
 
 export type Action =
 	| AddFieldAction
+	| AddReferencedStructuresAction
 	| AddValidationError
 	| ClearErrorAction
 	| CreateStructureAction
@@ -167,6 +150,33 @@ function reducer(state: State, action: Action): State {
 
 			return {...state, fields: nextFields, selection: [field.uuid]};
 		}
+		case 'add-referenced-structures': {
+			const {ercs} = action;
+
+			const nextFields = new Map(state.fields);
+
+			let selection: Structure['selection'] = [];
+
+			for (const [i, erc] of ercs.entries()) {
+				const uuid = getUuid();
+				const name = getRelationshipName();
+
+				const structure: ReferencedStructure = {
+					erc,
+					name,
+					type: 'referenced-structure',
+					uuid,
+				};
+
+				nextFields.set(structure.uuid, structure);
+
+				if (i === 0) {
+					selection = [uuid];
+				}
+			}
+
+			return {...state, fields: nextFields, selection};
+		}
 		case 'add-validation-error': {
 			const {error, uuid} = action;
 
@@ -194,7 +204,7 @@ function reducer(state: State, action: Action): State {
 				...state,
 				error: INITIAL_STATE.error,
 				id: action.id,
-				status: 'draft' as Status,
+				status: 'draft' as State['status'],
 			};
 		}
 		case 'delete-field': {
@@ -259,7 +269,7 @@ function reducer(state: State, action: Action): State {
 				publishedFields: new Set(
 					Array.from(state.fields.values()).map((field) => field.uuid)
 				),
-				status: 'published' as Status,
+				status: 'published' as State['status'],
 				unsavedChanges: false,
 			};
 
@@ -295,7 +305,7 @@ function reducer(state: State, action: Action): State {
 
 			const nextFields: State['fields'] = new Map(state.fields);
 
-			const field = nextFields.get(uuid);
+			const field = nextFields.get(uuid) as Field;
 
 			if (!field) {
 				return state;
@@ -352,12 +362,14 @@ function reducer(state: State, action: Action): State {
 
 			// Prepare updated state
 
+			const {erc, label, name, spaces} = action;
+
 			const nextState = {
 				...state,
-				erc: action.erc ?? state.erc,
-				label: action.label ?? state.label,
-				name: action.name ?? state.name,
-				spaces: action.spaces ?? state.spaces,
+				erc: erc ?? state.erc,
+				label: label ?? state.label,
+				name: name ?? state.name,
+				spaces: spaces ?? state.spaces,
 			};
 
 			// Validate the data sent in the action
@@ -366,7 +378,7 @@ function reducer(state: State, action: Action): State {
 
 			const errors = validateStructure({
 				currentErrors: invalids.get(state.uuid),
-				data: action,
+				data: {erc, label, name, spaces},
 			});
 
 			if (errors.size) {
@@ -469,6 +481,10 @@ function getDefaultFields() {
 	}
 
 	return fields;
+}
+
+function getRelationshipName() {
+	return normalizeName(`rel${getUuid()}`, {limit: 30});
 }
 
 export {StateContext, StateContextProvider, useSelector, useStateDispatch};

@@ -41,7 +41,7 @@ public class RequestBackedPortletURLFactoryUtil {
 
 		PortletResponse portletResponse =
 			(PortletResponse)portletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		if (portletResponse == null) {
 			return create(PortalUtil.getHttpServletRequest(portletRequest));

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dynamic Data Lists API
 Bundle-SymbolicName: com.liferay.dynamic.data.lists.api
-Bundle-Version: 10.0.3
+Bundle-Version: 10.1.0
 Export-Package:\
 	com.liferay.dynamic.data.lists.constants,\
 	com.liferay.dynamic.data.lists.exception,\

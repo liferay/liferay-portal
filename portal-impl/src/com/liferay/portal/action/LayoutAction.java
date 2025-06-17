@@ -442,7 +442,7 @@ public class LayoutAction implements Action {
 		finally {
 			PortletRequest portletRequest =
 				(PortletRequest)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST);
+					JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 			if (portletRequest != null) {
 				LiferayPortletRequest liferayPortletRequest =

@@ -11,6 +11,7 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManagerUtil;
 import com.liferay.exportimport.kernel.lifecycle.constants.ExportImportLifecycleConstants;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.comment.CommentManagerUtil;
 import com.liferay.portal.kernel.comment.DiscussionStagingHandler;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.model.StagedGroupedModel;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.model.WorkflowedModel;
+import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -327,6 +329,18 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 
 		if (portletDataContext.isPathProcessed(path)) {
 			return;
+		}
+
+		if (stagedModel instanceof CTModel) {
+			CTModel<?> ctModel = (CTModel)stagedModel;
+
+			if ((ctModel.getCtCollectionId() !=
+					CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION) &&
+				(ctModel.getCtCollectionId() !=
+					CTCollectionThreadLocal.getCTCollectionId())) {
+
+				return;
+			}
 		}
 
 		try {

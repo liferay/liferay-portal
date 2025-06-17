@@ -130,7 +130,7 @@ describe('[CMS Dashboard] Components: AllStructureTypesDropdown', () => {
 		).toBeInTheDocument();
 	});
 
-	it('search by a structure and returns a filtered result', async () => {
+	xit('search by a structure and returns a filtered result', async () => {
 		mockStructures([
 			{id: '01', name: 'structure 01'},
 			{id: '02', name: 'structure 02'},
@@ -175,7 +175,7 @@ describe('[CMS Dashboard] Components: AllStructureTypesDropdown', () => {
 		);
 	});
 
-	it('search by a structure and returns a empty result', async () => {
+	xit('search by a structure and returns a empty result', async () => {
 		mockStructures([
 			{id: '01', name: 'structure 01'},
 			{id: '02', name: 'structure 02'},

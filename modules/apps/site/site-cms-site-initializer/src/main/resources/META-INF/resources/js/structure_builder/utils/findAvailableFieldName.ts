@@ -10,7 +10,10 @@ export default function findAvailableFieldName(
 	name: string
 ) {
 	const exists = (name: string) =>
-		[...fields.values()].some((item) => item.name === name);
+		[...fields.values()].some(
+			(field) =>
+				field.type !== 'referenced-structure' && field.name === name
+		);
 
 	if (!exists(name)) {
 		return name;

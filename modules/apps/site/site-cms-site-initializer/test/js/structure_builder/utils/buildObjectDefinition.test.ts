@@ -79,6 +79,7 @@ describe('buildObjectDefinition', () => {
 					required: true,
 				},
 			],
+			objectRelationships: [],
 			pluralLabel: {en_US: 'Structure'},
 			scope: 'depot',
 		});
@@ -119,6 +120,7 @@ describe('buildObjectDefinition', () => {
 					required: false,
 				},
 			],
+			objectRelationships: [],
 			pluralLabel: {en_US: 'Structure'},
 			scope: 'depot',
 		});
@@ -165,6 +167,7 @@ describe('buildObjectDefinition', () => {
 					required: true,
 				},
 			],
+			objectRelationships: [],
 			pluralLabel: {en_US: 'Structure'},
 			scope: 'depot',
 		});

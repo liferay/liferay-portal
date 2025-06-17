@@ -12,6 +12,7 @@ GradleDependencyVersionCheck | [Bug Prevention](bug_prevention_checks.md#bug-pre
 GradleExportedPackageDependenciesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Validates dependencies in gradle build files. |
 GradleImportsCheck | [Styling](styling_checks.md#styling-checks) | Sorts and groups imports in `.gradle` files. |
 GradleIndentationCheck | [Styling](styling_checks.md#styling-checks) | Finds incorrect indentation in gradle build files. |
+GradleJakartaTransformCheck | [JakartaTransform](jakarta_transform_checks.md#jakartatransform-checks) | Performs replacements for use of Jakarta. |
 GradleJavaVersionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks values of properties `sourceCompatibility` and `targetCompatibility` in gradle build files. |
 GradleMissingDependenciesForUpgradeJava21Check | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks missing dependencies for upgrade Java 21 in gradle build files. |
 GradleMissingJarManifestTaskCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds missing `jarManifest` task when using `jarPatched` task in gradle build files. |

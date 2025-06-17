@@ -216,7 +216,7 @@ public class I18nFilter extends BasePortalFilter {
 
 		if (Validator.isNull(queryString)) {
 			queryString = (String)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING);
+				JavaConstants.JAKARTA_SERVLET_FORWARD_QUERY_STRING);
 		}
 
 		if (Validator.isNotNull(queryString)) {

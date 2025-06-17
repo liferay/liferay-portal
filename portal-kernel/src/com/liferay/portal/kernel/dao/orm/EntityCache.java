@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.dao.orm;
 
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.CacheModel;
 
 import java.io.Serializable;
 
@@ -23,6 +24,9 @@ public interface EntityCache {
 	public void clearCache(Class<?> clazz);
 
 	public void clearLocalCache();
+
+	public <T extends CacheModel<?>> T fetchCacheModel(
+		Class<?> clazz, Serializable primaryKey, Class<T> cacheModelClass);
 
 	public Serializable getLocalCacheResult(
 		Class<?> clazz, Serializable primaryKey);

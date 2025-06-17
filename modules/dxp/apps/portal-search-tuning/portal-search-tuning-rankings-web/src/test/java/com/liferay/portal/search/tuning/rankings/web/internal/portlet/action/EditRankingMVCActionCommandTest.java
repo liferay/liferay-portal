@@ -252,7 +252,9 @@ public class EditRankingMVCActionCommandTest
 				else if (argument.equals(WebKeys.PORTLET_ID)) {
 					return "thePortletId";
 				}
-				else if (argument.equals(JavaConstants.JAVAX_PORTLET_CONFIG)) {
+				else if (argument.equals(
+							JavaConstants.JAKARTA_PORTLET_CONFIG)) {
+
 					return portletConfig;
 				}
 

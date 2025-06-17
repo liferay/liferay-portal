@@ -346,14 +346,14 @@ const CustomEventList: React.FC<ICustomEventListProps> = ({
 			<RowActions
 				quickActions={[
 					{
-						iconSymbol: 'ac-block',
+						iconSymbol: 'ac_block',
 						label: Liferay.Language.get('block-event'),
 						onClick: () => {
 							handleBlockEvents([data]);
 						}
 					},
 					{
-						iconSymbol: hidden ? 'view' : 'ac-hidden',
+						iconSymbol: hidden ? 'view' : 'ac_hidden',
 						label: hidden
 							? Liferay.Language.get('set-to-show')
 							: Liferay.Language.get('set-to-hide'),
@@ -425,7 +425,7 @@ const CustomEventList: React.FC<ICustomEventListProps> = ({
 						icon={{
 							border: false,
 							size: Sizes.XXXLarge,
-							symbol: 'ac-satellite'
+							symbol: 'ac_satellite'
 						}}
 						title={Liferay.Language.get('no-custom-events-found')}
 					/>
@@ -451,7 +451,7 @@ const CustomEventList: React.FC<ICustomEventListProps> = ({
 										>
 											<ClayIcon
 												className='icon-root mr-2'
-												symbol='ac-block'
+												symbol='ac_block'
 											/>
 
 											{Liferay.Language.get(
@@ -481,7 +481,7 @@ const CustomEventList: React.FC<ICustomEventListProps> = ({
 													hasUnhiddenEvent(
 														selectedItems
 													)
-														? 'ac-hidden'
+														? 'ac_hidden'
 														: 'view'
 												}
 											/>

@@ -81,10 +81,21 @@ export default class BaseAppPublish {
 	) => {
 		const {productId, productSpecifications = []} = product;
 
-		const specification = productSpecifications.find(
-			(productSpecification) =>
-				productSpecification.specificationKey === specificationKey
-		);
+		let specification: any = {};
+		if (specificationKey === 'liferay-version') {
+			specification = productSpecifications.find(
+				(productSpecification) =>
+					productSpecification.specificationKey ===
+						specificationKey &&
+					productSpecification.value.en_US === value
+			);
+		}
+		else {
+			specification = productSpecifications.find(
+				(productSpecification) =>
+					productSpecification.specificationKey === specificationKey
+			);
+		}
 
 		if (
 			!value?.trim() ||

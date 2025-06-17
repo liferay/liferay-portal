@@ -47,7 +47,7 @@ public class DefaultUserAssociationsDisplayContext {
 				"site.groupTypeSettings");
 		_liferayPortletResponse = PortalUtil.getLiferayPortletResponse(
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE));
+				JavaConstants.JAKARTA_PORTLET_RESPONSE));
 		_liveGroupId = (long)httpServletRequest.getAttribute(
 			"site.liveGroupId");
 	}

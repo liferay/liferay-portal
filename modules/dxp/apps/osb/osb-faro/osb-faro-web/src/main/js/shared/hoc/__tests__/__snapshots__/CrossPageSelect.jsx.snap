@@ -44,11 +44,11 @@ exports[`CrossPageSelect should render the selected list when the user presses t
               href="/?field=name&page=1&sortOrder=DESC"
             >
               <svg
-                class="lexicon-icon lexicon-icon-order-arrow-ascending icon-root"
+                class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
                 role="presentation"
               >
                 <use
-                  href="#order-arrow-ascending"
+                  href="#order_arrow_ascending"
                 />
               </svg>
             </a>
@@ -320,11 +320,11 @@ exports[`CrossPageSelect should render the server data list by default 1`] = `
               href="/?field=name&page=1&sortOrder=DESC"
             >
               <svg
-                class="lexicon-icon lexicon-icon-order-arrow-ascending icon-root"
+                class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
                 role="presentation"
               >
                 <use
-                  href="#order-arrow-ascending"
+                  href="#order_arrow_ascending"
                 />
               </svg>
             </a>

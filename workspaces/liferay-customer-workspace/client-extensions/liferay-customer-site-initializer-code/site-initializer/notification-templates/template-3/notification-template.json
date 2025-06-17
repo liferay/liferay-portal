@@ -1,24 +1,24 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"externalReferenceCode": "SETUP-ANALYTICS-CLOUD-ENVIRONMENT-NOTIFICATION-TEMPLATE",
-	"name": "Setup Analytics Cloud Environment Notification Template",
+	"externalReferenceCode": "CP-REPLACEMENT-ACTIVATION-KEY-REQUEST",
+	"name": "CP Replacement Activation Key Request",
 	"recipientType": "email",
 	"recipients": [
 		{
 			"bcc": "",
-			"cc": "sales-ops@liferay.com",
-			"from": "solutions@liferay.com",
+			"cc": "",
+			"from": "provisioningrequest@liferay.com",
 			"fromName": {
-				"en-US": "Customer Portal"
+				"en-US": "Liferay Forms"
 			},
 			"to": {
-				"en-US": "cloud-provisioning@liferay.com "
+				"en-US": "provisioning-help@liferay.com"
 			}
 		}
 	],
 	"subject": {
-		"en_US": "Analytics Cloud Activation request for [%PROJECT_ID]"
+		"en_US": "Replacement Activation Key - Closed/Expired Account"
 	},
 	"type": "email"
 }

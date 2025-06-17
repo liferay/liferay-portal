@@ -44,7 +44,7 @@ public class ServletContextHelperDataContextImpl
 		_servletContextTempDir.mkdirs();
 
 		_attributesDictionary.put(
-			JavaConstants.JAVAX_SERVLET_CONTEXT_TEMPDIR,
+			JavaConstants.JAKARTA_SERVLET_CONTEXT_TEMPDIR,
 			_servletContextTempDir);
 	}
 

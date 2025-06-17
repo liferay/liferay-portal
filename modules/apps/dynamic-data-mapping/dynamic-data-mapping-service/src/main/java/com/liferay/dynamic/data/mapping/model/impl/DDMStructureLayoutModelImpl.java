@@ -10,8 +10,10 @@ import com.liferay.dynamic.data.mapping.model.DDMStructureLayoutModel;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
@@ -31,6 +33,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -46,6 +50,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1332,9 +1337,17 @@ public class DDMStructureLayoutModelImpl
 			ddmStructureLayoutCacheModel.definition = null;
 		}
 
-		setDDMFormLayout(null);
+		try {
+			setDDMFormLayout(null);
 
-		ddmStructureLayoutCacheModel._ddmFormLayout = getDDMFormLayout();
+			ddmStructureLayoutCacheModel.ddmFormLayout =
+				(com.liferay.dynamic.data.mapping.model.DDMFormLayout)
+					_ddmFormLayoutMethodHandle.invokeExact(
+						(DDMStructureLayoutImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return ddmStructureLayoutCacheModel;
 	}
@@ -1523,6 +1536,38 @@ public class DDMStructureLayoutModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected final transient Consumer
+		<com.liferay.dynamic.data.mapping.model.DDMFormLayout>
+			ddmFormLayoutUpdateEntityCacheConsumer = ddmFormLayout -> {
+				DDMStructureLayoutCacheModel ddmStructureLayoutCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						DDMStructureLayoutImpl.class, _structureLayoutId,
+						DDMStructureLayoutCacheModel.class);
+
+				if ((ddmStructureLayoutCacheModel != null) &&
+					(ddmStructureLayoutCacheModel.getMvccVersion() ==
+						getMvccVersion())) {
+
+					ddmStructureLayoutCacheModel.ddmFormLayout = ddmFormLayout;
+				}
+			};
+
+	private static final MethodHandle _ddmFormLayoutMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_ddmFormLayoutMethodHandle = lookup.findGetter(
+				DDMStructureLayoutImpl.class, "_ddmFormLayout",
+				com.liferay.dynamic.data.mapping.model.DDMFormLayout.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private DDMStructureLayout _escapedModel;
 
 }

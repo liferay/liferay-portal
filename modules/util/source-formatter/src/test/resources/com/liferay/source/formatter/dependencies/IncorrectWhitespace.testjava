@@ -49,7 +49,10 @@ public class IncorrectWhitespace {
 		String s9 = s5;
 
 		if (isGif()) {
+			return;
 		}
+
+		System.out.println("End of test.");
 	}
 
 	/*

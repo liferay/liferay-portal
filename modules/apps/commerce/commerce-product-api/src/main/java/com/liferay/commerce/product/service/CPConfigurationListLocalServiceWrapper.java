@@ -136,6 +136,15 @@ public class CPConfigurationListLocalServiceWrapper
 			cpConfigurationList);
 	}
 
+	@Override
+	public CPConfigurationList deleteCPConfigurationList(
+			CPConfigurationList cpConfigurationList, boolean force)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpConfigurationListLocalService.deleteCPConfigurationList(
+			cpConfigurationList, force);
+	}
+
 	/**
 	 * Deletes the cp configuration list with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -154,6 +163,15 @@ public class CPConfigurationListLocalServiceWrapper
 
 		return _cpConfigurationListLocalService.deleteCPConfigurationList(
 			CPConfigurationListId);
+	}
+
+	@Override
+	public CPConfigurationList deleteCPConfigurationList(
+			long cpConfigurationListId, boolean force)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpConfigurationListLocalService.deleteCPConfigurationList(
+			cpConfigurationListId, force);
 	}
 
 	@Override
@@ -308,14 +326,6 @@ public class CPConfigurationListLocalServiceWrapper
 
 		return _cpConfigurationListLocalService.
 			fetchCPConfigurationListByUuidAndGroupId(uuid, groupId);
-	}
-
-	@Override
-	public CPConfigurationList forceDeleteCPConfigurationList(
-		CPConfigurationList cpConfigurationList) {
-
-		return _cpConfigurationListLocalService.forceDeleteCPConfigurationList(
-			cpConfigurationList);
 	}
 
 	@Override

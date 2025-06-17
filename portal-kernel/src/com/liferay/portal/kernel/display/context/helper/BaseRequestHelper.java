@@ -81,7 +81,7 @@ public abstract class BaseRequestHelper {
 		if (_liferayPortletRequest == null) {
 			PortletRequest portletRequest =
 				(PortletRequest)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST);
+					JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 			_liferayPortletRequest = PortalUtil.getLiferayPortletRequest(
 				portletRequest);
@@ -94,7 +94,7 @@ public abstract class BaseRequestHelper {
 		if (_liferayPortletResponse == null) {
 			PortletResponse portletResponse =
 				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			_liferayPortletResponse = PortalUtil.getLiferayPortletResponse(
 				portletResponse);

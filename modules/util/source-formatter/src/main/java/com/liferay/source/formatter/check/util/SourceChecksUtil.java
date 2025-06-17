@@ -214,6 +214,7 @@ public class SourceChecksUtil {
 		attributesJSONObject = SourceFormatterCheckUtil.addPropertiesAttributes(
 			attributesJSONObject, propertiesMap,
 			SourceFormatterUtil.GIT_LIFERAY_PORTAL_BRANCH,
+			SourceFormatterUtil.JAKARTA_USED_BRANCH,
 			SourceFormatterUtil.UPGRADE_FROM_VERSION,
 			SourceFormatterUtil.UPGRADE_TO_LIFERAY_VERSION,
 			SourceFormatterUtil.UPGRADE_TO_RELEASE_VERSION);
@@ -270,7 +271,8 @@ public class SourceChecksUtil {
 			String sourceCheckName = SourceFormatterUtil.getSimpleName(
 				sourceCheckConfiguration.getName());
 
-			if ((sourceCheckCategory.startsWith("Upgrade") &&
+			if (((sourceCheckCategory.equals("JakartaTransform") ||
+				  sourceCheckCategory.startsWith("Upgrade")) &&
 				 !filterCheckCategoryNames.contains(sourceCheckCategory)) ||
 				((!filterCheckCategoryNames.isEmpty() ||
 				  !filterCheckNames.isEmpty()) &&

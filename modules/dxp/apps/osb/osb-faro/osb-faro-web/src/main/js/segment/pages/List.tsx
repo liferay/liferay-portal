@@ -357,7 +357,7 @@ export const List: React.FC<IListProps> = ({
 				icon: {
 					border: false,
 					size: Sizes.XXXLarge,
-					symbol: 'ac-satellite'
+					symbol: 'ac_satellite'
 				},
 				title: Liferay.Language.get('there-are-no-segments-found')
 			}}

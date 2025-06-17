@@ -9,6 +9,7 @@ import ${apiPackagePath}.model.${entity.name};
 	import ${apiPackagePath}.service.persistence.${entity.name}PK;
 </#if>
 
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 
@@ -17,6 +18,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.math.BigDecimal;
 
@@ -151,11 +155,20 @@ public class ${entity.name}CacheModel implements CacheModel<${entity.name}>, Ext
 
 		${entity.variableName}Impl.resetOriginalValues();
 
-		<#list cacheFields as cacheField>
-			<#assign methodName = serviceBuilder.getCacheFieldMethodName(cacheField) />
+		<#if cacheFields?size != 0>
+			try {
+				<#list cacheFields as cacheField>
+					<#assign
+						variableName = serviceBuilder.getVariableName(cacheField)
+					/>
 
-			${entity.variableName}Impl.set${methodName}(${cacheField.name});
-		</#list>
+					_${variableName}MethodHandle.invokeExact(${entity.variableName}Impl, ${variableName});
+				</#list>
+			}
+			catch (Throwable throwable) {
+				ReflectionUtil.throwException(throwable);
+			}
+		</#if>
 
 		return ${entity.variableName}Impl;
 	}
@@ -202,7 +215,9 @@ public class ${entity.name}CacheModel implements CacheModel<${entity.name}>, Ext
 		</#list>
 
 		<#list cacheFields as cacheField>
-			${cacheField.name} = (${serviceBuilder.getGenericValue(cacheField.type)})objectInput.readObject();
+			<#assign variableName = serviceBuilder.getVariableName(cacheField) />
+
+			${variableName} = (${serviceBuilder.getGenericValue(cacheField.type)})objectInput.readObject();
 		</#list>
 
 		<#if entity.hasCompoundPK()>
@@ -252,7 +267,9 @@ public class ${entity.name}CacheModel implements CacheModel<${entity.name}>, Ext
 		</#list>
 
 		<#list cacheFields as cacheField>
-			objectOutput.writeObject(${cacheField.name});
+			<#assign variableName = serviceBuilder.getVariableName(cacheField) />
+
+			objectOutput.writeObject(${variableName});
 		</#list>
 	}
 
@@ -269,11 +286,39 @@ public class ${entity.name}CacheModel implements CacheModel<${entity.name}>, Ext
 	</#list>
 
 	<#list cacheFields as cacheField>
-		public ${serviceBuilder.getGenericValue(cacheField.type)} ${cacheField.name};
+		<#assign variableName = serviceBuilder.getVariableName(cacheField) />
+
+		public volatile ${serviceBuilder.getGenericValue(cacheField.type)} ${variableName};
 	</#list>
 
 	<#if entity.hasCompoundPK()>
 		public transient ${entity.name}PK ${entity.PKVariableName};
 	</#if>
 
+	<#list cacheFields as cacheField>
+		<#assign
+			variableName = serviceBuilder.getVariableName(cacheField)
+		/>
+
+		private static final MethodHandle _${variableName}MethodHandle;
+	</#list>
+
+	<#if cacheFields?size != 0>
+		static {
+			MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+			try {
+				<#list cacheFields as cacheField>
+					<#assign
+						variableName = serviceBuilder.getVariableName(cacheField)
+					/>
+
+					_${variableName}MethodHandle = lookup.findSetter(${entity.name}Impl.class, "${cacheField.name}", ${cacheField.type.canonicalName}.class);
+				</#list>
+			}
+			catch (ReflectiveOperationException reflectiveOperationException) {
+				throw new ExceptionInInitializerError(reflectiveOperationException);
+			}
+		}
+	</#if>
 }

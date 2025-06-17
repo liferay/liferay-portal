@@ -180,12 +180,14 @@ public class ObjectEntryDisplayContextTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletActionResponse());
 		mockHttpServletRequest.setAttribute(
 			ObjectWebKeys.OBJECT_DEFINITION, objectDefinition);
 		mockHttpServletRequest.setAttribute(
 			ObjectWebKeys.OBJECT_ENTRY_READ_ONLY, Boolean.FALSE);
+		mockHttpServletRequest.setAttribute(
+			WebKeys.PORTLET_ID, objectDefinition.getPortletId());
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 

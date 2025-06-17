@@ -87,7 +87,7 @@ public class SummaryFixture<T> {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, portletRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, portletRequest);
 		mockHttpServletRequest.setPreferredLocales(
 			Collections.singletonList(locale));
 

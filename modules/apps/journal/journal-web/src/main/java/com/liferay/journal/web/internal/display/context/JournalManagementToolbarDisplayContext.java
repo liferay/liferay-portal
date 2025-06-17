@@ -1008,7 +1008,7 @@ public class JournalManagementToolbarDisplayContext
 
 					PortletRequest portletRequest =
 						(PortletRequest)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_REQUEST);
+							JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 					PortletURL controlPanelPortletURL =
 						_getControlPanelPortletURL(portletRequest);

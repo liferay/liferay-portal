@@ -8,23 +8,23 @@
 <%@ include file="/init.jsp" %>
 
 <%
-ViewFolderDisplayContext viewFolderDisplayContext = (ViewFolderDisplayContext)request.getAttribute(ViewFolderDisplayContext.class.getName());
+ViewFolderSectionDisplayContext viewFolderSectionDisplayContext = (ViewFolderSectionDisplayContext)request.getAttribute(ViewFolderSectionDisplayContext.class.getName());
 %>
 
 <div class="cms-section">
 	<div>
 		<react:component
 			module="{Breadcrumb} from site-cms-site-initializer"
-			props="<%= viewFolderDisplayContext.getBreadcrumbProps() %>"
+			props="<%= viewFolderSectionDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
 
 	<frontend-data-set:headless-display
-		apiURL="<%= viewFolderDisplayContext.getAPIURL() %>"
-		bulkActionDropdownItems="<%= viewFolderDisplayContext.getBulkActionDropdownItems() %>"
-		creationMenu="<%= viewFolderDisplayContext.getCreationMenu() %>"
-		emptyState="<%= viewFolderDisplayContext.getEmptyState() %>"
-		fdsActionDropdownItems="<%= viewFolderDisplayContext.getFDSActionDropdownItems() %>"
+		apiURL="<%= viewFolderSectionDisplayContext.getAPIURL() %>"
+		bulkActionDropdownItems="<%= viewFolderSectionDisplayContext.getBulkActionDropdownItems() %>"
+		creationMenu="<%= viewFolderSectionDisplayContext.getCreationMenu() %>"
+		emptyState="<%= viewFolderSectionDisplayContext.getEmptyState() %>"
+		fdsActionDropdownItems="<%= viewFolderSectionDisplayContext.getFDSActionDropdownItems() %>"
 		formName="fm"
 		id="<%= CMSSiteInitializerFDSNames.VIEW_FOLDER %>"
 		itemsPerPage="<%= 20 %>"

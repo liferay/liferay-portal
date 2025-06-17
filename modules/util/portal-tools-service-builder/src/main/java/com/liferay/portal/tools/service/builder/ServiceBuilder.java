@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.Validator_IW;
 import com.liferay.portal.tools.ArgumentsUtil;
+import com.liferay.portal.tools.GitUtil;
 import com.liferay.portal.tools.ToolsUtil;
 import com.liferay.portal.tools.java.parser.JavaParser;
 import com.liferay.portal.xml.SAXReaderFactory;
@@ -3588,16 +3589,18 @@ public class ServiceBuilder {
 		if (propsFile.exists()) {
 			Properties properties = PropertiesUtil.load(_read(propsFile));
 
-			if (!_buildNumberIncrement) {
+			if (_buildNumberIncrement && !_hasLocalChanges(propsFile) &&
+				_hasModifiedSQLFiles()) {
+
+				buildNumber =
+					GetterUtil.getLong(properties.getProperty("build.number")) +
+						1;
+			}
+			else {
 				buildDate = GetterUtil.getLong(
 					properties.getProperty("build.date"));
 				buildNumber = GetterUtil.getLong(
 					properties.getProperty("build.number"));
-			}
-			else {
-				buildNumber =
-					GetterUtil.getLong(properties.getProperty("build.number")) +
-						1;
 			}
 		}
 
@@ -4507,7 +4510,7 @@ public class ServiceBuilder {
 					content.substring(0, x) + newCreateTableString +
 						content.substring(y + 2);
 
-				_write(sqlFile, content);
+				ToolsUtil.writeFileRaw(sqlFile, content, _modifiedFileNames);
 			}
 		}
 		else if (addMissingTables) {
@@ -5622,12 +5625,6 @@ public class ServiceBuilder {
 	}
 
 	private List<JavaMethod> _getMethods(JavaClass javaClass) {
-		return _getMethods(javaClass, false);
-	}
-
-	private List<JavaMethod> _getMethods(
-		JavaClass javaClass, boolean superclasses) {
-
 		List<JavaMethod> methods = new ArrayList<>();
 
 		List<String> cacheFieldMethods = new ArrayList<>();
@@ -5671,7 +5668,7 @@ public class ServiceBuilder {
 			}
 		}
 
-		for (JavaMethod javaMethod : javaClass.getMethods(superclasses)) {
+		for (JavaMethod javaMethod : javaClass.getMethods(false)) {
 			if (!cacheFieldMethods.contains(javaMethod.getName())) {
 				methods.add(javaMethod);
 			}
@@ -5964,6 +5961,28 @@ public class ServiceBuilder {
 	private boolean _hasHttpMethods(JavaClass javaClass) {
 		for (JavaMethod javaMethod : _getMethods(javaClass)) {
 			if (javaMethod.isPublic() && isCustomMethod(javaMethod)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasLocalChanges(File propsFile) throws Exception {
+		for (String localChangesFileName :
+				GitUtil.getLocalChangesFileNames("")) {
+
+			if (localChangesFileName.equals(propsFile.getPath())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasModifiedSQLFiles() {
+		for (String modifiedFileName : _modifiedFileNames) {
+			if (modifiedFileName.endsWith(".sql")) {
 				return true;
 			}
 		}
@@ -8063,7 +8082,7 @@ public class ServiceBuilder {
 		Files.createFile(file.toPath());
 	}
 
-	private void _write(File file, String s) throws IOException {
+	private void _write(File file, String s) throws Exception {
 		Path path = file.toPath();
 
 		Files.createDirectories(path.getParent());

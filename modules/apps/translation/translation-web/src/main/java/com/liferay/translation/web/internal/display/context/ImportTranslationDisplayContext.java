@@ -52,7 +52,7 @@ public class ImportTranslationDisplayContext {
 	public String getErrorMessage() {
 		PortletRequest portletRequest =
 			(PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (!MultiSessionErrors.contains(
 				portletRequest,

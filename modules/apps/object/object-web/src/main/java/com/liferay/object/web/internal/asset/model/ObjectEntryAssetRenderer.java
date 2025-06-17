@@ -252,6 +252,8 @@ public class ObjectEntryAssetRenderer
 			_objectEntry.getExternalReferenceCode());
 		httpServletRequest.setAttribute(
 			ObjectWebKeys.OBJECT_ENTRY_READ_ONLY, Boolean.TRUE);
+		httpServletRequest.setAttribute(WebKeys.TEMPLATE, template);
+
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
 			_objectEntryDisplayContextFactory.create(httpServletRequest));

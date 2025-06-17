@@ -165,7 +165,7 @@
 </tr>
 <tr>
 	<td>FACET_ITEMS_SPECIFIC_ORDER</td>
-	<td>xpath=(//header[contains(., '${key_facetName}')]/following-sibling::div//div[contains(@class, 'panel-body')]//span[not(descendant::span)])[${key_termOrderNumber}]</td>
+	<td>xpath=(//header[contains(., '${key_facetName}')]/following-sibling::div//div[contains(@class, 'panel-body')]//span[not(descendant::span) and not(contains(@class,'sr-only'))])[${key_termOrderNumber}]</td>
 	<td></td>
 </tr>
 <tr>

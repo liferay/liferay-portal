@@ -34,6 +34,7 @@ const mockUseMarketplaceContext = {
 	modal: {onOpenChange: jest.fn()},
 	permissions: {
 		installFreeApps: true,
+		manageFragmentsEntries: true,
 		purchaseAndInstallPaidApps: true,
 		viewApps: true,
 	},
@@ -115,8 +116,9 @@ const mockProps = {
 	hideBackButton: false,
 };
 
-const renderComponent = (props = mockProps) =>
-	render(<MarketplaceViews {...props} />);
+const getComponent = (props = mockProps) => <MarketplaceViews {...props} />;
+
+const renderComponent = (props = mockProps) => render(getComponent(props));
 
 describe('MarketplaceViews', () => {
 	let consoleErrorSpy;
@@ -141,7 +143,9 @@ describe('MarketplaceViews', () => {
 			screen.getByTestId('mock-marketplace-products')
 		).toBeInTheDocument();
 
-		expect(screen.getByText('install')).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {name: 'install'})
+		).toBeInTheDocument();
 	});
 
 	it('renders storefront view correctly', async () => {
@@ -159,7 +163,7 @@ describe('MarketplaceViews', () => {
 			screen.getByTestId('mock-marketplace-storefront')
 		).toBeInTheDocument();
 
-		const installButton = screen.getByText('install');
+		const installButton = screen.getByRole('button', {name: 'install'});
 		expect(installButton).toBeInTheDocument();
 		userEvent.click(installButton);
 
@@ -186,7 +190,7 @@ describe('MarketplaceViews', () => {
 
 		renderComponent();
 
-		userEvent.click(screen.getByText('install'));
+		userEvent.click(screen.getByRole('button', {name: 'install'}));
 
 		await waitFor(() => {
 			expect(mockUseMarketplaceContext.setView).toHaveBeenCalledWith(
@@ -252,7 +256,7 @@ describe('MarketplaceViews', () => {
 
 		renderComponent();
 
-		userEvent.click(screen.getByText('install'));
+		userEvent.click(screen.getByRole('button', {name: 'install'}));
 
 		await waitFor(() => {
 			expect(
@@ -279,14 +283,46 @@ describe('MarketplaceViews', () => {
 	});
 
 	it('hides install button if user cannot install product', async () => {
+		const {rerender} = renderComponent();
+
+		expect(
+			screen.getByRole('button', {name: 'install'})
+		).toBeInTheDocument();
+
 		require('@liferay/marketplace-js-components-web').MarketplaceProduct =
 			jest.fn().mockImplementation((product) => ({
 				...product,
 				hasPermissionToInstall: jest.fn().mockReturnValue(false),
 			}));
 
-		renderComponent();
+		rerender(getComponent());
 
-		expect(screen.queryByText('install')).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: 'install'})
+		).not.toBeInTheDocument();
+
+		require('@liferay/marketplace-js-components-web').MarketplaceProduct =
+			jest.fn().mockImplementation((product) => ({
+				...product,
+				hasPermissionToInstall: jest.fn().mockReturnValue(false),
+			}));
+
+		const mockContext = {
+			...mockUseMarketplaceContext,
+			permissions: {
+				...mockUseMarketplaceContext.permissions,
+				manageFragmentsEntries: false,
+			},
+		};
+
+		require('@liferay/marketplace-js-components-web').useMarketplaceContext.mockReturnValue(
+			mockContext
+		);
+
+		rerender(getComponent());
+
+		expect(
+			screen.queryByRole('button', {name: 'install'})
+		).not.toBeInTheDocument();
 	});
 });

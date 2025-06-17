@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page, expect} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {ApplicationsMenuPage} from '../../product-navigation-applications-menu/ApplicationsMenuPage';
 
 export class CommerceAdminProductPage {
+	readonly addButton: Locator;
 	readonly addVirtualProductFileEntryButton: Locator;
 	readonly addVirtualSkuFileEntryButton: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
@@ -18,6 +19,12 @@ export class CommerceAdminProductPage {
 	readonly modalAddButton: Locator;
 	readonly modalCancelButton: Locator;
 	readonly page: Page;
+	readonly menuItemProductType: (productType: string) => Locator;
+	readonly modalFieldName: Locator;
+	readonly modalFrameLocator: FrameLocator;
+	readonly modalMenuItem: (catalogName: string) => Locator;
+	readonly modalPlaceHolder: Locator;
+	readonly modalSubmitButton: Locator;
 	readonly productSkuTableRowLink: (sku: string) => Locator;
 	readonly productSkuVirtualFileEntryCancelButton: Locator;
 	readonly productSkuVirtualFileEntrySaveButton: Locator;
@@ -35,6 +42,9 @@ export class CommerceAdminProductPage {
 	readonly virtualSettingsOverrideLink: Locator;
 
 	constructor(page: Page) {
+		this.addButton = page
+			.getByTestId('management-toolbar')
+			.locator('[data-testid="fdsCreationActionButton"]');
 		this.addVirtualProductFileEntryButton = page
 			.getByRole('button', {exact: true, name: 'Add File Entry'})
 			.first();
@@ -58,6 +68,22 @@ export class CommerceAdminProductPage {
 		this.modalAddButton = page.getByRole('button', {name: 'Add'});
 		this.modalCancelButton = page.getByRole('button', {name: 'Cancel'});
 		this.page = page;
+		this.menuItemProductType = (productType: string) =>
+			page.getByRole('menuitem', {exact: true, name: productType});
+		this.modalFrameLocator = page.frameLocator('.fds-modal-body iframe');
+		this.modalFieldName =
+			this.modalFrameLocator.getByLabel('Name Required');
+		this.modalMenuItem = (catalogName: string) =>
+			this.modalFrameLocator.getByRole('menuitem', {
+				exact: true,
+				name: catalogName,
+			});
+		this.modalPlaceHolder =
+			this.modalFrameLocator.getByPlaceholder('Type Here');
+		this.modalSubmitButton = this.modalFrameLocator.getByRole('button', {
+			exact: true,
+			name: 'Submit',
+		});
 		this.productSkuTableRowLink = (sku: string) =>
 			page.getByRole('link', {name: sku});
 		this.productSkuVirtualFileEntryCancelButton = page

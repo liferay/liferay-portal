@@ -114,11 +114,11 @@ exports[`Individuals Dashboard Distribution renders 1`] = `
                         class="no-results-icon"
                       >
                         <svg
-                          class="lexicon-icon lexicon-icon-ac-satellite icon-root icon-size-xxxl"
+                          class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
                           role="presentation"
                         >
                           <use
-                            href="#ac-satellite"
+                            href="#ac_satellite"
                           />
                         </svg>
                       </div>
@@ -170,11 +170,11 @@ exports[`Individuals Dashboard Distribution renders with data source empty state
         class="no-results-icon"
       >
         <svg
-          class="lexicon-icon lexicon-icon-ac-satellite icon-root icon-size-xxxl"
+          class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
           role="presentation"
         >
           <use
-            href="#ac-satellite"
+            href="#ac_satellite"
           />
         </svg>
       </div>

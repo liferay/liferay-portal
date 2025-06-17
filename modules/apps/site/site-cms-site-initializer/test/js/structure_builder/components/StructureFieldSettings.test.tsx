@@ -10,12 +10,12 @@ import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import StructureFieldSettings from '../../../../src/main/resources/META-INF/resources/js/structure_builder/components/StructureFieldSettings';
+import StructureFieldSettings from '../../../../src/main/resources/META-INF/resources/js/structure_builder/components/settings/StructureFieldSettings';
 import {
 	Action,
 	State,
-	Uuid,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
+import {Uuid} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Uuid';
 import {
 	Field,
 	getDefaultField,
@@ -82,10 +82,12 @@ const renderComponent = ({
 	state?: State;
 	uuid?: Uuid;
 } = {}) => {
+	const field = state.fields.get(uuid) as Field;
+
 	return render(
 		<MockStateProvider dispatch={dispatch} state={state}>
 			<MockCacheProvider picklists={picklists}>
-				<StructureFieldSettings uuid={uuid} />
+				<StructureFieldSettings field={field} />
 			</MockCacheProvider>
 		</MockStateProvider>
 	);

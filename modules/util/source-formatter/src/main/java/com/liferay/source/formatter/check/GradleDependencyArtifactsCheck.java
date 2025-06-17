@@ -366,11 +366,7 @@ public class GradleDependencyArtifactsCheck extends BaseFileCheck {
 
 		String moduleName = absolutePath.substring(y + 1, x);
 
-		if (!moduleName.endsWith("-test-util")) {
-			return false;
-		}
-
-		return true;
+		return moduleName.endsWith("-test-util");
 	}
 
 	private String _renameDependencyNames(

@@ -52,10 +52,10 @@ public class AssetRendererSharingEntryViewRenderer
 					AssetRendererSharingUtil.getAssetRenderer(sharingEntry),
 					PortalUtil.getLiferayPortletRequest(
 						(PortletRequest)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_REQUEST)),
+							JavaConstants.JAKARTA_PORTLET_REQUEST)),
 					PortalUtil.getLiferayPortletResponse(
 						(PortletResponse)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE)),
+							JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 					sharingEntry,
 					(ViewSharedAssetsDisplayContext)
 						httpServletRequest.getAttribute(

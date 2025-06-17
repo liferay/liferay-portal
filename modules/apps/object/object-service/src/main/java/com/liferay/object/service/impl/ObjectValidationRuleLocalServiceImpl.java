@@ -1030,15 +1030,15 @@ public class ObjectValidationRuleLocalServiceImpl
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 	private static final Snapshot<ObjectEntryLocalService>
 		_objectEntryLocalServiceSnapshot = new Snapshot<>(
-			ObjectValidationRuleSettingLocalServiceImpl.class,
+			ObjectValidationRuleLocalServiceImpl.class,
 			ObjectEntryLocalService.class, null, true);
 	private static final Snapshot<ObjectFieldLocalService>
 		_objectFieldLocalServiceSnapshot = new Snapshot<>(
-			ObjectValidationRuleSettingLocalServiceImpl.class,
+			ObjectValidationRuleLocalServiceImpl.class,
 			ObjectFieldLocalService.class, null, true);
 	private static final Snapshot<ObjectRelationshipLocalService>
 		_objectRelationshipLocalServiceSnapshot = new Snapshot<>(
-			ObjectRelationshipLocalServiceImpl.class,
+			ObjectValidationRuleLocalServiceImpl.class,
 			ObjectRelationshipLocalService.class, null, true);
 
 	@Reference

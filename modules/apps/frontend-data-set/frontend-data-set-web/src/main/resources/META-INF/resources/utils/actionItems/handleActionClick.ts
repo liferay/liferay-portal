@@ -12,7 +12,7 @@ import {resolveModalSize} from '../modals/resolveModalSize';
 import {ACTION_ITEM_TARGETS} from './constants';
 import formatActionURL from './formatActionURL';
 
-const {MODAL_PERMISSIONS} = ACTION_ITEM_TARGETS;
+const {INFO_PANEL, MODAL_PERMISSIONS} = ACTION_ITEM_TARGETS;
 
 const handleActionClick = ({
 	action,
@@ -24,6 +24,7 @@ const handleActionClick = ({
 	itemId,
 	loadData,
 	onActionDropdownItemClick,
+	onInfoPanelToggleButtonClick,
 	openModal,
 	openSidePanel,
 	setLoading,
@@ -38,6 +39,7 @@ const handleActionClick = ({
 	itemId: string | number;
 	loadData: Function;
 	onActionDropdownItemClick: Function;
+	onInfoPanelToggleButtonClick?: Function;
 	openModal: Function;
 	openSidePanel: Function;
 	setLoading?: Function;
@@ -59,7 +61,10 @@ const handleActionClick = ({
 	const url = formatActionURL(href, itemData, target);
 
 	const doAction = ({defaultPrevented}: {defaultPrevented: boolean}) => {
-		if (target?.includes('modal')) {
+		if (target === INFO_PANEL && onInfoPanelToggleButtonClick) {
+			onInfoPanelToggleButtonClick();
+		}
+		else if (target?.includes('modal')) {
 			event.preventDefault();
 
 			if (target === MODAL_PERMISSIONS) {

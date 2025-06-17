@@ -5,6 +5,8 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {PORTLET_URLS} from '../../utils/portletUrls';
+
 export class MetricsPage {
 	readonly page: Page;
 	readonly totalPendingItems: Locator;
@@ -22,5 +24,12 @@ export class MetricsPage {
 
 	async viewAllPendingItems() {
 		await this.totalPendingItems.click();
+	}
+
+	async goTo(siteUrl?: Site['friendlyUrlPath']) {
+		await this.page.goto(
+			`/group${siteUrl || '/guest'}${PORTLET_URLS.workflowMetrics}`,
+			{waitUntil: 'load'}
+		);
 	}
 }

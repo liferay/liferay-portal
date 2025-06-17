@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.impl.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Expression;
@@ -14,6 +15,7 @@ import com.liferay.petra.sql.dsl.spi.expression.NullExpression;
 import com.liferay.petra.sql.dsl.spi.expression.Scalar;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -424,6 +426,35 @@ public class DSLQueryEntryPersistenceImplTest {
 				).orderBy(
 					DSLQueryStatusEntryTable.INSTANCE.dslQueryStatusEntryId.
 						ascending()
+				)));
+	}
+
+	@Test
+	public void testDSLQueryWithFloatDivideOnColumn() {
+		DSLQueryEntry testDSLQueryEntry = _addDSLQueryEntry(
+			Long.MAX_VALUE, RandomTestUtil.randomString());
+
+		_dslQueryEntries.add(testDSLQueryEntry);
+
+		Assert.assertEquals(
+			Arrays.asList(1.0F),
+			_dslQueryEntryPersistence.dslQuery(
+				DSLQueryFactoryUtil.select(
+					DSLFunctionFactoryUtil.floatDivide(
+						(Expression<Number>)
+							(Column<?, ?>)
+								DSLQueryEntryTable.INSTANCE.dslQueryEntryId,
+						(Expression<Number>)
+							(Column<?, ?>)
+								DSLQueryEntryTable.INSTANCE.dslQueryEntryId
+					).as(
+						"alias"
+					)
+				).from(
+					DSLQueryEntryTable.INSTANCE
+				).where(
+					DSLQueryEntryTable.INSTANCE.dslQueryEntryId.eq(
+						Long.MAX_VALUE)
 				)));
 	}
 

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {State, Uuid} from '../contexts/StateContext';
+import {State} from '../contexts/StateContext';
+import {Uuid} from '../types/Uuid';
 
 export default function selectValidationErrors(uuid: Uuid) {
 	return (state: State) => {

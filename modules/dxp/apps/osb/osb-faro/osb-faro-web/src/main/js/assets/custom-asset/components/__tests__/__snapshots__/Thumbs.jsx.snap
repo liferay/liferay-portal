@@ -11,11 +11,11 @@ exports[`AddReport should render 1`] = `
       title="this is a thumb 1"
     >
       <svg
-        class="cerebro-thumb-line-chart"
+        class="cerebro_thumb_line_chart"
         viewBox=""
       >
         <use
-          xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro-thumb-line-chart"
+          xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro_thumb_line_chart"
         />
       </svg>
     </button>
@@ -25,11 +25,11 @@ exports[`AddReport should render 1`] = `
       title="this is a thumb 2"
     >
       <svg
-        class="cerebro-thumb-line-chart"
+        class="cerebro_thumb_line_chart"
         viewBox=""
       >
         <use
-          xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro-thumb-line-chart"
+          xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro_thumb_line_chart"
         />
       </svg>
     </button>
@@ -39,11 +39,11 @@ exports[`AddReport should render 1`] = `
       title="this is a thumb 3"
     >
       <svg
-        class="cerebro-thumb-line-chart"
+        class="cerebro_thumb_line_chart"
         viewBox=""
       >
         <use
-          xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro-thumb-line-chart"
+          xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro_thumb_line_chart"
         />
       </svg>
     </button>

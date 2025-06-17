@@ -233,7 +233,7 @@ public class ValidationsObjectDefinitionsScreenNavigationEntryTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG,
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			(LiferayPortletConfig)PortletConfigFactoryUtil.create(
 				_portletLocalService.getPortletById(
 					ObjectPortletKeys.OBJECT_DEFINITIONS),

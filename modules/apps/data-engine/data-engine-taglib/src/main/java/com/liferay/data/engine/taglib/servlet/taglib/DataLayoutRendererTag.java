@@ -81,7 +81,7 @@ public class DataLayoutRendererTag extends BaseDataLayoutRendererTag {
 			dataLayoutRendererContext.setHttpServletResponse(
 				PortalUtil.getHttpServletResponse(
 					(PortletResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE)));
+						JavaConstants.JAKARTA_PORTLET_RESPONSE)));
 
 			if (Validator.isNotNull(getLanguageId())) {
 				dataLayoutRendererContext.setLanguageId(getLanguageId());

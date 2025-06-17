@@ -22,6 +22,14 @@ function showRemoveButton() {
 	removeButton.addEventListener('click', onRemoveFile);
 }
 
+if (
+	!input.attributes.selectFromDocumentLibrary &&
+	input.required &&
+	input.value
+) {
+	fileInput.required = false;
+}
+
 let previousFiles = null;
 
 function onInputChange() {
@@ -31,6 +39,10 @@ function onInputChange() {
 		dataTransfer.items.add(previousFiles);
 
 		fileInput.files = dataTransfer.files;
+
+		if (input.required) {
+			fileInput.required = true;
+		}
 	}
 
 	fileName.innerText = fileInput.files[0].name;
@@ -47,6 +59,10 @@ function onRemoveFile() {
 
 	fileInput.value = '';
 	fileName.innerText = '';
+
+	if (input.required) {
+		fileInput.required = true;
+	}
 
 	hiddenFileInput.value = '';
 
@@ -86,10 +102,8 @@ const onSelectFromUserComputer = () => {
 	fileInput.click();
 };
 
-function getTranslationInput(namespace, languageId, inputName) {
-	const inputId = `${namespace}${inputName}-file-upload_${languageId}`;
-
-	return document.getElementById(inputId);
+function getTranslationInput(namespace, languageId, inputId) {
+	return document.getElementById(`${namespace}${inputId}_${languageId}`);
 }
 
 const setFileName = (input) => {
@@ -150,20 +164,18 @@ else {
 						]
 					);
 
-					Object.entries(initialValues).forEach(
-						([languageId, value]) => {
-							const input = getOrCreateTranslationInput(
-								inputElement?.id,
-								inputElement.name,
-								languageId,
-								inputElement.parentNode,
-								fragmentNamespace
-							);
+					initialValues.forEach(([languageId, value]) => {
+						const translationInput = getOrCreateTranslationInput(
+							inputElement.id,
+							input.name,
+							languageId,
+							inputElement.parentNode,
+							fragmentNamespace
+						);
 
-							input.value = value.fileEntryId;
-							input.dataset.fileName = value.name;
-						}
-					);
+						translationInput.value = value.fileEntryId;
+						translationInput.dataset.fileName = value.name;
+					});
 
 					const isFromDocumentLibrary =
 						input.attributes.selectFromDocumentLibrary;
@@ -178,7 +190,7 @@ else {
 							const translationInput = getTranslationInput(
 								fragmentNamespace,
 								languageId,
-								input.name
+								inputElement.id
 							);
 
 							if (translationInput) {
@@ -189,7 +201,7 @@ else {
 									getTranslationInput(
 										fragmentNamespace,
 										defaultLanguageId,
-										input.name
+										inputElement.id
 									);
 
 								setFileName(defaultTranslationInput);
@@ -202,7 +214,7 @@ else {
 							isFromDocumentLibrary === false ? 'file' : 'hidden';
 
 						const translationInput = getOrCreateTranslationInput(
-							`${input.name}-file-upload`,
+							inputElement.id,
 							input.name,
 							currentLanguageId,
 							inputElement.parentNode,
@@ -263,7 +275,7 @@ else {
 						removeButton.classList.add('d-none');
 
 						const translationInput = getOrCreateTranslationInput(
-							`${input.name}-file-upload`,
+							inputElement.id,
 							input.name,
 							currentLanguageId,
 							inputElement.parentNode,

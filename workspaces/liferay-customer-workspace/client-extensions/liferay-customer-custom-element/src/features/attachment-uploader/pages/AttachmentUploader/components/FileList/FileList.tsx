@@ -10,67 +10,79 @@ import i18n from '~/utils/I18n';
 
 import './FileList.css';
 
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import CircularProgress from '~/components/CircularProgress';
 
-import {IAttachment} from '../../AttachmentUploader';
-
 interface IProps {
-	attachment: IAttachment;
+	file: File;
+	isInitializing: boolean;
 	isUploading: boolean;
-	onDelete: (attachment: IAttachment) => void;
-	uploadedFile: IPropsUploadedFile;
-}
-interface IPropsUploadedFile {
+	onDelete: (file: File) => void;
 	progress: number;
 }
 
 const FileList = ({
-	attachment,
+	file,
+	isInitializing,
 	isUploading,
 	onDelete,
-	uploadedFile,
+	progress,
 }: IProps) => {
 	return (
 		<div className="file-list-container">
 			<div className="file-list-item-container">
 				<div className="file-list-item-left-content">
 					<div className="file-list-item-left-content-icon-container">
-						{isUploading ? (
-							<div className="image-file-item-loading-container">
-								<CircularProgress
-									height={80}
-									pathColor="#ffffff"
-									progress={uploadedFile.progress}
-									progressColor="#0B5FFF"
-									width={80}
-								/>
-							</div>
-						) : (
-							<ClayIcon
-								aria-label="Document Icon"
-								className="file-list-item-left-content-icon"
-								symbol="document-default"
-							/>
-						)}
+						{(() => {
+							if (isInitializing) {
+								return <ClayLoadingIndicator size="md" />;
+							}
+							else if (isUploading) {
+								return (
+									<div className="image-file-item-loading-container">
+										<CircularProgress
+											height={80}
+											pathColor="#ffffff"
+											progress={progress}
+											progressColor="#0B5FFF"
+											width={80}
+										/>
+									</div>
+								);
+							}
+							else {
+								return (
+									<ClayIcon
+										aria-label="Document Icon"
+										className="file-list-item-left-content-icon"
+										symbol="document-default"
+									/>
+								);
+							}
+						})()}
 					</div>
 
 					<div className="file-list-item-left-content-text-container">
 						<span className="d-flex file-list-item-left-content-text-file-name">
-							{attachment.file.name}
+							{file.name}
 						</span>
 
 						<span className="file-list-item-left-content-text-file-size">
-							{filesize(attachment.file.size)}
+							{filesize(file.size)}
 						</span>
 					</div>
 				</div>
 
 				<ClayButton
-					aria-label={isUploading ? 'Cancel Upload' : 'Remove'}
+					aria-label={
+						isUploading || isInitializing
+							? 'Cancel Upload'
+							: 'Remove'
+					}
 					className="file-list-item-button"
-					onClick={() => onDelete(attachment)}
+					onClick={() => onDelete(file)}
 				>
-					{isUploading
+					{isUploading || isInitializing
 						? i18n.translate('cancel-upload')
 						: i18n.translate('remove')}
 				</ClayButton>

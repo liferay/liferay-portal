@@ -69,7 +69,7 @@ public class HttpServletEndpointControllerImpl
 
 		File parentServletContextTempDir =
 			(File)parentServletContext.getAttribute(
-				JavaConstants.JAVAX_SERVLET_CONTEXT_TEMPDIR);
+				JavaConstants.JAKARTA_SERVLET_CONTEXT_TEMPDIR);
 
 		if (parentServletContextTempDir != null) {
 			parentServletContextTempDir = new File(

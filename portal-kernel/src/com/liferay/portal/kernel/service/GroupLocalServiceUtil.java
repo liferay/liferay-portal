@@ -174,19 +174,6 @@ public class GroupLocalServiceUtil {
 		return getService().addUserGroups(userId, groupIds);
 	}
 
-	/**
-	 * Adds a company group if it does not exist. This method is typically used
-	 * when a virtual host is added.
-	 *
-	 * @param companyId the primary key of the company
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public static void checkCompanyGroup(long companyId)
-		throws PortalException {
-
-		getService().checkCompanyGroup(companyId);
-	}
-
 	public static Group checkScopeGroup(
 			com.liferay.portal.kernel.model.Layout layout, long userId)
 		throws PortalException {

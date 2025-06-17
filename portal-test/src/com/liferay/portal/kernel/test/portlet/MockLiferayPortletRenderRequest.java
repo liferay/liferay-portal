@@ -40,7 +40,7 @@ public class MockLiferayPortletRenderRequest
 		_mockHttpServletRequest = mockHttpServletRequest;
 
 		_mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG,
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			ProxyUtil.newProxyInstance(
 				LiferayPortletConfig.class.getClassLoader(),
 				new Class<?>[] {LiferayPortletConfig.class},

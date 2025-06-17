@@ -110,6 +110,10 @@ const UsageOverview = lazy(() =>
 	import(/* webpackChunkName: "UsageOverview" */ './UsageOverview')
 );
 
+const UsageOverviewSaaS = lazy(() =>
+	import(/* webpackChunkName: "UsageOverviewSaaS" */ './UsageOverviewSaaS')
+);
+
 const Users = lazy(() => import(/* webpackChunkName: "Users" */ './user'));
 
 const WorkspaceSettings = lazy(() =>
@@ -146,7 +150,7 @@ export class Settings extends React.Component {
 			{
 				items: [
 					currentUser.isAdmin() && {
-						icon: 'ac-api',
+						icon: 'ac_api',
 						label: Liferay.Language.get('apis'),
 						route: Routes.SETTINGS_APIS_TOKEN_LIST,
 						url: toRoute(Routes.SETTINGS_APIS_TOKEN_LIST, {
@@ -160,13 +164,13 @@ export class Settings extends React.Component {
 						url: toRoute(Routes.SETTINGS_DEFINITIONS, {groupId})
 					},
 					{
-						icon: 'data-privacy-lock',
+						icon: 'data_privacy_lock',
 						label: Liferay.Language.get('data-control-&-privacy'),
 						route: Routes.SETTINGS_DATA_PRIVACY,
 						url: toRoute(Routes.SETTINGS_DATA_PRIVACY, {groupId})
 					},
 					{
-						icon: 'faro-data-source',
+						icon: 'faro_data_source',
 						label: Liferay.Language.get('data-sources'),
 						route: Routes.SETTINGS_DATA_SOURCE_LIST,
 						url: toRoute(Routes.SETTINGS_DATA_SOURCE_LIST, {
@@ -174,7 +178,7 @@ export class Settings extends React.Component {
 						})
 					},
 					recommendationsEnabled && {
-						icon: 'ac-star',
+						icon: 'ac_star',
 						label: Liferay.Language.get('recommendations'),
 						route: Routes.SETTINGS_RECOMMENDATIONS,
 						url: toRoute(Routes.SETTINGS_RECOMMENDATIONS, {
@@ -187,7 +191,7 @@ export class Settings extends React.Component {
 			{
 				items: [
 					{
-						icon: 'user-management',
+						icon: 'user_management',
 						label: Liferay.Language.get('user-management'),
 						route: Routes.SETTINGS_USERS,
 						url: toRoute(Routes.SETTINGS_USERS, {
@@ -195,7 +199,7 @@ export class Settings extends React.Component {
 						})
 					},
 					{
-						icon: 'ac-page',
+						icon: 'ac_page',
 						label: Liferay.Language.get('properties'),
 						route: Routes.SETTINGS_CHANNELS,
 						url: toRoute(Routes.SETTINGS_CHANNELS, {
@@ -225,8 +229,13 @@ export class Settings extends React.Component {
 			backURL,
 			groupId,
 			location: {pathname},
+			project,
 			recommendationsEnabled
 		} = this.props;
+
+		const IS_PROJECT_SAAS = project.faroSubscription
+			?.get('name')
+			?.includes('SaaS');
 
 		return (
 			<div className='settings-root'>
@@ -364,11 +373,21 @@ export class Settings extends React.Component {
 									path={Routes.SETTINGS_USERS}
 								/>
 
-								<BundleRouter
-									data={UsageOverview}
-									exact
-									path={Routes.SETTINGS_USAGE}
-								/>
+								{!IS_PROJECT_SAAS && (
+									<BundleRouter
+										data={UsageOverview}
+										exact
+										path={Routes.SETTINGS_USAGE}
+									/>
+								)}
+
+								{IS_PROJECT_SAAS && (
+									<BundleRouter
+										data={UsageOverviewSaaS}
+										exact
+										path={Routes.SETTINGS_USAGE}
+									/>
+								)}
 
 								<BundleRouter
 									data={Definitions}

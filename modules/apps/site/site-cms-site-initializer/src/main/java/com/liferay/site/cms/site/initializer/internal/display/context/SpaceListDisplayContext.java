@@ -25,10 +25,10 @@ import java.util.Map;
 public class SpaceListDisplayContext {
 
 	public SpaceListDisplayContext(
-		long assetLibraryId, GroupLocalService groupLocalService,
+		long groupId, GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest) {
 
-		_assetLibraryId = assetLibraryId;
+		_groupId = groupId;
 		_groupLocalService = groupLocalService;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
@@ -36,31 +36,35 @@ public class SpaceListDisplayContext {
 	}
 
 	public Map<String, Object> getProps() throws Exception {
-		Group group = _groupLocalService.fetchGroup(_assetLibraryId);
+		Group group = _groupLocalService.fetchGroup(_groupId);
 
-		String logoColor = "outline-0";
-		String name = StringPool.BLANK;
-
-		if (group != null) {
-			UnicodeProperties unicodeProperties =
-				group.getTypeSettingsProperties();
-
-			logoColor = GetterUtil.get(
-				unicodeProperties.get("logoColor"), "outline-0");
-
-			name = group.getDescriptiveName(_themeDisplay.getLocale());
+		if (group == null) {
+			return HashMapBuilder.<String, Object>put(
+				"displayType", "outline-0"
+			).put(
+				"name", StringPool.BLANK
+			).put(
+				"size", "sm"
+			).build();
 		}
 
 		return HashMapBuilder.<String, Object>put(
-			"displayType", logoColor
+			"displayType",
+			() -> {
+				UnicodeProperties unicodeProperties =
+					group.getTypeSettingsProperties();
+
+				return GetterUtil.get(
+					unicodeProperties.get("logoColor"), "outline-0");
+			}
 		).put(
-			"name", name
+			"name", group.getDescriptiveName(_themeDisplay.getLocale())
 		).put(
 			"size", "sm"
 		).build();
 	}
 
-	private final long _assetLibraryId;
+	private final long _groupId;
 	private final GroupLocalService _groupLocalService;
 	private final ThemeDisplay _themeDisplay;
 

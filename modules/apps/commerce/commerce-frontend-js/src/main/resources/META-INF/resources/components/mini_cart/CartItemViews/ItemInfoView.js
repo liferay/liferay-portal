@@ -51,39 +51,52 @@ function ItemInfoViewBundle({childItems, options}) {
 						const {name, quantity, skuUnitOfMeasure} =
 							childItem || {};
 
-						return name ? (
-							<div className="item-info-extra pt-2" key={index}>
-								<div className="h6 item-name">
-									{skuOptionName}
-								</div>
+						const parsedSkuOptionValueNames =
+							parseValue(skuOptionValueNames);
+						const parsedValue = parseValue(value);
 
-								<p className="item-sku">
-									<span>
+						return (parsedSkuOptionValueNames || parsedValue) &&
+							parsedValue !== '{}' ? (
+							name ? (
+								<div
+									className="item-info-extra pt-2"
+									key={index}
+								>
+									<div className="h6 item-name">
+										{skuOptionName}
+									</div>
+
+									<p className="item-sku">
 										<span>
-											{parseValue(skuOptionValueNames) ||
-												parseValue(value)}
-										</span>
+											<span>
+												{parsedSkuOptionValueNames ||
+													parsedValue}
+											</span>
 
-										<span className="pl-2">
-											{`(${quantity} \u00D7 ${name} ${
-												skuUnitOfMeasure?.key || ''
-											})`}
+											<span className="pl-2">
+												{`(${quantity} \u00D7 ${name} ${
+													skuUnitOfMeasure?.key || ''
+												})`}
+											</span>
 										</span>
-									</span>
-								</p>
-							</div>
-						) : (
-							<div className="item-info-extra pt-2" key={index}>
-								<div className="h6 item-name">
-									{skuOptionName}
+									</p>
 								</div>
+							) : (
+								<div
+									className="item-info-extra pt-2"
+									key={index}
+								>
+									<div className="h6 item-name">
+										{skuOptionName}
+									</div>
 
-								<p className="item-sku">
-									{parseValue(skuOptionValueNames) ||
-										parseValue(value)}
-								</p>
-							</div>
-						);
+									<p className="item-sku">
+										{parsedSkuOptionValueNames ||
+											parsedValue}
+									</p>
+								</div>
+							)
+						) : null;
 					})}
 				</div>
 			</ClayPanel.Body>

@@ -73,7 +73,7 @@ public class TransformerAgent {
 		return value;
 	}
 
-	private static final Set<String> _fixupSubpackageNames = new HashSet<>(
+	private static final Set<String> _preservedSubpackageNames = new HashSet<>(
 		Arrays.asList("annotation.processing", "transaction.xa"));
 	private static final Set<String> _subpackageNames = new HashSet<>(
 		Arrays.asList(
@@ -103,21 +103,24 @@ public class TransformerAgent {
 				reverseReplacementDashDotMap.put(jakartaPackage, javaxPackage);
 			});
 
-		// Order matters, fixups need to be put into replacement map later
+		// Order matters, preserved subpackage names need to be put into
+		// replacement map later
 
-		_fixupSubpackageNames.forEach(
-			fixupSubpackageName -> {
-				String fixupJavaxPackage = "javax." + fixupSubpackageName;
-				String fixupJakartaPackage = "jakarta." + fixupSubpackageName;
+		_preservedSubpackageNames.forEach(
+			preservedSubpackageName -> {
+				String preservedJavaxPackage =
+					"javax." + preservedSubpackageName;
+				String preservedJakartaPackage =
+					"jakarta." + preservedSubpackageName;
 
 				replacementDashDotMap.put(
-					fixupJakartaPackage.replace('.', '-'),
-					fixupJavaxPackage.replace('.', '-'));
+					preservedJakartaPackage.replace('.', '-'),
+					preservedJavaxPackage.replace('.', '-'));
 				replacementDashDotMap.put(
-					fixupJakartaPackage, fixupJavaxPackage);
+					preservedJakartaPackage, preservedJavaxPackage);
 				replacementSlashMap.put(
-					fixupJakartaPackage.replace('.', '/'),
-					fixupJavaxPackage.replace('.', '/'));
+					preservedJakartaPackage.replace('.', '/'),
+					preservedJavaxPackage.replace('.', '/'));
 			});
 
 		replacementDashDotMap.put(

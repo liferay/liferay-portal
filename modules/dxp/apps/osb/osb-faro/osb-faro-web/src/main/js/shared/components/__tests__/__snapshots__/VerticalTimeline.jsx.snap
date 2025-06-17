@@ -29,11 +29,11 @@ exports[`VerticalTimeline should render with a header and initialExpanded 1`] = 
                   Yesterday
                 </span>
                 <svg
-                  class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                  class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#ac-event-icon"
+                    href="#ac_event_icon"
                   />
                 </svg>
                 <span
@@ -123,11 +123,11 @@ exports[`VerticalTimeline should render with a header and initialExpanded 1`] = 
                   class="icon-group"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                    class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#ac-event-icon"
+                      href="#ac_event_icon"
                     />
                   </svg>
                   <span
@@ -417,11 +417,11 @@ Firefox"
                   Today
                 </span>
                 <svg
-                  class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                  class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#ac-event-icon"
+                    href="#ac_event_icon"
                   />
                 </svg>
                 <span
@@ -511,11 +511,11 @@ Firefox"
                   class="icon-group"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                    class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#ac-event-icon"
+                      href="#ac_event_icon"
                     />
                   </svg>
                   <span
@@ -835,11 +835,11 @@ Firefox"
                   class="icon-group"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                    class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#ac-event-icon"
+                      href="#ac_event_icon"
                     />
                   </svg>
                   <span
@@ -855,11 +855,11 @@ Firefox"
 Firefox"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-display icon-root mainLighten28"
+                      class="lexicon-icon lexicon-icon-ac_display icon-root mainLighten28"
                       role="presentation"
                     >
                       <use
-                        href="#ac-display"
+                        href="#ac_display"
                       />
                     </svg>
                   </span>

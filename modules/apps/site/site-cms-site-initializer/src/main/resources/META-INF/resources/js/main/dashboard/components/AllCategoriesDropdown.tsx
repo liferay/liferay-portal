@@ -83,53 +83,31 @@ const AllCategoriesDropdown: React.FC<IAllFiltersDropdown> = ({
 		);
 
 		const filteredData = data?.items
-			.filter(
-				({
-					assetLibraries,
-					numberOfTaxonomyCategories,
-				}: CategoryData) => {
-					if (numberOfTaxonomyCategories === 0) {
-						return false;
-					}
-
-					if (space.value === 'all') {
-						return true;
-					}
-
-					// TODO - Fix it:
-					// Decreasing 1 on id due a bug on response
-
-					return assetLibraries.some(
-						({id}) => String(id - 1) === space.value
-					);
+			.filter(({assetLibraries, numberOfTaxonomyCategories}) => {
+				if (numberOfTaxonomyCategories === 0) {
+					return false;
 				}
-			)
-			.map(
-				({
-					id,
-					name,
-					numberOfTaxonomyCategories,
-					parentTaxonomyVocabulary,
-				}) => {
-					const category: Category = {
-						label: name,
-						value: id.toString(),
-					};
 
-					if (parentTaxonomyVocabulary) {
-						category.parent = {
-							label: parentTaxonomyVocabulary.name,
-							value: String(parentTaxonomyVocabulary.id),
-						};
-					}
-
-					if (numberOfTaxonomyCategories > 0) {
-						category.hasChildren = true;
-					}
-
-					return category;
+				if (space.value === 'all') {
+					return true;
 				}
-			);
+
+				// TODO - Fix it:
+				// Decreasing 1 on id due a bug on response
+
+				return assetLibraries.some(
+					({id}) => String(id - 1) === space.value
+				);
+			})
+			.map(({id, name, numberOfTaxonomyCategories}) => {
+				const category: Category = {
+					hasChildren: numberOfTaxonomyCategories > 0,
+					label: name,
+					value: id.toString(),
+				};
+
+				return category;
+			});
 
 		return filteredData ?? [];
 	};
@@ -142,23 +120,35 @@ const AllCategoriesDropdown: React.FC<IAllFiltersDropdown> = ({
 			search: keywords,
 		});
 
-		const data = await fetchData(
-			`/o/headless-admin-taxonomy/v1.0/taxonomy-vocabularies/${item.value}/taxonomy-categories${queryParams}`
+		const isSubcategory = !!item.parent;
+
+		const endpoint = isSubcategory
+			? `/o/headless-admin-taxonomy/v1.0/taxonomy-categories/${item.value}/taxonomy-categories${queryParams}`
+			: `/o/headless-admin-taxonomy/v1.0/taxonomy-vocabularies/${item.value}/taxonomy-categories${queryParams}`;
+
+		const data = await fetchData(endpoint);
+
+		const categories = data?.items.map(
+			({id, name, numberOfTaxonomyCategories}) => {
+				const category: Category = {
+					label: name,
+					value: id.toString(),
+				};
+
+				if (numberOfTaxonomyCategories > 0) {
+					category.hasChildren = true;
+					category.parent = {
+						label: item.label,
+						value: item.value,
+					};
+				}
+
+				return category;
+			}
 		);
 
-		const categories = data?.items.map(({id, name}) => {
-			const category: Category = {
-				label: name,
-				value: id.toString(),
-			};
-
-			return category;
-		});
-
-		const parentCategory = data?.items[0].parentTaxonomyVocabulary;
-
-		if (parentCategory) {
-			const {id, name} = parentCategory;
+		if (!isSubcategory && data?.items[0]?.parentTaxonomyVocabulary) {
+			const {id, name} = data.items[0].parentTaxonomyVocabulary;
 
 			setParentCategory({
 				label: name,
@@ -188,9 +178,7 @@ const AllCategoriesDropdown: React.FC<IAllFiltersDropdown> = ({
 			}}
 			onSearch={async (keywords) => {
 				if (context === Context.Vocabularies) {
-					const data = await fetchVocabularies({
-						keywords,
-					});
+					const data = await fetchVocabularies({keywords});
 
 					const categories = !keywords
 						? [initialCategory, ...data]
@@ -202,9 +190,7 @@ const AllCategoriesDropdown: React.FC<IAllFiltersDropdown> = ({
 				else if (context === Context.Categories) {
 					const categories = await fetchCategories(
 						parentCategory || item,
-						{
-							keywords,
-						}
+						{keywords}
 					);
 
 					setCategories(categories);

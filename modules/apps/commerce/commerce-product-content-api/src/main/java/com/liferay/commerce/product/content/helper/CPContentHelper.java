@@ -166,6 +166,8 @@ public interface CPContentHelper {
 			CPSku cpSku, HttpServletRequest httpServletRequest)
 		throws Exception;
 
+	public boolean hasRequiredCPDefinitionOptionRels(long cpDefinitionId);
+
 	public boolean isDirectReplacement(CPSku cpSku) throws Exception;
 
 	public boolean isInWishList(

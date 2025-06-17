@@ -364,6 +364,10 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 			CompletableFuture<Void> completableFuture)
 		throws Exception {
 
+		if (_isProcessed(batchEngineUnit)) {
+			return null;
+		}
+
 		BatchEngineUnitConfiguration batchEngineUnitConfiguration = null;
 		byte[] content = null;
 		String contentType = null;
@@ -397,10 +401,6 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 				StringBundler.concat(
 					"Invalid batch engine file ", batchEngineUnit.getFileName(),
 					" ", batchEngineUnit.getDataFileName()));
-		}
-
-		if (_isProcessed(batchEngineUnit)) {
-			return null;
 		}
 
 		return _execute(

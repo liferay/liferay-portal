@@ -307,7 +307,7 @@ public class SelectSiteNavigationMenuDisplayContext {
 
 		PortletResponse portletResponse =
 			(PortletResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		return PortletURLBuilder.create(
 			PortletURLUtil.clone(
@@ -410,7 +410,7 @@ public class SelectSiteNavigationMenuDisplayContext {
 
 	private PortletRequest _getPortletRequest() {
 		return (PortletRequest)_httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 	}
 
 	private SiteNavigationMenu _getPrivatePagesHierarchySiteNavigationMenu() {

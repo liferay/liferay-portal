@@ -293,11 +293,11 @@ exports[`DynamicSegmentEdit should render 1`] = `
                             class="criteria-message"
                           >
                             <svg
-                              class="lexicon-icon lexicon-icon-ac-rule icon-root icon-size-md"
+                              class="lexicon-icon lexicon-icon-ac_rule icon-root icon-size-md"
                               role="presentation"
                             >
                               <use
-                                href="#ac-rule"
+                                href="#ac_rule"
                               />
                             </svg>
                             Drag and drop criterion from the right to add rules.
@@ -306,11 +306,11 @@ exports[`DynamicSegmentEdit should render 1`] = `
                             class="groups-message"
                           >
                             <svg
-                              class="lexicon-icon lexicon-icon-ac-group icon-root icon-size-md"
+                              class="lexicon-icon lexicon-icon-ac_group icon-root icon-size-md"
                               role="presentation"
                             >
                               <use
-                                href="#ac-group"
+                                href="#ac_group"
                               />
                             </svg>
                             Drag and drop over an existing criteria to form groups.

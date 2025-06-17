@@ -14,7 +14,7 @@ import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
-import {FIELD_TYPES} from './pages/StructureBuilderPage';
+import {FIELD_TYPES, StructureBuilderPage} from './pages/StructureBuilderPage';
 
 const test = mergeTests(
 	cmsPagesTest,
@@ -33,7 +33,7 @@ test(
 
 		// Go to the Structure Builder
 
-		await structureBuilderPage.goto();
+		await structureBuilderPage.createStructure();
 
 		await structureBuilderPage.enableForAllSpaces();
 
@@ -103,7 +103,7 @@ test(
 
 		// Go to the Structure Builder
 
-		await structureBuilderPage.goto();
+		await structureBuilderPage.createStructure();
 
 		await structureBuilderPage.enableForAllSpaces();
 
@@ -151,7 +151,7 @@ test(
 
 		// Go to the Structure Builder
 
-		await structureBuilderPage.goto();
+		await structureBuilderPage.createStructure();
 
 		await structureBuilderPage.enableForAllSpaces();
 
@@ -198,7 +198,7 @@ test(
 
 		// Go to the Structure Builder
 
-		await structureBuilderPage.goto();
+		await structureBuilderPage.createStructure();
 
 		await structureBuilderPage.enableForAllSpaces();
 
@@ -289,7 +289,7 @@ test.describe('Frontend validations', () => {
 
 			// Go to the Structure Builder
 
-			await structureBuilderPage.goto();
+			await structureBuilderPage.createStructure();
 
 			// Add a Text field
 
@@ -423,7 +423,7 @@ test.describe('Frontend validations', () => {
 
 			// Go to the Structure Builder
 
-			await structureBuilderPage.goto();
+			await structureBuilderPage.createStructure();
 
 			// Add a Single Select field and check for blur error
 
@@ -475,7 +475,7 @@ test(
 
 		// Go to the Structure Builder
 
-		await structureBuilderPage.goto();
+		await structureBuilderPage.createStructure();
 
 		// Add a Single Select field and select it
 
@@ -543,7 +543,7 @@ test.describe('Customize experience', () => {
 
 			// Go to the Structure Builder
 
-			await structureBuilderPage.goto();
+			await structureBuilderPage.createStructure();
 
 			await structureBuilderPage.enableForAllSpaces();
 
@@ -662,7 +662,7 @@ test.describe('Customize experience', () => {
 
 			// Go to the Structure Builder
 
-			await structureBuilderPage.goto();
+			await structureBuilderPage.createStructure();
 
 			await structureBuilderPage.enableForAllSpaces();
 
@@ -739,7 +739,7 @@ test.describe('Customize experience', () => {
 
 			// Go to the Structure Builder
 
-			await structureBuilderPage.goto();
+			await structureBuilderPage.createStructure();
 
 			await structureBuilderPage.enableForAllSpaces();
 
@@ -787,7 +787,7 @@ test(
 
 		// Go to the Structure Builder with type content and check initial fields
 
-		await structureBuilderPage.goto({type: 'content'});
+		await structureBuilderPage.createStructure();
 
 		await structureBuilderPage.changeStructureSettings({
 			label: getRandomString(),
@@ -803,7 +803,7 @@ test(
 
 		// Check with type file
 
-		await structureBuilderPage.goto({type: 'file'});
+		await structureBuilderPage.createStructure('file');
 
 		await structureBuilderPage.changeStructureSettings({
 			label: getRandomString(),
@@ -818,3 +818,242 @@ test(
 		).toBeVisible();
 	}
 );
+
+test.describe('Referenced structures', () => {
+	const createStructure = async (
+		page: StructureBuilderPage,
+		label: string,
+		publish: boolean = true
+	) => {
+		await page.createStructure();
+
+		await page.enableForAllSpaces();
+
+		await page.changeStructureSettings({
+			label,
+			name: `StructureName${getRandomInt()}`,
+		});
+
+		const {id} = await page.saveStructure();
+
+		if (publish) {
+			await page.publishStructure();
+		}
+
+		return id;
+	};
+
+	test(
+		'Can reference several structures and they are persisted',
+		{
+			tag: '@LPD-49645',
+		},
+		async ({page, structureBuilderPage}) => {
+			const label1 = getRandomString();
+			const label2 = getRandomString();
+			const label3 = getRandomString();
+			const label4 = getRandomString();
+
+			// Create three structures, one of them in draft
+
+			const id1 = await createStructure(structureBuilderPage, label1);
+			const id2 = await createStructure(structureBuilderPage, label2);
+			const id3 = await createStructure(
+				structureBuilderPage,
+				label3,
+				false
+			);
+
+			// Create another one and reference the first two
+
+			const id4 = await createStructure(structureBuilderPage, label4);
+
+			await structureBuilderPage.addReferencedStructures([
+				label1,
+				label2,
+			]);
+
+			// Check the one in draft can't be referenced
+
+			await expect(async () => {
+				await clickAndExpectToBeVisible({
+					target: page.getByRole('menuitem', {
+						exact: true,
+						name: 'Referenced Structure',
+					}),
+					trigger: page.getByLabel('Add Field'),
+				});
+
+				await clickAndExpectToBeVisible({
+					target: page.locator('.modal-title', {
+						hasText: 'Referenced Structure',
+					}),
+					timeout: 2000,
+					trigger: page.getByRole('menuitem', {
+						exact: true,
+						name: 'Referenced Structure',
+					}),
+				});
+
+				await page.getByLabel('Structures').click({timeout: 1000});
+
+				await expect(
+					page.getByRole('option', {name: label1})
+				).toBeVisible();
+
+				await expect(
+					page.getByRole('option', {name: label3})
+				).not.toBeVisible();
+
+				// Check we can't click Add without structures
+
+				await page
+					.locator('.modal-title', {
+						hasText: 'Referenced Structure',
+					})
+					.click({timeout: 500});
+
+				await clickAndExpectToBeVisible({
+					target: page
+						.locator('.modal-body')
+						.getByText('This field is required'),
+					trigger: page.locator('.modal-footer').getByText('Add'),
+				});
+
+				// Close modal
+
+				await clickAndExpectToBeHidden({
+					target: page.locator('.modal-title', {
+						hasText: 'Referenced Structure',
+					}),
+					timeout: 2000,
+					trigger: page.locator('.modal-header .close'),
+				});
+			}).toPass();
+
+			// Publish the structure
+
+			await structureBuilderPage.publishStructure();
+
+			// Check everything is persisted
+
+			await structureBuilderPage.editStructure(id4);
+
+			await expect(
+				page.locator('.treeview-link', {hasText: label1})
+			).toBeVisible();
+
+			await expect(
+				page.locator('.treeview-link', {hasText: label2})
+			).toBeVisible();
+
+			// Delete the structures
+
+			await structureBuilderPage.deleteStructure(id1);
+			await structureBuilderPage.deleteStructure(id2);
+			await structureBuilderPage.deleteStructure(id3);
+			await structureBuilderPage.deleteStructure(id4);
+		}
+	);
+
+	test(
+		'Can edit referenced structure in another tab',
+		{
+			tag: '@LPD-49645',
+		},
+		async ({context, page, structureBuilderPage}) => {
+			const label1 = getRandomString();
+			const label2 = getRandomString();
+
+			// Create one structure
+
+			const id1 = await createStructure(structureBuilderPage, label1);
+
+			// Create another one and reference the first one
+
+			const id2 = await createStructure(structureBuilderPage, label2);
+
+			await structureBuilderPage.addReferencedStructures([label1]);
+
+			// Check we can't edit referenced structure
+
+			await structureBuilderPage.selectFields([{label: label1}]);
+
+			await expect(page.getByLabel('Structure Name')).toBeDisabled();
+			await expect(page.getByLabel('ERC')).toBeDisabled();
+			await expect(structureBuilderPage.spaceSelector).toBeDisabled();
+
+			// Publish the structure
+
+			await structureBuilderPage.publishStructure();
+
+			// Edit referenced structure in another tab
+
+			const pagePromise = context.waitForEvent('page');
+
+			const treeItem = page
+				.locator('.treeview-item')
+				.getByLabel(label1, {exact: true});
+
+			await structureBuilderPage.selectFields([{label: label1}]);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {name: 'Edit'}),
+				trigger: treeItem.getByLabel('Field Options'),
+			});
+
+			const newPage = await pagePromise;
+
+			const newStructureBuilderPage = new StructureBuilderPage(newPage);
+
+			await newPage
+				.locator('.management-bar')
+				.getByText(label1)
+				.waitFor();
+
+			// Add new field and publish
+
+			await newStructureBuilderPage.addField('Date');
+
+			await expect(async () => {
+				await newStructureBuilderPage.publishButton.click({
+					timeout: 500,
+				});
+
+				await expect(
+					newPage.locator('.modal-title', {hasText: 'Publish'})
+				).toBeVisible({timeout: 3000});
+
+				await newPage
+					.getByText('Publish and Propagate')
+					.click({timeout: 500});
+
+				await waitForAlert(newPage, 'published', {timeout: 2000});
+			}).toPass();
+
+			// Check in first structure that the tree is updated with the new field
+
+			await structureBuilderPage.expandField({label: label1});
+
+			const dateTreeItem = page.locator('.treeview-link', {
+				hasText: 'Date',
+			});
+
+			await expect(dateTreeItem).toBeVisible();
+
+			// Check we can't delete referenced structure fields
+
+			await structureBuilderPage.selectFields([{label: 'Date'}]);
+
+			await expect(
+				dateTreeItem.getByLabel('Field Options')
+			).not.toBeVisible();
+
+			// Delete the structures
+
+			await structureBuilderPage.deleteStructure(id1);
+			await structureBuilderPage.deleteStructure(id2);
+		}
+	);
+});

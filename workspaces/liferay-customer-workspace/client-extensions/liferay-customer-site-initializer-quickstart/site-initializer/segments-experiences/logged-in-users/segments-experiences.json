@@ -1,0 +1,8 @@
+{
+	"active": "true",
+	"friendlyURL": "/home",
+	"name_i18n": {
+		"en-US": "Logged in Users"
+	},
+	"segmentsEntryId": "[$SEGMENTS_ENTRY_ID:LOGGED-IN-USERS$]"
+}

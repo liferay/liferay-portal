@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.dao.orm;
 
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.ProxyFactory;
 
@@ -33,6 +34,14 @@ public class EntityCacheUtil {
 		EntityCache entityCache = getEntityCache();
 
 		entityCache.clearLocalCache();
+	}
+
+	public static <T extends CacheModel<?>> T fetchCacheModel(
+		Class<?> clazz, Serializable primaryKey, Class<T> cacheModelClass) {
+
+		EntityCache entityCache = getEntityCache();
+
+		return entityCache.fetchCacheModel(clazz, primaryKey, cacheModelClass);
 	}
 
 	public static EntityCache getEntityCache() {

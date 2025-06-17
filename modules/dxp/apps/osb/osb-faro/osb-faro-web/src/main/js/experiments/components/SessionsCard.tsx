@@ -195,7 +195,7 @@ export const SessionsCard = ({experiment}) => {
 					>
 						<ClayIcon
 							className='icon-root mr-2'
-							symbol='session-single-chart'
+							symbol='session_single_chart'
 						/>
 
 						{Liferay.Language.get('total')}
@@ -211,7 +211,7 @@ export const SessionsCard = ({experiment}) => {
 					>
 						<ClayIcon
 							className='icon-root mr-2'
-							symbol='session-multiple-chart'
+							symbol='session_multiple_chart'
 						/>
 
 						{Liferay.Language.get('per-variant')}
@@ -228,7 +228,7 @@ export const SessionsCard = ({experiment}) => {
 						icon={{
 							border: false,
 							size: Sizes.XLarge,
-							symbol: 'ac-chart'
+							symbol: 'ac_chart'
 						}}
 						title={Liferay.Language.get(
 							'we-are-currently-collecting-data'

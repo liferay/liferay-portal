@@ -27,7 +27,7 @@ public class NamespaceTag extends TagSupport {
 
 			PortletResponse portletResponse =
 				(PortletResponse)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			if (portletResponse != null) {
 				JspWriter jspWriter = pageContext.getOut();

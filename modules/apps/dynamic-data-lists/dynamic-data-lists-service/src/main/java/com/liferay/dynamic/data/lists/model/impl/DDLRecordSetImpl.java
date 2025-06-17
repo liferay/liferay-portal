@@ -48,6 +48,12 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 				ddmStructure = (DDMStructure)ddmStructure.clone();
 
 				ddmStructure.setDefinition(ddmTemplate.getScript());
+
+				// Purposely lower MVCC version to avoid entity cache corruption
+				// when DDMStructureImpl#getDDMForm is invoked for
+				// reconstructing the DDMForm cache field
+
+				ddmStructure.setMvccVersion(ddmStructure.getMvccVersion() - 1);
 			}
 		}
 
@@ -73,11 +79,13 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 	}
 
 	@Override
-	public DDMFormValues getSettingsDDMFormValues() throws PortalException {
+	public DDMFormValues getSettingsDDMFormValues() {
 		if (_ddmFormValues == null) {
 			_ddmFormValues =
 				DDLRecordSetLocalServiceUtil.getRecordSetSettingsDDMFormValues(
 					this);
+
+			ddmFormValuesUpdateEntityCacheConsumer.accept(_ddmFormValues);
 		}
 
 		return _ddmFormValues;
@@ -100,7 +108,14 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 		_recordSetSettings = null;
 	}
 
-	@CacheField(methodName = "DDMFormValues", propagateToInterface = true)
+	@Override
+	public void setSettingsDDMFormValues(DDMFormValues ddmFormValues) {
+		_ddmFormValues = ddmFormValues;
+	}
+
+	@CacheField(
+		methodName = "SettingsDDMFormValues", propagateToInterface = true
+	)
 	private DDMFormValues _ddmFormValues;
 
 	private DDLRecordSetSettings _recordSetSettings;

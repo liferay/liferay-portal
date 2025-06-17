@@ -113,7 +113,7 @@ const NoPropertiesAvailable: React.FC<INoPropertiesAvailableProps> = ({
 					icon={{
 						border: false,
 						size: Sizes.XXXLarge,
-						symbol: 'ac-satellite'
+						symbol: 'ac_satellite'
 					}}
 					spacer
 					title={

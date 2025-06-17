@@ -218,6 +218,8 @@ definition {
 	@description = "This test covers LPS-141587. It validates that if the 'Delete Application Data Before Importing' option is selected the Doc Lib will not increase in size after the LAR import."
 	@priority = 4
 	test DLSizeDoesNotIncreaseIfAppDataIsDeletedBeforeImport {
+		Staging.enableDeleteApplicationDataBeforeImport();
+
 		for (var entryCount : list "1,2") {
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",

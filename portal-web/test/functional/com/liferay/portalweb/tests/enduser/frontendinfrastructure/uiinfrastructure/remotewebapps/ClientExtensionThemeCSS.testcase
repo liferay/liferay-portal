@@ -3,7 +3,7 @@ definition {
 
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.main.component.name = "Client Extension Framework";
+	property testray.main.component.name = "Frontend Client Extensions";
 
 	static var randomSiteName = StringUtil.randomString(8);
 

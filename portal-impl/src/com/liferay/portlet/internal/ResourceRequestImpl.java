@@ -259,9 +259,10 @@ public class ResourceRequestImpl
 		// The portletConfig is already set by PortletRequestImpl.defineObjects
 
 		if (!hasOriginalRequestAndResponse) {
-			setAttribute(JavaConstants.JAVAX_PORTLET_REQUEST, resourceRequest);
 			setAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE, resourceResponse);
+				JavaConstants.JAKARTA_PORTLET_REQUEST, resourceRequest);
+			setAttribute(
+				JavaConstants.JAKARTA_PORTLET_RESPONSE, resourceResponse);
 		}
 
 		return _portletAsyncContextImpl;

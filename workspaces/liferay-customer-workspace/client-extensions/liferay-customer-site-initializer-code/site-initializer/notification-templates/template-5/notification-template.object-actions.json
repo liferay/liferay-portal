@@ -1,13 +1,13 @@
 [
 	{
-		"active": false,
+		"active": true,
 		"externalReferenceCode": "CP-OBJECT-ACTION-5",
 		"label": {
-			"en_US": "Notification Template Action"
+			"en_US": "Support Ticket Escalation Action"
 		},
-		"name": "NotificationTemplateAction",
+		"name": "supportTicketEscalationAction",
 		"objectActionExecutorKey": "notification",
 		"objectActionTriggerKey": "onAfterAdd",
-		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:LiferayExperienceCloudEnvironment$]"
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:SupportTicketEscalation$]"
 	}
 ]

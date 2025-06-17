@@ -783,36 +783,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				"persistence.test.rule.aware", Boolean.TRUE));
 	}
 
-	/**
-	 * Adds a company group if it does not exist. This method is typically used
-	 * when a virtual host is added.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public void checkCompanyGroup(long companyId) throws PortalException {
-		int count = groupPersistence.countByC_C_C(
-			companyId, _classNameLocalService.getClassNameId(Company.class),
-			companyId);
-
-		if (count == 0) {
-			Group group = groupLocalService.addGroup(
-				_userLocalService.getGuestUserId(companyId),
-				GroupConstants.DEFAULT_PARENT_GROUP_ID, Company.class.getName(),
-				companyId, GroupConstants.DEFAULT_LIVE_GROUP_ID,
-				getLocalizationMap(GroupConstants.GLOBAL), null, 0, true,
-				GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
-				GroupConstants.GLOBAL_FRIENDLY_URL, true, true, null);
-
-			group.setExternalReferenceCode(
-				_toExternalReferenceCode(GroupConstants.GLOBAL));
-
-			groupPersistence.update(group);
-		}
-	}
-
 	@Override
 	public Group checkScopeGroup(Layout layout, long userId)
 		throws PortalException {
@@ -845,7 +815,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	public void checkSystemGroups(long companyId) throws PortalException {
 		String companyIdHexString = StringUtil.toHexString(companyId);
 
-		String[] systemGroups = PortalUtil.getSystemGroups();
+		String companyIdString = String.valueOf(companyId);
+
+		String[] systemGroups = ArrayUtil.append(
+			PortalUtil.getSystemGroups(), companyIdString);
 
 		for (Group group :
 				groupPersistence.findByC_GK(companyId, systemGroups)) {
@@ -912,6 +885,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 					friendlyURL =
 						GroupConstants.USER_PERSONAL_SITE_FRIENDLY_URL;
 					site = false;
+				}
+				else if (groupKey.equals(companyIdString)) {
+					className = Company.class.getName();
+					classPK = companyId;
+					groupKey = GroupConstants.GLOBAL;
+					type = 0;
+					friendlyURL = GroupConstants.GLOBAL_FRIENDLY_URL;
 				}
 
 				group = groupLocalService.addGroup(

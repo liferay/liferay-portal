@@ -1,0 +1,101 @@
+<div class="f-layout-${fragmentEntryLinkNamespace} width-desktop-${configuration.widthDesktop} width-tablet-${configuration.widthTablet} width-mobile-${configuration.widthMobile} ${configuration.fillHeightDesktop?then('fill-height', '')}">
+	<lfr-drop-zone></lfr-drop-zone>
+</div>
+
+<style>
+	body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(.f-layout-${fragmentEntryLinkNamespace}), .lfr-layout-structure-item-layout:has(.f-layout-${fragmentEntryLinkNamespace}) {
+		flex-basis: 100%;
+	}
+
+	body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(.f-layout-${fragmentEntryLinkNamespace}.fill-height), .lfr-layout-structure-item-layout:has(.f-layout-${fragmentEntryLinkNamespace}.fill-height) {
+		align-self: stretch;
+	}
+
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content:has(div.f-layout-${fragmentEntryLinkNamespace}),
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content:has(div.f-layout-${fragmentEntryLinkNamespace}) > div,
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content:has(div.f-layout-${fragmentEntryLinkNamespace}) > div > .lfr-layout-structure-item-layout,
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content:has(div.f-layout-${fragmentEntryLinkNamespace}) > div > .lfr-layout-structure-item-layout > div[class^='fragment'],
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content > div > .lfr-layout-structure-item-layout > div[id^='fragment-'] > .f-layout-${fragmentEntryLinkNamespace},
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content > div > .lfr-layout-structure-item-layout > div[id^='fragment-'] > .f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone,
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content > div > .lfr-layout-structure-item-layout > div[id^='fragment-'] > .f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope,
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content > div > .lfr-layout-structure-item-layout > div[id^='fragment-'] > .f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor,
+	div[class^='f-layout'] div[class^='lfr-layout-structure-item-topper'] > .page-editor__topper__content > div > .lfr-layout-structure-item-layout > div[id^='fragment-'] > .f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor > .page-editor__root {
+		height: 100%;
+	}
+
+	.lfr-layout-structure-item-layout:has(.f-layout-${fragmentEntryLinkNamespace}.fill-height) > div, .f-layout-${fragmentEntryLinkNamespace}.fill-height, .f-layout-${fragmentEntryLinkNamespace}.fill-height > div {
+		height: 100%;
+	}
+
+	@media screen and (min-width: 993px) {
+		body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(div.f-layout-${fragmentEntryLinkNamespace}.width-desktop-auto), .lfr-layout-structure-item-layout:has(.f-layout-${fragmentEntryLinkNamespace}.width-desktop-auto) {
+			flex-basis: auto;
+		}
+
+		body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(div.f-layout-${fragmentEntryLinkNamespace}.width-desktop-manual), .lfr-layout-structure-item-layout:has(.f-layout-${fragmentEntryLinkNamespace}.width-desktop-manual) {
+			flex: ${configuration.widthBasisDesktop} 0 0px;
+		}
+
+		body:not(.has-edit-mode-menu) .f-layout-${fragmentEntryLinkNamespace} > div > *, .f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor > .page-editor__root > * {
+			flex-grow: ${configuration.widthGrowDesktop};
+		}
+
+		.f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor > .page-editor__root, body:not(.has-edit-mode-menu) .f-layout-${fragmentEntryLinkNamespace} > div {
+			align-items: ${configuration.alignDesktop};
+			column-gap: ${configuration.horizontalGapDesktop};
+			display: flex;
+			flex-direction: ${configuration.directionDesktop};
+			flex-wrap: ${configuration.wrapDesktop};
+			justify-content: ${configuration.distributeDesktop};
+			row-gap: ${configuration.verticalGapDesktop};
+		}
+	}
+
+	@media screen and (min-width: 768px) and (max-width: 992px) {
+		body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(div.f-layout-${fragmentEntryLinkNamespace}.width-tablet-auto), .lfr-layout-structure-item-layout:has(div.f-layout-${fragmentEntryLinkNamespace}.width-tablet-auto) {
+			flex-basis: auto;
+		}
+
+		body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(div.f-layout-${fragmentEntryLinkNamespace}.width-tablet-manual), .lfr-layout-structure-item-layout:has(div.f-layout-${fragmentEntryLinkNamespace}.width-tablet-manual) {
+			flex: ${configuration.widthBasisTablet} 0 0px;
+		}
+
+		.f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor > .page-editor__root, body:not(.has-edit-mode-menu) .f-layout-${fragmentEntryLinkNamespace} > div {
+			align-items: ${configuration.alignTablet};
+			column-gap: ${configuration.horizontalGapTablet};
+			display: flex;
+			flex-direction: ${configuration.directionTablet};
+			flex-wrap: ${configuration.wrapTablet};
+			justify-content: ${configuration.distributeTablet};
+			row-gap: ${configuration.verticalGapTablet};
+		}
+
+		.f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor > .page-editor__root > *, body:not(.has-edit-mode-menu) .f-layout-${fragmentEntryLinkNamespace} > div > * {
+			flex-grow: ${configuration.widthGrowTablet};
+		}
+	}
+
+	@media screen and (max-width: 767px) {
+		body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(div.f-layout-${fragmentEntryLinkNamespace}.width-mobile-auto), .lfr-layout-structure-item-layout:has(div.f-layout-${fragmentEntryLinkNamespace}.width-mobile-auto) {
+			flex-basis: auto;
+		}
+
+		body.has-edit-mode-menu div[class^='lfr-layout-structure-item-topper']:has(div.f-layout-${fragmentEntryLinkNamespace}.width-mobile-manual), .lfr-layout-structure-item-layout:has(div.f-layout-${fragmentEntryLinkNamespace}.width-mobile-manual) {
+			flex: ${configuration.widthBasisMobile} 0 0px;
+		}
+
+		.f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor > .page-editor__root, body:not(.has-edit-mode-menu) .f-layout-${fragmentEntryLinkNamespace} > div {
+			align-items: ${configuration.alignMobile};
+			column-gap: ${configuration.horizontalGapMobile};
+			display: flex;
+			flex-direction: ${configuration.directionMobile};
+			flex-wrap: ${configuration.wrapMobile};
+			justify-content: ${configuration.distributeMobile};
+			row-gap: ${configuration.verticalGapMobile};
+		}
+
+		.f-layout-${fragmentEntryLinkNamespace} > lfr-drop-zone > .lfr-tooltip-scope > .page-editor > .page-editor__root > *, body:not(.has-edit-mode-menu) .f-layout-${fragmentEntryLinkNamespace} > div > * {
+			flex-grow: ${configuration.widthGrowMobile};
+		}
+	}
+</style>

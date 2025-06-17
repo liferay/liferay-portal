@@ -47,11 +47,11 @@ exports[`BlockListCard should render 1`] = `
                 href="/?field=name&page=1&sortOrder=DESC"
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-order-arrow-ascending icon-root"
+                  class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#order-arrow-ascending"
+                    href="#order_arrow_ascending"
                   />
                 </svg>
               </a>
@@ -244,11 +244,11 @@ exports[`BlockListCard should render 1`] = `
                     type="button"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-hidden icon-root"
+                      class="lexicon-icon lexicon-icon-ac_hidden icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-hidden"
+                        href="#ac_hidden"
                       />
                     </svg>
                   </button>
@@ -334,11 +334,11 @@ exports[`BlockListCard should render 1`] = `
                     type="button"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-hidden icon-root"
+                      class="lexicon-icon lexicon-icon-ac_hidden icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-hidden"
+                        href="#ac_hidden"
                       />
                     </svg>
                   </button>

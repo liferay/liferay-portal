@@ -68,7 +68,7 @@ public class UserSearch extends SearchContainer<User> {
 
 		PortletConfig portletConfig =
 			(PortletConfig)portletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		UserDisplayTerms displayTerms = (UserDisplayTerms)getDisplayTerms();
 

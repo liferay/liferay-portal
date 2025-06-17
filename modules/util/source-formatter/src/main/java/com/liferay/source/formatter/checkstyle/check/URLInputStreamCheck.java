@@ -140,11 +140,7 @@ public class URLInputStreamCheck extends BaseCheck {
 			return false;
 		}
 
-		if (Objects.equals(getTypeName(variableTypeDetailAST, false), "URL")) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(getTypeName(variableTypeDetailAST, false), "URL");
 	}
 
 	private static final String _MSG_REPLACE_USAGE = "replace.usage";

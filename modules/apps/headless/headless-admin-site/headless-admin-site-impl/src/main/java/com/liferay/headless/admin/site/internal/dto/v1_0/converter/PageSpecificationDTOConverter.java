@@ -351,6 +351,18 @@ public class PageSpecificationDTOConverter
 				setPageExperiences(
 					() -> _getPageExperiences(dtoConverterContext, layout));
 				setSettings(() -> _setSettings(layout));
+				setSiteTemplatePageSpecificationExternalReferenceCode(
+					() -> {
+						Layout layoutSetPrototypeLayout =
+							layout.getLayoutSetPrototypeLayout();
+
+						if (layoutSetPrototypeLayout == null) {
+							return null;
+						}
+
+						return layoutSetPrototypeLayout.
+							getExternalReferenceCode();
+					});
 				setStatus(
 					() -> {
 						if (layout.isDraftLayout()) {
@@ -377,6 +389,18 @@ public class PageSpecificationDTOConverter
 			{
 				setExternalReferenceCode(layout::getExternalReferenceCode);
 				setSettings(() -> _setSettings(layout));
+				setSiteTemplatePageSpecificationExternalReferenceCode(
+					() -> {
+						Layout layoutSetPrototypeLayout =
+							layout.getLayoutSetPrototypeLayout();
+
+						if (layoutSetPrototypeLayout == null) {
+							return null;
+						}
+
+						return layoutSetPrototypeLayout.
+							getExternalReferenceCode();
+					});
 				setStatus(() -> Status.APPROVED);
 				setType(() -> Type.WIDGET_PAGE_SPECIFICATION);
 			}

@@ -224,7 +224,7 @@ public class LayoutsAdminDisplayContextTest {
 			new MockLiferayPortletContext(path));
 
 		mockLiferayPortletRenderRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, null);
+			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.COMPANY_ID, group.getCompanyId());
 

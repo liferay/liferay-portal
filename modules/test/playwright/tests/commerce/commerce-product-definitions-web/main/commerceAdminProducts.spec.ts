@@ -114,7 +114,7 @@ test(
 		await commerceAdminProductDetailsSkusPage
 			.skusTableRowLink(`${productSkus[0].sku}`)
 			.click();
-		await commerceAdminProductDetailsSkusPage.goToSkuPrice();
+		await commerceAdminProductDetailsSkusPage.goToSkuTab('Price');
 		await commerceAdminProductDetailsSkusPage.skuPriceAddButton.click();
 		await commerceAdminProductDetailsSkusPage.skuPriceListSelect.selectOption(
 			priceListEUR.name

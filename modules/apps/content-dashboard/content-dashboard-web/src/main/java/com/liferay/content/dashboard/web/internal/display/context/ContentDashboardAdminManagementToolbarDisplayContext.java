@@ -109,7 +109,7 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 		_userLocalService = userLocalService;
 
 		_portletResponse = (PortletResponse)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 	}
 
 	@Override

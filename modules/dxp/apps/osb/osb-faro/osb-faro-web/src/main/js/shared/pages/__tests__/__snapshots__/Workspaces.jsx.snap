@@ -18,11 +18,11 @@ exports[`Workspaces should render a list of projects if there is only one projec
           target="_blank"
         >
           <svg
-            class="lexicon-icon lexicon-icon-liferay-logo icon-root liferay-logo"
+            class="lexicon-icon lexicon-icon-liferay_logo icon-root liferay-logo"
             role="presentation"
           >
             <use
-              href="#liferay-logo"
+              href="#liferay_logo"
             />
           </svg>
           <span
@@ -74,11 +74,11 @@ exports[`Workspaces should render a list of projects if there is only one projec
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac-logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
                 role="presentation"
               >
                 <use
-                  href="#ac-logo"
+                  href="#ac_logo"
                 />
               </svg>
               <span
@@ -193,11 +193,11 @@ exports[`Workspaces should render empty state 1`] = `
           target="_blank"
         >
           <svg
-            class="lexicon-icon lexicon-icon-liferay-logo icon-root liferay-logo"
+            class="lexicon-icon lexicon-icon-liferay_logo icon-root liferay-logo"
             role="presentation"
           >
             <use
-              href="#liferay-logo"
+              href="#liferay_logo"
             />
           </svg>
           <span
@@ -249,11 +249,11 @@ exports[`Workspaces should render empty state 1`] = `
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac-logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
                 role="presentation"
               >
                 <use
-                  href="#ac-logo"
+                  href="#ac_logo"
                 />
               </svg>
               <span
@@ -285,11 +285,11 @@ exports[`Workspaces should render empty state 1`] = `
                 class="empty-card"
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-ac-integration icon-root"
+                  class="lexicon-icon lexicon-icon-ac_integration icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#ac-integration"
+                    href="#ac_integration"
                   />
                 </svg>
                 <p>
@@ -310,11 +310,11 @@ exports[`Workspaces should render empty state 1`] = `
                 class="empty-card"
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-ac-page-analytics icon-root"
+                  class="lexicon-icon lexicon-icon-ac_page_analytics icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#ac-page-analytics"
+                    href="#ac_page_analytics"
                   />
                 </svg>
                 <p>
@@ -354,11 +354,11 @@ exports[`Workspaces should render with a message that all basic tier plans have 
           target="_blank"
         >
           <svg
-            class="lexicon-icon lexicon-icon-liferay-logo icon-root liferay-logo"
+            class="lexicon-icon lexicon-icon-liferay_logo icon-root liferay-logo"
             role="presentation"
           >
             <use
-              href="#liferay-logo"
+              href="#liferay_logo"
             />
           </svg>
           <span
@@ -410,11 +410,11 @@ exports[`Workspaces should render with a message that all basic tier plans have 
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac-logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
                 role="presentation"
               >
                 <use
-                  href="#ac-logo"
+                  href="#ac_logo"
                 />
               </svg>
               <span
@@ -579,11 +579,11 @@ exports[`Workspaces should render with a message that one or more basic tier wor
           target="_blank"
         >
           <svg
-            class="lexicon-icon lexicon-icon-liferay-logo icon-root liferay-logo"
+            class="lexicon-icon lexicon-icon-liferay_logo icon-root liferay-logo"
             role="presentation"
           >
             <use
-              href="#liferay-logo"
+              href="#liferay_logo"
             />
           </svg>
           <span
@@ -635,11 +635,11 @@ exports[`Workspaces should render with a message that one or more basic tier wor
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac-logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
                 role="presentation"
               >
                 <use
-                  href="#ac-logo"
+                  href="#ac_logo"
                 />
               </svg>
               <span

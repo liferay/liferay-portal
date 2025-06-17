@@ -210,7 +210,7 @@ const VerticalTimeline: FC<IVerticalTimelineProps> = ({
 				icon={{
 					border: false,
 					size: Sizes.XXXLarge,
-					symbol: 'ac-no-results-found'
+					symbol: 'ac_no_results_found'
 				}}
 				spacer
 				title={Liferay.Language.get('there-are-no-results-found')}

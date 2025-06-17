@@ -12,6 +12,7 @@ import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.configuration.ObjectConfiguration;
 import com.liferay.object.constants.ObjectActionKeys;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
@@ -19,9 +20,11 @@ import com.liferay.object.exception.ObjectEntryCountException;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -38,6 +41,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -58,6 +62,7 @@ import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -65,8 +70,11 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -96,7 +104,9 @@ import org.junit.runner.RunWith;
 /**
  * @author Marco Leo
  */
-@FeatureFlag("LPD-34594")
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594")}
+)
 @RunWith(Arquillian.class)
 public class ObjectEntryServiceTest {
 
@@ -108,11 +118,12 @@ public class ObjectEntryServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_adminUser = TestPropsValues.getUser();
+		_group = GroupTestUtil.addGroup();
 		_guestUser = _userLocalService.getGuestUser(
 			TestPropsValues.getCompanyId());
 
-		_objectDefinition = ObjectDefinitionTestUtil.addCustomObjectDefinition(
-			false,
+		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+			false, ObjectDefinitionTestUtil.getRandomName(),
 			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -121,12 +132,8 @@ public class ObjectEntryServiceTest {
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-					"Last Name", "lastName", false)));
-
-		_objectDefinition =
-			_objectDefinitionLocalService.publishCustomObjectDefinition(
-				TestPropsValues.getUserId(),
-				_objectDefinition.getObjectDefinitionId());
+					"Last Name", "lastName", false)),
+			ObjectDefinitionConstants.SCOPE_SITE, TestPropsValues.getUserId());
 
 		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -168,7 +175,7 @@ public class ObjectEntryServiceTest {
 
 		Assert.assertNotNull(
 			_objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
@@ -184,14 +191,15 @@ public class ObjectEntryServiceTest {
 			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _guestUser.getUserId(), " must have ADD_OBJECT_ENTRY ",
-				"permission for ", _objectDefinition.getResourceName(), " "),
+				"permission for ", _objectDefinition.getResourceName(), " ",
+				_group.getGroupId()),
 			() -> _objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null, Collections.emptyMap(),
 				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _guestUser.getUserId())));
+					_group.getGroupId(), _guestUser.getUserId())));
 
 		_setUser(_user);
 
@@ -199,9 +207,10 @@ public class ObjectEntryServiceTest {
 			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _user.getUserId(), " must have ADD_OBJECT_ENTRY ",
-				"permission for ", _objectDefinition.getResourceName(), " "),
+				"permission for ", _objectDefinition.getResourceName(), " ",
+				_group.getGroupId()),
 			() -> _objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null, Collections.emptyMap(),
@@ -221,7 +230,7 @@ public class ObjectEntryServiceTest {
 
 		Assert.assertNotNull(
 			_objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
@@ -242,7 +251,7 @@ public class ObjectEntryServiceTest {
 
 		Assert.assertNotNull(
 			_objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
@@ -251,6 +260,63 @@ public class ObjectEntryServiceTest {
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.addObjectEntryFolder(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				RandomTestUtil.randomString(),
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), StringUtil.randomString()
+				).build(),
+				StringUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext());
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.USER);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), ObjectEntryFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(objectEntryFolder.getObjectEntryFolderId()),
+			role.getRoleId(), new String[] {ActionKeys.ADD_ENTRY});
+
+		_setUser(_user);
+
+		Assert.assertNotNull(
+			_objectEntryService.addObjectEntry(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				objectEntryFolder.getObjectEntryFolderId(), null,
+				HashMapBuilder.<String, Serializable>put(
+					"firstName", RandomStringUtils.randomAlphabetic(5)
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _guestUser.getUserId())));
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			TestPropsValues.getCompanyId(), ObjectEntryFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(objectEntryFolder.getObjectEntryFolderId()),
+			role.getRoleId(), ActionKeys.ADD_ENTRY);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(),
+				" must have ADD_ENTRY permission for ",
+				ObjectEntryFolder.class.getName(), " ",
+				objectEntryFolder.getObjectEntryFolderId()),
+			() -> _objectEntryService.addObjectEntry(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				objectEntryFolder.getObjectEntryFolderId(), null,
+				HashMapBuilder.<String, Serializable>put(
+					"firstName", RandomStringUtils.randomAlphabetic(5)
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _guestUser.getUserId())));
 	}
 
 	@Test
@@ -731,7 +797,7 @@ public class ObjectEntryServiceTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			TestPropsValues.getUserId(), _group.getGroupId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -818,7 +884,7 @@ public class ObjectEntryServiceTest {
 		_setUser(_adminUser);
 
 		_objectEntryService.addObjectEntry(
-			0, _objectDefinition.getObjectDefinitionId(),
+			_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(),
 			ServiceContextTestUtil.getServiceContext(
@@ -830,7 +896,7 @@ public class ObjectEntryServiceTest {
 
 		try {
 			ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
-				0, _objectDefinition.getObjectDefinitionId(),
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null, Collections.emptyMap(),
@@ -847,7 +913,8 @@ public class ObjectEntryServiceTest {
 						_objectDefinition.getDefaultLanguageId()),
 					" has been reached and will no longer be accepted"),
 				() -> _objectEntryService.addObjectEntry(
-					0, _objectDefinition.getObjectDefinitionId(),
+					_group.getGroupId(),
+					_objectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 					null, Collections.emptyMap(),
@@ -869,7 +936,8 @@ public class ObjectEntryServiceTest {
 
 			Assert.assertNotNull(
 				_objectEntryService.addObjectEntry(
-					0, _objectDefinition.getObjectDefinitionId(),
+					_group.getGroupId(),
+					_objectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 					null, Collections.emptyMap(),
@@ -884,7 +952,8 @@ public class ObjectEntryServiceTest {
 						_objectDefinition.getDefaultLanguageId()),
 					" has been reached and will no longer be accepted"),
 				() -> _objectEntryService.addObjectEntry(
-					0, _objectDefinition.getObjectDefinitionId(),
+					_group.getGroupId(),
+					_objectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 					null, Collections.emptyMap(),
@@ -922,7 +991,7 @@ public class ObjectEntryServiceTest {
 		_addResourcePermissionToGuestUser();
 
 		ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
-			0, _objectDefinition.getObjectDefinitionId(),
+			_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(),
 			ServiceContextTestUtil.getServiceContext(
@@ -942,7 +1011,8 @@ public class ObjectEntryServiceTest {
 		try {
 			Assert.assertNotNull(
 				_objectEntryService.addObjectEntry(
-					0, _objectDefinition.getObjectDefinitionId(),
+					_group.getGroupId(),
+					_objectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 					null, Collections.emptyMap(),
@@ -957,7 +1027,8 @@ public class ObjectEntryServiceTest {
 						_objectDefinition.getDefaultLanguageId()),
 					" has been reached and will no longer be accepted"),
 				() -> _objectEntryService.addObjectEntry(
-					0, _objectDefinition.getObjectDefinitionId(),
+					_group.getGroupId(),
+					_objectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 					null, Collections.emptyMap(),
@@ -974,7 +1045,8 @@ public class ObjectEntryServiceTest {
 
 	private ObjectEntry _addObjectEntry(User user) throws Exception {
 		return _objectEntryLocalService.addObjectEntry(
-			user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
+			user.getUserId(), _group.getGroupId(),
+			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
@@ -1074,6 +1146,9 @@ public class ObjectEntryServiceTest {
 	@Inject
 	private ConfigurationProvider _configurationProvider;
 
+	@DeleteAfterTestRun
+	private Group _group;
+
 	private User _guestUser;
 
 	@DeleteAfterTestRun
@@ -1081,6 +1156,9 @@ public class ObjectEntryServiceTest {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

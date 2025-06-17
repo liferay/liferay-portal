@@ -6,7 +6,7 @@
 package com.liferay.commerce.internal.verify;
 
 import com.liferay.account.service.AccountGroupLocalService;
-import com.liferay.commerce.helper.CommerceAccountRoleHelper;
+import com.liferay.commerce.helper.CommerceRoleHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -49,7 +49,7 @@ public class CommerceAccountServiceVerifyProcess extends VerifyProcess {
 					serviceContext.setUserId(_getAdminUserId(companyId));
 					serviceContext.setUuid(PortalUUIDUtil.generate());
 
-					_commerceAccountRoleHelper.checkCommerceAccountRoles(
+					_commerceRoleHelper.checkCommerceAccountRoles(
 						serviceContext);
 				});
 		}
@@ -81,7 +81,7 @@ public class CommerceAccountServiceVerifyProcess extends VerifyProcess {
 	private AccountGroupLocalService _accountGroupLocalService;
 
 	@Reference
-	private CommerceAccountRoleHelper _commerceAccountRoleHelper;
+	private CommerceRoleHelper _commerceRoleHelper;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;

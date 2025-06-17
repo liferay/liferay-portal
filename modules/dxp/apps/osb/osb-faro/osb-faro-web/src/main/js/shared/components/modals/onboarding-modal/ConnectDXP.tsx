@@ -204,19 +204,19 @@ const ConnectDXP: React.FC<IConnectDXPWrapperProps & IConnectDXPProps> = ({
 				<div className='analytics-to-dxp-container'>
 					<ClayIcon
 						className='icon-root icon-size-xl'
-						symbol='dxp-icon'
+						symbol='dxp_icon'
 					/>
 
 					<ClayIcon
 						className={getCN('arrows icon-root icon-size-lg', {
 							connected: dxpConnected
 						})}
-						symbol='ac-horizontal-arrows'
+						symbol='ac_horizontal_arrows'
 					/>
 
 					<ClayIcon
 						className='icon-root icon-size-xl'
-						symbol={dxpConnected ? 'ac-logo' : 'ac-logo-grayscale'}
+						symbol={dxpConnected ? 'ac_logo' : 'ac_logo_grayscale'}
 					/>
 				</div>
 

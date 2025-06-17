@@ -11,7 +11,13 @@ import {useStateDispatch} from '../contexts/StateContext';
 import {Field, MaxLengthSettingsField} from '../utils/field';
 import Input from './Input';
 
-export default function MaxLengthInput({field}: {field: Field}) {
+export default function MaxLengthInput({
+	disabled,
+	field,
+}: {
+	disabled?: boolean;
+	field: Field;
+}) {
 	const maxLengthSettingsField = field as MaxLengthSettingsField;
 
 	const dispatch = useStateDispatch();
@@ -25,6 +31,7 @@ export default function MaxLengthInput({field}: {field: Field}) {
 			<ClayForm.Group className="mb-3">
 				<ClayCheckbox
 					checked={enableLimitCharacters}
+					disabled={disabled}
 					label={Liferay.Language.get('limit-characters')}
 					onChange={(event) => {
 						const value = event.target.checked;
@@ -48,6 +55,7 @@ export default function MaxLengthInput({field}: {field: Field}) {
 			{enableLimitCharacters ? (
 				<ClayForm.Group className="mb-3">
 					<Input
+						disabled={disabled}
 						helpMessage={sub(
 							Liferay.Language.get(
 								'set-the-maximum-number-of-characters-accepted-this-value-cant-be-less-than-x-or-greater-than-x'

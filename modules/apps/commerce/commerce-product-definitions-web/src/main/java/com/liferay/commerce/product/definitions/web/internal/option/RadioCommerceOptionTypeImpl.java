@@ -25,9 +25,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
@@ -42,7 +44,9 @@ import java.io.PrintWriter;
 
 import java.math.BigDecimal;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -72,6 +76,30 @@ public class RadioCommerceOptionTypeImpl implements CommerceOptionType {
 	@Override
 	public boolean hasValues() {
 		return true;
+	}
+
+	@Override
+	public boolean isValid(
+		CPDefinitionOptionRel cpDefinitionOptionRel, String[] values) {
+
+		if (ArrayUtil.isEmpty(values) || Validator.isBlank(values[0])) {
+			return true;
+		}
+
+		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
+			cpDefinitionOptionRel.getCPDefinitionOptionValueRels();
+
+		for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
+				cpDefinitionOptionValueRels) {
+
+			if (Objects.equals(
+					cpDefinitionOptionValueRel.getKey(), values[0])) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override

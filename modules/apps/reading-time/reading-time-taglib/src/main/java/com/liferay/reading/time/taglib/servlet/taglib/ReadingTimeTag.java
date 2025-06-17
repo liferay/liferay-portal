@@ -98,7 +98,7 @@ public class ReadingTimeTag extends AttributesTagSupport implements BodyTag {
 
 		RenderResponse renderResponse =
 			(RenderResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		return renderResponse.getNamespace();
 	}

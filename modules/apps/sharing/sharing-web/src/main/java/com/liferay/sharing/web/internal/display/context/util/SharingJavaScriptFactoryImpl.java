@@ -141,10 +141,10 @@ public class SharingJavaScriptFactoryImpl implements SharingJavaScriptFactory {
 			return assetRenderer.getURLShare(
 				_portal.getLiferayPortletRequest(
 					(PortletRequest)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST)),
+						JavaConstants.JAKARTA_PORTLET_REQUEST)),
 				_portal.getLiferayPortletResponse(
 					(PortletResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE)));
+						JavaConstants.JAKARTA_PORTLET_RESPONSE)));
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

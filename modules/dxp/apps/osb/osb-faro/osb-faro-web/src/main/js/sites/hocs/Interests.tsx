@@ -60,7 +60,7 @@ const TableWithData = withTableData(withData, {
 	emptyIcon: {
 		border: false,
 		size: Sizes.XXXLarge,
-		symbol: 'ac-satellite'
+		symbol: 'ac_satellite'
 	},
 	emptyTitle: Liferay.Language.get('there-are-no-interests-found'),
 	getColumns: ({

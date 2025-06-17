@@ -16,8 +16,13 @@ import {openPermissionsModal} from '../utils/modals/openPermissionsModal';
 import DefaultContent from './DefaultRenderer';
 
 function ActionLinkRenderer({actions, itemData, itemId, options, value}) {
-	const {executeAsyncItemAction, highlightItems, openModal, openSidePanel} =
-		useContext(FrontendDataSetContext);
+	const {
+		executeAsyncItemAction,
+		highlightItems,
+		onInfoPanelToggleButtonClick,
+		openModal,
+		openSidePanel,
+	} = useContext(FrontendDataSetContext);
 
 	if (!actions || !actions.length) {
 		return value ? <DefaultContent value={value} /> : null;
@@ -61,7 +66,12 @@ function ActionLinkRenderer({actions, itemData, itemId, options, value}) {
 					url: formattedHref,
 				});
 			}
-			if (currentAction.target === 'modal-permissions') {
+			if (currentAction.target === 'infoPanel') {
+				event.preventDefault();
+
+				onInfoPanelToggleButtonClick();
+			}
+			else if (currentAction.target === 'modal-permissions') {
 				event.preventDefault();
 
 				openPermissionsModal(formattedHref);
@@ -173,6 +183,7 @@ ActionLinkRenderer.propTypes = {
 			onClick: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
 			size: PropTypes.string,
 			target: PropTypes.oneOf([
+				'infoPanel',
 				'modal',
 				'modal-permissions',
 				'sidePanel',

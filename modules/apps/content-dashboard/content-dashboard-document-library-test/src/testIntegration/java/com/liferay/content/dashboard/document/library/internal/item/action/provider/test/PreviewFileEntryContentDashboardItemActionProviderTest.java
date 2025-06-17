@@ -91,7 +91,7 @@ public class PreviewFileEntryContentDashboardItemActionProviderTest {
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(mockHttpServletRequest));
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, mockLiferayResourceRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, mockLiferayResourceRequest);
 
 		ContentDashboardItemAction contentDashboardItemAction =
 			_contentDashboardItemActionProvider.getContentDashboardItemAction(
@@ -141,7 +141,7 @@ public class PreviewFileEntryContentDashboardItemActionProviderTest {
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(mockHttpServletRequest));
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, mockLiferayResourceRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, mockLiferayResourceRequest);
 
 		Assert.assertTrue(
 			_contentDashboardItemActionProvider.isShow(
@@ -188,7 +188,7 @@ public class PreviewFileEntryContentDashboardItemActionProviderTest {
 				WebKeys.THEME_DISPLAY, themeDisplay);
 
 			mockHttpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST,
+				JavaConstants.JAKARTA_PORTLET_REQUEST,
 				mockLiferayResourceRequest);
 
 			Assert.assertFalse(

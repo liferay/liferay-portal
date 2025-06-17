@@ -112,7 +112,7 @@ const BaseListPage: React.FC<IBaseListPageProps> = ({
 					icon={{
 						border: false,
 						size: Sizes.XXXLarge,
-						symbol: 'ac-no-results-found'
+						symbol: 'ac_no_results_found'
 					}}
 					title={Liferay.Language.get('there-are-no-results-found')}
 				/>

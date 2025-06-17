@@ -6,7 +6,6 @@
 package com.liferay.portal.osgi.web.portlet.tracker.internal.osgi.util.tracker;
 
 import com.liferay.osgi.util.StringPlus;
-import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -32,7 +31,6 @@ import com.liferay.portal.kernel.model.PortletConstants;
 import com.liferay.portal.kernel.model.PortletInfo;
 import com.liferay.portal.kernel.model.PortletURLListener;
 import com.liferay.portal.kernel.model.PublicRenderParameter;
-import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.portlet.PortletDependencyFactory;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.portlet.InvokerPortlet;
@@ -45,7 +43,6 @@ import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DelegateProxyFactory;
@@ -68,7 +65,6 @@ import com.liferay.portal.osgi.web.portlet.tracker.internal.BundlePortletAppDele
 import com.liferay.portal.osgi.web.portlet.tracker.internal.PortletPropertyValidator;
 import com.liferay.portal.osgi.web.servlet.context.helper.ServletContextHelperFactory;
 import com.liferay.portal.osgi.web.servlet.context.helper.ServletContextHelperRegistration;
-import com.liferay.portal.service.impl.ResourcePermissionLocalServiceImpl.IndividualPortletResourcePermissionProvider;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebAppPool;
 import com.liferay.portlet.PortletBagFactory;
@@ -103,7 +99,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -338,22 +333,6 @@ public class PortletTracker
 						_portalPortletModel =
 							_portletLocalService.getPortletById(
 								CompanyConstants.SYSTEM, PortletKeys.PORTAL);
-
-						ServiceRegistration
-							<IndividualPortletResourcePermissionProvider>
-								serviceRegistration =
-									bundleContext.registerService(
-										IndividualPortletResourcePermissionProvider.class,
-										new StartupIndividualPortletResourcePermissionProvider(
-											_resourcePermissionLocalService),
-										null);
-
-						InitialRequestSyncUtil.registerSyncCallable(
-							() -> {
-								serviceRegistration.unregister();
-
-								return null;
-							});
 
 						_serviceTracker.open();
 
@@ -1515,70 +1494,6 @@ public class PortletTracker
 
 	private ServiceReference<ServletContextHelperRegistration>
 		_servletContextHelperRegistrationServiceReference;
-
-	private static class StartupIndividualPortletResourcePermissionProvider
-		implements IndividualPortletResourcePermissionProvider {
-
-		@Override
-		public List<ResourcePermission> getResourcePermissions(
-			long companyId, String name) {
-
-			DCLSingleton<Map<String, List<ResourcePermission>>>
-				resourcePermissionsDCLSingleton = _resourcePermissionMaps.get(
-					companyId);
-
-			if (resourcePermissionsDCLSingleton == null) {
-				resourcePermissionsDCLSingleton = new DCLSingleton<>();
-
-				DCLSingleton<Map<String, List<ResourcePermission>>>
-					previousResourcePermissionsDCLSingleton =
-						_resourcePermissionMaps.putIfAbsent(
-							companyId, resourcePermissionsDCLSingleton);
-
-				if (previousResourcePermissionsDCLSingleton != null) {
-					resourcePermissionsDCLSingleton =
-						previousResourcePermissionsDCLSingleton;
-				}
-			}
-
-			Map<String, List<ResourcePermission>> resourcePermissions =
-				resourcePermissionsDCLSingleton.getSingleton(
-					() ->
-						_resourcePermissionLocalService.
-							getIndividualPortletResourcePermissions(companyId));
-
-			return resourcePermissions.get(name);
-		}
-
-		@Override
-		public void removeResourcePermissions(long companyId, String name) {
-			DCLSingleton<Map<String, List<ResourcePermission>>>
-				resourcePermissionsDCLSingleton = _resourcePermissionMaps.get(
-					companyId);
-
-			if (resourcePermissionsDCLSingleton != null) {
-				Map<String, List<ResourcePermission>> resourcePermissions =
-					resourcePermissionsDCLSingleton.getSingleton(() -> null);
-
-				if (resourcePermissions != null) {
-					resourcePermissions.remove(name);
-				}
-			}
-		}
-
-		private StartupIndividualPortletResourcePermissionProvider(
-			ResourcePermissionLocalService resourcePermissionLocalService) {
-
-			_resourcePermissionLocalService = resourcePermissionLocalService;
-		}
-
-		private final ResourcePermissionLocalService
-			_resourcePermissionLocalService;
-		private final Map
-			<Long, DCLSingleton<Map<String, List<ResourcePermission>>>>
-				_resourcePermissionMaps = new ConcurrentHashMap<>();
-
-	}
 
 	private class ServiceRegistrations {
 

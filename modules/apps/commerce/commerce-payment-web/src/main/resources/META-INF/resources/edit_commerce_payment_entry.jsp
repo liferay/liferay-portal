@@ -169,13 +169,13 @@ portletDisplay.setURLBack(backURL);
 								<commerce-ui:info-box
 									actionContext='<%=
 										HashMapBuilder.<String, Object>put(
-											"containerCssClasses", "modal-height-lg"
+											"containerCssClasses", "modal-height-md"
 										).put(
 											"namespace", liferayPortletResponse.getNamespace()
 										).put(
 											"refreshOnClose", true
 										).put(
-											"size", "lg"
+											"size", "md"
 										).build()
 									%>'
 									actionLabel='<%= commercePaymentEntryDisplayContext.hasCommercePaymentEntryModelPermission(ActionKeys.UPDATE) ? LanguageUtil.get(request, Validator.isNull(note) ? "add" : "edit") : null %>'

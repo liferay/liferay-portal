@@ -52,11 +52,7 @@ public class ExcludeSyntaxPattern {
 
 		String excludePattern = excludeSyntaxPattern.getExcludePattern();
 
-		if (!excludePattern.equals(_excludePattern)) {
-			return false;
-		}
-
-		return true;
+		return excludePattern.equals(_excludePattern);
 	}
 
 	public String getExcludePattern() {

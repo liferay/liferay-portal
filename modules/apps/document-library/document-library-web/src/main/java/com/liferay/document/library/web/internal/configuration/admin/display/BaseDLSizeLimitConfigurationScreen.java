@@ -64,7 +64,7 @@ public abstract class BaseDLSizeLimitConfigurationScreen
 					dlSizeLimitConfigurationProvider, httpServletRequest,
 					PortalUtil.getLiferayPortletResponse(
 						(PortletResponse)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE)),
+							JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 					getScope(), _getScopePK(httpServletRequest)));
 
 			RequestDispatcher requestDispatcher =

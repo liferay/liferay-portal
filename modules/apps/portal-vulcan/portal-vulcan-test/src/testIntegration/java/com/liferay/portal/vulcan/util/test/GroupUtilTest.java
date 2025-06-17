@@ -10,9 +10,12 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -94,17 +97,19 @@ public class GroupUtilTest {
 
 	@Test
 	public void testGetGroupId() throws Exception {
-		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
+		_testGetGroupId(
+			_groupLocalService.getGroup(TestPropsValues.getGroupId()));
 
-		Assert.assertEquals(
-			Long.valueOf(group.getGroupId()),
-			GroupUtil.getGroupId(
-				group.getCompanyId(), group.getGroupKey(), _groupLocalService));
-		Assert.assertEquals(
-			Long.valueOf(group.getGroupId()),
-			GroupUtil.getGroupId(
-				group.getCompanyId(), String.valueOf(group.getGroupId()),
-				_groupLocalService));
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		try {
+			_testGetGroupId(userGroup.getGroup());
+		}
+		finally {
+			if (userGroup != null) {
+				_userGroupLocalService.deleteUserGroup(userGroup);
+			}
+		}
 	}
 
 	@Test
@@ -145,6 +150,23 @@ public class GroupUtilTest {
 				_depotEntryLocalService, _groupLocalService));
 	}
 
+	private void _testGetGroupId(Group group) {
+		Assert.assertEquals(
+			Long.valueOf(group.getGroupId()),
+			GroupUtil.getGroupId(
+				group.getCompanyId(), group.getExternalReferenceCode(),
+				_groupLocalService));
+		Assert.assertEquals(
+			Long.valueOf(group.getGroupId()),
+			GroupUtil.getGroupId(
+				group.getCompanyId(), String.valueOf(group.getGroupId()),
+				_groupLocalService));
+		Assert.assertEquals(
+			Long.valueOf(group.getGroupId()),
+			GroupUtil.getGroupId(
+				group.getCompanyId(), group.getGroupKey(), _groupLocalService));
+	}
+
 	private DepotEntry _depotEntry;
 
 	@Inject
@@ -152,5 +174,8 @@ public class GroupUtilTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private UserGroupLocalService _userGroupLocalService;
 
 }

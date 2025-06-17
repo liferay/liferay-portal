@@ -110,10 +110,10 @@ public class CPConfigurationEntryLocalServiceUtil {
 	}
 
 	public static void deleteCPConfigurationEntries(
-			long classNameId, long classPK)
+			long classNameId, long classPK, boolean force)
 		throws PortalException {
 
-		getService().deleteCPConfigurationEntries(classNameId, classPK);
+		getService().deleteCPConfigurationEntries(classNameId, classPK, force);
 	}
 
 	/**
@@ -134,6 +134,14 @@ public class CPConfigurationEntryLocalServiceUtil {
 		return getService().deleteCPConfigurationEntry(cpConfigurationEntry);
 	}
 
+	public static CPConfigurationEntry deleteCPConfigurationEntry(
+			CPConfigurationEntry cpConfigurationEntry, boolean force)
+		throws PortalException {
+
+		return getService().deleteCPConfigurationEntry(
+			cpConfigurationEntry, force);
+	}
+
 	/**
 	 * Deletes the cp configuration entry with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -150,6 +158,14 @@ public class CPConfigurationEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteCPConfigurationEntry(CPConfigurationEntryId);
+	}
+
+	public static CPConfigurationEntry deleteCPConfigurationEntry(
+			long cpConfigurationEntryId, boolean force)
+		throws PortalException {
+
+		return getService().deleteCPConfigurationEntry(
+			cpConfigurationEntryId, force);
 	}
 
 	/**
@@ -280,13 +296,6 @@ public class CPConfigurationEntryLocalServiceUtil {
 
 		return getService().fetchCPConfigurationEntryByUuidAndGroupId(
 			uuid, groupId);
-	}
-
-	public static CPConfigurationEntry forceDeleteCPConfigurationEntry(
-		CPConfigurationEntry cpConfigurationEntry) {
-
-		return getService().forceDeleteCPConfigurationEntry(
-			cpConfigurationEntry);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery

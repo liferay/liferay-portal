@@ -198,6 +198,7 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 					RandomTestUtil.randomString());
 				purchaseOrderNumber = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				requestedDeliveryDate = RandomTestUtil.nextDate();
 				shippingMethod = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				shippingOption = StringUtil.toLowerCase(
@@ -348,7 +349,19 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
 				BigDecimal.ZERO, BigDecimal.ZERO, _serviceContext);
 
+		commerceOrder.setRequestedDeliveryDate(
+			placedOrder.getRequestedDeliveryDate());
+
+		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			commerceOrder);
+
 		_commerceOrders.add(commerceOrder);
+
+		return _addPlacedOrder(commerceOrder);
+	}
+
+	private PlacedOrder _addPlacedOrder(CommerceOrder commerceOrder)
+		throws Exception {
 
 		CommerceOrderType commerceOrderType =
 			_commerceOrderTypeLocalService.getCommerceOrderType(
@@ -379,6 +392,8 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 					commerceOrder.getShippingAddressId();
 				printedNote = commerceOrder.getPrintedNote();
 				purchaseOrderNumber = commerceOrder.getPurchaseOrderNumber();
+				requestedDeliveryDate =
+					commerceOrder.getRequestedDeliveryDate();
 				shippingOption = commerceOrder.getShippingOptionName();
 				status = commerceOrder.getAdvanceStatus();
 				valid = true;

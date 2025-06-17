@@ -216,9 +216,9 @@ export function getPlanLabel(name) {
 export function getPropIcon(name) {
 	switch (name) {
 		case INDIVIDUALS:
-			return 'ac-individual';
+			return 'ac_individual';
 		case PAGEVIEWS:
-			return 'faro-page-views';
+			return 'faro_page_views';
 		default:
 			return '';
 	}

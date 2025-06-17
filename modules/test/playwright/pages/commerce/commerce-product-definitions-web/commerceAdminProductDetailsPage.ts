@@ -39,6 +39,7 @@ export class CommerceAdminProductDetailsPage {
 	readonly productConfigurationLink: Locator;
 	readonly productDetailsInput: (inputName: string) => Promise<Locator>;
 	readonly productDiagramLink: Locator;
+	readonly productId: Locator;
 	readonly productMediaLink: Locator;
 	readonly productOptionsLink: Locator;
 	readonly productRelationsLink: Locator;
@@ -126,6 +127,7 @@ export class CommerceAdminProductDetailsPage {
 		this.productDiagramLink = page.getByRole('link', {
 			name: 'Diagram',
 		});
+		this.productId = page.locator('span:has-text("ID")+strong');
 		this.productMediaLink = page.getByRole('link', {
 			name: 'Media',
 		});

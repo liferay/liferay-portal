@@ -331,7 +331,7 @@ public class EditEntryMVCActionCommand extends BaseMVCActionCommand {
 		BlogsEntry entry, String redirect, String portletResource) {
 
 		PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG);
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		return PortletURLBuilder.createRenderURL(
 			_portal.getLiferayPortletResponse(actionResponse),

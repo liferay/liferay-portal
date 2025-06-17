@@ -118,10 +118,10 @@ public class SitemapPortalSettingsConfigurationScreenWrapper
 					_groupLocalService, _itemSelector,
 					_portal.getLiferayPortletRequest(
 						(PortletRequest)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_REQUEST)),
+							JavaConstants.JAKARTA_PORTLET_REQUEST)),
 					_portal.getLiferayPortletResponse(
 						(PortletResponse)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE)),
+							JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 					_sitemapConfigurationManager,
 					(ThemeDisplay)httpServletRequest.getAttribute(
 						WebKeys.THEME_DISPLAY)));

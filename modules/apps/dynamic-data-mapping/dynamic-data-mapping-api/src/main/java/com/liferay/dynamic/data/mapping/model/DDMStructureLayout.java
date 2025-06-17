@@ -59,4 +59,6 @@ public interface DDMStructureLayout
 	public long getDDMStructureId()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
+	public void setDDMFormLayout(DDMFormLayout ddmFormLayout);
+
 }

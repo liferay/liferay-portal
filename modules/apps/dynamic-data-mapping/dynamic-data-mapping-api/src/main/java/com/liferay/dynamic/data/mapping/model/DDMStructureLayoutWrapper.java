@@ -577,6 +577,11 @@ public class DDMStructureLayoutWrapper
 		model.setCtCollectionId(ctCollectionId);
 	}
 
+	@Override
+	public void setDDMFormLayout(DDMFormLayout ddmFormLayout) {
+		model.setDDMFormLayout(ddmFormLayout);
+	}
+
 	/**
 	 * Sets the definition of this ddm structure layout.
 	 *

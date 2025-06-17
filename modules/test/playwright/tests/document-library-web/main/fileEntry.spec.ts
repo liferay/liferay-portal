@@ -851,3 +851,28 @@ test(
 		);
 	}
 );
+
+test(
+	'Access from Desktop modal can be opened multiple times',
+	{tag: '@LPD-47606'},
+	async ({documentLibraryPage, page, site}) => {
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await page.click('button[title="Options"]');
+
+		await page.getByRole('menuitem', {name: 'Access from Desktop'}).click();
+
+		await page.getByRole('dialog').waitFor({state: 'visible'});
+
+		await page
+			.getByRole('dialog')
+			.getByRole('button', {name: 'close'})
+			.click();
+
+		await page.click('button[title="Options"]');
+
+		await page.getByRole('menuitem', {name: 'Access from Desktop'}).click();
+
+		await expect(page.getByRole('dialog')).toBeVisible();
+	}
+);

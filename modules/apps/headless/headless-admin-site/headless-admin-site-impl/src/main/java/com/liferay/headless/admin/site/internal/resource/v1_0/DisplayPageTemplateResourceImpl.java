@@ -18,6 +18,7 @@ import com.liferay.headless.admin.site.dto.v1_0.SitemapSettings;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.FileEntryUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.resource.v1_0.DisplayPageTemplateResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
@@ -372,14 +373,24 @@ public class DisplayPageTemplateResourceImpl
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
 
-		LayoutUtil.updateContentLayout(
+		layout = LayoutUtil.updateContentLayout(
 			layout, _getUnicodeProperties(displayPageTemplateSettings),
 			layout.getNameMap(), layout.getTitleMap(),
 			layout.getDescriptionMap(),
 			_getRobotsMap(displayPageTemplateSettings),
 			LocalizedMapUtil.getLocalizedMap(
 				displayPageTemplate.getFriendlyUrlPath_i18n()),
-			null, _getServiceContext(displayPageTemplate, groupId));
+			displayPageTemplate.getPageSpecifications(),
+			_getServiceContext(displayPageTemplate, groupId));
+
+		if (!layoutPageTemplateEntry.isApproved() &&
+			LayoutUtil.isPublished(layout)) {
+
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.updateStatus(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+					WorkflowConstants.STATUS_APPROVED);
+		}
 
 		return _displayPageTemplateDTOConverter.toDTO(
 			_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
@@ -405,6 +416,11 @@ public class DisplayPageTemplateResourceImpl
 		if (displayPageTemplate.getFriendlyUrlPath_i18n() != null) {
 			existingDisplayPageTemplate.setFriendlyUrlPath_i18n(
 				displayPageTemplate::getFriendlyUrlPath_i18n);
+		}
+
+		if (displayPageTemplate.getPageSpecifications() != null) {
+			existingDisplayPageTemplate.setPageSpecifications(
+				displayPageTemplate::getPageSpecifications);
 		}
 
 		if (displayPageTemplate.getParentFolder() != null) {
@@ -465,7 +481,9 @@ public class DisplayPageTemplateResourceImpl
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, displayPageTemplate.getThumbnail()),
-				false, 0L, layout.getPlid(), 0L, WorkflowConstants.STATUS_DRAFT,
+				false, 0L, layout.getPlid(), 0L,
+				PageSpecificationUtil.getPublishedStatus(
+					displayPageTemplate.getPageSpecifications()),
 				serviceContext));
 	}
 

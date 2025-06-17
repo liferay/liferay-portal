@@ -4,7 +4,7 @@ definition {
 	property portal.acceptance = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.main.component.name = "JS APIs and Utilities";
+	property testray.main.component.name = "Frontend JS";
 
 	setUp {
 		TestCase.setUpPortalInstance();

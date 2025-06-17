@@ -62,7 +62,7 @@ public class PropertiesImportedFilesContentCheck extends BaseFileCheck {
 
 					String value = line.substring(line.indexOf('=') + 1);
 
-					if (!Objects.isNull(value) && !value.equals("\\")) {
+					if (Objects.nonNull(value) && !value.equals("\\")) {
 						Set<String> set = map.get(key);
 
 						if (set == null) {

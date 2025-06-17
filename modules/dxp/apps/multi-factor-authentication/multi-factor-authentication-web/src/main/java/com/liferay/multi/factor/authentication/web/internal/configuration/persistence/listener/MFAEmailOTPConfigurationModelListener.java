@@ -10,6 +10,7 @@ import com.liferay.multi.factor.authentication.web.internal.system.configuration
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
+import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -45,7 +46,8 @@ public class MFAEmailOTPConfigurationModelListener
 					MFASystemConfiguration.class);
 
 			if (!mfaSystemConfiguration.disableGlobally() ||
-				!GetterUtil.getBoolean(properties.get("enabled"))) {
+				!GetterUtil.getBoolean(properties.get("enabled")) ||
+				!ClusterInvokeThreadLocal.isEnabled()) {
 
 				return;
 			}

@@ -162,7 +162,7 @@ export default function useSubmitLXCEnvironment(
 							new NotificationQueueService(client);
 
 						await notificationTemplateService.send(
-							'SETUP-LXC-ENVIRONMENT-NOTIFICATION-TEMPLATE',
+							'SETUP-LXC-ENVIRONMENT',
 							{
 								'[%ANALYTICS_CLOUD_OWNERS_EMAIL_ADDRESS%]':
 									lxcActivationFields.analyticsCloudOwnersEmailAddress,

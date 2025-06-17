@@ -21,7 +21,7 @@ const test = mergeTests(
 );
 
 test(
-	'Assert can delete vocabulary from dropdown actions ',
+	'Assert can delete vocabulary from dropdown actions',
 	{tag: '@LPD-32750LPD-32750LPD-32750LPD-32750LPD-32750LPD-32750'},
 	async ({editVocabularyPage, page, vocabulariesPage}) => {
 		editVocabularyPage.goto();
@@ -61,7 +61,7 @@ test(
 );
 
 test(
-	'Assert can edit vocabulary from dropdown actions ',
+	'Assert can edit vocabulary from dropdown actions',
 	{tag: '@LPD-32750'},
 	async ({editVocabularyPage, page, vocabulariesPage}) => {
 		await editVocabularyPage.goto();
@@ -90,7 +90,7 @@ test(
 );
 
 test(
-	'Assert can edit vocabulary permissions from dropdown actions ',
+	'Assert can edit vocabulary permissions from dropdown actions',
 	{tag: '@LPD-32750'},
 	async ({editVocabularyPage, page, vocabulariesPage}) => {
 		editVocabularyPage.goto();

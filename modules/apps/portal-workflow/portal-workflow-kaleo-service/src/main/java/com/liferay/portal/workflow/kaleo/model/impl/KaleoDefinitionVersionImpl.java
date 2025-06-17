@@ -30,6 +30,8 @@ public class KaleoDefinitionVersionImpl extends KaleoDefinitionVersionBaseImpl {
 
 		try {
 			_contentAsXML = WorkflowDefinitionContentUtil.toXML(getContent());
+
+			contentAsXMLUpdateEntityCacheConsumer.accept(_contentAsXML);
 		}
 		catch (WorkflowException workflowException) {
 			ReflectionUtil.throwException(workflowException);
@@ -47,6 +49,11 @@ public class KaleoDefinitionVersionImpl extends KaleoDefinitionVersionBaseImpl {
 	@Override
 	public KaleoNode getKaleoStartNode() throws PortalException {
 		return KaleoNodeLocalServiceUtil.getKaleoNode(getStartKaleoNodeId());
+	}
+
+	@Override
+	public void setContentAsXML(String contentAsXML) {
+		_contentAsXML = contentAsXML;
 	}
 
 	protected int getVersion(String version) {

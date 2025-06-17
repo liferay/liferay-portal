@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
@@ -762,6 +763,14 @@ public class DispatchTriggerLocalServiceTest {
 		@Override
 		public void clearLocalCache() {
 			_entityCache.clearLocalCache();
+		}
+
+		@Override
+		public <T extends CacheModel<?>> T fetchCacheModel(
+			Class<?> clazz, Serializable primaryKey, Class<T> cacheModelClass) {
+
+			return _entityCache.fetchCacheModel(
+				clazz, primaryKey, cacheModelClass);
 		}
 
 		@Override

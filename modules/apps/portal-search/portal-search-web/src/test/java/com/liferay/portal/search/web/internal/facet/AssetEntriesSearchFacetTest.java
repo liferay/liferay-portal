@@ -5,22 +5,25 @@
 
 package com.liferay.portal.search.web.internal.facet;
 
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.portal.kernel.search.SearchEngineHelper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.search.internal.asset.AssetRendererFactoryRegistry;
 import com.liferay.portal.search.internal.asset.SearchableAssetClassNamesProviderImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -33,13 +36,21 @@ public class AssetEntriesSearchFacetTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@BeforeClass
+	public static void setUpClass() {
+		assetRendererFactoryRegistryUtilMockedStatic = Mockito.mockStatic(
+			AssetRendererFactoryRegistryUtil.class);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		assetRendererFactoryRegistryUtilMockedStatic.close();
+	}
+
 	@Before
 	public void setUp() {
 		assetRendererFactory1 = Mockito.mock(AssetRendererFactory.class);
 		assetRendererFactory2 = Mockito.mock(AssetRendererFactory.class);
-
-		_assetRendererFactoryRegistry = Mockito.mock(
-			AssetRendererFactoryRegistry.class);
 
 		_searchEngineHelper = Mockito.mock(SearchEngineHelper.class);
 
@@ -49,8 +60,6 @@ public class AssetEntriesSearchFacetTest {
 			assetEntriesSearchFacet, "_searchableAssetClassNamesProvider",
 			new SearchableAssetClassNamesProviderImpl() {
 				{
-					assetRendererFactoryRegistry =
-						_assetRendererFactoryRegistry;
 					searchEngineHelper = _searchEngineHelper;
 				}
 			});
@@ -125,6 +134,9 @@ public class AssetEntriesSearchFacetTest {
 
 	protected static final String CLASS_NAME_2 = "com.liferay.model.Model2";
 
+	protected static MockedStatic<AssetRendererFactoryRegistryUtil>
+		assetRendererFactoryRegistryUtilMockedStatic;
+
 	protected AssetEntriesSearchFacet assetEntriesSearchFacet;
 	protected AssetRendererFactory<?> assetRendererFactory1;
 	protected AssetRendererFactory<?> assetRendererFactory2;
@@ -152,8 +164,8 @@ public class AssetEntriesSearchFacetTest {
 	private void _mockAssetRendererFactoryRegistry(
 		AssetRendererFactory<?>... assetRendererFactories) {
 
-		Mockito.when(
-			_assetRendererFactoryRegistry.getAssetRendererFactories(
+		assetRendererFactoryRegistryUtilMockedStatic.when(
+			() -> AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
 				Mockito.anyLong())
 		).thenReturn(
 			Arrays.asList(assetRendererFactories)
@@ -170,7 +182,6 @@ public class AssetEntriesSearchFacetTest {
 		);
 	}
 
-	private AssetRendererFactoryRegistry _assetRendererFactoryRegistry;
 	private SearchEngineHelper _searchEngineHelper;
 
 }

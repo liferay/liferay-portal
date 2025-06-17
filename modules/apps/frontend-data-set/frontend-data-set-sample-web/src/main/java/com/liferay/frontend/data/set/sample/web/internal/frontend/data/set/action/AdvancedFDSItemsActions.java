@@ -43,7 +43,7 @@ public class AdvancedFDSItemsActions implements FDSItemsActions {
 
 		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		LiferayPortletResponse liferayPortletResponse =
 			PortalUtil.getLiferayPortletResponse(portletResponse);
@@ -96,6 +96,9 @@ public class AdvancedFDSItemsActions implements FDSItemsActions {
 		fdsActionDropdownItem3.putData("disableHeader", true);
 
 		return Arrays.asList(
+			new FDSActionDropdownItem(
+				null, "view", "infoPanel", "View Details", null, null,
+				"infoPanel"),
 			new FDSActionDropdownItem(
 				null, "view", "sampleMessage", "Sample View", null, null,
 				"link"),

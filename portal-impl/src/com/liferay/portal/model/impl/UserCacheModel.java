@@ -6,6 +6,7 @@
 package com.liferay.portal.model.impl;
 
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -384,7 +388,12 @@ public class UserCacheModel
 
 		userImpl.resetOriginalValues();
 
-		userImpl.setGroupId(_groupId);
+		try {
+			_groupIdMethodHandle.invokeExact(userImpl, groupId);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return userImpl;
 	}
@@ -454,7 +463,7 @@ public class UserCacheModel
 
 		status = objectInput.readInt();
 
-		_groupId = (long)objectInput.readObject();
+		groupId = (long)objectInput.readObject();
 	}
 
 	@Override
@@ -643,7 +652,7 @@ public class UserCacheModel
 
 		objectOutput.writeInt(status);
 
-		objectOutput.writeObject(_groupId);
+		objectOutput.writeObject(groupId);
 	}
 
 	public long mvccVersion;
@@ -690,6 +699,20 @@ public class UserCacheModel
 	public boolean emailAddressVerified;
 	public int type;
 	public int status;
-	public long _groupId;
+	public volatile long groupId;
+
+	private static final MethodHandle _groupIdMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_groupIdMethodHandle = lookup.findSetter(
+				UserImpl.class, "_groupId", long.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

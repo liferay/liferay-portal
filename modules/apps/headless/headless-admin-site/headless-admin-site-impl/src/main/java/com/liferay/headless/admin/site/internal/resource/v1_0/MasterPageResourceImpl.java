@@ -17,6 +17,7 @@ import com.liferay.headless.admin.site.dto.v1_0.Scope;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.FileEntryUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.resource.v1_0.MasterPageResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
@@ -324,12 +325,6 @@ public class MasterPageResourceImpl extends BaseMasterPageResourceImpl {
 			defaultTemplate = true;
 		}
 
-		int status = WorkflowConstants.STATUS_DRAFT;
-
-		if (_isPublishedLayout(masterPage.getPageSpecifications())) {
-			status = WorkflowConstants.STATUS_APPROVED;
-		}
-
 		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
 
 		serviceContext.setAssetCategoryIds(
@@ -350,7 +345,9 @@ public class MasterPageResourceImpl extends BaseMasterPageResourceImpl {
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, masterPage.getThumbnail()),
 				defaultTemplate, 0,
-				_getLayoutPlid(groupId, masterPage, serviceContext), 0, status,
+				_getLayoutPlid(groupId, masterPage, serviceContext), 0,
+				PageSpecificationUtil.getPublishedStatus(
+					masterPage.getPageSpecifications()),
 				serviceContext));
 	}
 
@@ -466,31 +463,6 @@ public class MasterPageResourceImpl extends BaseMasterPageResourceImpl {
 		serviceContext.setUuid(masterPage.getUuid());
 
 		return serviceContext;
-	}
-
-	private boolean _isPublishedLayout(PageSpecification[] pageSpecifications) {
-		if (pageSpecifications == null) {
-			return false;
-		}
-
-		if (pageSpecifications.length != 2) {
-			throw new UnsupportedOperationException();
-		}
-
-		ContentPageSpecification publishedContentPageSpecification =
-			(ContentPageSpecification)pageSpecifications[0];
-
-		if (Validator.isNull(
-				publishedContentPageSpecification.
-					getDraftContentPageSpecificationExternalReferenceCode())) {
-
-			publishedContentPageSpecification =
-				(ContentPageSpecification)pageSpecifications[1];
-		}
-
-		return Objects.equals(
-			publishedContentPageSpecification.getStatus(),
-			PageSpecification.Status.APPROVED);
 	}
 
 	@Reference

@@ -32,7 +32,6 @@ import org.opensearch.client.opensearch.core.search.SourceConfig;
 import org.opensearch.client.opensearch.core.search.SourceFilter;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -203,8 +202,6 @@ public class GroupByTranslatorImpl implements GroupByTranslator {
 
 	private final HighlightTranslator _highlightTranslator =
 		new HighlightTranslator();
-
-	@Reference
-	private SortTranslator _sortTranslator;
+	private final SortTranslator _sortTranslator = new SortTranslator();
 
 }

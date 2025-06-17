@@ -58,11 +58,11 @@ exports[`NoPropertiesAvailable should render 1`] = `
               class="no-results-icon"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac-satellite icon-root icon-size-xxxl"
+                class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
                 role="presentation"
               >
                 <use
-                  href="#ac-satellite"
+                  href="#ac_satellite"
                 />
               </svg>
             </div>

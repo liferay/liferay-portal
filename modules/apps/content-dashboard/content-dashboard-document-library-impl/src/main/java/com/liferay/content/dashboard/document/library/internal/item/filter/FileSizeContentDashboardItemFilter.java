@@ -187,7 +187,7 @@ public class FileSizeContentDashboardItemFilter
 	private String _getURL(SizeType sizeType) {
 		PortletResponse portletResponse =
 			(PortletResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		String url = HttpComponentsUtil.removeParameter(
 			_portal.getCurrentCompleteURL(_httpServletRequest),

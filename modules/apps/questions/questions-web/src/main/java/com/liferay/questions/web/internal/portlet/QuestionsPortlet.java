@@ -17,7 +17,6 @@ import com.liferay.message.boards.moderation.configuration.MBModerationGroupConf
 import com.liferay.message.boards.service.MBStatsUserLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringUtil;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -32,7 +31,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.questions.web.internal.configuration.QuestionsConfiguration;
 import com.liferay.questions.web.internal.constants.QuestionsPortletKeys;
 import com.liferay.questions.web.internal.constants.QuestionsWebKeys;
 
@@ -49,20 +47,16 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Javier Gamarra
  */
 @Component(
-	configurationPid = "com.liferay.questions.web.internal.configuration.QuestionsConfiguration",
 	property = {
 		"com.liferay.portlet.css-class-wrapper=portlet-questions",
 		"com.liferay.portlet.display-category=category.collaboration",
@@ -91,9 +85,6 @@ public class QuestionsPortlet extends MVCPortlet {
 	public void doView(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
-
-		renderRequest.setAttribute(
-			QuestionsConfiguration.class.getName(), _questionsConfiguration);
 
 		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
 			renderRequest);
@@ -185,13 +176,6 @@ public class QuestionsPortlet extends MVCPortlet {
 		super.doView(renderRequest, renderResponse);
 	}
 
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_questionsConfiguration = ConfigurableUtil.createConfigurable(
-			QuestionsConfiguration.class, properties);
-	}
-
 	private String _getTagSelectorURL(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
@@ -266,7 +250,5 @@ public class QuestionsPortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
-
-	private volatile QuestionsConfiguration _questionsConfiguration;
 
 }

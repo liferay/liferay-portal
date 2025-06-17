@@ -1,0 +1,102 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "primary",
+					"label": "Style",
+					"name": "style",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Netral",
+								"value": "neutral"
+							},
+							{
+								"label": "Primary",
+								"value": "primary"
+							},
+							{
+								"label": "Secondary",
+								"value": "secondary"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "solid",
+					"label": "Type",
+					"name": "type",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Borderless",
+								"value": "borderless"
+							},
+							{
+								"label": "Ghost",
+								"value": "ghost"
+							},
+							{
+								"label": "Rounded",
+								"value": "rounded"
+							},
+							{
+								"label": "Solid",
+								"value": "solid"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "medium",
+					"label": "Size",
+					"name": "size",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Small",
+								"value": "small"
+							},
+							{
+								"label": "Medium",
+								"value": "medium"
+							},
+							{
+								"label": "Large",
+								"value": "large"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": false,
+					"label": "Icon Left",
+					"name": "iconLeft",
+					"type": "checkbox"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": false,
+					"label": "Icon Right",
+					"name": "iconRight",
+					"type": "checkbox"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": false,
+					"label": "Inverted",
+					"name": "inverted",
+					"type": "checkbox"
+				}
+			]
+		}
+	]
+}

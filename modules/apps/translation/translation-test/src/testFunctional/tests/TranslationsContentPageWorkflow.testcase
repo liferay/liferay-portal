@@ -1,9 +1,9 @@
-@component-name = "portal-content-management"
+@component-name = "portal-page-management"
 definition {
 
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.main.component.name = "Translations Management";
+	property testray.main.component.name = "Content Pages";
 
 	// This testcase validates the workflow functionality for the Content Page translations feature for default and custom experiences.
 

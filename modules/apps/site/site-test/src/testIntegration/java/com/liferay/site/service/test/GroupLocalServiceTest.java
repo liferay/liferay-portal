@@ -60,7 +60,7 @@ public class GroupLocalServiceTest {
 
 			// Verify idempotency
 
-			_groupLocalService.checkCompanyGroup(companyId);
+			_groupLocalService.checkSystemGroups(companyId);
 
 			Group afterCheckGlobalGroup = company.getGroup();
 

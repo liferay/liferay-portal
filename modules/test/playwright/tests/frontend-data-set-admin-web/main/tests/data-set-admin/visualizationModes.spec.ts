@@ -5,18 +5,18 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {accountSettingsPagesTest} from '../../../../../fixtures/accountSettingsPagesTest';
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
-import {liferayConfig} from '../../../../../liferay.config';
 import getRandomString from '../../../../../utils/getRandomString';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import clickActionInRow from '../../utils/clickActionInRow';
-import {EN_BASE_URL, ES_BASE_URL, PT_BASE_URL} from '../../utils/constants';
 import saveFromModal from '../../utils/saveFromModal';
 import {dataSetManagerSetupTest} from './fixtures/dataSetManagerSetupTest';
 import {visualizationModesPageTest} from './fixtures/visualizationModesPageTest';
 
 export const test = mergeTests(
+	accountSettingsPagesTest,
 	dataSetManagerApiHelpersTest,
 	featureFlagsTest({
 		'LPS-164563': {enabled: true},
@@ -1057,258 +1057,6 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 		});
 	});
 
-	test(
-		'Check that users can translate labels in table visualization mode.',
-		{tag: '@LPS-176516'},
-		async ({page, visualizationModesPage}) => {
-			const SAMPLE_FIELD = 'fieldName';
-			const SAMPLE_FIELD_EN_US = 'Name';
-			const SAMPLE_FIELD_ES_ES = 'Nombre';
-			const SAMPLE_FIELD_PT_BR = 'Nome';
-
-			await test.step('Navigate to table visualization mode page', async () => {
-				await visualizationModesPage.goto({
-					dataSetLabel,
-				});
-
-				await visualizationModesPage.selectTab('Table');
-
-				await expect(
-					visualizationModesPage.tableVisualizationModeContainer
-				).toBeVisible();
-			});
-
-			await test.step('Add field', async () => {
-				await visualizationModesPage.openAddDataSourceFieldsModal();
-
-				await visualizationModesPage.selectField({
-					fieldName: SAMPLE_FIELD,
-				});
-
-				await saveFromModal({
-					page,
-				});
-			});
-
-			await test.step('Check there is one field and is the one just added', async () => {
-				await expect(
-					visualizationModesPage
-						.getRowByText(SAMPLE_FIELD)
-						.locator('td')
-						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
-				).toHaveText(SAMPLE_FIELD);
-
-				await visualizationModesPage.assertTableFieldRowCount(1);
-			});
-
-			await test.step('Edit a field, change its label using the default language (en_US)', async () => {
-				await clickActionInRow({
-					actionName: 'Edit',
-					page,
-					rowName: SAMPLE_FIELD,
-				});
-
-				const labelInput =
-					visualizationModesPage.page.getByLabel('Label');
-
-				await expect(labelInput).toBeInViewport();
-
-				await expect(labelInput).toBeEnabled();
-
-				await labelInput.fill(SAMPLE_FIELD_EN_US);
-
-				await saveFromModal({page});
-			});
-
-			await test.step('Check there is one field and the label shows the translated value', async () => {
-				await expect(
-					visualizationModesPage
-						.getRowByText(SAMPLE_FIELD)
-						.locator('td')
-						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
-				).toHaveText(SAMPLE_FIELD_EN_US);
-
-				await visualizationModesPage.assertTableFieldRowCount(1);
-			});
-
-			await test.step('Edit a field, update the label using the pt_BR and es_ES languages', async () => {
-				await clickActionInRow({
-					actionName: 'Edit',
-					page,
-					rowName: SAMPLE_FIELD,
-				});
-
-				const labelInput =
-					visualizationModesPage.page.getByLabel('Label');
-
-				await expect(labelInput).toBeInViewport();
-
-				const localizationButton = page
-					.locator('.input-localized')
-					.getByRole('button');
-				const languageDropdownId =
-					await localizationButton.getAttribute('aria-controls');
-				const languageDropdown = page.locator(`#${languageDropdownId}`);
-
-				await localizationButton.click();
-
-				await languageDropdown.waitFor();
-
-				await expect(
-					languageDropdown
-						.getByRole('menuitem', {name: 'en_US'})
-						.locator('.label-item')
-				).toContainText('Default');
-
-				await expect(
-					languageDropdown
-						.getByRole('menuitem', {name: 'es_ES'})
-						.locator('.label-item')
-				).toContainText('Untranslated');
-
-				if (
-					await languageDropdown
-						.getByRole('menuitem', {name: 'es_AR'})
-						.locator('.label-item')
-						.isVisible()
-				) {
-					await expect(
-						languageDropdown
-							.getByRole('menuitem', {name: 'es_ES'})
-							.locator('.label-item')
-					).toContainText('Untranslated');
-				}
-
-				await expect(
-					languageDropdown
-						.getByRole('menuitem', {name: 'pt_BR'})
-						.locator('.label-item')
-				).toContainText('Untranslated');
-
-				await languageDropdown
-					.getByRole('menuitem', {name: 'pt_BR'})
-					.click();
-
-				await labelInput.fill(SAMPLE_FIELD_PT_BR);
-
-				await localizationButton.click();
-
-				await languageDropdown.waitFor();
-				await languageDropdown
-					.getByRole('menuitem', {name: 'es_ES'})
-					.click();
-
-				await labelInput.fill(SAMPLE_FIELD_ES_ES);
-
-				if (
-					await languageDropdown
-						.getByRole('menuitem', {name: 'es_AR'})
-						.locator('.label-item')
-						.isVisible()
-				) {
-					await localizationButton.click();
-
-					await languageDropdown.waitFor();
-
-					await languageDropdown
-						.getByRole('menuitem', {name: 'es_AR'})
-						.click();
-
-					await labelInput.fill(SAMPLE_FIELD_ES_ES);
-				}
-
-				await saveFromModal({page});
-			});
-
-			await test.step('Check that the language dropdown shows the updated language as Translated', async () => {
-				await clickActionInRow({
-					actionName: 'Edit',
-					page,
-					rowName: SAMPLE_FIELD,
-				});
-
-				const localizationButton = page
-					.locator('.input-localized')
-					.getByRole('button');
-				const languageDropdownId =
-					await localizationButton.getAttribute('aria-controls');
-				const languageDropdown = page.locator(`#${languageDropdownId}`);
-
-				await localizationButton.click();
-
-				await languageDropdown.waitFor();
-
-				await expect(
-					languageDropdown
-						.getByRole('menuitem', {name: 'en_US'})
-						.locator('.label-item')
-				).toContainText('Default');
-
-				await expect(
-					languageDropdown
-						.getByRole('menuitem', {name: 'es_ES'})
-						.locator('.label-item')
-				).toContainText('Translated');
-
-				await expect(
-					languageDropdown
-						.getByRole('menuitem', {name: 'pt_BR'})
-						.locator('.label-item')
-				).toContainText('Translated');
-
-				await languageDropdown
-					.getByRole('menuitem', {name: 'pt_BR'})
-					.click();
-
-				await page.keyboard.press('Escape');
-				await visualizationModesPage.cancelAddFieldsModal();
-			});
-
-			await test.step('Confirm that the translation works when the page is loaded with es_ES locale', async () => {
-				const currentUrl = page.url();
-				const updatedUrl = currentUrl.replace(
-					liferayConfig.environment.baseUrl,
-					ES_BASE_URL
-				);
-
-				await page.goto(updatedUrl);
-
-				await page.locator('nav.navbar').locator('li').nth(1).click();
-
-				await expect(
-					visualizationModesPage
-						.getRowByText(SAMPLE_FIELD)
-						.locator('td')
-						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
-				).toHaveText(SAMPLE_FIELD_ES_ES);
-
-				await visualizationModesPage.assertTableFieldRowCount(1);
-			});
-
-			await test.step('Confirm that the translation works when the page is loaded with pt_BR locale', async () => {
-				const currentUrl = page.url();
-				const updatedUrl = currentUrl.replace(ES_BASE_URL, PT_BASE_URL);
-
-				await page.goto(updatedUrl);
-
-				await page.locator('nav.navbar').locator('li').nth(1).click();
-
-				await expect(
-					visualizationModesPage
-						.getRowByText(SAMPLE_FIELD)
-						.locator('td')
-						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
-				).toHaveText(SAMPLE_FIELD_PT_BR);
-
-				await visualizationModesPage.assertTableFieldRowCount(1);
-			});
-
-			await test.step('Restore EN locale', async () => {
-				await page.goto(EN_BASE_URL);
-			});
-		}
-	);
-
 	test('Check modal field selection allows check and uncheck fields @LPS-174141, @LPS-185228, @LPS-179282', async ({
 		page,
 		visualizationModesPage,
@@ -1462,4 +1210,235 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 			);
 		});
 	});
+
+	test(
+		'Check that users can translate labels in table visualization mode.',
+		{tag: '@LPS-176516'},
+		async ({accountSettingsPage, page, visualizationModesPage}) => {
+			const SAMPLE_FIELD = 'fieldName';
+			const SAMPLE_FIELD_EN_US = 'Name';
+			const SAMPLE_FIELD_FR_FR = 'Nom';
+			const SAMPLE_FIELD_PT_BR = 'Nome';
+			let dataSetPageUrl;
+
+			await test.step('Navigate to table visualization mode page', async () => {
+				await visualizationModesPage.goto({
+					dataSetLabel,
+				});
+
+				await visualizationModesPage.selectTab('Table');
+
+				await expect(
+					visualizationModesPage.tableVisualizationModeContainer
+				).toBeVisible();
+			});
+
+			await test.step('Add field', async () => {
+				await visualizationModesPage.openAddDataSourceFieldsModal();
+
+				await visualizationModesPage.selectField({
+					fieldName: SAMPLE_FIELD,
+				});
+
+				await saveFromModal({
+					page,
+				});
+			});
+
+			await test.step('Check there is one field and is the one just added', async () => {
+				await expect(
+					visualizationModesPage
+						.getRowByText(SAMPLE_FIELD)
+						.locator('td')
+						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
+				).toHaveText(SAMPLE_FIELD);
+
+				await visualizationModesPage.assertTableFieldRowCount(1);
+			});
+
+			await test.step('Edit a field, change its label using the default language (en_US)', async () => {
+				await clickActionInRow({
+					actionName: 'Edit',
+					page,
+					rowName: SAMPLE_FIELD,
+				});
+
+				const labelInput =
+					visualizationModesPage.page.getByLabel('Label');
+
+				await expect(labelInput).toBeInViewport();
+
+				await expect(labelInput).toBeEnabled();
+
+				await labelInput.fill(SAMPLE_FIELD_EN_US);
+
+				await saveFromModal({page});
+			});
+
+			await test.step('Check there is one field and the label shows the translated value', async () => {
+				await expect(
+					visualizationModesPage
+						.getRowByText(SAMPLE_FIELD)
+						.locator('td')
+						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
+				).toHaveText(SAMPLE_FIELD_EN_US);
+
+				await visualizationModesPage.assertTableFieldRowCount(1);
+			});
+
+			await test.step('Edit a field, update the label using the pt_BR and fr_FR languages', async () => {
+				await clickActionInRow({
+					actionName: 'Edit',
+					page,
+					rowName: SAMPLE_FIELD,
+				});
+
+				const labelInput =
+					visualizationModesPage.page.getByLabel('Label');
+
+				await expect(labelInput).toBeInViewport();
+
+				const localizationButton = page
+					.locator('.input-localized')
+					.getByRole('button');
+				const languageDropdownId =
+					await localizationButton.getAttribute('aria-controls');
+				const languageDropdown = page.locator(`#${languageDropdownId}`);
+
+				await localizationButton.click();
+
+				await languageDropdown.waitFor();
+
+				await expect(
+					languageDropdown
+						.getByRole('menuitem', {name: 'en_US'})
+						.locator('.label-item')
+				).toContainText('Default');
+
+				await expect(
+					languageDropdown
+						.getByRole('menuitem', {name: 'fr_FR'})
+						.locator('.label-item')
+				).toContainText('Untranslated');
+
+				await expect(
+					languageDropdown
+						.getByRole('menuitem', {name: 'pt_BR'})
+						.locator('.label-item')
+				).toContainText('Untranslated');
+
+				await languageDropdown
+					.getByRole('menuitem', {name: 'pt_BR'})
+					.click();
+
+				await labelInput.fill(SAMPLE_FIELD_PT_BR);
+
+				await localizationButton.click();
+
+				await languageDropdown.waitFor();
+				await languageDropdown
+					.getByRole('menuitem', {name: 'fr_FR'})
+					.click();
+
+				await labelInput.fill(SAMPLE_FIELD_FR_FR);
+
+				await saveFromModal({page});
+			});
+
+			await test.step('Check that the language dropdown shows the updated language as Translated', async () => {
+				await clickActionInRow({
+					actionName: 'Edit',
+					page,
+					rowName: SAMPLE_FIELD,
+				});
+
+				const localizationButton = page
+					.locator('.input-localized')
+					.getByRole('button');
+				const languageDropdownId =
+					await localizationButton.getAttribute('aria-controls');
+				const languageDropdown = page.locator(`#${languageDropdownId}`);
+
+				await localizationButton.click();
+
+				await languageDropdown.waitFor();
+
+				await expect(
+					languageDropdown
+						.getByRole('menuitem', {name: 'en_US'})
+						.locator('.label-item')
+				).toContainText('Default');
+
+				await expect(
+					languageDropdown
+						.getByRole('menuitem', {name: 'fr_FR'})
+						.locator('.label-item')
+				).toContainText('Translated');
+
+				await expect(
+					languageDropdown
+						.getByRole('menuitem', {name: 'pt_BR'})
+						.locator('.label-item')
+				).toContainText('Translated');
+
+				await languageDropdown
+					.getByRole('menuitem', {name: 'pt_BR'})
+					.click();
+
+				await page.keyboard.press('Escape');
+				await visualizationModesPage.cancelAddFieldsModal();
+			});
+
+			await test.step('Confirm that the translation works when the page is loaded with fr_FR locale', async () => {
+				dataSetPageUrl = page.url();
+
+				await accountSettingsPage.selectAccountLanguage({
+					languageId: 'fr_FR',
+					navigate: true,
+				});
+
+				await page.goto(dataSetPageUrl);
+
+				await page.locator('nav.navbar').locator('li').nth(1).click();
+
+				await expect(
+					visualizationModesPage
+						.getRowByText(SAMPLE_FIELD)
+						.locator('td')
+						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
+				).toHaveText(SAMPLE_FIELD_FR_FR);
+
+				await visualizationModesPage.assertTableFieldRowCount(1);
+			});
+
+			await test.step('Confirm that the translation works when the page is loaded with pt_BR locale', async () => {
+				await accountSettingsPage.selectAccountLanguage({
+					languageId: 'pt_BR',
+					navigate: true,
+				});
+
+				await page.goto(dataSetPageUrl);
+
+				await page.locator('nav.navbar').locator('li').nth(1).click();
+
+				await expect(
+					visualizationModesPage
+						.getRowByText(SAMPLE_FIELD)
+						.locator('td')
+						.nth(visualizationModesPage.LABEL_COLUMN_INDEX)
+				).toHaveText(SAMPLE_FIELD_PT_BR);
+
+				await visualizationModesPage.assertTableFieldRowCount(1);
+			});
+
+			await test.step('Restore EN locale', async () => {
+				await accountSettingsPage.selectAccountLanguage({
+					languageId: 'en_US',
+					navigate: true,
+				});
+
+				await page.goto(dataSetPageUrl);
+			});
+		}
+	);
 });

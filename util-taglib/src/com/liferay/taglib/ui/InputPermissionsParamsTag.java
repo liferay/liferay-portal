@@ -44,7 +44,7 @@ public class InputPermissionsParamsTag extends TagSupport {
 		try {
 			RenderResponse renderResponse =
 				(RenderResponse)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(

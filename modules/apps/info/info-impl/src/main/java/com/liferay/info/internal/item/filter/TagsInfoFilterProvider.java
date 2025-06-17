@@ -49,7 +49,7 @@ public class TagsInfoFilterProvider
 			assetTagIds.add(
 				ArrayUtil.filter(
 					GetterUtil.getStringValues(entry.getValue()),
-					tagName -> !Objects.isNull(tagName)));
+					tagName -> Objects.nonNull(tagName)));
 		}
 
 		return assetTagIds.toArray(new String[assetTagIds.size()][]);

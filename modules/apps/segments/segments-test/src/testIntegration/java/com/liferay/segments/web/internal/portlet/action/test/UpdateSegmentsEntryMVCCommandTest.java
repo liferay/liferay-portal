@@ -206,7 +206,7 @@ public class UpdateSegmentsEntryMVCCommandTest {
 				portlet, null);
 
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, liferayPortletConfig);
+			JavaConstants.JAKARTA_PORTLET_CONFIG, liferayPortletConfig);
 
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.PORTLET_ID, SegmentsPortletKeys.SEGMENTS);

@@ -588,6 +588,12 @@ public class FragmentDisplayContext {
 					MarketplacePortletKeys.FRAGMENTS,
 					MarketplaceActionKeys.INSTALL_FREE_BUNDLED_APPS)
 			).put(
+				"manageFragmentsEntries",
+				() -> FragmentPermission.contains(
+					_themeDisplay.getPermissionChecker(),
+					_themeDisplay.getScopeGroupId(),
+					FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)
+			).put(
 				"purchaseAndInstallPaidApps",
 				PortletPermissionUtil.contains(
 					_themeDisplay.getPermissionChecker(),

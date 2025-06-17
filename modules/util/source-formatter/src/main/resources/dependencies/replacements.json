@@ -2874,6 +2874,19 @@
 	},
 	{
 		"classNames": [
+			"StrutsAction"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-28369",
+		"methodsToFormat": [
+			{
+				"from": "@Override\n\tpublic String execute(\n\t\tStrutsAction originalStrutsAction,\n\t\tHttpServletRequest httpServletRequest,\n\t\tHttpServletResponse httpServletResponse)",
+				"to": "public String execute(\n\t\t\tStrutsAction originalStrutsAction,\n\t\t\tHttpServletRequest httpServletRequest,\n\t\t\tHttpServletResponse httpServletResponse)"
+			}
+		]
+	},
+	{
+		"classNames": [
 			"CompanyLocalService",
 			"CompanyLocalServiceUtil"
 		],
@@ -3300,6 +3313,16 @@
 			"com.liferay.mail.kernel.service.MailServiceUtil"
 		],
 		"to": "MailServiceUtil.sendEmail(new MailMessage(param#0#, param#1#, param#2#, param#3#, param#4#))"
+	},
+	{
+		"classNames": [
+			"MentionsUserFinder"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-34770",
+		"newMethods": [
+			"@Override\n\tpublic List<User> getUsers(\n\t\t\tlong companyId, long groupId, long userId, String query,\n\t\t\tSocialInteractionsConfiguration socialInteractionsConfiguration)\n\t\tthrows PortalException {\n\n\t\treturn getUsers(\n\t\t\tcompanyId, userId, query,\n\t\t\tsocialInteractionsConfiguration);\n\t}"
+		]
 	},
 	{
 		"classNames": [

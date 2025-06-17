@@ -4142,12 +4142,12 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.apache.commons.jar!commons-beanutils.jar</file-name>
-				<version>1.9.4</version>
+				<version>1.11.0</version>
 				<project-name>Apache Commons BeanUtils</project-name>
-				<project-url>https://commons.apache.org/proper/commons-beanutils/</project-url>
+				<project-url>https://commons.apache.org/proper/commons-beanutils</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
+						<license-name>Apache-2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
@@ -6399,7 +6399,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/com.liferay.jenkins.results.parser.jar</file-name>
-				<version>1.0.1513</version>
+				<version>1.0.1603</version>
 				<project-name>Liferay Jenkins Results Parser</project-name>
 				<licenses>
 					<license>
@@ -7528,7 +7528,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/log4j-core.jar</file-name>
-				<version>2.17.1.LIFERAY-PATCHED-1</version>
+				<version>2.17.1.LIFERAY-PATCHED-2</version>
 				<project-name>Log4j Core</project-name>
 				<project-url>http://logging.apache.org/log4j</project-url>
 				<licenses>

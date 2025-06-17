@@ -308,7 +308,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		mockLiferayPortletActionRequest.addParameter(
 			"xmlSitemapIndexEnabled", String.valueOf(xmlSitemapIndexEnabled));
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletActionResponse());
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(user));

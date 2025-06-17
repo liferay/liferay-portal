@@ -80,7 +80,7 @@ test('LPD-33466 User can update pricing quantity of UOM', async ({
 
 	await commerceAdminProductDetailsSkusPage.pricinQuantity.fill('2');
 
-	await commerceAdminProductDetailsSkusPage.skuUOMFrameSaveButton.click();
+	await commerceAdminProductDetailsSkusPage.sidePanelNestedSaveButton.click();
 
 	await waitForAlert(
 		commerceAdminProductDetailsSkusPage.skuUOMFrame.frameLocator('iframe')

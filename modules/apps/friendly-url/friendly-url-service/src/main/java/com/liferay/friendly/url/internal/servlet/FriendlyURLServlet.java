@@ -877,7 +877,7 @@ public class FriendlyURLServlet extends HttpServlet {
 
 			if (HttpComponentsUtil.isForwarded(httpServletRequest)) {
 				originalRequestURI = (String)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_SERVLET_FORWARD_REQUEST_URI);
+					JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI);
 			}
 			else {
 				originalRequestURI = _getRequestURI(
@@ -974,7 +974,7 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		if (Validator.isNull(queryString)) {
 			queryString = (String)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING);
+				JavaConstants.JAKARTA_SERVLET_FORWARD_QUERY_STRING);
 		}
 
 		if (Validator.isNotNull(queryString)) {

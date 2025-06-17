@@ -70,7 +70,7 @@ const getSegmentsData = (
 	let items = segments.slice(0, MAX_BARS).map(({value, valueKey}) => ({
 		columns: [
 			{
-				icon: 'ac-segment',
+				icon: 'ac_segment',
 				label: valueKey
 			}
 		],
@@ -103,7 +103,7 @@ const getSegmentsData = (
 			{
 				columns: [
 					{
-						icon: 'ac-segment',
+						icon: 'ac_segment',
 						label: sub(Liferay.Language.get('x-more-segments'), [
 							totalOthers - (MAX_BARS - 1)
 						])

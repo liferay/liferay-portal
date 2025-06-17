@@ -2,7 +2,7 @@
 
 <suppressions>
 	<source-check>
-		<suppress checks="JavaJSImportMapsContributorCheck" files="frontend-js-web/src/main/java/com/liferay/frontend/js/web/internal/js/importmaps/extender/FrontendJsWebJSImportMapsContributor\.java" />
+		<suppress checks="JavaJSImportMapsContributorCheck" files="frontend-js-web/src/main/java/com/liferay/frontend/js/web/internal/js/importmaps/extender/FrontendJsWebDynamicJSImportMapsContributor\.java" />
 		<suppress checks="JSLodashDependencyCheck" files="frontend-js-aui-web/src/main/resources/META-INF/resources/liferay/aui_sandbox\.js" />
 		<suppress checks="JSONPackageJSONCheck" files="frontend-js-recharts/package\.json" />
 	</source-check>

@@ -1,4 +1,6 @@
 {
+	"accountEntryRestricted": true,
+	"accountEntryRestrictedObjectFieldName": "r_accountEntryToTicketAttachment_accountEntryId",
 	"enableObjectEntryDraft": true,
 	"label": {
 		"en_US": "Ticket Attachment"

@@ -13,6 +13,7 @@ PropertiesEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | Finds 
 PropertiesEnvironmentVariablesCheck | [Documentation](documentation_checks.md#documentation-checks) | Verifies that the environment property in the documentation matches the property name. |
 PropertiesFeatureFlagsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Generate feature flags in `portal.properties` file. |
 PropertiesImportedFilesContentCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `imported-files.properties` file. |
+PropertiesJakartaTransformCheck | [JakartaTransform](jakarta_transform_checks.md#jakartatransform-checks) | Performs replacements for use of Jakarta. |
 PropertiesLanguageContractionsCheck | [Styling](styling_checks.md#styling-checks) | Finds contractions (such as `can't` or `you're`). |
 [PropertiesLanguageKeysCheck](check/properties_language_keys_check.md#propertieslanguagekeyscheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that there is no HTML markup in language keys. |
 PropertiesLanguageKeysContextCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks if the language keys include a word of context to indicate specific meaning. |

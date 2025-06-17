@@ -6,6 +6,7 @@
 package com.liferay.commerce.product.option;
 
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
+import com.liferay.portal.kernel.exception.PortalException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +25,13 @@ public interface CommerceOptionType {
 	public boolean hasValues();
 
 	public default boolean isActive() {
+		return true;
+	}
+
+	public default boolean isValid(
+			CPDefinitionOptionRel cpDefinitionOptionRel, String[] values)
+		throws PortalException {
+
 		return true;
 	}
 

@@ -131,6 +131,14 @@ public class CPConfigurationListLocalServiceUtil {
 		return getService().deleteCPConfigurationList(cpConfigurationList);
 	}
 
+	public static CPConfigurationList deleteCPConfigurationList(
+			CPConfigurationList cpConfigurationList, boolean force)
+		throws PortalException {
+
+		return getService().deleteCPConfigurationList(
+			cpConfigurationList, force);
+	}
+
 	/**
 	 * Deletes the cp configuration list with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -147,6 +155,14 @@ public class CPConfigurationListLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteCPConfigurationList(CPConfigurationListId);
+	}
+
+	public static CPConfigurationList deleteCPConfigurationList(
+			long cpConfigurationListId, boolean force)
+		throws PortalException {
+
+		return getService().deleteCPConfigurationList(
+			cpConfigurationListId, force);
 	}
 
 	public static void deleteCPConfigurationLists(long companyId)
@@ -276,12 +292,6 @@ public class CPConfigurationListLocalServiceUtil {
 
 		return getService().fetchCPConfigurationListByUuidAndGroupId(
 			uuid, groupId);
-	}
-
-	public static CPConfigurationList forceDeleteCPConfigurationList(
-		CPConfigurationList cpConfigurationList) {
-
-		return getService().forceDeleteCPConfigurationList(cpConfigurationList);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery

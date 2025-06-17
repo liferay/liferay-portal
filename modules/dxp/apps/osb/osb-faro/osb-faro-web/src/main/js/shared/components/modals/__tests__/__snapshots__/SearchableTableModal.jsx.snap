@@ -84,11 +84,11 @@ exports[`SearchableTableModal should render 1`] = `
                   type="button"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-order-arrow-ascending icon-root"
+                    class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#order-arrow-ascending"
+                      href="#order_arrow_ascending"
                     />
                   </svg>
                 </button>

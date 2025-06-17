@@ -181,7 +181,7 @@ const SearchableTableWithAdded: React.FC<ISearchableTableWithAddedProps> = ({
 				<NoResultsDisplay
 					icon={{
 						size: Sizes.XXLarge,
-						symbol: 'ac-individual'
+						symbol: 'ac_individual'
 					}}
 					title={
 						sub(Liferay.Language.get('there-are-no-x-found'), [

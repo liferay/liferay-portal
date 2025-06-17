@@ -8,6 +8,7 @@ package com.liferay.source.formatter.check;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.source.formatter.util.SourceFormatterUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,9 +39,18 @@ public class JSPDefineObjectsCheck extends BaseFileCheck {
 		}
 
 		for (String[] defineObject : _PORTLET_DEFINE_OBJECTS) {
+			String value = defineObject[2];
+
+			if (isAttributeValue(
+					SourceFormatterUtil.JAKARTA_USED_BRANCH, absolutePath)) {
+
+				value = StringUtil.replaceFirst(
+					value, "JavaConstants.JAVAX_", "JavaConstants.JAKARTA_");
+			}
+
 			_checkDefineObjectsVariables(
-				fileName, content, defineObject[0], defineObject[1],
-				defineObject[2], "portlet");
+				fileName, content, defineObject[0], defineObject[1], value,
+				"portlet");
 		}
 
 		if (!isPortalSource() && !isSubrepository()) {

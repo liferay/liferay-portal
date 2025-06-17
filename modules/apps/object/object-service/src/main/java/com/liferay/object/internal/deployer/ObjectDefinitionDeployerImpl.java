@@ -481,7 +481,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				_bundleContext.registerService(
 					WorkflowHandler.class,
 					new ObjectEntryWorkflowHandler(
-						objectDefinition, _objectEntryLocalService,
+						objectDefinition, _objectDefinitionLocalService,
+						_objectEntryLocalService,
 						_workflowDefinitionLinkLocalService),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"model.class.name", objectDefinition.getClassName()

@@ -16,6 +16,7 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly configurationMenuItem: Locator;
 	readonly createNewOrderButton: Locator;
 	readonly firstCardItem: Locator;
+	readonly firstCardItemAddToCartButton: Locator;
 	readonly globalSearchBarButton: Locator;
 	readonly globalSearchBarInput: Locator;
 	readonly globalSearchBarCommerceItemLink: (text: string) => Locator;
@@ -64,6 +65,10 @@ export class CommerceThemeMiniumCatalogPage {
 			name: 'Create New Order',
 		});
 		this.firstCardItem = page.locator('.product-card').first();
+		this.firstCardItemAddToCartButton = this.firstCardItem.getByRole(
+			'button',
+			{name: 'Add to Cart'}
+		);
 		this.globalSearchBarButton = page
 			.locator('.commerce-topbar-button__icon')
 			.first();

@@ -53,6 +53,10 @@ public class SystemObjectEntry1toMObjectRelationshipElementsParserImpl
 
 	@Override
 	protected Map<String, Object> parseOne(Object object) {
+		if (object == null) {
+			return null;
+		}
+
 		validateOne(object);
 
 		Map<String, Object> nestedSystemObjectEntryProperties =

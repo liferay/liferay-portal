@@ -117,7 +117,7 @@ public class ExpandoDisplayContextTest {
 			new MockLiferayPortletRenderRequest();
 
 		mockLiferayPortletRenderRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, null);
+			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 

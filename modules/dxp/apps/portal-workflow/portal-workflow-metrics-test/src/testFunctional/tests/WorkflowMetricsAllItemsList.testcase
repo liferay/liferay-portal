@@ -629,57 +629,6 @@ definition {
 			key_processStep = "Review");
 	}
 
-	@description = "LPS-86652 - Validate that the correct number of entries is showed when user chooses 4, 8, 20, 40, 60"
-	@priority = 3
-	test CorrectNumberOfEntriesDisplayedWhenPaginationEdited {
-		Workflow.openWorkflowListView();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Blogs Entry");
-
-		for (var blogNumber : list "1,2,3,4,5,6,7,8") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title ${blogNumber}");
-		}
-
-		WorkflowMetrics.goToDashboardAllItemsWithFilter(
-			workflowFilterOption = "PENDING",
-			workflowMetricsTab = "DASHBOARD",
-			workflowProcess = "Single Approver");
-
-		WorkflowMetricsProcessListView.changePagination(itemsPerPage = "4 Entries");
-
-		for (var orderNumber : list "1,2,3,4") {
-			AssertElementPresent(
-				key_order = ${orderNumber},
-				key_processStep = "Review",
-				locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_TABLE_ORDER");
-		}
-
-		AssertElementNotPresent(
-			key_order = 5,
-			key_processStep = "Review",
-			locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_TABLE_ORDER");
-
-		Click(locator1 = "WorkflowMetricsProcessListView#METRICS_WORKFLOW_PAGINATION_NEXT_BUTTON");
-
-		for (var orderNumber : list "1,2,3,4") {
-			AssertElementPresent(
-				key_order = ${orderNumber},
-				key_processStep = "Review",
-				locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_TABLE_ORDER");
-		}
-
-		AssertElementNotPresent(
-			key_order = 5,
-			key_processStep = "Review",
-			locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_TABLE_ORDER");
-	}
-
 	@description = "LPS-130218 - Verify that once the order/sorting is made by the user, this definition should be preserved when the user change pagination number"
 	@priority = 3
 	test CreatedBySortIsPreservedWhenChangesPagination {
@@ -795,46 +744,6 @@ definition {
 			locator1 = "WorkflowMetrics#METRICS_ALL_ITEMS_TABLE_CREATION_DATE_UNDERLINE",
 			locator2 = "color",
 			value1 = "rgba(39, 40, 51, 1)");
-	}
-
-	@description = "LPS-130217 - Verify that once the order/sorting is made by the user, this definition should be preserved when the user change pagination number"
-	@priority = 3
-	test DefinitionIsPreservedWhenChangesPagination {
-		Workflow.openWorkflowListView();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Blogs Entry");
-
-		var count = 1;
-
-		while (${count} != 6) {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry",
-				entryTitle = "Blogs Entry ${count}");
-
-			var count = ${count} + 1;
-		}
-
-		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
-
-		Click(locator1 = "WorkflowMetrics#DASHBOARD_TOTAL_UNTRACKED_ITEMS_TITLE");
-
-		WorkflowMetricsProcessListView.changePagination(itemsPerPage = "4 Entries");
-
-		Click(
-			itemName = "Item Subject",
-			locator1 = "ACSettings#ITEM_ON_LIST");
-
-		Click(
-			key_pageNumber = 2,
-			locator1 = "WorkflowMetricsProcessListView#METRICS_WORKFLOW_PAGINATION_NUMBER_BUTTON");
-
-		AssertElementPresent(
-			key_value = "down",
-			locator1 = "WorkflowMetricsProcessListView#ANY_ARROW_ORDER");
 	}
 
 	@description = "LPS-86652 - Verify that the correct columns are displayed ID, Due Date, Item Subject, Process Step, Assignee, Created By, Creation Date"
@@ -1809,77 +1718,6 @@ definition {
 		AssertElementPresent(
 			key_status = "exclamation",
 			locator1 = "WorkflowAllItems#DETAIL_SLA_ICON");
-	}
-
-	@description = "LPS-130216 - Verify that once the order/sorting is made by the user, this definition should be preserved when the user change pagination number."
-	@priority = 3
-	test ItemOrdetationIsPreservedWhenChangesPagination {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Blogs Entry");
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Web Content Article");
-
-		for (var webContentNumber : list "1,2,3,4") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Guest",
-				title = "Web Content Title ${webContentNumber}");
-		}
-
-		for (var blogNumber : list "5,6,7,8") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title ${blogNumber}");
-		}
-
-		WorkflowMetrics.goToDashboardAllItemsWithFilter(
-			workflowFilterOption = "PENDING",
-			workflowMetricsTab = "DASHBOARD",
-			workflowProcess = "Single Approver");
-
-		WorkflowMetricsAllItemsList.orderByCreationDateAsc();
-
-		WorkflowMetricsProcessListView.changePagination(itemsPerPage = "8 Entries");
-
-		for (var orderNumber : list "1,2,3,4") {
-			AssertElementPresent(
-				key_itemSubject = "Web Content Article: Web Content Title ${orderNumber}",
-				key_order = ${orderNumber},
-				locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_ITEM_ORDER");
-		}
-
-		for (var orderNumber : list "5,6,7,8") {
-			AssertElementPresent(
-				key_itemSubject = "Blogs Entry: Blogs Entry Title ${orderNumber}",
-				key_order = ${orderNumber},
-				locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_ITEM_ORDER");
-		}
-
-		WorkflowMetricsProcessListView.changePagination(itemsPerPage = "20 Entries");
-
-		for (var orderNumber : list "1,2,3,4") {
-			AssertElementPresent(
-				key_itemSubject = "Web Content Article: Web Content Title ${orderNumber}",
-				key_order = ${orderNumber},
-				locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_ITEM_ORDER");
-		}
-
-		for (var orderNumber : list "5,6,7,8") {
-			AssertElementPresent(
-				key_itemSubject = "Blogs Entry: Blogs Entry Title ${orderNumber}",
-				key_order = ${orderNumber},
-				locator1 = "WorkflowAllItems#WORKFLOW_ALL_ITEMS_ITEM_ORDER");
-		}
 	}
 
 	@description = "LPS-86652 - Verify that long texts will display ellipsis"

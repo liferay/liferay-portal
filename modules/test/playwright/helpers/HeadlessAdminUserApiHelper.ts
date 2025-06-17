@@ -246,6 +246,12 @@ export class HeadlessAdminUserApiHelper {
 		);
 	}
 
+	async deletePostalAddress(postalAddressId: number) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/postal-addresses/${postalAddressId}`
+		);
+	}
+
 	async deleteRole(roleId: number) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/roles/${roleId}`

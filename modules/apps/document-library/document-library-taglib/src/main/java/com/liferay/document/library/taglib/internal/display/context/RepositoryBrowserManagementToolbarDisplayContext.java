@@ -40,7 +40,7 @@ public class RepositoryBrowserManagementToolbarDisplayContext
 	public RepositoryBrowserManagementToolbarDisplayContext(
 		Set<String> actions, long folderId,
 		ModelResourcePermission<Folder> folderModelResourcePermission,
-		HttpServletRequest httpServletRequest,
+		HttpServletRequest httpServletRequest, boolean includeExtension,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse, long repositoryId,
 		SearchContainer<Object> searchContainer, boolean viewableByGuest) {
@@ -52,6 +52,7 @@ public class RepositoryBrowserManagementToolbarDisplayContext
 		_actions = actions;
 		_folderId = folderId;
 		_folderModelResourcePermission = folderModelResourcePermission;
+		_includeExtension = includeExtension;
 		_repositoryId = repositoryId;
 		_viewableByGuest = viewableByGuest;
 
@@ -106,6 +107,8 @@ public class RepositoryBrowserManagementToolbarDisplayContext
 					ActionKeys.ADD_DOCUMENT),
 			dropdownItem -> {
 				dropdownItem.putData("action", "uploadFile");
+				dropdownItem.putData(
+					"includeExtension", String.valueOf(_includeExtension));
 				dropdownItem.setIcon("upload");
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "file-upload"));
@@ -173,6 +176,7 @@ public class RepositoryBrowserManagementToolbarDisplayContext
 	private final long _folderId;
 	private final ModelResourcePermission<Folder>
 		_folderModelResourcePermission;
+	private final boolean _includeExtension;
 	private final long _repositoryId;
 	private final ThemeDisplay _themeDisplay;
 	private final boolean _viewableByGuest;

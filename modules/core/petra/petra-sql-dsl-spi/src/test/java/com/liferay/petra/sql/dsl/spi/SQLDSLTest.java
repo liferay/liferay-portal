@@ -532,12 +532,12 @@ public class SQLDSLTest {
 					MainExampleTable.INSTANCE.mainExampleIdColumn,
 					ReferenceExampleTable.INSTANCE.referenceExampleIdColumn)));
 		Assert.assertEquals(
-			"CAST_FLOAT(MainExample.mainExampleId) / ?",
+			"CAST_DECIMAL(MainExample.mainExampleId) / ?",
 			String.valueOf(
 				DSLFunctionFactoryUtil.floatDivide(
 					MainExampleTable.INSTANCE.mainExampleIdColumn, 2L)));
 		Assert.assertEquals(
-			"CAST_FLOAT(MainExample.mainExampleId) / ReferenceExample." +
+			"CAST_DECIMAL(MainExample.mainExampleId) / ReferenceExample." +
 				"referenceExampleId",
 			String.valueOf(
 				DSLFunctionFactoryUtil.floatDivide(

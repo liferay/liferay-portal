@@ -27,7 +27,7 @@ type Report = {
 const thumbChartItems = [
 	{
 		selected: true,
-		svg: 'cerebro-thumb-line-chart',
+		svg: 'cerebro_thumb_line_chart',
 		text: Liferay.Language.get(
 			'not-possible-to-change-the-visualization-type'
 		),

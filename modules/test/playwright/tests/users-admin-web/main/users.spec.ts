@@ -246,3 +246,115 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Cannot create user with invalid screen name',
+	{tag: '@LPD-57460'},
+	async ({editUserPage, usersAndOrganizationsPage}) => {
+		const testScreenName = async (
+			screenName: string,
+			screenNameVariation: string
+		) => {
+			await editUserPage.screenNameInput.fill(screenName);
+			await editUserPage.saveButton.click();
+
+			if (screenNameVariation === 'empty') {
+				await expect(editUserPage.screenNameError).toHaveText(
+					'The Screen Name field is required.'
+				);
+			}
+			else if (screenNameVariation === 'valid') {
+				await expect(editUserPage.screenNameError).not.toBeVisible();
+			}
+			else {
+				await expect(editUserPage.screenNameError).toContainText(
+					'The screen name cannot be an email address or a reserved word'
+				);
+
+				await editUserPage.screenNameInput.fill('validScreenName');
+			}
+		};
+
+		await usersAndOrganizationsPage.goToUsers();
+
+		await usersAndOrganizationsPage.addUserButton.click();
+
+		await testScreenName('', 'empty');
+		await testScreenName('newuser`', 'invalid');
+		await testScreenName('newuser\\', 'invalid');
+		await testScreenName('newuser^', 'invalid');
+		await testScreenName('newuser(', 'invalid');
+		await testScreenName('newuser{', 'invalid');
+		await testScreenName('newuser)', 'invalid');
+		await testScreenName('newuser}', 'invalid');
+		await testScreenName('newuser[', 'invalid');
+		await testScreenName('newuser?', 'invalid');
+		await testScreenName('newuser]', 'invalid');
+		await testScreenName('newuser&', 'invalid');
+		await testScreenName('newuser:', 'invalid');
+		await testScreenName("newuser'", 'invalid');
+		await testScreenName('newuser–', 'invalid');
+		await testScreenName('newuser=', 'invalid');
+		await testScreenName('newuser>', 'invalid');
+		await testScreenName('newuser/', 'invalid');
+		await testScreenName('newuser;', 'invalid');
+		await testScreenName('newuser@', 'invalid');
+		await testScreenName('newuser%', 'invalid');
+		await testScreenName('newuser$', 'invalid');
+		await testScreenName('newuser#', 'invalid');
+		await testScreenName('newuser!', 'invalid');
+		await testScreenName('newuser-', 'valid');
+		await testScreenName('newuser.', 'valid');
+		await testScreenName('newuser_', 'valid');
+		await testScreenName('0123456789', 'valid');
+	}
+);
+
+test(
+	'Adding special characters to user name',
+	{tag: '@LPD-57460'},
+	async ({apiHelpers, editUserPage, page, usersAndOrganizationsPage}) => {
+		const name = '<username>';
+
+		const userAccount = await apiHelpers.headlessAdminUser.postUserAccount({
+			givenName: name,
+		});
+
+		userData[userAccount.alternateName] = {
+			name: userAccount.givenName,
+			password: 'test',
+			surname: userAccount.familyName,
+		};
+
+		const adminRole =
+			await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
+
+		await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+			adminRole.externalReferenceCode,
+			userAccount.id
+		);
+
+		await usersAndOrganizationsPage.goToUsers(false);
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(
+				name + ' ' + userAccount.familyName
+			)
+		).toBeVisible();
+
+		await usersAndOrganizationsPage.goToUser(
+			name + ' ' + userAccount.familyName
+		);
+
+		await expect(editUserPage.firstNameInput).toHaveValue(name);
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: userAccount.alternateName});
+
+		await page.goto(`/web/${userAccount.alternateName}`);
+
+		await expect(
+			page.getByText(name + ' ' + userAccount.familyName)
+		).toHaveCount(3);
+	}
+);

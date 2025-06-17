@@ -56,6 +56,8 @@ public interface ObjectEntryDisplayContext {
 	public Map<String, String> getRelationshipContextParams()
 		throws PortalException;
 
+	public Map<String, Object> getScheduleProperties() throws PortalException;
+
 	public default String getURLSeparator() {
 		return FriendlyURLResolverConstants.URL_SEPARATOR_OBJECT_ENTRY;
 	}

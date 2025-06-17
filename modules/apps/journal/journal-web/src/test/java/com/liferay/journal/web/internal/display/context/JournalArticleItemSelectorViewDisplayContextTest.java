@@ -171,7 +171,7 @@ public class JournalArticleItemSelectorViewDisplayContextTest {
 
 		Mockito.when(
 			_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST)
+				JavaConstants.JAKARTA_PORTLET_REQUEST)
 		).thenReturn(
 			renderRequest
 		);
@@ -180,7 +180,7 @@ public class JournalArticleItemSelectorViewDisplayContextTest {
 
 		Mockito.when(
 			_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE)
+				JavaConstants.JAKARTA_PORTLET_RESPONSE)
 		).thenReturn(
 			renderResponse
 		);

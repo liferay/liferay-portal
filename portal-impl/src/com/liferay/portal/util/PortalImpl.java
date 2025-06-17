@@ -3909,13 +3909,13 @@ public class PortalImpl implements Portal {
 		String portletDescription = LanguageUtil.get(
 			resourceBundle,
 			StringBundler.concat(
-				JavaConstants.JAVAX_PORTLET_DESCRIPTION, StringPool.PERIOD,
+				JavaConstants.JAKARTA_PORTLET_DESCRIPTION, StringPool.PERIOD,
 				portlet.getRootPortletId()),
 			null);
 
 		if (Validator.isNull(portletDescription)) {
 			portletDescription = LanguageUtil.get(
-				resourceBundle, JavaConstants.JAVAX_PORTLET_DESCRIPTION);
+				resourceBundle, JavaConstants.JAKARTA_PORTLET_DESCRIPTION);
 		}
 
 		return portletDescription;
@@ -3931,7 +3931,7 @@ public class PortalImpl implements Portal {
 		return LanguageUtil.get(
 			locale,
 			StringBundler.concat(
-				JavaConstants.JAVAX_PORTLET_DESCRIPTION, StringPool.PERIOD,
+				JavaConstants.JAKARTA_PORTLET_DESCRIPTION, StringPool.PERIOD,
 				portletId));
 	}
 
@@ -3947,7 +3947,7 @@ public class PortalImpl implements Portal {
 		return LanguageUtil.get(
 			user.getLocale(),
 			StringBundler.concat(
-				JavaConstants.JAVAX_PORTLET_DESCRIPTION, StringPool.PERIOD,
+				JavaConstants.JAKARTA_PORTLET_DESCRIPTION, StringPool.PERIOD,
 				portletId));
 	}
 
@@ -3997,7 +3997,7 @@ public class PortalImpl implements Portal {
 	public String getPortletId(HttpServletRequest httpServletRequest) {
 		LiferayPortletConfig liferayPortletConfig =
 			(LiferayPortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		if (liferayPortletConfig != null) {
 			return liferayPortletConfig.getPortletId();
@@ -4010,7 +4010,7 @@ public class PortalImpl implements Portal {
 	public String getPortletId(PortletRequest portletRequest) {
 		LiferayPortletConfig liferayPortletConfig =
 			(LiferayPortletConfig)portletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		if (liferayPortletConfig != null) {
 			return liferayPortletConfig.getPortletId();
@@ -4030,10 +4030,10 @@ public class PortalImpl implements Portal {
 
 		try {
 			String portletLongTitle = ResourceBundleUtil.getString(
-				resourceBundle, JavaConstants.JAVAX_PORTLET_LONG_TITLE);
+				resourceBundle, JavaConstants.JAKARTA_PORTLET_LONG_TITLE);
 
 			if (portletLongTitle.startsWith(
-					JavaConstants.JAVAX_PORTLET_LONG_TITLE)) {
+					JavaConstants.JAKARTA_PORTLET_LONG_TITLE)) {
 
 				portletLongTitle = getPortletTitle(
 					portlet, servletContext, locale);
@@ -4055,7 +4055,7 @@ public class PortalImpl implements Portal {
 		String portletLongTitle = LanguageUtil.get(
 			locale,
 			StringBundler.concat(
-				JavaConstants.JAVAX_PORTLET_LONG_TITLE, StringPool.PERIOD,
+				JavaConstants.JAKARTA_PORTLET_LONG_TITLE, StringPool.PERIOD,
 				portletId),
 			StringPool.BLANK);
 
@@ -4191,13 +4191,13 @@ public class PortalImpl implements Portal {
 		String portletTitle = LanguageUtil.get(
 			resourceBundle,
 			StringBundler.concat(
-				JavaConstants.JAVAX_PORTLET_TITLE, StringPool.PERIOD,
+				JavaConstants.JAKARTA_PORTLET_TITLE, StringPool.PERIOD,
 				portletId),
 			null);
 
 		if (Validator.isNull(portletTitle)) {
 			portletTitle = ResourceBundleUtil.getString(
-				resourceBundle, JavaConstants.JAVAX_PORTLET_TITLE);
+				resourceBundle, JavaConstants.JAKARTA_PORTLET_TITLE);
 		}
 
 		return portletTitle;
@@ -4215,7 +4215,7 @@ public class PortalImpl implements Portal {
 		return LanguageUtil.get(
 			user.getLocale(),
 			StringBundler.concat(
-				JavaConstants.JAVAX_PORTLET_TITLE, StringPool.PERIOD,
+				JavaConstants.JAKARTA_PORTLET_TITLE, StringPool.PERIOD,
 				portletId));
 	}
 
@@ -4225,7 +4225,7 @@ public class PortalImpl implements Portal {
 
 		RenderRequest renderRequest =
 			(RenderRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		PortletPreferences portletPreferences = null;
 
@@ -7858,13 +7858,13 @@ public class PortalImpl implements Portal {
 		String portletTitle = LanguageUtil.get(
 			resourceBundle,
 			StringBundler.concat(
-				JavaConstants.JAVAX_PORTLET_TITLE, StringPool.PERIOD,
+				JavaConstants.JAKARTA_PORTLET_TITLE, StringPool.PERIOD,
 				rootPortletId),
 			null);
 
 		if (Validator.isNull(portletTitle)) {
 			portletTitle = LanguageUtil.get(
-				resourceBundle, JavaConstants.JAVAX_PORTLET_TITLE);
+				resourceBundle, JavaConstants.JAKARTA_PORTLET_TITLE);
 		}
 
 		return portletTitle;

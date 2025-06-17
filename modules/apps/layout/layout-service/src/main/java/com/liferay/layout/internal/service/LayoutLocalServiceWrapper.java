@@ -1113,6 +1113,13 @@ public class LayoutLocalServiceWrapper
 				className -> serviceContext);
 		}
 
+		for (DeletedLayoutStructureItem deletedLayoutStructureItem :
+				layoutStructure.getDeletedLayoutStructureItems()) {
+
+			layoutStructure.deleteLayoutStructureItem(
+				deletedLayoutStructureItem.getItemId());
+		}
+
 		return layoutStructure.toJSONObject();
 	}
 

@@ -12,6 +12,7 @@ type Translations = Liferay.Language.LocalizedValue<string>;
 
 export function LocalizedInput({
 	className,
+	disabled,
 	formGroupClassName,
 	id,
 	label = '',
@@ -21,6 +22,7 @@ export function LocalizedInput({
 	...otherProps
 }: {
 	className?: string;
+	disabled?: boolean;
 	formGroupClassName?: string;
 	id?: string;
 	label?: string;
@@ -45,6 +47,7 @@ export function LocalizedInput({
 			<InputLocalized
 				{...otherProps}
 				className={className}
+				disabled={disabled}
 				error={
 					hasError
 						? Liferay.Language.get('this-field-is-required')

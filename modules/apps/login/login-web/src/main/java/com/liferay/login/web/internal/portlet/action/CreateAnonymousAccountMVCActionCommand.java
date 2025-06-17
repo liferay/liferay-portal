@@ -90,7 +90,7 @@ public class CreateAnonymousAccountMVCActionCommand
 		throws Exception {
 
 		PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG);
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		String portletName = portletConfig.getPortletName();
 

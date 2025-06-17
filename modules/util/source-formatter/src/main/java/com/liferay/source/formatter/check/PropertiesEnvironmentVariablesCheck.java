@@ -13,8 +13,8 @@ import com.liferay.portal.tools.ToolsUtil;
 
 import java.io.IOException;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * @author Peter Shin
@@ -147,9 +147,17 @@ public class PropertiesEnvironmentVariablesCheck extends BaseFileCheck {
 	}
 
 	private Set<String> _getEnvironmentVariables(String fileName, String s) {
-		Set<String> environmentVariables = new TreeSet<>();
+		Set<String> environmentVariables = new LinkedHashSet<>();
+
+		String previousLine = null;
 
 		for (String line : StringUtil.splitLines(s)) {
+			if ((previousLine != null) && previousLine.endsWith("\\")) {
+				previousLine = line;
+
+				continue;
+			}
+
 			String trimmedLine = StringUtil.trim(line);
 
 			if (trimmedLine.startsWith(StringPool.POUND)) {
@@ -161,6 +169,8 @@ public class PropertiesEnvironmentVariablesCheck extends BaseFileCheck {
 			int pos = trimmedLine.indexOf(StringPool.EQUAL);
 
 			if (pos == -1) {
+				previousLine = line;
+
 				continue;
 			}
 
@@ -171,6 +181,8 @@ public class PropertiesEnvironmentVariablesCheck extends BaseFileCheck {
 				environmentVariable = environmentVariable.replaceFirst(
 					"LIFERAY_", "SYSTEM_LIFERAY_");
 			}
+
+			previousLine = line;
 
 			environmentVariables.add(environmentVariable);
 		}

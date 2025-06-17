@@ -43,6 +43,7 @@ JSPGetStaticResourceURLCheck | [Bug Prevention](bug_prevention_checks.md#bug-pre
 [JSPIncludeCheck](check/jsp_include_check.md#jspincludecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Validates values of `include` in `.jsp` files. |
 JSPIndentationCheck | [Styling](styling_checks.md#styling-checks) | Finds incorrect indentation in `.jsp` files. |
 JSPInlineVariableCheck | [Styling](styling_checks.md#styling-checks) | Finds cases where variables can be inlined. |
+JSPJakartaTransformCheck | [JakartaTransform](jakarta_transform_checks.md#jakartatransform-checks) | Performs replacements for use of Jakarta. |
 JSPJavaParserCheck | [Styling](styling_checks.md#styling-checks) | Performs JavaParser on `.java` files. |
 JSPLanguageKeysCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds missing language keys in `Language.properties`. |
 JSPLanguageUtilCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds incorrect use of `LanguageUtil.get` in `.jsp` files. |

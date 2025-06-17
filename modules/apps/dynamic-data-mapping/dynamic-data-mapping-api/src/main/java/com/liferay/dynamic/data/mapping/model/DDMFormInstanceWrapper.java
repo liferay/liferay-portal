@@ -464,8 +464,7 @@ public class DDMFormInstanceWrapper
 
 	@Override
 	public com.liferay.dynamic.data.mapping.storage.DDMFormValues
-			getSettingsDDMFormValues()
-		throws com.liferay.portal.kernel.exception.PortalException {
+		getSettingsDDMFormValues() {
 
 		return model.getSettingsDDMFormValues();
 	}
@@ -829,6 +828,13 @@ public class DDMFormInstanceWrapper
 	@Override
 	public void setSettings(String settings) {
 		model.setSettings(settings);
+	}
+
+	@Override
+	public void setSettingsDDMFormValues(
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues) {
+
+		model.setSettingsDDMFormValues(ddmFormValues);
 	}
 
 	/**

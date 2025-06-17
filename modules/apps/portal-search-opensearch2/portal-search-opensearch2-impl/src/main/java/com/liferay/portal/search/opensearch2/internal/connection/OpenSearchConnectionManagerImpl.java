@@ -293,7 +293,7 @@ public class OpenSearchConnectionManagerImpl
 
 	private static final Snapshot<CrossClusterReplicationConfigurationHelper>
 		_crossClusterReplicationConfigurationHelperSnapshot = new Snapshot<>(
-			OpenSearchConnectionManager.class,
+			OpenSearchConnectionManagerImpl.class,
 			CrossClusterReplicationConfigurationHelper.class, null, true);
 
 	@Reference

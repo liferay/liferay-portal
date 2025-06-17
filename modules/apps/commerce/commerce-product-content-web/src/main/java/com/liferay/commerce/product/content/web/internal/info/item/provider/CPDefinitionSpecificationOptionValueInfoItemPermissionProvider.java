@@ -6,10 +6,10 @@
 package com.liferay.commerce.product.content.web.internal.info.item.provider;
 
 import com.liferay.commerce.context.CommerceContext;
-import com.liferay.commerce.context.CommerceContextThreadLocal;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
+import com.liferay.commerce.util.CommerceContextThreadLocal;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.info.exception.InfoItemPermissionException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;

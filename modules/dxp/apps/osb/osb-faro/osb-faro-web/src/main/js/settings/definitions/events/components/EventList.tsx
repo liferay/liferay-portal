@@ -226,7 +226,7 @@ const EventList: React.FC<IEventListProps> = ({
 				<RowActions
 					quickActions={[
 						{
-							iconSymbol: hidden ? 'view' : 'ac-hidden',
+							iconSymbol: hidden ? 'view' : 'ac_hidden',
 							label: hidden
 								? Liferay.Language.get('set-to-show')
 								: Liferay.Language.get('set-to-hide'),
@@ -265,7 +265,7 @@ const EventList: React.FC<IEventListProps> = ({
 					icon={{
 						border: false,
 						size: Sizes.XXXLarge,
-						symbol: 'ac-satellite'
+						symbol: 'ac_satellite'
 					}}
 				/>
 			}
@@ -298,7 +298,7 @@ const EventList: React.FC<IEventListProps> = ({
 											className='mr-2'
 											symbol={
 												hasUnhiddenEvent(selectedItems)
-													? 'ac-hidden'
+													? 'ac_hidden'
 													: 'view'
 											}
 										/>

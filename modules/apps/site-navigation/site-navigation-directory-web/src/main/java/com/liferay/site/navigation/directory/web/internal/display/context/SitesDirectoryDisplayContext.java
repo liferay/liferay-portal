@@ -43,7 +43,7 @@ public class SitesDirectoryDisplayContext {
 		_httpServletRequest = httpServletRequest;
 
 		_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		_sitesDirectoryPortletInstanceConfiguration =
 			ConfigurationProviderUtil.getPortletInstanceConfiguration(

@@ -223,7 +223,7 @@ public class ScreenNavigationTag extends IncludeTag {
 		if (Validator.isNotNull(id)) {
 			PortletResponse portletResponse =
 				(PortletResponse)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			String namespace = StringPool.BLANK;
 

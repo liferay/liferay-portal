@@ -77,13 +77,13 @@ public abstract class BaseSitesItemSelectorViewDisplayContext
 	@Override
 	public PortletRequest getPortletRequest() {
 		return (PortletRequest)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 	}
 
 	@Override
 	public PortletResponse getPortletResponse() {
 		return (PortletResponse)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 	}
 
 	@Override

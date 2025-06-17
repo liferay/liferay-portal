@@ -88,6 +88,7 @@ Checks are configured in the following files:
 - ### By Category:
    - [Bug Prevention](src/main/resources/documentation/bug_prevention_checks.md#bug-prevention-checks)
    - [Documentation](src/main/resources/documentation/documentation_checks.md#documentation-checks)
+   - [JakartaTransform](src/main/resources/documentation/jakarta_transform_checks.md#jakartatransform-checks)
    - [Javadoc](src/main/resources/documentation/javadoc_checks.md#javadoc-checks)
    - [Miscellaneous](src/main/resources/documentation/miscellaneous_checks.md#miscellaneous-checks)
    - [Naming Conventions](src/main/resources/documentation/naming_conventions_checks.md#naming-conventions-checks)

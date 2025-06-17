@@ -5,14 +5,12 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.Build;
-import com.liferay.jenkins.results.parser.BuildReportFactory;
-import com.liferay.jenkins.results.parser.CIJobSummaryReportUtil;
+import com.liferay.jenkins.results.parser.BuildReport;
 import com.liferay.jenkins.results.parser.Dom4JUtil;
+import com.liferay.jenkins.results.parser.JenkinsConsoleTextLoader;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
-import com.liferay.jenkins.results.parser.TopLevelBuild;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 
 import java.io.File;
@@ -39,14 +37,14 @@ import org.json.JSONObject;
 public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 
 	public TopLevelBuildTestrayCaseResult(
-		TestrayBuild testrayBuild, TopLevelBuild topLevelBuild) {
+		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport) {
 
-		super(testrayBuild, topLevelBuild);
+		super(testrayBuild, topLevelBuildReport);
 	}
 
 	@Override
-	public Build getBuild() {
-		return getTopLevelBuild();
+	public BuildReport getBuildReport() {
+		return getTopLevelBuildReport();
 	}
 
 	@Override
@@ -158,11 +156,11 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 
 		Map<String, String> propertiesMap = new HashMap<>();
 
-		TopLevelBuild testTopLevelBuild = getTopLevelBuild();
+		TopLevelBuildReport testTopLevelBuildReport = getTopLevelBuildReport();
 
 		propertiesMap.put(
 			"testray.build.date",
-			testTopLevelBuild.getTestrayBuildDateString());
+			testTopLevelBuildReport.getTestrayBuildDateString());
 
 		propertiesMap.put("testray.build.name", testrayBuild.getName());
 
@@ -184,7 +182,7 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 
 		propertiesMap.put("testray.run.id", testrayRun.getRunIDString());
 
-		_addPropertyElements(
+		addPropertyElements(
 			rootElement.addElement("properties"), propertiesMap);
 
 		List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
@@ -233,7 +231,7 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 				Element propertiesElement = testcaseElement.addElement(
 					"properties");
 
-				_addPropertyElements(propertiesElement, testcasePropertiesMap);
+				addPropertyElements(propertiesElement, testcasePropertiesMap);
 
 				String[] warnings = testrayCaseResult.getWarnings();
 
@@ -290,16 +288,16 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 
 		TestrayServer testrayServer = testrayBuild.getTestrayServer();
 
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
+		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
 
-		JenkinsMaster jenkinsMaster = topLevelBuild.getJenkinsMaster();
+		JenkinsMaster jenkinsMaster = topLevelBuildReport.getJenkinsMaster();
 
 		try {
 			testrayServer.writeCaseResult(
 				JenkinsResultsParserUtil.combine(
 					"TESTS-", jenkinsMaster.getName(), "_",
-					topLevelBuild.getJobName(), "_",
-					String.valueOf(topLevelBuild.getBuildNumber()),
+					topLevelBuildReport.getJobName(), "_",
+					String.valueOf(topLevelBuildReport.getBuildNumber()),
 					"_top-level-build.xml"),
 				Dom4JUtil.format(rootElement));
 		}
@@ -322,13 +320,14 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 		String name = getTopLevelBuildReportName();
 
 		TestrayAttachment testrayAttachment = getTestrayAttachment(
-			getTopLevelBuild(), name, key);
+			getTopLevelBuildReport(), name, key);
 
 		if (testrayAttachment != null) {
 			return testrayAttachment;
 		}
 
-		final TopLevelBuild topLevelBuild = getTopLevelBuild();
+		final TopLevelBuildReport topLevelBuildReport =
+			getTopLevelBuildReport();
 
 		return uploadTestrayAttachment(
 			name, key,
@@ -340,10 +339,6 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 						getTestrayUploadBaseDir(), "build-report.json");
 					File gzipFile = new File(
 						getTestrayUploadBaseDir(), "build-report.json.gz");
-
-					TopLevelBuildReport topLevelBuildReport =
-						BuildReportFactory.newTopLevelBuildReport(
-							topLevelBuild);
 
 					if (topLevelBuildReport == null) {
 						return null;
@@ -385,13 +380,14 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 		String name = getTopLevelJenkinsConsoleName();
 
 		TestrayAttachment testrayAttachment = getTestrayAttachment(
-			getTopLevelBuild(), name, key);
+			getTopLevelBuildReport(), name, key);
 
 		if (testrayAttachment != null) {
 			return testrayAttachment;
 		}
 
-		final TopLevelBuild topLevelBuild = getTopLevelBuild();
+		final TopLevelBuildReport topLevelBuildReport =
+			getTopLevelBuildReport();
 
 		return uploadTestrayAttachment(
 			name, key,
@@ -405,8 +401,15 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 						getTestrayUploadBaseDir(), "jenkins-console.txt.gz");
 
 					try {
+						String topLevelBuildURL = String.valueOf(
+							topLevelBuildReport.getBuildURL());
+
+						JenkinsConsoleTextLoader jenkinsConsoleTextLoader =
+							JenkinsConsoleTextLoader.getInstance(
+								topLevelBuildURL);
+
 						JenkinsResultsParserUtil.write(
-							file, topLevelBuild.getConsoleText());
+							file, jenkinsConsoleTextLoader.getConsoleText());
 
 						JenkinsResultsParserUtil.gzip(file, gzipFile);
 					}
@@ -432,54 +435,7 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 		String key = getTopLevelJenkinsReportKey();
 		String name = getTopLevelJenkinsReportName();
 
-		TestrayAttachment testrayAttachment = getTestrayAttachment(
-			getTopLevelBuild(), name, key);
-
-		if (testrayAttachment != null) {
-			return testrayAttachment;
-		}
-
-		final TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		return uploadTestrayAttachment(
-			name, key,
-			new Callable<File>() {
-
-				@Override
-				public File call() throws Exception {
-					File file = new File(
-						getTestrayUploadBaseDir(), "jenkins-report.html");
-					File gzipFile = new File(
-						getTestrayUploadBaseDir(), "jenkins-report.html.gz");
-
-					Element jenkinsReportElement =
-						topLevelBuild.getJenkinsReportElement();
-
-					if (jenkinsReportElement == null) {
-						return null;
-					}
-
-					try {
-						JenkinsResultsParserUtil.write(
-							file, Dom4JUtil.format(jenkinsReportElement));
-
-						JenkinsResultsParserUtil.gzip(file, gzipFile);
-					}
-					catch (IOException ioException) {
-						throw new RuntimeException(ioException);
-					}
-					finally {
-						JenkinsResultsParserUtil.delete(file);
-					}
-
-					if (gzipFile.exists()) {
-						return gzipFile;
-					}
-
-					return null;
-				}
-
-			});
+		return getTestrayAttachment(getTopLevelBuildReport(), name, key);
 	}
 
 	@Override
@@ -487,76 +443,7 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 		String key = getTopLevelJobSummaryKey();
 		String name = getTopLevelJobSummaryName();
 
-		TestrayAttachment testrayAttachment = getTestrayAttachment(
-			getTopLevelBuild(), name, key);
-
-		if (testrayAttachment != null) {
-			return testrayAttachment;
-		}
-
-		final TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		return uploadTestrayAttachment(
-			name, key,
-			new Callable<File>() {
-
-				@Override
-				public File call() throws Exception {
-					File summaryDir = new File(
-						getTestrayUploadBaseDir(), "job-summary");
-
-					File file = new File(summaryDir, "index.html");
-					File gzipFile = new File(summaryDir, "index.html.gz");
-
-					Job job = topLevelBuild.getJob();
-
-					if (job == null) {
-						return null;
-					}
-
-					try {
-						CIJobSummaryReportUtil.writeJobSummaryReport(
-							summaryDir, job);
-
-						JenkinsResultsParserUtil.gzip(file, gzipFile);
-					}
-					catch (IOException ioException) {
-						throw new RuntimeException(ioException);
-					}
-					finally {
-						JenkinsResultsParserUtil.delete(file);
-					}
-
-					if (gzipFile.exists()) {
-						return gzipFile;
-					}
-
-					return null;
-				}
-
-			});
-	}
-
-	private void _addPropertyElements(
-		Element propertiesElement, Map<String, String> propertiesMap) {
-
-		for (Map.Entry<String, String> propertyEntry :
-				propertiesMap.entrySet()) {
-
-			Element propertyElement = propertiesElement.addElement("property");
-
-			String propertyName = propertyEntry.getKey();
-			String propertyValue = propertyEntry.getValue();
-
-			if (JenkinsResultsParserUtil.isNullOrEmpty(propertyName) ||
-				JenkinsResultsParserUtil.isNullOrEmpty(propertyValue)) {
-
-				continue;
-			}
-
-			propertyElement.addAttribute("name", propertyName);
-			propertyElement.addAttribute("value", propertyValue);
-		}
+		return getTestrayAttachment(getTopLevelBuildReport(), name, key);
 	}
 
 }

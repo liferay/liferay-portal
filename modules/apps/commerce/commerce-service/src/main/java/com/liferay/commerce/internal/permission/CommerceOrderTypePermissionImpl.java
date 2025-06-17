@@ -5,10 +5,10 @@
 
 package com.liferay.commerce.internal.permission;
 
-import com.liferay.commerce.context.CommerceGroupThreadLocal;
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.permission.CommerceOrderTypePermission;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
+import com.liferay.commerce.util.CommerceGroupThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;

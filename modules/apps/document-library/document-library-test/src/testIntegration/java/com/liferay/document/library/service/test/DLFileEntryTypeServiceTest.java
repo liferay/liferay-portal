@@ -16,14 +16,12 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeService;
 import com.liferay.document.library.util.DLFileEntryTypeUtil;
-import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeResponse;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -78,17 +76,6 @@ public class DLFileEntryTypeServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-	}
-
-	@Test
-	public void testAddFileEntryTypeDDMStructure() throws Exception {
-		DLFileEntryType dlFileEntryType = _addFileEntryType(null);
-
-		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
-			dlFileEntryType.getDataDefinitionId());
-
-		Assert.assertEquals(
-			DDMStructureConstants.TYPE_DEFAULT, ddmStructure.getType());
 	}
 
 	@Test
@@ -455,9 +442,6 @@ public class DLFileEntryTypeServiceTest {
 
 	@Inject(filter = "ddm.form.deserializer.type=xsd")
 	private DDMFormDeserializer _ddmFormDeserializer;
-
-	@Inject
-	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;

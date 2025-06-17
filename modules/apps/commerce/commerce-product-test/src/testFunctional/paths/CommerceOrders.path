@@ -355,7 +355,7 @@
 </tr>
 <tr>
 	<td>ORDER_EDIT_SUMMARY_BUTTON</td>
-	<td>//a[contains(.,'Edit')]</td>
+	<td>//div[contains(@class, 'card-header') and contains(.,'Edit')]/a</td>
 	<td></td>
 </tr>
 <tr>

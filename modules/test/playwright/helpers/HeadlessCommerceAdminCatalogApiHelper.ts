@@ -353,10 +353,14 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 	}
 
 	async getProducts(searchParams = new URLSearchParams()) {
+		if (!searchParams.has('nestedFields')) {
+			searchParams.append('nestedFields', 'skus');
+		}
+
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${
 				this.basePath
-			}/products?nestedFields=skus&${searchParams.toString()}`
+			}/products?${searchParams.toString()}`
 		);
 	}
 

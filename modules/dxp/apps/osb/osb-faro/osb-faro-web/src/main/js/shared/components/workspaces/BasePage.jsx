@@ -104,7 +104,7 @@ export class WorkspacesBasePage extends React.Component {
 						<ClayLink href='https://liferay.com' target='_blank'>
 							<ClayIcon
 								className='icon-root liferay-logo'
-								symbol='liferay-logo'
+								symbol='liferay_logo'
 							/>
 						</ClayLink>
 
@@ -140,7 +140,7 @@ export class WorkspacesBasePage extends React.Component {
 								<div className='logo-container'>
 									<ClayIcon
 										className='icon-root logo-icon'
-										symbol='ac-logo'
+										symbol='ac_logo'
 									/>
 
 									<span className='logo-text'>

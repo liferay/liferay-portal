@@ -169,9 +169,9 @@ public class PortletRequestDispatcherImpl
 			PortalUtil.getHttpServletRequest(portletRequest);
 
 		httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, portletRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, portletRequest);
 		httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE, portletResponse);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE, portletResponse);
 
 		String pathInfo = null;
 		String queryString = null;

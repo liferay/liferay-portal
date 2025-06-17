@@ -138,7 +138,7 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = ({
 				NAME,
 				OrderByDirections.Ascending
 			),
-			noResultsIcon: 'ac-segment',
+			noResultsIcon: 'ac_segment',
 			noResultsName: Liferay.Language.get('static-segments'),
 			onClose: close,
 			onSubmit: (selectedSegmentsList: List<Segment>) =>
@@ -252,7 +252,7 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = ({
 					icon={{
 						border: false,
 						size: Sizes.XXXLarge,
-						symbol: 'ac-satellite'
+						symbol: 'ac_satellite'
 					}}
 					primary
 					title={Liferay.Language.get(

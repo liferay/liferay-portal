@@ -52,7 +52,7 @@ public class CompleteTaskMVCActionCommandTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE, new MockPortletResponse());
+			JavaConstants.JAKARTA_PORTLET_RESPONSE, new MockPortletResponse());
 
 		Portal portal = Mockito.mock(Portal.class);
 
@@ -73,7 +73,7 @@ public class CompleteTaskMVCActionCommandTest {
 		Assert.assertNotNull(httpServletRequest);
 		Assert.assertNotNull(
 			httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE));
+				JavaConstants.JAKARTA_PORTLET_RESPONSE));
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class CompleteTaskMVCActionCommandTest {
 		Assert.assertNotNull(httpServletRequest);
 		Assert.assertNotNull(
 			httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE));
+				JavaConstants.JAKARTA_PORTLET_RESPONSE));
 	}
 
 	private CompleteTaskMVCActionCommand _completeTaskMVCActionCommand;

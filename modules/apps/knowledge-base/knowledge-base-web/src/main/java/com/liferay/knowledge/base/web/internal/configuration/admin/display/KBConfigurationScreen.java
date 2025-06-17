@@ -67,7 +67,7 @@ public class KBConfigurationScreen implements ConfigurationScreen {
 					httpServletRequest, _kbServiceConfigurationProvider,
 					_portal.getLiferayPortletResponse(
 						(PortletResponse)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE))));
+							JavaConstants.JAKARTA_PORTLET_RESPONSE))));
 
 			RequestDispatcher requestDispatcher =
 				_servletContext.getRequestDispatcher(

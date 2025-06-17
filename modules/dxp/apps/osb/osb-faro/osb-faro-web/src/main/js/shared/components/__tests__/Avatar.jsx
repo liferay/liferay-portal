@@ -75,7 +75,7 @@ describe('Avatar', () => {
 	it('should render an icon if a segment is passed', () => {
 		const {container} = render(<Avatar entity={mockSegment()} />);
 		expect(
-			container.querySelector('.lexicon-icon-faro-contacts-segments')
+			container.querySelector('.lexicon-icon-faro_contacts_segments')
 		).toBeTruthy();
 	});
 });

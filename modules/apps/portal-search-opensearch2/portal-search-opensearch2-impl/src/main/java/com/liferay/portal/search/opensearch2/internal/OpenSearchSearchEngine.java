@@ -50,6 +50,7 @@ import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.opensearch2.internal.configuration.OpenSearchConfigurationObserver;
 import com.liferay.portal.search.opensearch2.internal.configuration.OpenSearchConfigurationWrapper;
 import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
+import com.liferay.portal.search.opensearch2.internal.index.CompanyIndexHelper;
 import com.liferay.portal.search.opensearch2.internal.index.IndexFactory;
 
 import jakarta.json.JsonObject;
@@ -76,6 +77,7 @@ import org.opensearch.client.opensearch.ingest.PutPipelineRequest;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -320,6 +322,9 @@ public class OpenSearchSearchEngine
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
+		_indexFactory = new IndexFactory(
+			_companyIndexHelper, _companyLocalService,
+			_openSearchConfigurationWrapper, _openSearchConnectionManager);
 		_checkNodeVersions();
 
 		_openSearchConfigurationWrapper.register(this);
@@ -341,6 +346,11 @@ public class OpenSearchSearchEngine
 
 			initialize(CompanyConstants.SYSTEM);
 		}
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_indexFactory.close();
 	}
 
 	private void _checkNodeVersions() {
@@ -625,9 +635,11 @@ public class OpenSearchSearchEngine
 			null, true);
 
 	@Reference
-	private CompanyLocalService _companyLocalService;
+	private CompanyIndexHelper _companyIndexHelper;
 
 	@Reference
+	private CompanyLocalService _companyLocalService;
+
 	private IndexFactory _indexFactory;
 
 	@Reference

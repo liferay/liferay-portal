@@ -34,7 +34,7 @@ public class DSLFunctionType {
 	public static final DSLFunctionType DIVISION = new DSLFunctionType(" / ");
 
 	public static final DSLFunctionType FLOAT_DIVISION = new DSLFunctionType(
-		"CAST_FLOAT(", ") / ", StringPool.BLANK);
+		"CAST_DECIMAL(", ") / ", StringPool.BLANK);
 
 	public static final DSLFunctionType LOWER = new DSLFunctionType(
 		"LOWER(", ")");

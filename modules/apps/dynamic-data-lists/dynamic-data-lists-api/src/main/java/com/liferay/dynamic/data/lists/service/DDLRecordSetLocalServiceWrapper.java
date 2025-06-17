@@ -634,8 +634,7 @@ public class DDLRecordSetLocalServiceWrapper
 	 */
 	@Override
 	public com.liferay.dynamic.data.mapping.storage.DDMFormValues
-			getRecordSetSettingsDDMFormValues(DDLRecordSet recordSet)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		getRecordSetSettingsDDMFormValues(DDLRecordSet recordSet) {
 
 		return _ddlRecordSetLocalService.getRecordSetSettingsDDMFormValues(
 			recordSet);

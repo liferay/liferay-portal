@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -66,89 +65,65 @@ public class SegmentsExperienceManagerTest {
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			_segmentsExperienceManager.getSegmentsExperienceId(
-				_getMockHttpServletRequest()));
+				_getMockHttpServletRequest(false)));
 	}
 
 	@Test
 	public void testGetSegmentsExperienceIdWithSegmentsExperienceId1()
 		throws PortalException {
 
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(true);
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				_mockPermissionChecker(true));
+		SegmentsExperience segmentsExperience1 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
 
-			MockHttpServletRequest mockHttpServletRequest =
-				_getMockHttpServletRequest();
+		mockHttpServletRequest.setAttribute(
+			SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
+			new long[] {segmentsExperience1.getSegmentsExperienceId()});
 
-			SegmentsExperience segmentsExperience1 =
-				SegmentsTestUtil.addSegmentsExperience(
-					_group.getGroupId(), _layout.getPlid());
+		SegmentsExperience segmentsExperience2 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
 
-			mockHttpServletRequest.setAttribute(
-				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
-				new long[] {segmentsExperience1.getSegmentsExperienceId()});
+		mockHttpServletRequest.setParameter(
+			"segmentsExperienceId",
+			String.valueOf(segmentsExperience2.getSegmentsExperienceId()));
 
-			SegmentsExperience segmentsExperience2 =
-				SegmentsTestUtil.addSegmentsExperience(
-					_group.getGroupId(), _layout.getPlid());
-
-			mockHttpServletRequest.setParameter(
-				"segmentsExperienceId",
-				String.valueOf(segmentsExperience2.getSegmentsExperienceId()));
-
-			Assert.assertEquals(
-				segmentsExperience2.getSegmentsExperienceId(),
-				_segmentsExperienceManager.getSegmentsExperienceId(
-					mockHttpServletRequest));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-		}
+		Assert.assertEquals(
+			segmentsExperience2.getSegmentsExperienceId(),
+			_segmentsExperienceManager.getSegmentsExperienceId(
+				mockHttpServletRequest));
 	}
 
 	@Test
 	public void testGetSegmentsExperienceIdWithSegmentsExperienceId2()
 		throws PortalException {
 
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(false);
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				_mockPermissionChecker(false));
+		SegmentsExperience segmentsExperience1 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
 
-			MockHttpServletRequest mockHttpServletRequest =
-				_getMockHttpServletRequest();
+		mockHttpServletRequest.setAttribute(
+			SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
+			new long[] {segmentsExperience1.getSegmentsExperienceId()});
 
-			SegmentsExperience segmentsExperience1 =
-				SegmentsTestUtil.addSegmentsExperience(
-					_group.getGroupId(), _layout.getPlid());
+		SegmentsExperience segmentsExperience2 =
+			SegmentsTestUtil.addSegmentsExperience(
+				_group.getGroupId(), _layout.getPlid());
 
-			mockHttpServletRequest.setAttribute(
-				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
-				new long[] {segmentsExperience1.getSegmentsExperienceId()});
+		mockHttpServletRequest.setParameter(
+			"segmentsExperienceId",
+			String.valueOf(segmentsExperience2.getSegmentsExperienceId()));
 
-			SegmentsExperience segmentsExperience2 =
-				SegmentsTestUtil.addSegmentsExperience(
-					_group.getGroupId(), _layout.getPlid());
-
-			mockHttpServletRequest.setParameter(
-				"segmentsExperienceId",
-				String.valueOf(segmentsExperience2.getSegmentsExperienceId()));
-
-			Assert.assertEquals(
-				segmentsExperience1.getSegmentsExperienceId(),
-				_segmentsExperienceManager.getSegmentsExperienceId(
-					mockHttpServletRequest));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-		}
+		Assert.assertEquals(
+			segmentsExperience1.getSegmentsExperienceId(),
+			_segmentsExperienceManager.getSegmentsExperienceId(
+				mockHttpServletRequest));
 	}
 
 	@Test
@@ -156,7 +131,7 @@ public class SegmentsExperienceManagerTest {
 		throws PortalException {
 
 		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest();
+			_getMockHttpServletRequest(false);
 
 		SegmentsExperience segmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
@@ -172,13 +147,17 @@ public class SegmentsExperienceManagerTest {
 				mockHttpServletRequest));
 	}
 
-	private MockHttpServletRequest _getMockHttpServletRequest() {
+	private MockHttpServletRequest _getMockHttpServletRequest(
+		boolean groupAdmin) {
+
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setLayout(_layout);
+		themeDisplay.setPermissionChecker(
+			_getMockPermissionChecker(groupAdmin));
 		themeDisplay.setPlid(_layout.getPlid());
 
 		mockHttpServletRequest.setAttribute(
@@ -187,7 +166,7 @@ public class SegmentsExperienceManagerTest {
 		return mockHttpServletRequest;
 	}
 
-	private PermissionChecker _mockPermissionChecker(boolean groupAdmin) {
+	private PermissionChecker _getMockPermissionChecker(boolean groupAdmin) {
 		return new SimplePermissionChecker() {
 
 			@Override

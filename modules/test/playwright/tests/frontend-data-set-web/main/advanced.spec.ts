@@ -19,6 +19,7 @@ const test = mergeTests(
 	apiHelpersTest,
 	fdsSamplePageTest,
 	featureFlagsTest({
+		'LPD-41774': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
@@ -592,7 +593,7 @@ test('Check behavior of item actions', async ({fdsSamplePage, page}) => {
 
 		await expect(
 			page.locator(`#${dropdownId}`).getByRole('menuitem')
-		).toHaveCount(13);
+		).toHaveCount(14);
 
 		await page.keyboard.press('Escape');
 	});
@@ -1319,15 +1320,15 @@ test(
 			await firstRowItemActionButton.hover();
 
 			await expect(
+				fdsSamplePage.table.bodyRows.first().getByLabel('View Details')
+			).toBeVisible();
+
+			await expect(
 				fdsSamplePage.table.bodyRows.first().getByLabel('Sample View')
 			).toBeVisible();
 
 			await expect(
 				fdsSamplePage.table.bodyRows.first().getByLabel('Sample Edit')
-			).toBeVisible();
-
-			await expect(
-				fdsSamplePage.table.bodyRows.first().getByLabel('Sample Delete')
 			).toBeVisible();
 
 			await expect(
@@ -1347,6 +1348,74 @@ test(
 		});
 	}
 );
+
+test('InfoPanel behavior', async ({fdsSamplePage, page}) => {
+	const firstItemCheckbox = fdsSamplePage.table.container
+		.locator('tbody .cell-select-item')
+		.first()
+		.getByRole('checkbox');
+
+	const secondItemCheckbox = fdsSamplePage.table.container
+		.locator('tbody .cell-select-item')
+		.nth(1)
+		.getByRole('checkbox');
+
+	await test.step('Can open Info Panel when no item is selected', async () => {
+		expect(fdsSamplePage.toggleInfoPanelButton).toBeVisible();
+
+		await fdsSamplePage.toggleInfoPanelButton.click();
+
+		expect(fdsSamplePage.infoPanel).toBeInViewport();
+
+		expect(
+			page.getByText('Content from propsTransformer: No items selected')
+		).toBeVisible();
+
+		await fdsSamplePage.toggleInfoPanelButton.click();
+
+		expect(fdsSamplePage.infoPanel).not.toBeInViewport();
+	});
+
+	await test.step('Can open Info Panel when there is one item selected', async () => {
+		await firstItemCheckbox.check();
+
+		expect(fdsSamplePage.toggleInfoPanelButton).toBeVisible();
+
+		await fdsSamplePage.toggleInfoPanelButton.click();
+
+		expect(fdsSamplePage.infoPanel).toBeInViewport();
+
+		expect(
+			fdsSamplePage.infoPanel.getByText(
+				'This is a description for sample 1.'
+			)
+		).toBeVisible();
+
+		await fdsSamplePage.toggleInfoPanelButton.click();
+
+		expect(fdsSamplePage.infoPanel).not.toBeInViewport();
+	});
+
+	await test.step('Can open Info Panel when there are more than one items selected', async () => {
+		await firstItemCheckbox.check();
+
+		await secondItemCheckbox.check();
+
+		await fdsSamplePage.toggleInfoPanelButton.click();
+
+		expect(fdsSamplePage.infoPanel).toBeInViewport();
+
+		expect(
+			fdsSamplePage.infoPanel.getByText(
+				'Content from propsTransformer. Items selected: 2'
+			)
+		).toBeVisible();
+
+		await fdsSamplePage.toggleInfoPanelButton.click();
+
+		expect(fdsSamplePage.infoPanel).not.toBeInViewport();
+	});
+});
 
 const accountSettingsTest = mergeTests(test, accountSettingsPagesTest);
 

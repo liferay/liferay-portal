@@ -6,6 +6,9 @@
 package com.liferay.object.web.internal.object.entries.frontend.data.set.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.frontend.data.set.provider.FDSActionProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -19,6 +22,9 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -27,11 +33,14 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -117,6 +126,70 @@ public class RelatedModelFDSActionProviderTest {
 					objectDefinition.getClassName(),
 					objectEntry.getObjectEntryId(), objectEntry.getTitleValue(),
 					false)));
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(objectEntry.getObjectEntryId());
+
+		mockHttpServletRequest.setParameter(
+			"template", AssetRenderer.TEMPLATE_ABSTRACT);
+
+		_assertDropdownItems(
+			new String[0],
+			_fdsActionProvider.getDropdownItems(
+				TestPropsValues.getGroupId(), mockHttpServletRequest,
+				new RelatedModel(
+					objectDefinition.getClassName(),
+					objectEntry.getObjectEntryId(), objectEntry.getTitleValue(),
+					false)));
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			objectDefinition.getClassName(), objectEntry.getObjectEntryId());
+
+		String portletId = PortletKeys.MY_WORKFLOW_TASK;
+		String redirect = RandomTestUtil.randomString();
+		String workflowTaskId = StringUtil.randomId();
+
+		mockHttpServletRequest.setParameter("portletId", portletId);
+		mockHttpServletRequest.setParameter("redirect", redirect);
+		mockHttpServletRequest.setParameter(
+			"template", AssetRenderer.TEMPLATE_FULL_CONTENT);
+		mockHttpServletRequest.setParameter("workflowTaskId", workflowTaskId);
+
+		List<DropdownItem> fdsActionProviderDropdownItems =
+			_fdsActionProvider.getDropdownItems(
+				TestPropsValues.getGroupId(), mockHttpServletRequest,
+				new RelatedModel(
+					objectDefinition.getClassName(),
+					objectEntry.getObjectEntryId(), objectEntry.getTitleValue(),
+					false));
+
+		DropdownItem dropdownItem = fdsActionProviderDropdownItems.get(0);
+
+		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+			RequestBackedPortletURLFactoryUtil.create(mockHttpServletRequest);
+
+		Assert.assertEquals(
+			PortletURLBuilder.create(
+				requestBackedPortletURLFactory.createRenderURL(portletId)
+			).setMVCPath(
+				"/view_content.jsp"
+			).setRedirect(
+				redirect
+			).setParameter(
+				"assetEntryClassPK", objectEntry.getObjectEntryId()
+			).setParameter(
+				"assetEntryId", assetEntry.getEntryId()
+			).setParameter(
+				"externalReferenceCode", objectEntry.getExternalReferenceCode()
+			).setParameter(
+				"languageId",
+				LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault())
+			).setParameter(
+				"type", objectDefinition.getClassName()
+			).setParameter(
+				"workflowTaskId", workflowTaskId
+			).buildString(),
+			dropdownItem.get("href"));
 	}
 
 	private void _assertDropdownItems(
@@ -169,6 +242,9 @@ public class RelatedModelFDSActionProviderTest {
 
 		return mockHttpServletRequest;
 	}
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

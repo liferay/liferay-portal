@@ -633,11 +633,7 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 
 		methodName = getMethodName(parentDetailAST);
 
-		if (methodName.matches("(?i)_?set" + variableName)) {
-			return true;
-		}
-
-		return false;
+		return methodName.matches("(?i)_?set" + variableName);
 	}
 
 	private static final String _MSG_ADD_TO_STRING = "to.string.add";

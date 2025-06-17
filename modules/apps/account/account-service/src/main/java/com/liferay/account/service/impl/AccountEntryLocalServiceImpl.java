@@ -483,6 +483,7 @@ public class AccountEntryLocalServiceImpl
 		return accountEntryImpl;
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public AccountEntry getOrAddIncompleteAccountEntry(
 			String externalReferenceCode, long companyId, long userId,

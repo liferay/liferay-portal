@@ -7,10 +7,12 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -38,7 +40,6 @@ import com.liferay.portal.kernel.model.ResourcePermissionConstants;
 import com.liferay.portal.kernel.model.ResourcePermissionTable;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -54,6 +55,7 @@ import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.service.persistence.ResourceActionPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
+import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.portal.kernel.spring.aop.Property;
 import com.liferay.portal.kernel.spring.aop.Retry;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -81,6 +83,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Provides the local service for accessing, adding, checking, deleting,
@@ -790,44 +793,6 @@ public class ResourcePermissionLocalServiceImpl
 		}
 
 		return availableActionIds;
-	}
-
-	@Override
-	public Map<String, List<ResourcePermission>>
-		getIndividualPortletResourcePermissions(long companyId) {
-
-		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
-			ResourcePermissionTable.INSTANCE
-		).from(
-			ResourcePermissionTable.INSTANCE
-		).where(
-			ResourcePermissionTable.INSTANCE.companyId.eq(
-				companyId
-			).and(
-				ResourcePermissionTable.INSTANCE.name.eq(
-					ResourcePermissionTable.INSTANCE.primKey)
-			).and(
-				ResourcePermissionTable.INSTANCE.scope.eq(
-					ResourceConstants.SCOPE_INDIVIDUAL)
-			)
-		);
-
-		Map<String, List<ResourcePermission>> resourcePermissionsMap =
-			new HashMap<>();
-
-		for (ResourcePermission resourcePermission :
-				resourcePermissionPersistence.
-					<List<ResourcePermission>>dslQuery(dslQuery)) {
-
-			List<ResourcePermission> resourcePermissions =
-				resourcePermissionsMap.computeIfAbsent(
-					resourcePermission.getName(), key -> new ArrayList<>());
-
-			resourcePermissions.add(
-				(ResourcePermission)resourcePermission.clone());
-		}
-
-		return resourcePermissionsMap;
 	}
 
 	/**
@@ -1717,15 +1682,6 @@ public class ResourcePermissionLocalServiceImpl
 		}
 	}
 
-	public interface IndividualPortletResourcePermissionProvider {
-
-		public List<ResourcePermission> getResourcePermissions(
-			long companyId, String name);
-
-		public void removeResourcePermissions(long companyId, String name);
-
-	}
-
 	protected void addGroupPermissions(
 			long groupId, Resource resource, String[] actionIds)
 		throws PortalException {
@@ -2118,6 +2074,86 @@ public class ResourcePermissionLocalServiceImpl
 		}
 	}
 
+	private Map<String, List<ResourcePermission>>
+		_getIndividualPortletResourcePermissions(long companyId) {
+
+		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
+			ResourcePermissionTable.INSTANCE
+		).from(
+			ResourcePermissionTable.INSTANCE
+		).where(
+			ResourcePermissionTable.INSTANCE.companyId.eq(
+				companyId
+			).and(
+				ResourcePermissionTable.INSTANCE.name.eq(
+					ResourcePermissionTable.INSTANCE.primKey)
+			).and(
+				ResourcePermissionTable.INSTANCE.scope.eq(
+					ResourceConstants.SCOPE_INDIVIDUAL)
+			)
+		);
+
+		Map<String, List<ResourcePermission>> resourcePermissionsMap =
+			new HashMap<>();
+
+		for (ResourcePermission resourcePermission :
+				resourcePermissionPersistence.
+					<List<ResourcePermission>>dslQuery(dslQuery)) {
+
+			List<ResourcePermission> resourcePermissions =
+				resourcePermissionsMap.computeIfAbsent(
+					resourcePermission.getName(), key -> new ArrayList<>());
+
+			resourcePermissions.add(
+				(ResourcePermission)resourcePermission.clone());
+		}
+
+		return resourcePermissionsMap;
+	}
+
+	private List<ResourcePermission> _getResourcePermissions(
+		long companyId, String name) {
+
+		if (InitialRequestSyncUtil.isSynced() ||
+			StartupHelperUtil.isUpgrading()) {
+
+			return resourcePermissionPersistence.findByC_N_S_P(
+				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, name);
+		}
+
+		DCLSingleton<Map<String, List<ResourcePermission>>>
+			resourcePermissionsDCLSingleton = _resourcePermissionMaps.get(
+				companyId);
+
+		if (resourcePermissionsDCLSingleton == null) {
+			resourcePermissionsDCLSingleton = new DCLSingleton<>();
+
+			DCLSingleton<Map<String, List<ResourcePermission>>>
+				previousResourcePermissionsDCLSingleton =
+					_resourcePermissionMaps.putIfAbsent(
+						companyId, resourcePermissionsDCLSingleton);
+
+			if (previousResourcePermissionsDCLSingleton != null) {
+				resourcePermissionsDCLSingleton =
+					previousResourcePermissionsDCLSingleton;
+			}
+		}
+
+		Map<String, List<ResourcePermission>> resourcePermissionsMap =
+			resourcePermissionsDCLSingleton.getSingleton(
+				() -> _getIndividualPortletResourcePermissions(companyId));
+
+		List<ResourcePermission> resourcePermissions =
+			resourcePermissionsMap.get(name);
+
+		if (resourcePermissions == null) {
+			resourcePermissions = resourcePermissionPersistence.findByC_N_S_P(
+				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, name);
+		}
+
+		return resourcePermissions;
+	}
+
 	private Map<Long, ResourcePermission> _getResourcePermissionsMap(
 		List<ResourcePermission> resourcePermissions) {
 
@@ -2137,25 +2173,9 @@ public class ResourcePermissionLocalServiceImpl
 			List<String> ownerActionIds, List<String> groupActionIds)
 		throws PortalException {
 
-		IndividualPortletResourcePermissionProvider
-			individualPortletResourcePermissionProvider =
-				_individualPortletResourcePermissionProviderSnapshot.get();
-
-		List<ResourcePermission> resourcePermissions = null;
-
-		if (individualPortletResourcePermissionProvider != null) {
-			resourcePermissions =
-				individualPortletResourcePermissionProvider.
-					getResourcePermissions(companyId, name);
-		}
-
-		if (resourcePermissions == null) {
-			resourcePermissions = resourcePermissionPersistence.findByC_N_S_P(
-				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, name);
-		}
-
 		Map<Long, ResourcePermission> resourcePermissionsMap =
-			_getResourcePermissionsMap(resourcePermissions);
+			_getResourcePermissionsMap(
+				_getResourcePermissions(companyId, name));
 
 		boolean flushResourcePermissionEnabled =
 			PermissionThreadLocal.isFlushResourcePermissionEnabled(name, name);
@@ -2207,10 +2227,7 @@ public class ResourcePermissionLocalServiceImpl
 				PermissionCacheUtil.clearResourcePermissionCache(
 					ResourceConstants.SCOPE_INDIVIDUAL, name, name);
 
-				if (individualPortletResourcePermissionProvider != null) {
-					individualPortletResourcePermissionProvider.
-						removeResourcePermissions(companyId, name);
-				}
+				_removeResourcePermissions(companyId, name);
 
 				IndexWriterHelperUtil.updatePermissionFields(name, name);
 			}
@@ -2303,6 +2320,25 @@ public class ResourcePermissionLocalServiceImpl
 				_finderPathWithoutPaginationFindByC_N_S_P,
 				new Object[] {companyId, name, scope, primKey},
 				resourcePermissions);
+		}
+	}
+
+	private void _removeResourcePermissions(long companyId, String name) {
+		if (!InitialRequestSyncUtil.isSynced() &&
+			!StartupHelperUtil.isUpgrading()) {
+
+			DCLSingleton<Map<String, List<ResourcePermission>>>
+				resourcePermissionsDCLSingleton = _resourcePermissionMaps.get(
+					companyId);
+
+			if (resourcePermissionsDCLSingleton != null) {
+				Map<String, List<ResourcePermission>> resourcePermissions =
+					resourcePermissionsDCLSingleton.getSingleton(() -> null);
+
+				if (resourcePermissions != null) {
+					resourcePermissions.remove(name);
+				}
+			}
 		}
 	}
 
@@ -2419,11 +2455,6 @@ public class ResourcePermissionLocalServiceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		ResourcePermissionLocalServiceImpl.class);
 
-	private static final Snapshot<IndividualPortletResourcePermissionProvider>
-		_individualPortletResourcePermissionProviderSnapshot = new Snapshot<>(
-			ResourcePermissionLocalServiceImpl.class,
-			IndividualPortletResourcePermissionProvider.class);
-
 	private FinderPath _finderPathWithoutPaginationFindByC_N_S_P;
 
 	@BeanReference(type = ResourceActionLocalService.class)
@@ -2431,6 +2462,9 @@ public class ResourcePermissionLocalServiceImpl
 
 	@BeanReference(type = ResourceActionPersistence.class)
 	private ResourceActionPersistence _resourceActionPersistence;
+
+	private final Map<Long, DCLSingleton<Map<String, List<ResourcePermission>>>>
+		_resourcePermissionMaps = new ConcurrentHashMap<>();
 
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;

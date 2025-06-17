@@ -73,11 +73,11 @@ exports[`RequestList should render 1`] = `
                 href="/?field=createDate&page=1&sortOrder=ASC"
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-order-arrow-descending icon-root"
+                  class="lexicon-icon lexicon-icon-order_arrow_descending icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#order-arrow-descending"
+                    href="#order_arrow_descending"
                   />
                 </svg>
               </a>

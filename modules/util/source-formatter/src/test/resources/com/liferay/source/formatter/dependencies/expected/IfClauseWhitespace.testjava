@@ -47,12 +47,16 @@ public class IfClauseWhitespace {
 		if ((testString == null) ||
 			StringUtil.contains(testString, "testString")) {
 
+			System.out.println("testString contains \"testString\"");
+
 			return;
 		}
 
 		if (StringUtil.equalsIgnoreCase(
 				testString,
 				"this is a very long string that needs its own line")) {
+
+			System.out.println("testString equals \"this is a ...\"");
 
 			return;
 		}
@@ -88,7 +92,11 @@ public class IfClauseWhitespace {
 		if (testString.contains(
 				"This string is so long that it will not be able to fit on " +
 					"one single line")) {
+
+			return;
 		}
+
+		System.out.println("End of test.");
 	}
 
 }

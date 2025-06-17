@@ -54,7 +54,7 @@ const getTableWithData = useDB => {
 		emptyIcon: {
 			border: false,
 			size: Sizes.XXXLarge,
-			symbol: 'ac-satellite'
+			symbol: 'ac_satellite'
 		},
 		emptyTitle: Liferay.Language.get('there-are-no-pages-found'),
 		getColumns: ({

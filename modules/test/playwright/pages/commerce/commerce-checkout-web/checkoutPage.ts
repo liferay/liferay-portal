@@ -6,7 +6,10 @@
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
-import {CommerceDNDTablePage} from '../commerceDNDTablePage';
+import {
+	CommerceDNDTablePage,
+	searchTableRowByValue,
+} from '../commerceDNDTablePage';
 
 type TAddress = {
 	asGuest?: boolean | false;
@@ -46,6 +49,11 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	readonly orderItemsTabLink: Locator;
 	readonly orderItemsTableLocator: Locator;
 	readonly orderSuccessMessage: Locator;
+	readonly orderSummaryTableRow: (
+		colPosition: number,
+		value: number | string,
+		strictEqual?: boolean
+	) => Promise<{column: Locator; row: Locator}>;
 	readonly page: Page;
 	readonly phoneNumberInput: Locator;
 	readonly previousButton: Locator;
@@ -129,11 +137,23 @@ export class CheckoutPage extends CommerceDNDTablePage {
 			name: 'Order Items',
 		});
 		this.orderItemsTableLocator = page.locator(
-			'#_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet_commerceOrderItems'
+			'#_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet_commerceOrderItems table'
 		);
 		this.orderSuccessMessage = page.getByText(
 			'Success! Your order has been processed.'
 		);
+		this.orderSummaryTableRow = async (
+			colPosition: number,
+			value: number | string,
+			strictEqual: boolean = false
+		) => {
+			return await searchTableRowByValue(
+				this.orderItemsTableLocator,
+				colPosition,
+				String(value),
+				strictEqual
+			);
+		};
 		this.page = page;
 		this.phoneNumberInput = page.getByPlaceholder('Phone Number', {
 			exact: true,
@@ -159,8 +179,8 @@ export class CheckoutPage extends CommerceDNDTablePage {
 			.getByLabel('Reset Subtype')
 			.getByPlaceholder('Subtype');
 		this.orderSummaryShippingMethod = page.locator('div.shipping-method');
-		this.useAsBillingCheckbox = page.getByLabel(
-			'Use shipping address as billing address'
+		this.useAsBillingCheckbox = page.locator(
+			'[id="_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet_use-as-billing"]'
 		);
 		this.viewDeliveryGroupTableButton = page.getByLabel('view');
 		this.zipInput = page.getByPlaceholder('Zip', {exact: true});
@@ -243,5 +263,25 @@ export class CheckoutPage extends CommerceDNDTablePage {
 
 			await expect(this.orderSuccessMessage).toBeVisible();
 		}
+	}
+
+	async performCheckoutUntilStep(stopAt: string) {
+		let currentStep = await this.activeCheckoutStep.textContent();
+
+		while (!currentStep.includes(stopAt)) {
+			await this.continueButton.click();
+
+			await expect(async () => {
+				const nextStep = await this.activeCheckoutStep.textContent({
+					timeout: 1000,
+				});
+
+				expect(currentStep !== nextStep).toBeTruthy();
+
+				currentStep = nextStep;
+			}).toPass();
+		}
+
+		return;
 	}
 }

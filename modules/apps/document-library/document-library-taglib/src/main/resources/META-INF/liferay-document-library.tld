@@ -43,6 +43,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>includeExtension</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>repositoryId</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

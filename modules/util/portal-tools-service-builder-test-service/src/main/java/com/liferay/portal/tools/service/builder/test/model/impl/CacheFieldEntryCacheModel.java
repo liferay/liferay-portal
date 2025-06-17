@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.model.impl;
 
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.tools.service.builder.test.model.CacheFieldEntry;
@@ -14,6 +15,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 /**
  * The cache model class for representing CacheFieldEntry in entity cache.
@@ -80,7 +84,12 @@ public class CacheFieldEntryCacheModel
 
 		cacheFieldEntryImpl.resetOriginalValues();
 
-		cacheFieldEntryImpl.setNickname(_nickname);
+		try {
+			_nicknameMethodHandle.invokeExact(cacheFieldEntryImpl, nickname);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return cacheFieldEntryImpl;
 	}
@@ -94,7 +103,7 @@ public class CacheFieldEntryCacheModel
 		groupId = objectInput.readLong();
 		name = objectInput.readUTF();
 
-		_nickname = (String)objectInput.readObject();
+		nickname = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -110,12 +119,26 @@ public class CacheFieldEntryCacheModel
 			objectOutput.writeUTF(name);
 		}
 
-		objectOutput.writeObject(_nickname);
+		objectOutput.writeObject(nickname);
 	}
 
 	public long cacheFieldEntryId;
 	public long groupId;
 	public String name;
-	public String _nickname;
+	public volatile String nickname;
+
+	private static final MethodHandle _nicknameMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_nicknameMethodHandle = lookup.findSetter(
+				CacheFieldEntryImpl.class, "_nickname", String.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

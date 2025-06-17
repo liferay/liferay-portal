@@ -257,8 +257,8 @@ public class InviteUsersMVCResourceCommand
 	private String[] _getModelResourceActions(int role) {
 		if (role == PublicationRoleConstants.ROLE_ADMIN) {
 			return new String[] {
-				ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW,
-				CTActionKeys.INVITE_USERS, CTActionKeys.PUBLISH
+				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
+				ActionKeys.VIEW, CTActionKeys.INVITE_USERS, CTActionKeys.PUBLISH
 			};
 		}
 		else if (role == PublicationRoleConstants.ROLE_EDITOR) {

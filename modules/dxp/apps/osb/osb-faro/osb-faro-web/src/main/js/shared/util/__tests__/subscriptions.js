@@ -58,7 +58,7 @@ describe('subscriptions', () => {
 		it('should return the prop icon symbol', () => {
 			const symbol = getPropIcon(INDIVIDUALS);
 
-			expect(symbol).toEqual('ac-individual');
+			expect(symbol).toEqual('ac_individual');
 		});
 	});
 

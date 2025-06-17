@@ -1,0 +1,8 @@
+Bundle-Name: Liferay Export Import Report API
+Bundle-SymbolicName: com.liferay.exportimport.report.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.exportimport.report.exception,\
+	com.liferay.exportimport.report.model,\
+	com.liferay.exportimport.report.service,\
+	com.liferay.exportimport.report.service.persistence

@@ -112,7 +112,7 @@ public class EmbeddedPortletWhenEmbeddingPortletInLayoutTemplateTest
 				PortletContainerTestUtil.getHttpServletRequest(group, layout);
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletRenderResponse());
 		mockHttpServletRequest.setAttribute(
 			WebKeys.CTX, mockHttpServletRequest.getServletContext());

@@ -46,7 +46,7 @@ public abstract class BasePersonalMenuEntry implements PersonalMenuEntry {
 	public String getLabel(Locale locale) {
 		return LanguageUtil.get(
 			getResourceBundle(locale),
-			JavaConstants.JAVAX_PORTLET_TITLE + StringPool.PERIOD +
+			JavaConstants.JAKARTA_PORTLET_TITLE + StringPool.PERIOD +
 				getPortletId());
 	}
 

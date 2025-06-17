@@ -133,7 +133,7 @@ public class FileExtensionContentDashboardItemFilter
 		try {
 			PortletRequest portletRequest =
 				(PortletRequest)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST);
+					JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 			RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 				RequestBackedPortletURLFactoryUtil.create(portletRequest);
@@ -149,7 +149,7 @@ public class FileExtensionContentDashboardItemFilter
 
 			PortletResponse portletResponse =
 				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			return PortletURLBuilder.create(
 				_itemSelector.getItemSelectorURL(
@@ -182,7 +182,7 @@ public class FileExtensionContentDashboardItemFilter
 	private String _getRedirectURL() {
 		PortletResponse portletResponse =
 			(PortletResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		return HttpComponentsUtil.removeParameter(
 			_portal.getCurrentCompleteURL(_httpServletRequest),

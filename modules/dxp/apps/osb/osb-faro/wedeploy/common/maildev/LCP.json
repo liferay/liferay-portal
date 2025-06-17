@@ -1,0 +1,34 @@
+{
+	"cpu": 1,
+	"id": "maildev",
+	"image": "maildev/maildev",
+	"kind": "Deployment",
+	"livenessProbe": {
+		"failureThreshold": 3,
+		"httpGet": {
+			"path": "/healthz",
+			"port": 1080
+		},
+		"initialDelaySeconds": 30,
+		"timeoutSeconds": 10
+	},
+	"loadBalancer": {
+		"cdn": false,
+		"targetPort": 1080
+	},
+	"memory": 256,
+	"ports": [
+		{
+			"external": false,
+			"port": 1080,
+			"protocol": "TCP",
+			"targetPort": 1080
+		},
+		{
+			"external": false,
+			"port": 1025,
+			"protocol": "TCP",
+			"targetPort": 1025
+		}
+	]
+}

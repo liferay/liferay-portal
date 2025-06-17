@@ -322,8 +322,7 @@ public class DDMFormInstanceLocalServiceImpl
 
 	@Override
 	public DDMFormValues getFormInstanceSettingsFormValues(
-			DDMFormInstance formInstance)
-		throws PortalException {
+		DDMFormInstance formInstance) {
 
 		return _getFormInstanceSettingsFormValues(formInstance.getSettings());
 	}
@@ -509,8 +508,7 @@ public class DDMFormInstanceLocalServiceImpl
 	}
 
 	private DDMFormValues _getFormInstanceSettingsFormValues(
-			String serializedSettingsDDMFormValues)
-		throws PortalException {
+		String serializedSettingsDDMFormValues) {
 
 		DDMForm ddmForm = DDMFormFactory.create(DDMFormInstanceSettings.class);
 

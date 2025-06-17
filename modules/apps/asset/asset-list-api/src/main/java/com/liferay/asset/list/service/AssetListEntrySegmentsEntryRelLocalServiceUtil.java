@@ -297,6 +297,13 @@ public class AssetListEntrySegmentsEntryRelLocalServiceUtil {
 			assetListEntryId, segmentsEntryIds);
 	}
 
+	public static List<AssetListEntrySegmentsEntryRel>
+		fetchDynamicAssetListEntrySegmentsEntryRels(long companyId) {
+
+		return getService().fetchDynamicAssetListEntrySegmentsEntryRels(
+			companyId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 

@@ -37,7 +37,6 @@ import com.liferay.portal.util.PropsUtil;
 
 import java.math.BigDecimal;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -75,20 +74,14 @@ public class ProductConfigurationResourceTest
 		_masterCPConfigurationList =
 			_cpConfigurationListLocalService.getMasterCPConfigurationList(
 				_commerceCatalog.getGroupId());
-	}
 
-	@After
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-
-		for (CPConfigurationEntry cpConfigurationEntry :
-				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
-					_masterCPConfigurationList.getCPConfigurationListId())) {
-
-			_cpConfigurationEntryLocalService.forceDeleteCPConfigurationEntry(
-				cpConfigurationEntry);
-		}
+		_cpConfigurationList =
+			_cpConfigurationListLocalService.addCPConfigurationList(
+				RandomTestUtil.randomString(), _user.getUserId(),
+				_commerceCatalog.getGroupId(),
+				_masterCPConfigurationList.getCPConfigurationListId(), false,
+				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
+				0, true);
 	}
 
 	@FeatureFlag("LPD-10889")
@@ -405,10 +398,6 @@ public class ProductConfigurationResourceTest
 			CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
 				_commerceCatalog.getGroupId(), "simple");
 
-			_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
-				_classNameLocalService.getClassNameId(CPDefinition.class),
-				cpDefinition.getCPDefinitionId());
-
 			CProduct cProduct = cpDefinition.getCProduct();
 
 			return new ProductConfiguration() {
@@ -443,7 +432,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				randomProductConfiguration());
 	}
 
@@ -454,7 +443,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				randomProductConfiguration());
 	}
 
@@ -463,15 +452,7 @@ public class ProductConfigurationResourceTest
 			testGetProductByExternalReferenceCodeConfiguration_addProductConfiguration()
 		throws Exception {
 
-		ProductConfiguration productConfiguration =
-			randomProductConfiguration();
-
-		productConfigurationResource.
-			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
-				productConfiguration);
-
-		return productConfiguration;
+		return testGetProductIdConfiguration_addProductConfiguration();
 	}
 
 	@Override
@@ -490,7 +471,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				randomProductConfiguration());
 	}
 
@@ -501,7 +482,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				randomProductConfiguration());
 	}
 
@@ -522,7 +503,7 @@ public class ProductConfigurationResourceTest
 			testGetProductConfigurationListByExternalReferenceCodeProductConfigurationsPage_getExternalReferenceCode()
 		throws Exception {
 
-		return _masterCPConfigurationList.getExternalReferenceCode();
+		return _cpConfigurationList.getExternalReferenceCode();
 	}
 
 	@Override
@@ -541,7 +522,7 @@ public class ProductConfigurationResourceTest
 			testGetProductConfigurationListIdProductConfigurationsPage_getId()
 		throws Exception {
 
-		return _masterCPConfigurationList.getCPConfigurationListId();
+		return _cpConfigurationList.getCPConfigurationListId();
 	}
 
 	@Override
@@ -549,15 +530,17 @@ public class ProductConfigurationResourceTest
 			testGetProductIdConfiguration_addProductConfiguration()
 		throws Exception {
 
-		ProductConfiguration productConfiguration =
-			randomProductConfiguration();
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_commerceCatalog.getGroupId(), "simple");
 
-		productConfigurationResource.
-			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
-				productConfiguration);
+		CPConfigurationEntry cpConfigurationEntry =
+			_cpConfigurationEntryLocalService.getCPConfigurationEntry(
+				_classNameLocalService.getClassNameId(CPDefinition.class),
+				cpDefinition.getCPDefinitionId(),
+				_masterCPConfigurationList.getCPConfigurationListId());
 
-		return productConfiguration;
+		return productConfigurationResource.getProductConfiguration(
+			cpConfigurationEntry.getCPConfigurationEntryId());
 	}
 
 	@Override
@@ -565,7 +548,20 @@ public class ProductConfigurationResourceTest
 			ProductConfiguration productConfiguration)
 		throws Exception {
 
-		return productConfiguration.getEntityId();
+		CProduct cProduct =
+			_cProductLocalService.getCProductByExternalReferenceCode(
+				productConfiguration.getEntityExternalReferenceCode(),
+				_cpConfigurationList.getCompanyId());
+
+		return cProduct.getCProductId();
+	}
+
+	@Override
+	protected ProductConfiguration
+			testGraphQLGetProductByExternalReferenceCodeConfiguration_addProductConfiguration()
+		throws Exception {
+
+		return testGraphQLGetProductIdConfiguration_addProductConfiguration();
 	}
 
 	@Override
@@ -578,6 +574,24 @@ public class ProductConfigurationResourceTest
 	}
 
 	@Override
+	protected ProductConfiguration
+			testGraphQLGetProductIdConfiguration_addProductConfiguration()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_commerceCatalog.getGroupId(), "simple");
+
+		CPConfigurationEntry cpConfigurationEntry =
+			_cpConfigurationEntryLocalService.getCPConfigurationEntry(
+				_classNameLocalService.getClassNameId(CPDefinition.class),
+				cpDefinition.getCPDefinitionId(),
+				_masterCPConfigurationList.getCPConfigurationListId());
+
+		return productConfigurationResource.getProductConfiguration(
+			cpConfigurationEntry.getCPConfigurationEntryId());
+	}
+
+	@Override
 	protected Long testGraphQLGetProductIdConfiguration_getId(
 			ProductConfiguration productConfiguration)
 		throws Exception {
@@ -585,7 +599,7 @@ public class ProductConfigurationResourceTest
 		CProduct cProduct =
 			_cProductLocalService.getCProductByExternalReferenceCode(
 				productConfiguration.getEntityExternalReferenceCode(),
-				_masterCPConfigurationList.getCompanyId());
+				_cpConfigurationList.getCompanyId());
 
 		return cProduct.getCProductId();
 	}
@@ -597,7 +611,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				randomProductConfiguration());
 	}
 
@@ -608,7 +622,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				randomProductConfiguration());
 	}
 
@@ -619,7 +633,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				randomProductConfiguration());
 	}
 
@@ -631,7 +645,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				productConfiguration);
 	}
 
@@ -643,7 +657,7 @@ public class ProductConfigurationResourceTest
 
 		return productConfigurationResource.
 			postProductConfigurationListIdProductConfiguration(
-				_masterCPConfigurationList.getCPConfigurationListId(),
+				_cpConfigurationList.getCPConfigurationListId(),
 				productConfiguration);
 	}
 
@@ -661,6 +675,8 @@ public class ProductConfigurationResourceTest
 
 	@Inject
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
+
+	private CPConfigurationList _cpConfigurationList;
 
 	@Inject
 	private CPConfigurationListLocalService _cpConfigurationListLocalService;

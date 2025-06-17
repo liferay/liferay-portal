@@ -35,26 +35,26 @@ public class PortletResourceBundle extends ResourceBundle {
 
 		if (description != null) {
 			portletInfos.put(
-				JavaConstants.JAVAX_PORTLET_DESCRIPTION, description);
+				JavaConstants.JAKARTA_PORTLET_DESCRIPTION, description);
 		}
 
 		String keywords = portletInfo.getKeywords();
 
 		if (keywords != null) {
-			portletInfos.put(JavaConstants.JAVAX_PORTLET_KEYWORDS, keywords);
+			portletInfos.put(JavaConstants.JAKARTA_PORTLET_KEYWORDS, keywords);
 		}
 
 		String shortTitle = portletInfo.getShortTitle();
 
 		if (shortTitle != null) {
 			portletInfos.put(
-				JavaConstants.JAVAX_PORTLET_SHORT_TITLE, shortTitle);
+				JavaConstants.JAKARTA_PORTLET_SHORT_TITLE, shortTitle);
 		}
 
 		String title = portletInfo.getTitle();
 
 		if (title != null) {
-			portletInfos.put(JavaConstants.JAVAX_PORTLET_TITLE, title);
+			portletInfos.put(JavaConstants.JAKARTA_PORTLET_TITLE, title);
 		}
 
 		return portletInfos;

@@ -43,7 +43,7 @@ public class SegmentsCompanyConfigurationDisplayContext {
 		return PortletURLBuilder.createActionURL(
 			_portal.getLiferayPortletResponse(
 				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE)),
+					JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 			ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
 		).setActionName(
 			"/instance_settings/bind_segments_company_configuration"
@@ -54,7 +54,7 @@ public class SegmentsCompanyConfigurationDisplayContext {
 		return PortletURLBuilder.createActionURL(
 			_portal.getLiferayPortletResponse(
 				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE)),
+					JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 			ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
 		).setActionName(
 			"/instance_settings/delete_segments_company_configuration"

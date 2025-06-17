@@ -22,7 +22,7 @@ public class DDLRequestHelper extends BaseRequestHelper {
 		super(httpServletRequest);
 
 		_renderRequest = (RenderRequest)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		_portletPreferences = _renderRequest.getPreferences();
 	}

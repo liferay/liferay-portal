@@ -2586,6 +2586,50 @@
 		},
 		{
 			"properties": {
+				"checkInterval": {
+					"default": 15,
+					"description": "Set the interval (in minutes) to check for expiration, publishing, and review of object entries.",
+					"min": 1,
+					"title": "Object Entry Check Interval",
+					"type": "number"
+				},
+				"pid": {
+					"const": "com.liferay.object.configuration.ObjectEntryScheduleConfiguration",
+					"title": "Schedule"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Schedule"
+		},
+		{
+			"properties": {
+				"maximumRetentionPeriod": {
+					"default": 0,
+					"description": "Define the maximum retention period for entry versions. Once this period expires, the system will automatically delete the oldest versions to optimize storage space.",
+					"title": "Maximum Retention Period",
+					"type": "number"
+				},
+				"maximumVersionsPerEntry": {
+					"default": 0,
+					"description": "Define the maximum number of entries to be stored per object. Once this limit is reached, the oldest versions will be automatically deleted to optimize storage space.",
+					"title": "Maximum Versions per Entry",
+					"type": "number"
+				},
+				"pid": {
+					"const": "com.liferay.object.configuration.ObjectEntryVersionConfiguration",
+					"title": "Versioning for Entries"
+				}
+			},
+			"required": [
+				"pid",
+				"maximumRetentionPeriod"
+			],
+			"title": "Versioning for Entries"
+		},
+		{
+			"properties": {
 				"configurationName": {
 					"description": "Set hash provider configuration name.",
 					"title": "Hash Provider Configuration Name",
@@ -4312,6 +4356,8 @@
 				"com.liferay.oauth2.provider.rest.internal.configuration.OAuth2InAssertionConfiguration",
 				"com.liferay.oauth2.provider.rest.internal.endpoint.authorize.configuration.AuthorizeScreenConfiguration",
 				"com.liferay.object.configuration.ObjectConfiguration",
+				"com.liferay.object.configuration.ObjectEntryScheduleConfiguration",
+				"com.liferay.object.configuration.ObjectEntryVersionConfiguration",
 				"com.liferay.portal.crypto.hash.provider.bcrypt.internal.configuration.BCryptCryptoHashProviderConfiguration",
 				"com.liferay.portal.crypto.hash.provider.message.digest.internal.configuration.MessageDigestCryptoHashProviderConfiguration",
 				"com.liferay.portal.defaultpermissions.configuration.PortalDefaultPermissionsCompanyConfiguration",

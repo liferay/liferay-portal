@@ -765,8 +765,7 @@ public class TransactionalPortalCacheTest {
 	private int _getTransactionStackSize() {
 		ThreadLocal<List<?>> portalCacheMapsThreadLocal =
 			ReflectionTestUtil.getFieldValue(
-				TransactionalPortalCacheUtil.class,
-				"_portalCacheMapsThreadLocal");
+				TransactionalPortalCacheUtil.class, "_portalCacheMaps");
 
 		List<?> portalCacheMaps = portalCacheMapsThreadLocal.get();
 

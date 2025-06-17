@@ -134,7 +134,7 @@ public class EditDDMTemplateDisplayContext {
 
 		PortletConfig portletConfig =
 			(PortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		_refererWebDAVToken = ParamUtil.getString(
 			httpServletRequest, "refererWebDAVToken",

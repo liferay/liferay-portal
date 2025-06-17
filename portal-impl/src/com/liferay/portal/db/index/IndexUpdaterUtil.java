@@ -117,7 +117,7 @@ public class IndexUpdaterUtil {
 						() -> {
 							bundleTracker.close();
 
-							_processedServletContextNames.clear();
+							_clearProcessedServletContextNames();
 
 							_awaitFuturesTermination();
 
@@ -204,6 +204,10 @@ public class IndexUpdaterUtil {
 		}
 
 		_futures.clear();
+	}
+
+	private static void _clearProcessedServletContextNames() {
+		_processedServletContextNames.clear();
 	}
 
 	private static ExecutorService _getExecutorService() {

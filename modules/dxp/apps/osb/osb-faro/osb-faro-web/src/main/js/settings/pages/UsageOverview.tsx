@@ -68,7 +68,6 @@ const getAlertStatusCode = currentPlan => {
 export const UsageOverview = ({groupId, project}) => {
 	const [showAlert, setShowAlert] = useState(true);
 	const currentUser = useCurrentUser();
-
 	const admin = currentUser.isAdmin();
 	const currentPlan = formatPlanData(project.faroSubscription);
 	const {timeZoneId} = useTimeZone();
@@ -85,7 +84,7 @@ export const UsageOverview = ({groupId, project}) => {
 				icon: {
 					symbol: 'shortcut'
 				},
-				label: Liferay.Language.get('manage-subscriptions'),
+				label: Liferay.Language.get('go-to-customer-portal'),
 				target: '_blank'
 			}
 		];

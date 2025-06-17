@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder auto-import-default-references="false" auto-namespace-tables="false" dependency-injector="ds" mvcc-enabled="true" package-path="com.liferay.exportimport.report" short-no-such-exception-enabled="false">
+	<author>Carlos Correa</author>
+	<namespace>ExportImportReport</namespace>
+	<entity local-service="true" name="ExportImportReportEntry" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="exportImportReportEntryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="classExternalReferenceCode" type="String" />
+		<column name="classNameId" type="long" />
+		<column name="exportImportConfigurationId" type="long" />
+		<column convert-null="false" name="error" type="String" />
+		<column convert-null="false" name="errorStacktrace" type="String" />
+		<column name="resolved" type="boolean" />
+		<column name="type" type="int" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_E" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="exportImportConfigurationId" />
+		</finder>
+	</entity>
+</service-builder>

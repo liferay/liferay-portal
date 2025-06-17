@@ -4,10 +4,14 @@
  */
 
 type Options = {
+	limit?: number;
 	style?: 'camel' | 'pascal';
 };
 
-export default function normalizeName(name: string, {style}: Options = {}) {
+export default function normalizeName(
+	name: string,
+	{limit, style}: Options = {}
+) {
 
 	// Remove special characters, replace dashes with spaces and split
 
@@ -30,6 +34,12 @@ export default function normalizeName(name: string, {style}: Options = {}) {
 				? split.toLowerCase()
 				: split.charAt(0).toUpperCase() + split.slice(1).toLowerCase()
 		);
+	}
+
+	const result = splits.join('');
+
+	if (limit) {
+		return result.substring(0, limit);
 	}
 
 	return splits.join('');

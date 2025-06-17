@@ -82,11 +82,11 @@ exports[`Individuals Dashboard KnownIndividuals List renders 1`] = `
                       href="/?field=name&page=1&sortOrder=DESC"
                     >
                       <svg
-                        class="lexicon-icon lexicon-icon-order-arrow-ascending icon-root"
+                        class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
                         role="presentation"
                       >
                         <use
-                          href="#order-arrow-ascending"
+                          href="#order_arrow_ascending"
                         />
                       </svg>
                     </a>
@@ -383,11 +383,11 @@ exports[`Individuals Dashboard KnownIndividuals List renders with data source em
             class="no-results-icon"
           >
             <svg
-              class="lexicon-icon lexicon-icon-ac-satellite icon-root icon-size-xxxl"
+              class="lexicon-icon lexicon-icon-ac_satellite icon-root icon-size-xxxl"
               role="presentation"
             >
               <use
-                href="#ac-satellite"
+                href="#ac_satellite"
               />
             </svg>
           </div>

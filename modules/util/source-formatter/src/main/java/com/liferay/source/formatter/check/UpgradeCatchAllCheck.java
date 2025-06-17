@@ -25,6 +25,7 @@ import com.liferay.source.formatter.parser.JavaVariable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -73,7 +74,7 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 
 			if ((from.contains(StringPool.OPEN_PARENTHESIS) &&
 				 !skipValidation) ||
-				!keys.contains("to")) {
+				(keys.contains("from") && !keys.contains("to"))) {
 
 				expectedMessages.add(_getMessage(jsonObject));
 			}
@@ -220,6 +221,43 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		return sb.toString();
 	}
 
+	private static Pattern _getMethodSignaturePattern(JSONObject jsonObject) {
+		String from = jsonObject.getString("from");
+
+		if (from.startsWith("regex:")) {
+			return Pattern.compile(from.replaceFirst("regex:", ""));
+		}
+
+		String methodRegex = StringUtil.replace(
+			from,
+			new char[] {
+				CharPool.SPACE, CharPool.NEW_LINE, CharPool.TAB,
+				CharPool.OPEN_PARENTHESIS, CharPool.CLOSE_PARENTHESIS,
+				CharPool.PERIOD, CharPool.COMMA
+			},
+			new String[] {
+				"\\s+", "\\s*", "\\s*", "\\(", "\\)", "\\.\\s*", "\\,\\s*"
+			});
+
+		methodRegex = methodRegex + ")(?:\\s+throws\\s+[A-Za-z0-9._<>\\s,]+)?";
+
+		String methodStartRegex =
+			"\\n\\s+(?:@[A-Za-z]+\\s+)?" +
+				"(?:public|private|protected|static|final|abstract|\\s+)*";
+
+		if (from.contains(StringPool.AT)) {
+			methodRegex = StringBundler.concat(
+				"^(", methodStartRegex, methodRegex);
+		}
+		else {
+			methodRegex = StringBundler.concat(
+				CharPool.CARET, methodStartRegex, CharPool.OPEN_PARENTHESIS,
+				methodRegex);
+		}
+
+		return Pattern.compile(methodRegex, Pattern.MULTILINE);
+	}
+
 	private static Pattern _getPattern(JSONObject jsonObject) {
 		String from = jsonObject.getString("from");
 
@@ -363,61 +401,33 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		return newContent;
 	}
 
-	private String _formatGeneral(
-		String content, String fileName, JSONObject jsonObject) {
+	private int _findMatchingClosingBrace(String content, int index) {
+		int count = 0;
 
-		String newContent = content;
+		for (int i = index; i < content.length(); i++) {
+			char c = content.charAt(i);
 
-		Pattern pattern = _getPattern(jsonObject);
-
-		Matcher matcher = pattern.matcher(content);
-
-		while (matcher.find()) {
-			String methodCall = matcher.group();
-
-			String from = jsonObject.getString("from");
-			String to = jsonObject.getString("to");
-
-			if (from.startsWith("regex:")) {
-				newContent = newContent.replaceAll(pattern.toString(), to);
+			if (c == '{') {
+				count++;
 			}
-			else if (from.contains(StringPool.OPEN_PARENTHESIS)) {
-				newContent = _formatMethodCall(
-					fileName, from, newContent, jsonObject, matcher, newContent,
-					to);
+			else if (c == '}') {
+				count--;
 			}
-			else {
-				Set<String> keys = jsonObject.keySet();
 
-				if (!keys.contains("to")) {
-					addMessage(fileName, _getMessage(jsonObject));
-
-					_newMessage = true;
-
-					continue;
-				}
-
-				newContent = StringUtil.replaceFirst(
-					newContent, methodCall,
-					StringUtil.replace(methodCall, from, to), matcher.start());
+			if (count == 0) {
+				return i;
 			}
 		}
 
-		if (!content.equals(newContent)) {
-			newContent = _addReplacementDependencies(
-				fileName, jsonObject, newContent);
-		}
-
-		return newContent;
+		return -1;
 	}
 
-	private String _formatJava(
-			String content, String fileName, JSONObject jsonObject)
+	private String _formatCalls(
+			String content, String fileName, JavaClass javaClass,
+			JSONObject jsonObject)
 		throws Exception {
 
 		String newContent = content;
-
-		JavaClass javaClass = JavaClassParser.parseJavaClass(fileName, content);
 
 		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
 			String javaContent = null;
@@ -513,6 +523,109 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		return newContent;
 	}
 
+	private String _formatGeneral(
+		String content, String fileName, JSONObject jsonObject) {
+
+		String newContent = content;
+
+		Pattern pattern = _getPattern(jsonObject);
+
+		Matcher matcher = pattern.matcher(content);
+
+		while (matcher.find()) {
+			String methodCall = matcher.group();
+
+			String from = jsonObject.getString("from");
+			String to = jsonObject.getString("to");
+
+			if (from.startsWith("regex:")) {
+				newContent = newContent.replaceAll(pattern.toString(), to);
+			}
+			else if (from.contains(StringPool.OPEN_PARENTHESIS)) {
+				newContent = _formatMethodCall(
+					fileName, from, newContent, jsonObject, matcher, newContent,
+					to);
+			}
+			else {
+				Set<String> keys = jsonObject.keySet();
+
+				if (!keys.contains("to")) {
+					addMessage(fileName, _getMessage(jsonObject));
+
+					_newMessage = true;
+
+					continue;
+				}
+
+				newContent = StringUtil.replaceFirst(
+					newContent, methodCall,
+					StringUtil.replace(methodCall, from, to), matcher.start());
+			}
+		}
+
+		if (!content.equals(newContent)) {
+			newContent = _addReplacementDependencies(
+				fileName, jsonObject, newContent);
+		}
+
+		return newContent;
+	}
+
+	private String _formatJava(
+			String content, String fileName, JSONObject jsonObject)
+		throws Exception {
+
+		String newContent = content;
+
+		JavaClass javaClass = JavaClassParser.parseJavaClass(fileName, content);
+
+		if (!jsonObject.getBoolean("classStructurePattern")) {
+			return _formatCalls(content, fileName, javaClass, jsonObject);
+		}
+
+		String[] classNames = JSONUtil.toStringArray(
+			jsonObject.getJSONArray("classNames"));
+
+		if (ArrayUtil.isEmpty(classNames)) {
+			return newContent;
+		}
+
+		for (String className : classNames) {
+			List<String> implementedClassNames =
+				javaClass.getImplementedClassNames();
+			List<String> extendedClassNames = javaClass.getExtendedClassNames();
+
+			if (!extendedClassNames.contains(className) &&
+				!implementedClassNames.contains(className)) {
+
+				return newContent;
+			}
+		}
+
+		String[] newMethods = JSONUtil.toStringArray(
+			jsonObject.getJSONArray("newMethods"));
+
+		if (ArrayUtil.isNotEmpty(newMethods)) {
+			for (String newMethod : newMethods) {
+				newContent = _insertMethodAlphabetically(newContent, newMethod);
+			}
+		}
+
+		JSONArray jsonArray = jsonObject.getJSONArray("methodsToFormat");
+
+		if (JSONUtil.isEmpty(jsonArray)) {
+			return newContent;
+		}
+
+		for (Object method : jsonArray) {
+			JSONObject methodJSONObject = (JSONObject)method;
+
+			newContent = _formatMethodSignature(newContent, methodJSONObject);
+		}
+
+		return newContent;
+	}
+
 	private String _formatMethodCall(
 		String fileName, String from, String javaMethodContent,
 		JSONObject jsonObject, Matcher matcher, String newContent, String to) {
@@ -545,6 +658,35 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		}
 
 		return _formatParameters(methodCall, newContent, parameterNames, to);
+	}
+
+	private String _formatMethodSignature(
+		String content, JSONObject jsonObject) {
+
+		String from = jsonObject.getString("from");
+		String to = jsonObject.getString("to");
+
+		Pattern pattern = _getMethodSignaturePattern(jsonObject);
+
+		Matcher matcher = pattern.matcher(content);
+
+		while (matcher.find()) {
+			if (from.startsWith("regex:")) {
+				return content.replaceAll(pattern.toString(), to);
+			}
+
+			String methodSignature = matcher.group(1);
+
+			if (methodSignature.startsWith("\n\t") ||
+				methodSignature.startsWith("\n ")) {
+
+				to = "\n\t" + to;
+			}
+
+			content = StringUtil.replace(content, matcher.group(1), to);
+		}
+
+		return content;
 	}
 
 	private String _formatParameters(
@@ -699,9 +841,152 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		return true;
 	}
 
+	private String _insertMethodAlphabetically(
+			String fileContent, String newMethod)
+		throws Exception {
+
+		int endIndex = -1;
+		int startIndex = -1;
+
+		Matcher matcher = _classDeclarationPattern.matcher(fileContent);
+
+		if (matcher.find()) {
+			startIndex = matcher.end() + 1;
+
+			endIndex = _findMatchingClosingBrace(fileContent, startIndex - 2);
+
+			if (endIndex == -1) {
+				throw new UpgradeCatchAllException(
+					"Unable to find matching closing brace for the class");
+			}
+		}
+		else {
+			throw new UpgradeCatchAllException(
+				"Unable to find class declaration in the file content");
+		}
+
+		String classBody = fileContent.substring(startIndex, endIndex);
+
+		Pattern pattern = Pattern.compile(
+			StringBundler.concat(
+				"^\\n\\t\\s*(?:(?:@[a-zA-Z_][a-zA-Z0-9_]*(?:\\([^)]*\\))?\\s*",
+				"\\n\\s*)*(?:@[a-zA-Z_][a-zA-Z0-9_]*(?:\\([^)]*\\))?\\s*)?)?",
+				"(?:public|private|protected|static|final|synchronized|",
+				"abstract|native)\\s+[^\\s]+\\s+([a-zA-Z_][a-zA-Z0-9_]*",
+				"\\s*\\([^)]*\\))\\s*(?:throws\\s+",
+				"[^\\s]+(?:,\\s+[^\\s]+)*)?\\s*\\{"),
+			Pattern.MULTILINE);
+
+		List<String> methodNames = new ArrayList<>();
+		List<String> existingMethods = new ArrayList<>();
+		Matcher bodyMatcher = pattern.matcher(classBody);
+
+		while (bodyMatcher.find()) {
+			String methodName = bodyMatcher.group(1);
+
+			methodName = StringUtil.removeChar(methodName, CharPool.NEW_LINE);
+
+			int methodIndex = bodyMatcher.start();
+
+			int methodEndIndex = _findMatchingClosingBrace(
+				classBody, bodyMatcher.end() - 1);
+
+			if (methodEndIndex != -1) {
+				existingMethods.add(
+					classBody.substring(methodIndex, methodEndIndex + 1));
+				methodNames.add(methodName);
+			}
+		}
+
+		newMethod = "\n\t" + newMethod;
+
+		Matcher newMethodMatcher = pattern.matcher(newMethod);
+
+		if (!newMethodMatcher.find()) {
+			throw new UpgradeCatchAllException(
+				"Unable to extract the name of the method to be inserted");
+		}
+
+		String newMethodName = newMethodMatcher.group(1);
+
+		newMethodName = StringUtil.removeChar(newMethodName, CharPool.NEW_LINE);
+
+		if (methodNames.contains(newMethodName)) {
+			return fileContent;
+		}
+
+		methodNames.add(newMethodName);
+
+		Collections.sort(methodNames);
+
+		StringBuilder newClassBodySB = new StringBuilder();
+
+		if (existingMethods.isEmpty()) {
+			newClassBodySB.append(newMethod);
+		}
+		else {
+			int insertIndex = methodNames.indexOf(newMethodName);
+
+			if (insertIndex == 0) {
+				newClassBodySB.append(newMethod);
+
+				for (String existingMethod : existingMethods) {
+					newClassBodySB.append("\n");
+					newClassBodySB.append(existingMethod);
+				}
+			}
+			else if (insertIndex == existingMethods.size()) {
+				for (String existingMethod : existingMethods) {
+					newClassBodySB.append(existingMethod);
+					newClassBodySB.append("\n");
+				}
+
+				newClassBodySB.append(newMethod);
+			}
+			else {
+				for (int i = 0; i < insertIndex; i++) {
+					newClassBodySB.append(existingMethods.get(i));
+					newClassBodySB.append("\n");
+				}
+
+				newClassBodySB.append(newMethod);
+				newClassBodySB.append("\n");
+
+				for (int i = insertIndex; i < existingMethods.size(); i++) {
+					newClassBodySB.append(existingMethods.get(i));
+					newClassBodySB.append("\n");
+				}
+			}
+		}
+
+		StringBuilder newFileContentSB = new StringBuilder();
+
+		String tempFileContent = fileContent.substring(0, endIndex);
+
+		for (String existingMethod : existingMethods) {
+			tempFileContent = StringUtil.removeSubstring(
+				tempFileContent, "\n" + existingMethod);
+		}
+
+		newFileContentSB.append(tempFileContent.trim());
+		newFileContentSB.append("\n");
+		newFileContentSB.append(newClassBodySB);
+		newFileContentSB.append("\n\n");
+		newFileContentSB.append(fileContent.substring(endIndex));
+
+		return newFileContentSB.toString();
+	}
+
 	private static final String _CONSTRUCTOR_REGEX =
 		"n?e?w? ?(:?[A-Z][a-z]*)+\\(.*\\)";
 
+	private static final Pattern _classDeclarationPattern = Pattern.compile(
+		StringBundler.concat(
+			"^(?:@[a-zA-Z_][a-zA-Z0-9_]*(?:\\([^)]*\\))?\\s*)*",
+			"(?:public|private|protected)?\\s*(?:static)?\\s*class\\s+",
+			"([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?:extends\\s+[^\\s]+)?\\s*",
+			"(?:implements\\s+[^\\s]+(?:,\\s+[^\\s]+)*)?\\s*\\{"),
+		Pattern.MULTILINE);
 	private static String _issueKey;
 	private static final Pattern _parameterNamePattern = Pattern.compile(
 		"\\w+#(\\d+)#");

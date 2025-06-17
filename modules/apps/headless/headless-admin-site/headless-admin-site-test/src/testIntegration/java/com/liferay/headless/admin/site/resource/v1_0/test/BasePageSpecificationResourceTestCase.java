@@ -170,6 +170,8 @@ public abstract class BasePageSpecificationResourceTestCase {
 		PageSpecification pageSpecification = randomPageSpecification();
 
 		pageSpecification.setExternalReferenceCode(regex);
+		pageSpecification.setSiteTemplatePageSpecificationExternalReferenceCode(
+			regex);
 
 		String json = PageSpecificationSerDes.toJSON(pageSpecification);
 
@@ -179,6 +181,10 @@ public abstract class BasePageSpecificationResourceTestCase {
 
 		Assert.assertEquals(
 			regex, pageSpecification.getExternalReferenceCode());
+		Assert.assertEquals(
+			regex,
+			pageSpecification.
+				getSiteTemplatePageSpecificationExternalReferenceCode());
 	}
 
 	@Test
@@ -873,6 +879,8 @@ public abstract class BasePageSpecificationResourceTestCase {
 				{
 					externalReferenceCode = StringUtil.toLowerCase(
 						RandomTestUtil.randomString());
+					siteTemplatePageSpecificationExternalReferenceCode =
+						StringUtil.toLowerCase(RandomTestUtil.randomString());
 					draftContentPageSpecificationExternalReferenceCode =
 						StringUtil.toLowerCase(RandomTestUtil.randomString());
 
@@ -890,6 +898,8 @@ public abstract class BasePageSpecificationResourceTestCase {
 				{
 					externalReferenceCode = StringUtil.toLowerCase(
 						RandomTestUtil.randomString());
+					siteTemplatePageSpecificationExternalReferenceCode =
+						StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 					type = Type.create("WidgetPageSpecification");
 				}
@@ -1012,6 +1022,20 @@ public abstract class BasePageSpecificationResourceTestCase {
 
 			if (Objects.equals("settings", additionalAssertFieldName)) {
 				if (pageSpecification.getSettings() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"siteTemplatePageSpecificationExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (pageSpecification.
+						getSiteTemplatePageSpecificationExternalReferenceCode() ==
+							null) {
+
 					valid = false;
 				}
 
@@ -1220,6 +1244,22 @@ public abstract class BasePageSpecificationResourceTestCase {
 				if (!Objects.deepEquals(
 						pageSpecification1.getSettings(),
 						pageSpecification2.getSettings())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"siteTemplatePageSpecificationExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						pageSpecification1.
+							getSiteTemplatePageSpecificationExternalReferenceCode(),
+						pageSpecification2.
+							getSiteTemplatePageSpecificationExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1470,6 +1510,56 @@ public abstract class BasePageSpecificationResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals(
+				"siteTemplatePageSpecificationExternalReferenceCode")) {
+
+			Object object =
+				pageSpecification.
+					getSiteTemplatePageSpecificationExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("status")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1530,6 +1620,9 @@ public abstract class BasePageSpecificationResourceTestCase {
 
 				pageSpecification.setExternalReferenceCode(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				pageSpecification.
+					setSiteTemplatePageSpecificationExternalReferenceCode(
+						StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
 				pageSpecification.
 					setDraftContentPageSpecificationExternalReferenceCode(
@@ -1546,6 +1639,9 @@ public abstract class BasePageSpecificationResourceTestCase {
 
 				pageSpecification.setExternalReferenceCode(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
+				pageSpecification.
+					setSiteTemplatePageSpecificationExternalReferenceCode(
+						StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
 				pageSpecification.setType(
 					PageSpecification.Type.create("WidgetPageSpecification"));

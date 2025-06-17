@@ -249,14 +249,22 @@ public class CPConfigurationListLocalServiceImpl
 			expirationDateHour, expirationDateMinute, neverExpire);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPConfigurationList deleteCPConfigurationList(
 			CPConfigurationList cpConfigurationList)
 		throws PortalException {
 
-		if (cpConfigurationList.isMaster()) {
+		return cpConfigurationListLocalService.deleteCPConfigurationList(
+			cpConfigurationList, false);
+	}
+
+	@Override
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CPConfigurationList deleteCPConfigurationList(
+			CPConfigurationList cpConfigurationList, boolean force)
+		throws PortalException {
+
+		if (cpConfigurationList.isMaster() && !force) {
 			throw new RequiredCPConfigurationListException();
 		}
 
@@ -271,12 +279,19 @@ public class CPConfigurationListLocalServiceImpl
 			long cpConfigurationListId)
 		throws PortalException {
 
-		CPConfigurationList cpConfigurationList =
-			cpConfigurationListPersistence.findByPrimaryKey(
-				cpConfigurationListId);
+		return cpConfigurationListLocalService.deleteCPConfigurationList(
+			cpConfigurationListId, false);
+	}
+
+	@Override
+	public CPConfigurationList deleteCPConfigurationList(
+			long cpConfigurationListId, boolean force)
+		throws PortalException {
 
 		return cpConfigurationListLocalService.deleteCPConfigurationList(
-			cpConfigurationList);
+			cpConfigurationListPersistence.findByPrimaryKey(
+				cpConfigurationListId),
+			force);
 	}
 
 	@Override
@@ -287,26 +302,9 @@ public class CPConfigurationListLocalServiceImpl
 			cpConfigurationListPersistence.findByCompanyId(companyId);
 
 		for (CPConfigurationList cpConfigurationList : cpConfigurationLists) {
-			cpConfigurationListLocalService.forceDeleteCPConfigurationList(
-				cpConfigurationList);
+			cpConfigurationListLocalService.deleteCPConfigurationList(
+				cpConfigurationList, true);
 		}
-	}
-
-	@Indexable(type = IndexableType.DELETE)
-	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public CPConfigurationList forceDeleteCPConfigurationList(
-		CPConfigurationList cpConfigurationList) {
-
-		for (CPConfigurationEntry cpConfigurationEntry :
-				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
-					cpConfigurationList.getCPConfigurationListId())) {
-
-			_cpConfigurationEntryLocalService.forceDeleteCPConfigurationEntry(
-				cpConfigurationEntry);
-		}
-
-		return cpConfigurationListPersistence.remove(cpConfigurationList);
 	}
 
 	@Override

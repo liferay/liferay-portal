@@ -7,8 +7,12 @@ package com.liferay.layout.type.controller.asset.display.internal.portlet;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
+import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
@@ -17,6 +21,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -24,6 +30,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.servlet.I18nServlet;
 
 import java.util.Locale;
@@ -160,7 +167,8 @@ public class AssetDisplayPageFriendlyURLProviderImpl
 				layoutDisplayPageObjectProvider.getClassPK(),
 				layoutDisplayPageObjectProvider.getClassTypeId())) {
 
-			return null;
+			return _getURLViewInContext(
+				layoutDisplayPageObjectProvider, themeDisplay);
 		}
 
 		return StringBundler.concat(
@@ -205,6 +213,41 @@ public class AssetDisplayPageFriendlyURLProviderImpl
 		return StringPool.SLASH + locale.toLanguageTag();
 	}
 
+	private String _getURLViewInContext(
+			LayoutDisplayPageObjectProvider layoutDisplayPageObjectProvider,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		if (layoutDisplayPageObjectProvider.getDisplayObject() instanceof
+				JournalArticle) {
+
+			AssetRendererFactory<?> assetRendererFactory =
+				AssetRendererFactoryRegistryUtil.
+					getAssetRendererFactoryByClassName(
+						layoutDisplayPageObjectProvider.getClassName());
+
+			AssetRenderer<?> assetRenderer =
+				assetRendererFactory.getAssetRenderer(
+					layoutDisplayPageObjectProvider.getClassPK());
+
+			try {
+				String friendlyURL = assetRenderer.getURLViewInContext(
+					themeDisplay, StringPool.BLANK);
+
+				if (!Validator.isBlank(friendlyURL)) {
+					return friendlyURL;
+				}
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
+			}
+		}
+
+		return null;
+	}
+
 	private void _setThemeDisplayI18n(
 		ThemeDisplay themeDisplay, Locale locale) {
 
@@ -229,6 +272,9 @@ public class AssetDisplayPageFriendlyURLProviderImpl
 		themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
 		themeDisplay.setLocale(locale);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetDisplayPageFriendlyURLProviderImpl.class);
 
 	@Reference
 	private GroupLocalService _groupLocalService;

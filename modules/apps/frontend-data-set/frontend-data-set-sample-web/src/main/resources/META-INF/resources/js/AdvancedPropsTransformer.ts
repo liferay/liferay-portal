@@ -8,6 +8,7 @@ import {openModal} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 
 import CustomAuthorTableCell from './CustomAuthorTableCell';
+import SampleInfoPanel from './SampleInfoPanel';
 
 import type {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
@@ -27,6 +28,7 @@ export default function propsTransformer({
 		customRenderers: {
 			tableCell: [customAuthorTableCellRenderer],
 		},
+		infoPanelComponent: SampleInfoPanel,
 		onActionDropdownItemClick({
 			action,
 			itemData,

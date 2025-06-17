@@ -46,7 +46,7 @@ public abstract class BaseTopLevelBuildReport
 			jsonArray = new JSONArray();
 		}
 
-		jsonArray.put(testrayAttachmentURL);
+		jsonArray.put(String.valueOf(testrayAttachmentURL));
 
 		buildReportJSONObject.put("testrayAttachmentURLs", jsonArray);
 	}

@@ -52,12 +52,17 @@
 		<weight>1</weight>
 		<permissions>
 			<supports>
+				<action-key>ADD_ENTRY</action-key>
 				<action-key>ADD_FOLDER</action-key>
 				<action-key>DELETE</action-key>
 				<action-key>UPDATE</action-key>
 				<action-key>VIEW</action-key>
 			</supports>
+			<site-member-defaults>
+				<action-key>VIEW</action-key>
+			</site-member-defaults>
 			<guest-unsupported>
+				<action-key>ADD_ENTRY</action-key>
 				<action-key>ADD_FOLDER</action-key>
 				<action-key>DELETE</action-key>
 				<action-key>UPDATE</action-key>

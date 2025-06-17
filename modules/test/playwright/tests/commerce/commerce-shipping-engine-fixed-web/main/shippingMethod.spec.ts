@@ -383,7 +383,7 @@ test(
 		await commerceAdminShipmentsPage.shippingMethodSelect.selectOption(
 			'Variable Rate'
 		);
-		await commerceAdminShipmentsPage.shipmentsItemSubmitButton.click();
+		await commerceAdminShipmentsPage.carrierDetailsSubmitButton.click();
 
 		await expect(
 			await page.getByText('www.variableratecarriersite.com/')

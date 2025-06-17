@@ -18,6 +18,7 @@ XMLImportsCheck | [Styling](styling_checks.md#styling-checks) | Sorts and groups
 XMLIndentationCheck | [Styling](styling_checks.md#styling-checks) | Finds incorrect indentation in `.xml` files. |
 XMLInstanceWrappersFileCheck | [Styling](styling_checks.md#styling-checks) | Checks the order of instance-wrappers in `instance_wrappers.xml` file. |
 XMLIvyFileCheck | [Styling](styling_checks.md#styling-checks) | Checks the order of dependencies in `ivy.xml` file. |
+XMLJakartaTransformCheck | [JakartaTransform](jakarta_transform_checks.md#jakartatransform-checks) | Performs replacements for use of Jakarta. |
 XMLLog4jFileCheck | [Styling](styling_checks.md#styling-checks) | Checks the order of categories in `*-log4j.xml` file. |
 XMLLog4jLoggersCheck | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Checks the loggers defined in `*-log4j.xml` file. |
 XMLLookAndFeelCompatibilityVersionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds missing attribute `version` in `compatibility` element in `*--look-and-feel.xml` file. |

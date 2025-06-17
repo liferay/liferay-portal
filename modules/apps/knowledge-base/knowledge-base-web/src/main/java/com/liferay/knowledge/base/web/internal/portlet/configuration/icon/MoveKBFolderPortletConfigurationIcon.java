@@ -143,7 +143,7 @@ public class MoveKBFolderPortletConfigurationIcon
 
 		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		return _portal.getLiferayPortletResponse(portletResponse);
 	}

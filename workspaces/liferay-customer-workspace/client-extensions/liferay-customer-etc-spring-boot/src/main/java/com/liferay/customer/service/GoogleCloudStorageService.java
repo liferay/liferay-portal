@@ -81,7 +81,8 @@ public class GoogleCloudStorageService extends BaseService {
 	}
 
 	public String getUploadSessionURL(
-			String origin, String bucketName, String objectName)
+			String origin, String bucketName, String objectName,
+			String fileSize)
 		throws Exception {
 
 		ResponseEntity<String> responseEntity = WebClient.create(
@@ -94,6 +95,8 @@ public class GoogleCloudStorageService extends BaseService {
 			MediaType.APPLICATION_JSON
 		).header(
 			HttpHeaders.AUTHORIZATION, "Bearer " + _getAccessToken()
+		).header(
+			HttpHeaders.CONTENT_LENGTH, fileSize
 		).header(
 			HttpHeaders.ORIGIN, origin
 		).retrieve(

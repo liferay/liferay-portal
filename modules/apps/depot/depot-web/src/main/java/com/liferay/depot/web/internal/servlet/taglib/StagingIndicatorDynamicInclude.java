@@ -181,7 +181,7 @@ public class StagingIndicatorDynamicInclude extends BaseDynamicInclude {
 				return _groupURLProvider.getLiveGroupURL(
 					liveGroup,
 					(PortletRequest)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST));
+						JavaConstants.JAKARTA_PORTLET_REQUEST));
 			}
 		}
 

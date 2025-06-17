@@ -129,9 +129,13 @@ public interface CPConfigurationListLocalService
 	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPConfigurationList deleteCPConfigurationList(
 			CPConfigurationList cpConfigurationList)
+		throws PortalException;
+
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CPConfigurationList deleteCPConfigurationList(
+			CPConfigurationList cpConfigurationList, boolean force)
 		throws PortalException;
 
 	/**
@@ -148,6 +152,10 @@ public interface CPConfigurationListLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public CPConfigurationList deleteCPConfigurationList(
 			long CPConfigurationListId)
+		throws PortalException;
+
+	public CPConfigurationList deleteCPConfigurationList(
+			long cpConfigurationListId, boolean force)
 		throws PortalException;
 
 	public void deleteCPConfigurationLists(long companyId)
@@ -250,11 +258,6 @@ public interface CPConfigurationListLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPConfigurationList fetchCPConfigurationListByUuidAndGroupId(
 		String uuid, long groupId);
-
-	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public CPConfigurationList forceDeleteCPConfigurationList(
-		CPConfigurationList cpConfigurationList);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

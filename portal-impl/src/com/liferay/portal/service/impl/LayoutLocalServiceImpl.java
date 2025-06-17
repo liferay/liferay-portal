@@ -362,6 +362,13 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			layout.setLayoutPrototypeLinkEnabled(layoutPrototypeLinkEnabled);
 		}
 
+		String sourcePrototypeLayoutUuid = ParamUtil.getString(
+			serviceContext, "sourcePrototypeLayoutUuid");
+
+		if (Validator.isNotNull(sourcePrototypeLayoutUuid)) {
+			layout.setSourcePrototypeLayoutUuid(sourcePrototypeLayoutUuid);
+		}
+
 		layout.setPublishDate(serviceContext.getModifiedDate(date));
 
 		if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
@@ -449,6 +456,10 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 				serviceContext.getAttribute(
 					"draftLayoutDefaultSegmentsExperienceExternalReference" +
 						"Code"));
+			serviceContext.setAttribute(
+				"sourcePrototypeLayoutUuid",
+				serviceContext.getAttribute(
+					"draftLayoutSourcePrototypeLayoutUuid"));
 			serviceContext.setModifiedDate(date);
 
 			addLayout(

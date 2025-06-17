@@ -449,8 +449,7 @@ public class DDMFormInstanceLocalServiceUtil {
 	}
 
 	public static com.liferay.dynamic.data.mapping.storage.DDMFormValues
-			getFormInstanceSettingsFormValues(DDMFormInstance formInstance)
-		throws PortalException {
+		getFormInstanceSettingsFormValues(DDMFormInstance formInstance) {
 
 		return getService().getFormInstanceSettingsFormValues(formInstance);
 	}

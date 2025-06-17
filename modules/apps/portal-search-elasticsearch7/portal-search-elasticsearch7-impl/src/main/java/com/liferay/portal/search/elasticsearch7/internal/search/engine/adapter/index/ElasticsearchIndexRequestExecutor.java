@@ -5,6 +5,8 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index;
 
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.engine.adapter.index.AnalyzeIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.AnalyzeIndexResponse;
 import com.liferay.portal.search.engine.adapter.index.CloseIndexRequest;
@@ -35,6 +37,7 @@ import com.liferay.portal.search.engine.adapter.index.StatsIndexResponse;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -148,6 +151,12 @@ public class ElasticsearchIndexRequestExecutor implements IndexRequestExecutor {
 			updateIndexSettingsIndexRequest);
 	}
 
+	@Activate
+	protected void activate() {
+		_statsIndexRequestExecutor = new StatsIndexRequestExecutor(
+			_elasticsearchClientResolver, _jsonFactory);
+	}
+
 	@Reference
 	private AnalyzeIndexRequestExecutor _analyzeIndexRequestExecutor;
 
@@ -159,6 +168,9 @@ public class ElasticsearchIndexRequestExecutor implements IndexRequestExecutor {
 
 	@Reference
 	private DeleteIndexRequestExecutor _deleteIndexRequestExecutor;
+
+	@Reference
+	private ElasticsearchClientResolver _elasticsearchClientResolver;
 
 	@Reference
 	private FlushIndexRequestExecutor _flushIndexRequestExecutor;
@@ -178,6 +190,9 @@ public class ElasticsearchIndexRequestExecutor implements IndexRequestExecutor {
 		_indicesExistsIndexRequestExecutor;
 
 	@Reference
+	private JSONFactory _jsonFactory;
+
+	@Reference
 	private OpenIndexRequestExecutor _openIndexRequestExecutor;
 
 	@Reference
@@ -186,7 +201,6 @@ public class ElasticsearchIndexRequestExecutor implements IndexRequestExecutor {
 	@Reference
 	private RefreshIndexRequestExecutor _refreshIndexRequestExecutor;
 
-	@Reference
 	private StatsIndexRequestExecutor _statsIndexRequestExecutor;
 
 	@Reference

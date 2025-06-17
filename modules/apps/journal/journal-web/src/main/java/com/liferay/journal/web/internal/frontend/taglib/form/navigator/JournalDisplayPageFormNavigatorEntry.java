@@ -73,7 +73,7 @@ public class JournalDisplayPageFormNavigatorEntry
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		long classNameId = ParamUtil.getLong(portletRequest, "classNameId");
 

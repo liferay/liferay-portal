@@ -110,7 +110,7 @@ public class AssetListEntryItemSelectorDisplayContext {
 
 		PortletRequest portletRequest =
 			(PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		SearchContainer<AssetListEntry> searchContainer = new SearchContainer<>(
 			portletRequest, _portletURL, null,

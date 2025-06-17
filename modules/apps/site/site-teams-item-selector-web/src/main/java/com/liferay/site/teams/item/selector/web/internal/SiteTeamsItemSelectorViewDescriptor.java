@@ -118,7 +118,7 @@ public class SiteTeamsItemSelectorViewDescriptor
 	private SearchContainer<Team> _getTeamSearchContainer() {
 		RenderRequest renderRequest =
 			(RenderRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		SearchContainer<Team> teamSearchContainer = new SearchContainer<>(
 			renderRequest, _portletURL, null, "no-teams-were-found");

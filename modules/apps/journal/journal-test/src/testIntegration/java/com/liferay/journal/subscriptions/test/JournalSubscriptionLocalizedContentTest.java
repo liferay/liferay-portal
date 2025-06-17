@@ -393,10 +393,10 @@ public class JournalSubscriptionLocalizedContentTest
 			PortletServlet.PORTLET_SERVLET_REQUEST, httpServletRequest);
 
 		httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, mockPortletRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, mockPortletRequest);
 
 		httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletActionResponse());
 
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);

@@ -60,7 +60,7 @@ public class ElasticsearchIndexInformationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_companyIndexFactoryFixture = _createCompanyIndexFactoryFixture(
+		_indexFactoryFixture = _createIndexFactoryFixture(
 			_elasticsearchConnectionFixture);
 
 		_indexNameBuilder = _createIndexNameBuilder();
@@ -71,14 +71,14 @@ public class ElasticsearchIndexInformationTest {
 
 	@After
 	public void tearDown() {
-		_companyIndexFactoryFixture.deleteIndices();
+		_indexFactoryFixture.deleteIndices();
 
-		_companyIndexFactoryFixture.tearDown();
+		_indexFactoryFixture.tearDown();
 	}
 
 	@Test
 	public void testGetCompanyIndexName() throws Exception {
-		_companyIndexFactoryFixture.createIndices();
+		_indexFactoryFixture.createIndices();
 
 		long companyId = RandomTestUtil.randomLong();
 
@@ -89,33 +89,26 @@ public class ElasticsearchIndexInformationTest {
 
 	@Test
 	public void testGetFieldMappings() throws Exception {
-		_companyIndexFactoryFixture.createIndices();
+		_indexFactoryFixture.createIndices();
 
 		AssertUtils.assertEquals(
 			"", _loadJSONObject(testName.getMethodName()),
 			_jsonFactory.createJSONObject(
 				_elasticsearchIndexInformation.getFieldMappings(
-					_companyIndexFactoryFixture.getIndexName())));
+					_indexFactoryFixture.getIndexName())));
 	}
 
 	@Test
 	public void testGetIndexNames() throws Exception {
-		_companyIndexFactoryFixture.createIndices();
+		_indexFactoryFixture.createIndices();
 
 		AssertUtils.assertEquals(
-			"", Arrays.asList(_companyIndexFactoryFixture.getIndexName()),
+			"", Arrays.asList(_indexFactoryFixture.getIndexName()),
 			Arrays.asList(_elasticsearchIndexInformation.getIndexNames()));
 	}
 
 	@Rule
 	public TestName testName = new TestName();
-
-	private CompanyIndexFactoryFixture _createCompanyIndexFactoryFixture(
-		ElasticsearchClientResolver elasticsearchClientResolver) {
-
-		return new CompanyIndexFactoryFixture(
-			elasticsearchClientResolver, testName.getMethodName());
-	}
 
 	private ElasticsearchIndexInformation _createElasticsearchIndexInformation(
 		ElasticsearchClientResolver elasticsearchClientResolver,
@@ -132,6 +125,13 @@ public class ElasticsearchIndexInformationTest {
 			indexNameBuilder);
 
 		return elasticsearchIndexInformation;
+	}
+
+	private IndexFactoryFixture _createIndexFactoryFixture(
+		ElasticsearchClientResolver elasticsearchClientResolver) {
+
+		return new IndexFactoryFixture(
+			elasticsearchClientResolver, testName.getMethodName());
 	}
 
 	private IndexNameBuilder _createIndexNameBuilder() {
@@ -159,8 +159,8 @@ public class ElasticsearchIndexInformationTest {
 	private static ElasticsearchConnectionFixture
 		_elasticsearchConnectionFixture;
 
-	private CompanyIndexFactoryFixture _companyIndexFactoryFixture;
 	private ElasticsearchIndexInformation _elasticsearchIndexInformation;
+	private IndexFactoryFixture _indexFactoryFixture;
 	private IndexNameBuilder _indexNameBuilder;
 	private final JSONFactory _jsonFactory = new JSONFactoryImpl();
 

@@ -37,6 +37,8 @@ export class CommerceAdminOrdersPage extends CommerceDNDTablePage {
 	readonly managementBarActionsButton: Locator;
 	readonly managementBarCheckbox: Locator;
 	readonly managementBarDeleteMenuItem: Locator;
+	readonly menuActionButton: (accountName: string) => Locator;
+	readonly menuItemAction: (action: string) => Locator;
 	readonly orderActionsButton: Locator;
 	readonly orderStatusLink: (orderStatus: string) => Locator;
 	readonly page: Page;
@@ -46,7 +48,6 @@ export class CommerceAdminOrdersPage extends CommerceDNDTablePage {
 			page,
 			'#_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_fm .fds table'
 		);
-
 		this.editCommerceOrderTable = page.locator(
 			'#_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_editOrderContainer .fds table'
 		);
@@ -88,7 +89,6 @@ export class CommerceAdminOrdersPage extends CommerceDNDTablePage {
 
 			throw new Error(`Cannot locate row with rowValue: ${rowValue}`);
 		};
-
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.backLink = page.getByRole('link', {exact: true, name: 'Back'});
 		this.deleteItemMenuItem = page.getByRole('menuitem', {
@@ -119,6 +119,10 @@ export class CommerceAdminOrdersPage extends CommerceDNDTablePage {
 			exact: true,
 			name: 'delete',
 		});
+		this.menuActionButton = (accountName) =>
+			page.getByRole('row', {name: accountName}).getByRole('button');
+		this.menuItemAction = (action) =>
+			page.getByRole('menuitem', {exact: true, name: action});
 		this.orderActionsButton = page.getByRole('button', {
 			name: 'Actions',
 		});

@@ -7,6 +7,8 @@ import {Locator, Page} from '@playwright/test';
 
 export class CommerceThemeMiniumPage {
 	readonly goToMiniumLink: (siteName: string) => Promise<Locator>;
+	readonly miniCartButton: Locator;
+	readonly miniCartSubmitButton: Locator;
 	readonly myProfileItemMenu: Locator;
 	readonly page: Page;
 	readonly stickerUserNav: Locator;
@@ -15,6 +17,8 @@ export class CommerceThemeMiniumPage {
 		this.goToMiniumLink = async (siteName: string) => {
 			return page.getByRole('link', {name: `Go to ${siteName}`});
 		};
+		this.miniCartButton = page.getByTestId('miniCartButton');
+		this.miniCartSubmitButton = page.getByRole('button', {name: 'Submit'});
 		this.page = page;
 		this.myProfileItemMenu = page.getByRole('link', {name: 'My Profile'});
 		this.stickerUserNav = page.locator('.sticker').first();

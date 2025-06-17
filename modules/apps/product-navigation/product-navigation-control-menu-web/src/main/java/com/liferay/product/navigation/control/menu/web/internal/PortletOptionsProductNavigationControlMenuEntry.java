@@ -61,7 +61,7 @@ public class PortletOptionsProductNavigationControlMenuEntry
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (ListUtil.isEmpty(
 				PortletConfigurationIconTracker.getPortletConfigurationIcons(

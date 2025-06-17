@@ -1,0 +1,275 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UsageOverviewSaaS should render 1`] = `
+<div>
+  <div
+    class="settings-base-page-root"
+  >
+    <div
+      class="maintenance-alert-root"
+    />
+    <div
+      class="content-header has-page-actions"
+    >
+      <div
+        class="header-text"
+      >
+        <div
+          class="d-flex"
+        >
+          <h3
+            class="title-text text-truncate"
+          >
+            <span
+              class="text-truncate"
+              data-tooltip="false"
+              title=""
+            >
+              Subscription & Usage
+            </span>
+          </h3>
+        </div>
+        <div
+          class="description"
+        >
+          SaaS plan usage is determined by MALUs and APVs.
+        </div>
+      </div>
+      <div
+        class="page-actions-container"
+      >
+        <a
+          class="button-root btn btn-primary"
+          href="https://support.liferay.com/"
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-shortcut mr-2"
+            role="presentation"
+          >
+            <use
+              href="#shortcut"
+            />
+          </svg>
+          Go to Customer Portal
+          <span
+            class="sr-only"
+          >
+            (Opens a new window)
+          </span>
+        </a>
+      </div>
+    </div>
+    <div>
+      <div
+        class="saas-banner p-5 sm:p-8 md:p-10 xl:p-4"
+      >
+        <div
+          class="text-white"
+        >
+          <h2
+            class="title"
+          >
+            View Your SaaS Project Metrics
+          </h2>
+          <p
+            class="w-50 d-flex mb-0"
+          >
+            As a SaaS customer, you can view your project usage metrics directly in the Customer Portal. This includes details on resource usage, site users, and storage capacity, along with key project information, all accessible in one place.
+          </p>
+        </div>
+      </div>
+      <div
+        class="gradient-opaque mt-5"
+      >
+        <div
+          class="mt-2"
+        >
+          <div
+            class="w-100"
+          >
+            <h2
+              class="title"
+            >
+              Sites and Users
+            </h2>
+          </div>
+          <div
+            class="row"
+          >
+            <div
+              class="col-xl-4"
+            >
+              <div
+                class="card card-root mt-4"
+              >
+                <div
+                  class="card-header"
+                >
+                  <div
+                    class="card-title"
+                  >
+                    <h3>
+                      Number of Sites
+                    </h3>
+                  </div>
+                </div>
+                <div
+                  class="card-body"
+                >
+                  <div
+                    class="chart-bars"
+                  >
+                    <div
+                      class="small-bar"
+                    />
+                    <div
+                      class="big-bar"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-xl-4"
+            >
+              <div
+                class="card card-root mt-4"
+              >
+                <div
+                  class="card-header"
+                >
+                  <div
+                    class="card-title"
+                  >
+                    <h3>
+                      Authenticated Logins (MALU's)
+                    </h3>
+                  </div>
+                </div>
+                <div
+                  class="card-body"
+                >
+                  <div
+                    class="chart-bars"
+                  >
+                    <div
+                      class="small-bar"
+                    />
+                    <div
+                      class="big-bar"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-xl-4"
+            >
+              <div
+                class="card card-root mt-4"
+              >
+                <div
+                  class="card-header"
+                >
+                  <div
+                    class="card-title"
+                  >
+                    <h3>
+                      Anonymous Page Views (AVP)
+                    </h3>
+                  </div>
+                </div>
+                <div
+                  class="card-body"
+                >
+                  <div
+                    class="chart-bars"
+                  >
+                    <div
+                      class="small-bar"
+                    />
+                    <div
+                      class="big-bar"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mt-2"
+        >
+          <div
+            class="w-100"
+          >
+            <h2
+              class="title"
+            >
+              Resource Usage
+            </h2>
+          </div>
+          <div
+            class="row"
+          >
+            <div
+              class="d-flex mt-4 donut-chart-item col-xl-4"
+            >
+              <div
+                class="recharts-responsive-container"
+                style="width: 50%; height: 100%; min-width: 0;"
+              />
+              <div
+                class="d-flex flex-column justify-content-center"
+              >
+                <h4>
+                  Extension Capacity
+                </h4>
+                <h4>
+                  RAM
+                </h4>
+              </div>
+            </div>
+            <div
+              class="d-flex mt-4 donut-chart-item col-xl-4"
+            >
+              <div
+                class="recharts-responsive-container"
+                style="width: 50%; height: 100%; min-width: 0;"
+              />
+              <div
+                class="d-flex flex-column justify-content-center"
+              >
+                <h4>
+                  Extension Capacity
+                </h4>
+                <h4>
+                  vCPU
+                </h4>
+              </div>
+            </div>
+            <div
+              class="d-flex mt-4 donut-chart-item col-xl-4"
+            >
+              <div
+                class="recharts-responsive-container"
+                style="width: 50%; height: 100%; min-width: 0;"
+              />
+              <div
+                class="d-flex flex-column justify-content-center"
+              >
+                <h4>
+                  Storage Capacity
+                </h4>
+                <h4 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

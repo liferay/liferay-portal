@@ -223,15 +223,14 @@ public class TransactionalTestRule implements TestRule {
 			"com.liferay.portal.spring.transaction." +
 				"TransactionExecutorThreadLocal");
 
-		Field field = clazz.getDeclaredField("_transactionExecutorThreadLocal");
+		Field field = clazz.getDeclaredField("_transactionExecutorDeque");
 
 		field.setAccessible(true);
 
-		ThreadLocal<Deque<Object>> transactionExecutorsThreadLocal =
+		ThreadLocal<Deque<Object>> deque =
 			(ThreadLocal<Deque<Object>>)field.get(null);
 
-		Deque<Object> transactionExecutors =
-			transactionExecutorsThreadLocal.get();
+		Deque<Object> transactionExecutorDeque = deque.get();
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
@@ -252,15 +251,15 @@ public class TransactionalTestRule implements TestRule {
 		Object portletTransactionExecutor = bundleContext.getService(
 			serviceReference);
 
-		if (portletTransactionExecutor == transactionExecutors.peek()) {
+		if (portletTransactionExecutor == transactionExecutorDeque.peek()) {
 			return () -> {
 			};
 		}
 
-		transactionExecutors.push(portletTransactionExecutor);
+		transactionExecutorDeque.push(portletTransactionExecutor);
 
 		return () -> {
-			transactionExecutors.pop();
+			transactionExecutorDeque.pop();
 
 			bundleContext.ungetService(serviceReference);
 		};

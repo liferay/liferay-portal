@@ -46,7 +46,7 @@ public class WikiPortletHeaderJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		String mvcRenderCommandName = ParamUtil.getString(
 			portletRequest, "mvcRenderCommandName");

@@ -21,7 +21,6 @@
 		},
 		{
 			"active": true,
-			"conditionExpression": "eventStatus != 'overdue'",
 			"externalReferenceCode": "BUSINESS-EVENT-UPDATE",
 			"label": {
 				"en_US": "Business Event Update"

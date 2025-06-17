@@ -7,6 +7,7 @@ package com.liferay.dynamic.data.mapping.model.impl;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -199,7 +203,13 @@ public class DDMFormInstanceCacheModel
 
 		ddmFormInstanceImpl.resetOriginalValues();
 
-		ddmFormInstanceImpl.setDDMFormValues(_ddmFormValues);
+		try {
+			_ddmFormValuesMethodHandle.invokeExact(
+				ddmFormInstanceImpl, ddmFormValues);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return ddmFormInstanceImpl;
 	}
@@ -234,7 +244,7 @@ public class DDMFormInstanceCacheModel
 		settings = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
-		_ddmFormValues =
+		ddmFormValues =
 			(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
 				objectInput.readObject();
 	}
@@ -311,7 +321,7 @@ public class DDMFormInstanceCacheModel
 
 		objectOutput.writeLong(lastPublishDate);
 
-		objectOutput.writeObject(_ddmFormValues);
+		objectOutput.writeObject(ddmFormValues);
 	}
 
 	public long mvccVersion;
@@ -332,7 +342,22 @@ public class DDMFormInstanceCacheModel
 	public String description;
 	public String settings;
 	public long lastPublishDate;
-	public com.liferay.dynamic.data.mapping.storage.DDMFormValues
-		_ddmFormValues;
+	public volatile com.liferay.dynamic.data.mapping.storage.DDMFormValues
+		ddmFormValues;
+
+	private static final MethodHandle _ddmFormValuesMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_ddmFormValuesMethodHandle = lookup.findSetter(
+				DDMFormInstanceImpl.class, "_ddmFormValues",
+				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

@@ -8,13 +8,13 @@ jest.unmock('react-dom');
 
 const DATA_SOURCE_ARRAY = [
 	{
-		iconName: 'csv-logo',
+		iconName: 'csv_logo',
 		iconSize: 'xl',
 		name: 'test',
 		url: '#'
 	},
 	{
-		iconName: 'liferay-logo',
+		iconName: 'liferay_logo',
 		iconSize: 'xxl',
 		name: 'test1',
 		url: '#'
@@ -29,7 +29,7 @@ const mockSections = [
 	{
 		dataSources: [
 			{
-				iconName: 'salesforce-logo',
+				iconName: 'salesforce_logo',
 				iconSize: 'xxl',
 				name: 'test1',
 				onClick: noop

@@ -16,7 +16,7 @@ const TYPE_ICON_MAP = {
 	[PropertyTypes.Date]: 'date',
 	[PropertyTypes.DateTime]: 'date',
 	[PropertyTypes.Duration]: 'time',
-	[PropertyTypes.Event]: 'ac-event-analysis',
+	[PropertyTypes.Event]: 'ac_event_analysis',
 	[PropertyTypes.Number]: 'integer',
 	[PropertyTypes.OrganizationBoolean]: 'check',
 	[PropertyTypes.OrganizationDate]: 'date',

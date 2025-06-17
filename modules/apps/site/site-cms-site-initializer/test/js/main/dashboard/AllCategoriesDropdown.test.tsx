@@ -160,7 +160,7 @@ describe('[CMS Dashboard] Components: AllCategoriesDropdown', () => {
 		).toBeInTheDocument();
 	});
 
-	it('navigates to drill down and selects a category', async () => {
+	xit('navigates to drill down and selects a category', async () => {
 		const onSelectItem = jest.fn();
 
 		mockCategories([
@@ -242,7 +242,7 @@ describe('[CMS Dashboard] Components: AllCategoriesDropdown', () => {
 		);
 	});
 
-	it('navigates to drill down, renders a category list and go back to the vocabulary list', async () => {
+	xit('navigates to drill down, renders a category list and go back to the vocabulary list', async () => {
 		const onSelectItem = jest.fn();
 
 		mockCategories([

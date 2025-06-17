@@ -9,9 +9,12 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.DataLimitExceededException;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.tools.service.builder.test.model.DataLimitEntry;
@@ -39,7 +42,7 @@ public class DataLimitTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		_setDataLimitModelMaxCount(3);
 
 		try {
@@ -47,11 +50,11 @@ public class DataLimitTest {
 
 			// Asserting limit is per company
 
-			long companyId = CompanyThreadLocal.getCompanyId();
+			_company = CompanyTestUtil.addCompany(false);
 
 			try (SafeCloseable safeCloseable =
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-						companyId + 1)) {
+						_company.getCompanyId())) {
 
 				_test();
 			}
@@ -117,6 +120,9 @@ public class DataLimitTest {
 
 		_dataLimitEntryLocalService.updateDataLimitEntry(dataLimitEntry3);
 	}
+
+	@DeleteAfterTestRun
+	private Company _company;
 
 	@Inject
 	private CounterLocalService _counterLocalService;

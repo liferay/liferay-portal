@@ -97,7 +97,7 @@ export class ProductDetailsPage {
 			return page.getByText(mpn, {exact: true});
 		};
 		this.nameField = async (name: string) => {
-			return page.getByRole('heading', {name});
+			return page.getByRole('heading', {exact: true, name});
 		};
 		this.optionSelector = (optionName: string) => {
 			return page.getByLabel(optionName);
@@ -109,7 +109,7 @@ export class ProductDetailsPage {
 			.getByRole('button');
 		this.priceContainer = page.locator('div.price-container');
 		this.priceField = async (price: string, container = this.page) => {
-			return container.getByText(price);
+			return container.getByText(price, {exact: true});
 		};
 		this.productNameHeading = async (productName) => {
 			return page.getByRole('heading', {name: productName});
@@ -139,7 +139,7 @@ export class ProductDetailsPage {
 			return page.getByText(shortDescription);
 		};
 		this.skuField = async (sku: string) => {
-			return page.getByText(sku);
+			return page.getByText(sku, {exact: true});
 		};
 		this.uomCombobox = page.getByRole('combobox', {exact: true});
 		this.uomTable = async (cellValue: string) => {

@@ -3051,8 +3051,9 @@ public class DDMFormInstancePersistenceImpl
 					DDMFormInstanceModelImpl cachedDDMFormInstanceModelImpl =
 						(DDMFormInstanceModelImpl)cachedDDMFormInstance;
 
-					ddmFormInstanceModelImpl.setDDMFormValues(
-						cachedDDMFormInstanceModelImpl.getDDMFormValues());
+					ddmFormInstanceModelImpl.setSettingsDDMFormValues(
+						cachedDDMFormInstanceModelImpl.
+							getSettingsDDMFormValues());
 				}
 			}
 		}

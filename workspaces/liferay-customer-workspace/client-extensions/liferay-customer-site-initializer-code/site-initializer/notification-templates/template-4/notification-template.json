@@ -1,24 +1,24 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"externalReferenceCode": "CP-REPLACEMENT-ACTIVATION-KEY-REQUEST-NOTIFICATION-TEMPLATE",
-	"name": "CP Replacement Activation Key Request Notification Template",
+	"externalReferenceCode": "SETUP-LXC-ENVIRONMENT",
+	"name": "Setup LXC Environment",
 	"recipientType": "email",
 	"recipients": [
 		{
 			"bcc": "",
 			"cc": "",
-			"from": "provisioningrequest@liferay.com",
+			"from": "solutions@liferay.com",
 			"fromName": {
-				"en-US": "Liferay Forms"
+				"en-US": "Customer Portal"
 			},
 			"to": {
-				"en-US": "provisioning-help@liferay.com"
+				"en-US": "cloud-provisioning@liferay.com "
 			}
 		}
 	],
 	"subject": {
-		"en_US": "Replacement Activation Key - Closed/Expired Account"
+		"en_US": "Liferay SaaS Activation request for [%PROJECT_CODE%]"
 	},
 	"type": "email"
 }

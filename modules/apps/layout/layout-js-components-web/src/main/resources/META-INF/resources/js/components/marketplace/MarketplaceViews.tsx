@@ -218,7 +218,9 @@ export default function MarketplaceViews({
 interface MarketplaceInstallButtonProps {
 	className: string;
 	handleInstallProduct: (product: Product) => void;
-	permissions?: AppsPermissions;
+	permissions?: AppsPermissions & {
+		manageFragmentsEntries?: boolean;
+	};
 	product: Product;
 }
 
@@ -230,7 +232,11 @@ function MarketplaceInstallButton({
 }: MarketplaceInstallButtonProps) {
 	const marketplaceProduct = new MarketplaceProduct(product);
 
-	if (permissions && marketplaceProduct.hasPermissionToInstall(permissions)) {
+	if (
+		permissions &&
+		marketplaceProduct.hasPermissionToInstall(permissions) &&
+		permissions.manageFragmentsEntries
+	) {
 		return (
 			<ClayButton
 				className={className}

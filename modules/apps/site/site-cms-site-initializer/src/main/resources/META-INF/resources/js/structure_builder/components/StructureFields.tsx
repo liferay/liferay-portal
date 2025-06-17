@@ -9,7 +9,7 @@ import ClayEmptyState from '@clayui/empty-state';
 import {SearchForm} from '@liferay/layout-js-components-web';
 import {ManagementToolbar} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
-import React, {useMemo, useState} from 'react';
+import React, {useState} from 'react';
 
 import {getImage} from '../../main/util/getImage';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
@@ -35,14 +35,6 @@ function StructureFields() {
 
 	const [search, setSearch] = useState('');
 
-	const filteredFields = useMemo(() => {
-		return fields.filter((field) =>
-			field.label[
-				Liferay.ThemeDisplay.getDefaultLanguageId()
-			]!.toLowerCase().includes(search.toLowerCase())
-		);
-	}, [fields, search]);
-
 	if (!fields.length) {
 		return <EmptyState />;
 	}
@@ -51,7 +43,7 @@ function StructureFields() {
 		<>
 			<Toolbar setSearch={setSearch} />
 
-			<FieldsTree fields={filteredFields} />
+			<FieldsTree search={search} />
 		</>
 	);
 }

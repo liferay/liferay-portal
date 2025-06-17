@@ -139,10 +139,10 @@ public class UADExportProcessDisplayContext {
 	public PortletURL getPortletURL() throws PortalException {
 		PortletRequest portletRequest =
 			(PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 		PortletResponse portletResponse =
 			(PortletResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		return PortletURLBuilder.create(
 			PortletURLUtil.getCurrent(
@@ -176,7 +176,7 @@ public class UADExportProcessDisplayContext {
 
 		PortletRequest portletRequest =
 			(PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		SearchContainer<BackgroundTask> searchContainer = new SearchContainer(
 			portletRequest, getPortletURL(), null,

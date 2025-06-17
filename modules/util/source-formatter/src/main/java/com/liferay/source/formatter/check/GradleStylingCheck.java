@@ -184,11 +184,7 @@ public class GradleStylingCheck extends BaseFileCheck {
 
 		line = line.trim();
 
-		if (line.startsWith("//")) {
-			return true;
-		}
-
-		return false;
+		return line.startsWith("//");
 	}
 
 	private String _sortFileNames(String content) {

@@ -10,7 +10,7 @@ import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.NotificationUtil;
 import com.liferay.jenkins.results.parser.TestrayResultsParserUtil;
-import com.liferay.jenkins.results.parser.TopLevelBuild;
+import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 
 import java.io.File;
 import java.io.IOException;
@@ -285,11 +285,11 @@ public class TestrayServer {
 		return _url;
 	}
 
-	public void importCaseResults(TopLevelBuild topLevelBuild) {
+	public void importCaseResults(TopLevelBuildReport topLevelBuildReport) {
 		TestrayResultsParserUtil.processTestrayResultFiles(getResultsDir());
 
 		if (TestrayS3Bucket.hasGoogleApplicationCredentials()) {
-			_importCaseResultsToGCP(topLevelBuild);
+			_importCaseResultsToGCP(topLevelBuildReport);
 		}
 	}
 
@@ -519,25 +519,27 @@ public class TestrayServer {
 			false, entityName, entityFields, filter, sort, maxCount, pageSize);
 	}
 
-	private void _importCaseResultsToGCP(TopLevelBuild topLevelBuild) {
+	private void _importCaseResultsToGCP(
+		TopLevelBuildReport topLevelBuildReport) {
+
 		if (!TestrayS3Bucket.hasGoogleApplicationCredentials()) {
 			return;
 		}
 
 		StringBuilder sb = new StringBuilder();
 
-		JenkinsMaster jenkinsMaster = topLevelBuild.getJenkinsMaster();
+		JenkinsMaster jenkinsMaster = topLevelBuildReport.getJenkinsMaster();
 
 		sb.append(jenkinsMaster.getName());
 
 		sb.append("-");
 
-		String jobName = topLevelBuild.getJobName();
+		String jobName = topLevelBuildReport.getJobName();
 
 		sb.append(jobName.replaceAll("[\\(\\)]", "_"));
 
 		sb.append("-");
-		sb.append(topLevelBuild.getBuildNumber());
+		sb.append(topLevelBuildReport.getBuildNumber());
 		sb.append("-results.tar.gz");
 
 		File resultsDir = getResultsDir();

@@ -185,7 +185,7 @@ public class DepotBreadcrumbEntryContributorImpl
 			_groupURLProvider.getGroupURL(
 				scopeGroup,
 				(PortletRequest)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST)));
+					JavaConstants.JAKARTA_PORTLET_REQUEST)));
 
 		return breadcrumbEntry;
 	}

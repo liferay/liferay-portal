@@ -1,0 +1,24 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"title1": {
+			"config": {
+			},
+			"defaultValue": "Tab 1"
+		},
+		"title2": {
+			"config": {
+			},
+			"defaultValue": "Tab 2"
+		},
+		"title3": {
+			"config": {
+			},
+			"defaultValue": "Tab 3"
+		},
+		"title4": {
+			"config": {
+			},
+			"defaultValue": "Tab 4"
+		}
+	}
+}

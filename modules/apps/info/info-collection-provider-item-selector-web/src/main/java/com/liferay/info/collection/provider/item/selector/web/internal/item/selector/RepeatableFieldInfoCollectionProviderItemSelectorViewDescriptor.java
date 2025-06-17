@@ -82,7 +82,7 @@ public class RepeatableFieldInfoCollectionProviderItemSelectorViewDescriptor
 	public SearchContainer<InfoFieldSetEntry> getSearchContainer() {
 		PortletRequest portletRequest =
 			(PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		SearchContainer<InfoFieldSetEntry> searchContainer =
 			new SearchContainer<>(

@@ -89,7 +89,7 @@ public class DataGuardTestRuleUtil {
 
 		serviceRegistration.unregister();
 
-		_recordsThreadLocal.remove();
+		_records.remove();
 
 		_autoDeleteAndAssert(
 			testClassName, dataBag._dataMap, dataBag._portlets,
@@ -117,7 +117,7 @@ public class DataGuardTestRuleUtil {
 		Map<String, Map<Serializable, String>> records =
 			new ConcurrentHashMap<>();
 
-		_recordsThreadLocal.set(records);
+		_records.set(records);
 
 		ServiceRegistration<SessionCustomizer> serviceRegistration =
 			bundleContext.registerService(
@@ -132,7 +132,7 @@ public class DataGuardTestRuleUtil {
 	public static DataBag beforeMethod() {
 		return new DataBag(
 			_captureDataMap(), PortletLocalServiceUtil.getPortlets(),
-			_recordsThreadLocal.get(), null);
+			_records.get(), null);
 	}
 
 	public static void smartDelete(
@@ -581,7 +581,7 @@ public class DataGuardTestRuleUtil {
 			"com.liferay.portal.spring.transaction." +
 				"TransactionExecutorThreadLocal");
 
-		Field field = clazz.getDeclaredField("_transactionExecutorThreadLocal");
+		Field field = clazz.getDeclaredField("_transactionExecutorDeque");
 
 		field.setAccessible(true);
 
@@ -609,21 +609,20 @@ public class DataGuardTestRuleUtil {
 		Object portletTransactionExecutor = bundleContext.getService(
 			serviceReference);
 
-		ThreadLocal<Deque<Object>> transactionExecutorsThreadLocal =
+		ThreadLocal<Deque<Object>> deque =
 			(ThreadLocal<Deque<Object>>)field.get(null);
 
-		Deque<Object> transactionExecutors =
-			transactionExecutorsThreadLocal.get();
+		Deque<Object> transactionExecutorDeque = deque.get();
 
-		if (portletTransactionExecutor == transactionExecutors.peek()) {
+		if (portletTransactionExecutor == transactionExecutorDeque.peek()) {
 			return () -> {
 			};
 		}
 
-		transactionExecutors.push(portletTransactionExecutor);
+		transactionExecutorDeque.push(portletTransactionExecutor);
 
 		return () -> {
-			transactionExecutors.pop();
+			transactionExecutorDeque.pop();
 
 			bundleContext.ungetService(serviceReference);
 		};
@@ -665,7 +664,7 @@ public class DataGuardTestRuleUtil {
 		SetUtil.fromArray(
 			"com.liferay.portal.security.audit.storage.model.AuditEvent");
 	private static final ThreadLocal<Map<String, Map<Serializable, String>>>
-		_recordsThreadLocal = new ThreadLocal<>();
+		_records = new ThreadLocal<>();
 	private static final TransactionConfig _transactionConfig =
 		TransactionConfig.Factory.create(
 			Propagation.SUPPORTS,

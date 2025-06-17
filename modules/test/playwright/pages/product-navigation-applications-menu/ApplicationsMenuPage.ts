@@ -14,37 +14,40 @@ export class ApplicationsMenuPage {
 	private readonly aiCreatorLink: Locator;
 	private readonly announcementsItem: Locator;
 	private readonly apiBuilderMenuItem: Locator;
-	private readonly auditItem: Locator;
 	readonly applicationsMenuTabButton: Locator;
+	private readonly auditItem: Locator;
 	private readonly blueprintsItem: Locator;
 	private readonly clientExtensionsLink: Locator;
 	private readonly commerceCatalogsMenuItem: Locator;
 	private readonly commerceChannelsMenuItem: Locator;
 	private readonly commerceCurrenciesMenuItem: Locator;
 	private readonly commerceDiscountsMenuItem: Locator;
+	private readonly commerceHealthCheckMenuItem: Locator;
 	private readonly commerceOrdersMenuItem: Locator;
+	private readonly commerceOrderTypesMenuItem: Locator;
 	private readonly commercePanelButton: Locator;
 	private readonly commerceProductConfigurationListsMenuItem: Locator;
 	private readonly commerceReturnsMenuItem: Locator;
 	private readonly commerceShipmentsMenuItem: Locator;
 	private readonly commerceSpecificationsMenuItem: Locator;
 	private readonly commerceTaxCategoriesMenuItem: Locator;
+	private readonly commerceWarehousesMenuItem: Locator;
 	private readonly componentsMenuItem: Locator;
 	private readonly controlPanelButton: Locator;
 	private readonly countriesManagementItem: Locator;
 	private readonly customFieldsMenuItem: Locator;
 	private readonly dataMigrationCenterMenuItem: Locator;
-	readonly exportMenuItem: Locator;
-	readonly importMenuItem: Locator;
 	private readonly dataSetManagerMenuItem: Locator;
 	private readonly defaultPermissionsLink: Locator;
+	readonly exportMenuItem: Locator;
 	private readonly gogoShellItem: Locator;
 	private readonly homePage: HomePage;
+	readonly importMenuItem: Locator;
 	private readonly instanceSettingsMenuItem: Locator;
 	private readonly jobSchedulerMenuItem: Locator;
+	private readonly metricsItem: Locator;
 	private readonly oAuth2Administration: Locator;
 	private readonly objectsMenuItem: Locator;
-	private readonly metricsItem: Locator;
 	private readonly page: Page;
 	private readonly passwordPoliciesAdminItem: Locator;
 	private readonly paymentsMenuItem: Locator;
@@ -56,11 +59,11 @@ export class ApplicationsMenuPage {
 	private readonly rolesItem: Locator;
 	private readonly samlAdminItem: Locator;
 	private readonly searchItem: Locator;
+	private readonly serverAdministrationItem: Locator;
 	private readonly serviceAccountsItem: Locator;
 	private readonly sitesItem: Locator;
-	private readonly systemSettingsItem: Locator;
-	private readonly serverAdministrationItem: Locator;
 	private readonly siteTemplatesButton: Locator;
+	private readonly systemSettingsItem: Locator;
 	private readonly userGroupsItem: Locator;
 	private readonly usersAndOrganizationsItem: Locator;
 	private readonly virtualInstancesItem: Locator;
@@ -120,9 +123,17 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Discounts',
 		});
+		this.commerceHealthCheckMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Health Check',
+		});
 		this.commerceOrdersMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Orders',
+		});
+		this.commerceOrderTypesMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Order Types',
 		});
 		this.commercePanelButton = page.getByRole('tab', {
 			name: 'Commerce',
@@ -150,6 +161,10 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Tax Categories',
 		});
+		this.commerceWarehousesMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Warehouses',
+		});
 		this.componentsMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Components',
@@ -165,22 +180,9 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Custom Fields',
 		});
-		this.gogoShellItem = page.getByRole('menuitem', {
-			exact: true,
-			name: 'Gogo Shell',
-		});
-		this.homePage = new HomePage(page);
 		this.dataMigrationCenterMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Data Migration Center',
-		});
-		this.exportMenuItem = page.getByRole('menuitem', {
-			exact: true,
-			name: 'Export',
-		});
-		this.importMenuItem = page.getByRole('menuitem', {
-			exact: true,
-			name: 'Import',
 		});
 		this.dataSetManagerMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -189,6 +191,19 @@ export class ApplicationsMenuPage {
 		this.defaultPermissionsLink = page.getByRole('link', {
 			exact: true,
 			name: 'Default Permissions',
+		});
+		this.exportMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Export',
+		});
+		this.gogoShellItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Gogo Shell',
+		});
+		this.homePage = new HomePage(page);
+		this.importMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Import',
 		});
 		this.instanceSettingsMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -251,13 +266,13 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Search',
 		});
-		this.serviceAccountsItem = page.getByRole('menuitem', {
-			exact: true,
-			name: 'Service Accounts',
-		});
 		this.serverAdministrationItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Server Administration',
+		});
+		this.serviceAccountsItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Service Accounts',
 		});
 		this.sitesItem = page.getByRole('menuitem', {
 			exact: true,
@@ -330,74 +345,14 @@ export class ApplicationsMenuPage {
 		await this.accountUsersItem.click();
 	}
 
-	async goToAnnouncements() {
-		await this.goToApplicationsMenu();
-		await this.announcementsItem.click();
-	}
-
-	async goToDataSetManager(checkTabVisibility = true) {
-		await this.goToControlPanel(checkTabVisibility);
-		await this.dataSetManagerMenuItem.click();
-	}
-
-	async goToApplicationsMenu() {
-		await this.goto();
-		await this.applicationsMenuTabButton.click();
-	}
-
 	async goToAICreator() {
 		await this.goToInstanceSettings();
 		await this.aiCreatorLink.click();
 	}
 
-	async goToClientExtensions() {
-		await this.goto();
-		await this.clientExtensionsLink.click();
-	}
-
-	async goToComponents() {
-		await this.goto();
-		await this.controlPanelButton.click();
-		await this.componentsMenuItem.click();
-	}
-
-	async goToCountriesManagement() {
-		await this.goto();
-		await this.controlPanelButton.click();
-		await this.countriesManagementItem.click();
-	}
-
-	async goToCustomFields(forceReload = true) {
-		if (forceReload) {
-			await this.goto();
-		}
-		else {
-			await this.homePage.openApplicationMenu();
-
-			await expect(this.applicationsMenuTabButton).toBeVisible();
-		}
-		await this.controlPanelButton.click();
-		await this.customFieldsMenuItem.click();
-	}
-
-	async goToDataMigrationCenter() {
+	async goToAnnouncements() {
 		await this.goToApplicationsMenu();
-		await this.dataMigrationCenterMenuItem.click();
-	}
-
-	async goToExport() {
-		await this.goToApplicationsMenu();
-		await this.exportMenuItem.click();
-	}
-
-	async goToImport() {
-		await this.goToApplicationsMenu();
-		await this.importMenuItem.click();
-	}
-
-	async goToDefaultPermissions() {
-		await this.goToInstanceSettings();
-		await this.defaultPermissionsLink.click();
+		await this.announcementsItem.click();
 	}
 
 	async goToAPIBuilder() {
@@ -405,88 +360,25 @@ export class ApplicationsMenuPage {
 		await this.apiBuilderMenuItem.click();
 	}
 
-	async goToGogoShell() {
-		await this.goToControlPanel();
-		await this.gogoShellItem.click();
+	async goToApplicationsMenu() {
+		await this.goto();
+		await this.applicationsMenuTabButton.click();
 	}
 
-	async goToMetrics() {
+	async goToAudit() {
+		await this.goto();
+		await this.controlPanelButton.click();
+		await this.auditItem.click();
+	}
+
+	async goToBlueprints() {
 		await this.goToApplicationsMenu();
-		await this.metricsItem.click();
+		await this.blueprintsItem.click();
 	}
 
-	async goToObjects() {
-		await this.goToControlPanel();
-		await this.objectsMenuItem.click();
-	}
-
-	async goToObjectDefinition(objectDefinitionName: string) {
-		await this.goToControlPanel();
-		await this.page
-			.getByRole('menuitem', {name: objectDefinitionName})
-			.click();
-	}
-
-	async goToPicklists() {
-		await this.goToControlPanel();
-		await this.picklistsMenuItem.click();
-	}
-
-	async goToSearch() {
-		await this.goToControlPanel();
-		await this.searchItem.click();
-	}
-
-	async goToServerAdministration() {
-		await this.goToControlPanel();
-		await this.serverAdministrationItem.click();
-	}
-
-	async goToSiteTemplates() {
-		await this.goToControlPanel();
-		await this.siteTemplatesButton.click();
-	}
-
-	async goToSites(forceReload = true) {
-		if (forceReload) {
-			await this.goto();
-		}
-		else {
-			await this.homePage.openApplicationMenu();
-
-			await expect(this.applicationsMenuTabButton).toBeVisible();
-		}
-
-		await this.controlPanelButton.click();
-		await this.sitesItem.click();
-	}
-
-	async goToGlobalSite() {
-		await this.goToSite('Global');
-	}
-
-	async goToSystemSettings() {
-		await this.goToControlPanel();
-		await this.systemSettingsItem.click();
-	}
-
-	async goToInstanceSettings(forceReload = true) {
-		if (forceReload) {
-			await this.goto();
-		}
-		else {
-			await this.homePage.openApplicationMenu();
-
-			await expect(this.applicationsMenuTabButton).toBeVisible();
-		}
-
-		await this.controlPanelButton.click();
-		await this.instanceSettingsMenuItem.click();
-	}
-
-	async goToJobScheduler() {
-		await this.goToControlPanel();
-		await this.jobSchedulerMenuItem.click();
+	async goToClientExtensions() {
+		await this.goto();
+		await this.clientExtensionsLink.click();
 	}
 
 	async goToCommerceCatalogs(checkTabVisibility = true) {
@@ -509,14 +401,24 @@ export class ApplicationsMenuPage {
 		await this.commerceDiscountsMenuItem.click();
 	}
 
-	async goToCommercePanel(checkTabVisibility = true) {
-		await this.goto(checkTabVisibility);
-		await this.commercePanelButton.click();
+	async goToCommerceHealthCheck() {
+		await this.goToCommercePanel();
+		await this.commerceHealthCheckMenuItem.click();
 	}
 
 	async goToCommerceOrders(checkTabVisibility = true) {
 		await this.goToCommercePanel(checkTabVisibility);
 		await this.commerceOrdersMenuItem.click();
+	}
+
+	async goToCommerceOrderTypes(checkTabVisibility = true) {
+		await this.goToCommercePanel(checkTabVisibility);
+		await this.commerceOrderTypesMenuItem.click();
+	}
+
+	async goToCommercePanel(checkTabVisibility = true) {
+		await this.goto(checkTabVisibility);
+		await this.commercePanelButton.click();
 	}
 
 	async goToCommerceProductConfigurationLists(checkTabVisibility = true) {
@@ -544,6 +446,116 @@ export class ApplicationsMenuPage {
 		await this.commerceTaxCategoriesMenuItem.click();
 	}
 
+	async goToCommerceWarehouses(checkTabVisibility = true) {
+		await this.goToCommercePanel(checkTabVisibility);
+		await this.commerceWarehousesMenuItem.click();
+	}
+
+	async goToComponents() {
+		await this.goto();
+		await this.controlPanelButton.click();
+		await this.componentsMenuItem.click();
+	}
+
+	async goToControlPanel(checkTabVisibility = true) {
+		await this.goto(checkTabVisibility);
+		await this.controlPanelButton.click();
+	}
+
+	async goToCountriesManagement() {
+		await this.goto();
+		await this.controlPanelButton.click();
+		await this.countriesManagementItem.click();
+	}
+
+	async goToCustomFields(forceReload = true) {
+		if (forceReload) {
+			await this.goto();
+		}
+		else {
+			await this.homePage.openApplicationMenu();
+			await expect(this.applicationsMenuTabButton).toBeVisible();
+		}
+
+		await this.controlPanelButton.click();
+		await this.customFieldsMenuItem.click();
+	}
+
+	async goToDataMigrationCenter() {
+		await this.goToApplicationsMenu();
+		await this.dataMigrationCenterMenuItem.click();
+	}
+
+	async goToDataSetManager(checkTabVisibility = true) {
+		await this.goToControlPanel(checkTabVisibility);
+		await this.dataSetManagerMenuItem.click();
+	}
+
+	async goToDefaultPermissions() {
+		await this.goToInstanceSettings();
+		await this.defaultPermissionsLink.click();
+	}
+
+	async goToExport() {
+		await this.goToApplicationsMenu();
+		await this.exportMenuItem.click();
+	}
+
+	async goToGlobalSite() {
+		await this.goToSite('Global');
+	}
+
+	async goToGogoShell() {
+		await this.goToControlPanel();
+		await this.gogoShellItem.click();
+	}
+
+	async goToImport() {
+		await this.goToApplicationsMenu();
+		await this.importMenuItem.click();
+	}
+
+	async goToInstanceSettings(forceReload = true) {
+		if (forceReload) {
+			await this.goto();
+		}
+		else {
+			await this.homePage.openApplicationMenu();
+
+			await expect(this.applicationsMenuTabButton).toBeVisible();
+		}
+
+		await this.controlPanelButton.click();
+		await this.instanceSettingsMenuItem.click();
+	}
+
+	async goToJobScheduler() {
+		await this.goToControlPanel();
+		await this.jobSchedulerMenuItem.click();
+	}
+
+	async goToMetrics() {
+		await this.goToApplicationsMenu();
+		await this.metricsItem.click();
+	}
+
+	async goToOauth2Administration() {
+		await this.goToControlPanel();
+		await this.oAuth2Administration.click();
+	}
+
+	async goToObjectDefinition(objectDefinitionName: string) {
+		await this.goToControlPanel();
+		await this.page
+			.getByRole('menuitem', {name: objectDefinitionName})
+			.click();
+	}
+
+	async goToObjects() {
+		await this.goToControlPanel();
+		await this.objectsMenuItem.click();
+	}
+
 	async goToPasswordPolicies() {
 		await this.goToControlPanel();
 		await this.passwordPoliciesAdminItem.click();
@@ -554,6 +566,16 @@ export class ApplicationsMenuPage {
 		await this.paymentsMenuItem.click();
 	}
 
+	async goToPicklists() {
+		await this.goToControlPanel();
+		await this.picklistsMenuItem.click();
+	}
+
+	async goToProcessBuilder() {
+		await this.goToApplicationsMenu();
+		await this.processBuilderItem.click();
+	}
+
 	async goToProducts(checkTabVisibility = true) {
 		await this.goToCommercePanel(checkTabVisibility);
 		await this.productsMenuItem.click();
@@ -562,31 +584,6 @@ export class ApplicationsMenuPage {
 	async goToQueue() {
 		await this.goToControlPanel();
 		await this.queueMenuItem.click();
-	}
-
-	async goToSite(name: string = 'Liferay DXP', checkTabVisibility = true) {
-		await this.goto(checkTabVisibility);
-		await this.page.getByRole('link', {exact: true, name}).click();
-	}
-
-	async goToControlPanel(checkTabVisibility = true) {
-		await this.goto(checkTabVisibility);
-		await this.controlPanelButton.click();
-	}
-
-	async goToBlueprints() {
-		await this.goToApplicationsMenu();
-		await this.blueprintsItem.click();
-	}
-
-	async goToOauth2Administration() {
-		await this.goToControlPanel();
-		await this.oAuth2Administration.click();
-	}
-
-	async goToProcessBuilder() {
-		await this.goToApplicationsMenu();
-		await this.processBuilderItem.click();
 	}
 
 	async goToResultRankings() {
@@ -614,10 +611,49 @@ export class ApplicationsMenuPage {
 		await this.samlAdminItem.click();
 	}
 
+	async goToSearch() {
+		await this.goToControlPanel();
+		await this.searchItem.click();
+	}
+
+	async goToServerAdministration() {
+		await this.goToControlPanel();
+		await this.serverAdministrationItem.click();
+	}
+
 	async goToServiceAccounts() {
 		await this.goto();
 		await this.controlPanelButton.click();
 		await this.serviceAccountsItem.click();
+	}
+
+	async goToSite(name: string = 'Liferay DXP', checkTabVisibility = true) {
+		await this.goto(checkTabVisibility);
+		await this.page.getByRole('link', {exact: true, name}).click();
+	}
+
+	async goToSites(forceReload = true) {
+		if (forceReload) {
+			await this.goto();
+		}
+		else {
+			await this.homePage.openApplicationMenu();
+
+			await expect(this.applicationsMenuTabButton).toBeVisible();
+		}
+
+		await this.controlPanelButton.click();
+		await this.sitesItem.click();
+	}
+
+	async goToSiteTemplates() {
+		await this.goToControlPanel();
+		await this.siteTemplatesButton.click();
+	}
+
+	async goToSystemSettings() {
+		await this.goToControlPanel();
+		await this.systemSettingsItem.click();
 	}
 
 	async goToUserGroups(forceReload = true) {
@@ -629,6 +665,7 @@ export class ApplicationsMenuPage {
 
 			await expect(this.applicationsMenuTabButton).toBeVisible();
 		}
+
 		await this.controlPanelButton.click();
 		await this.userGroupsItem.click();
 	}
@@ -663,11 +700,5 @@ export class ApplicationsMenuPage {
 		await this.goto();
 		await this.controlPanelButton.click();
 		await this.virtualInstancesItem.click();
-	}
-
-	async goToAudit() {
-		await this.goto();
-		await this.controlPanelButton.click();
-		await this.auditItem.click();
 	}
 }

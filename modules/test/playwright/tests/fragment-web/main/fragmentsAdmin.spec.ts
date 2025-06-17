@@ -304,7 +304,7 @@ test(
 		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
 			fragmentCollectionId: globalFragmentCollection.fragmentCollectionId,
 			groupId: globalSiteId,
-			html: '<div class="fragment-name"><img src="[resources:image]" /></div>',
+			html: '<div class="fragment-name"><img src="[resources:image.jpg]" /></div>',
 			name: fragmentEntryName,
 		});
 
@@ -362,7 +362,7 @@ test(
 			path.join(__dirname, '/dependencies/image.jpg')
 		);
 
-		await expect(page.getByText('Image')).toBeVisible();
+		await expect(page.getByText('Image.jpg')).toBeVisible();
 
 		// Assert global fragment in current site
 
@@ -400,7 +400,7 @@ test(
 
 		await resources.click();
 
-		await expect(page.getByText('Image')).toBeVisible();
+		await expect(page.getByText('Image.jpg')).toBeVisible();
 
 		// Delete global fragment collection
 

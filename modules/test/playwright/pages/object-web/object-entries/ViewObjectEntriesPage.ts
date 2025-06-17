@@ -66,7 +66,7 @@ export class ViewObjectEntriesPage {
 		);
 		this.saveObjectEntryButton = page.getByRole('button', {name: 'Save'});
 		this.saveObjectEntryButtonArabic = page.getByRole('button', {
-			name: 'إحفظ',
+			name: 'حفظ',
 		});
 		this.selectFileButton = page.getByRole('button', {name: 'Select File'});
 		this.selectFileButtonArabic = page.getByRole('button', {

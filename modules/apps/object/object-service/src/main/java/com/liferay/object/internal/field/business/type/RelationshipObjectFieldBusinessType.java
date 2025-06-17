@@ -165,6 +165,10 @@ public class RelationshipObjectFieldBusinessType
 		if (values.containsKey(objectField.getName())) {
 			Object value = values.get(objectField.getName());
 
+			if (value == null) {
+				return 0;
+			}
+
 			long valueLong = GetterUtil.getLong(value);
 
 			if (valueLong == 0) {
@@ -210,6 +214,10 @@ public class RelationshipObjectFieldBusinessType
 		if (values.containsKey(objectRelationshipERCObjectFieldName)) {
 			String externalReferenceCode = MapUtil.getString(
 				values, objectRelationshipERCObjectFieldName);
+
+			if (Validator.isNull(externalReferenceCode)) {
+				return 0;
+			}
 
 			ObjectDefinition objectDefinition = _getObjectDefinition(
 				objectField);

@@ -7,6 +7,9 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -31,7 +34,9 @@ public class PortalHotfixReleaseJob extends BasePortalReleaseJob {
 
 		if (portalHotfixRelease != null) {
 			jsonObject.put(
-				"portal_hotfix_release", portalHotfixRelease.getJSONObject());
+				"portal_hotfix_release_url",
+				String.valueOf(
+					portalHotfixRelease.getPortalHotfixReleaseURL()));
 		}
 
 		return jsonObject;
@@ -100,8 +105,13 @@ public class PortalHotfixReleaseJob extends BasePortalReleaseJob {
 	protected PortalHotfixReleaseJob(JSONObject jsonObject) {
 		super(jsonObject);
 
-		_portalHotfixRelease = new PortalHotfixRelease(
-			jsonObject.getJSONObject("portal_hotfix_release"));
+		try {
+			_portalHotfixRelease = PortalReleaseFactory.newPortalHotfixRelease(
+				new URL(jsonObject.getString("portal_hotfix_release_url")));
+		}
+		catch (MalformedURLException malformedURLException) {
+			throw new RuntimeException(malformedURLException);
+		}
 	}
 
 	private final PortalHotfixRelease _portalHotfixRelease;

@@ -643,6 +643,9 @@ public class PortalUpgradeProcessRegistryImpl
 
 		upgradeVersionTreeMap.put(
 			new Version(32, 4, 1), new UpgradePortletPreferenceValueCounter());
+
+		upgradeVersionTreeMap.put(
+			new Version(32, 4, 2), new UpgradeServiceComponent());
 	}
 
 }

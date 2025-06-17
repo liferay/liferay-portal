@@ -88,10 +88,10 @@ export function getSymbol(type) {
 		case EntityTypes.DataSource:
 			return 'document';
 		case EntityTypes.IndividualsSegment:
-			return 'faro-contacts-segments';
+			return 'faro_contacts_segments';
 		case EntityTypes.Individual:
 		default:
-			return 'faro-contacts-individuals';
+			return 'faro_contacts_individuals';
 	}
 }
 

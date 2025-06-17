@@ -82,7 +82,7 @@ public class SchedulerEngineAuditorImpl implements SchedulerEngineAuditor {
 
 	private static final Snapshot<AuditRouter> _auditRouterSnapshot =
 		new Snapshot<>(
-			SchedulerEngineHelperImpl.class, AuditRouter.class, null, true);
+			SchedulerEngineAuditorImpl.class, AuditRouter.class, null, true);
 
 	@Reference
 	private ClusterMasterExecutor _clusterMasterExecutor;

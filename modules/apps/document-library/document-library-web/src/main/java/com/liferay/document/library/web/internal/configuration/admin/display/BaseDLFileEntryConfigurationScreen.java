@@ -65,7 +65,7 @@ public abstract class BaseDLFileEntryConfigurationScreen
 					dlFileEntryConfigurationProvider, httpServletRequest,
 					portal.getLiferayPortletResponse(
 						(PortletResponse)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE)),
+							JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 					scope, _getScopePK(httpServletRequest, scope)));
 
 			RequestDispatcher requestDispatcher =

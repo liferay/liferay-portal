@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.tools.service.builder.test.service.persistence.IndexEntryPersistence;
@@ -21,6 +22,8 @@ import com.liferay.portal.tools.service.builder.test.service.persistence.IndexEn
 import java.lang.reflect.Field;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,8 @@ public class IndexEntryTest {
 		List<String> missingIndexForFinderNames = new ArrayList<>();
 
 		try (Connection connection = DataAccess.getConnection()) {
+			DatabaseMetaData databaseMetaData = connection.getMetaData();
+
 			DB db = DBManagerUtil.getDB();
 
 			List<IndexMetadata> indexMetadatas = db.getIndexMetadatas(
@@ -71,6 +76,7 @@ public class IndexEntryTest {
 
 				if ((finderName != null) &&
 					!_hasIndex(
+						databaseMetaData,
 						(FinderPath)field.get(_indexEntryPersistence),
 						indexMetadatas, unique)) {
 
@@ -79,18 +85,36 @@ public class IndexEntryTest {
 			}
 		}
 
-		Assert.assertTrue(missingIndexForFinderNames.isEmpty());
+		Assert.assertTrue(
+			missingIndexForFinderNames.toString(),
+			missingIndexForFinderNames.isEmpty());
 	}
 
 	private boolean _hasIndex(
-		FinderPath finderPath, List<IndexMetadata> indexMetadatas,
-		boolean unique) {
+			DatabaseMetaData databaseMetaData, FinderPath finderPath,
+			List<IndexMetadata> indexMetadatas, boolean unique)
+		throws SQLException {
 
 		for (IndexMetadata indexMetadata : indexMetadatas) {
-			if (unique) {
-				String[] expectedIndexColumnNames = ArrayUtil.append(
-					finderPath.getColumnNames(), "ctCollectionId");
+			String[] expectedIndexColumnNames = finderPath.getColumnNames();
 
+			if (unique) {
+				expectedIndexColumnNames = ArrayUtil.append(
+					expectedIndexColumnNames, "ctCollectionId");
+			}
+
+			for (int i = 0; i < expectedIndexColumnNames.length; i++) {
+				if (databaseMetaData.storesLowerCaseIdentifiers()) {
+					expectedIndexColumnNames[i] = StringUtil.toLowerCase(
+						expectedIndexColumnNames[i]);
+				}
+				else if (databaseMetaData.storesUpperCaseIdentifiers()) {
+					expectedIndexColumnNames[i] = StringUtil.toUpperCase(
+						expectedIndexColumnNames[i]);
+				}
+			}
+
+			if (unique) {
 				if (indexMetadata.isUnique() &&
 					ArrayUtil.containsAll(
 						indexMetadata.getColumnNames(),

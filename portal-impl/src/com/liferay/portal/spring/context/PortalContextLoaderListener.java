@@ -338,7 +338,7 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 		_portalServletContextPath = servletContext.getContextPath();
 
 		File tempDir = (File)servletContext.getAttribute(
-			JavaConstants.JAVAX_SERVLET_CONTEXT_TEMPDIR);
+			JavaConstants.JAKARTA_SERVLET_CONTEXT_TEMPDIR);
 
 		PropsValues.LIFERAY_WEB_PORTAL_CONTEXT_TEMPDIR =
 			tempDir.getAbsolutePath();

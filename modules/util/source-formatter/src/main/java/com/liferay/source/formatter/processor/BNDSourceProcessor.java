@@ -57,11 +57,7 @@ public class BNDSourceProcessor extends BaseSourceProcessor {
 
 		List<String> fileExtensions = sourceFormatterArgs.getFileExtensions();
 
-		if (!fileExtensions.contains("bnd")) {
-			return false;
-		}
-
-		return true;
+		return fileExtensions.contains("bnd");
 	}
 
 	private static final String[] _INCLUDES = {"**/*.bnd"};

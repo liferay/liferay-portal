@@ -15,11 +15,11 @@ exports[`WorkspacesErrorDisplay should render 1`] = `
         target="_blank"
       >
         <svg
-          class="lexicon-icon lexicon-icon-liferay-logo icon-root liferay-logo"
+          class="lexicon-icon lexicon-icon-liferay_logo icon-root liferay-logo"
           role="presentation"
         >
           <use
-            href="#liferay-logo"
+            href="#liferay_logo"
           />
         </svg>
         <span
@@ -71,11 +71,11 @@ exports[`WorkspacesErrorDisplay should render 1`] = `
             class="logo-container"
           >
             <svg
-              class="lexicon-icon lexicon-icon-ac-logo icon-root logo-icon"
+              class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
               role="presentation"
             >
               <use
-                href="#ac-logo"
+                href="#ac_logo"
               />
             </svg>
             <span

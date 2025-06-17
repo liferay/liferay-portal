@@ -226,7 +226,7 @@ public class AutoSaveArticleMVCResourceCommandTest {
 			WebKeys.CURRENT_URL, "http://localhost:8080");
 
 		mockMultipartHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG,
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			PortletConfigFactoryUtil.create(
 				_portletLocalService.getPortletById(JournalPortletKeys.JOURNAL),
 				null));

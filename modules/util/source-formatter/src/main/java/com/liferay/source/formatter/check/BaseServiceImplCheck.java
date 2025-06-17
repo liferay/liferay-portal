@@ -137,11 +137,7 @@ public abstract class BaseServiceImplCheck extends BaseJavaTermCheck {
 
 		s = s.substring(0, x);
 
-		if (!s.contains("/*")) {
-			return true;
-		}
-
-		return false;
+		return !s.contains("/*");
 	}
 
 }

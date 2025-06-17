@@ -33,6 +33,7 @@ import FrontendDataSetContext, {
 	IDataSetData,
 	TRenderer,
 } from './FrontendDataSetContext';
+import {InfoPanel} from './info_panel/InfoPanel';
 
 // @ts-ignore
 
@@ -91,6 +92,7 @@ const FrontendDataSet = ({
 	formName,
 	header,
 	id,
+	infoPanelComponent,
 	inlineAddingSettings,
 	inlineEditingSettings,
 	items: itemsProp,
@@ -120,16 +122,21 @@ const FrontendDataSet = ({
 	uniformActionsDisplay,
 	views,
 }: IFrontendDataSetProps) => {
+	const fdsRef = useRef(null);
 	const wrapperRef = useRef(null);
 	const [componentLoading, setComponentLoading] = useState(false);
 	const [creationMenu, setCreationMenu] = useState(initialCreationMenu);
 	const [dataLoading, setDataLoading] = useState(!!apiURL);
-	const [dataSetSupportModalId] = useState(`support-modal-${getRandomId()}`);
-	const [dataSetSupportSidePanelId] = useState(
+	const dataSetSupportInfoPanelIdRef = useRef(
+		`support-info-panel-${getRandomId()}`
+	);
+	const dataSetSupportModalIdRef = useRef(`support-modal-${getRandomId()}`);
+	const dataSetSupportSidePanelIdRef = useRef(
 		sidePanelId || `support-side-panel-${getRandomId()}`
 	);
 
 	const [highlightedItemsValue, setHighlightedItemsValue] = useState([]);
+	const [infoPanelOpen, setInfoPanelOpen] = useState<boolean>(false);
 	const [items, setItems] = useState(itemsProp || []);
 	const [itemsChanges, setItemsChanges] = useState<{[key: string]: any}>({});
 	const [pageNumber, setPageNumber] = useState(
@@ -704,7 +711,6 @@ const FrontendDataSet = ({
 				selectionType={selectionType}
 				showSearch={showSearch}
 				showSelectAll={showSelectAll}
-				sidePanelId={dataSetSupportSidePanelId}
 				total={total}
 			/>
 		</div>
@@ -879,7 +885,7 @@ const FrontendDataSet = ({
 
 	function openSidePanel(config: IModalConfig) {
 		return Liferay.fire(EVENTS.OPEN_SIDE_PANEL, {
-			id: dataSetSupportSidePanelId,
+			id: dataSetSupportSidePanelIdRef.current,
 			onSubmit: refreshData,
 			...config,
 		});
@@ -887,7 +893,7 @@ const FrontendDataSet = ({
 
 	function openModal(config: IModalConfig) {
 		return Liferay.fire(EVENTS.OPEN_MODAL, {
-			id: dataSetSupportModalId,
+			id: dataSetSupportModalIdRef.current,
 			onSubmit: refreshData,
 			...config,
 		});
@@ -1081,17 +1087,22 @@ const FrontendDataSet = ({
 				highlightItems,
 				highlightedItemsValue,
 				id,
+				infoPanelId: dataSetSupportInfoPanelIdRef.current,
+				infoPanelOpen,
 				inlineAddingSettings,
 				inlineEditingSettings,
 				itemsActions,
 				itemsChanges,
 				loadData: refreshData,
-				modalId: dataSetSupportModalId,
+				modalId: dataSetSupportModalIdRef.current,
 				namespace,
 				nestedItemsKey,
 				nestedItemsReferenceKey,
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
+				onInfoPanelToggleButtonClick: () => {
+					setInfoPanelOpen((value) => !value);
+				},
 				onItemsChange,
 				onSearch,
 				onSelect,
@@ -1104,12 +1115,17 @@ const FrontendDataSet = ({
 					selectedItemsKey &&
 						(bulkActions?.length || selectionType === 'single')
 				),
+				selectedItems,
 				selectedItemsKey,
 				selectedItemsValue,
 				selectionType,
 				showBulkActionsManagementBar,
 				showBulkActionsManagementBarActions,
-				sidePanelId: dataSetSupportSidePanelId,
+				showInfoPanel:
+					infoPanelComponent && Liferay.FeatureFlags['LPD-41774']
+						? true
+						: false,
+				sidePanelId: dataSetSupportSidePanelIdRef.current,
 				sorts,
 				style,
 				toggleItemInlineEdit,
@@ -1119,12 +1135,15 @@ const FrontendDataSet = ({
 			}}
 		>
 			<ViewsContext.Provider value={[viewsState, viewsDispatch]}>
-				<div className="fds">
-					<Modal id={dataSetSupportModalId} onClose={refreshData} />
+				<div className="fds" ref={fdsRef}>
+					<Modal
+						id={dataSetSupportModalIdRef.current}
+						onClose={refreshData}
+					/>
 
 					{!sidePanelId && (
 						<SidePanel
-							id={dataSetSupportSidePanelId}
+							id={dataSetSupportSidePanelIdRef.current}
 							onAfterSubmit={refreshData}
 						/>
 					)}
@@ -1134,6 +1153,17 @@ const FrontendDataSet = ({
 						data-testid={`visualization-mode-${activeView.name}`}
 						ref={wrapperRef}
 					>
+						{infoPanelComponent && (
+							<InfoPanel
+								className="fds-info-panel"
+								component={infoPanelComponent}
+								containerRef={fdsRef}
+								id={dataSetSupportInfoPanelIdRef.current}
+								onOpenChange={setInfoPanelOpen}
+								open={infoPanelOpen}
+							/>
+						)}
+
 						{style === 'default' && (
 							<div className="data-set data-set-inline">
 								{managementBar}

@@ -25,7 +25,7 @@ public class PostgreSQLTransformerLogic extends BaseSQLTransformerLogic {
 		Function[] functions = {
 			getAggregationFunction(), getBitwiseCheckFunction(),
 			getBooleanFunction(), getCastClobTextFunction(),
-			getCastFloatFunction(), getCastLongFunction(),
+			getCastDecimalFunction(), getCastLongFunction(),
 			getCastTextFunction(), getDropTableIfExistsTextFunction(),
 			getInstrFunction(), getIntegerDivisionFunction(),
 			_getNegativeComparisonFunction(), _getNullDateFunction()

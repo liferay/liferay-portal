@@ -381,17 +381,7 @@ public class UserImpl extends UserBaseImpl {
 	@Override
 	public Group getGroup() {
 		if (_group == null) {
-			if (_groupId == -1) {
-				_group = GroupLocalServiceUtil.fetchUserGroup(
-					getCompanyId(), getUserId());
-
-				if (_group != null) {
-					_groupId = _group.getGroupId();
-				}
-			}
-			else {
-				_group = GroupLocalServiceUtil.fetchGroup(_groupId);
-			}
+			_group = GroupLocalServiceUtil.fetchGroup(getGroupId());
 		}
 
 		return _group;
@@ -405,6 +395,8 @@ public class UserImpl extends UserBaseImpl {
 
 			if (_group != null) {
 				_groupId = _group.getGroupId();
+
+				groupIdUpdateEntityCacheConsumer.accept(_groupId);
 			}
 		}
 

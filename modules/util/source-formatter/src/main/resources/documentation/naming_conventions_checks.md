@@ -13,6 +13,7 @@ JSONNamingCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks if vari
 [JSPTaglibVariableCheck](check/jsp_taglib_variable_check.md#jsptaglibvariablecheck) | .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks if variable names follow naming conventions. |
 JavaClassNameCheck | .java | Checks if class names follow naming conventions. |
 [JavaComponentActivateCheck](check/java_component_activate_check.md#javacomponentactivatecheck) | .java | Checks if methods with annotation `@Activate` or `@Deactivate` follow naming conventions. |
+JavaConstantsFileCheck | .java | Checks if constants names follow naming conventions. |
 JavaExceptionCheck | .java | Checks that variable names of exceptions in `catch` statements follow naming conventions. |
 [JavaHelperUtilCheck](check/java_helper_util_check.md#javahelperutilcheck) | .java | Finds incorrect use of `*Helper` or `*Util` classes. |
 [JavaTestMethodAnnotationsCheck](check/java_test_method_annotations_check.md#javatestmethodannotationscheck) | .java | Checks if methods with test annotations follow the naming conventions. |

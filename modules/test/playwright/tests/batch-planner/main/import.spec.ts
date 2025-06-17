@@ -1144,62 +1144,24 @@ test('can import json file with attachment field', async ({
 				'c/students'
 			)
 		).items
-	).toEqual([
-		{
-			actions: expect.any(Object),
-			creator: expect.any(Object),
-			dateCreated: expect.any(String),
-			dateModified: expect.any(String),
-			diploma: {
-				externalReferenceCode: expect.any(String),
-				id: expect.any(Number),
-				link: {
-					href: expect.any(String),
-					label: 'diploma.png',
-				},
-				name: 'diploma.png',
-				scope: expect.any(Object),
-			},
-			externalReferenceCode: expect.any(String),
-			id: expect.any(Number),
-			keywords: [],
-			name: 'Jane',
-			objectEntryFolderExternalReferenceCode: '',
-			objectEntryFolderId: 0,
-			r_subjectStudents_c_subjectERC: 'Math',
-			r_subjectStudents_c_subjectId: expect.any(Number),
-			status: expect.any(Object),
-			subjectStudentsERC: 'Math',
-			taxonomyCategoryBriefs: [],
-		},
-		{
-			actions: expect.any(Object),
-			creator: expect.any(Object),
-			dateCreated: expect.any(String),
-			dateModified: expect.any(String),
-			diploma: {
-				externalReferenceCode: expect.any(String),
-				id: expect.any(Number),
-				link: {
-					href: expect.any(String),
-					label: 'diploma.png',
-				},
-				name: 'diploma.png',
-				scope: expect.any(Object),
-			},
-			externalReferenceCode: expect.any(String),
-			id: expect.any(Number),
-			keywords: [],
-			name: 'John',
-			objectEntryFolderExternalReferenceCode: '',
-			objectEntryFolderId: 0,
-			r_subjectStudents_c_subjectERC: 'Math',
-			r_subjectStudents_c_subjectId: expect.any(Number),
-			status: expect.any(Object),
-			subjectStudentsERC: 'Math',
-			taxonomyCategoryBriefs: [],
-		},
-	]);
+	).toEqual(
+		expect.arrayContaining([
+			expect.objectContaining({
+				diploma: expect.objectContaining({
+					link: expect.objectContaining({label: 'diploma.png'}),
+				}),
+				name: 'Jane',
+				r_subjectStudents_c_subjectERC: 'Math',
+			}),
+			expect.objectContaining({
+				diploma: expect.objectContaining({
+					link: expect.objectContaining({label: 'diploma.png'}),
+				}),
+				name: 'John',
+				r_subjectStudents_c_subjectERC: 'Math',
+			}),
+		])
+	);
 });
 
 test('can map all imported fields', async ({

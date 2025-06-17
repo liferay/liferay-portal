@@ -171,7 +171,7 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 	public String getItemSelectorURL(HttpServletRequest httpServletRequest) {
 		RenderResponse renderResponse =
 			(RenderResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		InfoItemItemSelectorCriterion itemSelectorCriterion =
 			new InfoItemItemSelectorCriterion();

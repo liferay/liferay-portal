@@ -5,7 +5,7 @@ definition {
 	property osgi.modules.includes = "wiki";
 	property portal.release = "false";
 	property portal.upstream = "true";
-	property testray.main.component.name = "User Interface";
+	property testray.main.component.name = "Frontend Editor";
 
 	var pageName = "CKEditor Page";
 

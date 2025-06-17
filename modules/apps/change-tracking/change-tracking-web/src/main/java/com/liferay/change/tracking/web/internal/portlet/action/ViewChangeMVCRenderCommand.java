@@ -161,7 +161,7 @@ public class ViewChangeMVCRenderCommand implements MVCRenderCommand {
 
 	private static final Snapshot<PublishScheduler> _publishSchedulerSnapshot =
 		new Snapshot<>(
-			ViewChangesMVCRenderCommand.class, PublishScheduler.class, null,
+			ViewChangeMVCRenderCommand.class, PublishScheduler.class, null,
 			true);
 
 	@Reference

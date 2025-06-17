@@ -15,6 +15,7 @@ import {
 } from '../../../../../context/NewAppContext';
 import useListTypeDefinition from '../../../../../hooks/useListTypeDefinition';
 import i18n from '../../../../../i18n';
+import {getRandomID} from '../../../../../utils/string';
 import {LIFERAY_VERSION_PICKLIST} from '../constants';
 
 type NewAppPackageVersionModal = {
@@ -58,7 +59,6 @@ export function NewAppPackageVersionModal({
 			<ClayModal.Header>
 				{i18n.translate('select-compatible-versions')}
 			</ClayModal.Header>
-
 			<ClayModal.Body>
 				<p>
 					{i18n.translate(
@@ -130,7 +130,6 @@ export function NewAppPackageVersionModal({
 					</ClayForm.Group>
 				</ClayForm>
 			</ClayModal.Body>
-
 			<ClayModal.Footer
 				last={
 					<ClayButton.Group spaced>
@@ -147,12 +146,11 @@ export function NewAppPackageVersionModal({
 									payload: {
 										liferayPackages: [
 											...liferayPackages,
-											...checkboxVersions.map(
-												(checkedVersion) => ({
-													files: [],
-													version: checkedVersion,
-												})
-											),
+											{
+												file: null,
+												id: getRandomID(),
+												versions: checkboxVersions,
+											},
 										],
 									},
 									type: NewAppTypes.SET_BUILD,

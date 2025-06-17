@@ -116,17 +116,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 	public Group getGroup() throws PortalException {
 		if (getCompanyId() > CompanyConstants.SYSTEM) {
 			if (_group == null) {
-				if (_groupId == -1) {
-					_group = GroupLocalServiceUtil.fetchCompanyGroup(
-						getCompanyId());
-
-					if (_group != null) {
-						_groupId = _group.getGroupId();
-					}
-				}
-				else {
-					_group = GroupLocalServiceUtil.fetchGroup(_groupId);
-				}
+				_group = GroupLocalServiceUtil.fetchGroup(getGroupId());
 			}
 
 			return _group;
@@ -142,6 +132,8 @@ public class CompanyImpl extends CompanyBaseImpl {
 
 			if (_group != null) {
 				_groupId = _group.getGroupId();
+
+				groupIdUpdateEntityCacheConsumer.accept(_groupId);
 			}
 		}
 
@@ -281,6 +273,8 @@ public class CompanyImpl extends CompanyBaseImpl {
 		}
 
 		_virtualHostname = virtualHost.getHostname();
+
+		virtualHostnameUpdateEntityCacheConsumer.accept(_virtualHostname);
 
 		return _virtualHostname;
 	}

@@ -7,7 +7,7 @@ application:
 author: Roberto Díaz
 clientDir: ../headless-asset-library-client/src/main/java
 forcePredictableOperationId: true
-generateBatch: false
+generateBatch: true
 generateGraphQL: false
 javaEEPackage: jakarta
 testDir: ../headless-asset-library-test/src/testIntegration/java

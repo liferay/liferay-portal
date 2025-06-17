@@ -306,9 +306,7 @@ public class FragmentCollectionImpl extends FragmentCollectionBaseImpl {
 				QueryUtil.ALL_POS);
 
 		for (Object object : foldersAndFileEntriesAndFileShortcuts) {
-			if (object instanceof Folder) {
-				Folder childFolder = (Folder)object;
-
+			if (object instanceof Folder childFolder) {
 				String childFolderPath = childFolder.getName();
 
 				if (!Validator.isBlank(parentPath)) {
@@ -319,9 +317,7 @@ public class FragmentCollectionImpl extends FragmentCollectionBaseImpl {
 				resourcesMap.putAll(
 					_getResourcesMap(childFolder, childFolderPath));
 			}
-			else if (object instanceof FileEntry) {
-				FileEntry fileEntry = (FileEntry)object;
-
+			else if (object instanceof FileEntry fileEntry) {
 				String fileEntryPath = fileEntry.getFileName();
 
 				if (!Validator.isBlank(parentPath)) {

@@ -43,8 +43,6 @@ DLAccessFromDesktopDisplayContext dlAccessFromDesktopDisplayContext = new DLAcce
 			if (webdavContentContainer) {
 				html = webdavContentContainer.innerHTML;
 
-				webdavContentContainer.remove();
-
 				Liferay.Util.openModal({
 					bodyHTML: html,
 					onOpen: function (event) {

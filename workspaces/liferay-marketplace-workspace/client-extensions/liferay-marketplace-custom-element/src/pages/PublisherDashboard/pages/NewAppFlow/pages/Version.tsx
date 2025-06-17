@@ -50,7 +50,6 @@ const Version = () => {
 					})
 				}
 				placeholder="Enter app description"
-				required
 				tooltip="Notes pertaining to the release of the project. These will be displayed when the customer goes to purchase and/or update the app."
 				value={notes}
 			/>

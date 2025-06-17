@@ -100,10 +100,10 @@ public abstract class BaseLayoutScreenNavigationEntry
 				layoutSEOSiteLocalService,
 				portal.getLiferayPortletRequest(
 					(PortletRequest)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST)),
+						JavaConstants.JAKARTA_PORTLET_REQUEST)),
 				portal.getLiferayPortletResponse(
 					(RenderResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE))));
+						JavaConstants.JAKARTA_PORTLET_RESPONSE))));
 
 		jspRenderer.renderJSP(
 			servletContext, httpServletRequest, httpServletResponse,

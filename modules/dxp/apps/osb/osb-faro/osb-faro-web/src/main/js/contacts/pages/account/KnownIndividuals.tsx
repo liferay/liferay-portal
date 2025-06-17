@@ -95,7 +95,7 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = ({
 						icon={{
 							border: false,
 							size: Sizes.XXXLarge,
-							symbol: 'ac-satellite'
+							symbol: 'ac_satellite'
 						}}
 						title={Liferay.Language.get(
 							'there-are-no-individuals-found'

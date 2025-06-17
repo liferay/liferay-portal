@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
@@ -68,7 +67,7 @@ public class DDMStructureCTDisplayRenderer
 		).setRedirect(
 			_portal.getCurrentURL(httpServletRequest)
 		).setParameter(
-			"classNameId", _portalUtil.getClassNameId(DDMStructure.class)
+			"classNameId", _portal.getClassNameId(DDMStructure.class)
 		).setParameter(
 			"classPK", ddmStructure.getStructureId()
 		).setParameter(
@@ -118,8 +117,5 @@ public class DDMStructureCTDisplayRenderer
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private PortalUtil _portalUtil;
 
 }

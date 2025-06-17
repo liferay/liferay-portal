@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.ccr.FollowInfoCCRResponse;
 /**
  * @author Bryan Engler
  */
-public interface FollowInfoCCRRequestExecutor {
+public class FollowInfoCCRRequestExecutor {
 
 	public FollowInfoCCRResponse execute(
-		FollowInfoCCRRequest followInfoCCRRequest);
+		FollowInfoCCRRequest followInfoCCRRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

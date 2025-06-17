@@ -19,7 +19,8 @@ export enum CSVType {
 	Individual = 'individual',
 	Journal = 'journal',
 	Membership = 'membership',
-	Page = 'page'
+	Page = 'page',
+	SearchTerms = 'search-terms'
 }
 
 export function useDownloadCSV({

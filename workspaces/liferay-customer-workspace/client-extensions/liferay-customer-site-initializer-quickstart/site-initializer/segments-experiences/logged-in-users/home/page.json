@@ -1,0 +1,22 @@
+{
+	"friendlyURL": "/home",
+	"hidden": false,
+	"name_i18n": {
+		"en_US": "Home",
+		"es_ES": "Página de inicio",
+		"ja_JP": "ホームページ",
+		"pt_BR": "Página inicial"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "content"
+}

@@ -100,6 +100,11 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testCombineIfStatementAndReturn() throws Exception {
+		test("CombineIfStatementAndReturn.testjava");
+	}
+
+	@Test
 	public void testCombineLines() throws Exception {
 		test("CombineLines.testjava");
 	}

@@ -521,8 +521,6 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 				HashMapBuilder.<String, Object>put(
 					"containerCssClasses", "modal-height-lg"
 				).put(
-					"id", "order-summary-modal"
-				).put(
 					"namespace", liferayPortletResponse.getNamespace()
 				).put(
 					"refreshOnClose", true
@@ -531,6 +529,7 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 				).build()
 			%>'
 			actionLabel='<%= commerceOrderEditDisplayContext.hasManageCommerceOrderPricesPermission() ? LanguageUtil.get(request, "edit") : null %>'
+			actionTargetId="order-summary-modal"
 			actionUrl="<%= commerceOrderEditDisplayContext.hasManageCommerceOrderPricesPermission() ? editOrderSummaryURL : null %>"
 			title='<%= LanguageUtil.get(request, "order-summary") %>'
 		>

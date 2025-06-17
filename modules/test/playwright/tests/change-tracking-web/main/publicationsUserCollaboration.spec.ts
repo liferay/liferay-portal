@@ -80,6 +80,10 @@ test('LPD-30098 Invite user as admin', async ({
 
 	await waitForAlert(page, 'Success:Successfully updated');
 
+	await page.getByRole('button', {name: 'Actions'}).click();
+
+	await expect(page.getByRole('menuitem', {name: 'Delete'})).toBeVisible();
+
 	await changeTrackingPage.addUserToPublication(title, 'Admin', user2);
 
 	await changeTrackingPage.assertPublicationCommentsCRUDPermissions();

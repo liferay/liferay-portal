@@ -1,8 +1,8 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"externalReferenceCode": "SUPPORT-TICKET-ESCALATION-TEMPLATE",
-	"name": "Callback Form Submission Template",
+	"externalReferenceCode": "OVERDUE-BUSINESS-EVENTS",
+	"name": "Overdue Business Events",
 	"recipientType": "email",
 	"recipients": [
 		{
@@ -13,12 +13,12 @@
 				"en-US": "Customer Portal"
 			},
 			"to": {
-				"en-US": "d-devsecops-ccc-alert-aaaahibaaepmcmagzyuqnxpely@liferay.slack.com"
+				"en-US": "[%BUSINESSEVENT_AUTHOR_EMAIL_ADDRESS%]"
 			}
 		}
 	],
 	"subject": {
-		"en_US": "Callback Form Submission"
+		"en_US": "Was your business event, [%BUSINESSEVENT_NAME%], successful?"
 	},
 	"type": "email"
 }

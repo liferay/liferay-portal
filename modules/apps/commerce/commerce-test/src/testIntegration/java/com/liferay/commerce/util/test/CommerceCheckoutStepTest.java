@@ -269,7 +269,7 @@ public class CommerceCheckoutStepTest {
 			mockLiferayPortletActionRequest.getHttpServletRequest();
 
 		httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, null);
+			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
 
 		mockLiferayPortletActionRequest.setAttribute(
 			CommerceCheckoutWebKeys.COMMERCE_ORDER, commerceOrder);

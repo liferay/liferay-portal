@@ -16,6 +16,10 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.test.util.TreeTestUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
@@ -28,11 +32,15 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
+import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -41,6 +49,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,6 +57,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Alicia García
@@ -99,6 +110,90 @@ public class ObjectEntryWorkflowHandlerTest {
 				ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL, true);
 
 		Assert.assertNull(workflowDefinitionLink);
+	}
+
+	@FeatureFlag("LPD-34594")
+	@Test
+	public void testGetEntryClassPK() throws Exception {
+		TreeTestUtil.createObjectDefinitionTree(
+			_objectDefinitionLocalService, _objectRelationshipLocalService,
+			true,
+			LinkedHashMapBuilder.put(
+				"A", new String[] {"AA", "AB"}
+			).put(
+				"AA", new String[] {"AAA", "AAB"}
+			).put(
+				"AB", new String[0]
+			).put(
+				"AAA", new String[0]
+			).put(
+				"AAB", new String[0]
+			).build());
+
+		ObjectDefinition objectDefinitionA =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				TestPropsValues.getCompanyId(), "C_A");
+
+		_workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
+			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(), 0,
+			objectDefinitionA.getClassName(), 0, 0, "Single Approver", 1);
+
+		TreeTestUtil.createObjectEntryTree(
+			"1", _objectDefinitionLocalService, _objectEntryLocalService,
+			_objectFieldLocalService, _objectRelationshipLocalService,
+			objectDefinitionA.getObjectDefinitionId());
+
+		WorkflowHandler<ObjectEntry> workflowHandler =
+			WorkflowHandlerRegistryUtil.getWorkflowHandler(
+				objectDefinitionA.getClassName());
+
+		ObjectEntry objectEntryA1 = _objectEntryLocalService.getObjectEntry(
+			"A1", objectDefinitionA.getObjectDefinitionId());
+
+		Assert.assertNotNull(
+			workflowHandler.getAssetRenderer(objectEntryA1.getObjectEntryId()));
+
+		List<WorkflowTask> workflowTasks =
+			_workflowTaskManager.getWorkflowTasksByUserRoles(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+				false, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		WorkflowTask workflowTask = workflowTasks.get(0);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		Assert.assertEquals(
+			objectEntryA1.getObjectEntryId(),
+			workflowHandler.getEntryClassPK(
+				TestPropsValues.getCompanyId(), mockHttpServletRequest,
+				workflowTask));
+
+		ObjectDefinition objectDefinitionAA =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				TestPropsValues.getCompanyId(), "C_AA");
+
+		ObjectEntry objectEntryAA1 = _objectEntryLocalService.getObjectEntry(
+			"AA1", objectDefinitionAA.getObjectDefinitionId());
+
+		Assert.assertNotNull(
+			workflowHandler.getAssetRenderer(
+				objectEntryAA1.getObjectEntryId()));
+
+		mockHttpServletRequest.setParameter(
+			"assetEntryClassPK",
+			String.valueOf(objectEntryAA1.getObjectEntryId()));
+
+		Assert.assertEquals(
+			objectEntryAA1.getObjectEntryId(),
+			workflowHandler.getEntryClassPK(
+				TestPropsValues.getCompanyId(), mockHttpServletRequest,
+				workflowTask));
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
@@ -250,10 +345,19 @@ public class ObjectEntryWorkflowHandlerTest {
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
 
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
+
 	private ServiceContext _serviceContext;
 
 	@Inject
 	private WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;
+
+	@Inject
+	private WorkflowTaskManager _workflowTaskManager;
 
 }

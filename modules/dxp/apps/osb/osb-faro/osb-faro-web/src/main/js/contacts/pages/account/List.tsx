@@ -103,7 +103,7 @@ const List: React.FC<IListProps> = ({channelId, groupId, ...otherProps}) => {
 				icon: {
 					border: false,
 					size: Sizes.XXXLarge,
-					symbol: 'ac-satellite'
+					symbol: 'ac_satellite'
 				},
 				title: Liferay.Language.get(
 					'no-accounts-synced-from-data-sources'

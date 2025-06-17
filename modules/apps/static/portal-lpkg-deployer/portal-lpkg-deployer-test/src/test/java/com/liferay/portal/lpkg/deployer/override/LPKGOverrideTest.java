@@ -194,9 +194,7 @@ public class LPKGOverrideTest {
 	private void _upgradeModuleVersion(Path path, Map<String, String> overrides)
 		throws IOException {
 
-		try (FileSystem fileSystem = FileSystems.newFileSystem(
-				path, (Map<String, ?>)null)) {
-
+		try (FileSystem fileSystem = FileSystems.newFileSystem(path)) {
 			Path manifestPath = fileSystem.getPath("META-INF/MANIFEST.MF");
 
 			try (InputStream inputStream = Files.newInputStream(manifestPath);

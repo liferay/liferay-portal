@@ -9,7 +9,7 @@ import com.liferay.account.settings.AccountEntryGroupSettings;
 import com.liferay.commerce.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
-import com.liferay.commerce.helper.CommerceAccountRoleHelper;
+import com.liferay.commerce.helper.CommerceRoleHelper;
 import com.liferay.commerce.initializer.util.CPDefinitionsImporter;
 import com.liferay.commerce.initializer.util.CPOptionCategoriesImporter;
 import com.liferay.commerce.initializer.util.CPOptionsImporter;
@@ -816,7 +816,7 @@ public class CommerceSiteInitializerImpl implements CommerceSiteInitializer {
 				resourcePath, ".json", ".model-resource-permissions.json"),
 			serviceContext, servletContext);
 
-		_commerceAccountRoleHelper.checkCommerceAccountRoles(serviceContext);
+		_commerceRoleHelper.checkCommerceAccountRoles(serviceContext);
 
 		_commerceCurrencyLocalService.importDefaultValues(true, serviceContext);
 
@@ -1039,9 +1039,6 @@ public class CommerceSiteInitializerImpl implements CommerceSiteInitializer {
 	private ChannelResource.Factory _channelResourceFactory;
 
 	@Reference
-	private CommerceAccountRoleHelper _commerceAccountRoleHelper;
-
-	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	@Reference
@@ -1069,6 +1066,9 @@ public class CommerceSiteInitializerImpl implements CommerceSiteInitializer {
 
 	@Reference
 	private CommercePriceListLocalService _commercePriceListLocalService;
+
+	@Reference
+	private CommerceRoleHelper _commerceRoleHelper;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

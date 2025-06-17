@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Taglib
 Bundle-SymbolicName: com.liferay.document.library.taglib
-Bundle-Version: 6.0.1
+Bundle-Version: 6.1.0
 Export-Package: com.liferay.document.library.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

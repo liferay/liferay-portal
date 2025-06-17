@@ -1,0 +1,220 @@
+.app-review {
+	&-container {
+		margin-bottom: 24px;
+		width: 600px;
+	}
+	&-file {
+		align-items: center;
+		display: flex;
+		padding-top: 20px;
+
+		&-container {
+			align-items: center;
+			background-color: #e7efff;
+			border-radius: 4px;
+			display: flex;
+			height: 72px;
+			justify-content: center;
+			width: 72px;
+
+			&-icon {
+				height: 24px;
+				width: 24px;
+				filter: invert(35%) sepia(86%) saturate(1411%)
+					hue-rotate(206deg) brightness(102%) contrast(101%);
+			}
+		}
+	}
+	&-logo-icon {
+		border-radius: 4px;
+		height: 48px;
+		width: 48px;
+	}
+
+	&-name {
+		font-size: 24px;
+		font-weight: 700;
+	}
+
+	&-pricing {
+		&-description {
+			color: #54555f;
+			font-size: 13px;
+		}
+
+		&-icon {
+			color: #377cff;
+		}
+
+		&-title {
+			font-size: 18px;
+			font-weight: 600;
+		}
+	}
+
+	&-section {
+		padding: 16px 0;
+
+		.edit-button {
+			font-weight: 600;
+		}
+
+		.required-asterisk-icon {
+			height: 6px;
+			margin-bottom: 6px;
+			width: 6px;
+		}
+	}
+
+	&-section-body {
+		margin-top: 22px;
+
+		&-description {
+			color: #54555f;
+			font-size: 16px;
+
+			&-paragraph {
+				margin-bottom: 0;
+				margin-top: 22px;
+				word-break: break-word;
+				word-wrap: break-word;
+			}
+		}
+
+		&-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-top: 22px;
+		}
+	}
+
+	&-storefront {
+		&-container {
+			img {
+				height: 64px;
+				width: 110px;
+			}
+
+			.icon-image {
+				color: #377cff;
+				height: 16px;
+				margin-top: 2px;
+				width: 16px;
+			}
+
+			.storefront-description {
+				color: #54555f;
+				font-size: 13px;
+				font-weight: 400;
+			}
+
+			.storefront-section-title {
+				font-size: 11px;
+				text-transform: capitalize;
+			}
+
+			.storefront-url-title {
+				color: #282934;
+				font-size: 13px;
+				font-weight: 600;
+			}
+
+			.video-player {
+				background-color: white;
+				height: 64px;
+				width: 110px;
+			}
+		}
+
+		&-important-note {
+			color: #54555f;
+			font-size: 13px;
+			font-weight: 400;
+			margin-top: 12px;
+		}
+	}
+
+	&-version {
+		color: #54555f;
+		font-size: 14px;
+		font-weight: 600;
+	}
+}
+
+.licensing-option-title {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.licesing-price-type {
+	text-transform: capitalize;
+}
+
+.licensing-unit-price {
+	color: #54555f;
+	font-size: 13px;
+}
+
+.app-review-support {
+	&-container {
+		border: 1px solid #e2e2e4;
+		border-radius: 0.5rem;
+		display: flex;
+		flex-direction: column;
+		margin-top: 20px;
+		max-width: 37.5rem;
+		padding: 1rem;
+		transition: background-color 0.5s;
+		transition: border 0.5s;
+		width: 100%;
+	}
+
+	&-icon {
+		align-items: center;
+		background-color: #e2e2e4;
+		border-radius: 99px;
+		display: flex;
+		height: 40px;
+		justify-content: center;
+		min-width: 40px;
+		width: 40px;
+
+		&-image {
+			filter: invert(20%) sepia(24%) saturate(334%) hue-rotate(196deg)
+				brightness(92%) contrast(82%);
+			height: 16px;
+			margin-top: 2px;
+			transition: filter 0.5s;
+			width: 16px;
+		}
+	}
+
+	&-info {
+		display: flex;
+		flex-direction: column;
+		margin-left: 24px;
+		overflow: hidden;
+
+		&-text {
+			font-size: 13px;
+			font-weight: 400;
+			line-height: 16px;
+		}
+
+		&-description {
+			color: #0b5fff;
+			font-size: 16px;
+			font-weight: 600;
+			line-height: 24px;
+		}
+	}
+
+	&-description {
+		color: #54555f;
+		font-size: 16px;
+		font-weight: 600;
+		line-height: 24px;
+		word-break: break-word;
+	}
+}

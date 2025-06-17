@@ -14,16 +14,43 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.JSONObject;
+
 /**
  * @author Michael Hashimoto
  */
 public class PortalFixpackRelease {
 
-	public PortalFixpackRelease(
-		String portalFixpackVersion, PortalRelease portalRelease) {
+	public JSONObject getJSONObject() {
+		JSONObject jsonObject = new JSONObject();
 
-		_portalFixpackVersion = portalFixpackVersion;
-		_portalRelease = portalRelease;
+		PortalRelease portalRelease = getPortalRelease();
+
+		jsonObject.put(
+			"portal_fixpack_url", String.valueOf(getPortalFixpackURL())
+		).put(
+			"portal_fixpack_version", getPortalFixpackVersion()
+		).put(
+			"portal_release_version", portalRelease.getPortalVersion()
+		);
+
+		return jsonObject;
+	}
+
+	public URL getPortalFixpackURL() {
+		return _portalFixpackURL;
+	}
+
+	public String getPortalFixpackVersion() {
+		return _portalFixpackVersion;
+	}
+
+	public PortalRelease getPortalRelease() {
+		return _portalRelease;
+	}
+
+	protected static URL getPortalFixpackURL(
+		String portalFixpackVersion, PortalRelease portalRelease) {
 
 		try {
 			String portalVersion = portalRelease.getPortalVersion();
@@ -39,26 +66,33 @@ public class PortalFixpackRelease {
 			String portalBaseBuildVersion = portalBaseVersion.replaceAll(
 				"\\.", "");
 
-			_portalFixpackURL = new URL(
+			return new URL(
 				JenkinsResultsParserUtil.combine(
 					"https://files.liferay.com/private/ee/fix-packs/",
 					portalBaseVersion, "/", portalFixpackType,
 					"/liferay-fix-pack-", portalFixpackType, "-",
-					_portalFixpackVersion, "-", portalBaseBuildVersion,
-					".zip"));
+					portalFixpackVersion, "-", portalBaseBuildVersion, ".zip"));
 		}
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
 		}
 	}
 
-	public PortalFixpackRelease(
-		String portalFixpackVersion, String portalVersion) {
+	protected PortalFixpackRelease(JSONObject jsonObject) {
+		try {
+			_portalFixpackURL = new URL(
+				jsonObject.getString("portal_fixpack_url"));
+		}
+		catch (MalformedURLException malformedURLException) {
+			throw new RuntimeException(malformedURLException);
+		}
 
-		this(portalFixpackVersion, new PortalRelease(portalVersion));
+		_portalFixpackVersion = jsonObject.getString("portal_fixpack_version");
+		_portalRelease = PortalReleaseFactory.newPortalRelease(
+			jsonObject.getString("portal_release_version"));
 	}
 
-	public PortalFixpackRelease(URL portalFixpackURL) {
+	protected PortalFixpackRelease(URL portalFixpackURL) {
 		Matcher fixpackURLMatcher = _fixpackURLPattern.matcher(
 			portalFixpackURL.toString());
 
@@ -79,7 +113,7 @@ public class PortalFixpackRelease {
 		_portalFixpackVersion = fixpackFileNameMatcher.group(
 			"portalFixpackVersion");
 
-		_portalRelease = new PortalRelease(
+		_portalRelease = PortalReleaseFactory.newPortalRelease(
 			_getPortalVersion(
 				fixpackFileNameMatcher.group("portalBuildVersion"),
 				_portalFixpackVersion));
@@ -97,36 +131,6 @@ public class PortalFixpackRelease {
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
 		}
-	}
-
-	public String getHTMLReport() {
-		StringBuilder sb = new StringBuilder();
-
-		String urlString = String.valueOf(getPortalFixpackURL());
-
-		sb.append("<ul>");
-
-		sb.append("<li><a href=\"");
-		sb.append(urlString);
-		sb.append("\">");
-		sb.append(urlString.replaceAll(".+/([^/]+)", "$1"));
-		sb.append("</a></li>");
-
-		sb.append("</ul>");
-
-		return sb.toString();
-	}
-
-	public URL getPortalFixpackURL() {
-		return _portalFixpackURL;
-	}
-
-	public String getPortalFixpackVersion() {
-		return _portalFixpackVersion;
-	}
-
-	public PortalRelease getPortalRelease() {
-		return _portalRelease;
 	}
 
 	private String _getPortalVersion(

@@ -25,11 +25,11 @@ exports[`withSidebar should render with the sidebar 1`] = `
           href="/workspace/23/1/sites"
         >
           <svg
-            class="lexicon-icon lexicon-icon-ac-logo icon-root icon-size-md logo"
+            class="lexicon-icon lexicon-icon-ac_logo icon-root icon-size-md logo"
             role="presentation"
           >
             <use
-              href="#ac-logo"
+              href="#ac_logo"
             />
           </svg>
         </a>
@@ -95,11 +95,11 @@ exports[`withSidebar should render with the sidebar 1`] = `
                     class="icon-wrapper"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-page icon-root"
+                      class="lexicon-icon lexicon-icon-ac_page icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-page"
+                        href="#ac_page"
                       />
                     </svg>
                   </span>
@@ -125,11 +125,11 @@ exports[`withSidebar should render with the sidebar 1`] = `
                     class="icon-wrapper"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-assets icon-root"
+                      class="lexicon-icon lexicon-icon-ac_assets icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-assets"
+                        href="#ac_assets"
                       />
                     </svg>
                   </span>
@@ -155,11 +155,11 @@ exports[`withSidebar should render with the sidebar 1`] = `
                     class="icon-wrapper"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-event-analysis icon-root"
+                      class="lexicon-icon lexicon-icon-ac_event_analysis icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-event-analysis"
+                        href="#ac_event_analysis"
                       />
                     </svg>
                   </span>
@@ -198,11 +198,11 @@ exports[`withSidebar should render with the sidebar 1`] = `
                     class="icon-wrapper"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-segment icon-root"
+                      class="lexicon-icon lexicon-icon-ac_segment icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-segment"
+                        href="#ac_segment"
                       />
                     </svg>
                   </span>
@@ -228,11 +228,11 @@ exports[`withSidebar should render with the sidebar 1`] = `
                     class="icon-wrapper"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-individual icon-root"
+                      class="lexicon-icon lexicon-icon-ac_individual icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-individual"
+                        href="#ac_individual"
                       />
                     </svg>
                   </span>
@@ -271,11 +271,11 @@ exports[`withSidebar should render with the sidebar 1`] = `
                     class="icon-wrapper"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-ac-test icon-root"
+                      class="lexicon-icon lexicon-icon-ac_test icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#ac-test"
+                        href="#ac_test"
                       />
                     </svg>
                   </span>

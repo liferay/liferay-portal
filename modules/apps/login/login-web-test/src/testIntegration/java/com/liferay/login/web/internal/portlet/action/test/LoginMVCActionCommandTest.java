@@ -216,7 +216,7 @@ public class LoginMVCActionCommandTest {
 		mockLiferayPortletActionRequest.addParameter(
 			"password", "wrongpassword");
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, _getLiferayPortletConfig());
+			JavaConstants.JAKARTA_PORTLET_CONFIG, _getLiferayPortletConfig());
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.COMPANY_ID, TestPropsValues.getCompanyId());
 

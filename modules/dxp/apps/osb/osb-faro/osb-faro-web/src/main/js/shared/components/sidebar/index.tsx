@@ -39,19 +39,19 @@ const Sidebar: React.FC<ISidebarProps> = ({
 		{
 			items: [
 				{
-					icon: 'ac-page',
+					icon: 'ac_page',
 					label: Liferay.Language.get('sites'),
 					route: Routes.SITES,
 					url: toRoute(Routes.SITES, {channelId, groupId})
 				},
 				{
-					icon: 'ac-assets',
+					icon: 'ac_assets',
 					label: Liferay.Language.get('assets'),
 					route: Routes.ASSETS,
 					url: toRoute(Routes.ASSETS, {channelId, groupId})
 				},
 				{
-					icon: 'ac-event-analysis',
+					icon: 'ac_event_analysis',
 					label: Liferay.Language.get('events'),
 					route: Routes.EVENT_ANALYSIS,
 					url: toRoute(Routes.EVENT_ANALYSIS, {
@@ -65,7 +65,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 		{
 			items: [
 				{
-					icon: 'ac-segment',
+					icon: 'ac_segment',
 					label: Liferay.Language.get('segments'),
 					route: Routes.CONTACTS_LIST_SEGMENT,
 					url: toRoute(Routes.CONTACTS_LIST_ENTITY, {
@@ -75,7 +75,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					})
 				},
 				ENABLE_ACCOUNTS && {
-					icon: 'ac-account',
+					icon: 'ac_account',
 					label: Liferay.Language.get('accounts'),
 					route: Routes.CONTACTS_LIST_ACCOUNT,
 					url: toRoute(Routes.CONTACTS_LIST_ENTITY, {
@@ -85,7 +85,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					})
 				},
 				{
-					icon: 'ac-individual',
+					icon: 'ac_individual',
 					label: Liferay.Language.get('individuals'),
 					route: Routes.CONTACTS_INDIVIDUALS,
 					url: toRoute(Routes.CONTACTS_INDIVIDUALS, {
@@ -101,7 +101,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 			hide: !DEVELOPER_MODE,
 			items: [
 				{
-					icon: 'ac-commerce',
+					icon: 'ac_commerce',
 					label: Liferay.Language.get('commerce'),
 					route: Routes.COMMERCE,
 					url: toRoute(Routes.COMMERCE, {channelId, groupId})
@@ -112,7 +112,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 		{
 			items: [
 				{
-					icon: 'ac-test',
+					icon: 'ac_test',
 					label: Liferay.Language.get('tests'),
 					route: Routes.TESTS,
 					url: toRoute(Routes.TESTS, {channelId, groupId})
@@ -181,7 +181,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 				>
 					<ClayIcon
 						className='icon-root icon-size-md logo'
-						symbol='ac-logo'
+						symbol='ac_logo'
 					/>
 				</Link>
 

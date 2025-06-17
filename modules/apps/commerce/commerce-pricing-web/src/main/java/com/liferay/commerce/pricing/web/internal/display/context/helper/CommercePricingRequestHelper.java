@@ -22,10 +22,10 @@ public class CommercePricingRequestHelper extends BaseRequestHelper {
 		super(httpServletRequest);
 
 		Object portletRequest = httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		Object portletResponse = httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		if (!(portletRequest instanceof RenderRequest) ||
 			!(portletResponse instanceof RenderResponse)) {

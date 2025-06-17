@@ -13,9 +13,11 @@ import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -24,8 +26,10 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.upload.FileItem;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -44,7 +48,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import java.util.HashMap;
+import java.util.Objects;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -76,48 +82,26 @@ public class RepositoryBrowserServletTest {
 
 	@Test
 	public void testDoPutFileEntryWithGuestPermissions() throws Exception {
-		String name = RandomTestUtil.randomString();
-
-		MockMultipartFile mockMultipartFile = new MockMultipartFile(
-			"file", _BYTES);
+		String fileName = RandomTestUtil.randomString();
 
 		_servlet.service(
-			_getMockMultipartHttpServletRequest(name, mockMultipartFile, true),
+			_getMockMultipartHttpServletRequest(
+				fileName, false, new MockMultipartFile("file", _BYTES), true),
 			new MockHttpServletResponse());
 
-		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
-			_user);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, permissionChecker)) {
-
-			_dlAppService.getFileEntry(
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				name);
-		}
+		_getFileEntry(fileName);
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testDoPutFileEntryWithoutGuestPermissions() throws Exception {
-		String name = RandomTestUtil.randomString();
-
-		MockMultipartFile mockMultipartFile = new MockMultipartFile(
-			"file", _BYTES);
+		String fileName = RandomTestUtil.randomString();
 
 		_servlet.service(
-			_getMockMultipartHttpServletRequest(name, mockMultipartFile, false),
+			_getMockMultipartHttpServletRequest(
+				fileName, false, new MockMultipartFile("file", _BYTES), false),
 			new MockHttpServletResponse());
 
-		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
-			_user);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, permissionChecker)) {
-
-			_dlAppService.getFileEntry(
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				name);
-		}
+		_getFileEntry(fileName);
 	}
 
 	@Test
@@ -125,19 +109,10 @@ public class RepositoryBrowserServletTest {
 		String name = RandomTestUtil.randomString();
 
 		_servlet.service(
-			_getMockMultipartHttpServletRequest(name, true),
+			_getMockMultipartHttpServletRequest(0, false, "PUT", name, true),
 			new MockHttpServletResponse());
 
-		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
-			_user);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, permissionChecker)) {
-
-			_dlAppService.getFolder(
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				name);
-		}
+		_getFolder(name);
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
@@ -145,19 +120,19 @@ public class RepositoryBrowserServletTest {
 		String name = RandomTestUtil.randomString();
 
 		_servlet.service(
-			_getMockMultipartHttpServletRequest(name, false),
+			_getMockMultipartHttpServletRequest(0, false, "PUT", name, false),
 			new MockHttpServletResponse());
 
-		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
-			_user);
+		_getFolder(name);
+	}
 
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, permissionChecker)) {
-
-			_dlAppService.getFolder(
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				name);
-		}
+	@Test
+	@TestInfo("LPD-55643")
+	public void testIncludeExtension() throws Exception {
+		_testIncludeExtension("testIncludeExtension", false);
+		_testIncludeExtension("testIncludeExtension", true);
+		_testIncludeExtension("testIncludeExtension.txt", false);
+		_testIncludeExtension("testIncludeExtension.txt", true);
 	}
 
 	private FileItem _createFileItem(byte[] bytes, String fileName)
@@ -221,7 +196,28 @@ public class RepositoryBrowserServletTest {
 			null);
 	}
 
+	private FileEntry _getFileEntry(String title) throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, _permissionCheckerFactory.create(_user))) {
+
+			return _dlAppService.getFileEntry(
+				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				title);
+		}
+	}
+
+	private Folder _getFolder(String name) throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, _permissionCheckerFactory.create(_user))) {
+
+			return _dlAppService.getFolder(
+				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				name);
+		}
+	}
+
 	private MockMultipartHttpServletRequest _getMockMultipartHttpServletRequest(
+			long fileEntryId, boolean includeExtension, String method,
 			String name, boolean viewableByGuest)
 		throws Exception {
 
@@ -234,7 +230,11 @@ public class RepositoryBrowserServletTest {
 			WebKeys.USER, TestPropsValues.getUser());
 		mockMultipartHttpServletRequest.setContentType(
 			"multipart/form-data;boundary=" + System.currentTimeMillis());
-		mockMultipartHttpServletRequest.setMethod("PUT");
+		mockMultipartHttpServletRequest.setMethod(method);
+		mockMultipartHttpServletRequest.setParameter(
+			"fileEntryId", String.valueOf(fileEntryId));
+		mockMultipartHttpServletRequest.setParameter(
+			"includeExtension", String.valueOf(includeExtension));
 		mockMultipartHttpServletRequest.setParameter("name", name);
 		mockMultipartHttpServletRequest.setParameter(
 			"repositoryId", String.valueOf(_group.getGroupId()));
@@ -245,13 +245,13 @@ public class RepositoryBrowserServletTest {
 	}
 
 	private HttpServletRequest _getMockMultipartHttpServletRequest(
-			String fileName, MockMultipartFile mockMultipartFile,
-			boolean viewableByGuest)
+			String fileName, boolean includeExtension,
+			MockMultipartFile mockMultipartFile, boolean viewableByGuest)
 		throws Exception {
 
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
 			_getMockMultipartHttpServletRequest(
-				RandomTestUtil.randomString(), viewableByGuest);
+				0, includeExtension, "PUT", null, viewableByGuest);
 
 		mockMultipartHttpServletRequest.addFile(mockMultipartFile);
 		mockMultipartHttpServletRequest.setContent(_BYTES);
@@ -266,6 +266,60 @@ public class RepositoryBrowserServletTest {
 				).build(),
 				new HashMap<>()),
 			null, RandomTestUtil.randomString());
+	}
+
+	private void _testIncludeExtension(
+			String fileName, boolean includeExtension)
+		throws Exception {
+
+		_servlet.service(
+			_getMockMultipartHttpServletRequest(
+				fileName, includeExtension,
+				new MockMultipartFile("file", _BYTES), true),
+			new MockHttpServletResponse());
+
+		String title = fileName;
+
+		if (!includeExtension) {
+			title = FileUtil.stripExtension(fileName);
+		}
+
+		FileEntry fileEntry = _getFileEntry(title);
+
+		Assert.assertEquals(fileName, fileEntry.getFileName());
+
+		_testIncludeExtensionUpdateName(
+			fileEntry, includeExtension, "testIncludeExtensionUpdateName");
+		_testIncludeExtensionUpdateName(
+			fileEntry, includeExtension, "testIncludeExtensionUpdateName.TXT");
+		_testIncludeExtensionUpdateName(
+			fileEntry, includeExtension, "testIncludeExtensionUpdateName.pdf");
+		_testIncludeExtensionUpdateName(
+			fileEntry, includeExtension, "testIncludeExtensionUpdateName.txt");
+
+		_dlAppService.deleteFileEntry(fileEntry.getFileEntryId());
+	}
+
+	private void _testIncludeExtensionUpdateName(
+			FileEntry fileEntry, boolean includeExtension, String name)
+		throws Exception {
+
+		_servlet.service(
+			_getMockMultipartHttpServletRequest(
+				fileEntry.getFileEntryId(), includeExtension, "POST", name,
+				true),
+			new MockHttpServletResponse());
+
+		String title = name;
+
+		if (includeExtension &&
+			Objects.equals(fileEntry.getExtension(), "txt") &&
+			!StringUtil.endsWith(StringUtil.toLowerCase(name), ".txt")) {
+
+			title = name + ".txt";
+		}
+
+		_getFileEntry(title);
 	}
 
 	private static final byte[] _BYTES =

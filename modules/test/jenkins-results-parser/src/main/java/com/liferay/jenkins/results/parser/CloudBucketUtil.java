@@ -261,12 +261,22 @@ public class CloudBucketUtil {
 		return s3ObjectRefFile.exists();
 	}
 
-	public static String listGCPFiles(String path)
+	public static String listGCPFiles(String path, String... args)
 		throws IOException, TimeoutException {
 
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("gcloud storage ls ");
+
+		for (String arg : args) {
+			sb.append(arg);
+			sb.append(" ");
+		}
+
+		sb.append(_escapeParentheses(path));
+
 		Process process = JenkinsResultsParserUtil.executeBashCommands(
-			true, _getGCPAuthenticationCommand(path, path),
-			"gcloud storage ls " + _escapeParentheses(path));
+			true, _getGCPAuthenticationCommand(path, path), sb.toString());
 
 		return JenkinsResultsParserUtil.readInputStream(
 			process.getInputStream());

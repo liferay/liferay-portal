@@ -127,7 +127,7 @@ public class PublishLayoutMVCActionCommandTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-51205", "LPD-53620"})
+	@TestInfo({"LPD-51205", "LPD-53620", "LPD-56595"})
 	public void testDeletedFragmentEntryLinksAreRemovedWhenLayoutIsPublished()
 		throws Exception {
 
@@ -264,6 +264,18 @@ public class PublishLayoutMVCActionCommandTest {
 			count,
 			_layoutClassedModelUsageLocalService.
 				getLayoutClassedModelUsagesCount());
+
+		layoutStructure = _layoutStructureProvider.getLayoutStructure(
+			_layout.getPlid(),
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_layout.getPlid()));
+
+		List<DeletedLayoutStructureItem> deletedLayoutStructureItems =
+			layoutStructure.getDeletedLayoutStructureItems();
+
+		Assert.assertTrue(
+			deletedLayoutStructureItems.toString(),
+			ListUtil.isEmpty(deletedLayoutStructureItems));
 	}
 
 	@Test

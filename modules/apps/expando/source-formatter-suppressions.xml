@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<suppressions>
-	<source-check>
-		<suppress checks="CSPTagIllegalAttributesCheck" files="expando-taglib/src/main/resources/META-INF/resources/custom_attribute/page\.jsp" />
-	</source-check>
-</suppressions>

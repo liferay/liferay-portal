@@ -166,11 +166,11 @@ exports[`IndividualOverview should render 1`] = `
                         Dec 6, 2021
                       </span>
                       <svg
-                        class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                        class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                         role="presentation"
                       >
                         <use
-                          href="#ac-event-icon"
+                          href="#ac_event_icon"
                         />
                       </svg>
                       <span
@@ -232,11 +232,11 @@ exports[`IndividualOverview should render 1`] = `
                         class="icon-group"
                       >
                         <svg
-                          class="lexicon-icon lexicon-icon-ac-event-icon event-icon icon-root"
+                          class="lexicon-icon lexicon-icon-ac_event_icon event-icon icon-root"
                           role="presentation"
                         >
                           <use
-                            href="#ac-event-icon"
+                            href="#ac_event_icon"
                           />
                         </svg>
                         <span
@@ -252,11 +252,11 @@ exports[`IndividualOverview should render 1`] = `
 Chrome"
                         >
                           <svg
-                            class="lexicon-icon lexicon-icon-ac-display icon-root mainLighten28"
+                            class="lexicon-icon lexicon-icon-ac_display icon-root mainLighten28"
                             role="presentation"
                           >
                             <use
-                              href="#ac-display"
+                              href="#ac_display"
                             />
                           </svg>
                         </span>
@@ -653,11 +653,11 @@ Chrome"
                     class="sticker sticker-root sticker-static sticker-rounded sticker-primary"
                   >
                     <svg
-                      class="lexicon-icon lexicon-icon-individual-dynamic-segment icon-root"
+                      class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
                       role="presentation"
                     >
                       <use
-                        href="#individual-dynamic-segment"
+                        href="#individual_dynamic_segment"
                       />
                     </svg>
                   </div>

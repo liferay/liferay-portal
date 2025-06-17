@@ -15,6 +15,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {OPEN_SIDE_PANEL} from '../../utils/eventsDefinitions';
 import {getOpenedSidePanel} from '../../utils/sidePanels';
+import InfoPanelToggleButton from './InfoPanelToggleButton';
 import SelectionCheckbox from './SelectionCheckbox';
 
 function getQueryString(key, values = []) {
@@ -50,6 +51,7 @@ function BulkActions({
 		onBulkActionItemClick,
 		showBulkActionsManagementBar,
 		showBulkActionsManagementBarActions,
+		showInfoPanel,
 	} = useContext(FrontendDataSetContext);
 
 	const [currentSidePanelActionPayload, setCurrentSidePanelActionPayload] =
@@ -325,6 +327,12 @@ function BulkActions({
 												)}
 											</DropDown.ItemList>
 										</DropDown>
+									</li>
+								)}
+
+								{showInfoPanel && (
+									<li className="nav-item">
+										<InfoPanelToggleButton symbol="info-circle" />
 									</li>
 								)}
 							</ul>

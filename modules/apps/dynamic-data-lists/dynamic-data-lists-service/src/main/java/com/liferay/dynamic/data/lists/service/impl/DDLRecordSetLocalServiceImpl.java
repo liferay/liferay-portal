@@ -438,8 +438,7 @@ public class DDLRecordSetLocalServiceImpl
 	 */
 	@Override
 	public DDMFormValues getRecordSetSettingsDDMFormValues(
-			DDLRecordSet recordSet)
-		throws PortalException {
+		DDLRecordSet recordSet) {
 
 		DDMForm ddmForm = DDMFormFactory.create(DDLRecordSetSettings.class);
 

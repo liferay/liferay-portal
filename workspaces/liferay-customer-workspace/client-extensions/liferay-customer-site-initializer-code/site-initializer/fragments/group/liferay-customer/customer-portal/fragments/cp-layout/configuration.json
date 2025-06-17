@@ -1,0 +1,484 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "row",
+					"label": "Direction",
+					"name": "directionDesktop",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Horizontal",
+								"value": "row"
+							},
+							{
+								"label": "Vertical",
+								"value": "column"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "flex-start",
+					"label": "Distribute",
+					"name": "distributeDesktop",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Start",
+								"value": "flex-start"
+							},
+							{
+								"label": "Center",
+								"value": "center"
+							},
+							{
+								"label": "End",
+								"value": "end"
+							},
+							{
+								"label": "Space Between",
+								"value": "space-between"
+							},
+							{
+								"label": "Space Around",
+								"value": "space-around"
+							},
+							{
+								"label": "Space Evenly",
+								"value": "space-evenly"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "flex-start",
+					"label": "Align",
+					"name": "alignDesktop",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Top",
+								"value": "flex-start"
+							},
+							{
+								"label": "Center",
+								"value": "center"
+							},
+							{
+								"label": "Bottom",
+								"value": "flex-end"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "nowrap",
+					"label": "Wrap",
+					"name": "wrapDesktop",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Wrap",
+								"value": "wrap"
+							},
+							{
+								"label": "No Wrap",
+								"value": "nowrap"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "var(--spacer-4)",
+					"description": "Vertical Gap",
+					"label": "Vertical Gap",
+					"name": "verticalGapDesktop",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "var(--spacer-4)",
+					"description": "Horizontal Gap",
+					"label": "Horizontal Gap",
+					"name": "horizontalGapDesktop",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "manual",
+					"label": "Width",
+					"name": "widthDesktop",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Manual",
+								"value": "manual"
+							},
+							{
+								"label": "Auto",
+								"value": "auto"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "1",
+					"description": "Width Basis",
+					"label": "Width Basis",
+					"name": "widthBasisDesktop",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "1",
+					"description": "Width Grow",
+					"label": "Width Grow",
+					"name": "widthGrowDesktop",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": true,
+					"description": "Fill Height",
+					"label": "Fill Height",
+					"name": "fillHeightDesktop",
+					"type": "checkbox"
+				}
+			],
+			"label": "Desktop"
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "row",
+					"label": "Direction",
+					"name": "directionTablet",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Horizontal",
+								"value": "row"
+							},
+							{
+								"label": "Vertical",
+								"value": "column"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "flex-start",
+					"label": "Distribute",
+					"name": "distributeTablet",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Start",
+								"value": "flex-start"
+							},
+							{
+								"label": "Center",
+								"value": "center"
+							},
+							{
+								"label": "End",
+								"value": "end"
+							},
+							{
+								"label": "Space Between",
+								"value": "space-between"
+							},
+							{
+								"label": "Space Around",
+								"value": "space-around"
+							},
+							{
+								"label": "Space Evenly",
+								"value": "space-evenly"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "flex-start",
+					"label": "Align",
+					"name": "alignTablet",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Top",
+								"value": "flex-start"
+							},
+							{
+								"label": "Center",
+								"value": "center"
+							},
+							{
+								"label": "Bottom",
+								"value": "flex-end"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "nowrap",
+					"label": "Wrap",
+					"name": "wrapTablet",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Wrap",
+								"value": "wrap"
+							},
+							{
+								"label": "No Wrap",
+								"value": "nowrap"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "var(--spacer-4)",
+					"description": "Vertical Gap",
+					"label": "Vertical Gap",
+					"name": "verticalGapTablet",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "var(--spacer-4)",
+					"description": "Horizontal Gap",
+					"label": "Horizontal Gap",
+					"name": "horizontalGapTablet",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "manual",
+					"label": "Width",
+					"name": "widthTablet",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Manual",
+								"value": "manual"
+							},
+							{
+								"label": "Auto",
+								"value": "auto"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "1",
+					"description": "Width Basis",
+					"label": "Width Basis",
+					"name": "widthBasisTablet",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "1",
+					"description": "Width Grow",
+					"label": "Width Grow",
+					"name": "widthGrowTablet",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": true,
+					"description": "Fill Height",
+					"label": "Fill Height",
+					"name": "fillHeightTablet",
+					"type": "checkbox"
+				}
+			],
+			"label": "Tablet"
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "row",
+					"label": "Direction",
+					"name": "directionMobile",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Horizontal",
+								"value": "row"
+							},
+							{
+								"label": "Vertical",
+								"value": "column"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "flex-start",
+					"label": "Distribute",
+					"name": "distributeMobile",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Start",
+								"value": "flex-start"
+							},
+							{
+								"label": "Center",
+								"value": "center"
+							},
+							{
+								"label": "End",
+								"value": "end"
+							},
+							{
+								"label": "Space Between",
+								"value": "space-between"
+							},
+							{
+								"label": "Space Around",
+								"value": "space-around"
+							},
+							{
+								"label": "Space Evenly",
+								"value": "space-evenly"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "flex-start",
+					"label": "Align",
+					"name": "alignMobile",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Top",
+								"value": "flex-start"
+							},
+							{
+								"label": "Center",
+								"value": "center"
+							},
+							{
+								"label": "Bottom",
+								"value": "flex-end"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "nowrap",
+					"label": "Wrap",
+					"name": "wrapMobile",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Wrap",
+								"value": "wrap"
+							},
+							{
+								"label": "No Wrap",
+								"value": "nowrap"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "var(--spacer-3)",
+					"description": "Vertical Gap",
+					"label": "Vertical Gap",
+					"name": "verticalGapMobile",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "var(--spacer-3)",
+					"description": "Horizontal Gap",
+					"label": "Horizontal Gap",
+					"name": "horizontalGapMobile",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "manual",
+					"label": "Width",
+					"name": "widthMobile",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Manual",
+								"value": "manual"
+							},
+							{
+								"label": "Auto",
+								"value": "auto"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "1",
+					"description": "Width Basis",
+					"label": "Width Basis",
+					"name": "widthBasisMobile",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "1",
+					"description": "Width Grow",
+					"label": "Width Grow",
+					"name": "widthGrowMobile",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": true,
+					"description": "Fill Height",
+					"label": "Fill Height",
+					"name": "fillHeightMobile",
+					"type": "checkbox"
+				}
+			],
+			"label": "Mobile"
+		}
+	]
+}

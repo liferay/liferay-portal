@@ -427,7 +427,7 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 
 		RenderResponse renderResponse =
 			(RenderResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		LayoutPageTemplateCollectionItemSelectorCriterion
 			layoutPageTemplateCollectionItemSelectorCriterion =

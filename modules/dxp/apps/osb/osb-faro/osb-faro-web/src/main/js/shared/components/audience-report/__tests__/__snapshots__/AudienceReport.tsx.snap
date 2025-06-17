@@ -603,11 +603,11 @@ exports[`CommerceMetricCard should render 1`] = `
                       class="analytics-bar-chart-html-column"
                     >
                       <svg
-                        class="lexicon-icon lexicon-icon-ac-segment analytics-bar-chart-html-icon icon-root"
+                        class="lexicon-icon lexicon-icon-ac_segment analytics-bar-chart-html-icon icon-root"
                         role="presentation"
                       >
                         <use
-                          href="#ac-segment"
+                          href="#ac_segment"
                         />
                       </svg>
                       <div

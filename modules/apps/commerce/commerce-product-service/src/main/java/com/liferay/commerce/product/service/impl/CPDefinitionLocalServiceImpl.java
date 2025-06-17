@@ -1413,7 +1413,7 @@ public class CPDefinitionLocalServiceImpl
 
 		_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
 			_portal.getClassNameId(CPDefinition.class),
-			cpDefinition.getCPDefinitionId());
+			cpDefinition.getCPDefinitionId(), true);
 
 		// Commerce product display layouts
 

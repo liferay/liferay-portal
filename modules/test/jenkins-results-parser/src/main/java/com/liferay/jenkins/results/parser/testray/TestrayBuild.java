@@ -166,7 +166,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 				return null;
 			}
 
-			return TestrayFactory.newTestrayCaseResult(
+			return TestrayFactory.newJSONObjectTestrayCaseResult(
 				this, entityJSONObjects.get(0));
 		}
 		catch (IOException ioException) {
@@ -202,7 +202,8 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 			for (JSONObject entityJSONObject : entityJSONObjects) {
 				TestrayCaseResult testrayCaseResult =
-					TestrayFactory.newTestrayCaseResult(this, entityJSONObject);
+					TestrayFactory.newJSONObjectTestrayCaseResult(
+						this, entityJSONObject);
 
 				TestrayCase testrayCase = testrayCaseResult.getTestrayCase();
 
@@ -409,7 +410,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 			for (JSONObject entityJSONObject : entityJSONObjects) {
 				testrayCaseResults.add(
-					TestrayFactory.newTestrayCaseResult(
+					TestrayFactory.newJSONObjectTestrayCaseResult(
 						this, entityJSONObject));
 			}
 		}

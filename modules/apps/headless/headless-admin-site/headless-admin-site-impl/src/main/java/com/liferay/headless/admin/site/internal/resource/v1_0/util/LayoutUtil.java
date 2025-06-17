@@ -20,9 +20,13 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
+import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
 import com.liferay.portal.kernel.util.ColorSchemeFactoryUtil;
@@ -172,6 +176,23 @@ public class LayoutUtil {
 		serviceContext.setAttribute(
 			"draftLayoutExternalReferenceCode",
 			draftContentPageSpecification.getExternalReferenceCode());
+
+		Layout prototypeLayout = _getLayoutPrototypeLayout(
+			groupId, publishedContentPageSpecification, serviceContext);
+
+		if (prototypeLayout != null) {
+			serviceContext.setAttribute(
+				"sourcePrototypeLayoutUuid", prototypeLayout.getUuid());
+
+			Layout draftPrototypeLayout = _getLayoutPrototypeLayout(
+				groupId, draftContentPageSpecification, serviceContext);
+
+			if (draftPrototypeLayout != null) {
+				serviceContext.setAttribute(
+					"draftLayoutSourcePrototypeLayoutUuid",
+					draftPrototypeLayout.getUuid());
+			}
+		}
 
 		if (Objects.equals(
 				publishedContentPageSpecification.getStatus(),
@@ -443,6 +464,69 @@ public class LayoutUtil {
 		}
 
 		return dlFileEntry.getFileEntryId();
+	}
+
+	private static Layout _getLayoutPrototypeLayout(
+			long groupId, PageSpecification pageSpecification,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		if (Validator.isNull(
+				pageSpecification.
+					getSiteTemplatePageSpecificationExternalReferenceCode())) {
+
+			return null;
+		}
+
+		boolean privateLayout = Boolean.FALSE;
+
+		int layoutPageTemplateEntryType = GetterUtil.getInteger(
+			serviceContext.getAttribute("layout.page.template.entry.type"), -1);
+
+		if (Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.BASIC,
+				layoutPageTemplateEntryType) ||
+			Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				layoutPageTemplateEntryType) ||
+			Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE,
+				layoutPageTemplateEntryType)) {
+
+			privateLayout = Boolean.TRUE;
+		}
+		else if (Objects.equals(
+					PageSpecification.Type.CONTENT_PAGE_SPECIFICATION,
+					pageSpecification.getType())) {
+
+			ContentPageSpecification contentPageSpecification =
+				(ContentPageSpecification)pageSpecification;
+
+			if (Validator.isNull(
+					contentPageSpecification.
+						getDraftContentPageSpecificationExternalReferenceCode())) {
+
+				privateLayout = Boolean.TRUE;
+			}
+		}
+
+		LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+			groupId, privateLayout);
+
+		if (!layoutSet.isLayoutSetPrototypeLinkActive()) {
+			return null;
+		}
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.
+				getLayoutSetPrototypeByUuidAndCompanyId(
+					layoutSet.getLayoutSetPrototypeUuid(),
+					layoutSet.getCompanyId());
+
+		return LayoutLocalServiceUtil.fetchLayoutByUuidAndGroupId(
+			pageSpecification.
+				getSiteTemplatePageSpecificationExternalReferenceCode(),
+			layoutSetPrototype.getGroupId(), privateLayout);
 	}
 
 	private static long _getMasterLayoutPlid(Layout layout, Settings settings)

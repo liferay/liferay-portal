@@ -10,8 +10,10 @@ import com.liferay.dynamic.data.lists.model.DDLRecordSetModel;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
@@ -31,6 +33,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -46,6 +50,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1024,12 +1029,12 @@ public class DDLRecordSetModelImpl
 	}
 
 	public com.liferay.dynamic.data.mapping.storage.DDMFormValues
-		getDDMFormValues() {
+		getSettingsDDMFormValues() {
 
 		return null;
 	}
 
-	public void setDDMFormValues(
+	public void setSettingsDDMFormValues(
 		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues) {
 	}
 
@@ -1323,7 +1328,7 @@ public class DDLRecordSetModelImpl
 
 		_setModifiedDate = false;
 
-		setDDMFormValues(null);
+		setSettingsDDMFormValues(null);
 
 		_columnBitmask = 0;
 	}
@@ -1444,9 +1449,17 @@ public class DDLRecordSetModelImpl
 			ddlRecordSetCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
-		setDDMFormValues(null);
+		try {
+			setSettingsDDMFormValues(null);
 
-		ddlRecordSetCacheModel._ddmFormValues = getDDMFormValues();
+			ddlRecordSetCacheModel.ddmFormValues =
+				(com.liferay.dynamic.data.mapping.storage.DDMFormValues)
+					_ddmFormValuesMethodHandle.invokeExact(
+						(DDLRecordSetImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return ddlRecordSetCacheModel;
 	}
@@ -1655,6 +1668,38 @@ public class DDLRecordSetModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected final transient Consumer
+		<com.liferay.dynamic.data.mapping.storage.DDMFormValues>
+			ddmFormValuesUpdateEntityCacheConsumer = ddmFormValues -> {
+				DDLRecordSetCacheModel ddlRecordSetCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						DDLRecordSetImpl.class, _recordSetId,
+						DDLRecordSetCacheModel.class);
+
+				if ((ddlRecordSetCacheModel != null) &&
+					(ddlRecordSetCacheModel.getMvccVersion() ==
+						getMvccVersion())) {
+
+					ddlRecordSetCacheModel.ddmFormValues = ddmFormValues;
+				}
+			};
+
+	private static final MethodHandle _ddmFormValuesMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_ddmFormValuesMethodHandle = lookup.findGetter(
+				DDLRecordSetImpl.class, "_ddmFormValues",
+				com.liferay.dynamic.data.mapping.storage.DDMFormValues.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private DDLRecordSet _escapedModel;
 
 }

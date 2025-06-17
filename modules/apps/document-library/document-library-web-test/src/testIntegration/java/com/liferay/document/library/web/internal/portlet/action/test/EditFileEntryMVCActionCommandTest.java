@@ -400,7 +400,7 @@ public class EditFileEntryMVCActionCommandTest {
 			_createMockMultipartHttpServletRequest();
 
 		mockMultipartHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG,
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			PortletConfigFactoryUtil.create(
 				_portletLocalService.getPortletById(
 					DLPortletKeys.DOCUMENT_LIBRARY),

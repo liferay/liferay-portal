@@ -5,8 +5,8 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.Build;
-import com.liferay.jenkins.results.parser.TopLevelBuild;
+import com.liferay.jenkins.results.parser.BuildReport;
+import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
 /**
@@ -15,15 +15,15 @@ import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 public class SFBatchBuildTestrayCaseResult extends BatchBuildTestrayCaseResult {
 
 	public SFBatchBuildTestrayCaseResult(
-		TestrayBuild testrayBuild, TopLevelBuild topLevelBuild,
+		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport,
 		AxisTestClassGroup axisTestClassGroup) {
 
-		super(testrayBuild, topLevelBuild, axisTestClassGroup);
+		super(testrayBuild, topLevelBuildReport, axisTestClassGroup);
 	}
 
 	@Override
-	public Build getBuild() {
-		return getTopLevelBuild();
+	public BuildReport getBuildReport() {
+		return getTopLevelBuildReport();
 	}
 
 }

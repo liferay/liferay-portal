@@ -73,7 +73,13 @@
 							</div>
 
 							<div class="col paragraph">
-								<@liferay_ui["message"] key="learn-knowledge-base-header-text" />
+								<p class="d-none disclaimer-how-to">
+									<@liferay_ui["message"] key="knowledge-article-header-disclaimer-how-to" />
+								</p>
+
+								<p class="d-none disclaimer-default">
+									<@liferay_ui["message"] key="knowledge-article-header-disclaimer" />
+								</p>
 							</div>
 						</div>
 					</div>
@@ -125,55 +131,41 @@
 		</div>
 
 		<div class="col-md-3 knowledge-article-sidemenu" id="right-panel">
-			<div class="container-fluid">
-				<div class="row sidemenu-header">
-					<div class="col knowledge-article-dialect">
-						<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
-							<@liferay_ui["message"] key="legacy-knowledge-base" />
-						<#else>
-							<@liferay_ui["message"] key="knowledge-base" />
-						</#if>
-					</div>
-				</div>
-			</div>
-
-			<div class="article-nav-menu page-nav-menu">
-			</div>
-
-			<div class="page-nav-menu">
-				<div class="category-container mb-3">
-					<div class="learn-category-section-side">
-					</div>
-
-					<div class="knowledge-article-type-category-section">
-						<#if (ObjectField_knowledgeArticleType.getData())?hasContent>
-							<section>
-								<h6>
-									<@liferay_ui["message"] key="type" />
-								</h6>
-
-								<div class="category-tags">
-									<span class="category-tag-side">
-										${ObjectField_knowledgeArticleType.getData()}
-									</span>
-								</div>
-							</section>
-						</#if>
+			<div class="sticky-panel">
+				<div class="container-fluid">
+					<div class="row sidemenu-header">
+						<div class="col knowledge-article-dialect">
+							<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
+								<@liferay_ui["message"] key="legacy-knowledge-base" />
+							<#else>
+								<@liferay_ui["message"] key="knowledge-base" />
+							</#if>
+						</div>
 					</div>
 				</div>
 
-				<hr />
+				<div class="article-nav-menu page-nav-menu">
+				</div>
 
-				<div class="align-items-center d-flex flex-row rating-box">
-					<div>
-						<@liferay_ui["message"] key="did-this-article-resolve-your-issue" />
+				<div class="page-nav-menu">
+					<div class="category-container mb-3">
+						<div class="learn-category-section-side">
+						</div>
 					</div>
 
-					<@liferay_ratings["ratings"]
-						className="com.liferay.journal.model.JournalArticle"
-						classPK=assetId
-						type="thumbs"
-					/>
+					<hr />
+
+					<div class="align-items-center d-flex flex-row rating-box">
+						<div>
+							<@liferay_ui["message"] key="did-this-article-resolve-your-issue" />
+						</div>
+
+						<@liferay_ratings["ratings"]
+							className="com.liferay.journal.model.JournalArticle"
+							classPK=assetId
+							type="thumbs"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -309,18 +301,19 @@
 
 			const taxonomyCategoriesByTaxonomyVocabularyMap = new Map();
 
-			for (const item of taxonomyCategoryBriefs) {
-				const { embeddedTaxonomyCategory, taxonomyCategoryName } = item;
+			for (const taxonomyCategoryBrief of taxonomyCategoryBriefs) {
+				const {embeddedTaxonomyCategory, taxonomyCategoryId, taxonomyCategoryName} = taxonomyCategoryBrief;
 
-				const { parentTaxonomyVocabulary } = embeddedTaxonomyCategory;
+				const {parentTaxonomyVocabulary} = embeddedTaxonomyCategory;
 
-				const { name: taxonomyVocabularyName, externalReferenceCode: taxonomyVocabularyExternalReferenceCode } = parentTaxonomyVocabulary;
+				const {externalReferenceCode: taxonomyVocabularyExternalReferenceCode, name: taxonomyVocabularyName} = parentTaxonomyVocabulary;
 
 				let taxonomyVocabulary = taxonomyCategoriesByTaxonomyVocabularyMap.get(taxonomyVocabularyName);
 
 				if (!taxonomyVocabulary) {
 					taxonomyVocabulary = {
 						externalReferenceCode: taxonomyVocabularyExternalReferenceCode,
+						key:taxonomyVocabularyName.toLowerCase(),
 						name: taxonomyVocabularyName,
 						taxonomyCategories: []
 					};
@@ -328,7 +321,11 @@
 					taxonomyCategoriesByTaxonomyVocabularyMap.set(taxonomyVocabularyName, taxonomyVocabulary);
 				}
 
-				taxonomyVocabulary.taxonomyCategories.push(taxonomyCategoryName);
+				taxonomyVocabulary.taxonomyCategories.push({
+			  		id: taxonomyCategoryId,
+			  		name: taxonomyCategoryName,
+					vocabulary: taxonomyVocabularyName.toLowerCase(),
+				});
 			}
 
 			const taxonomyCategoriesByTaxonomyVocabulary = Array.from(taxonomyCategoriesByTaxonomyVocabularyMap.values());
@@ -361,12 +358,17 @@
 					targetContainer = document.querySelector('.learn-category-section-bottom');
 				}
 
-				item.taxonomyCategories.forEach(taxonomyCategoryName => {
-					const spanElement = document.createElement('span');
+				item.taxonomyCategories.forEach(taxonomyCategory => {
+					const linkElement = document.createElement('a');
 
-					spanElement.className = spanClassName;
-					spanElement.textContent = taxonomyCategoryName;
-					categoryTagsElement.appendChild(spanElement);
+					if (taxonomyCategory && spanClassName === 'category-tag-bottom') {
+						linkElement.href = '/search?' + taxonomyCategory.vocabulary + '=' + taxonomyCategory.id ;
+					}
+
+					linkElement.className = spanClassName;
+		  			linkElement.textContent = taxonomyCategory.name;
+
+					categoryTagsElement.appendChild(linkElement);
 				});
 
 				sectionElement.appendChild(categoryTagsElement);
@@ -377,9 +379,22 @@
 			});
 		}
 
+		async function createDisclaimerMessage() {
+			const defaultDisclaimer = document.querySelector('.disclaimer-default');
+			const howToDisclaimer = document.querySelector('.disclaimer-how-to');
+
+			if (knowledgeArticle?.knowledgeArticleType.key == 'howTo') {
+				howToDisclaimer.classList.remove('d-none');
+			}
+			else {
+				defaultDisclaimer.classList.remove('d-none');
+			}
+		}
+
 		const knowledgeArticle = await fetchKnowledgeArticle();
 
 		createAttachmentsContainter();
+		createDisclaimerMessage();
 		createNavMenuContainer();
 		createTaxonomyCategoriesContainer();
 	}
@@ -490,8 +505,8 @@
 			border: 1px solid var(--color-brand-primary, #0b5fff);
 			border-radius: var(--border-radius-xl);
 			color: var(--color-brand-primary, #0b5fff);
-			gap: 0.25rem;
-			padding: 0.25rem 0.5rem;
+			padding: 0 0.75rem;
+			height: 24px;
 		}
 
 		section {
@@ -609,6 +624,11 @@
 		&::before {
 			background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cmask%20id%3D%22mask0_1005_5947%22%20style%3D%22mask-type%3Aalpha%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%221%22%20width%3D%2216%22%20height%3D%2214%22%3E%3Cpath%20d%3D%22M3%201H1C0.446875%201%200%201.44687%200%202V3H4V2C4%201.44687%203.55312%201%203%201Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M0%2014C0%2014.5531%200.446875%2015%201%2015H3C3.55312%2015%204%2014.5531%204%2014V13H0V14Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M4%204H0V12H4V4Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M8.00001%201H6.00001C5.44688%201%205.00001%201.44687%205.00001%202V3H9.00001V2C9.00001%201.44687%208.55313%201%208.00001%201Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M5.00001%2014C5.00001%2014.5531%205.44688%2015%206.00001%2015H8.00001C8.55313%2015%209.00001%2014.5531%209.00001%2014V13H5.00001V14Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M9.00001%204H5.00001V12H9.00001V4Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M11.2212%201.10002L10.2525%201.35315C9.71809%201.49377%209.39621%202.03752%209.53684%202.5719L9.78996%203.54065L12.6931%202.7844L12.44%201.81565C12.2993%201.28127%2011.7556%200.959396%2011.2212%201.10002Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M12.9456%203.75117L10.0422%204.50657L12.0566%2012.249L14.96%2011.4936L12.9456%203.75117Z%22%20fill%3D%22%236B6C7E%22/%3E%3Cpath%20d%3D%22M12.5586%2014.1844C12.6993%2014.7188%2013.243%2015.0407%2013.7774%2014.9001L14.7461%2014.6469C15.2805%2014.5063%2015.6024%2013.9626%2015.4618%2013.4282L15.2086%2012.4594L12.3055%2013.2157L12.5586%2014.1844Z%22%20fill%3D%22%236B6C7E%22/%3E%3C/mask%3E%3Cg%20mask%3D%22url(%23mask0_1005_5947)%22%3E%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22white%22/%3E%3C/g%3E%3C/svg%3E");
 		}
+	}
+
+	.sticky-panel {
+		position: sticky;
+		top: 200px;
 	}
 
 	.warning-disclaimer {

@@ -65,4 +65,13 @@ public class CPConfigurationEntryImpl extends CPConfigurationEntryBaseImpl {
 		return cpConfigurationList.getParentCPConfigurationList();
 	}
 
+	@Override
+	public boolean isMaster() throws PortalException {
+		CPConfigurationList cpConfigurationList =
+			CPConfigurationListLocalServiceUtil.getCPConfigurationList(
+				getCPConfigurationListId());
+
+		return cpConfigurationList.isMaster();
+	}
+
 }

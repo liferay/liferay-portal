@@ -109,11 +109,7 @@ public class SelfReferenceCheck extends BaseCheck {
 				(parentDetailAST.getType() == TokenTypes.ENUM_DEF) ||
 				(parentDetailAST.getType() == TokenTypes.INTERFACE_DEF)) {
 
-				if (className.equals(getName(parentDetailAST))) {
-					return false;
-				}
-
-				return true;
+				return !className.equals(getName(parentDetailAST));
 			}
 
 			parentDetailAST = parentDetailAST.getParent();

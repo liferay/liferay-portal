@@ -51,7 +51,7 @@ const TableWithData = withBaseResults(withData, {
 	emptyIcon: {
 		border: false,
 		size: Sizes.XXXLarge,
-		symbol: 'ac-satellite'
+		symbol: 'ac_satellite'
 	},
 	emptyTitle: Liferay.Language.get('there-are-no-individuals-found'),
 	getColumns: ({

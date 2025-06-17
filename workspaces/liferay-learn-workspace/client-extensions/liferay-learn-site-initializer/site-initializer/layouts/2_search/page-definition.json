@@ -143,7 +143,7 @@
 											},
 											"widgetInstance": {
 												"widgetConfig": {
-													"displayStyle": "ddmTemplate_LEARN_SEARCH_CATEGORY_FACET_TABS",
+													"displayStyle": "ddmTemplate_LEARN-SEARCH-CATEGORY-FACET-TABS",
 													"frequenciesVisible": "true",
 													"frequencyThreshold": "0",
 													"maxTerms": "10",
@@ -230,7 +230,7 @@
 												"definition": {
 													"widgetInstance": {
 														"widgetConfig": {
-															"displayStyle": "ddmTemplate_LEARN_SEARCH_SORT",
+															"displayStyle": "ddmTemplate_LEARN-SEARCH-SORT",
 															"fields": "[{\"field\": \"\", \"label\": \"relevance\"}, {\"field\": \"title+\", \"label\": \"Alphabetical (A-Z)\"}, {\"field\": \"title-\", \"label\": \"Alphabetical (Z-A)\"}, {\"field\": \"publishedDate-\", \"label\": \"publish-date\"}]"
 														},
 														"widgetName": "com_liferay_portal_search_web_internal_sort_portlet_SortPortlet"
@@ -251,7 +251,7 @@
 											"name": "Capability Category Facet",
 											"widgetInstance": {
 												"widgetConfig": {
-													"displayStyle": "ddmTemplate_LEARN_SEARCH_CATEGORY_FACET",
+													"displayStyle": "ddmTemplate_LEARN-SEARCH-CATEGORY-FACET",
 													"frequenciesVisible": "false",
 													"frequencyThreshold": "1",
 													"maxTerms": "12",
@@ -274,7 +274,7 @@
 											"name": "Feature Category Facet",
 											"widgetInstance": {
 												"widgetConfig": {
-													"displayStyle": "ddmTemplate_LEARN_SEARCH_CATEGORY_FACET",
+													"displayStyle": "ddmTemplate_LEARN-SEARCH-CATEGORY-FACET",
 													"frequenciesVisible": "false",
 													"frequencyThreshold": "1",
 													"maxTerms": "50",
@@ -297,7 +297,7 @@
 											"name": "Deployment Approach Category Facet",
 											"widgetInstance": {
 												"widgetConfig": {
-													"displayStyle": "ddmTemplate_LEARN_SEARCH_CATEGORY_FACET",
+													"displayStyle": "ddmTemplate_LEARN-SEARCH-CATEGORY-FACET",
 													"frequenciesVisible": "false",
 													"frequencyThreshold": "1",
 													"maxTerms": "50",
@@ -335,7 +335,7 @@
 											"widgetInstance": {
 												"widgetConfig": {
 													"displayInDocumentForm": "false",
-													"displayStyle": "ddmTemplate_LEARN_SEARCH_RESULTS",
+													"displayStyle": "ddmTemplate_LEARN-SEARCH-RESULTS",
 													"federatedSearchKey": "",
 													"fieldsToDisplay": "",
 													"highlightEnabled": "true",

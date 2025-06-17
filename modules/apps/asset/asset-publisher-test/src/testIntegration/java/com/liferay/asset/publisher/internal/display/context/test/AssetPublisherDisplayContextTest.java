@@ -318,7 +318,7 @@ public class AssetPublisherDisplayContextTest {
 				portlet, null);
 
 		mockLiferayPortletRenderRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, liferayPortletConfig);
+			JavaConstants.JAKARTA_PORTLET_CONFIG, liferayPortletConfig);
 
 		String path = "/view.jsp";
 

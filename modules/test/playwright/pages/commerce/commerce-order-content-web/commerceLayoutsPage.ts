@@ -81,6 +81,11 @@ export class CommerceLayoutsPage {
 	readonly submitButton: Locator;
 	readonly widgetPageTemplateButton: Locator;
 
+	readonly orderTypeModal: Locator;
+	readonly orderTypeModalHeading: Locator;
+	readonly orderTypeModalInput: Locator;
+	readonly orderTypeModalButton: Locator;
+
 	constructor(page: Page) {
 		this.accountSelectorButton = (name) => {
 			return page.getByRole('button', {
@@ -226,6 +231,17 @@ export class CommerceLayoutsPage {
 		this.orderItemCardButton = page
 			.frameLocator('iframe[title="Select"]')
 			.getByRole('button', {name: 'Select Order Items'});
+		this.orderTypeModal = page.locator('.modal-content');
+		this.orderTypeModalHeading = this.orderTypeModal.getByRole('heading', {
+			name: 'Select Order Type',
+		});
+		this.orderTypeModalInput = this.orderTypeModal.getByLabel(
+			'Order Type',
+			{exact: true}
+		);
+		this.orderTypeModalButton = this.orderTypeModal.getByRole('button', {
+			name: 'Add Order',
+		});
 		this.page = page;
 		this.pageEditorCollectionItem = page
 			.locator('.page-editor__collection-item')

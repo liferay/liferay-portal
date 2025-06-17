@@ -786,6 +786,13 @@ public class CPConfigurationEntryWrapper
 		return model.isFreeShipping();
 	}
 
+	@Override
+	public boolean isMaster()
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return model.isMaster();
+	}
+
 	/**
 	 * Returns <code>true</code> if this cp configuration entry is purchasable.
 	 *

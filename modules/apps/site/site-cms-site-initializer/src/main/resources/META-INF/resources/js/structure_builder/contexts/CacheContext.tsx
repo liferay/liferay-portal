@@ -18,8 +18,10 @@ import PicklistService from '../../services/PicklistService';
 import SpaceService from '../../services/SpaceService';
 import {Picklist} from '../../types/Picklist';
 import {Space} from '../../types/Space';
+import StructureService from '../services/StructureService';
+import {Structures} from '../types/Structure';
 
-type CacheKey = 'picklists' | 'spaces';
+export type CacheKey = 'picklists' | 'spaces' | 'structures';
 export type CacheStatus = 'idle' | 'saving' | 'saved' | 'stale';
 
 export type Cache = {
@@ -33,6 +35,11 @@ export type Cache = {
 		fetcher: () => Promise<Space[]>;
 		status: CacheStatus;
 	};
+	structures: {
+		data: Structures;
+		fetcher: () => Promise<Structures>;
+		status: CacheStatus;
+	};
 };
 
 const INITIAL_CACHE: Cache = {
@@ -44,6 +51,11 @@ const INITIAL_CACHE: Cache = {
 	spaces: {
 		data: [],
 		fetcher: SpaceService.getSpaces,
+		status: 'idle',
+	},
+	structures: {
+		data: new Map(),
+		fetcher: StructureService.getStructures,
 		status: 'idle',
 	},
 };

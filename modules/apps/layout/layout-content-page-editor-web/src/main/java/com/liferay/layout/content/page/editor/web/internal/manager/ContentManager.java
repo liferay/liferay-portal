@@ -524,7 +524,7 @@ public class ContentManager {
 
 				PortletResponse portletResponse =
 					(PortletResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE);
+						JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 				return JSONUtil.put(
 					"editImageURL",
@@ -560,7 +560,7 @@ public class ContentManager {
 
 				PortletResponse portletResponse =
 					(PortletResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE);
+						JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 				return _layoutLockManager.getUnlockDraftLayoutURL(
 					_portal.getLiferayPortletResponse(portletResponse),
@@ -796,7 +796,7 @@ public class ContentManager {
 
 		PortletResponse portletResponse =
 			(PortletResponse)liferayPortletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		LiferayPortletResponse liferayPortletResponse =
 			_portal.getLiferayPortletResponse(portletResponse);

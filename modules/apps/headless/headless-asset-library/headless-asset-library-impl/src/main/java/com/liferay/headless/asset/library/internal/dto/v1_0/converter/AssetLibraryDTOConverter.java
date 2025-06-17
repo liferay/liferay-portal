@@ -75,7 +75,10 @@ public class AssetLibraryDTOConverter
 			{
 				setActions(dtoConverterContext::getActions);
 				setDateCreated(depotEntry::getCreateDate);
-				setDateModified(depotEntry::getModifiedDate);
+				setDateModified(
+					() -> GetterUtil.getObject(
+						depotEntry.getModifiedDate(),
+						depotEntry::getCreateDate));
 				setDescription(
 					() -> group.getDescription(
 						dtoConverterContext.getLocale()));

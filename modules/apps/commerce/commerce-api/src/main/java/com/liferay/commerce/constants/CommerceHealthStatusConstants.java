@@ -113,4 +113,10 @@ public class CommerceHealthStatusConstants {
 		SPLIT_COMMERCE_ORDER_BY_CATALOG_HEALTH_STATUS_KEY =
 			"split.commerce.order.by.catalog.health.status.key";
 
+	public static final String USERS_COMMERCE_HEALTH_STATUS_DESCRIPTION =
+		"users.commerce.health.status.description";
+
+	public static final String USERS_COMMERCE_HEALTH_STATUS_KEY =
+		"users.commerce.health.status.key";
+
 }

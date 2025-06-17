@@ -248,33 +248,33 @@ const SetupAnalyticsCloudPage = ({
 						new NotificationQueueService(client);
 
 					await notificationTemplateService.send(
-						'SETUP-ANALYTICS-CLOUD-ENVIRONMENT-NOTIFICATION-TEMPLATE',
+						'SETUP-ANALYTICS-CLOUD-ENVIRONMENT',
 						{
-							'[%AC_DATA_CENTER_LOCATION]':
+							'[%AC_DATA_CENTER_LOCATION%]':
 								analyticsCloud.dataCenterLocation,
-							'[%AC_DATA_TIME]': new Date().toUTCString(),
-							'[%AC_EMAIL_DOMAINS]':
+							'[%AC_DATA_TIME%]': new Date().toUTCString(),
+							'[%AC_EMAIL_DOMAINS%]':
 								analyticsCloud.allowedEmailDomains ||
 								BLANK_TEXT,
-							'[%AC_INCIDENT_REPORT_CONTACT]':
+							'[%AC_INCIDENT_REPORT_CONTACT%]':
 								emailsCriticalIncident,
-							'[%AC_OWNER_EMAIL]':
+							'[%AC_OWNER_EMAIL%]':
 								analyticsCloud.ownerEmailAddress,
-							'[%AC_TIME_ZONE]':
+							'[%AC_TIME_ZONE%]':
 								analyticsCloud.timeZone || BLANK_TEXT,
-							'[%AC_WORKSPACE_FRIENDLY_URL]':
+							'[%AC_WORKSPACE_FRIENDLY_URL%]':
 								analyticsCloud.workspaceFriendlyUrl ||
 								BLANK_TEXT,
-							'[%AC_WORKSPACE_NAME]':
+							'[%AC_WORKSPACE_NAME%]':
 								analyticsCloud.workspaceName,
-							'[%PROJECT_ID]': project?.code,
-							'[%PROJECT_SALESFORCE_ACCOUNT_LINK]':
+							'[%PROJECT_ID%]': project?.code,
+							'[%PROJECT_SALESFORCE_ACCOUNT_LINK%]':
 								project?.salesforceAccountKey
 									? 'https://liferay.lightning.force.com/lightning/r/Account/' +
 										project?.salesforceAccountKey +
 										'/view'
 									: BLANK_TEXT,
-							'[%PROJECT_SALESFORCE_PROJECT_LINK]':
+							'[%PROJECT_SALESFORCE_PROJECT_LINK%]':
 								project?.salesforceProjectKey
 									? 'https://liferay.lightning.force.com/lightning/r/Project__c/' +
 										project?.salesforceProjectKey +

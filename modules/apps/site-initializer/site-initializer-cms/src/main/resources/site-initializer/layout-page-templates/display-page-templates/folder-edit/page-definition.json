@@ -13,7 +13,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.EditFolderFragmentRenderer"
+								"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.EditFolderComponentSectionFragmentRenderer"
 							},
 							"fragmentConfig": {
 							},

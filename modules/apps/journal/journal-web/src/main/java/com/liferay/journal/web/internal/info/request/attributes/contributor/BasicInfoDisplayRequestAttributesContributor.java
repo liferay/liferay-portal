@@ -60,7 +60,7 @@ public class BasicInfoDisplayRequestAttributesContributor
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (portletRequest != null) {
 			return;
@@ -90,9 +90,9 @@ public class BasicInfoDisplayRequestAttributesContributor
 					themeDisplay.getPlid());
 
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST, liferayRenderRequest);
+				JavaConstants.JAKARTA_PORTLET_REQUEST, liferayRenderRequest);
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE,
+				JavaConstants.JAKARTA_PORTLET_RESPONSE,
 				RenderResponseFactory.create(
 					themeDisplay.getResponse(), liferayRenderRequest));
 		}

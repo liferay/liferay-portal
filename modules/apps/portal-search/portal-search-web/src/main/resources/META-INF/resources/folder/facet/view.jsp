@@ -81,6 +81,10 @@ FolderFacetPortletInstanceConfiguration folderFacetPortletInstanceConfiguration 
 								onClick="Liferay.Search.FacetUtil.clearSelections(event);"
 							>
 								<strong><liferay-ui:message key="clear" /></strong>
+
+								<span class="sr-only">
+									<liferay-ui:message arguments="folder-facet-portlet-instance-configuration-name" key="x-filter" />
+								</span>
 							</clay:button>
 						</c:if>
 

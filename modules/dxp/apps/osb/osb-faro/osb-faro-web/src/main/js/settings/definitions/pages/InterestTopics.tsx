@@ -270,7 +270,7 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 				icon={{
 					border: false,
 					size: Sizes.XXXLarge,
-					symbol: 'ac-satellite'
+					symbol: 'ac_satellite'
 				}}
 				primary
 				title={Liferay.Language.get('no-keywords-found')}

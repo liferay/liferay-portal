@@ -54,7 +54,7 @@ public class ForgetPasswordNavigationPostPageInclude implements PageInclude {
 		if (FeatureFlagManagerUtil.isEnabled("LPD-6378")) {
 			PortletConfig portletConfig =
 				(PortletConfig)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_CONFIG);
+					JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 			String portletName = portletConfig.getPortletName();
 

@@ -283,7 +283,7 @@ public class BlogsEntryItemSelectorView
 			SearchContainer<BlogsEntry> entriesSearchContainer =
 				new SearchContainer<>(
 					(PortletRequest)_httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST),
+						JavaConstants.JAKARTA_PORTLET_REQUEST),
 					_portletURL, null, "no-entries-were-found");
 
 			entriesSearchContainer.setOrderByCol(getOrderByCol());

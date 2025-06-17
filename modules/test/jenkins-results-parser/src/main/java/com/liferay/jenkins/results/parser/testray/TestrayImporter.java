@@ -5,38 +5,24 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.AntException;
-import com.liferay.jenkins.results.parser.AntUtil;
-import com.liferay.jenkins.results.parser.Build;
+import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.ControllerBuildReport;
 import com.liferay.jenkins.results.parser.Dom4JUtil;
-import com.liferay.jenkins.results.parser.GitWorkingDirectory;
-import com.liferay.jenkins.results.parser.GitWorkingDirectoryFactory;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.NotificationUtil;
-import com.liferay.jenkins.results.parser.ParallelExecutor;
-import com.liferay.jenkins.results.parser.PluginsBranchInformationBuild;
-import com.liferay.jenkins.results.parser.PluginsTopLevelBuild;
-import com.liferay.jenkins.results.parser.PortalAppReleaseTopLevelBuild;
-import com.liferay.jenkins.results.parser.PortalBranchInformationBuild;
+import com.liferay.jenkins.results.parser.PluginsWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.PortalFixpackRelease;
-import com.liferay.jenkins.results.parser.PortalFixpackReleaseBuild;
-import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalHotfixRelease;
-import com.liferay.jenkins.results.parser.PortalHotfixReleaseBuild;
 import com.liferay.jenkins.results.parser.PortalRelease;
-import com.liferay.jenkins.results.parser.PortalReleaseBuild;
+import com.liferay.jenkins.results.parser.PortalWorkspace;
+import com.liferay.jenkins.results.parser.PortalWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.PullRequest;
-import com.liferay.jenkins.results.parser.PullRequestBuild;
-import com.liferay.jenkins.results.parser.PullRequestSubrepositoryTopLevelBuild;
-import com.liferay.jenkins.results.parser.QAWebsitesBranchInformationBuild;
 import com.liferay.jenkins.results.parser.QAWebsitesGitRepositoryJob;
-import com.liferay.jenkins.results.parser.QAWebsitesTopLevelBuild;
-import com.liferay.jenkins.results.parser.Retryable;
-import com.liferay.jenkins.results.parser.TopLevelBuild;
+import com.liferay.jenkins.results.parser.QAWebsitesWorkspaceGitRepository;
+import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.Workspace;
-import com.liferay.jenkins.results.parser.WorkspaceBuild;
 import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
@@ -59,9 +45,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,17 +59,22 @@ import org.dom4j.Element;
  */
 public class TestrayImporter {
 
-	public TestrayImporter(Build build) {
-		if (build == null) {
-			throw new RuntimeException("Please provide a valid build");
-		}
+	public TestrayImporter(
+		BuildDatabase buildDatabase, TopLevelBuildReport topLevelBuildReport) {
 
-		_topLevelBuild = build.getTopLevelBuild();
-
-		if (_topLevelBuild == null) {
+		if (topLevelBuildReport == null) {
 			throw new RuntimeException(
-				"Please provide a build with a top level build");
+				"Please provide a valid top level build report");
 		}
+
+		_topLevelBuildReport = topLevelBuildReport;
+
+		_jobs = buildDatabase.getJobs();
+		_portalFixpackReleases = buildDatabase.getPortalFixpackReleases();
+		_portalHotfixReleases = buildDatabase.getPortalHotfixReleases();
+		_portalReleases = buildDatabase.getPortalReleases();
+		_pullRequests = buildDatabase.getPullRequests();
+		_workspaces = buildDatabase.getWorkspaces();
 	}
 
 	public String getJenkinsBuildDescription() {
@@ -94,21 +82,19 @@ public class TestrayImporter {
 
 		Element rootElement = document.addElement("div");
 
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
 		Dom4JUtil.addToElement(
 			rootElement,
 			_getJenkinsBuildDescriptionElement(
 				"Jenkins Build",
 				JenkinsResultsParserUtil.combine(
-					topLevelBuild.getJobName(), "#",
-					String.valueOf(topLevelBuild.getBuildNumber())),
-				topLevelBuild.getBuildURL()),
+					_topLevelBuildReport.getJobName(), "#",
+					String.valueOf(_topLevelBuildReport.getBuildNumber())),
+				String.valueOf(_topLevelBuildReport.getBuildURL())),
 			_getJenkinsBuildDescriptionElement(
 				"Jenkins Report", "jenkins-report.html",
-				topLevelBuild.getJenkinsReportURL()),
+				String.valueOf(_topLevelBuildReport.getJenkinsReportURL())),
 			_getJenkinsBuildDescriptionElement(
-				"Jenkins Suite", topLevelBuild.getTestSuiteName()));
+				"Jenkins Suite", _topLevelBuildReport.getTestSuiteName()));
 
 		PullRequest pullRequest = getPullRequest();
 
@@ -188,65 +174,36 @@ public class TestrayImporter {
 		}
 	}
 
-	public Job getJob() {
-		if (_job != null) {
-			return _job;
-		}
-
-		_job = _topLevelBuild.getJob();
-
-		return _job;
-	}
-
 	public PortalFixpackRelease getPortalFixpackRelease() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		if (!(topLevelBuild instanceof PortalFixpackReleaseBuild)) {
+		if (_portalFixpackReleases.isEmpty()) {
 			return null;
 		}
 
-		PortalFixpackReleaseBuild portalFixpackReleaseBuild =
-			(PortalFixpackReleaseBuild)topLevelBuild;
-
-		return portalFixpackReleaseBuild.getPortalFixpackRelease();
+		return _portalFixpackReleases.get(0);
 	}
 
 	public PortalHotfixRelease getPortalHotfixRelease() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		if (!(topLevelBuild instanceof PortalHotfixReleaseBuild)) {
+		if (_portalHotfixReleases.isEmpty()) {
 			return null;
 		}
 
-		PortalHotfixReleaseBuild portalHotfixReleaseBuild =
-			(PortalHotfixReleaseBuild)topLevelBuild;
-
-		return portalHotfixReleaseBuild.getPortalHotfixRelease();
+		return _portalHotfixReleases.get(0);
 	}
 
 	public PortalRelease getPortalRelease() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		if (!(topLevelBuild instanceof PortalReleaseBuild)) {
+		if (_portalReleases.isEmpty()) {
 			return null;
 		}
 
-		PortalReleaseBuild portalReleaseBuild =
-			(PortalReleaseBuild)topLevelBuild;
-
-		return portalReleaseBuild.getPortalRelease();
+		return _portalReleases.get(0);
 	}
 
 	public PullRequest getPullRequest() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		if (!(topLevelBuild instanceof PullRequestBuild)) {
+		if (_pullRequests.isEmpty()) {
 			return null;
 		}
 
-		PullRequestBuild pullRequestBuild = (PullRequestBuild)topLevelBuild;
-
-		return pullRequestBuild.getPullRequest();
+		return _pullRequests.get(0);
 	}
 
 	public synchronized TestrayBuild getTestrayBuild(File testBaseDir) {
@@ -354,15 +311,14 @@ public class TestrayImporter {
 	}
 
 	public Date getTestrayBuildDate() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
+		ControllerBuildReport controllerBuildReport =
+			_topLevelBuildReport.getControllerBuildReport();
 
-		Build controllerBuild = topLevelBuild.getControllerBuild();
-
-		if (controllerBuild != null) {
-			return new Date(controllerBuild.getStartTime());
+		if (controllerBuildReport != null) {
+			return controllerBuildReport.getStartDate();
 		}
 
-		return new Date(topLevelBuild.getStartTime());
+		return _topLevelBuildReport.getStartDate();
 	}
 
 	public String getTestrayBuildDescription() {
@@ -392,104 +348,74 @@ public class TestrayImporter {
 			sb.append("; ");
 		}
 
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
 		sb.append("<a href=\"");
-		sb.append(topLevelBuild.getJenkinsReportURL());
+		sb.append(_topLevelBuildReport.getJenkinsReportURL());
 		sb.append("\">Jenkins Report</a>");
 		sb.append("; ");
 
-		if (topLevelBuild instanceof PortalBranchInformationBuild) {
-			PortalBranchInformationBuild portalBranchInformationBuild =
-				(PortalBranchInformationBuild)topLevelBuild;
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_getPortalWorkspaceGitRepository();
 
-			Build.BranchInformation portalBranchInformation =
-				portalBranchInformationBuild.getPortalBranchInformation();
+		if (portalWorkspaceGitRepository != null) {
+			sb.append("Portal Branch: ");
+			sb.append(portalWorkspaceGitRepository.getUpstreamBranchName());
+			sb.append("; ");
 
-			if (portalBranchInformation != null) {
-				sb.append("Portal Branch: ");
-				sb.append(portalBranchInformation.getUpstreamBranchName());
-				sb.append("; ");
-
-				sb.append("Portal SHA: ");
-				sb.append(portalBranchInformation.getSenderBranchSHAShort());
-				sb.append("; ");
-			}
+			sb.append("Portal SHA: ");
+			sb.append(portalWorkspaceGitRepository.getSenderBranchSHAShort());
+			sb.append("; ");
 		}
 
-		if (topLevelBuild instanceof PluginsBranchInformationBuild) {
-			PluginsBranchInformationBuild pluginsBranchInformationBuild =
-				(PluginsBranchInformationBuild)topLevelBuild;
+		PluginsWorkspaceGitRepository pluginsWorkspaceGitRepository =
+			_getPluginsWorkspaceGitRepository();
 
-			Build.BranchInformation pluginsBranchInformation =
-				pluginsBranchInformationBuild.getPluginsBranchInformation();
+		if (pluginsWorkspaceGitRepository != null) {
+			sb.append("Plugins Branch: ");
+			sb.append(pluginsWorkspaceGitRepository.getUpstreamBranchName());
+			sb.append("; ");
 
-			if (pluginsBranchInformation != null) {
-				sb.append("Plugins Branch: ");
-				sb.append(pluginsBranchInformation.getUpstreamBranchName());
-				sb.append("; ");
-
-				sb.append("Plugins SHA: ");
-				sb.append(pluginsBranchInformation.getSenderBranchSHAShort());
-				sb.append("; ");
-			}
+			sb.append("Plugins SHA: ");
+			sb.append(pluginsWorkspaceGitRepository.getSenderBranchSHAShort());
+			sb.append("; ");
 		}
 
-		if (topLevelBuild instanceof QAWebsitesBranchInformationBuild) {
-			QAWebsitesBranchInformationBuild qaWebsitesBranchInformationBuild =
-				(QAWebsitesBranchInformationBuild)topLevelBuild;
+		QAWebsitesWorkspaceGitRepository qaWebsitesWorkspaceGitRepository =
+			_getQAWebsitesWorkspaceGitRepository();
 
-			Build.BranchInformation qaWebsitesBranchInformation =
-				qaWebsitesBranchInformationBuild.
-					getQAWebsitesBranchInformation();
+		if (qaWebsitesWorkspaceGitRepository != null) {
+			sb.append("QA Websites Branch: ");
+			sb.append(qaWebsitesWorkspaceGitRepository.getUpstreamBranchName());
+			sb.append("; ");
 
-			if (qaWebsitesBranchInformation != null) {
-				sb.append("QA Websites Branch: ");
-				sb.append(qaWebsitesBranchInformation.getUpstreamBranchName());
-				sb.append("; ");
-
-				sb.append("QA Websites SHA: ");
-				sb.append(
-					qaWebsitesBranchInformation.getSenderBranchSHAShort());
-				sb.append("; ");
-			}
+			sb.append("QA Websites SHA: ");
+			sb.append(
+				qaWebsitesWorkspaceGitRepository.getSenderBranchSHAShort());
+			sb.append("; ");
 		}
 
 		return sb.toString();
 	}
 
 	public String getTestrayBuildSHA() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_getPortalWorkspaceGitRepository();
 
-		if (topLevelBuild instanceof PortalBranchInformationBuild) {
-			PortalBranchInformationBuild portalBranchInformationBuild =
-				(PortalBranchInformationBuild)topLevelBuild;
-
-			Build.BranchInformation portalBranchInformation =
-				portalBranchInformationBuild.getPortalBranchInformation();
-
-			return portalBranchInformation.getSenderBranchSHA();
+		if (portalWorkspaceGitRepository != null) {
+			return portalWorkspaceGitRepository.getSenderBranchSHA();
 		}
 
-		if (topLevelBuild instanceof PluginsBranchInformationBuild) {
-			PluginsBranchInformationBuild pluginsBranchInformationBuild =
-				(PluginsBranchInformationBuild)topLevelBuild;
+		PluginsWorkspaceGitRepository pluginsWorkspaceGitRepository =
+			_getPluginsWorkspaceGitRepository();
 
-			Build.BranchInformation pluginsBranchInformation =
-				pluginsBranchInformationBuild.getPluginsBranchInformation();
-
-			return pluginsBranchInformation.getSenderBranchSHA();
+		if (pluginsWorkspaceGitRepository != null) {
+			return pluginsWorkspaceGitRepository.getSenderBranchSHA();
 		}
 
-		if (topLevelBuild instanceof QAWebsitesBranchInformationBuild) {
-			QAWebsitesBranchInformationBuild qaWebsitesBranchInformationBuild =
-				(QAWebsitesBranchInformationBuild)topLevelBuild;
+		QAWebsitesWorkspaceGitRepository qaWebsitesWorkspaceGitRepository =
+			_getQAWebsitesWorkspaceGitRepository();
 
-			Build.BranchInformation qaWebsitesBranchInformation =
-				qaWebsitesBranchInformationBuild.
-					getQAWebsitesBranchInformation();
-
-			return qaWebsitesBranchInformation.getSenderBranchSHA();
+		if (qaWebsitesWorkspaceGitRepository != null) {
+			return qaWebsitesWorkspaceGitRepository.getSenderBranchSHA();
 		}
 
 		return null;
@@ -572,9 +498,7 @@ public class TestrayImporter {
 				}
 			}
 
-			Job job = getJob();
-
-			String jobName = job.getJobName();
+			String jobName = _topLevelBuildReport.getJobName();
 
 			if ((testrayProductVersion == null) &&
 				(jobName.equals("test-qa-websites-functional-daily") ||
@@ -956,10 +880,6 @@ public class TestrayImporter {
 		throw new RuntimeException("Please set TESTRAY_SERVER_URL");
 	}
 
-	public TopLevelBuild getTopLevelBuild() {
-		return _topLevelBuild;
-	}
-
 	public void postSlackNotification() {
 		List<Long> testrayBuildIDs = new ArrayList<>();
 
@@ -993,338 +913,281 @@ public class TestrayImporter {
 	}
 
 	public void recordTestrayCaseResults() {
-		final Job job = getJob();
+		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>();
 
-		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>(
-			job.getAxisTestClassGroups());
+		for (Job job : _jobs) {
+			axisTestClassGroups.addAll(job.getAxisTestClassGroups());
+			axisTestClassGroups.addAll(job.getDependentAxisTestClassGroups());
 
-		axisTestClassGroups.addAll(job.getDependentAxisTestClassGroups());
+			File testBaseDir = null;
 
-		File testBaseDir = null;
+			if ((job instanceof QAWebsitesGitRepositoryJob) &&
+				!axisTestClassGroups.isEmpty()) {
 
-		if (job instanceof QAWebsitesGitRepositoryJob) {
-			for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
+				AxisTestClassGroup axisTestClassGroup = axisTestClassGroups.get(
+					0);
+
 				testBaseDir = axisTestClassGroup.getTestBaseDir();
-
-				if (testBaseDir != null) {
-					break;
-				}
 			}
-		}
 
-		TopLevelBuildTestrayCaseResult topLevelBuildTestrayCaseResult =
-			TestrayFactory.newTopLevelBuildTestrayCaseResult(
-				getTestrayBuild(testBaseDir), getTopLevelBuild());
+			TopLevelBuildTestrayCaseResult topLevelBuildTestrayCaseResult =
+				TestrayFactory.newTopLevelBuildTestrayCaseResult(
+					getTestrayBuild(testBaseDir), _topLevelBuildReport);
 
-		topLevelBuildTestrayCaseResult.recordTestrayCaseResult(job);
+			topLevelBuildTestrayCaseResult.recordTestrayCaseResult(job);
 
-		List<Callable<Void>> callables = new ArrayList<>();
+			for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
+				TestrayBuild testrayBuild = getTestrayBuild(
+					axisTestClassGroup.getTestBaseDir());
 
-		for (final AxisTestClassGroup axisTestClassGroup :
-				axisTestClassGroups) {
+				TestrayRun testrayRun = TestrayFactory.newTestrayRun(
+					testrayBuild, axisTestClassGroup.getBatchName(),
+					job.getJobPropertiesFiles());
 
-			callables.add(
-				new Callable<Void>() {
+				long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
-					@Override
-					public Void call() throws Exception {
-						TestrayBuild testrayBuild = getTestrayBuild(
-							axisTestClassGroup.getTestBaseDir());
+				Document document = DocumentHelper.createDocument();
 
-						TestrayRun testrayRun = TestrayFactory.newTestrayRun(
-							testrayBuild, axisTestClassGroup.getBatchName(),
-							job.getJobPropertiesFiles());
+				Element rootElement = document.addElement("testsuite");
 
-						long start =
-							JenkinsResultsParserUtil.getCurrentTimeMillis();
+				Element environmentsElement = rootElement.addElement(
+					"environments");
 
-						Document document = DocumentHelper.createDocument();
+				for (TestrayRun.Factor factor : testrayRun.getFactors()) {
+					Element environmentElement = environmentsElement.addElement(
+						"environment");
 
-						Element rootElement = document.addElement("testsuite");
+					environmentElement.addAttribute("type", factor.getName());
+					environmentElement.addAttribute(
+						"option", factor.getValue());
+				}
 
-						Element environmentsElement = rootElement.addElement(
-							"environments");
+				Map<String, String> propertiesMap = new HashMap<>();
 
-						for (TestrayRun.Factor factor :
-								testrayRun.getFactors()) {
+				propertiesMap.put(
+					"testray.build.date",
+					_topLevelBuildReport.getTestrayBuildDateString());
 
-							Element environmentElement =
-								environmentsElement.addElement("environment");
+				propertiesMap.put("testray.build.name", testrayBuild.getName());
+				propertiesMap.put(
+					"testray.build.time",
+					JenkinsResultsParserUtil.toDurationString(
+						_topLevelBuildReport.getDuration()));
 
-							environmentElement.addAttribute(
-								"type", factor.getName());
-							environmentElement.addAttribute(
-								"option", factor.getValue());
-						}
+				TestrayRoutine testrayRoutine =
+					testrayBuild.getTestrayRoutine();
 
-						Map<String, String> propertiesMap = new HashMap<>();
+				propertiesMap.put(
+					"testray.build.type", testrayRoutine.getName());
 
-						TopLevelBuild testTopLevelBuild = getTopLevelBuild();
-
-						propertiesMap.put(
-							"testray.build.date",
-							testTopLevelBuild.getTestrayBuildDateString());
-
-						propertiesMap.put(
-							"testray.build.name", testrayBuild.getName());
-						propertiesMap.put(
-							"testray.build.time",
-							JenkinsResultsParserUtil.toDurationString(
-								testTopLevelBuild.getDuration()));
-
-						TestrayRoutine testrayRoutine =
-							testrayBuild.getTestrayRoutine();
+				TestrayProductVersion testrayProductVersion =
+					testrayBuild.getTestrayProductVersion();
 
-						propertiesMap.put(
-							"testray.build.type", testrayRoutine.getName());
-
-						TestrayProductVersion testrayProductVersion =
-							testrayBuild.getTestrayProductVersion();
-
-						if (testrayProductVersion != null) {
-							propertiesMap.put(
-								"testray.product.version",
-								testrayProductVersion.getName());
-						}
-
-						TestrayProject testrayProject =
-							testrayBuild.getTestrayProject();
-
-						propertiesMap.put(
-							"testray.project.name", testrayProject.getName());
-
-						propertiesMap.put(
-							"testray.run.id", testrayRun.getRunIDString());
-
-						propertiesMap.put(
-							"testray.total.cpu.use.time",
-							JenkinsResultsParserUtil.toDurationString(
-								testTopLevelBuild.getTotalDuration()));
-
-						_addPropertyElements(
-							rootElement.addElement("properties"),
-							propertiesMap);
-
-						List<TestrayCaseResult> testrayCaseResults =
-							new ArrayList<>();
-
-						if (axisTestClassGroup instanceof
-								FunctionalAxisTestClassGroup ||
-							axisTestClassGroup instanceof
-								JUnitAxisTestClassGroup ||
-							axisTestClassGroup instanceof
-								SemVerModulesAxisTestClassGroup) {
-
-							PortalLogBatchBuildTestrayCaseResult
-								portalLogBatchBuildTestrayCaseResult =
-									TestrayFactory.
-										newPortalLogTestrayCaseResult(
-											testrayBuild, getTopLevelBuild(),
-											axisTestClassGroup);
-
-							if (!JenkinsResultsParserUtil.isNullOrEmpty(
-									portalLogBatchBuildTestrayCaseResult.
-										getErrors())) {
-
-								testrayCaseResults.add(
-									portalLogBatchBuildTestrayCaseResult);
-							}
-
-							for (TestClass testClass :
-									axisTestClassGroup.getTestClasses()) {
-
-								testrayCaseResults.add(
-									TestrayFactory.newTestrayCaseResult(
-										testrayBuild, getTopLevelBuild(),
-										axisTestClassGroup, testClass));
-							}
-						}
-						else if (axisTestClassGroup instanceof
-									JSUnitAxisTestClassGroup ||
-								 axisTestClassGroup instanceof
-									 PlaywrightAxisTestClassGroup) {
-
-							for (TestClass testClass :
-									axisTestClassGroup.getTestClasses()) {
-
-								for (TestClassMethod testClassMethod :
-										testClass.getTestClassMethods()) {
-
-									testrayCaseResults.add(
-										TestrayFactory.newTestrayCaseResult(
-											testrayBuild, getTopLevelBuild(),
-											axisTestClassGroup, testClass,
-											testClassMethod));
-								}
-							}
-						}
-						else {
-							testrayCaseResults.add(
-								TestrayFactory.newTestrayCaseResult(
-									testrayBuild, getTopLevelBuild(),
-									axisTestClassGroup, null));
-						}
-
-						for (TestrayCaseResult testrayCaseResult :
-								testrayCaseResults) {
-
-							Element testcaseElement = rootElement.addElement(
-								"testcase");
-
-							Map<String, String> testcasePropertiesMap =
-								new HashMap<>();
-
-							testcasePropertiesMap.put(
-								"testray.case.type.name",
-								testrayCaseResult.getType());
-							testcasePropertiesMap.put(
-								"testray.component.names",
-								testrayCaseResult.getSubcomponentNames());
-							testcasePropertiesMap.put(
-								"testray.main.component.name",
-								testrayCaseResult.getComponentName());
-							testcasePropertiesMap.put(
-								"testray.team.name",
-								testrayCaseResult.getTeamName());
-							testcasePropertiesMap.put(
-								"testray.testcase.duration",
-								String.valueOf(
-									testrayCaseResult.getDuration()));
-
-							String testrayCaseName =
-								testrayCaseResult.getName();
-
-							if (testrayCaseName.length() > 150) {
-								testrayCaseName = testrayCaseName.substring(
-									0, 150);
-							}
-
-							testcasePropertiesMap.put(
-								"testray.testcase.name", testrayCaseName);
-
-							testcasePropertiesMap.put(
-								"testray.testcase.priority",
-								String.valueOf(
-									testrayCaseResult.getPriority()));
-
-							TestrayCaseResult.Status testrayCaseStatus =
-								testrayCaseResult.getStatus();
-
-							testcasePropertiesMap.put(
-								"testray.testcase.status",
-								testrayCaseStatus.getName());
-
-							Element propertiesElement =
-								testcaseElement.addElement("properties");
-
-							_addPropertyElements(
-								propertiesElement, testcasePropertiesMap);
-
-							String[] warnings = testrayCaseResult.getWarnings();
-
-							if ((warnings != null) && (warnings.length > 0)) {
-								Element warningsPropertyElement =
-									propertiesElement.addElement("property");
-
-								warningsPropertyElement.addAttribute(
-									"name", "testray.testcase.warnings");
-								warningsPropertyElement.addAttribute(
-									"value", String.valueOf(warnings.length));
-
-								for (String warning : warnings) {
-									Element warningPropertyElement =
-										warningsPropertyElement.addElement(
-											"value");
-
-									warningPropertyElement.addText(
-										StringEscapeUtils.escapeHtml(warning));
-								}
-							}
-
-							Element attachmentsElement =
-								testcaseElement.addElement("attachments");
-
-							for (TestrayAttachment testrayAttachment :
-									testrayCaseResult.getTestrayAttachments()) {
-
-								Element attachmentFileElement =
-									attachmentsElement.addElement("file");
-
-								attachmentFileElement.addAttribute(
-									"name", testrayAttachment.getName());
-								attachmentFileElement.addAttribute(
-									"url",
-									testrayAttachment.getURL() + "?authuser=0");
-								attachmentFileElement.addAttribute(
-									"value",
-									testrayAttachment.getKey() + "?authuser=0");
-							}
-
-							String errors = testrayCaseResult.getErrors();
-
-							if (!JenkinsResultsParserUtil.isNullOrEmpty(
-									errors)) {
-
-								Element failureElement =
-									testcaseElement.addElement("failure");
-
-								failureElement.addAttribute("message", errors);
-							}
-						}
-
-						TestrayServer testrayServer =
-							testrayBuild.getTestrayServer();
-
-						TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-						JenkinsMaster jenkinsMaster =
-							topLevelBuild.getJenkinsMaster();
-
-						try {
-							String axisName = axisTestClassGroup.getAxisName();
-
-							testrayServer.writeCaseResult(
-								JenkinsResultsParserUtil.combine(
-									"TESTS-", jenkinsMaster.getName(), "_",
-									topLevelBuild.getJobName(), "_",
-									String.valueOf(
-										topLevelBuild.getBuildNumber()),
-									"_", axisName.replace("/", "_"), ".xml"),
-								Dom4JUtil.format(rootElement));
-						}
-						catch (IOException ioException) {
-							throw new RuntimeException(ioException);
-						}
-
-						long currentTimeMillis =
-							JenkinsResultsParserUtil.getCurrentTimeMillis();
-
-						System.out.println(
-							JenkinsResultsParserUtil.combine(
-								"Recorded ",
-								String.valueOf(testrayCaseResults.size()),
-								" case results for ",
-								axisTestClassGroup.getAxisName(), " in ",
-								JenkinsResultsParserUtil.toDurationString(
-									currentTimeMillis - start)));
-
-						return null;
+				if (testrayProductVersion != null) {
+					propertiesMap.put(
+						"testray.product.version",
+						testrayProductVersion.getName());
+				}
+
+				TestrayProject testrayProject =
+					testrayBuild.getTestrayProject();
+
+				propertiesMap.put(
+					"testray.project.name", testrayProject.getName());
+
+				propertiesMap.put(
+					"testray.run.id", testrayRun.getRunIDString());
+
+				propertiesMap.put(
+					"testray.total.cpu.use.time",
+					JenkinsResultsParserUtil.toDurationString(
+						_topLevelBuildReport.getTotalDuration()));
+
+				_addPropertyElements(
+					rootElement.addElement("properties"), propertiesMap);
+
+				List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
+
+				if (axisTestClassGroup instanceof
+						FunctionalAxisTestClassGroup ||
+					axisTestClassGroup instanceof JUnitAxisTestClassGroup ||
+					axisTestClassGroup instanceof
+						SemVerModulesAxisTestClassGroup) {
+
+					PortalLogBatchBuildTestrayCaseResult
+						portalLogBatchBuildTestrayCaseResult =
+							TestrayFactory.newPortalLogTestrayCaseResult(
+								testrayBuild, _topLevelBuildReport,
+								axisTestClassGroup);
+
+					if (!JenkinsResultsParserUtil.isNullOrEmpty(
+							portalLogBatchBuildTestrayCaseResult.getErrors())) {
+
+						testrayCaseResults.add(
+							portalLogBatchBuildTestrayCaseResult);
 					}
 
-				});
-		}
+					for (TestClass testClass :
+							axisTestClassGroup.getTestClasses()) {
 
-		ParallelExecutor<Void> parallelExecutor = new ParallelExecutor<>(
-			callables, _executorService, "recordTestrayCaseResults");
+						testrayCaseResults.add(
+							TestrayFactory.newBuildTestrayCaseResult(
+								testrayBuild, _topLevelBuildReport,
+								axisTestClassGroup, testClass));
+					}
+				}
+				else if (axisTestClassGroup instanceof
+							JSUnitAxisTestClassGroup ||
+						 axisTestClassGroup instanceof
+							 PlaywrightAxisTestClassGroup) {
 
-		try {
-			parallelExecutor.execute(60L * 180L);
-		}
-		catch (TimeoutException timeoutException) {
-			throw new RuntimeException(timeoutException);
-		}
+					for (TestClass testClass :
+							axisTestClassGroup.getTestClasses()) {
 
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
+						for (TestClassMethod testClassMethod :
+								testClass.getTestClassMethods()) {
+
+							testrayCaseResults.add(
+								TestrayFactory.newBuildTestrayCaseResult(
+									testrayBuild, _topLevelBuildReport,
+									axisTestClassGroup, testClass,
+									testClassMethod));
+						}
+					}
+				}
+				else {
+					testrayCaseResults.add(
+						TestrayFactory.newBuildTestrayCaseResult(
+							testrayBuild, _topLevelBuildReport,
+							axisTestClassGroup, null));
+				}
+
+				for (TestrayCaseResult testrayCaseResult : testrayCaseResults) {
+					Element testcaseElement = rootElement.addElement(
+						"testcase");
+
+					Map<String, String> testcasePropertiesMap = new HashMap<>();
+
+					testcasePropertiesMap.put(
+						"testray.case.type.name", testrayCaseResult.getType());
+					testcasePropertiesMap.put(
+						"testray.component.names",
+						testrayCaseResult.getSubcomponentNames());
+					testcasePropertiesMap.put(
+						"testray.main.component.name",
+						testrayCaseResult.getComponentName());
+					testcasePropertiesMap.put(
+						"testray.team.name", testrayCaseResult.getTeamName());
+					testcasePropertiesMap.put(
+						"testray.testcase.duration",
+						String.valueOf(testrayCaseResult.getDuration()));
+
+					String testrayCaseName = testrayCaseResult.getName();
+
+					if (testrayCaseName.length() > 150) {
+						testrayCaseName = testrayCaseName.substring(0, 150);
+					}
+
+					testcasePropertiesMap.put(
+						"testray.testcase.name", testrayCaseName);
+
+					testcasePropertiesMap.put(
+						"testray.testcase.priority",
+						String.valueOf(testrayCaseResult.getPriority()));
+
+					TestrayCaseResult.Status testrayCaseStatus =
+						testrayCaseResult.getStatus();
+
+					testcasePropertiesMap.put(
+						"testray.testcase.status", testrayCaseStatus.getName());
+
+					Element propertiesElement = testcaseElement.addElement(
+						"properties");
+
+					_addPropertyElements(
+						propertiesElement, testcasePropertiesMap);
+
+					String[] warnings = testrayCaseResult.getWarnings();
+
+					if ((warnings != null) && (warnings.length > 0)) {
+						Element warningsPropertyElement =
+							propertiesElement.addElement("property");
+
+						warningsPropertyElement.addAttribute(
+							"name", "testray.testcase.warnings");
+						warningsPropertyElement.addAttribute(
+							"value", String.valueOf(warnings.length));
+
+						for (String warning : warnings) {
+							Element warningPropertyElement =
+								warningsPropertyElement.addElement("value");
+
+							warningPropertyElement.addText(
+								StringEscapeUtils.escapeHtml(warning));
+						}
+					}
+
+					Element attachmentsElement = testcaseElement.addElement(
+						"attachments");
+
+					for (TestrayAttachment testrayAttachment :
+							testrayCaseResult.getTestrayAttachments()) {
+
+						Element attachmentFileElement =
+							attachmentsElement.addElement("file");
+
+						attachmentFileElement.addAttribute(
+							"name", testrayAttachment.getName());
+						attachmentFileElement.addAttribute(
+							"url", testrayAttachment.getURL() + "?authuser=0");
+						attachmentFileElement.addAttribute(
+							"value",
+							testrayAttachment.getKey() + "?authuser=0");
+					}
+
+					String errors = testrayCaseResult.getErrors();
+
+					if (!JenkinsResultsParserUtil.isNullOrEmpty(errors)) {
+						Element failureElement = testcaseElement.addElement(
+							"failure");
+
+						failureElement.addAttribute("message", errors);
+					}
+				}
+
+				TestrayServer testrayServer = testrayBuild.getTestrayServer();
+
+				JenkinsMaster jenkinsMaster =
+					_topLevelBuildReport.getJenkinsMaster();
+
+				try {
+					String axisName = axisTestClassGroup.getAxisName();
+
+					testrayServer.writeCaseResult(
+						JenkinsResultsParserUtil.combine(
+							"TESTS-", jenkinsMaster.getName(), "_",
+							_topLevelBuildReport.getJobName(), "_",
+							String.valueOf(
+								_topLevelBuildReport.getBuildNumber()),
+							"_", axisName.replace("/", "_"), ".xml"),
+						Dom4JUtil.format(rootElement));
+				}
+				catch (IOException ioException) {
+					throw new RuntimeException(ioException);
+				}
+
+				long currentTimeMillis =
+					JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Recorded ", String.valueOf(testrayCaseResults.size()),
+						" case results for ", axisTestClassGroup.getAxisName(),
+						" in ",
+						JenkinsResultsParserUtil.toDurationString(
+							currentTimeMillis - start)));
+			}
+		}
 
 		List<Long> testrayBuildIDs = new ArrayList<>();
 
@@ -1337,82 +1200,10 @@ public class TestrayImporter {
 
 			TestrayServer testrayServer = testrayBuild.getTestrayServer();
 
-			testrayServer.importCaseResults(topLevelBuild);
+			testrayServer.importCaseResults(_topLevelBuildReport);
 		}
 
 		_sendPullRequestNotification();
-	}
-
-	public void setup() {
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		if (topLevelBuild instanceof WorkspaceBuild) {
-			WorkspaceBuild workspaceBuild = (WorkspaceBuild)topLevelBuild;
-
-			Workspace workspace = workspaceBuild.getWorkspace();
-
-			for (WorkspaceGitRepository workspaceGitRepository :
-					workspace.getWorkspaceGitRepositories()) {
-
-				if (workspaceGitRepository == null) {
-					continue;
-				}
-
-				workspaceGitRepository.addPropertyOption(
-					String.valueOf(topLevelBuild.getBuildProfile()));
-				workspaceGitRepository.addPropertyOption(
-					topLevelBuild.getJobName());
-				workspaceGitRepository.addPropertyOption(
-					workspaceGitRepository.getUpstreamBranchName());
-
-				String dockerEnabled = System.getenv("LIFERAY_DOCKER_ENABLED");
-
-				if ((dockerEnabled != null) && dockerEnabled.equals("true")) {
-					workspaceGitRepository.addPropertyOption("docker");
-				}
-
-				String osbAsahStagingEnabled = System.getenv(
-					"OSB_ASAH_STAGING_ENABLED");
-
-				if ((osbAsahStagingEnabled != null) &&
-					osbAsahStagingEnabled.equals("true")) {
-
-					workspaceGitRepository.addPropertyOption(
-						"osb-asah-staging-enabled");
-				}
-
-				if (JenkinsResultsParserUtil.isWindows()) {
-					workspaceGitRepository.addPropertyOption("windows");
-				}
-				else {
-					workspaceGitRepository.addPropertyOption("unix");
-				}
-
-				PortalRelease portalRelease = getPortalRelease();
-
-				if (portalRelease != null) {
-					workspaceGitRepository.addPropertyOption(
-						portalRelease.getPortalVersion());
-				}
-			}
-
-			workspace.setUp();
-
-			_setupPortalBundle();
-
-			return;
-		}
-
-		_checkoutPortalBranch();
-
-		_setupProfileDXP();
-
-		_setupPortalBundle();
-
-		_callPrepareTCK();
-
-		_checkoutPluginsBranch();
-		_checkoutQAWebsitesBranch();
 	}
 
 	private void _addPropertyElements(
@@ -1437,188 +1228,6 @@ public class TestrayImporter {
 		}
 	}
 
-	private void _callPrepareTCK() {
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
-			_getPortalGitWorkingDirectory();
-
-		Map<String, String> parameters = new HashMap<>();
-
-		String portalUpstreamBranchName =
-			portalGitWorkingDirectory.getUpstreamBranchName();
-
-		if (!portalUpstreamBranchName.contains("ee-")) {
-			GitWorkingDirectory jenkinsGitWorkingDirectory =
-				_getJenkinsGitWorkingDirectory();
-
-			Properties testProperties = JenkinsResultsParserUtil.getProperties(
-				new File(
-					jenkinsGitWorkingDirectory.getWorkingDirectory(),
-					"commands/dependencies/test.properties"));
-
-			parameters.put(
-				"tck.home",
-				JenkinsResultsParserUtil.getProperty(
-					testProperties, "tck.home"));
-		}
-
-		try {
-			AntUtil.callTarget(
-				portalGitWorkingDirectory.getWorkingDirectory(),
-				"build-test-tck.xml", "prepare-tck", parameters);
-		}
-		catch (AntException antException) {
-			throw new RuntimeException(antException);
-		}
-	}
-
-	private void _checkoutPluginsBranch() {
-		if (!(_topLevelBuild instanceof PluginsBranchInformationBuild)) {
-			return;
-		}
-
-		PluginsBranchInformationBuild pluginsBranchInformationBuild =
-			(PluginsBranchInformationBuild)_topLevelBuild;
-
-		Build.BranchInformation branchInformation =
-			pluginsBranchInformationBuild.getPluginsBranchInformation();
-
-		if (branchInformation == null) {
-			return;
-		}
-
-		Properties buildProperties = null;
-
-		try {
-			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		String upstreamBranchName = branchInformation.getUpstreamBranchName();
-
-		String upstreamDirPath = JenkinsResultsParserUtil.getProperty(
-			buildProperties, "plugins.dir", upstreamBranchName);
-		String upstreamRepository = JenkinsResultsParserUtil.getProperty(
-			buildProperties, "plugins.repository", upstreamBranchName);
-
-		GitWorkingDirectory pluginsGitWorkingDirectory =
-			GitWorkingDirectoryFactory.newGitWorkingDirectory(
-				upstreamBranchName, upstreamDirPath, upstreamRepository);
-
-		pluginsGitWorkingDirectory.clean();
-
-		pluginsGitWorkingDirectory.checkoutLocalGitBranch(branchInformation);
-
-		pluginsGitWorkingDirectory.displayLog();
-
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
-			_getPortalGitWorkingDirectory();
-
-		File releasePropertiesFile = new File(
-			portalGitWorkingDirectory.getWorkingDirectory(),
-			JenkinsResultsParserUtil.combine(
-				"release.", System.getenv("HOSTNAME"), ".properties"));
-
-		try {
-			JenkinsResultsParserUtil.write(
-				releasePropertiesFile,
-				JenkinsResultsParserUtil.combine(
-					"lp.plugins.dir=",
-					JenkinsResultsParserUtil.getCanonicalPath(
-						pluginsGitWorkingDirectory.getWorkingDirectory())));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-	}
-
-	private void _checkoutPortalBranch() {
-		if (!(_topLevelBuild instanceof PortalBranchInformationBuild)) {
-			return;
-		}
-
-		PortalBranchInformationBuild portalBranchInformationBuild =
-			(PortalBranchInformationBuild)_topLevelBuild;
-
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
-			_getPortalGitWorkingDirectory();
-
-		portalGitWorkingDirectory.clean();
-
-		portalGitWorkingDirectory.checkoutLocalGitBranch(
-			portalBranchInformationBuild.getPortalBranchInformation());
-
-		portalGitWorkingDirectory.displayLog();
-
-		try {
-			JenkinsResultsParserUtil.write(
-				new File(
-					portalGitWorkingDirectory.getWorkingDirectory(),
-					JenkinsResultsParserUtil.combine(
-						"app.server.", System.getenv("HOSTNAME"),
-						".properties")),
-				JenkinsResultsParserUtil.combine(
-					"app.server.parent.dir=",
-					JenkinsResultsParserUtil.getCanonicalPath(
-						portalGitWorkingDirectory.getWorkingDirectory()),
-					"/bundles"));
-
-			JenkinsResultsParserUtil.write(
-				new File(
-					portalGitWorkingDirectory.getWorkingDirectory(),
-					JenkinsResultsParserUtil.combine(
-						"build.", System.getenv("HOSTNAME"), ".properties")),
-				JenkinsResultsParserUtil.combine(
-					"liferay.home=",
-					JenkinsResultsParserUtil.getCanonicalPath(
-						portalGitWorkingDirectory.getWorkingDirectory()),
-					"/bundles"));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-	}
-
-	private void _checkoutQAWebsitesBranch() {
-		if (!(_topLevelBuild instanceof QAWebsitesBranchInformationBuild)) {
-			return;
-		}
-
-		Properties buildProperties = null;
-
-		try {
-			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		QAWebsitesBranchInformationBuild qaWebsitesBranchInformationBuild =
-			(QAWebsitesBranchInformationBuild)_topLevelBuild;
-
-		Build.BranchInformation branchInformation =
-			qaWebsitesBranchInformationBuild.getQAWebsitesBranchInformation();
-
-		String upstreamBranchName = branchInformation.getUpstreamBranchName();
-
-		String upstreamDirPath = JenkinsResultsParserUtil.getProperty(
-			buildProperties, "qa.websites.dir", upstreamBranchName);
-		String upstreamRepository = JenkinsResultsParserUtil.getProperty(
-			buildProperties, "qa.websites.repository", upstreamBranchName);
-
-		GitWorkingDirectory qaWebsitesGitWorkingDirectory =
-			GitWorkingDirectoryFactory.newGitWorkingDirectory(
-				upstreamBranchName, upstreamDirPath, upstreamRepository);
-
-		qaWebsitesGitWorkingDirectory.clean();
-
-		qaWebsitesGitWorkingDirectory.checkoutLocalGitBranch(
-			qaWebsitesBranchInformationBuild.getQAWebsitesBranchInformation());
-
-		qaWebsitesGitWorkingDirectory.displayLog();
-	}
-
 	private String _fixSlackString(String string) {
 		string = string.replace("*", "&#42;");
 		string = string.replace(">", "&gt;");
@@ -1630,13 +1239,14 @@ public class TestrayImporter {
 	private String _getBuildParameter(String buildParameterName) {
 		Map<String, String> buildParameters = new HashMap<>();
 
-		Build controllerBuild = _topLevelBuild.getControllerBuild();
+		ControllerBuildReport controllerBuildReport =
+			_topLevelBuildReport.getControllerBuildReport();
 
-		if (controllerBuild != null) {
-			buildParameters.putAll(controllerBuild.getParameters());
+		if (controllerBuildReport != null) {
+			buildParameters.putAll(controllerBuildReport.getBuildParameters());
 		}
 
-		buildParameters.putAll(_topLevelBuild.getParameters());
+		buildParameters.putAll(_topLevelBuildReport.getBuildParameters());
 
 		return buildParameters.get(buildParameterName);
 	}
@@ -1701,63 +1311,97 @@ public class TestrayImporter {
 		return element;
 	}
 
-	private GitWorkingDirectory _getJenkinsGitWorkingDirectory() {
-		Properties buildProperties = null;
-
-		try {
-			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		String upstreamBranchName = "master";
-
-		String upstreamDirPath = JenkinsResultsParserUtil.getProperty(
-			buildProperties, "jenkins.dir", upstreamBranchName);
-
-		String upstreamRepository = JenkinsResultsParserUtil.getProperty(
-			buildProperties, "jenkins.repository", upstreamBranchName);
-
-		return GitWorkingDirectoryFactory.newGitWorkingDirectory(
-			upstreamBranchName, upstreamDirPath, upstreamRepository);
-	}
-
 	private JobProperty _getJobProperty(
 		String basePropertyName, File testBaseDir) {
 
-		Job job = getJob();
+		for (Job job : _jobs) {
+			if (job instanceof QAWebsitesGitRepositoryJob) {
+				JobProperty jobProperty = JobPropertyFactory.newJobProperty(
+					basePropertyName, job, testBaseDir,
+					JobProperty.Type.QA_WEBSITES_TEST_DIR);
 
-		if (job instanceof QAWebsitesGitRepositoryJob) {
-			JobProperty jobProperty = JobPropertyFactory.newJobProperty(
-				basePropertyName, job, testBaseDir,
-				JobProperty.Type.QA_WEBSITES_TEST_DIR);
+				if (!JenkinsResultsParserUtil.isNullOrEmpty(
+						jobProperty.getValue())) {
 
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(
-					jobProperty.getValue())) {
-
-				return jobProperty;
+					return jobProperty;
+				}
 			}
+
+			return JobPropertyFactory.newJobProperty(basePropertyName, job);
 		}
 
-		return JobPropertyFactory.newJobProperty(basePropertyName, job);
+		return null;
 	}
 
-	private PortalGitWorkingDirectory _getPortalGitWorkingDirectory() {
-		String portalUpstreamBranchName = _topLevelBuild.getBranchName();
+	private String _getMajorPortalVersion() {
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_getPortalWorkspaceGitRepository();
 
-		if (_topLevelBuild instanceof PullRequestSubrepositoryTopLevelBuild) {
-			PullRequestSubrepositoryTopLevelBuild
-				pullRequestSubrepositoryTopLevelBuild =
-					(PullRequestSubrepositoryTopLevelBuild)_topLevelBuild;
-
-			portalUpstreamBranchName =
-				pullRequestSubrepositoryTopLevelBuild.
-					getPortalUpstreamBranchName();
+		if (portalWorkspaceGitRepository == null) {
+			return "7.4";
 		}
 
-		return GitWorkingDirectoryFactory.newPortalGitWorkingDirectory(
-			portalUpstreamBranchName);
+		File releasePropertiesFile = new File(
+			portalWorkspaceGitRepository.getDirectory(), "release.properties");
+
+		Properties releaseProperties = JenkinsResultsParserUtil.getProperties(
+			releasePropertiesFile);
+
+		String majorPortalVersion = JenkinsResultsParserUtil.getProperty(
+			releaseProperties, "lp.version.major");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(majorPortalVersion)) {
+			return "7.4";
+		}
+
+		return majorPortalVersion;
+	}
+
+	private PluginsWorkspaceGitRepository _getPluginsWorkspaceGitRepository() {
+		for (Workspace workspace : _workspaces) {
+			if (!(workspace instanceof PortalWorkspace)) {
+				continue;
+			}
+
+			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
+
+			return portalWorkspace.getPluginsWorkspaceGitRepository();
+		}
+
+		return null;
+	}
+
+	private PortalWorkspaceGitRepository _getPortalWorkspaceGitRepository() {
+		for (Workspace workspace : _workspaces) {
+			if (!(workspace instanceof PortalWorkspace)) {
+				continue;
+			}
+
+			PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
+
+			return portalWorkspace.getPortalWorkspaceGitRepository();
+		}
+
+		return null;
+	}
+
+	private QAWebsitesWorkspaceGitRepository
+		_getQAWebsitesWorkspaceGitRepository() {
+
+		for (Workspace workspace : _workspaces) {
+			WorkspaceGitRepository workspaceGitRepository =
+				workspace.getWorkspaceGitRepository("liferay-qa-websites-ee");
+
+			if (!(workspaceGitRepository instanceof
+					QAWebsitesWorkspaceGitRepository)) {
+
+				return null;
+			}
+
+			return (QAWebsitesWorkspaceGitRepository)workspaceGitRepository;
+		}
+
+		return null;
 	}
 
 	private String _getSlackBody(File testBaseDir) {
@@ -1827,11 +1471,9 @@ public class TestrayImporter {
 			return _replaceSlackEnvVars(slackSubject, testBaseDir);
 		}
 
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
 		return JenkinsResultsParserUtil.combine(
-			topLevelBuild.getJobName(), "#",
-			String.valueOf(topLevelBuild.getBuildNumber()));
+			_topLevelBuildReport.getJobName(), "#",
+			String.valueOf(_topLevelBuildReport.getBuildNumber()));
 	}
 
 	private String _getSlackUsername(File testBaseDir) {
@@ -1862,9 +1504,7 @@ public class TestrayImporter {
 		string = _replaceEnvVarsQAWebsitesTopLevelBuild(string);
 		string = _replaceEnvVarsTopLevelBuild(string);
 
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		String jobName = topLevelBuild.getJobName();
+		String jobName = _topLevelBuildReport.getJobName();
 
 		if (jobName.contains("subrepository")) {
 			string = _replaceEnvVarsSubrepository(string);
@@ -1880,72 +1520,62 @@ public class TestrayImporter {
 	}
 
 	private String _replaceEnvVarsControllerBuild(String string) {
-		Build controllerBuild = _topLevelBuild.getControllerBuild();
+		ControllerBuildReport controllerBuildReport =
+			_topLevelBuildReport.getControllerBuildReport();
 
-		if (controllerBuild == null) {
+		if (controllerBuildReport == null) {
 			return string;
 		}
 
 		string = string.replace(
-			"$(jenkins.controller.build.url)", controllerBuild.getBuildURL());
+			"$(jenkins.controller.build.url)",
+			String.valueOf(controllerBuildReport.getBuildURL()));
 		string = string.replace(
 			"$(jenkins.controller.build.number)",
-			String.valueOf(controllerBuild.getBuildNumber()));
+			String.valueOf(controllerBuildReport.getBuildNumber()));
 		string = string.replace(
 			"$(jenkins.controller.build.start)",
-			JenkinsResultsParserUtil.toDateString(
-				new Date(controllerBuild.getStartTime()),
-				"yyyy-MM-dd[HH:mm:ss]", "America/Los_Angeles"));
+			controllerBuildReport.getTestrayBuildDateString());
 		string = string.replace(
-			"$(jenkins.controller.job.name)", controllerBuild.getJobName());
+			"$(jenkins.controller.job.name)",
+			controllerBuildReport.getJobName());
 
-		JenkinsMaster jenkinsMaster = controllerBuild.getJenkinsMaster();
+		JenkinsMaster jenkinsMaster = controllerBuildReport.getJenkinsMaster();
 
 		return string.replace(
 			"$(jenkins.controller.master.hostname)", jenkinsMaster.getName());
 	}
 
 	private String _replaceEnvVarsPluginsBranchInformationBuild(String string) {
-		if (!(_topLevelBuild instanceof PluginsBranchInformationBuild)) {
-			return string;
-		}
+		PluginsWorkspaceGitRepository pluginsWorkspaceGitRepository =
+			_getPluginsWorkspaceGitRepository();
 
-		PluginsBranchInformationBuild pluginsBranchInformationBuild =
-			(PluginsBranchInformationBuild)_topLevelBuild;
-
-		Build.BranchInformation pluginsBranchInformation =
-			pluginsBranchInformationBuild.getPluginsBranchInformation();
-
-		if (pluginsBranchInformation == null) {
+		if (pluginsWorkspaceGitRepository == null) {
 			return string;
 		}
 
 		string = string.replace(
 			"$(plugins.branch.name)",
-			pluginsBranchInformation.getUpstreamBranchName());
+			pluginsWorkspaceGitRepository.getUpstreamBranchName());
 		string = string.replace(
 			"$(plugins.custom.branch.name)",
-			pluginsBranchInformation.getSenderBranchName());
+			pluginsWorkspaceGitRepository.getSenderBranchName());
 		string = string.replace(
 			"$(plugins.custom.branch.username)",
-			pluginsBranchInformation.getSenderUsername());
+			pluginsWorkspaceGitRepository.getSenderBranchUsername());
 		string = string.replace(
-			"$(plugins.repository)",
-			pluginsBranchInformation.getRepositoryName());
+			"$(plugins.repository)", pluginsWorkspaceGitRepository.getName());
 
 		return string.replace(
-			"$(plugins.sha)", pluginsBranchInformation.getSenderBranchSHA());
+			"$(plugins.sha)",
+			pluginsWorkspaceGitRepository.getSenderBranchSHA());
 	}
 
 	private String _replaceEnvVarsPluginsTopLevelBuild(String string) {
-		if (!(_topLevelBuild instanceof PluginsTopLevelBuild)) {
-			return string;
-		}
+		Map<String, String> buildParameters =
+			_topLevelBuildReport.getBuildParameters();
 
-		PluginsTopLevelBuild pluginsTopLevelBuild =
-			(PluginsTopLevelBuild)_topLevelBuild;
-
-		String pluginName = pluginsTopLevelBuild.getPluginName();
+		String pluginName = buildParameters.get("TEST_PLUGIN_NAME");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(pluginName)) {
 			string = string.replace("$(plugin.name)", pluginName);
@@ -1955,58 +1585,49 @@ public class TestrayImporter {
 	}
 
 	private String _replaceEnvVarsPortalAppReleaseTopLevelBuild(String string) {
-		if (!(_topLevelBuild instanceof PortalAppReleaseTopLevelBuild)) {
-			return string;
+		Map<String, String> buildParameters =
+			_topLevelBuildReport.getBuildParameters();
+
+		String portalAppName = buildParameters.get("TEST_PORTAL_APP_NAME");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalAppName)) {
+			string = string.replace("$(portal.app.name)", portalAppName);
 		}
 
-		PortalAppReleaseTopLevelBuild portalAppReleaseTopLevelBuild =
-			(PortalAppReleaseTopLevelBuild)_topLevelBuild;
-
-		return string.replace(
-			"$(portal.app.name)",
-			portalAppReleaseTopLevelBuild.getPortalAppName());
+		return string;
 	}
 
 	private String _replaceEnvVarsPortalBranchInformationBuild(String string) {
-		Job.BuildProfile buildProfile = _topLevelBuild.getBuildProfile();
+		Job.BuildProfile buildProfile = _topLevelBuildReport.getBuildProfile();
 
-		string = string.replace(
-			"$(portal.profile)", buildProfile.toDisplayString());
+		if (buildProfile != null) {
+			string = string.replace(
+				"$(portal.profile)", buildProfile.toDisplayString());
 
-		if (buildProfile == Job.BuildProfile.PORTAL) {
-			string = string.replace("$(portal.type)", "CE");
-		}
-		else {
-			string = string.replace("$(portal.type)", "EE");
-		}
-
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
-			_getPortalGitWorkingDirectory();
-
-		string = string.replace(
-			"$(portal.version)",
-			portalGitWorkingDirectory.getMajorPortalVersion());
-
-		string = string.replace(
-			"$(portal.product.version)",
-			portalGitWorkingDirectory.getMajorPortalVersion() + ".x");
-
-		if (!(_topLevelBuild instanceof PortalBranchInformationBuild)) {
-			return string;
+			if (buildProfile == Job.BuildProfile.PORTAL) {
+				string = string.replace("$(portal.type)", "CE");
+			}
+			else {
+				string = string.replace("$(portal.type)", "EE");
+			}
 		}
 
-		PortalBranchInformationBuild portalBranchInformationBuild =
-			(PortalBranchInformationBuild)_topLevelBuild;
+		String majorPortalVersion = _getMajorPortalVersion();
 
-		Build.BranchInformation portalBranchInformation =
-			portalBranchInformationBuild.getPortalBranchInformation();
+		string = string.replace("$(portal.version)", majorPortalVersion);
 
-		if (portalBranchInformation == null) {
+		string = string.replace(
+			"$(portal.product.version)", majorPortalVersion + ".x");
+
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_getPortalWorkspaceGitRepository();
+
+		if (portalWorkspaceGitRepository == null) {
 			return string;
 		}
 
 		String portalUpstreamBranchName =
-			portalBranchInformation.getUpstreamBranchName();
+			portalWorkspaceGitRepository.getUpstreamBranchName();
 
 		string = string.replace(
 			"$(portal.branch.name)", portalUpstreamBranchName);
@@ -2023,16 +1644,14 @@ public class TestrayImporter {
 		}
 		else {
 			string = string.replace(
-				"$(portal.branch.display.name)",
-				portalGitWorkingDirectory.getMajorPortalVersion());
+				"$(portal.branch.display.name)", majorPortalVersion);
 		}
 
 		string = string.replace(
-			"$(portal.repository)",
-			portalBranchInformation.getRepositoryName());
+			"$(portal.repository)", portalWorkspaceGitRepository.getName());
 
 		return string.replace(
-			"$(portal.sha)", portalBranchInformation.getSenderBranchSHA());
+			"$(portal.sha)", portalWorkspaceGitRepository.getSenderBranchSHA());
 	}
 
 	private String _replaceEnvVarsPortalRelease(String string) {
@@ -2058,7 +1677,10 @@ public class TestrayImporter {
 					matcher.group("releaseName"));
 			}
 
-			String portalReleaseBuildVersion = _topLevelBuild.getParameterValue(
+			Map<String, String> buildParameters =
+				_topLevelBuildReport.getBuildParameters();
+
+			String portalReleaseBuildVersion = buildParameters.get(
 				"TEST_PORTAL_RELEASE_VERSION");
 
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(
@@ -2125,16 +1747,10 @@ public class TestrayImporter {
 		StringBuilder sb = new StringBuilder();
 
 		if (portalRelease == null) {
-			PortalGitWorkingDirectory portalGitWorkingDirectory =
-				_getPortalGitWorkingDirectory();
-
-			sb.append(portalGitWorkingDirectory.getMajorPortalVersion());
-
+			sb.append(_getMajorPortalVersion());
 			sb.append(".x");
 
-			string = string.replace(
-				"$(portal.product.version)",
-				portalGitWorkingDirectory.getMajorPortalVersion() + ".x");
+			string = string.replace("$(portal.product.version)", sb.toString());
 		}
 		else {
 			sb.append(portalRelease.getPortalVersion());
@@ -2176,52 +1792,65 @@ public class TestrayImporter {
 	}
 
 	private String _replaceEnvVarsQAWebsitesTopLevelBuild(String string) {
-		if (!(_topLevelBuild instanceof QAWebsitesTopLevelBuild)) {
-			return string;
+		Map<String, String> buildParameters =
+			_topLevelBuildReport.getBuildParameters();
+
+		String projectNames = buildParameters.get("PROJECT_NAMES");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(projectNames)) {
+			string = string.replace(
+				"$(qa.websites.project.name)", projectNames);
 		}
 
-		QAWebsitesTopLevelBuild qaWebsitesTopLevelBuild =
-			(QAWebsitesTopLevelBuild)_topLevelBuild;
-
-		return string.replace(
-			"$(qa.websites.project.name)",
-			JenkinsResultsParserUtil.join(
-				",", qaWebsitesTopLevelBuild.getProjectNames()));
+		return string;
 	}
 
 	private String _replaceEnvVarsSubrepository(String string) {
-		string = string.replace(
-			"$(github.upstream.branch.name)",
-			_topLevelBuild.getParameterValue("GITHUB_UPSTREAM_BRANCH_NAME"));
+		Map<String, String> buildParameters =
+			_topLevelBuildReport.getBuildParameters();
 
-		return string.replace(
-			"$(repository.name)",
-			_topLevelBuild.getParameterValue("REPOSITORY_NAME"));
+		String githubUpstreamBranchName = buildParameters.get(
+			"GITHUB_UPSTREAM_BRANCH_NAME");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(githubUpstreamBranchName)) {
+			string = string.replace(
+				"$(github.upstream.branch.name)", githubUpstreamBranchName);
+		}
+
+		String repositoryName = buildParameters.get("REPOSITORY_NAME");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(repositoryName)) {
+			string = string.replace("$(repository.name)", repositoryName);
+		}
+
+		return string;
 	}
 
 	private String _replaceEnvVarsTopLevelBuild(String string) {
 		string = string.replace(
-			"$(ci.test.suite)", _topLevelBuild.getTestSuiteName());
+			"$(ci.test.suite)", _topLevelBuildReport.getTestSuiteName());
 		string = string.replace(
 			"$(jenkins.build.number)",
-			String.valueOf(_topLevelBuild.getBuildNumber()));
+			String.valueOf(_topLevelBuildReport.getBuildNumber()));
 		string = string.replace(
 			"$(jenkins.build.start)",
 			JenkinsResultsParserUtil.toDateString(
-				new Date(_topLevelBuild.getStartTime()), "yyyy-MM-dd[HH:mm:ss]",
+				_topLevelBuildReport.getStartDate(), "yyyy-MM-dd[HH:mm:ss]",
 				"America/Los_Angeles"));
 		string = string.replace(
-			"$(jenkins.build.url)", _topLevelBuild.getBuildURL());
+			"$(jenkins.build.url)",
+			String.valueOf(_topLevelBuildReport.getBuildURL()));
 		string = string.replace(
-			"$(jenkins.job.name)", _topLevelBuild.getJobName());
+			"$(jenkins.job.name)", _topLevelBuildReport.getJobName());
 
-		JenkinsMaster jenkinsMaster = _topLevelBuild.getJenkinsMaster();
+		JenkinsMaster jenkinsMaster = _topLevelBuildReport.getJenkinsMaster();
 
 		string = string.replace(
 			"$(jenkins.master.hostname)", jenkinsMaster.getName());
 
 		return string.replace(
-			"$(jenkins.report.url)", _topLevelBuild.getJenkinsReportURL());
+			"$(jenkins.report.url)",
+			String.valueOf(_topLevelBuildReport.getJenkinsReportURL()));
 	}
 
 	private String _replaceSlackEnvVars(String string, File testBaseDir) {
@@ -2322,167 +1951,6 @@ public class TestrayImporter {
 		pullRequest.addComment(getJenkinsBuildDescription());
 	}
 
-	private void _setupPortalBundle() {
-		final PortalGitWorkingDirectory portalGitWorkingDirectory =
-			_getPortalGitWorkingDirectory();
-
-		if (portalGitWorkingDirectory == null) {
-			return;
-		}
-
-		PortalRelease portalRelease = getPortalRelease();
-
-		if (portalRelease == null) {
-			return;
-		}
-
-		final Map<String, String> parameters = new HashMap<>();
-
-		parameters.put(
-			"liferay.portal.bundle", portalRelease.getPortalVersion());
-
-		String portalBundleTomcatURLString = String.valueOf(
-			portalRelease.getPortalBundleTomcatURL());
-
-		if (portalBundleTomcatURLString.startsWith(
-				"https://release.liferay.com")) {
-
-			try {
-				portalBundleTomcatURLString =
-					portalBundleTomcatURLString.replaceAll(
-						"https://(release\\.liferay\\.com.*)",
-						JenkinsResultsParserUtil.combine(
-							"https://",
-							JenkinsResultsParserUtil.getBuildProperty(
-								"jenkins.admin.user.name"),
-							":",
-							JenkinsResultsParserUtil.getBuildProperty(
-								"jenkins.admin.user.password"),
-							"@$1"));
-			}
-			catch (IOException ioException) {
-				throw new RuntimeException(ioException);
-			}
-		}
-
-		parameters.put(
-			"test.build.bundle.zip.url", portalBundleTomcatURLString);
-
-		PortalFixpackRelease portalFixpackRelease = getPortalFixpackRelease();
-		PortalHotfixRelease portalHotfixRelease = getPortalHotfixRelease();
-
-		if ((portalFixpackRelease != null) || (portalHotfixRelease != null)) {
-			try {
-				parameters.put(
-					"test.fix.pack.base.url",
-					JenkinsResultsParserUtil.getBuildProperty(
-						"portal.test.properties[test.fix.pack.base.url]"));
-			}
-			catch (IOException ioException) {
-				throw new RuntimeException(ioException);
-			}
-
-			if (portalHotfixRelease != null) {
-				parameters.put(
-					"test.build.fix.pack.zip.url",
-					String.valueOf(
-						portalHotfixRelease.getPortalHotfixReleaseURL()));
-			}
-			else {
-				parameters.put(
-					"test.build.fix.pack.zip.url",
-					String.valueOf(portalFixpackRelease.getPortalFixpackURL()));
-			}
-		}
-
-		final File workingDirectory =
-			portalGitWorkingDirectory.getWorkingDirectory();
-
-		Retryable<Object> retryable = new Retryable<Object>(true, 3, 15, true) {
-
-			@Override
-			public Object execute() {
-				try {
-					AntUtil.callTarget(
-						workingDirectory, "build-test.xml",
-						"set-tomcat-version-number", parameters);
-
-					String upstreamBranchName =
-						portalGitWorkingDirectory.getUpstreamBranchName();
-
-					if (upstreamBranchName.contains("6.1") ||
-						upstreamBranchName.contains("6.2")) {
-
-						parameters.put(
-							"test.app.server.bin.dir",
-							JenkinsResultsParserUtil.getProperty(
-								portalGitWorkingDirectory.
-									getAppServerProperties(),
-								"app.server.tomcat.bin.dir"));
-					}
-
-					AntUtil.callTarget(
-						workingDirectory, "build-test.xml",
-						"prepare-test-bundle", parameters);
-				}
-				catch (AntException antException) {
-					throw new RuntimeException(antException);
-				}
-
-				return null;
-			}
-
-		};
-
-		retryable.execute();
-	}
-
-	private void _setupProfileDXP() {
-		boolean setupProfileDXP = false;
-
-		TopLevelBuild topLevelBuild = getTopLevelBuild();
-
-		String branchName = topLevelBuild.getBranchName();
-		String jobName = topLevelBuild.getJobName();
-
-		if (!branchName.startsWith("ee-") && !branchName.endsWith("-private") &&
-			jobName.contains("environment")) {
-
-			setupProfileDXP = true;
-		}
-
-		if (!branchName.startsWith("ee-") &&
-			(jobName.contains("fixpack") || jobName.contains("hotfix"))) {
-
-			setupProfileDXP = true;
-		}
-
-		String portalBuildProfile = topLevelBuild.getParameterValue(
-			"TEST_PORTAL_BUILD_PROFILE");
-
-		if ((portalBuildProfile != null) && portalBuildProfile.equals("dxp")) {
-			setupProfileDXP = true;
-		}
-
-		if (!setupProfileDXP) {
-			return;
-		}
-
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
-			_getPortalGitWorkingDirectory();
-
-		try {
-			AntUtil.callTarget(
-				portalGitWorkingDirectory.getWorkingDirectory(), "build.xml",
-				"setup-profile-dxp");
-		}
-		catch (AntException antException) {
-			throw new RuntimeException(antException);
-		}
-	}
-
-	private static final ExecutorService _executorService =
-		JenkinsResultsParserUtil.getNewThreadPoolExecutor(10, true);
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile("(?<year>\\d{4}).(?<quarter>[Qq]\\d+).\\d+");
 	private static final Pattern _releaseArtifactURLPattern = Pattern.compile(
@@ -2490,7 +1958,11 @@ public class TestrayImporter {
 	private static final Pattern _releaseBranchPattern = Pattern.compile(
 		"release-(?<year>\\d{4})\\.q(?<quarter>[1-4])");
 
-	private Job _job;
+	private final List<Job> _jobs;
+	private final List<PortalFixpackRelease> _portalFixpackReleases;
+	private final List<PortalHotfixRelease> _portalHotfixReleases;
+	private final List<PortalRelease> _portalReleases;
+	private final List<PullRequest> _pullRequests;
 	private final Map<File, TestrayBuild> _testrayBuilds =
 		Collections.synchronizedMap(new HashMap<File, TestrayBuild>());
 	private final Map<File, TestrayProductVersion> _testrayProductVersions =
@@ -2501,6 +1973,7 @@ public class TestrayImporter {
 		Collections.synchronizedMap(new HashMap<File, TestrayRoutine>());
 	private final Map<File, TestrayServer> _testrayServers =
 		Collections.synchronizedMap(new HashMap<File, TestrayServer>());
-	private final TopLevelBuild _topLevelBuild;
+	private final TopLevelBuildReport _topLevelBuildReport;
+	private final List<Workspace> _workspaces;
 
 }

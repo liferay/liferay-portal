@@ -373,8 +373,7 @@ public interface DDMFormInstanceLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMFormValues getFormInstanceSettingsFormValues(
-			DDMFormInstance formInstance)
-		throws PortalException;
+		DDMFormInstance formInstance);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMFormInstanceSettings getFormInstanceSettingsModel(

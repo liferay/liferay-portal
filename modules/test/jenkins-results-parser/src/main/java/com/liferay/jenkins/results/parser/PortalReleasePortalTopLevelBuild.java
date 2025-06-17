@@ -86,7 +86,8 @@ public class PortalReleasePortalTopLevelBuild
 			else {
 				URL portalReleaseTomcatURL = new URL(tomcatURLString);
 
-				_portalRelease = new PortalRelease(portalReleaseTomcatURL);
+				_portalRelease = PortalReleaseFactory.newPortalRelease(
+					portalReleaseTomcatURL);
 
 				_portalRelease.setPortalBundleTomcatURL(portalReleaseTomcatURL);
 			}

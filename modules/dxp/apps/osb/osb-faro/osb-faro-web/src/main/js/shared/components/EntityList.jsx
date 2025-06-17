@@ -87,8 +87,8 @@ class EntityListItem extends React.Component {
 							display='primary'
 							symbol={
 								segmentType === SegmentTypes.Static
-									? 'individual-static-segment'
-									: 'individual-dynamic-segment'
+									? 'individual_static_segment'
+									: 'individual_dynamic_segment'
 							}
 						/>
 					) : (

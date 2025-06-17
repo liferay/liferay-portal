@@ -33,20 +33,20 @@ public class NamespaceServletRequest extends DynamicServletRequest {
 
 	public static Set<String> reservedAttrs = new HashSet<String>() {
 		{
-			add(JavaConstants.JAVAX_PORTLET_CONFIG);
-			add(JavaConstants.JAVAX_PORTLET_PORTLET);
-			add(JavaConstants.JAVAX_PORTLET_REQUEST);
-			add(JavaConstants.JAVAX_PORTLET_RESPONSE);
-			add(JavaConstants.JAVAX_SERVLET_FORWARD_CONTEXT_PATH);
-			add(JavaConstants.JAVAX_SERVLET_FORWARD_PATH_INFO);
-			add(JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING);
-			add(JavaConstants.JAVAX_SERVLET_FORWARD_REQUEST_URI);
-			add(JavaConstants.JAVAX_SERVLET_FORWARD_SERVLET_PATH);
-			add(JavaConstants.JAVAX_SERVLET_INCLUDE_CONTEXT_PATH);
-			add(JavaConstants.JAVAX_SERVLET_INCLUDE_PATH_INFO);
-			add(JavaConstants.JAVAX_SERVLET_INCLUDE_QUERY_STRING);
-			add(JavaConstants.JAVAX_SERVLET_INCLUDE_REQUEST_URI);
-			add(JavaConstants.JAVAX_SERVLET_INCLUDE_SERVLET_PATH);
+			add(JavaConstants.JAKARTA_PORTLET_CONFIG);
+			add(JavaConstants.JAKARTA_PORTLET_PORTLET);
+			add(JavaConstants.JAKARTA_PORTLET_REQUEST);
+			add(JavaConstants.JAKARTA_PORTLET_RESPONSE);
+			add(JavaConstants.JAKARTA_SERVLET_FORWARD_CONTEXT_PATH);
+			add(JavaConstants.JAKARTA_SERVLET_FORWARD_PATH_INFO);
+			add(JavaConstants.JAKARTA_SERVLET_FORWARD_QUERY_STRING);
+			add(JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI);
+			add(JavaConstants.JAKARTA_SERVLET_FORWARD_SERVLET_PATH);
+			add(JavaConstants.JAKARTA_SERVLET_INCLUDE_CONTEXT_PATH);
+			add(JavaConstants.JAKARTA_SERVLET_INCLUDE_PATH_INFO);
+			add(JavaConstants.JAKARTA_SERVLET_INCLUDE_QUERY_STRING);
+			add(JavaConstants.JAKARTA_SERVLET_INCLUDE_REQUEST_URI);
+			add(JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH);
 			add(MimeResponse.MARKUP_HEAD_ELEMENT);
 			add(PortletRequest.LIFECYCLE_PHASE);
 		}

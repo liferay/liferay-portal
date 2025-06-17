@@ -57,7 +57,7 @@ public class RecentBloggersConfigurationAction
 
 		RenderResponse renderResponse =
 			(RenderResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		OrganizationItemSelectorCriterion organizationItemSelectorCriterion =
 			new OrganizationItemSelectorCriterion();

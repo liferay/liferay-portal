@@ -22,7 +22,6 @@
 			font-size: 18px;
 			margin-bottom: 34px;
 		}
-
 	}
 
 	.modal-content {
@@ -43,7 +42,7 @@
 
 		// TODO: LRAC-7427 Adjust SVGs with Linear Gradients
 		.ac-property-buildings {
-			background-image: url('/o/osb-faro-web/dist/sprite.svg#ac-property-buildings-usage');
+			background-image: url('/o/osb-faro-web/dist/sprite.svg#ac_property_buildings-usage');
 			padding: 150px 350px 0px;
 			width: 489px;
 		}
@@ -60,7 +59,6 @@
 				font-weight: $fontWeightSemiBold;
 				margin-bottom: 12px;
 			}
-			
 			.description-subtitle {
 				color: $mainLighten4;
 				margin-bottom: 8px;

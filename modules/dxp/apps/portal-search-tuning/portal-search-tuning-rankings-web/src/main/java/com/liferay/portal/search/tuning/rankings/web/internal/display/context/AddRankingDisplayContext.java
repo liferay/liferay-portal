@@ -82,7 +82,7 @@ public class AddRankingDisplayContext {
 
 	private static final Snapshot<SXPBlueprintTitleProvider>
 		_sxpBlueprintTitleProviderSnapshot = new Snapshot<>(
-			RankingPortletDisplayBuilder.class, SXPBlueprintTitleProvider.class,
+			AddRankingDisplayContext.class, SXPBlueprintTitleProvider.class,
 			null, true);
 
 	private final ItemSelector _itemSelector;

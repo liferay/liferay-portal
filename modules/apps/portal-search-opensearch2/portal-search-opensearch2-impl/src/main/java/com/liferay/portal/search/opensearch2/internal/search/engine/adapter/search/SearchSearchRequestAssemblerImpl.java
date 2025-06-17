@@ -320,8 +320,7 @@ public class SearchSearchRequestAssemblerImpl
 	@Reference
 	private SortFieldTranslator<SortOptions> _sortFieldTranslator;
 
-	@Reference
-	private SortTranslator _sortTranslator;
+	private final SortTranslator _sortTranslator = new SortTranslator();
 
 	@Reference
 	private StatsRequestBuilderFactory _statsRequestBuilderFactory;

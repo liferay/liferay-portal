@@ -28,7 +28,7 @@ services:
             start_period: 40s
             test: ["CMD", "curl", "-f", "-s", "--fail", "http://localhost:8080/c/portal/status"]
             timeout: 10s
-        image: liferay/dxp:2024.q2.7
+        image: liferay/dxp:2025.q1.8-lts
         ports:
             -   8080:8080
         user: root

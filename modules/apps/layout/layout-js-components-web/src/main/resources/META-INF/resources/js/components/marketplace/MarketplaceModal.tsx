@@ -31,7 +31,9 @@ interface MarketplaceModalProps {
 	children?: ReactNode;
 	className?: string;
 	openOnRender?: boolean;
-	permissions: AppsPermissions;
+	permissions: AppsPermissions & {
+		manageFragmentsEntries?: boolean;
+	};
 	portletNamespace: string;
 	trigger?: ReactElement | null;
 }

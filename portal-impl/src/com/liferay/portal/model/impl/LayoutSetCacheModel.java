@@ -6,6 +6,7 @@
 package com.liferay.portal.model.impl;
 
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -175,10 +179,16 @@ public class LayoutSetCacheModel
 
 		layoutSetImpl.resetOriginalValues();
 
-		layoutSetImpl.setCompanyFallbackVirtualHostname(
-			_companyFallbackVirtualHostname);
+		try {
+			_companyFallbackVirtualHostnameMethodHandle.invokeExact(
+				layoutSetImpl, companyFallbackVirtualHostname);
 
-		layoutSetImpl.setVirtualHostnames(_virtualHostnames);
+			_virtualHostnamesMethodHandle.invokeExact(
+				layoutSetImpl, virtualHostnames);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return layoutSetImpl;
 	}
@@ -212,8 +222,9 @@ public class LayoutSetCacheModel
 
 		layoutSetPrototypeLinkEnabled = objectInput.readBoolean();
 
-		_companyFallbackVirtualHostname = (String)objectInput.readObject();
-		_virtualHostnames = (java.util.TreeMap)objectInput.readObject();
+		companyFallbackVirtualHostname = (String)objectInput.readObject();
+
+		virtualHostnames = (java.util.TreeMap)objectInput.readObject();
 	}
 
 	@Override
@@ -273,8 +284,9 @@ public class LayoutSetCacheModel
 
 		objectOutput.writeBoolean(layoutSetPrototypeLinkEnabled);
 
-		objectOutput.writeObject(_companyFallbackVirtualHostname);
-		objectOutput.writeObject(_virtualHostnames);
+		objectOutput.writeObject(companyFallbackVirtualHostname);
+
+		objectOutput.writeObject(virtualHostnames);
 	}
 
 	public long mvccVersion;
@@ -293,7 +305,28 @@ public class LayoutSetCacheModel
 	public String settings;
 	public String layoutSetPrototypeUuid;
 	public boolean layoutSetPrototypeLinkEnabled;
-	public String _companyFallbackVirtualHostname;
-	public java.util.TreeMap _virtualHostnames;
+	public volatile String companyFallbackVirtualHostname;
+	public volatile java.util.TreeMap virtualHostnames;
+
+	private static final MethodHandle
+		_companyFallbackVirtualHostnameMethodHandle;
+	private static final MethodHandle _virtualHostnamesMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_companyFallbackVirtualHostnameMethodHandle = lookup.findSetter(
+				LayoutSetImpl.class, "_companyFallbackVirtualHostname",
+				String.class);
+
+			_virtualHostnamesMethodHandle = lookup.findSetter(
+				LayoutSetImpl.class, "_virtualHostnames",
+				java.util.TreeMap.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

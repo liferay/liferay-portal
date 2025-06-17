@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder auto-import-default-references="false" dependency-injector="ds" mvcc-enabled="true" package-path="com.liferay.osb.patcher">
+	<namespace>OSBPatcher</namespace>
+	<entity local-service="true" name="PatcherAccount" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherAccountId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="accountEntryId" type="long" />
+		<column name="accountEntryCode" type="String" />
+
+		<!-- Relationships -->
+
+		<column entity="PatcherBuild" mapping-table="PAccounts_PBuilds" name="patcherBuilds" type="Collection" />
+	</entity>
+	<entity local-service="true" name="PatcherBuild" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherBuildId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="hotfixId" type="long" />
+		<column name="patcherAccountId" type="long" />
+		<column name="patcherFixId" type="long" />
+		<column name="patcherProductVersionId" type="long" />
+		<column name="patcherProjectVersionId" type="long" />
+		<column name="ticketEntryId" type="long" />
+		<column name="accountEntryCode" type="String" />
+		<column name="childBuild" type="boolean" />
+		<column name="comments" type="String" />
+		<column name="fileName" type="String" />
+		<column name="initialName" type="String" />
+		<column name="key" type="String" />
+		<column name="keyVersion" type="double" />
+		<column name="latestBuild" type="boolean" />
+		<column name="latestKeyBuild" type="boolean" />
+		<column name="latestLESATicketBuild" type="boolean" />
+		<column name="latestSupportTicketBuild" type="boolean" />
+		<column name="lesaTicket" type="String" />
+		<column name="lesaTicketVersion" type="double" />
+		<column name="name" type="String" />
+		<column name="notified" type="boolean" />
+		<column name="productVersion" type="int" />
+		<column name="qaComments" type="String" />
+		<column name="qaStatus" type="int" />
+		<column name="requestKey" type="String" />
+		<column name="sourceName" type="String" />
+		<column name="supportTicket" type="String" />
+		<column name="supportTicketVersion" type="double" />
+		<column name="type" type="int" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Relationships -->
+
+		<column entity="PatcherAccount" mapping-table="PAccounts_PBuilds" name="patcherAccounts" type="Collection" />
+		<column entity="PatcherFix" mapping-table="PBuilds_PFixes" name="patcherFixes" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="K_KV" return-type="PatcherBuild" unique="true">
+			<finder-column name="key" />
+			<finder-column name="keyVersion" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="PatcherBuildRel" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherBuildRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="childPatcherBuildId" type="long" />
+		<column name="parentPatcherBuildId" type="long" />
+	</entity>
+	<entity local-service="true" name="PatcherFix" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherFixId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="patcherProductVersionId" type="long" />
+		<column name="patcherProjectVersionId" type="long" />
+		<column name="comments" type="String" />
+		<column name="committish" type="String" />
+		<column name="dependencies" type="String" />
+		<column name="fixPackStatus" type="int" />
+		<column name="gitHash" type="String" />
+		<column name="gitRemoteURL" type="String" />
+		<column name="jenkinsResults" type="String" />
+		<column name="key" type="String" />
+		<column name="keyVersion" type="double" />
+		<column name="latestFix" type="boolean" />
+		<column name="name" type="String" />
+		<column name="notified" type="boolean" />
+		<column name="obsolete" type="boolean" />
+		<column name="productVersion" type="int" />
+		<column name="requestKey" type="String" />
+		<column name="requirements" type="String" />
+		<column name="type" type="int" />
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
+
+		<!-- Relationships -->
+
+		<column entity="PatcherBuild" mapping-table="PBuilds_PFixes" name="patcherBuilds" type="Collection" />
+		<column entity="PatcherFixPack" mapping-table="PFixes_PFixPacks" name="patcherFixPack" type="Collection" />
+	</entity>
+	<entity local-service="true" name="PatcherFixComponent" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherFixComponentId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+	</entity>
+	<entity local-service="true" name="PatcherFixPack" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherFixPackId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="patcherBuildId" type="long" />
+		<column name="patcherFixComponentId" type="long" />
+		<column name="patcherProjectVersionId" type="long" />
+		<column name="name" type="String" />
+		<column name="releasedDate" type="Date" />
+		<column name="requirements" type="String" />
+		<column name="version" type="int" />
+		<column name="status" type="int" />
+
+		<!-- Relationships -->
+
+		<column entity="PatcherFix" mapping-table="PFixes_PFixPacks" name="patcherFix" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="PFCI_PPVI_N_V" return-type="PatcherFixPack" unique="true">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="name" />
+			<finder-column name="version" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="PatcherFixRel" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherFixRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="childPatcherFixId" type="long" />
+		<column name="parentPatcherFixId" type="long" />
+	</entity>
+	<entity local-service="true" name="PatcherProductVersion" remote-service="false" table="PProductVersion">
+
+		<!-- PK fields -->
+
+		<column name="patcherProductVersionId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="fixDeliveryMethod" type="int" />
+		<column name="moduleFolderName" type="String" />
+		<column name="name" type="String" />
+	</entity>
+	<entity local-service="true" name="PatcherProjectVersion" remote-service="false" table="PProjectVersion">
+
+		<!-- PK fields -->
+
+		<column name="patcherProjectVersionId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="patcherProductVersionId" type="long" />
+		<column name="rootPatcherProjectVersionId" type="long" />
+		<column name="combinedBranch" type="boolean" />
+		<column name="committish" type="String" />
+		<column name="fixedIssues" type="String" />
+		<column name="hide" type="boolean" />
+		<column name="name" type="String" />
+		<column name="productVersion" type="int" />
+		<column name="repositoryName" type="String" />
+	</entity>
+	<entity local-service="true" name="PatcherTicketHint" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="patcherTicketHintId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="patcherProductVersionId" type="long" />
+		<column name="script" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="PatcherProductVersionId" return-type="PatcherTicketHint" unique="true">
+			<finder-column name="patcherProductVersionId" />
+		</finder>
+	</entity>
+</service-builder>

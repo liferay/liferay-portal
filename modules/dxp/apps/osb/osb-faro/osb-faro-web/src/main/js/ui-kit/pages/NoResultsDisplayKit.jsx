@@ -16,7 +16,7 @@ class NoResultsDisplayKit extends React.Component {
 				<hr />
 
 				<NoResultsDisplay
-					icon={{symbol: 'ac-individual'}}
+					icon={{symbol: 'ac_individual'}}
 					title={sub(Liferay.Language.get('there-are-no-x-found'), [
 						Liferay.Language.get('individuals')
 					])}
@@ -26,7 +26,7 @@ class NoResultsDisplayKit extends React.Component {
 
 				<NoResultsDisplay
 					description='This is a description'
-					icon={{symbol: 'ac-individual'}}
+					icon={{symbol: 'ac_individual'}}
 					title='No Results Title'
 				/>
 
@@ -34,7 +34,7 @@ class NoResultsDisplayKit extends React.Component {
 
 				<NoResultsDisplay
 					description='This is a description'
-					icon={{symbol: 'ac-individual'}}
+					icon={{symbol: 'ac_individual'}}
 					primary
 					title='No Results Title'
 				>

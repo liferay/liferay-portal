@@ -76,7 +76,7 @@ public class EditJournalArticleContentDashboardItemActionProviderTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, _getLiferayPortletConfig());
+			JavaConstants.JAKARTA_PORTLET_CONFIG, _getLiferayPortletConfig());
 		mockHttpServletRequest.setAttribute(
 			WebKeys.CURRENT_URL, "http://www.liferay.com");
 		mockHttpServletRequest.setAttribute(

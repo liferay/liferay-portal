@@ -74,7 +74,7 @@ public class CETItemSelectorViewDescriptor
 
 		SearchContainer<CET> searchContainer = new SearchContainer<>(
 			(PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST),
+				JavaConstants.JAKARTA_PORTLET_REQUEST),
 			_portletURL, null, "there-are-no-items-to-display");
 
 		List<CET> cets = _cetManager.getCETs(

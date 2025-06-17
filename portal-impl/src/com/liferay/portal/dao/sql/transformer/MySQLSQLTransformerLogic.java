@@ -22,7 +22,7 @@ public class MySQLSQLTransformerLogic extends BaseSQLTransformerLogic {
 		Function[] functions = {
 			getAggregationFunction(), getBitwiseCheckFunction(),
 			getBooleanFunction(), getCastClobTextFunction(),
-			getCastFloatFunction(), getCastLongFunction(),
+			getCastDecimalFunction(), getCastLongFunction(),
 			getCastTextFunction(), getDropTableIfExistsTextFunction(),
 			getIntegerDivisionFunction(), getNullDateFunction()
 		};
@@ -32,11 +32,6 @@ public class MySQLSQLTransformerLogic extends BaseSQLTransformerLogic {
 		}
 
 		setFunctions(functions);
-	}
-
-	@Override
-	protected String replaceCastFloat(Matcher matcher) {
-		return matcher.replaceAll("CAST($1 AS DECIMAL(9, 7))");
 	}
 
 	@Override

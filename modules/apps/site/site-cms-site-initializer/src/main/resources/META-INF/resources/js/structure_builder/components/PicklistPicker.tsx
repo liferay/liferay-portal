@@ -20,7 +20,13 @@ import selectValidationErrors from '../selectors/selectValidationErrors';
 import {Field, MultiselectField, SingleSelectField} from '../utils/field';
 import AsyncPicker from './AsyncPicker';
 
-export default function PicklistPicker({field}: {field: Field}) {
+export default function PicklistPicker({
+	disabled,
+	field,
+}: {
+	disabled?: boolean;
+	field: Field;
+}) {
 	const selectField = field as SingleSelectField | MultiselectField;
 
 	const [selectedKey, setSelectedKey] = useState<React.Key>(
@@ -54,7 +60,7 @@ export default function PicklistPicker({field}: {field: Field}) {
 
 					<AsyncPicker
 						aria-describedby={feedbackId}
-						disabled={isPublished || !picklists.length}
+						disabled={isPublished || !picklists.length || disabled}
 						id={pickerId}
 						items={picklists}
 						loader={loadPicklist}

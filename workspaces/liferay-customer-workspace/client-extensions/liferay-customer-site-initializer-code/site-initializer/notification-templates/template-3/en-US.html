@@ -1,55 +1,75 @@
-<blockquote>
-	<h3>
-		Someone submitted the Analytics Cloud Activation form for [%PROJECT_ID] at [%AC_DATA_TIME]
-	</h3>
+<div style="padding: 20px">
+	<h2>Replacement Activation Key Acknowledgement Request</h2>
 
-	<hr />
-</blockquote>
-
-<ul>
-	<li>
-		<p style="margin-top: 20px">
-			<strong>Owner Email -</strong> [%AC_OWNER_EMAIL]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Workspace Name -</strong> [%AC_WORKSPACE_NAME]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Data Center Location -</strong> [%AC_DATA_CENTER_LOCATION]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Workspace Friendly URL -</strong> [%AC_WORKSPACE_FRIENDLY_URL]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Allowed Email Domains -</strong> [%AC_EMAIL_DOMAINS]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Time Zone -</strong> [%AC_TIME_ZONE]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Incident Report Contact(s) -</strong> [%AC_INCIDENT_REPORT_CONTACT]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Salesforce Account -</strong> [%PROJECT_SALESFORCE_ACCOUNT_LINK]
-		</p>
-	</li>
-	<li>
-		<p>
-			<strong>Salesforce Project -</strong> [%PROJECT_SALESFORCE_PROJECT_LINK]
-		</p>
-	</li>
-</ul>
+	<table style="width: 100%; border-spacing: 15px">
+		<tbody>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Contact Email Address:
+				</td>
+				<td>[%REPLACEMENTACTIVATIONKEYREQUEST_CONTACTEMAILADDRESS%]</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Company Name:
+				</td>
+				<td>[%REPLACEMENTACTIVATIONKEYREQUEST_COMPANYNAME%]</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Active Liferay Subscription?
+				</td>
+				<td>
+					[%REPLACEMENTACTIVATIONKEYREQUEST_ACTIVELIFERAYSUBSCRIPTION%]
+				</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Support Region:
+				</td>
+				<td>[%REPLACEMENTACTIVATIONKEYREQUEST_SUPPORTREGION%]</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; width: 60%">
+					Please explain why you need a replacement activation key:
+				</td>
+				<td>
+					[%REPLACEMENTACTIVATIONKEYREQUEST_EXPLAINREPLACEMENTACTIVATIONKEY%]
+				</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Type of Server:
+				</td>
+				<td>[%REPLACEMENTACTIVATIONKEYREQUEST_TYPEOFSERVER%]</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Clustered?
+				</td>
+				<td>[%REPLACEMENTACTIVATIONKEYREQUEST_CLUSTERED%]</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Version of Liferay Software:
+				</td>
+				<td>
+					[%REPLACEMENTACTIVATIONKEYREQUEST_VERSIONOFLIFERAYSOFTWARE%]
+				</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; width: 60%">
+					Provided server information, as applicable, depending on
+					your version of Liferay Portal or Liferay DXP:
+				</td>
+				<td>[%REPLACEMENTACTIVATIONKEYREQUEST_SERVERINFORMATION%]</td>
+			</tr>
+			<tr>
+				<td style="font-weight: bold; white-space: nowrap">
+					Acknowledgement:
+				</td>
+				<td>[%REPLACEMENTACTIVATIONKEYREQUEST_ACKNOWLEDGEMENT%]</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

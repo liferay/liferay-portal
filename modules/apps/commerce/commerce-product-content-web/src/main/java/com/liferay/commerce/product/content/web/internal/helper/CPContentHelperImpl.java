@@ -79,6 +79,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -712,6 +713,15 @@ public class CPContentHelperImpl implements CPContentHelper {
 	}
 
 	@Override
+	public boolean hasRequiredCPDefinitionOptionRels(long cpDefinitionId) {
+		return ListUtil.isNotEmpty(
+			ListUtil.filter(
+				_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRels(
+					cpDefinitionId),
+				CPDefinitionOptionRel::isRequired));
+	}
+
+	@Override
 	public boolean isDirectReplacement(CPSku cpSku) throws Exception {
 		if ((cpSku == null) || cpSku.isDiscontinued()) {
 			return false;
@@ -788,7 +798,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 		RenderRequest renderRequest =
 			(RenderRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		CPContentRenderer cpContentRenderer =
 			_cpContentRendererRegistry.getCPContentRenderer(

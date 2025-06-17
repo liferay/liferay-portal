@@ -12,7 +12,7 @@ const IconKit = () => (
 				<Item key={index}>
 					<ClayIcon
 						className={`icon-root icon-size-${size}`}
-						symbol='ac-star'
+						symbol='ac_star'
 					/>
 				</Item>
 			))}
@@ -23,7 +23,7 @@ const IconKit = () => (
 				<Item key={index}>
 					<ClayIcon
 						className={`icon-root icon-size-${size}`}
-						symbol='ac-star'
+						symbol='ac_star'
 					/>
 				</Item>
 			))}

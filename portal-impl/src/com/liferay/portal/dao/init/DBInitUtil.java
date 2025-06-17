@@ -20,14 +20,11 @@ import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ReleaseInfo;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.spring.hibernate.DialectDetector;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import com.liferay.portal.util.PropsUtil;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import java.util.Date;
 import java.util.Objects;
@@ -119,27 +116,6 @@ public class DBInitUtil {
 		PortalUpgradeProcess.createPortalRelease(connection);
 
 		_setDBNew();
-	}
-
-	private static boolean _hasDefaultReleaseWithTestString(
-			Connection connection, String testString)
-		throws Exception {
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select count(*) from Release_ where releaseId = ? and " +
-					"testString = ?")) {
-
-			preparedStatement.setLong(1, ReleaseConstants.DEFAULT_ID);
-			preparedStatement.setString(2, testString);
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				if (resultSet.next() && (resultSet.getInt(1) > 0)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	private static void _init(DB db, Connection connection) throws Exception {
@@ -247,15 +223,9 @@ public class DBInitUtil {
 				"Release_ table was not initialized properly");
 		}
 
-		if (_hasDefaultReleaseWithTestString(
-				connection,
-				StringUtil.toUpperCase(ReleaseConstants.TEST_STRING))) {
-
-			db.setSupportsStringCaseSensitiveQuery(false);
-		}
-		else {
-			db.setSupportsStringCaseSensitiveQuery(true);
-		}
+		db.setSupportsStringCaseSensitiveQuery(
+			PortalUpgradeProcess.isSupportsStringCaseSensitiveQuery(
+				connection));
 	}
 
 	private DBInitUtil() {

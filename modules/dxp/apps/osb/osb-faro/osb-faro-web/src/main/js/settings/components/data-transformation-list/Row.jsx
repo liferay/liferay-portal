@@ -366,12 +366,12 @@ export class DataTransformationListRow extends React.Component {
 					{error ? (
 						<ClayIcon
 							className='icon-root'
-							symbol='faro-connection-error-ovals'
+							symbol='faro_connection_error_ovals'
 						/>
 					) : (
 						<ClayIcon
 							className='icon-root'
-							symbol='faro-connection-success-ovals'
+							symbol='faro_connection_success_ovals'
 						/>
 					)}
 				</Form.GroupItem>

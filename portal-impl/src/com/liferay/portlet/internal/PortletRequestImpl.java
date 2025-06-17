@@ -93,11 +93,12 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 
 	@Override
 	public void cleanUp() {
-		_httpServletRequest.removeAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 		_httpServletRequest.removeAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 		_httpServletRequest.removeAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
+		_httpServletRequest.removeAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 		_httpServletRequest.removeAttribute(PortletRequest.LIFECYCLE_PHASE);
 		_httpServletRequest.removeAttribute(WebKeys.PORTLET_ID);
 		_httpServletRequest.removeAttribute(WebKeys.PORTLET_CONTENT);
@@ -118,9 +119,9 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 
 		setAttribute(WebKeys.PORTLET_ID, liferayPortletConfig.getPortletId());
 
-		setAttribute(JavaConstants.JAVAX_PORTLET_CONFIG, portletConfig);
-		setAttribute(JavaConstants.JAVAX_PORTLET_REQUEST, this);
-		setAttribute(JavaConstants.JAVAX_PORTLET_RESPONSE, portletResponse);
+		setAttribute(JavaConstants.JAKARTA_PORTLET_CONFIG, portletConfig);
+		setAttribute(JavaConstants.JAKARTA_PORTLET_REQUEST, this);
+		setAttribute(JavaConstants.JAKARTA_PORTLET_RESPONSE, portletResponse);
 		setAttribute(PortletRequest.LIFECYCLE_PHASE, getLifecycle());
 	}
 
@@ -1123,7 +1124,7 @@ public abstract class PortletRequestImpl implements LiferayPortletRequest {
 		while (enumeration.hasMoreElements()) {
 			String name = enumeration.nextElement();
 
-			if (!name.equals(JavaConstants.JAVAX_SERVLET_INCLUDE_PATH_INFO)) {
+			if (!name.equals(JavaConstants.JAKARTA_SERVLET_INCLUDE_PATH_INFO)) {
 				names.add(name);
 			}
 		}

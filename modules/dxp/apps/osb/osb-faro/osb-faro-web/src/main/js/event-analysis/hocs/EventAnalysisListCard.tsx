@@ -253,7 +253,7 @@ const EventAnalysisListCard: React.FC<PropsFromRedux> = ({
 						icon={{
 							border: false,
 							size: Sizes.XXXLarge,
-							symbol: 'ac-satellite'
+							symbol: 'ac_satellite'
 						}}
 						title={Liferay.Language.get(
 							'there-are-no-analysis-found'

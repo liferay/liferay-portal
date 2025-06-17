@@ -75,7 +75,7 @@ class EmptyDropZone extends Component<IEmptyDropZone> {
 						<div className='criteria-message'>
 							<ClayIcon
 								className='icon-root icon-size-md'
-								symbol='ac-rule'
+								symbol='ac_rule'
 							/>
 
 							{Liferay.Language.get(
@@ -86,7 +86,7 @@ class EmptyDropZone extends Component<IEmptyDropZone> {
 						<div className='groups-message'>
 							<ClayIcon
 								className='icon-root icon-size-md'
-								symbol='ac-group'
+								symbol='ac_group'
 							/>
 
 							{Liferay.Language.get(

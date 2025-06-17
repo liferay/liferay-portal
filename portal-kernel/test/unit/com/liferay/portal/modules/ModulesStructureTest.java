@@ -222,7 +222,12 @@ public class ModulesStructureTest {
 								Files.deleteIfExists(settingsGradlePath));
 						}
 
-						if (Files.exists(dirPath.resolve("app.bnd"))) {
+						Path appBndPath = dirPath.resolve("app.bnd");
+
+						if (Files.exists(appBndPath)) {
+							_testDirWithOnlyTests(
+								appBndPath, buildGradlePath, dirPath);
+
 							_testEquals(buildGradlePath, _APP_BUILD_GRADLE);
 
 							_testRelengAppProperties(dirPath);
@@ -1102,6 +1107,37 @@ public class ModulesStructureTest {
 				_getAntPluginsGitIgnore(
 					parentDirPath, Collections.emptySortedSet()));
 		}
+	}
+
+	private void _testDirWithOnlyTests(
+		Path appBndPath, Path buildGradlePath, Path dirPath) {
+
+		File dirPathFile = dirPath.toFile();
+
+		File[] dirPathFiles = dirPathFile.listFiles();
+
+		if (dirPathFiles == null) {
+			return;
+		}
+
+		for (File file : dirPathFiles) {
+			if (file.isDirectory()) {
+				String modulePath = file.toString();
+
+				if (!modulePath.endsWith("-test") ||
+					!modulePath.endsWith("-test-util")) {
+
+					return;
+				}
+			}
+		}
+
+		Assert.assertFalse(
+			"Unexpected file " + appBndPath, Files.exists(appBndPath));
+
+		Assert.assertFalse(
+			"Unexpected file " + buildGradlePath,
+			Files.exists(buildGradlePath));
 	}
 
 	private void _testEquals(Path path, String expected) throws IOException {

@@ -185,7 +185,7 @@ renderResponse.setTitle(editDisplayContext.getPageTitle());
 
 			Liferay.Util.openToast({
 				message:
-					'<%= LanguageUtil.get(request, "at-least-one-translation-is-required-with-a-new-language-key") %>',
+					'<%= HtmlUtil.escapeJS(LanguageUtil.get(request, "at-least-one-translation-is-required-with-a-new-language-key")) %>',
 				type: 'danger',
 			});
 		}

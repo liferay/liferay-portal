@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
+import com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpaceListComponentSectionFragmentRenderer;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -118,9 +119,8 @@ public class ActionUtil {
 		FragmentEntryLink spaceListFragmentEntryLink = _addFragmentEntryLink(
 			StringPool.BLANK, fragmentEntryLinkService,
 			fragmentRendererRegistry,
-			"com.liferay.site.cms.site.initializer.internal.fragment." +
-				"renderer.SpaceListFragmentRenderer",
-			layout, segmentsExperienceId, serviceContext);
+			SpaceListComponentSectionFragmentRenderer.class.getName(), layout,
+			segmentsExperienceId, serviceContext);
 
 		if (spaceListFragmentEntryLink != null) {
 			layoutStructure.addFragmentStyledLayoutStructureItem(

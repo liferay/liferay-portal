@@ -65,7 +65,7 @@ public class CompareVersionsJournalArticleContentDashboardItemVersionAction
 		LiferayPortletResponse liferayPortletResponse =
 			_portal.getLiferayPortletResponse(
 				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE));
+					JavaConstants.JAKARTA_PORTLET_RESPONSE));
 
 		PortletURL portletURL = liferayPortletResponse.createRenderURL();
 

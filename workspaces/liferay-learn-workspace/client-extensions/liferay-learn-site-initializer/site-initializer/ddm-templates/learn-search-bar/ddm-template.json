@@ -1,6 +1,6 @@
 {
 	"className": "com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortlet",
-	"ddmTemplateKey": "LEARN_SEARCH_BAR",
+	"ddmTemplateKey": "LEARN-SEARCH-BAR",
 	"name": "Learn Search Bar",
 	"resourceClassName": "com.liferay.portlet.display.template.PortletDisplayTemplate"
 }

@@ -7,12 +7,15 @@ package com.liferay.commerce.product.definitions.web.internal.option;
 
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
+import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.option.CommerceOptionType;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOption;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
@@ -26,6 +29,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.PrintWriter;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -57,6 +61,29 @@ public class CheckboxMultipleCommerceOptionTypeImpl
 	@Override
 	public boolean hasValues() {
 		return true;
+	}
+
+	@Override
+	public boolean isValid(
+		CPDefinitionOptionRel cpDefinitionOptionRel, String[] values) {
+
+		if (ArrayUtil.isEmpty(values)) {
+			return true;
+		}
+
+		List<String> valuesList = ListUtil.fromArray(values);
+
+		for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
+				cpDefinitionOptionRel.getCPDefinitionOptionValueRels()) {
+
+			valuesList.remove(cpDefinitionOptionValueRel.getKey());
+
+			if (valuesList.isEmpty()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override

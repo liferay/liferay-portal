@@ -114,7 +114,7 @@ public class DDMStructureItemSelectorViewDescriptor
 		SearchContainer<DDMStructure> ddmStructureSearchContainer =
 			new SearchContainer<>(
 				(PortletRequest)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST),
+					JavaConstants.JAKARTA_PORTLET_REQUEST),
 				_portletURL, null, emptyResultsMessage);
 
 		ddmStructureSearchContainer.setOrderByCol(getOrderByCol());

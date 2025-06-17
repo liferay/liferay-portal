@@ -67,7 +67,7 @@ public class UserOAuth2ItemSelectorView
 
 		RenderRequest renderRequest =
 			(RenderRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		UserOAuth2ItemSelectorViewDisplayContext
 			userOAuth2ItemSelectorViewDisplayContext =

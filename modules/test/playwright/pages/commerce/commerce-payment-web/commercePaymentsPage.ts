@@ -37,7 +37,7 @@ export class CommercePaymentsPage {
 			.frameLocator('iframe[title="Comment"]')
 			.getByLabel('Note', {exact: true});
 		this.commentSubmitButton = page
-			.frameLocator('iframe[title="Comment"]')
+			.locator('.modal-item-last')
 			.getByRole('button', {exact: true, name: 'Submit'});
 		this.ercInput = page
 			.frameLocator('iframe[title="Edit External Reference Code"]')

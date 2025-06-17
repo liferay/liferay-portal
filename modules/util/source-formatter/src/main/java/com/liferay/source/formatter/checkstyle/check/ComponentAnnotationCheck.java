@@ -196,13 +196,8 @@ public class ComponentAnnotationCheck extends BaseCheck {
 
 		FullIdent fullIdent = FullIdent.createFullIdent(firstChildDetailAST);
 
-		if (!Objects.equals(
-				fullIdent.getText(), _OSGI_SERVICE_NAME + ".class")) {
-
-			return false;
-		}
-
-		return true;
+		return Objects.equals(
+			fullIdent.getText(), _OSGI_SERVICE_NAME + ".class");
 	}
 
 	private static final String _MSG_INCORRECT_CONFIGURATION_POLICY =

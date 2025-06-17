@@ -10,6 +10,7 @@ import com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailO
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
+import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -48,7 +49,9 @@ public class MFASystemConfigurationModelListener
 		boolean mfaDisableGlobally = GetterUtil.getBoolean(
 			properties.get("disableGlobally"));
 
-		if (mfaDisableGlobally == _mfaDisableGlobally) {
+		if ((mfaDisableGlobally == _mfaDisableGlobally) ||
+			!ClusterInvokeThreadLocal.isEnabled()) {
+
 			return;
 		}
 

@@ -1,8 +1,8 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"externalReferenceCode": "SUPPORT-TICKET-ESCALATION-TEMPLATE",
-	"name": "Support Ticket Escalation Template",
+	"externalReferenceCode": "CALLBACK-FORM-SUBMISSION",
+	"name": "Callback Form Submission",
 	"recipientType": "email",
 	"recipients": [
 		{
@@ -13,12 +13,12 @@
 				"en-US": "Customer Portal"
 			},
 			"to": {
-				"en-US": "is-support@liferay.com"
+				"en-US": "d-devsecops-ccc-alert-aaaahibaaepmcmagzyuqnxpely@liferay.slack.com"
 			}
 		}
 	],
 	"subject": {
-		"en_US": "Support Ticket Escalation [%SUPPORTTICKETESCALATION_TICKETSIDS%]"
+		"en_US": "Callback Form Submission"
 	},
 	"type": "email"
 }

@@ -210,7 +210,7 @@
 															"widgetInstance": {
 																"widgetConfig": {
 																	"destination": "",
-																	"displayStyle": "ddmTemplate_LEARN_SEARCH_BAR",
+																	"displayStyle": "ddmTemplate_LEARN-SEARCH-BAR",
 																	"displayStyleGroupId": "32483059",
 																	"federatedSearchKey": "",
 																	"invisible": "false",
@@ -368,7 +368,7 @@
 														"definition": {
 															"widgetInstance": {
 																"widgetConfig": {
-																	"displayStyle": "ddmTemplate_LEARN_SEARCH_CATEGORY_FACET",
+																	"displayStyle": "ddmTemplate_LEARN-SEARCH-CATEGORY-FACET",
 																	"displayStyleGroupId": "33060",
 																	"displayStyleGroupKey": "Liferay Learn",
 																	"frequenciesVisible": "false",
@@ -404,7 +404,7 @@
 													},
 													"widgetInstance": {
 														"widgetConfig": {
-															"displayStyle": "ddmTemplate_LEARN_SEARCH_CATEGORY_FACET",
+															"displayStyle": "ddmTemplate_LEARN-SEARCH-CATEGORY-FACET",
 															"displayStyleGroupId": "32483059",
 															"displayStyleGroupKey": "",
 															"frequenciesVisible": "false",
@@ -450,7 +450,7 @@
 														"definition": {
 															"widgetInstance": {
 																"widgetConfig": {
-																	"displayStyle": "ddmTemplate_LEARN_SEARCH_CATEGORY_FACET",
+																	"displayStyle": "ddmTemplate_LEARN-SEARCH-CATEGORY-FACET",
 																	"displayStyleGroupId": "32483059",
 																	"frequenciesVisible": "false",
 																	"frequencyThreshold": "1",
@@ -502,7 +502,7 @@
 															"widgetInstance": {
 																"widgetConfig": {
 																	"displayInDocumentForm": "false",
-																	"displayStyle": "ddmTemplate_LEARN_SEARCH_RESULTS",
+																	"displayStyle": "ddmTemplate_LEARN-SEARCH-RESULTS",
 																	"displayStyleGroupId": "33060",
 																	"displayStyleGroupKey": "Liferay Learn",
 																	"federatedSearchKey": "",

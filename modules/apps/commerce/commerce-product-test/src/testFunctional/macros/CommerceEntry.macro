@@ -967,12 +967,14 @@ definition {
 			locator1 = "TextInput#GENERIC_TEXT_INPUT",
 			value1 = ${keyReferenceCode});
 
-		Button.click(button = "Submit");
+		Click(
+			key_text = "Submit",
+			locator1 = "Modal#MODAL_FOOTER_BUTTON");
 
 		if (isSet(uniqueERC)) {
 			Alert.viewErrorMessage(errorMessage = "Please enter a unique external reference code.");
 
-			Click(locator1 = "Button#CANCEL_SPECIAL");
+			Click(locator1 = "Button#CANCEL");
 		}
 
 		Click(locator1 = "Icon#BACK");
@@ -1359,7 +1361,9 @@ definition {
 
 			SelectFrame.selectFrameTop();
 
-			Button.click(button = "Submit");
+			Click(
+				key_text = "Submit",
+				locator1 = "Modal#MODAL_FOOTER_BUTTON");
 		}
 
 		Type(

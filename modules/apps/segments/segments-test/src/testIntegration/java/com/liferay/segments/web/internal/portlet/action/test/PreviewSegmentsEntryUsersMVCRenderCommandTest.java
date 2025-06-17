@@ -290,7 +290,7 @@ public class PreviewSegmentsEntryUsersMVCRenderCommandTest {
 			SegmentsPortletKeys.SEGMENTS);
 
 		mockLiferayPortletRenderRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG,
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			PortletConfigFactoryUtil.create(portlet, null));
 
 		mockLiferayPortletRenderRequest.setAttribute(

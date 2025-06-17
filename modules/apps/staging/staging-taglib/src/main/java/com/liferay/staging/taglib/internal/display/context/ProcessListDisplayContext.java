@@ -84,7 +84,7 @@ public class ProcessListDisplayContext {
 
 		_searchContainer = new SearchContainer(
 			(PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST),
+				JavaConstants.JAKARTA_PORTLET_REQUEST),
 			_getPortletURL(), null, "no-publish-processes-were-found");
 
 		_searchContainer.setOrderByCol(_getOrderByCol());

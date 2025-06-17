@@ -92,7 +92,7 @@ public class AssetCategoryInfoItemItemSelectorView
 				(HttpServletRequest)servletRequest,
 				infoItemItemSelectorCriterion, itemSelectedEventName,
 				(RenderResponse)servletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE)));
+					JavaConstants.JAKARTA_PORTLET_RESPONSE)));
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}

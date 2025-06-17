@@ -10,11 +10,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.dom4j.Document;
-import org.dom4j.Node;
+import org.json.JSONObject;
 
 /**
  * @author Michael Hashimoto
@@ -30,126 +32,6 @@ public class PortalRelease {
 			portalVersion);
 
 		return matcher.matches();
-	}
-
-	public PortalRelease(String portalVersion) {
-		URL bundlesBaseURL = null;
-
-		for (String baseURLString : _BASE_URL_STRINGS) {
-			String bundlesBaseURLString =
-				baseURLString + "/" + portalVersion.replaceAll("\\.u", "-u");
-
-			String bundlesBaseURLContent = null;
-
-			try {
-				bundlesBaseURLContent = JenkinsResultsParserUtil.toString(
-					bundlesBaseURLString + "/", true, 1, 5, 0);
-
-				bundlesBaseURL = new URL(bundlesBaseURLString);
-
-				break;
-			}
-			catch (Exception exception) {
-			}
-
-			try {
-				String xml = JenkinsResultsParserUtil.toString(
-					baseURLString + "/", true, 1, 5, 0);
-
-				xml = xml.substring(xml.indexOf("<html>"));
-
-				xml = xml.replaceAll("&nbsp;", "");
-				xml = xml.replaceAll("<img[^>]+>", "");
-				xml = xml.replaceAll("<hr>", "");
-
-				Document document = Dom4JUtil.parse(xml);
-
-				for (Node node : Dom4JUtil.getNodesByXPath(document, "//a")) {
-					String text = node.getText();
-
-					text = text.trim();
-					text = text.replace("/", "");
-
-					if (!text.startsWith(portalVersion + "-")) {
-						continue;
-					}
-
-					bundlesBaseURLString = baseURLString + "/" + text;
-
-					try {
-						bundlesBaseURLContent =
-							JenkinsResultsParserUtil.toString(
-								bundlesBaseURLString + "/", true, 0, 5, 0);
-
-						portalVersion = text;
-
-						break;
-					}
-					catch (Exception exception) {
-					}
-				}
-
-				if (bundlesBaseURLContent != null) {
-					bundlesBaseURL = new URL(bundlesBaseURLString);
-
-					break;
-				}
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		}
-
-		if (bundlesBaseURL == null) {
-			throw new RuntimeException(
-				"Invalid portal version " + portalVersion);
-		}
-
-		_portalVersion = portalVersion;
-
-		_bundlesBaseURL = _getRemoteURL(bundlesBaseURL.toString());
-
-		_initializeURLs();
-	}
-
-	public PortalRelease(URL bundleURL) {
-		Matcher bundleURLMatcher = _bundleURLPattern.matcher(
-			bundleURL.toString());
-
-		if (!bundleURLMatcher.find()) {
-			throw new RuntimeException("Invalid URL " + bundleURL);
-		}
-
-		String portalVersion = null;
-
-		String bundleFileName = bundleURLMatcher.group("bundleFileName");
-
-		Matcher bundleFileNameMatcher = _bundleFileNamePattern.find(
-			bundleFileName);
-
-		if (bundleFileNameMatcher != null) {
-			portalVersion = bundleFileNameMatcher.group("portalVersion");
-		}
-
-		String bundlesBaseURLString = bundleURLMatcher.group("bundlesBaseURL");
-
-		if (portalVersion == null) {
-			Matcher bundlesBaseURLMatcher = _bundlesBaseURLPattern.find(
-				bundlesBaseURLString);
-
-			if (bundlesBaseURLMatcher == null) {
-				throw new RuntimeException(
-					"Invalid bundle file name " + bundleFileName);
-			}
-
-			portalVersion = bundlesBaseURLMatcher.group("portalVersion");
-		}
-
-		_bundlesBaseURL = _getRemoteURL(bundlesBaseURLString);
-
-		_portalVersion = portalVersion;
-
-		_initializeURLs();
 	}
 
 	public PortalRelease(URL bundlesBaseURL, String portalVersion) {
@@ -183,36 +65,16 @@ public class PortalRelease {
 		return _getRemoteURL(_bundlesBaseURL.toString());
 	}
 
-	public String getHTMLReport() {
-		StringBuilder sb = new StringBuilder();
+	public JSONObject getJSONObject() {
+		JSONObject jsonObject = new JSONObject();
 
-		sb.append("<ul>");
+		jsonObject.put(
+			"bundles_base_url", String.valueOf(_bundlesBaseURL)
+		).put(
+			"portal_version", _portalVersion
+		);
 
-		URL[] urls = {
-			getPluginsWarZipURL(), getPortalBundleGlassFishURL(),
-			getPortalBundleJBossURL(), getPortalBundleTomcatURL(),
-			getPortalBundleWildFlyURL(), getPortalDependenciesZipURL(),
-			getPortalOSGiZipURL(), getPortalSQLZipURL(), getPortalToolsZipURL(),
-			getPortalWarURL()
-		};
-
-		for (URL url : urls) {
-			if (url == null) {
-				continue;
-			}
-
-			String urlString = url.toString();
-
-			sb.append("<li><a href=\"");
-			sb.append(urlString);
-			sb.append("\">");
-			sb.append(urlString.replaceAll(".+/([^/]+)", "$1"));
-			sb.append("</a></li>");
-		}
-
-		sb.append("</ul>");
-
-		return sb.toString();
+		return jsonObject;
 	}
 
 	public URL getPluginsWarZipLocalURL() {
@@ -497,6 +359,168 @@ public class PortalRelease {
 			portalWarURL.toString());
 	}
 
+	protected static URL getBundlesBaseURL(String portalVersion) {
+		_initalizePortalVersionsMap();
+
+		synchronized (_portalVersionsMap) {
+			for (Map.Entry<String, URL> entry : _portalVersionsMap.entrySet()) {
+				String key = entry.getKey();
+
+				if (key.equals(portalVersion) ||
+					key.startsWith(portalVersion + "-")) {
+
+					return entry.getValue();
+				}
+			}
+		}
+
+		return null;
+	}
+
+	protected static URL getBundlesBaseURL(URL bundleURL) {
+		Matcher bundleURLMatcher = _bundleURLPattern.matcher(
+			bundleURL.toString());
+
+		if (!bundleURLMatcher.find()) {
+			throw new RuntimeException("Invalid URL " + bundleURL);
+		}
+
+		try {
+			return new URL(bundleURLMatcher.group("bundlesBaseURL"));
+		}
+		catch (MalformedURLException malformedURLException) {
+			throw new RuntimeException(malformedURLException);
+		}
+	}
+
+	protected static String getPortalVersion(String portalVersion) {
+		_initalizePortalVersionsMap();
+
+		synchronized (_portalVersionsMap) {
+			if (_portalVersionsMap.containsKey(portalVersion)) {
+				return portalVersion;
+			}
+
+			for (Map.Entry<String, URL> entry : _portalVersionsMap.entrySet()) {
+				String key = entry.getKey();
+
+				if (key.startsWith(portalVersion + "-")) {
+					return key;
+				}
+			}
+
+			return null;
+		}
+	}
+
+	protected static String getPortalVersion(URL bundleURL) {
+		Matcher bundleURLMatcher = _bundleURLPattern.matcher(
+			bundleURL.toString());
+
+		if (!bundleURLMatcher.find()) {
+			throw new RuntimeException("Invalid URL " + bundleURL);
+		}
+
+		String bundleFileName = bundleURLMatcher.group("bundleFileName");
+
+		Matcher bundleFileNameMatcher = _bundleFileNamePattern.find(
+			bundleFileName);
+
+		if (bundleFileNameMatcher != null) {
+			return bundleFileNameMatcher.group("portalVersion");
+		}
+
+		String bundlesBaseURLString = bundleURLMatcher.group("bundlesBaseURL");
+
+		Matcher bundlesBaseURLMatcher = _bundlesBaseURLPattern.find(
+			bundlesBaseURLString);
+
+		if (bundlesBaseURLMatcher == null) {
+			throw new RuntimeException(
+				"Invalid bundle file name " + bundleFileName);
+		}
+
+		return bundlesBaseURLMatcher.group("portalVersion");
+	}
+
+	protected PortalRelease(JSONObject jsonObject) {
+		try {
+			_bundlesBaseURL = new URL(jsonObject.getString("bundles_base_url"));
+		}
+		catch (MalformedURLException malformedURLException) {
+			throw new RuntimeException(malformedURLException);
+		}
+
+		_portalVersion = jsonObject.getString("portal_version");
+
+		_initializeURLs();
+	}
+
+	protected PortalRelease(String portalVersion) {
+		_portalVersion = getPortalVersion(portalVersion);
+
+		_bundlesBaseURL = _getRemoteURL(
+			String.valueOf(getBundlesBaseURL(portalVersion)));
+
+		_initializeURLs();
+	}
+
+	protected PortalRelease(URL bundleURL) {
+		_bundlesBaseURL = _getRemoteURL(
+			String.valueOf(getBundlesBaseURL(bundleURL)));
+		_portalVersion = getPortalVersion(bundleURL);
+
+		_initializeURLs();
+	}
+
+	private static void _initalizePortalVersionsMap() {
+		synchronized (_portalVersionsMap) {
+			if (!_portalVersionsMap.isEmpty()) {
+				return;
+			}
+
+			try {
+				Properties buildProperties =
+					JenkinsResultsParserUtil.getBuildProperties();
+
+				for (String propertyName :
+						buildProperties.stringPropertyNames()) {
+
+					Matcher tomcatBundlePropertyMatcher =
+						_tomcatBundlePropertyPattern.matcher(propertyName);
+
+					if (!tomcatBundlePropertyMatcher.find()) {
+						continue;
+					}
+
+					String propertyValue = JenkinsResultsParserUtil.getProperty(
+						buildProperties, propertyName);
+
+					Matcher tomcatBundleURLMatcher =
+						_tomcatBundleURLPattern.matcher(propertyValue);
+
+					if (!tomcatBundleURLMatcher.matches()) {
+						continue;
+					}
+
+					URL bundlesBaseURL = new URL(
+						JenkinsResultsParserUtil.combine(
+							"https://",
+							tomcatBundleURLMatcher.group("hostname"), "/",
+							tomcatBundleURLMatcher.group("urlPath")));
+
+					String portalVersion = tomcatBundlePropertyMatcher.group(
+						"portalVersion");
+
+					_portalVersionsMap.put(portalVersion, bundlesBaseURL);
+				}
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
+		}
+	}
+
 	private URL _getLocalURL(String urlString) {
 		if (urlString == null) {
 			return null;
@@ -686,12 +710,6 @@ public class PortalRelease {
 			bundlesBaseURLContent, _portalWarFileNamePattern);
 	}
 
-	private static final String[] _BASE_URL_STRINGS = {
-		"https://releases.liferay.com/portal",
-		"https://releases.liferay.com/dxp",
-		"https://files.liferay.com/private/ee/portal"
-	};
-
 	private static final String _PORTAL_VERSION_REGEX =
 		"(?<portalVersion>\\d\\.([u\\d\\.]+)(-ee)?(-dxp-\\d+)?" +
 			"(\\-(ep|ga|rc|sp)\\d+)?)";
@@ -743,10 +761,17 @@ public class PortalRelease {
 		"(?<majorVersion>\\d)\\.(?<minorVersion>\\d)\\.(?<fixVersion>\\d+)" +
 			"([-\\.](?<updatePrefix>u)?(?<updateVersion>\\d+))?" +
 				"(-dxp-(?<dxpVersion>\\d+))?.*");
+	private static final Map<String, URL> _portalVersionsMap = new HashMap<>();
 	private static final Pattern _portalWarFileNamePattern = Pattern.compile(
 		"href=\\\"[^\\\"]*(?<fileName>liferay-[^\\\"]+\\.war)\\\"");
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile(_QUARTERLY_RELEASE_VERSION_REGEX);
+	private static final Pattern _tomcatBundlePropertyPattern = Pattern.compile(
+		"portal.bundle.tomcat\\[(?<portalVersion>.+)\\]");
+	private static final Pattern _tomcatBundleURLPattern = Pattern.compile(
+		"https?://(mirrors.lax.liferay.com/)?" +
+			"(?<hostname>releases.liferay.com)/(?<urlPath>(dxp|portal)/" +
+				"(?<portalVersion>[^/]+))/[^/]+");
 
 	private final URL _bundlesBaseURL;
 	private String _pluginsWarZipURLString;

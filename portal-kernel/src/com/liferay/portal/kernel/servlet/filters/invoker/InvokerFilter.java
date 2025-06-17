@@ -199,11 +199,11 @@ public class InvokerFilter implements Filter {
 
 		if (_dispatcher == Dispatcher.ERROR) {
 			uri = (String)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_SERVLET_ERROR_REQUEST_URI);
+				JavaConstants.JAKARTA_SERVLET_ERROR_REQUEST_URI);
 		}
 		else if (_dispatcher == Dispatcher.INCLUDE) {
 			uri = (String)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_SERVLET_INCLUDE_REQUEST_URI);
+				JavaConstants.JAKARTA_SERVLET_INCLUDE_REQUEST_URI);
 		}
 		else {
 			uri = httpServletRequest.getRequestURI();

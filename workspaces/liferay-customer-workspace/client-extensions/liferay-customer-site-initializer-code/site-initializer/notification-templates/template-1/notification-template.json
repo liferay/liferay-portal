@@ -1,8 +1,8 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"externalReferenceCode": "SETUP-DXP-CLOUD-ENVIRONMENT-NOTIFICATION-TEMPLATE",
-	"name": "Setup DXP Cloud Environment Notification Template",
+	"externalReferenceCode": "SETUP-DXP-CLOUD-ENVIRONMENT",
+	"name": "Setup DXP Cloud Environment",
 	"recipientType": "email",
 	"recipients": [
 		{

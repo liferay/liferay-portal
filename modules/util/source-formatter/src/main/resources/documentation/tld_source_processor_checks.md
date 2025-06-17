@@ -3,6 +3,7 @@
 Check | Category | Description
 ----- | -------- | -----------
 TLDElementOrderCheck | [Styling](styling_checks.md#styling-checks) | Checks the order of attributes in `.tld` file. |
+TLDJakartaTransformCheck | [JakartaTransform](jakarta_transform_checks.md#jakartatransform-checks) | Performs replacements for use of Jakarta. |
 TLDStylingCheck | [Styling](styling_checks.md#styling-checks) | Applies rules to enforce consistency in code style. |
 TLDTypeCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Ensures the fully qualified name is used for types in `.tld` file. |
 WhitespaceCheck | [Styling](styling_checks.md#styling-checks) | Finds missing and unnecessary whitespace. |

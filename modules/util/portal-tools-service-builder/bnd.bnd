@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Tools Service Builder
 Bundle-SymbolicName: com.liferay.portal.tools.service.builder
-Bundle-Version: 1.0.503
+Bundle-Version: 1.0.505
 Main-Class: com.liferay.portal.tools.service.builder.ServiceBuilder
 -includeresource:\
 	com/liferay/account/service.xml=../../../modules/apps/account/account-service/service.xml,\
@@ -48,6 +48,8 @@ Main-Class: com.liferay.portal.tools.service.builder.ServiceBuilder
 	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/ArgumentsMap.class,\
 	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/ArgumentsUtil.class,\
 	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/BaseImportsFormatter.class,\
+	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/GitException.class,\
+	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/GitUtil.class,\
 	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/ImportPackage.class,\
 	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/ImportsFormatter.class,\
 	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/JavaImportsFormatter.class,\

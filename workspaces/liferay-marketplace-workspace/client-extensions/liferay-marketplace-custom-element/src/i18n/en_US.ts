@@ -36,6 +36,8 @@ export default {
 		'All progress and information related to the creation of the app will be lost. Do you still want to exit?',
 	'all-progress-and-information-related-to-the-creation-of-the-app-will-be-lost-unless-you-save-the-app-as-a-draft-do-you-still-want-to-exit':
 		'All progress and information related to the creation of the app will be lost unless you save the app as a draft. Do you still want to exit?',
+	'all-progress-and-information-related-to-the-creation-of-the-new-app-build-will-be-lost-do-you-still-want-to-exit':
+		'All progress and information related to the creation of the new app build will be lost. Do you still want to exit?',
 	'all-progress-and-information-related-to-the-creation-of-the-solution-will-be-lost-do-you-still-want-to-exit':
 		'All progress and information related to the creation of the solution will be lost. Do you still want to exit?',
 	'all-progress-and-information-related-to-the-creation-of-the-solution-will-be-lost-unless-you-save-the-solution-as-a-draft-do-you-still-want-to-exit':
@@ -86,6 +88,7 @@ export default {
 	'becoming-a-liferay-marketplace-publisher':
 		'Becoming a Liferay Marketplace publisher',
 	'billing-address': 'Billing Address',
+	'build': 'Build',
 	'business-address': 'Business Address',
 	'by-requesting-a-publisher-account-you-agree-to-the':
 		'By requesting a Publisher account, you agree to the',
@@ -113,6 +116,7 @@ export default {
 	'comments': 'Comments',
 	'company-profile': 'Company Profile',
 	'compatible-offering': 'Compatible Offering',
+	'compatible-versions': 'Compatible Versions',
 	'complete-publisher-account-request': 'Complete Publisher Account Request',
 	'composite-app': 'Composite App',
 	'confirm': 'Confirm',
@@ -224,6 +228,7 @@ export default {
 	'environment-type': 'Environment Type',
 	'environments': 'Environments',
 	'exit': 'Exit',
+	'exit-from-providing-app-build': 'Exit from providing app build',
 	'exp-date': 'Exp. Date',
 	'expiration-date': 'Expiration Date',
 	'expired': 'Expired',
@@ -350,8 +355,8 @@ export default {
 	'number-of-cpus': 'Number of CPUs',
 	'of-target': 'of target',
 	'on-hold': 'On Hold',
-	'only-gif-jpg-png-are-allowed-ax-file-size-is-5mb':
-		'Only gif, jpg, png are allowed. Max file size is 5MB',
+	'only-gif-jpg-jpeg-png-are-allowed-max-file-size-is-5mb':
+		'Only gif, jpg, jpeg and png are allowed. Max file size is 5MB',
 	'only-jar-war-files-are-allowed-max-file-size-is-500mb':
 		'Only JAR, WAR files are allowed. Max file size is 500MB.',
 	'only-zip-files-are-allowed-max-file-size-is-500-mb':
@@ -362,12 +367,15 @@ export default {
 	'order-status': 'Order Status',
 	'orders': 'Orders',
 	'other': 'Other',
+	'package': 'Package',
 	'payment': 'Payment',
 	'payment-method': 'Payment Method',
 	'payment-status': 'Payment Status',
 	'paypal-account': 'Paypal Account',
 	'phone': 'Phone',
 	'phone-number': 'Phone Number',
+	'please-be-aware-that-since-you-are-adding-a-new-version-of-the-app-the-only-section-visible-is-the-build':
+		'Please be aware that since you are adding a new version of the app the only section visible is the “Build”.',
 	'please-be-sure-to-specify-liferay-compatibility-through-the-appropriate-properties-or-xml-files-in-your-plugin':
 		'Please be sure to specify Liferay compatibility through the appropriate properties or XML files in your plugin.',
 	'please-fill-in-a-valid-email': 'Please fill in a valid email',
@@ -434,6 +442,7 @@ export default {
 	'return-to-marketplace': 'Return to Marketplace',
 	'review-and-accept-the-legal-agreement-between-you-and-liferay-before-proceeding-you-are-about-to-create-a-new-solution-submission':
 		'Review and accept the legal agreement between you and Liferay before proceeding, You are about to create a new solution submission.',
+	'review-and-submit-app': 'Review and submit app',
 	'review-and-submit-solution': 'Review and submit solution',
 	'review-the-new-publisher-info-and-the-liferay-marketplace-terms-before-proceeding':
 		'Review the new publisher info and the Liferay Marketplace terms before proceeding',

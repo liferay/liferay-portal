@@ -8,7 +8,7 @@ package com.liferay.commerce.health.status.web.internal;
 import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.commerce.constants.CommerceHealthStatusConstants;
 import com.liferay.commerce.health.status.CommerceHealthStatus;
-import com.liferay.commerce.helper.CommerceAccountRoleHelper;
+import com.liferay.commerce.helper.CommerceRoleHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -133,7 +133,7 @@ public class AccountsCommerceHealthStatus implements CommerceHealthStatus {
 			Propagation.REQUIRED, new Class<?>[] {Exception.class});
 
 	@Reference
-	private CommerceAccountRoleHelper _commerceAccountRoleHelper;
+	private CommerceRoleHelper _commerceRoleHelper;
 
 	@Reference
 	private Language _language;
@@ -145,8 +145,7 @@ public class AccountsCommerceHealthStatus implements CommerceHealthStatus {
 
 		@Override
 		public Object call() throws Exception {
-			_commerceAccountRoleHelper.checkCommerceAccountRoles(
-				_serviceContext);
+			_commerceRoleHelper.checkCommerceAccountRoles(_serviceContext);
 
 			return null;
 		}

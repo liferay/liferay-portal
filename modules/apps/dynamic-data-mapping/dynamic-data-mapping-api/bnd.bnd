@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dynamic Data Mapping API
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.api
-Bundle-Version: 35.0.1
+Bundle-Version: 35.1.0
 Export-Package:\
 	com.liferay.dynamic.data.mapping.annotations,\
 	com.liferay.dynamic.data.mapping.configuration,\

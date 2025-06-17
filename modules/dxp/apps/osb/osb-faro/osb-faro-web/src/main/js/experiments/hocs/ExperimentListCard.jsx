@@ -27,7 +27,7 @@ const ExperimentListCard = props => {
 							<ClayIcon
 								className='icon-root'
 								key='ICON'
-								symbol='ac-test'
+								symbol='ac_test'
 							/>
 						],
 						false
@@ -46,7 +46,7 @@ const ExperimentListCard = props => {
 		emptyIcon: {
 			border: false,
 			size: Sizes.XXXLarge,
-			symbol: 'ac-satellite'
+			symbol: 'ac_satellite'
 		},
 		emptyTitle: Liferay.Language.get('there-are-no-tests-found'),
 		getColumns: () => getColumns(timeZoneId),

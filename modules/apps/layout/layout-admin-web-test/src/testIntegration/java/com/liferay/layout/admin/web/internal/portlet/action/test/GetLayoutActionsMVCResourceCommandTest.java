@@ -128,7 +128,7 @@ public class GetLayoutActionsMVCResourceCommandTest {
 			new MockLiferayResourceRequest();
 
 		mockLiferayResourceRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, null);
+			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();

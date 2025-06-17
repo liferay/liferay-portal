@@ -30,6 +30,8 @@ public class DDMStructureVersionImpl extends DDMStructureVersionBaseImpl {
 				_ddmForm =
 					DDMStructureVersionLocalServiceUtil.
 						getStructureVersionDDMForm(this);
+
+				ddmFormUpdateEntityCacheConsumer.accept(_ddmForm);
 			}
 			catch (Exception exception) {
 				_log.error(exception);

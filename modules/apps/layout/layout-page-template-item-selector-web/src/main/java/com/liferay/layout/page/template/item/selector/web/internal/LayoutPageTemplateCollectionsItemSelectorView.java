@@ -174,7 +174,7 @@ public class LayoutPageTemplateCollectionsItemSelectorView
 			_portletURL = portletURL;
 
 			_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 			_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 		}

@@ -172,7 +172,7 @@ public abstract class BaseSynonymsWebTestCase {
 
 		_setUpPortletRequestGetAttribute(
 			portletRequest, Mockito.mock(PortletConfig.class),
-			JavaConstants.JAVAX_PORTLET_CONFIG);
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 		_setUpPortletRequestGetAttribute(
 			portletRequest, themeDisplay, WebKeys.THEME_DISPLAY);
 	}

@@ -143,10 +143,6 @@ function FieldSetContent({
 						!field.typeOptions?.dependency ||
 						Object.entries(field.typeOptions.dependency).every(
 							([key, {type, value}]) => {
-								if (!Liferay.FeatureFlags['LPD-46393']) {
-									return true;
-								}
-
 								let dependencyValue = String(values[key]);
 
 								if (!dependencyValue) {

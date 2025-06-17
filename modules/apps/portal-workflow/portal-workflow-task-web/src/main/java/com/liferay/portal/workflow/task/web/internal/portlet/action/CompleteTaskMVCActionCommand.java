@@ -135,11 +135,11 @@ public class CompleteTaskMVCActionCommand
 
 		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		if (portletResponse == null) {
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE,
+				JavaConstants.JAKARTA_PORTLET_RESPONSE,
 				_portal.getLiferayPortletResponse(actionResponse));
 		}
 

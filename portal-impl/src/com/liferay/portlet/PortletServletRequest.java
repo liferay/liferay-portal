@@ -79,7 +79,7 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 			return _httpServletRequest.getAttribute(name);
 		}
 
-		if (name.equals(JavaConstants.JAVAX_SERVLET_FORWARD_CONTEXT_PATH)) {
+		if (name.equals(JavaConstants.JAKARTA_SERVLET_FORWARD_CONTEXT_PATH)) {
 			if (_named) {
 				return null;
 			}
@@ -87,7 +87,7 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 			return _portletRequest.getContextPath();
 		}
 
-		if (name.equals(JavaConstants.JAVAX_SERVLET_FORWARD_PATH_INFO)) {
+		if (name.equals(JavaConstants.JAKARTA_SERVLET_FORWARD_PATH_INFO)) {
 			if (_named) {
 				return null;
 			}
@@ -95,7 +95,7 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 			return _pathInfo;
 		}
 
-		if (name.equals(JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING)) {
+		if (name.equals(JavaConstants.JAKARTA_SERVLET_FORWARD_QUERY_STRING)) {
 			if (_named) {
 				return null;
 			}
@@ -103,7 +103,7 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 			return _queryString;
 		}
 
-		if (name.equals(JavaConstants.JAVAX_SERVLET_FORWARD_REQUEST_URI)) {
+		if (name.equals(JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI)) {
 			if (_named) {
 				return null;
 			}
@@ -111,7 +111,7 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 			return _requestURI;
 		}
 
-		if (name.equals(JavaConstants.JAVAX_SERVLET_FORWARD_SERVLET_PATH)) {
+		if (name.equals(JavaConstants.JAKARTA_SERVLET_FORWARD_SERVLET_PATH)) {
 			if (_named) {
 				return null;
 			}

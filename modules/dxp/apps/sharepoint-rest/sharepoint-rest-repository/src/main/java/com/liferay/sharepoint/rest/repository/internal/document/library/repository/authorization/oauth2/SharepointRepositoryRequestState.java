@@ -41,7 +41,7 @@ public final class SharepointRepositoryRequestState implements Serializable {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		httpSession.setAttribute(
 			SharepointRepositoryRequestState.class.getName(),

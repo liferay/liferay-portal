@@ -48,7 +48,6 @@ import javax.management.ObjectName;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -101,7 +100,6 @@ public class CounterLocalServiceProcessTest {
 			},
 			HypersonicServerClassTestRule.INSTANCE);
 
-	@Ignore
 	@Test
 	public void testConcurrentIncrement() throws Exception {
 		List<String> arguments = new ArrayList<>();
@@ -116,7 +114,7 @@ public class CounterLocalServiceProcessTest {
 		}
 
 		arguments.add("-Xmx1024m");
-		arguments.add("-XX:MaxPermSize=200m");
+		arguments.add("-XX:MaxMetaspaceSize=200m");
 
 		ProcessConfig portalProcessConfig =
 			PortalClassPathUtil.getPortalProcessConfig();

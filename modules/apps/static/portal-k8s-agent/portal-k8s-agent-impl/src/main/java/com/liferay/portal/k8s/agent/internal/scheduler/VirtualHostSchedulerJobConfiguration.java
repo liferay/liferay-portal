@@ -8,7 +8,6 @@ package com.liferay.portal.k8s.agent.internal.scheduler;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.k8s.agent.PortalK8sConfigMapModifier;
 import com.liferay.portal.k8s.agent.custodian.VirtualInstanceCustodian;
-import com.liferay.portal.k8s.agent.internal.model.listener.VirtualHostModelListener;
 import com.liferay.portal.k8s.agent.internal.util.CompanyConfigMapUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.service.Snapshot;
@@ -57,12 +56,12 @@ public class VirtualHostSchedulerJobConfiguration
 
 	private static final Snapshot<PortalK8sConfigMapModifier>
 		_portalK8sConfigMapModifierSnapshot = new Snapshot<>(
-			VirtualHostModelListener.class, PortalK8sConfigMapModifier.class,
-			null, true);
+			VirtualHostSchedulerJobConfiguration.class,
+			PortalK8sConfigMapModifier.class, null, true);
 	private static final Snapshot<VirtualInstanceCustodian>
 		_virtualInstanceCustodianSnapshot = new Snapshot<>(
-			VirtualHostModelListener.class, VirtualInstanceCustodian.class,
-			null, true);
+			VirtualHostSchedulerJobConfiguration.class,
+			VirtualInstanceCustodian.class, null, true);
 
 	@Reference
 	private CompanyLocalService _companyLocalService;

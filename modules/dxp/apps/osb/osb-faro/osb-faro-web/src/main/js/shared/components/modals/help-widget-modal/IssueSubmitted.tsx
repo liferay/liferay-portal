@@ -13,7 +13,7 @@ const IssueSubmitted: React.FC<IHelpWidgetScreenProps> = ({onClose}) => (
 		<Modal.Body className='d-flex flex-column align-items-center'>
 			<ClayIcon
 				className='icon-root icon-size-xxxl my-5'
-				symbol='ac-no-sites'
+				symbol='ac_no_sites'
 			/>
 
 			<h3>{Liferay.Language.get('message-received')}</h3>

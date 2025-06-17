@@ -23,6 +23,7 @@ import {
 	showAppImage,
 } from '../../../../utils/util';
 import {ReviewAndSubmitAppPage} from './AppCreationFlow/ReviewAndSubmitAppPage/ReviewAndSubmitAppPage';
+import AppDetail from './AppDetail';
 
 import './App.scss';
 
@@ -120,8 +121,10 @@ const AdministratorButtons: React.FC<AdministratorButtons> = ({
 
 const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
 	const {productId} = useParams();
-	const {myUserAccount} = useMarketplaceContext();
+	const {myUserAccount, properties} = useMarketplaceContext();
 	const navigate = useNavigate();
+
+	const isNewAppEnabled = properties.featureFlags.includes('LPD-24546');
 
 	const {
 		data: selectedApp,
@@ -247,13 +250,17 @@ const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
 					)}
 			</div>
 			<div>
-				<ReviewAndSubmitAppPage
-					onClickBack={() => {}}
-					onClickContinue={() => {}}
-					productERC={selectedApp.externalReferenceCode}
-					productId={selectedApp.productId}
-					readonly
-				/>
+				{isNewAppEnabled ? (
+					<AppDetail />
+				) : (
+					<ReviewAndSubmitAppPage
+						onClickBack={() => {}}
+						onClickContinue={() => {}}
+						productERC={selectedApp.externalReferenceCode}
+						productId={selectedApp.productId}
+						readonly
+					/>
+				)}
 			</div>
 		</div>
 	);

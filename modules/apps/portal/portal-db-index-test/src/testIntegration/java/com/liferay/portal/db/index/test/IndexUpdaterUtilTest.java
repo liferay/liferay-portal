@@ -19,13 +19,12 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.sql.Connection;
 
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -82,9 +81,6 @@ public class IndexUpdaterUtilTest {
 
 		_dbInspector = new DBInspector(_connection);
 
-		_processedServletContextNames = ReflectionTestUtil.getFieldValue(
-			IndexUpdaterUtil.class, "_processedServletContextNames");
-
 		countDownLatch.await(10, TimeUnit.SECONDS);
 
 		_initIndexNames();
@@ -93,11 +89,17 @@ public class IndexUpdaterUtilTest {
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		DataAccess.cleanUp(_connection);
+
+		ReflectionTestUtil.invoke(
+			IndexUpdaterUtil.class, "_clearProcessedServletContextNames", null,
+			null);
 	}
 
-	@After
-	public void tearDown() {
-		_processedServletContextNames.clear();
+	@Before
+	public void setUp() {
+		ReflectionTestUtil.invoke(
+			IndexUpdaterUtil.class, "_clearProcessedServletContextNames", null,
+			null);
 	}
 
 	@Test
@@ -207,6 +209,5 @@ public class IndexUpdaterUtilTest {
 	private static String _moduleTableIndexName;
 	private static String _portalIndexName;
 	private static String _portalTableIndexName;
-	private static Set<String> _processedServletContextNames;
 
 }

@@ -33,196 +33,6 @@ definition {
 		CommerceConfiguration.commerceTearDown();
 	}
 
-	@description = "Verify active order type is automatically assigned to an order created via the account selector."
-	@priority = 5
-	test AssertActiveOrderTypeAutomaticallyAssignedToOrderCreatedViaAccountSelector {
-		property portal.acceptance = "true";
-
-		task ("Given active and inactive order types") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "false",
-				orderTypeDescription = "Test Order Type Description 2",
-				orderTypeName = "Test Order Type 2");
-		}
-
-		task ("When I log in as the buyer user and create a new order in the Minium site via the account selector") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
-		}
-
-		task ("Then the active order type should be automatically assigned to the order") {
-			AssertElementPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify active order type is automatically assigned to an order created via pending orders."
-	@priority = 5
-	test AssertActiveOrderTypeAutomaticallyAssignedToOrderCreatedViaPendingOrders {
-		property portal.acceptance = "true";
-
-		task ("Given active and inactive order types") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "false",
-				orderTypeDescription = "Test Order Type Description 2",
-				orderTypeName = "Test Order Type 2");
-		}
-
-		task ("When I log in as the buyer user and create a new order in the Minium site via pending orders") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
-		}
-
-		task ("Then the active order type should be automatically assigned to the order") {
-			AssertElementPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify inactive order type is not assigned to an order created via the account selector."
-	@priority = 5
-	test AssertInactiveOrderTypeNotAssignedToOrderViaAccountSelector {
-		property portal.acceptance = "true";
-
-		task ("Given an inactive order type") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "false",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-
-		task ("When I log in as the buyer user and create a new order in the Minium site via the account selector") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
-		}
-
-		task ("Then the inactive order type should not be assigned to the order") {
-			AssertElementNotPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify inactive order type is not assigned to an order created via pending orders."
-	@priority = 3
-	test AssertInactiveOrderTypeNotAssignedToOrderViaPendingOrders {
-		property portal.acceptance = "false";
-
-		task ("Given an inactive order type") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "false",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-
-		task ("When I log in as the buyer user and create a new order in the Minium site via pending orders") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
-		}
-
-		task ("Then the inactive order type should not be assigned to the order") {
-			AssertElementNotPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify single active order type is automatically assigned to orders created via the account selector."
-	@priority = 5
-	test AssertSingleOrderTypeAutomaticallyAssignedToOrderCreatedViaAccountSelector {
-		property portal.acceptance = "true";
-
-		task ("Given an active order type") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-
-		task ("When I log in as the buyer user and create a new order in the Minium site via the account selector") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
-		}
-
-		task ("Then the active order type should be automatically assigned to the order") {
-			AssertElementPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify single active order type is automatically assigned to orders created via pending orders."
-	@priority = 3
-	test AssertSingleOrderTypeAutomaticallyAssignedToOrderCreatedViaPendingOrders {
-		property portal.acceptance = "false";
-
-		task ("Given an active order type") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-
-		task ("When I log in as the buyer user and create a new order in the Minium site via pending orders") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
-		}
-
-		task ("Then the active order type should be automatically assigned to the order") {
-			AssertElementPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
 	@description = "This is a test for COMMERCE-11560. Verify when we complete checkout and there is more than 1 active order type for the channel, the order type is the one selected on the Select Order Type popup"
 	@priority = 5
 	test CanCompleteCheckoutWithSelectedOrderType {
@@ -252,6 +62,8 @@ definition {
 		}
 
 		task ("And these two order types can be selected on the order type selector, one is selected by default") {
+			AssertElementPresent(locator1 = "Modal#MODAL");
+
 			var selectOrderType = selenium.getSelectedLabel("Select#TYPE");
 
 			for (var orderTypeNumber : list "1,2") {
@@ -260,7 +72,9 @@ definition {
 					locator1 = "Select#TYPE_SELECTED");
 			}
 
-			Button.click(button = "Add Order");
+			Click(
+				key_text = "Add Order",
+				locator1 = "Modal#MODAL_FOOTER_BUTTON");
 		}
 
 		task ("When the buyer completes the checkout with the selected Order Type") {
@@ -468,53 +282,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for COMMERCE-11565. Verify when we add a product to the cart and there is more than 1 active order type and 1 inactive order type for the channel, only the active ones are shown on the Select Order Type popup"
-	@priority = 3
-	test CannotViewAnInactiveOrderType {
-		property portal.acceptance = "false";
-
-		task ("Given two active order types and one inactive order type are created") {
-			for (var orderTypeNumber : list "1,2") {
-				CommerceJSONOrdersAPI._addOrderType(
-					active = "true",
-					orderTypeDescription = "Test Order Type Description ${orderTypeNumber}",
-					orderTypeName = "Test Order Type ${orderTypeNumber}");
-			}
-
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "false",
-				orderTypeDescription = "Test Order Type Description 3",
-				orderTypeName = "Test Order Type 3");
-		}
-
-		task ("When the buyer adds a product to the cart") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			Click(
-				key_productName = "U-Joint",
-				locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON");
-		}
-
-		task ("Then two active order types can be selected on the order type selector, Order Type 1 is selected by default") {
-			for (var orderTypeNumber : list "1,2") {
-				AssertElementPresent(
-					key_typeName = "Test Order Type ${orderTypeNumber}",
-					locator1 = "Select#TYPE_SELECTED");
-			}
-		}
-
-		task ("And the inactive order type is not shown") {
-			AssertElementNotPresent(
-				key_typeName = "Test Order Type 3",
-				locator1 = "Select#TYPE_SELECTED");
-		}
-	}
-
 	@description = "This is a test for COMMERCE-11564. Verify when we delete the order from Pending Orders page and there is more than 1 active order type for the channel, we can reselect the order type when adding a product to the cart"
 	@priority = 3
 	test CanReselectOrderTypeAfterDeletingTheOrderFromPendingOrdersPage {
@@ -573,7 +340,7 @@ definition {
 		}
 
 		task ("Then the Select Order Type popup is shown again") {
-			AssertElementPresent(locator1 = "IFrame#MODAL_IFRAME");
+			AssertElementPresent(locator1 = "Modal#MODAL");
 		}
 	}
 
@@ -642,49 +409,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for COMMERCE-11561. Verify when we add a product to the cart and there is more than 1 active order type for the channel, we need to select the order type on the first attempt, the popup won't show when we add a second product to the cart"
-	@priority = 3
-	test CanSelectOrderTypeFirstTimeAddingProductToCart {
-		property portal.acceptance = "false";
-
-		task ("Given two active order types are created") {
-			for (var orderTypeNumber : list "1,2") {
-				CommerceJSONOrdersAPI._addOrderType(
-					active = "true",
-					orderTypeDescription = "Test Order Type Description ${orderTypeNumber}",
-					orderTypeName = "Test Order Type ${orderTypeNumber}");
-			}
-		}
-
-		task ("And the buyer adds a product to the cart with Order Type 1") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			FrontStore.addInitializerProductToCart(
-				orderType = "Test Order Type 1",
-				productName = "U-Joint",
-				productQuantity = 1);
-		}
-
-		task ("When the buyer adds other products to the cart") {
-			Click(
-				key_productName = "Mount",
-				locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON");
-		}
-
-		task ("Then the Select Order Type popup is not shown") {
-			AssertElementNotPresent(locator1 = "IFrame#MODAL_IFRAME");
-
-			AssertElementPresent(
-				key_itemCount = 2,
-				locator1 = "CommerceAccelerators#MINI_CART_BUTTON_DATA_BADGE_COUNT");
-		}
-	}
-
 	@description = "This is a test for COMMERCE-11562. Verify when we complete checkout and there is more than 1 active order type for the channel, we can reselect the order type when adding a product to the cart"
 	@priority = 3
 	test CanSelectOrderTypeForANewOrder {
@@ -737,11 +461,11 @@ definition {
 		}
 
 		task ("Then the Select Order Type popup is shown again") {
-			AssertElementPresent(locator1 = "IFrame#MODAL_IFRAME");
+			AssertElementPresent(locator1 = "Modal#MODAL");
 		}
 	}
 
-	@description = "This is a test for COMMERCE-11558. Verify when we add a product to the cart and there is more than 1 active order type for the channel, the order type with the highest priority (lower display order) is selected on the Select Order Type popup"
+	@description = ""
 	@priority = 5
 	test CanViewHighestPriorityOrderTypeIsSetByDefault {
 		property portal.acceptance = "true";
@@ -785,261 +509,6 @@ definition {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
 			Button.click(button = "View");
-
-			AssertElementPresent(
-				key_orderType = "Test Order Type 2",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify users can create a new order type."
-	@priority = 3
-	test CreateOrderType {
-		property portal.acceptance = "false";
-
-		task ("When I create a new order type from the Order Types page") {
-			CommerceOrders.openOrderTypesAdmin();
-
-			CommerceOrders.addOrderType(
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-
-		task ("Then the order type will be added correctly") {
-			Navigator.gotoBack();
-
-			CommerceNavigator.gotoEntry(entryName = "Test Order Type");
-
-			CommerceOrders.assertOrderTypesEntry(
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-	}
-
-	@description = "Verify a new order type can be deleted"
-	@priority = 5
-	test DeleteOrderType {
-		property portal.acceptance = "true";
-
-		task ("Given an order type is created through the Order Types Page") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-
-			CommerceOrders.openOrderTypesAdmin();
-		}
-
-		task ("When that order type is deleted") {
-			CommerceOrders.deleteOrderType(orderTypeName = "Test Order Type");
-		}
-
-		task ("Then it should no longer appear in the Order Types Page") {
-			AssertElementNotPresent(
-				key_entryName = "Test Order Type",
-				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
-	}
-
-	@description = "Verify users can edit an order type."
-	@priority = 5
-	test EditOrderType {
-		property portal.acceptance = "true";
-
-		task ("Given an order type") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-
-		task ("When I edit the name and description of the order type and publish it") {
-			CommerceOrders.openOrderTypesAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test Order Type");
-
-			CommerceOrders.editOrderType(
-				orderTypeDescription = "Test Order Type Description Edit",
-				orderTypeName = "Test Order Type Edit");
-		}
-
-		task ("Then the order type name and description should be updated") {
-			Navigator.gotoBack();
-
-			CommerceNavigator.gotoEntry(entryName = "Test Order Type Edit");
-
-			CommerceOrders.assertOrderTypesEntry(
-				orderTypeDescription = "Test Order Type Description Edit",
-				orderTypeName = "Test Order Type Edit");
-		}
-	}
-
-	@description = "Verify the order type field is empty when creating a new order with no active order types"
-	@priority = 3
-	test OrderTypeFieldIsEmptyWhenNoOrderTypesAreActive {
-		property portal.acceptance = "false";
-
-		task ("Given there are no active order types") {
-			CommerceOrders.openOrderTypesAdmin();
-
-			AssertElementPresent(locator1 = "Message#EMPTY_STATE_INFO");
-		}
-
-		task ("When the buyer logs in and adds a product to the cart") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "U-Joint",
-				productQuantity = 1);
-		}
-
-		task ("Then a new order is automatically created and the order type field is empty") {
-			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-			Button.click(button = "View");
-
-			AssertElementPresent(
-				key_orderType = "",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-
-		task ("When the buyer creates an order from pending orders") {
-			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
-		}
-
-		task ("Then a new order is created and the order type field is empty") {
-			AssertElementPresent(
-				key_orderType = "",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-
-		task ("When the buyer creates an order from the account selector") {
-			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
-		}
-
-		task ("Then a new order is created and the order type field is empty") {
-			AssertElementPresent(
-				key_orderType = "",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify when creating a new order with add to cart and there is only 1 order type active for the channel, that order type is set in the order"
-	@priority = 5
-	test OrderTypeIsAutomaticallySetForNewOrderWhenTheUserAddsToCart {
-		property portal.acceptance = "true";
-
-		task ("Given an active order type") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-		}
-
-		task ("When the buyer logs in and adds a product to the cart") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "U-Joint",
-				productQuantity = 1);
-		}
-
-		task ("Then a new order is automatically created and the order type is set as the Order Type for the order") {
-			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-			Button.click(button = "View");
-
-			AssertElementPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify user can select order type when creating a new order via the account selector."
-	@priority = 5
-	test SelectOrderTypeWhenCreatingNewOrderViaAccountSelector {
-		property portal.acceptance = "true";
-
-		task ("Given two active order types") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description 2",
-				orderTypeName = "Test Order Type 2");
-		}
-
-		task ("When I log in as the buyer user and go to the Minium site to create a new order from the account selector drop down.") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
-		}
-
-		task ("Then I should be able to select the Test Order Type for my new order.") {
-			Select(
-				locator1 = "Select#TYPE",
-				value1 = "Test Order Type");
-
-			Click(locator1 = "//div[contains(@class,'modal-item')]//button[contains(.,'Submit')]");
-
-			AssertElementPresent(
-				key_orderType = "Test Order Type",
-				locator1 = "CommerceOrders#PENDING_ORDERS_ORDER_TYPE");
-		}
-	}
-
-	@description = "Verify users can select order type when creating a new order via pending orders if there are multiple order types."
-	@priority = 5
-	test SelectOrderTypeWhenCreatingNewOrderViaPendingOrders {
-		property portal.acceptance = "true";
-
-		task ("Given two new order types") {
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description",
-				orderTypeName = "Test Order Type");
-
-			CommerceJSONOrdersAPI._addOrderType(
-				active = "true",
-				orderTypeDescription = "Test Order Type Description 2",
-				orderTypeName = "Test Order Type 2");
-		}
-
-		task ("When I log in as the buyer user and create a new order in the Minium site via pending orders") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
-		}
-
-		task ("Then I should be able to select the order type for my new order") {
-			Select(
-				locator1 = "Select#TYPE",
-				value1 = "Test Order Type 2");
-
-			Button.click(button = "Add Order");
 
 			AssertElementPresent(
 				key_orderType = "Test Order Type 2",

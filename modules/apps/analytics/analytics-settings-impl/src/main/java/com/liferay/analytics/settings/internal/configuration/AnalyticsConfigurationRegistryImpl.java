@@ -18,6 +18,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -50,6 +51,7 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -154,6 +156,18 @@ public class AnalyticsConfigurationRegistryImpl
 
 		modified(properties);
 
+		_companyLocalService.forEachCompany(
+			company -> {
+				if (GetterUtil.getBoolean(
+						PropsUtil.get(
+							PropsKeys.
+								ANALYTICS_CLOUD_CONFIGURATION_DELETE_ON_STARTUP)) ||
+					_isEnabled(company)) {
+
+					_activatedCompanyIds.put(company.getCompanyId(), true);
+				}
+			});
+
 		_executorService = _portalExecutorManager.getPortalExecutor(
 			AnalyticsConfigurationRegistryImpl.class.getName());
 		_serviceRegistration = bundleContext.registerService(
@@ -164,16 +178,6 @@ public class AnalyticsConfigurationRegistryImpl
 				"com.liferay.analytics.settings.configuration." +
 					"AnalyticsConfiguration.scoped"
 			).build());
-
-		if (GetterUtil.getBoolean(
-				PropsUtil.get(
-					PropsKeys.
-						ANALYTICS_CLOUD_CONFIGURATION_DELETE_ON_STARTUP))) {
-
-			_companyLocalService.forEachCompany(
-				company -> _activatedCompanyIds.put(
-					company.getCompanyId(), true));
-		}
 	}
 
 	@Deactivate
@@ -477,6 +481,33 @@ public class AnalyticsConfigurationRegistryImpl
 
 		return GetterUtil.getBoolean(
 			dictionary.get("contentRecommenderUserPersonalizationEnabled"));
+	}
+
+	private boolean _isEnabled(Company company) {
+		boolean hasEnabled = false;
+
+		Properties properties = PropsUtil.getProperties(
+			PropsKeys.ANALYTICS_CLOUD_CONFIGURATION_DELETE_ON_STARTUP, false);
+
+		properties.remove(
+			PropsKeys.ANALYTICS_CLOUD_CONFIGURATION_DELETE_ON_STARTUP);
+
+		for (Object deleteOnStartup : properties.values()) {
+			if (GetterUtil.getBoolean(deleteOnStartup)) {
+				hasEnabled = true;
+
+				break;
+			}
+		}
+
+		if (!hasEnabled) {
+			return false;
+		}
+
+		return GetterUtil.getBoolean(
+			PropsUtil.get(
+				PropsKeys.ANALYTICS_CLOUD_CONFIGURATION_DELETE_ON_STARTUP,
+				new Filter(company.getVirtualHostname())));
 	}
 
 	private boolean _isSyncedAccountFieldsChanged(

@@ -61,8 +61,7 @@ public interface DDMFormInstance extends DDMFormInstanceModel, PersistedModel {
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public com.liferay.dynamic.data.mapping.storage.DDMFormValues
-			getSettingsDDMFormValues()
-		throws com.liferay.portal.kernel.exception.PortalException;
+		getSettingsDDMFormValues();
 
 	public DDMFormInstanceSettings getSettingsModel()
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -72,5 +71,8 @@ public interface DDMFormInstance extends DDMFormInstanceModel, PersistedModel {
 
 	public DDMStructure getStructure()
 		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public void setSettingsDDMFormValues(
+		com.liferay.dynamic.data.mapping.storage.DDMFormValues ddmFormValues);
 
 }

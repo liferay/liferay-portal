@@ -1,6 +1,6 @@
 [
 	{
-		"active": false,
+		"active": true,
 		"externalReferenceCode": "CP-OBJECT-ACTION-3",
 		"label": {
 			"en_US": "Notification Template Action"
@@ -8,6 +8,6 @@
 		"name": "NotificationTemplateAction",
 		"objectActionExecutorKey": "notification",
 		"objectActionTriggerKey": "onAfterAdd",
-		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:AnalyticsCloudWorkspace$]"
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:ReplacementActivationKeyRequest$]"
 	}
 ]

@@ -193,6 +193,8 @@ function SearchResults({
 					permissions={{
 						installFreeApps:
 							permissions.INSTALL_FREE_BUNDLED_APPS_MARKETPLACE,
+						manageFragmentsEntries:
+							permissions.MANAGE_FRAGMENT_ENTRIES,
 						purchaseAndInstallPaidApps:
 							permissions.PURCHASE_AND_INSTALL_PAID_APPS_MARKETPLACE,
 					}}

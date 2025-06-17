@@ -6,9 +6,10 @@
 import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import {useCallback} from 'react';
 
-import {State, useSelector, useStateDispatch} from '../contexts/StateContext';
+import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectState from '../selectors/selectState';
 import selectStructureFields from '../selectors/selectStructureFields';
+import {Structure} from '../types/Structure';
 import {Field, MultiselectField, SingleSelectField} from './field';
 import focusInvalidElement from './focusInvalidElement';
 
@@ -63,7 +64,7 @@ export function validateStructure({
 	data,
 }: {
 	currentErrors?: Set<ValidationError>;
-	data: Partial<State>;
+	data: Partial<Structure>;
 }): Set<ValidationError> {
 	const {erc, label, name, spaces} = data;
 

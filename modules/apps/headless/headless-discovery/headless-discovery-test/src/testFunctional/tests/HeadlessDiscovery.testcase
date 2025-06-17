@@ -78,7 +78,7 @@ definition {
 		task ("When executing query taxonomy vocabulary name") {
 			var siteId = JSONGroupSetter.setGroupId(groupName = "Guest");
 
-			APIExplorer.executeGraphqlQuery(query = "query{taxonomyVocabularies(siteKey:\"${siteId}\"){items{name}}}");
+			APIExplorer.executeGraphqlQuery(query = "query{siteTaxonomyVocabularies(siteKey:\"${siteId}\"){items{name}}}");
 		}
 
 		task ("Then the value in respone equals to the one we created") {

@@ -563,10 +563,16 @@ public class ProductConfigurationResourceImpl
 
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"delete",
-			() -> addAction(
-				"UPDATE", cpConfigurationEntry.getCPConfigurationEntryId(),
-				"deleteProductConfiguration",
-				_cpConfigurationEntryModelResourcePermission)
+			() -> {
+				if (cpConfigurationEntry.isMaster()) {
+					return null;
+				}
+
+				return addAction(
+					"UPDATE", cpConfigurationEntry.getCPConfigurationEntryId(),
+					"deleteProductConfiguration",
+					_cpConfigurationEntryModelResourcePermission);
+			}
 		).put(
 			"get",
 			() -> addAction(

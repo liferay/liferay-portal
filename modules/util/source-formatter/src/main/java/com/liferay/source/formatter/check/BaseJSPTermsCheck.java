@@ -262,11 +262,7 @@ public abstract class BaseJSPTermsCheck extends BaseFileCheck {
 
 		s = s.substring(0, x);
 
-		if (!s.contains("/*")) {
-			return true;
-		}
-
-		return false;
+		return !s.contains("/*");
 	}
 
 	private boolean _isJSPTermRequired(

@@ -5,6 +5,9 @@
 
 package com.liferay.object.web.internal.object.entries.frontend.data.set;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.frontend.data.set.provider.FDSActionProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
@@ -17,13 +20,18 @@ import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.web.internal.object.entries.constants.ObjectEntriesFDSNames;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
@@ -50,14 +58,14 @@ public class RelatedModelFDSActionProvider implements FDSActionProvider {
 			long groupId, HttpServletRequest httpServletRequest, Object model)
 		throws PortalException {
 
-		if (ParamUtil.getBoolean(httpServletRequest, "readOnly")) {
-			return null;
-		}
-
 		RelatedModel relatedModel = (RelatedModel)model;
 
 		return DropdownItemListBuilder.add(
 			() -> {
+				if (ParamUtil.getBoolean(httpServletRequest, "readOnly")) {
+					return false;
+				}
+
 				ObjectEntry objectEntry =
 					_objectEntryLocalService.getObjectEntry(
 						relatedModel.getId());
@@ -84,6 +92,13 @@ public class RelatedModelFDSActionProvider implements FDSActionProvider {
 					_language.get(httpServletRequest, Constants.DELETE));
 			}
 		).add(
+			() -> {
+				String template = ParamUtil.getString(
+					httpServletRequest, "template");
+
+				return !StringUtil.equals(
+					template, AssetRenderer.TEMPLATE_ABSTRACT);
+			},
 			dropdownItem -> {
 				dropdownItem.putData("id", "view");
 				dropdownItem.setHref(
@@ -149,6 +164,39 @@ public class RelatedModelFDSActionProvider implements FDSActionProvider {
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectEntry.getObjectDefinitionId());
 
+		String portletId = ParamUtil.getString(httpServletRequest, "portletId");
+
+		if (StringUtil.equals(portletId, PortletKeys.MY_WORKFLOW_TASK)) {
+			AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+				objectDefinition.getClassName(),
+				objectEntry.getObjectEntryId());
+
+			RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+				RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
+
+			return PortletURLBuilder.create(
+				requestBackedPortletURLFactory.createRenderURL(portletId)
+			).setMVCPath(
+				"/view_content.jsp"
+			).setRedirect(
+				ParamUtil.getString(httpServletRequest, "redirect")
+			).setParameter(
+				"assetEntryClassPK", assetEntry.getClassPK()
+			).setParameter(
+				"assetEntryId", assetEntry.getEntryId()
+			).setParameter(
+				"externalReferenceCode", objectEntry.getExternalReferenceCode()
+			).setParameter(
+				"languageId",
+				LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault())
+			).setParameter(
+				"type", objectDefinition.getClassName()
+			).setParameter(
+				"workflowTaskId",
+				ParamUtil.getString(httpServletRequest, "workflowTaskId")
+			).buildPortletURL();
+		}
+
 		return PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
 				httpServletRequest, objectDefinition.getPortletId(),
@@ -161,6 +209,9 @@ public class RelatedModelFDSActionProvider implements FDSActionProvider {
 			"externalReferenceCode", objectEntry.getExternalReferenceCode()
 		).buildPortletURL();
 	}
+
+	@Reference
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Reference
 	private Language _language;

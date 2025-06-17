@@ -82,7 +82,10 @@ else {
 							editor.model.document.on(
 								'change:data',
 								(event, source) => {
-									if (source?.isTyping) {
+									if (
+										source?.isTyping ||
+										source?.isUndoable
+									) {
 										updateData();
 									}
 								}
@@ -224,7 +227,10 @@ else {
 							editor.model.document.on(
 								'change:data',
 								(event, source) => {
-									if (source?.isTyping) {
+									if (
+										source?.isTyping ||
+										source?.isUndoable
+									) {
 										hiddenInput.value = editor.getData();
 									}
 								}

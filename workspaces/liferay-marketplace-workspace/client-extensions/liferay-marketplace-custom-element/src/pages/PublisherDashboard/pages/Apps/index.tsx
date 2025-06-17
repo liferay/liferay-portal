@@ -12,7 +12,10 @@ import Page from '../../../../components/Page';
 import {useMarketplaceContext} from '../../../../context/MarketplaceContext';
 import SearchBuilder from '../../../../core/SearchBuilder';
 import {MarketplaceProduct} from '../../../../entity/MarketplaceProduct';
-import {ProductTypeVocabulary} from '../../../../enums/Product';
+import {
+	ProductTypeVocabulary,
+	ProductWorkflowStatusCode,
+} from '../../../../enums/Product';
 import i18n from '../../../../i18n';
 import HeadlessCommerceAdminCatalog from '../../../../services/rest/HeadlessCommerceAdminCatalog';
 import {formatDate} from '../../../../utils/date';
@@ -82,6 +85,9 @@ const Apps = () => {
 					actions: isNewAppEnabled
 						? [
 								{
+									disabled: (row: Product) =>
+										row.productStatus ===
+										ProductWorkflowStatusCode.PENDING,
 									name: i18n.translate('edit-details'),
 									onClick: (row: Product) =>
 										navigate(
@@ -89,11 +95,13 @@ const Apps = () => {
 										),
 								},
 								{
-									disabled: true,
+									disabled: (row: Product) =>
+										row.productStatus !==
+										ProductWorkflowStatusCode.APPROVED,
 									name: i18n.translate('add-new-version'),
 									onClick: (row: Product) =>
 										navigate(
-											`newapp/${row.productId}/publisher/build`
+											`newapp/${row.productId}/newbuild`
 										),
 								},
 							]

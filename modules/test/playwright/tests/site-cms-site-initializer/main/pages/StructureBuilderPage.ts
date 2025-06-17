@@ -30,6 +30,8 @@ type FieldType = (typeof FIELD_TYPES)[number];
 
 type Field = {label: string; nth?: number};
 
+type StructureType = 'content' | 'file';
+
 export class StructureBuilderPage {
 	readonly page: Page;
 
@@ -37,10 +39,10 @@ export class StructureBuilderPage {
 	private readonly labelInput: Locator;
 	private readonly nameInput: Locator;
 	private readonly spaceCheckbox: Locator;
-	private readonly spaceSelector: Locator;
 
 	readonly publishButton: Locator;
 	readonly saveButton: Locator;
+	readonly spaceSelector: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -55,23 +57,30 @@ export class StructureBuilderPage {
 		this.spaceCheckbox = this.page.getByRole('checkbox', {
 			name: 'Make this structure available in all spaces',
 		});
-		this.spaceSelector = this.page.getByLabel('Space Selector');
+		this.spaceSelector = this.page.getByLabel('Spaces', {exact: true});
 	}
 
-	async goto(
-		{type = 'content'}: {type?: 'content' | 'file'} = {type: 'content'}
-	) {
-		const folderERC =
-			type === 'content'
-				? 'L_CMS_CONTENT_STRUCTURES'
-				: 'L_CMS_FILE_TYPES';
+	private async goto(props: {id: string} | {type: StructureType}) {
+		let url = PORTLET_URLS.cmsStructureBuilder;
 
-		await this.page.goto(
-			PORTLET_URLS.cmsStructureBuilder +
-				`?objectFolderExternalReferenceCode=${folderERC}`
-		);
+		if ('id' in props) {
+			url = url + `?objectDefinitionId=${props.id}`;
+		}
+		else if ('type' in props) {
+			const erc =
+				props.type === 'content'
+					? 'L_CMS_CONTENT_STRUCTURES'
+					: 'L_CMS_FILE_TYPES';
 
-		await this.page.getByText('New Structure').waitFor();
+			url = url + `?objectFolderExternalReferenceCode=${erc}`;
+		}
+
+		await this.page.goto(url);
+
+		await this.page
+			.locator('.management-bar')
+			.getByText('Publish')
+			.waitFor();
 	}
 
 	async addField(type: FieldType) {
@@ -92,6 +101,61 @@ export class StructureBuilderPage {
 			autoClick: true,
 			target: this.page.getByRole('menuitem', {exact: true, name: type}),
 			trigger,
+		});
+	}
+
+	async addReferencedStructures(names: string[]) {
+		const hasFields = !(await this.page
+			.getByText('No Fields Yet')
+			.isVisible());
+
+		let trigger: Locator;
+
+		if (hasFields) {
+			trigger = this.page.getByLabel('Add Field');
+		}
+		else {
+			trigger = this.page.getByText('Add Field');
+		}
+
+		await clickAndExpectToBeVisible({
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: 'Referenced Structure',
+			}),
+			trigger,
+		});
+
+		await clickAndExpectToBeVisible({
+			target: this.page.locator('.modal-title', {
+				hasText: 'Referenced Structure',
+			}),
+			timeout: 2000,
+			trigger: this.page.getByRole('menuitem', {
+				exact: true,
+				name: 'Referenced Structure',
+			}),
+		});
+
+		for (const name of names) {
+			await expect(async () => {
+				await this.page.getByLabel('Structures').click({timeout: 1000});
+
+				await this.page
+					.getByRole('option', {name})
+					.click({timeout: 1000});
+
+				await expect(
+					this.page.locator('.label-secondary', {hasText: name})
+				).toBeVisible();
+			}).toPass();
+		}
+
+		await clickAndExpectToBeHidden({
+			target: this.page.locator('.modal-title', {
+				hasText: 'Referenced Structure',
+			}),
+			trigger: this.page.locator('.modal-footer').getByText('Add'),
 		});
 	}
 
@@ -185,6 +249,10 @@ export class StructureBuilderPage {
 		}
 	}
 
+	async createStructure(type: StructureType = 'content') {
+		await this.goto({type});
+	}
+
 	async customizeExperience() {
 		await expect(async () => {
 			await this.customizeExperienceButton.click();
@@ -265,6 +333,10 @@ export class StructureBuilderPage {
 		expect(status).toBe(204);
 	}
 
+	async editStructure(id: string) {
+		await this.goto({id});
+	}
+
 	async enableForAllSpaces() {
 		await expect(async () => {
 			await this.page.getByText('Structure Fields').click({timeout: 500});
@@ -272,6 +344,21 @@ export class StructureBuilderPage {
 			await this.spaceCheckbox.click({timeout: 500});
 
 			await expect(this.spaceSelector).toBeDisabled({timeout: 500});
+		}).toPass();
+	}
+
+	async expandField(field: Field) {
+		const treeItem = this.page
+			.locator('.treeview-item')
+			.getByLabel(field.label, {exact: true})
+			.nth(field.nth || 0);
+
+		await expect(async () => {
+			await treeItem.locator('.component-expander').click({timeout: 500});
+
+			await expect(treeItem).toHaveAttribute('aria-expanded', 'true', {
+				timeout: 2000,
+			});
 		}).toPass();
 	}
 

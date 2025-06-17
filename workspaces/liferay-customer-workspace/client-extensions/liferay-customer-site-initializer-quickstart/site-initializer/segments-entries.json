@@ -1,0 +1,54 @@
+[
+	{
+		"active": true,
+		"criteria": {
+			"criteria": {
+				"context": {
+					"conjunction": "and",
+					"filterString": "(signedIn eq true)",
+					"typeValue": "context"
+				},
+				"user": {
+					"conjunction": "and",
+					"filterString": "(roleIds eq 'Partner' or roleIds eq 'Customer' or roleIds eq 'Liferay Staff')",
+					"typeValue": "model"
+				}
+			},
+			"filterStrings": {
+				"context": "(signedIn eq true)",
+				"model": "(roleIds eq 'Partner' or roleIds eq 'Customer' or roleIds eq 'Liferay Staff')"
+			}
+		},
+		"name_i18n": {
+			"en-US": "Customers and Partners"
+		},
+		"segmentsEntryKey": "CUSTOMERS-AND-PARTNERS",
+		"type": "com.liferay.portal.kernel.model.User"
+	},
+	{
+		"active": true,
+		"criteria": {
+			"criteria": {
+				"context": {
+					"conjunction": "and",
+					"filterString": "(signedIn eq true)",
+					"typeValue": "context"
+				},
+				"user": {
+					"conjunction": "and",
+					"filterString": "(roleIds eq 'User')",
+					"typeValue": "model"
+				}
+			},
+			"filterStrings": {
+				"context": "(signedIn eq true)",
+				"model": "(roleIds eq 'User')"
+			}
+		},
+		"name_i18n": {
+			"en-US": "Logged in Users"
+		},
+		"segmentsEntryKey": "LOGGED-IN-USERS",
+		"type": "com.liferay.portal.kernel.model.User"
+	}
+]

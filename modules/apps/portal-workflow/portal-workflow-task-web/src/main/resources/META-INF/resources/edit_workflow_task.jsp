@@ -22,9 +22,9 @@ String languageId = LanguageUtil.getLanguageId(request);
 
 WorkflowTask workflowTask = workflowTaskDisplayContext.getWorkflowTask();
 
-long classPK = workflowTaskDisplayContext.getWorkflowContextEntryClassPK(workflowTask);
-
 WorkflowHandler<?> workflowHandler = workflowTaskDisplayContext.getWorkflowHandler(workflowTask);
+
+long classPK = workflowTaskDisplayContext.getWorkflowContextEntryClassPK(workflowHandler, workflowTask);
 
 AssetRenderer<?> assetRenderer = workflowHandler.getAssetRenderer(classPK);
 

@@ -448,7 +448,7 @@ public class FileEntryContentDashboardItem
 				LiferayPortletResponse liferayPortletResponse =
 					_portal.getLiferayPortletResponse(
 						(PortletResponse)httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE));
+							JavaConstants.JAKARTA_PORTLET_RESPONSE));
 
 				return liferayPortletResponse.createRenderURL();
 			}

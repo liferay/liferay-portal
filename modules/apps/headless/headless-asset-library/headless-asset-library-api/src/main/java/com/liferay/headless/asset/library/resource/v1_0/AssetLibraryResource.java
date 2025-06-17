@@ -14,6 +14,7 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -22,6 +23,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collections;
@@ -44,6 +46,9 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface AssetLibraryResource {
 
 	public void deleteAssetLibrary(Long assetLibraryId) throws Exception;
+
+	public Response deleteAssetLibraryBatch(String callbackURL, Object object)
+		throws Exception;
 
 	public void deleteAssetLibraryByExternalReferenceCode(
 			String externalReferenceCode)
@@ -81,6 +86,9 @@ public interface AssetLibraryResource {
 		throws Exception;
 
 	public AssetLibrary postAssetLibrary(AssetLibrary assetLibrary)
+		throws Exception;
+
+	public Response postAssetLibraryBatch(String callbackURL, Object object)
 		throws Exception;
 
 	public AssetLibrary putAssetLibraryByExternalReferenceCode(
@@ -133,6 +141,10 @@ public interface AssetLibraryResource {
 	public void setRoleLocalService(RoleLocalService roleLocalService);
 
 	public void setSortParserProvider(SortParserProvider sortParserProvider);
+
+	public void setVulcanBatchEngineImportTaskResource(
+		VulcanBatchEngineImportTaskResource
+			vulcanBatchEngineImportTaskResource);
 
 	public default com.liferay.portal.kernel.search.filter.Filter toFilter(
 		String filterString) {

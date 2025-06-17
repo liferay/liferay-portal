@@ -266,7 +266,7 @@ const SetupDXPCloudPage = ({
 					);
 
 					await notificationTemplateService.send(
-						'SETUP-DXP-CLOUD-ENVIRONMENT-NOTIFICATION-TEMPLATE',
+						'SETUP-DXP-CLOUD-ENVIRONMENT',
 						{
 							'[%DATE_AND_TIME_SUBMITTED%]':
 								new Date().toUTCString(),

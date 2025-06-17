@@ -3858,8 +3858,8 @@ public class DDLRecordSetPersistenceImpl
 					DDLRecordSetModelImpl cachedDDLRecordSetModelImpl =
 						(DDLRecordSetModelImpl)cachedDDLRecordSet;
 
-					ddlRecordSetModelImpl.setDDMFormValues(
-						cachedDDLRecordSetModelImpl.getDDMFormValues());
+					ddlRecordSetModelImpl.setSettingsDDMFormValues(
+						cachedDDLRecordSetModelImpl.getSettingsDDMFormValues());
 				}
 			}
 		}

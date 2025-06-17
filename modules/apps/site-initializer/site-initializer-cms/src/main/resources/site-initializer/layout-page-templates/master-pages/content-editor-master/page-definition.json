@@ -15,7 +15,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ContentEditorManagementBarFragmentRenderer"
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ContentEditorManagementBarComponentSectionFragmentRenderer"
 					},
 					"fragmentConfig": {
 					},
@@ -29,7 +29,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ContentEditorSidePanelFragmentRenderer"
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ContentEditorSidePanelComponentSectionFragmentRenderer"
 					},
 					"fragmentConfig": {
 					},

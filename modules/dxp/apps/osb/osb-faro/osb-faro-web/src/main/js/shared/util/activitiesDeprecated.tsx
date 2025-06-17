@@ -268,9 +268,9 @@ function getAssetRoute(assetType: string): string {
 function getObjectTypeIcon(assetType: string): string {
 	switch (assetType) {
 		case AssetTypes.Blog:
-			return 'ac-blogs';
+			return 'ac_blogs';
 		case AssetTypes.Document:
-			return 'ac-documents-and-media';
+			return 'ac_documents_and_media';
 		case AssetTypes.Form:
 			return 'forms';
 		case AssetTypes.WebPage:

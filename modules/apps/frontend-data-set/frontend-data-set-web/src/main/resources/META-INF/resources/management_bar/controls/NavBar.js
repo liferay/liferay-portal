@@ -14,13 +14,16 @@ import ViewsContext from '../../views/ViewsContext';
 import ActiveViewSelector from './ActiveViewSelector';
 import CreationMenu from './CreationMenu';
 import CustomViewsControls from './CustomViewsControls';
+import InfoPanelToggleButton from './InfoPanelToggleButton';
 import MainSearch from './MainSearch';
 import SelectionCheckbox from './SelectionCheckbox';
 import SortDropdown from './SortDropdown';
 import FiltersDropdown from './filters/FiltersDropdown';
 
 function NavBar({creationMenu, handleCheckboxClick, items, showSearch}) {
-	const {selectable, selectionType} = useContext(FrontendDataSetContext);
+	const {selectable, selectionType, showInfoPanel} = useContext(
+		FrontendDataSetContext
+	);
 
 	const [{customViewsEnabled, filters, sorts, views}] =
 		useContext(ViewsContext);
@@ -100,6 +103,12 @@ function NavBar({creationMenu, handleCheckboxClick, items, showSearch}) {
 				{creationMenu && (
 					<ManagementToolbar.Item>
 						<CreationMenu {...creationMenu} />
+					</ManagementToolbar.Item>
+				)}
+
+				{showInfoPanel && (
+					<ManagementToolbar.Item>
+						<InfoPanelToggleButton symbol="info-panel-closed" />
 					</ManagementToolbar.Item>
 				)}
 			</ManagementToolbar.ItemList>

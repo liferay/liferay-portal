@@ -891,7 +891,7 @@ definition {
 		task ("When: User changes the language of the portal back to English") {
 			Navigator.openURL();
 
-			UserBar.gotoDropdownItem(dropdownItem = "Mi cuenta");
+			UserBar.gotoDropdownItem(dropdownItem = "Configuración de la cuenta");
 
 			MyAccount.changeUserLanguage(
 				languageName = "English (United States)",

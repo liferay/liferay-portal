@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 import ScheduleField from './ScheduleField';
 
 import './ScheduleContainer.scss';
+import {convertToUTC} from '../../js/utils/convertToUTC';
 
 type HiddenValue = {[key in SchedulePropertyKey]: string | null};
 
@@ -54,8 +55,10 @@ export default function ScheduleContainer({
 
 	const [hiddenScheduleValues, setHiddenScheduleValues] =
 		useState<HiddenValue>({
-			expirationDate: scheduleProperties.expirationDate.value ?? null,
-			reviewDate: scheduleProperties.reviewDate.value ?? null,
+			expirationDate: convertToUTC(
+				scheduleProperties.expirationDate.value
+			),
+			reviewDate: convertToUTC(scheduleProperties.reviewDate.value),
 		});
 
 	const handleCheckboxChange = ({
@@ -146,7 +149,8 @@ export default function ScheduleContainer({
 									});
 									setHiddenScheduleValues((prev) => ({
 										...prev,
-										[schedulePropertyKey]: value,
+										[schedulePropertyKey]:
+											convertToUTC(value),
 									}));
 								}}
 								portletNamespace={portletNamespace}

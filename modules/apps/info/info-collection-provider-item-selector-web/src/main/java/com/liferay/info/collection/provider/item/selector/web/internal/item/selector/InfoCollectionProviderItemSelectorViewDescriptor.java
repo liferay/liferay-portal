@@ -58,7 +58,7 @@ public class InfoCollectionProviderItemSelectorViewDescriptor
 	public SearchContainer<InfoCollectionProvider<?>> getSearchContainer() {
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		SearchContainer<InfoCollectionProvider<?>> searchContainer =
 			new SearchContainer<>(

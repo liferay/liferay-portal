@@ -10,8 +10,10 @@ import com.liferay.dynamic.data.mapping.model.DDMStructureModel;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
@@ -31,6 +33,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -46,6 +50,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1606,17 +1611,31 @@ public class DDMStructureModelImpl
 			ddmStructureCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
-		setClassName(null);
+		try {
+			setClassName(null);
 
-		ddmStructureCacheModel._className = getClassName();
+			ddmStructureCacheModel.className =
+				(String)_classNameMethodHandle.invokeExact(
+					(DDMStructureImpl)this);
 
-		setDDMForm(null);
+			setDDMForm(null);
 
-		ddmStructureCacheModel._ddmForm = getDDMForm();
+			ddmStructureCacheModel.ddmForm =
+				(com.liferay.dynamic.data.mapping.model.DDMForm)
+					_ddmFormMethodHandle.invokeExact((DDMStructureImpl)this);
 
-		setDDMFormFieldsMap(null);
+			setDDMFormFieldsMap(null);
 
-		ddmStructureCacheModel._ddmFormFieldsMap = getDDMFormFieldsMap();
+			ddmStructureCacheModel.ddmFormFieldsMap =
+				(Map
+					<String,
+					 com.liferay.dynamic.data.mapping.model.DDMFormField>)
+						 _ddmFormFieldsMapMethodHandle.invokeExact(
+							 (DDMStructureImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return ddmStructureCacheModel;
 	}
@@ -1834,6 +1853,78 @@ public class DDMStructureModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected final transient Consumer<String>
+		classNameUpdateEntityCacheConsumer = className -> {
+			DDMStructureCacheModel ddmStructureCacheModel =
+				EntityCacheUtil.fetchCacheModel(
+					DDMStructureImpl.class, _structureId,
+					DDMStructureCacheModel.class);
+
+			if ((ddmStructureCacheModel != null) &&
+				(ddmStructureCacheModel.getMvccVersion() == getMvccVersion())) {
+
+				ddmStructureCacheModel.className = className;
+			}
+		};
+
+	private static final MethodHandle _classNameMethodHandle;
+
+	protected final transient Consumer
+		<com.liferay.dynamic.data.mapping.model.DDMForm>
+			ddmFormUpdateEntityCacheConsumer = ddmForm -> {
+				DDMStructureCacheModel ddmStructureCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						DDMStructureImpl.class, _structureId,
+						DDMStructureCacheModel.class);
+
+				if ((ddmStructureCacheModel != null) &&
+					(ddmStructureCacheModel.getMvccVersion() ==
+						getMvccVersion())) {
+
+					ddmStructureCacheModel.ddmForm = ddmForm;
+				}
+			};
+
+	private static final MethodHandle _ddmFormMethodHandle;
+
+	protected final transient Consumer
+		<Map<String, com.liferay.dynamic.data.mapping.model.DDMFormField>>
+			ddmFormFieldsMapUpdateEntityCacheConsumer = ddmFormFieldsMap -> {
+				DDMStructureCacheModel ddmStructureCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						DDMStructureImpl.class, _structureId,
+						DDMStructureCacheModel.class);
+
+				if ((ddmStructureCacheModel != null) &&
+					(ddmStructureCacheModel.getMvccVersion() ==
+						getMvccVersion())) {
+
+					ddmStructureCacheModel.ddmFormFieldsMap = ddmFormFieldsMap;
+				}
+			};
+
+	private static final MethodHandle _ddmFormFieldsMapMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_classNameMethodHandle = lookup.findGetter(
+				DDMStructureImpl.class, "_className", String.class);
+
+			_ddmFormMethodHandle = lookup.findGetter(
+				DDMStructureImpl.class, "_ddmForm",
+				com.liferay.dynamic.data.mapping.model.DDMForm.class);
+
+			_ddmFormFieldsMapMethodHandle = lookup.findGetter(
+				DDMStructureImpl.class, "_ddmFormFieldsMap", Map.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private DDMStructure _escapedModel;
 
 }

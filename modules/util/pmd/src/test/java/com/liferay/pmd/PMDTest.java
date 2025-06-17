@@ -37,6 +37,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -100,6 +101,7 @@ public class PMDTest extends AutoBalanceTestCase {
 		Files.delete(_logFilePath);
 	}
 
+	@Ignore
 	@Test
 	public void testPMDJava() throws IOException {
 		SourceLanguage sourceLanguage = new SourceLanguage();

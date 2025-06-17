@@ -10,10 +10,13 @@ import MultipleFilesUploadModalContent from '../../components/modal/MultipleFile
 
 export type MultipleFileUploaderData = {
 	assetLibraries: AssetLibrary[];
+	baseAssetLibraryViewURL: string;
+	parentObjectEntryFolderExternalReferenceCode: string;
 };
 
 export default function multipleFilesUploadAction(
-	data: MultipleFileUploaderData
+	data: MultipleFileUploaderData,
+	loadData?: () => void
 ) {
 	openModal({
 		containerProps: {
@@ -21,7 +24,8 @@ export default function multipleFilesUploadAction(
 		},
 		contentComponent: ({closeModal}: {closeModal: () => void}) =>
 			MultipleFilesUploadModalContent({
-				assetLibraries: data.assetLibraries,
+				...data,
+				loadData,
 				onModalClose: closeModal,
 			}),
 		size: 'md',

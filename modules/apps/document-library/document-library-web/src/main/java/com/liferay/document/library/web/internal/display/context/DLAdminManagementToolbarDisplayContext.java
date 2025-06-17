@@ -667,7 +667,7 @@ public class DLAdminManagementToolbarDisplayContext
 
 		PortletResponse portletResponse =
 			(PortletResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		ItemSelector itemSelector =
 			(ItemSelector)_httpServletRequest.getAttribute(

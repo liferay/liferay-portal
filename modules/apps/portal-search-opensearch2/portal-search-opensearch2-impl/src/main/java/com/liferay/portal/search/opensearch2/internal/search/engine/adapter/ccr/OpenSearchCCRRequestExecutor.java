@@ -16,7 +16,6 @@ import com.liferay.portal.search.engine.adapter.ccr.UnfollowCCRRequest;
 import com.liferay.portal.search.engine.adapter.ccr.UnfollowCCRResponse;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Bryan Engler
@@ -55,16 +54,13 @@ public class OpenSearchCCRRequestExecutor implements CCRRequestExecutor {
 		return _unfollowCCRRequestExecutor.execute(unfollowCCRRequest);
 	}
 
-	@Reference
-	private FollowInfoCCRRequestExecutor _followInfoCCRRequestExecutor;
-
-	@Reference
-	private PauseFollowCCRRequestExecutor _pauseFollowCCRRequestExecutor;
-
-	@Reference
-	private PutFollowCCRRequestExecutor _putFollowCCRRequestExecutor;
-
-	@Reference
-	private UnfollowCCRRequestExecutor _unfollowCCRRequestExecutor;
+	private final FollowInfoCCRRequestExecutor _followInfoCCRRequestExecutor =
+		new FollowInfoCCRRequestExecutor();
+	private final PauseFollowCCRRequestExecutor _pauseFollowCCRRequestExecutor =
+		new PauseFollowCCRRequestExecutor();
+	private final PutFollowCCRRequestExecutor _putFollowCCRRequestExecutor =
+		new PutFollowCCRRequestExecutor();
+	private final UnfollowCCRRequestExecutor _unfollowCCRRequestExecutor =
+		new UnfollowCCRRequestExecutor();
 
 }

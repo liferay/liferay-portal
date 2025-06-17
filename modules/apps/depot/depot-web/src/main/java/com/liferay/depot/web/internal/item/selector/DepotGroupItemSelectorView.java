@@ -233,7 +233,7 @@ public class DepotGroupItemSelectorView
 			try {
 				PortletRequest portletRequest =
 					(PortletRequest)_httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST);
+						JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 				return _depotAdminGroupSearchProvider.getGroupSearch(
 					_depotGroupItemSelectorCriterion, portletRequest,

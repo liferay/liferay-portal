@@ -100,10 +100,10 @@ public class PortletSharedRequestHelperImpl
 			requestURL = _portal.getAbsoluteURL(
 				httpServletRequest,
 				(String)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_SERVLET_FORWARD_REQUEST_URI));
+					JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI));
 
 			queryString = (String)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING);
+				JavaConstants.JAKARTA_SERVLET_FORWARD_QUERY_STRING);
 		}
 		else {
 			requestURL = _portal.getAbsoluteURL(

@@ -25,14 +25,11 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.LiferayFileItemException;
 import com.liferay.portal.kernel.upload.UploadException;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
-import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -47,7 +44,6 @@ import jakarta.portlet.PortletRequest;
 import java.io.File;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -195,15 +191,6 @@ public class JournalArticleUtil {
 			displayDateHour += 12;
 		}
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		User user = themeDisplay.getUser();
-
-		Date displayDate = portal.getDate(
-			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
-			displayDateMinute, user.getTimeZone(), null);
-
 		int expirationDateMonth = ParamUtil.getInteger(
 			uploadPortletRequest, "expirationDateMonth");
 		int expirationDateDay = ParamUtil.getInteger(
@@ -315,19 +302,6 @@ public class JournalArticleUtil {
 			boolean autoArticleId = ParamUtil.getBoolean(
 				uploadPortletRequest, "autoArticleId");
 
-			if (displayDate == null) {
-				Calendar calendar = CalendarFactoryUtil.getCalendar(
-					user.getTimeZone());
-
-				calendar.setTime(new Date());
-
-				displayDateMonth = calendar.get(Calendar.MONTH);
-				displayDateDay = calendar.get(Calendar.DATE);
-				displayDateYear = calendar.get(Calendar.YEAR);
-				displayDateHour = calendar.get(Calendar.HOUR);
-				displayDateMinute = calendar.get(Calendar.MINUTE);
-			}
-
 			article = journalArticleService.addArticle(
 				null, groupId, folderId, classNameId, classPK, articleId,
 				autoArticleId, titleMap, descriptionMap, friendlyURLMap,
@@ -362,32 +336,6 @@ public class JournalArticleUtil {
 			}
 
 			if (actionName.equals("/journal/update_article")) {
-				if (displayDate == null) {
-					Calendar calendar = CalendarFactoryUtil.getCalendar(
-						user.getTimeZone());
-
-					displayDate = article.getDisplayDate();
-
-					if ((displayDate != null) &&
-						displayDate.before(new Date())) {
-
-						calendar.setTime(article.getDisplayDate());
-					}
-					else {
-						calendar.setTime(new Date());
-					}
-
-					displayDateMonth = calendar.get(Calendar.MONTH);
-					displayDateDay = calendar.get(Calendar.DATE);
-					displayDateYear = calendar.get(Calendar.YEAR);
-					displayDateHour = calendar.get(Calendar.HOUR);
-					displayDateMinute = calendar.get(Calendar.MINUTE);
-
-					if (calendar.get(Calendar.AM_PM) == Calendar.PM) {
-						displayDateHour += 12;
-					}
-				}
-
 				article = journalArticleService.updateArticle(
 					groupId, folderId, articleId, version, titleMap,
 					descriptionMap, friendlyURLMap, content, ddmTemplateKey,

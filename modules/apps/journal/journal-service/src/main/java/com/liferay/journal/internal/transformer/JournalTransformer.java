@@ -908,19 +908,19 @@ public class JournalTransformer {
 			if (portletRequestModel != null) {
 				originalPortletRequest =
 					(PortletRequest)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST);
+						JavaConstants.JAKARTA_PORTLET_REQUEST);
 				originalPortletResponse =
 					(PortletResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE);
+						JavaConstants.JAKARTA_PORTLET_RESPONSE);
 				originalLifecyclePhase =
 					(String)httpServletRequest.getAttribute(
 						PortletRequest.LIFECYCLE_PHASE);
 
 				httpServletRequest.setAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST,
+					JavaConstants.JAKARTA_PORTLET_REQUEST,
 					portletRequestModel.getPortletRequest());
 				httpServletRequest.setAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE,
+					JavaConstants.JAKARTA_PORTLET_RESPONSE,
 					portletRequestModel.getPortletResponse());
 				httpServletRequest.setAttribute(
 					PortletRequest.LIFECYCLE_PHASE,
@@ -1026,10 +1026,10 @@ public class JournalTransformer {
 		finally {
 			if ((httpServletRequest != null) && (portletRequestModel != null)) {
 				httpServletRequest.setAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST,
+					JavaConstants.JAKARTA_PORTLET_REQUEST,
 					originalPortletRequest);
 				httpServletRequest.setAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE,
+					JavaConstants.JAKARTA_PORTLET_RESPONSE,
 					originalPortletResponse);
 				httpServletRequest.setAttribute(
 					PortletRequest.LIFECYCLE_PHASE, originalLifecyclePhase);

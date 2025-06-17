@@ -4,7 +4,7 @@ definition {
 	property custom.properties = "feature.flag.LPS-164563=true${line.separator}feature.flag.LPS-167253=true";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.main.component.name = "Client Extension Framework";
+	property testray.main.component.name = "Frontend Client Extensions";
 
 	setUp {
 		TestCase.setUpPortalInstance();

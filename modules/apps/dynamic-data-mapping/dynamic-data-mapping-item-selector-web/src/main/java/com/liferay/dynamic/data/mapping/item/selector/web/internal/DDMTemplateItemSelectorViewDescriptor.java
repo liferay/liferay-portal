@@ -96,7 +96,7 @@ public class DDMTemplateItemSelectorViewDescriptor
 		SearchContainer<DDMTemplate> ddmTemplateSearchContainer =
 			new SearchContainer<>(
 				(PortletRequest)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST),
+					JavaConstants.JAKARTA_PORTLET_REQUEST),
 				_portletURL, null, "there-are-no-templates");
 
 		if (ddmTemplateSearchContainer.isSearch()) {

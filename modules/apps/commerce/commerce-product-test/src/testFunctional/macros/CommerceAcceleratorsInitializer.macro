@@ -242,7 +242,9 @@ definition {
 				locator1 = "Select#TYPE",
 				value1 = ${orderType});
 
-			Button.click(button = "Add Order");
+			Click(
+				key_text = "Add Order",
+				locator1 = "Modal#MODAL_FOOTER_BUTTON");
 
 			WaitForElementPresent(
 				key_orderType = ${orderType},

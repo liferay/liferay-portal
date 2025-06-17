@@ -1,0 +1,32 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+/**
+ * @author Nícolas Moura
+ */
+@Component(service = MentionsUserFinder.class)
+public class LPD_34770 implements MentionsUserFinder {
+
+	@Override
+	public List<User> getUsers(
+			long companyId, long groupId, long userId, String query,
+			SocialInteractionsConfiguration socialInteractionsConfiguration)
+		throws PortalException {
+
+		return getUsers(
+			companyId, userId, query,
+			socialInteractionsConfiguration);
+	}
+
+	@Override
+	public List<User> getUsers(
+			long companyId, long userId, String query,
+			SocialInteractionsConfiguration socialInteractionsConfiguration)
+		throws PortalException {
+	}
+
+}

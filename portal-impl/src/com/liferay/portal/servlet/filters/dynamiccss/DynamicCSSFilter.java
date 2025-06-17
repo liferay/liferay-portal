@@ -51,7 +51,7 @@ public class DynamicCSSFilter extends IgnoreModuleRequestFilter {
 		_servletContext = filterConfig.getServletContext();
 
 		File tempDir = (File)_servletContext.getAttribute(
-			JavaConstants.JAVAX_SERVLET_CONTEXT_TEMPDIR);
+			JavaConstants.JAKARTA_SERVLET_CONTEXT_TEMPDIR);
 
 		_tempDir = new File(tempDir, _TEMP_DIR);
 

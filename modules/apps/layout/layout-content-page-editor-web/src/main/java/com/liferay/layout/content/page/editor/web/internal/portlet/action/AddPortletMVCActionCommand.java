@@ -230,7 +230,7 @@ public class AddPortletMVCActionCommand
 					actionRequest.getPreferences(), themeDisplay.getPlid());
 
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST, liferayRenderRequest);
+				JavaConstants.JAKARTA_PORTLET_REQUEST, liferayRenderRequest);
 
 			HttpServletResponse httpServletResponse =
 				_portal.getHttpServletResponse(actionResponse);
@@ -240,7 +240,7 @@ public class AddPortletMVCActionCommand
 					httpServletResponse, liferayRenderRequest);
 
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE, liferayRenderResponse);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE, liferayRenderResponse);
 
 			LayoutStructure layoutStructure =
 				LayoutStructureUtil.getLayoutStructure(

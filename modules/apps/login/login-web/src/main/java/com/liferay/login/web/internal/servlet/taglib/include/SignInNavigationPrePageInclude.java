@@ -60,7 +60,7 @@ public class SignInNavigationPrePageInclude implements PageInclude {
 
 		PortletConfig portletConfig =
 			(PortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		String portletName = portletConfig.getPortletName();
 
@@ -156,7 +156,7 @@ public class SignInNavigationPrePageInclude implements PageInclude {
 
 		PortletConfig portletConfig =
 			(PortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		return PortletURLBuilder.create(
 			PortletURLFactoryUtil.create(

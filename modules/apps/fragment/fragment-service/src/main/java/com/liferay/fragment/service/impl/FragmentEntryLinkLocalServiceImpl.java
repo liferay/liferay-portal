@@ -796,7 +796,10 @@ public class FragmentEntryLinkLocalServiceImpl
 			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml());
 
 		if (!Objects.equals(fragmentEntryLink.getHtml(), html)) {
+			String editableValues = fragmentEntryLink.getEditableValues();
+
 			fragmentEntryLink.setHtml(html);
+			fragmentEntryLink.setEditableValues(null);
 
 			String defaultEditableValues = String.valueOf(
 				_fragmentEntryProcessorRegistry.
@@ -806,10 +809,8 @@ public class FragmentEntryLinkLocalServiceImpl
 							ServiceContextThreadLocal.getServiceContext()),
 						fragmentEntryLink.getConfiguration()));
 
-			String newEditableValues = _mergeEditableValues(
-				defaultEditableValues, fragmentEntryLink.getEditableValues());
-
-			fragmentEntryLink.setEditableValues(newEditableValues);
+			fragmentEntryLink.setEditableValues(
+				_mergeEditableValues(defaultEditableValues, editableValues));
 
 			modified = true;
 		}
@@ -944,9 +945,20 @@ public class FragmentEntryLinkLocalServiceImpl
 					String key = defaultEditableValuesIterator.next();
 
 					if (editableFragmentEntryProcessorJSONObject.has(key)) {
+						JSONObject editableValueJSONObject =
+							editableFragmentEntryProcessorJSONObject.
+								getJSONObject(key);
+
+						JSONObject defaultEditableValueJSONObject =
+							defaultEditableFragmentEntryProcessorJSONObject.
+								getJSONObject(key);
+
+						editableValueJSONObject.put(
+							"defaultValue",
+							defaultEditableValueJSONObject.get("defaultValue"));
+
 						defaultEditableFragmentEntryProcessorJSONObject.put(
-							key,
-							editableFragmentEntryProcessorJSONObject.get(key));
+							key, editableValueJSONObject);
 					}
 				}
 

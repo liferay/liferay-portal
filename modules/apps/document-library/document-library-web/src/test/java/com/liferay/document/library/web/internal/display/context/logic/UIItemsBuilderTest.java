@@ -333,10 +333,10 @@ public class UIItemsBuilderTest {
 			attributeName, Mockito.mock(PortletURL.class));
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, liferayPortletRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, liferayPortletRequest);
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletActionResponse());
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);

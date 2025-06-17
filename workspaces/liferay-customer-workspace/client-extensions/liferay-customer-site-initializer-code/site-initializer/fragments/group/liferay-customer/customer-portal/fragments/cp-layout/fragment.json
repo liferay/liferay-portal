@@ -1,0 +1,9 @@
+{
+	"configurationPath": "configuration.json",
+	"cssPath": "index.css",
+	"htmlPath": "index.html",
+	"icon": "edit-layout",
+	"jsPath": "index.js",
+	"name": "CP Layout",
+	"type": "component"
+}

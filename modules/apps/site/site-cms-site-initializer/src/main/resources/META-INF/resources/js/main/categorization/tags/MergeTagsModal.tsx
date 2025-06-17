@@ -365,7 +365,7 @@ export default function MergeTagsModalContent({
 						</span>
 					</label>
 
-					<ClayInput readOnly value={tagName} />
+					<ClayInput disabled value={tagName} />
 				</Form.Group>
 			</ClayModal.Body>
 

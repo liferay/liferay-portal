@@ -5,22 +5,25 @@
 
 package com.liferay.portal.search.web.internal.type.facet.portlet;
 
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.search.SearchEngineHelper;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.search.internal.asset.AssetRendererFactoryRegistry;
 import com.liferay.portal.search.internal.asset.SearchableAssetClassNamesProviderImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -33,14 +36,23 @@ public class TypeFacetPortletPreferencesImplTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@BeforeClass
+	public static void setUpClass() {
+		assetRendererFactoryRegistryUtilMockedStatic = Mockito.mockStatic(
+			AssetRendererFactoryRegistryUtil.class);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		assetRendererFactoryRegistryUtilMockedStatic.close();
+	}
+
 	@Before
 	public void setUp() {
 		typeFacetPortletPreferencesImpl = new TypeFacetPortletPreferencesImpl(
 			_objectDefinitionLocalService, null,
 			new SearchableAssetClassNamesProviderImpl() {
 				{
-					assetRendererFactoryRegistry =
-						_assetRendererFactoryRegistry;
 					searchEngineHelper = _searchEngineHelper;
 				}
 			});
@@ -121,6 +133,9 @@ public class TypeFacetPortletPreferencesImplTest {
 
 	protected static final String CLASS_NAME_2 = "com.liferay.model.Model2";
 
+	protected static MockedStatic<AssetRendererFactoryRegistryUtil>
+		assetRendererFactoryRegistryUtilMockedStatic;
+
 	protected AssetRendererFactory<?> assetRendererFactory1 = Mockito.mock(
 		AssetRendererFactory.class);
 	protected AssetRendererFactory<?> assetRendererFactory2 = Mockito.mock(
@@ -150,8 +165,8 @@ public class TypeFacetPortletPreferencesImplTest {
 	private void _mockAssetRendererFactoryRegistry(
 		AssetRendererFactory<?>... assetRendererFactories) {
 
-		Mockito.when(
-			_assetRendererFactoryRegistry.getAssetRendererFactories(
+		assetRendererFactoryRegistryUtilMockedStatic.when(
+			() -> AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
 				Mockito.anyLong())
 		).thenReturn(
 			Arrays.asList(assetRendererFactories)
@@ -168,8 +183,6 @@ public class TypeFacetPortletPreferencesImplTest {
 		);
 	}
 
-	private final AssetRendererFactoryRegistry _assetRendererFactoryRegistry =
-		Mockito.mock(AssetRendererFactoryRegistry.class);
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService =
 		Mockito.mock(ObjectDefinitionLocalService.class);
 	private final SearchEngineHelper _searchEngineHelper = Mockito.mock(

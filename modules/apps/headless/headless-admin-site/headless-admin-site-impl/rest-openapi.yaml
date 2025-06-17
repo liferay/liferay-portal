@@ -2186,6 +2186,11 @@ components:
                     type: string
                 settings:
                     $ref: "#/components/schemas/Settings"
+                siteTemplatePageSpecificationExternalReferenceCode:
+                    # @review
+                    description:
+                        The site template page specification's external reference code.
+                    type: string
                 status:
                     # @review
                     description:
@@ -3527,7 +3532,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.site.client', and version '1.0.10'."
+        'com.liferay.headless.admin.site.client', and version '1.0.11'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

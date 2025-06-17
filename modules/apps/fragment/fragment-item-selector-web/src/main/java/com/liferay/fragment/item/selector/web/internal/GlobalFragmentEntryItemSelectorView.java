@@ -96,7 +96,7 @@ public class GlobalFragmentEntryItemSelectorView
 				_groupLocalService.fetchGroup(themeDisplay.getCompanyGroupId()),
 				_portal.getLiferayPortletRequest(
 					(PortletRequest)servletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST)),
+						JavaConstants.JAKARTA_PORTLET_REQUEST)),
 				portletURL));
 
 		requestDispatcher.include(servletRequest, servletResponse);

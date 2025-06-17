@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import {filesize} from 'filesize';
+import {useState} from 'react';
 
 import {DropzoneUpload} from '../../../../../../components/DropzoneUpload/DropzoneUpload';
 import {
@@ -15,28 +16,26 @@ import {
 import {Header} from '../../../../../../components/Header/Header';
 import {NewAppPageFooterButtons} from '../../../../../../components/NewAppPageFooterButtons/NewAppPageFooterButtons';
 import {Section} from '../../../../../../components/Section/Section';
+import i18n from '../../../../../../i18n';
+import {Liferay} from '../../../../../../liferay/liferay';
+import fetcher from '../../../../../../services/fetcher';
+import HeadlessCommerceAdminCatalog from '../../../../../../services/rest/HeadlessCommerceAdminCatalog';
 import {
 	baseURL,
 	createImageAxios,
 	deleteAttachment,
 } from '../../../../../../utils/api';
+import {swapElements} from '../../../../../../utils/array';
+import {getRandomID} from '../../../../../../utils/string';
+import {submitBase64EncodedFile} from '../../../../../../utils/util';
 import {useAppContext} from '../AppContext/AppManageState';
 import {ActionTypes} from '../AppContext/actionTypes';
 
 import './CustomizeAppStorefrontPage.scss';
 
-import {useState} from 'react';
-
-import i18n from '../../../../../../i18n';
-import {Liferay} from '../../../../../../liferay/liferay';
-import fetcher from '../../../../../../services/fetcher';
-import HeadlessCommerceAdminCatalog from '../../../../../../services/rest/HeadlessCommerceAdminCatalog';
-import {swapElements} from '../../../../../../utils/array';
-import {getRandomID} from '../../../../../../utils/string';
-import {submitBase64EncodedFile} from '../../../../../../utils/util';
-
 export const ACCEPT_FILE_TYPES = {
 	'image/gif': ['.gif'],
+	'image/jpeg': ['.jpeg'],
 	'image/jpg': ['.jpg'],
 	'image/png': ['.png'],
 };

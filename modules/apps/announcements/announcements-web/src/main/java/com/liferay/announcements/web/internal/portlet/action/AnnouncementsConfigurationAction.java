@@ -53,9 +53,9 @@ public class AnnouncementsConfigurationAction
 				new AnnouncementsRequestHelper(httpServletRequest),
 				httpServletRequest, AnnouncementsPortletKeys.ANNOUNCEMENTS,
 				(RenderRequest)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST),
+					JavaConstants.JAKARTA_PORTLET_REQUEST),
 				(RenderResponse)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE),
+					JavaConstants.JAKARTA_PORTLET_RESPONSE),
 				_requestContextMapper, _segmentsEntryRetriever,
 				_segmentsConfigurationProvider));
 

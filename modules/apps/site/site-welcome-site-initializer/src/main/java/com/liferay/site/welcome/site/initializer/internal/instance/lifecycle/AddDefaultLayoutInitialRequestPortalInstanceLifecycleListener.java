@@ -261,7 +261,7 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (portletRequest != null) {
 			return serviceContext;
@@ -287,9 +287,9 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 					themeDisplay.getPlid());
 
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST, liferayRenderRequest);
+				JavaConstants.JAKARTA_PORTLET_REQUEST, liferayRenderRequest);
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE,
+				JavaConstants.JAKARTA_PORTLET_RESPONSE,
 				RenderResponseFactory.create(
 					new DummyHttpServletResponse(), liferayRenderRequest));
 		}

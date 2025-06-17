@@ -41,7 +41,7 @@ public class SearchContext implements Serializable {
 
 	public static boolean isBatchMode() {
 		Map.Entry<Set<Future<?>>, List<Callable<Void>>> entry =
-			_batchModeSyncFuturesAndCallablesThreadLocal.get();
+			_batchModeSyncFuturesAndCallables.get();
 
 		if (entry == null) {
 			return false;
@@ -70,7 +70,7 @@ public class SearchContext implements Serializable {
 		}
 
 		SafeCloseable safeCloseable =
-			_batchModeSyncFuturesAndCallablesThreadLocal.setWithSafeCloseable(
+			_batchModeSyncFuturesAndCallables.setWithSafeCloseable(
 				new AbstractMap.SimpleImmutableEntry<>(
 					Collections.newSetFromMap(new ConcurrentHashMap<>()),
 					new ArrayList<>()));
@@ -80,7 +80,7 @@ public class SearchContext implements Serializable {
 
 			try {
 				Map.Entry<Set<Future<?>>, List<Callable<Void>>> entry =
-					_batchModeSyncFuturesAndCallablesThreadLocal.get();
+					_batchModeSyncFuturesAndCallables.get();
 
 				for (Future<?> future : entry.getKey()) {
 					try {
@@ -133,7 +133,7 @@ public class SearchContext implements Serializable {
 
 	public static void registerBatchModeSyncCallable(Callable<Void> callable) {
 		Map.Entry<Set<Future<?>>, List<Callable<Void>>> entry =
-			_batchModeSyncFuturesAndCallablesThreadLocal.get();
+			_batchModeSyncFuturesAndCallables.get();
 
 		if (entry == null) {
 			throw new IllegalStateException("Not in batch mode");
@@ -146,7 +146,7 @@ public class SearchContext implements Serializable {
 
 	public static void registerBatchModeSyncFuture(Future<?> future) {
 		Map.Entry<Set<Future<?>>, List<Callable<Void>>> entry =
-			_batchModeSyncFuturesAndCallablesThreadLocal.get();
+			_batchModeSyncFuturesAndCallables.get();
 
 		if (entry == null) {
 			throw new IllegalStateException("Not in batch mode");
@@ -159,7 +159,7 @@ public class SearchContext implements Serializable {
 
 	public static void unregisterBatchModeSyncFuture(Future<?> future) {
 		Map.Entry<Set<Future<?>>, List<Callable<Void>>> entry =
-			_batchModeSyncFuturesAndCallablesThreadLocal.get();
+			_batchModeSyncFuturesAndCallables.get();
 
 		if (entry != null) {
 			Set<Future<?>> batchModeSyncFutures = entry.getKey();
@@ -558,10 +558,9 @@ public class SearchContext implements Serializable {
 
 	private static final CentralizedThreadLocal
 		<Map.Entry<Set<Future<?>>, List<Callable<Void>>>>
-			_batchModeSyncFuturesAndCallablesThreadLocal =
-				new CentralizedThreadLocal<>(
-					SearchContext.class.getName() +
-						"._batchModeSyncFuturesThreadLocal");
+			_batchModeSyncFuturesAndCallables = new CentralizedThreadLocal<>(
+				SearchContext.class.getName() +
+					"._batchModeSyncFuturesAndCallables");
 	private static final Snapshot<TransactionLifecycleListener>
 		_transactionLifecycleListenerSnapshot = new Snapshot<>(
 			SearchContext.class, TransactionLifecycleListener.class,

@@ -789,7 +789,7 @@ public class SourceFormatter {
 
 				String message = sourceMismatchException.getMessage();
 
-				if (!Objects.isNull(message)) {
+				if (Objects.nonNull(message)) {
 					sb.append(index);
 					sb.append(": ");
 					sb.append(message);

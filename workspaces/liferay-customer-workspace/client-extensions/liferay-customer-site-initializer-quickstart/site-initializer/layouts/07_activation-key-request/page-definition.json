@@ -38,7 +38,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "custom-dialect-text"
+								"key": "cp-text"
 							},
 							"fragmentConfig": {
 								"textType": "h1",
@@ -69,7 +69,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "custom-dialect-text"
+								"key": "cp-text"
 							},
 							"fragmentConfig": {
 								"textType": "text-paragraph",
@@ -156,7 +156,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "custom-dialect-text"
+												"key": "cp-text"
 											},
 											"fragmentConfig": {
 												"textType": "text-paragraph-sm",
@@ -187,7 +187,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "custom-dialect-text"
+												"key": "cp-text"
 											},
 											"fragmentConfig": {
 												"textType": "text-paragraph-sm",
@@ -380,7 +380,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "custom-dialect-text"
+										"key": "cp-text"
 									},
 									"fragmentConfig": {
 										"textType": "text-paragraph-sm",
@@ -412,7 +412,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "custom-dialect-text"
+										"key": "cp-text"
 									},
 									"fragmentConfig": {
 										"textType": "text-paragraph",
@@ -464,7 +464,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "custom-dialect-text"
+										"key": "cp-text"
 									},
 									"fragmentConfig": {
 										"textType": "text-paragraph-sm",

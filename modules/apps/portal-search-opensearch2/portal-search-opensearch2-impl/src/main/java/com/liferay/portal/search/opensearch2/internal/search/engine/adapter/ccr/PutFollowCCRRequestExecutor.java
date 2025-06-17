@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.ccr.PutFollowCCRResponse;
 /**
  * @author Bryan Engler
  */
-public interface PutFollowCCRRequestExecutor {
+public class PutFollowCCRRequestExecutor {
 
 	public PutFollowCCRResponse execute(
-		PutFollowCCRRequest putFollowCCRRequest);
+		PutFollowCCRRequest putFollowCCRRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

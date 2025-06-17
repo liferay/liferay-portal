@@ -34,7 +34,7 @@ public class ExportImportProcessDisplayContext {
 		_httpServletRequest = httpServletRequest;
 
 		_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 	}
 
 	public BackgroundTask getBackgroundTask() throws PortalException {
@@ -83,7 +83,7 @@ public class ExportImportProcessDisplayContext {
 	private PortletURL _getIteratorURL() {
 		PortletResponse portletResponse =
 			(PortletResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		MimeResponse mimeResponse = (MimeResponse)portletResponse;
 

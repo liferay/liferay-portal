@@ -62,10 +62,10 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	}
 
 	@Test
-	public void testReplaceCastFloat() {
+	public void testReplaceCastDecimal() {
 		Assert.assertEquals(
-			getCastFloatTransformedSQL(),
-			sqlTransformer.transform(getCastFloatOriginalSQL()));
+			getCastDecimalTransformedSQL(),
+			sqlTransformer.transform(getCastDecimalOriginalSQL()));
 	}
 
 	@Test
@@ -212,14 +212,14 @@ public abstract class BaseSQLTransformerLogicTestCase {
 			"from Foo";
 	}
 
-	protected String getCastFloatOriginalSQL() {
-		return "select CAST_FLOAT(1 + (CAST_FLOAT(foo) - (bar x 2))), " +
-			"CAST_FLOAT(foo + (bar x 3)) from Foo";
+	protected String getCastDecimalOriginalSQL() {
+		return "select CAST_DECIMAL(1 + (CAST_DECIMAL(foo) - (bar x 2))), " +
+			"CAST_DECIMAL(foo + (bar x 3)) from Foo";
 	}
 
-	protected String getCastFloatTransformedSQL() {
-		return "select CAST(1 + (CAST(foo AS FLOAT) - (bar x 2)) AS FLOAT), " +
-			"CAST(foo + (bar x 3) AS FLOAT) from Foo";
+	protected String getCastDecimalTransformedSQL() {
+		return "select CAST(1 + (CAST(foo AS DECIMAL(31, 2)) - (bar x 2)) AS " +
+			"DECIMAL(31, 2)), CAST(foo + (bar x 3) AS DECIMAL(31, 2)) from Foo";
 	}
 
 	protected String getCastLongOriginalSQL() {

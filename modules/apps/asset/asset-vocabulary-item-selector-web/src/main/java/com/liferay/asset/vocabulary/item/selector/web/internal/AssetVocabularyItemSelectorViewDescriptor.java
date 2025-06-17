@@ -79,7 +79,7 @@ public class AssetVocabularyItemSelectorViewDescriptor
 		SearchContainer<AssetVocabulary> searchContainer =
 			new SearchContainer<>(
 				(PortletRequest)_httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST),
+					JavaConstants.JAKARTA_PORTLET_REQUEST),
 				_portletURL, null, "there-are-no-items-to-display");
 
 		if (searchContainer.isSearch()) {

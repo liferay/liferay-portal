@@ -66,7 +66,7 @@ const usePublishAppSubmission = (
 		await _onSave({isDraft: false});
 
 		Liferay.Util.openToast({
-			message: i18n.sub('solution-x-submitted', [context.profile.name]),
+			message: i18n.sub('app-x-submitted', [context.profile.name]),
 			title: '',
 			type: 'info',
 		});

@@ -420,7 +420,7 @@ public class HttpComponentsUtil {
 		if (isForwarded(httpServletRequest)) {
 			return GetterUtil.getString(
 				httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_SERVLET_FORWARD_QUERY_STRING));
+					JavaConstants.JAKARTA_SERVLET_FORWARD_QUERY_STRING));
 		}
 
 		return httpServletRequest.getQueryString();
@@ -493,7 +493,7 @@ public class HttpComponentsUtil {
 
 	public static boolean isForwarded(HttpServletRequest httpServletRequest) {
 		String forwardedRequestURI = (String)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_SERVLET_FORWARD_REQUEST_URI);
+			JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI);
 
 		if (forwardedRequestURI != null) {
 			return true;

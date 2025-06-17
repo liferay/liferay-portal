@@ -97,6 +97,12 @@ public class ObjectEntryLocalServiceUtil {
 			objectEntryFolderId, values, serviceContext);
 	}
 
+	public static void checkObjectEntries(long companyId)
+		throws PortalException {
+
+		getService().checkObjectEntries(companyId);
+	}
+
 	/**
 	 * Creates a new object entry with the primary key. Does not add the object entry to the database.
 	 *

@@ -26,9 +26,11 @@ import Licensing from './pages/NewAppFlow/pages/Licensing';
 import LicensePrices from './pages/NewAppFlow/pages/Licensing/LicensePrices';
 import Pricing from './pages/NewAppFlow/pages/Pricing';
 import Storefront from './pages/NewAppFlow/pages/Storefront';
-import SubmitApp from './pages/NewAppFlow/pages/Submit/Submit';
+import SubmitApp from './pages/NewAppFlow/pages/Submit';
 import Support from './pages/NewAppFlow/pages/Support';
 import Version from './pages/NewAppFlow/pages/Version';
+import NewAppBuildOutlet from './pages/NewVersionFlow/NewAppBuildOutlet';
+import SubmitNewBuild from './pages/NewVersionFlow/pages/SubmitNewBuild';
 import Solutions from './pages/Solutions';
 import SolutionsDetails from './pages/Solutions/Solution';
 import PublishSolutionOutlet from './pages/Solutions/SolutionForm/PublishSolutionOutlet';
@@ -104,6 +106,10 @@ const PublisherDashboardRouter = () => {
 
 							<Route element={<Support />} path="support" />
 						</Route>
+						<Route element={<NewAppBuildOutlet />} path="newbuild">
+							<Route element={<Build />} index />
+							<Route element={<SubmitNewBuild />} path="submit" />
+						</Route>
 					</Route>
 				</Route>
 
@@ -126,7 +132,17 @@ const PublisherDashboardRouter = () => {
 				>
 					<Route path="/">
 						<Route element={<Apps />} index />
-						<Route element={<App />} path="app/:productId" />
+
+						<Route
+							element={
+								<NewAppContextProvider
+									catalog={catalog as Catalog}
+								>
+									<App />
+								</NewAppContextProvider>
+							}
+							path="app/:productId"
+						/>
 					</Route>
 
 					<Route element={<Accounts />} path="accounts" />

@@ -38,7 +38,7 @@ const EmptyState: React.FC<IEmptyStateProps> = ({
 				description={Liferay.Language.get(
 					'do-more-with-our-business-&-enterprise-plans'
 				)}
-				icon='ac-integration'
+				icon='ac_integration'
 			/>
 		</div>
 
@@ -52,7 +52,7 @@ const EmptyState: React.FC<IEmptyStateProps> = ({
 					description={Liferay.Language.get(
 						'90-day-full-feature-trial'
 					)}
-					icon='ac-page-analytics'
+					icon='ac_page_analytics'
 				/>
 			</div>
 		)}

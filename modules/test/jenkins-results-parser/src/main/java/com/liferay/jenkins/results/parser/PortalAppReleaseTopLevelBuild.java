@@ -40,8 +40,9 @@ public class PortalAppReleaseTopLevelBuild
 
 		if (portalFixPackZipURL != null) {
 			try {
-				portalFixpackRelease = new PortalFixpackRelease(
-					new URL(portalFixPackZipURL));
+				portalFixpackRelease =
+					PortalReleaseFactory.newPortalFixpackRelease(
+						new URL(portalFixPackZipURL));
 
 				return portalFixpackRelease;
 			}
@@ -63,7 +64,8 @@ public class PortalAppReleaseTopLevelBuild
 			"TEST_PORTAL_BUNDLE_VERSION");
 
 		if (portalBundleVersion != null) {
-			portalRelease = new PortalRelease(portalBundleVersion);
+			portalRelease = PortalReleaseFactory.newPortalRelease(
+				portalBundleVersion);
 
 			return portalRelease;
 		}

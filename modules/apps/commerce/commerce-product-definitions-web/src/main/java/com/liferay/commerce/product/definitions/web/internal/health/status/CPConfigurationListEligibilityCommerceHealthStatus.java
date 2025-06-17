@@ -507,8 +507,8 @@ public class CPConfigurationListEligibilityCommerceHealthStatus
 				_commerceChannelRelLocalService.deleteCommerceChannelRels(
 					CPConfigurationList.class.getName(),
 					cpConfigurationList.getCPConfigurationListId());
-				_cpConfigurationListLocalService.forceDeleteCPConfigurationList(
-					cpConfigurationList);
+				_cpConfigurationListLocalService.deleteCPConfigurationList(
+					cpConfigurationList, true);
 				_cpConfigurationListRelLocalService.
 					deleteCPConfigurationListRels(
 						cpConfigurationList.getCPConfigurationListId());

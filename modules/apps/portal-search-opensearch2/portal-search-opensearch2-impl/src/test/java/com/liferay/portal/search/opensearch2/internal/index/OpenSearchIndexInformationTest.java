@@ -45,7 +45,7 @@ public class OpenSearchIndexInformationTest extends BaseOpenSearchTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		_companyIndexFactoryFixture = _createCompanyIndexFactoryFixture(
+		_indexFactoryFixture = _createIndexFactoryFixture(
 			openSearchConnectionManager);
 
 		_indexNameBuilder = _createIndexNameBuilder();
@@ -56,14 +56,14 @@ public class OpenSearchIndexInformationTest extends BaseOpenSearchTestCase {
 
 	@After
 	public void tearDown() {
-		_companyIndexFactoryFixture.deleteIndices();
+		_indexFactoryFixture.deleteIndices();
 
-		_companyIndexFactoryFixture.tearDown();
+		_indexFactoryFixture.tearDown();
 	}
 
 	@Test
 	public void testGetCompanyIndexName() throws Exception {
-		_companyIndexFactoryFixture.createIndices();
+		_indexFactoryFixture.createIndices();
 
 		long companyId = RandomTestUtil.randomLong();
 
@@ -74,11 +74,11 @@ public class OpenSearchIndexInformationTest extends BaseOpenSearchTestCase {
 
 	@Test
 	public void testGetFieldMappings() throws Exception {
-		_companyIndexFactoryFixture.createIndices();
+		_indexFactoryFixture.createIndices();
 
 		JSONObject fieldMappingsJSONObject = _jsonFactory.createJSONObject(
 			_openSearchIndexInformation.getFieldMappings(
-				_companyIndexFactoryFixture.getIndexName()));
+				_indexFactoryFixture.getIndexName()));
 
 		AssertUtils.assertEquals(
 			"", _loadJSONObject(testName.getMethodName()),
@@ -87,21 +87,21 @@ public class OpenSearchIndexInformationTest extends BaseOpenSearchTestCase {
 
 	@Test
 	public void testGetIndexName() throws Exception {
-		_companyIndexFactoryFixture.createIndices();
+		_indexFactoryFixture.createIndices();
 
 		Assert.assertTrue(
 			ArrayUtil.contains(
 				_openSearchIndexInformation.getIndexNames(),
-				_companyIndexFactoryFixture.getIndexName()));
+				_indexFactoryFixture.getIndexName()));
 	}
 
 	@Rule
 	public TestName testName = new TestName();
 
-	private CompanyIndexFactoryFixture _createCompanyIndexFactoryFixture(
+	private IndexFactoryFixture _createIndexFactoryFixture(
 		OpenSearchConnectionManager openSearchConnectionManager) {
 
-		return new CompanyIndexFactoryFixture(
+		return new IndexFactoryFixture(
 			testName.getMethodName(), openSearchConnectionManager);
 	}
 
@@ -144,7 +144,7 @@ public class OpenSearchIndexInformationTest extends BaseOpenSearchTestCase {
 		return _jsonFactory.createJSONObject(json);
 	}
 
-	private CompanyIndexFactoryFixture _companyIndexFactoryFixture;
+	private IndexFactoryFixture _indexFactoryFixture;
 	private IndexNameBuilder _indexNameBuilder;
 	private final JSONFactory _jsonFactory = new JSONFactoryImpl();
 	private OpenSearchIndexInformation _openSearchIndexInformation;

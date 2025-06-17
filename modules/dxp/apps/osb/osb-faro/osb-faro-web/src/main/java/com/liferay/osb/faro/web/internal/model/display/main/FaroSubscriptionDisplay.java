@@ -64,8 +64,10 @@ public class FaroSubscriptionDisplay {
 
 		_startDate = baseOSBOfferingEntry.getStartDate();
 
-		_lastAnniversaryDate = _getLastAnniversaryDate(
-			_isBasicSubscription(_name), _startDate);
+		if (_startDate != null) {
+			_lastAnniversaryDate = _getLastAnniversaryDate(
+				_isBasicSubscription(_name), _startDate);
+		}
 
 		FaroSubscriptionPlan baseFaroSubscriptionPlan =
 			FaroSubscriptionConstants.getFaroSubscriptionPlanByProductEntryId(

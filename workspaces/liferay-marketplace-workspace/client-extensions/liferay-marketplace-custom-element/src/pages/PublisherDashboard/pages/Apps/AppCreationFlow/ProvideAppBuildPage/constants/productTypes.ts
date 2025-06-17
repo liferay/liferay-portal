@@ -27,7 +27,7 @@ export const ProductTypeOptions: ProductTypeOption[] = [
 	},
 	{
 		description:
-			'Complex app with multiple parts like i.e. OSGI extentions + CX + low-code applications',
+			'Complex app with multiple parts like i.e. OSGI extentions + CX + low-code applications.',
 		label: i18n.translate('composite-app'),
 		value: ProductType.COMPOSITE_APP,
 	},
@@ -39,7 +39,7 @@ export const ProductTypeOptions: ProductTypeOption[] = [
 	},
 	{
 		description:
-			'Methods for building business applications faster without needing in-depth coding knowledge (i.e.: fragments , data set, object definitions, etc ',
+			'Methods for building business applications faster without needing in-depth coding knowledge (i.e.: fragments , data set, object definitions, etc). ',
 		label: i18n.translate('low-code-configuration'),
 		value: ProductType.LOW_CODE_CONFIGURATION,
 	},

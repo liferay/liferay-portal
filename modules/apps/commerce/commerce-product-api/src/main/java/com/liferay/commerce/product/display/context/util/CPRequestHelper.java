@@ -27,14 +27,14 @@ public class CPRequestHelper extends BaseRequestHelper {
 		super(httpServletRequest);
 
 		Object portletRequest = httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (portletRequest instanceof RenderRequest) {
 			_renderRequest = (RenderRequest)portletRequest;
 		}
 
 		Object portletResponse = httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		if (portletResponse instanceof RenderResponse) {
 			_renderResponse = (RenderResponse)portletResponse;

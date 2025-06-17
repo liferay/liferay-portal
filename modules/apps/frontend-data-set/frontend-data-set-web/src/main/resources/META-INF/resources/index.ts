@@ -24,6 +24,7 @@ export declare function FrontendDataSet({
 	formName,
 	header,
 	id,
+	infoPanelComponent,
 	inlineAddingSettings,
 	inlineEditingSettings,
 	items,
@@ -140,6 +141,7 @@ export interface IItemsActions {
 		| 'async'
 		| 'blank'
 		| 'headless'
+		| 'infoPanel'
 		| 'inlineEdit'
 		| 'link'
 		| 'modal'
@@ -274,6 +276,7 @@ export interface IFrontendDataSetProps {
 		title?: string;
 	};
 	id: string;
+	infoPanelComponent?: React.ComponentType<TInfoPanelComponent>;
 	inlineAddingSettings?: {
 		apiURL: string;
 		defaultBodyContent: object;
@@ -312,6 +315,10 @@ export interface IFrontendDataSetProps {
 	views: TViews[];
 	viewsTitle?: string;
 }
+
+export type TInfoPanelComponent = {
+	items?: Array<any>;
+};
 
 export interface IModalConfig {
 	disableHeader: boolean;

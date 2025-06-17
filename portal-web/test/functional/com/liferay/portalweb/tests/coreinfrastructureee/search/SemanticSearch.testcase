@@ -38,11 +38,11 @@ definition {
 
 		ServerAdministration.addCategoryLogLevels(
 			categoryLevel = "DEBUG",
-			categoryName = "com.liferay.portal.search.internal.ml.embedding.text.TextEmbeddingProvidersHolderImpl");
+			categoryName = "com.liferay.portal.search.internal.ml.embedding.text.TextEmbeddingRetrieverImpl");
 
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 
-		FileUtil.write("${liferayHome}/osgi/configs/com.liferay.portal.search.internal.ml.embedding.text.TextEmbeddingProvidersHolderImpl.config", "disabledProviders=[\"txtai\",\"huggingFaceInferenceAPI\"]");
+		FileUtil.write("${liferayHome}/osgi/configs/com.liferay.portal.search.internal.ml.embedding.text.TextEmbeddingRetrieverImpl.config", "disabledProviders=[\"txtai\",\"huggingFaceInferenceAPI\"]");
 
 		OSGiConfig.waitForOSGiConfig();
 
@@ -74,7 +74,7 @@ definition {
 			key_value = "Hugging Face Inference API",
 			locator1 = "Select#GENERIC_SELECT_VALUE");
 
-		OSGiConfig.deleteOSGiConfigFile(osgiConfigFileName = "com.liferay.portal.search.internal.ml.embedding.text.TextEmbeddingProvidersHolderImpl.config");
+		OSGiConfig.deleteOSGiConfigFile(osgiConfigFileName = "com.liferay.portal.search.internal.ml.embedding.text.TextEmbeddingRetrieverImpl.config");
 
 		WaitForConsoleTextPresent(value1 = "Enabling txtai");
 

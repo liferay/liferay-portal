@@ -63,7 +63,7 @@ public class CreateAccountNavigationPostPageInclude implements PageInclude {
 		if (FeatureFlagManagerUtil.isEnabled("LPD-6378")) {
 			PortletConfig portletConfig =
 				(PortletConfig)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_CONFIG);
+					JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 			String portletName = portletConfig.getPortletName();
 
@@ -142,7 +142,7 @@ public class CreateAccountNavigationPostPageInclude implements PageInclude {
 
 			PortletConfig portletConfig =
 				(PortletConfig)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_CONFIG);
+					JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 			return PortletURLBuilder.create(
 				PortletURLFactoryUtil.create(

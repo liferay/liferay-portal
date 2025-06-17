@@ -281,8 +281,7 @@ public class StringBundler implements Serializable {
 		StringBuilder sb = null;
 
 		if (length > _THREAD_LOCAL_BUFFER_LIMIT) {
-			Reference<StringBuilder> reference =
-				_stringBuilderThreadLocal.get();
+			Reference<StringBuilder> reference = _stringBuilderReference.get();
 
 			if (reference != null) {
 				sb = reference.get();
@@ -291,7 +290,7 @@ public class StringBundler implements Serializable {
 			if (sb == null) {
 				sb = new StringBuilder(length);
 
-				_stringBuilderThreadLocal.set(new SoftReference<>(sb));
+				_stringBuilderReference.set(new SoftReference<>(sb));
 			}
 			else {
 				sb.setLength(length);
@@ -315,7 +314,7 @@ public class StringBundler implements Serializable {
 	private static final int _THREAD_LOCAL_BUFFER_LIMIT;
 
 	private static final ThreadLocal<Reference<StringBuilder>>
-		_stringBuilderThreadLocal;
+		_stringBuilderReference;
 	private static final long serialVersionUID = 1L;
 
 	static {
@@ -329,12 +328,12 @@ public class StringBundler implements Serializable {
 
 			_THREAD_LOCAL_BUFFER_LIMIT = threadLocalBufferLimit;
 
-			_stringBuilderThreadLocal = new CentralizedThreadLocal<>(false);
+			_stringBuilderReference = new CentralizedThreadLocal<>(false);
 		}
 		else {
 			_THREAD_LOCAL_BUFFER_LIMIT = Integer.MAX_VALUE;
 
-			_stringBuilderThreadLocal = null;
+			_stringBuilderReference = null;
 		}
 	}
 

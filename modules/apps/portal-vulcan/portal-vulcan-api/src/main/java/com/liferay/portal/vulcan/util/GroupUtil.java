@@ -50,6 +50,11 @@ public class GroupUtil {
 			group = groupLocalService.fetchGroup(GetterUtil.getLong(siteKey));
 		}
 
+		if (group == null) {
+			group = groupLocalService.fetchGroupByExternalReferenceCode(
+				siteKey, companyId);
+		}
+
 		if (_checkGroup(group)) {
 			return group.getGroupId();
 		}
@@ -74,8 +79,9 @@ public class GroupUtil {
 	}
 
 	private static boolean _checkGroup(Group group) {
-		if (_isDepotOrSite(group) ||
-			((group != null) && _isDepotOrSite(group.getLiveGroup()))) {
+		if ((group != null) &&
+			(_isDepotOrSite(group) || _isDepotOrSite(group.getLiveGroup()) ||
+			 group.isUserGroup())) {
 
 			return true;
 		}

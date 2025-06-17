@@ -236,7 +236,7 @@ public class TranslateDisplayContext {
 			() -> {
 				PortletRequest portletRequest =
 					(PortletRequest)_httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST);
+						JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 				return SessionErrors.contains(
 					portletRequest, "duplicateChanges");

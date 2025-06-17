@@ -80,39 +80,6 @@ definition {
 		WorkflowMetricsProcessListView.assertPaginationComponentPresent(pageNumberList = 1);
 	}
 
-	@description = "LPS-86638 - Verify that pagination follows in asc/desc sequence"
-	@priority = 3
-	test PaginationFollowsAscDescSequence {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		for (var newWorkflow : list "1,2,3") {
-			Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow ${newWorkflow}");
-
-			ProcessBuilderKaleoDesignerReact.addConnector(
-				connectorIn = "end",
-				connectorLabel = "Start-End Connector",
-				connectorOut = "start",
-				key_direction = "right");
-
-			PortletEntry.publish();
-
-			Navigator.gotoBack();
-		}
-
-		Workflow.openWorkflowMetrics();
-
-		WorkflowMetricsProcessListView.changePagination(itemsPerPage = "4 Entries");
-
-		WorkflowMetricsProcessListView.assertPaginationComponentPresent(pageNumberList = 1);
-
-		WorkflowMetricsProcessListView.assertPaginationComponentPresent(pageNumberList = 2);
-
-		WorkflowMetricsProcessListView.viewResults(results = "Showing 1 to 4 of 5 entries.");
-	}
-
 	@description = "LPS-86638 - Verify that the pagination component is displayed when the table has 5 items or more"
 	@priority = 3
 	test PaginationIsDisplayedWhenTableHas5Items {

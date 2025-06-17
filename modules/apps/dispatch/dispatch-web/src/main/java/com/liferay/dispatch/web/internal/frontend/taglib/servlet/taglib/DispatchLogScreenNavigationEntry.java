@@ -57,7 +57,7 @@ public class DispatchLogScreenNavigationEntry
 
 		RenderRequest renderRequest =
 			(RenderRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		DispatchLogDisplayContext dispatchLogDisplayContext =
 			new DispatchLogDisplayContext(_dispatchLogService, renderRequest);

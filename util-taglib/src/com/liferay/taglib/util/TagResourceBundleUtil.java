@@ -92,7 +92,7 @@ public class TagResourceBundleUtil {
 
 			PortletConfig portletConfig =
 				(PortletConfig)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_CONFIG);
+					JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 			if (portletConfig != null) {
 				LiferayPortletContext liferayPortletContext =
@@ -125,7 +125,7 @@ public class TagResourceBundleUtil {
 
 		PortletConfig portletConfig =
 			(PortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		if (portletConfig != null) {
 			return portletConfig.getResourceBundle(locale);

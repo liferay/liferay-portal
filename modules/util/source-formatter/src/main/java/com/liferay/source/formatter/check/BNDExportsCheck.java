@@ -317,11 +317,7 @@ public class BNDExportsCheck extends BaseFileCheck {
 
 								String fileName = file.getName();
 
-								if (fileName.endsWith(".java")) {
-									return true;
-								}
-
-								return false;
+								return fileName.endsWith(".java");
 							}
 
 						});

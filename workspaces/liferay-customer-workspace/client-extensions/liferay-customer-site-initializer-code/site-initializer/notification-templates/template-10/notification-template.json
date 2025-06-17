@@ -1,8 +1,8 @@
 {
 	"description": "",
 	"editorType": "richText",
-	"externalReferenceCode": "UPDATED-BUSINESS-EVENTS",
-	"name": "Updated Business Events",
+	"externalReferenceCode": "CANCELED-BUSINESS-EVENTS",
+	"name": "Canceled Business Events",
 	"recipientType": "email",
 	"recipients": [
 		{
@@ -18,7 +18,7 @@
 		}
 	],
 	"subject": {
-		"en_US": "Update to [%BUSINESSEVENT_EVENTTYPE%] - [%PROJECT_NAME%] - [%BUSINESSEVENT_NAME%]"
+		"en_US": "Canceled [%BUSINESSEVENT_EVENTTYPE%] - [%PROJECT_NAME%] - [%BUSINESSEVENT_NAME%]"
 	},
 	"type": "email"
 }

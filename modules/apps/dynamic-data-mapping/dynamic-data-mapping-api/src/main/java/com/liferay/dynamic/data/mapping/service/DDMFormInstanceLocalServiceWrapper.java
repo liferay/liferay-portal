@@ -507,8 +507,7 @@ public class DDMFormInstanceLocalServiceWrapper
 
 	@Override
 	public com.liferay.dynamic.data.mapping.storage.DDMFormValues
-			getFormInstanceSettingsFormValues(DDMFormInstance formInstance)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		getFormInstanceSettingsFormValues(DDMFormInstance formInstance) {
 
 		return _ddmFormInstanceLocalService.getFormInstanceSettingsFormValues(
 			formInstance);

@@ -543,7 +543,7 @@ public class InvokerPortletImpl
 				liferayPortletResponse.getHttpServletResponse();
 
 			httpServletRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_PORTLET, _portlet);
+				JavaConstants.JAKARTA_PORTLET_PORTLET, _portlet);
 			httpServletRequest.setAttribute(
 				PortletRequest.LIFECYCLE_PHASE, lifecycle);
 			httpServletRequest.setAttribute(

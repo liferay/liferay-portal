@@ -4,28 +4,38 @@
  */
 
 import ClayForm, {ClayCheckbox} from '@clayui/form';
+import ClayIcon from '@clayui/icon';
 import ClayMultiSelect from '@clayui/multi-select';
 import classNames from 'classnames';
-import {FieldFeedback} from 'frontend-js-components-web';
+import {FieldFeedback, useId} from 'frontend-js-components-web';
 import React from 'react';
 
 import {Space} from '../../types/Space';
 import {useCache} from '../contexts/CacheContext';
-import {State, useSelector, useStateDispatch} from '../contexts/StateContext';
+import {State, useStateDispatch} from '../contexts/StateContext';
 import selectStructureSpaces from '../selectors/selectStructureSpaces';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectValidationErrors from '../selectors/selectValidationErrors';
+import {Structure} from '../types/Structure';
 
 type Item = {
 	label: string;
 	value: string;
 };
 
-export default function Spaces() {
+export default function Spaces({
+	disabled,
+	structure,
+}: {
+	disabled?: boolean;
+	structure: Structure;
+}) {
 	const dispatch = useStateDispatch();
-	const structureSpaces = useSelector(selectStructureSpaces);
-	const structureUuid = useSelector(selectStructureUuid);
-	const validationErrors = useSelector(selectValidationErrors(structureUuid));
+	const structureSpaces = selectStructureSpaces(structure);
+	const structureUuid = selectStructureUuid(structure);
+	const validationErrors = selectValidationErrors(structureUuid)(structure);
+
+	const id = useId();
 
 	const {data: spaces, status} = useCache('spaces');
 
@@ -44,9 +54,20 @@ export default function Spaces() {
 			</p>
 
 			<ClayForm.Group className={classNames({'has-error': hasError})}>
+				<label htmlFor={id}>
+					{Liferay.Language.get('spaces')}
+
+					<ClayIcon
+						className="ml-1 reference-mark"
+						focusable="false"
+						role="presentation"
+						symbol="asterisk"
+					/>
+				</label>
+
 				<ClayMultiSelect
-					aria-label={Liferay.Language.get('space-selector')}
-					disabled={structureSpaces === 'all'}
+					disabled={disabled || structureSpaces === 'all'}
+					id={id}
 					items={getSelection(structureSpaces, spaces)}
 					loadingState={status === 'saving' ? 1 : 0}
 					onBlur={() => {
@@ -90,6 +111,7 @@ export default function Spaces() {
 			<ClayForm.Group>
 				<ClayCheckbox
 					checked={structureSpaces === 'all'}
+					disabled={disabled}
 					label={Liferay.Language.get(
 						'make-this-structure-available-in-all-spaces'
 					)}

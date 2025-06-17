@@ -506,7 +506,7 @@ const View: React.FC<IViewProps> = ({
 								'all-users-from-this-workspace-have-access-to-this-property'
 							)}
 							icon={{
-								symbol: 'ac-no-sites'
+								symbol: 'ac_no_sites'
 							}}
 							title={Liferay.Language.get('all-aboard')}
 						/>

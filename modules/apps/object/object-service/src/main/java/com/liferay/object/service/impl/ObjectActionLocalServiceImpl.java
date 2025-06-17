@@ -925,7 +925,7 @@ public class ObjectActionLocalServiceImpl
 			}
 		}
 
-		if (!Objects.isNull(
+		if (Objects.nonNull(
 				parametersUnicodeProperties.get(
 					"usePreferredLanguageForGuests")) &&
 			!_isUsePreferredLanguageForGuestsSupported(

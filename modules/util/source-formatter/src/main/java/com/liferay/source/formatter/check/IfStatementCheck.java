@@ -48,17 +48,17 @@ public class IfStatementCheck extends BaseFileCheck {
 					getLineNumber(content, matcher.start()));
 			}
 
-			if (!followingCode.startsWith("if (")) {
-				continue;
-			}
+			if (followingCode.startsWith("if (")) {
+				IfStatement ifStatement2 = _getIfStatement(
+					content, ifStatement1.getEnd());
 
-			IfStatement ifStatement2 = _getIfStatement(
-				content, ifStatement1.getEnd());
+				String newContent = _combineStatementsWithSameBodies(
+					content, ifStatement1, ifStatement2);
 
-			String newContent = _combineStatementsWithSameBodies(
-				content, ifStatement1, ifStatement2);
+				if (content.equals(newContent)) {
+					continue;
+				}
 
-			if (!content.equals(newContent)) {
 				if (getSourceProcessor() instanceof JSPSourceProcessor) {
 					addMessage(
 						fileName,
@@ -71,6 +71,36 @@ public class IfStatementCheck extends BaseFileCheck {
 
 				return newContent;
 			}
+
+			if (!followingCode.startsWith("return false;") &&
+				!followingCode.startsWith("return true;")) {
+
+				continue;
+			}
+
+			String clause = ifStatement1.getClause();
+
+			if (clause.contains("instanceof")) {
+				continue;
+			}
+
+			int x = StringUtil.indexOfAny(
+				clause, new String[] {"&", "<", "=", ">", "|", "^"});
+
+			if (x != -1) {
+				continue;
+			}
+
+			String returnStatement = _moveStatementInsideReturn(
+				ifStatement1.getBody(), clause, followingCode);
+
+			if (returnStatement == null) {
+				continue;
+			}
+
+			return content.substring(0, ifStatement1.getStart()) +
+				returnStatement +
+					followingCode.substring(followingCode.indexOf(";"));
 		}
 
 		return content;
@@ -173,6 +203,31 @@ public class IfStatementCheck extends BaseFileCheck {
 			StringUtil.trim(content.substring(x + 3, y)),
 			content.substring(content.indexOf("(", pos), x + 1),
 			StringUtil.trim(content.substring(y + 1)), pos, y + 1);
+	}
+
+	private String _moveStatementInsideReturn(
+		String body, String clause, String followingCode) {
+
+		String strippedParenthesesClause = clause.substring(
+			1, clause.length() - 1);
+
+		if (body.equals("return true;") &&
+			followingCode.startsWith("return false;")) {
+
+			return "return " + strippedParenthesesClause;
+		}
+
+		if (body.equals("return false;") &&
+			followingCode.startsWith("return true;")) {
+
+			if (strippedParenthesesClause.startsWith("!")) {
+				return "return " + strippedParenthesesClause.substring(1);
+			}
+
+			return "return !" + strippedParenthesesClause;
+		}
+
+		return null;
 	}
 
 	private static final Pattern _assignStatementPattern = Pattern.compile(

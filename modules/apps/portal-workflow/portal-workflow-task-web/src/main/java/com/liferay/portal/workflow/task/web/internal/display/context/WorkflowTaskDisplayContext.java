@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -220,7 +219,7 @@ public class WorkflowTaskDisplayContext {
 		WorkflowHandler<?> workflowHandler = getWorkflowHandler(workflowTask);
 
 		return workflowHandler.getAssetRenderer(
-			getWorkflowContextEntryClassPK(workflowTask));
+			getWorkflowContextEntryClassPK(workflowHandler, workflowTask));
 	}
 
 	public AssetRendererFactory<?> getAssetRendererFactory() {
@@ -234,7 +233,7 @@ public class WorkflowTaskDisplayContext {
 		WorkflowHandler<?> workflowHandler = getWorkflowHandler(workflowTask);
 
 		String title = workflowHandler.getTitle(
-			getWorkflowContextEntryClassPK(workflowTask),
+			getWorkflowContextEntryClassPK(workflowHandler, workflowTask),
 			getTaskContentLocale());
 
 		if (title != null) {
@@ -592,15 +591,13 @@ public class WorkflowTaskDisplayContext {
 		};
 	}
 
-	public long getWorkflowContextEntryClassPK(WorkflowTask workflowTask)
+	public long getWorkflowContextEntryClassPK(
+			WorkflowHandler<?> workflowHandler, WorkflowTask workflowTask)
 		throws PortalException {
 
-		Map<String, Serializable> workflowContext = _getWorkflowContext(
+		return workflowHandler.getEntryClassPK(
+			_workflowTaskRequestHelper.getCompanyId(), _httpServletRequest,
 			workflowTask);
-
-		return GetterUtil.getLong(
-			(String)workflowContext.get(
-				WorkflowConstants.CONTEXT_ENTRY_CLASS_PK));
 	}
 
 	public WorkflowHandler<?> getWorkflowHandler(WorkflowTask workflowTask)
@@ -918,7 +915,7 @@ public class WorkflowTaskDisplayContext {
 		WorkflowHandler<?> workflowHandler = getWorkflowHandler(workflowTask);
 
 		return workflowHandler.getURLEdit(
-			getWorkflowContextEntryClassPK(workflowTask),
+			getWorkflowContextEntryClassPK(workflowHandler, workflowTask),
 			_liferayPortletRequest, _liferayPortletResponse);
 	}
 
@@ -1103,7 +1100,7 @@ public class WorkflowTaskDisplayContext {
 		WorkflowHandler<?> workflowHandler = getWorkflowHandler(workflowTask);
 
 		return workflowHandler.getURLViewDiffs(
-			getWorkflowContextEntryClassPK(workflowTask),
+			getWorkflowContextEntryClassPK(workflowHandler, workflowTask),
 			_liferayPortletRequest, _liferayPortletResponse);
 	}
 

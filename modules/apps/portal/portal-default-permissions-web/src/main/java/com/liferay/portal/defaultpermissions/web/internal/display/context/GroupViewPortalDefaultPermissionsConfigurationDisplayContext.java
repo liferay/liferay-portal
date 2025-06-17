@@ -56,10 +56,10 @@ public class GroupViewPortalDefaultPermissionsConfigurationDisplayContext
 
 		_liferayPortletRequest = PortalUtil.getLiferayPortletRequest(
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST));
+				JavaConstants.JAKARTA_PORTLET_REQUEST));
 		_liferayPortletResponse = PortalUtil.getLiferayPortletResponse(
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE));
+				JavaConstants.JAKARTA_PORTLET_RESPONSE));
 	}
 
 	@Override

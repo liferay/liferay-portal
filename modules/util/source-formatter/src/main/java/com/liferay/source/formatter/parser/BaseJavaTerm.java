@@ -96,11 +96,7 @@ public abstract class BaseJavaTerm implements JavaTerm {
 
 		Matcher matcher = pattern.matcher(_content);
 
-		if (matcher.find()) {
-			return true;
-		}
-
-		return false;
+		return matcher.find();
 	}
 
 	@Override
@@ -128,11 +124,8 @@ public abstract class BaseJavaTerm implements JavaTerm {
 
 	@Override
 	public boolean isDefault() {
-		if (Objects.equals(_accessModifier, JavaTerm.ACCESS_MODIFIER_DEFAULT)) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			_accessModifier, JavaTerm.ACCESS_MODIFIER_DEFAULT);
 	}
 
 	@Override
@@ -187,31 +180,19 @@ public abstract class BaseJavaTerm implements JavaTerm {
 
 	@Override
 	public boolean isPrivate() {
-		if (Objects.equals(_accessModifier, JavaTerm.ACCESS_MODIFIER_PRIVATE)) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			_accessModifier, JavaTerm.ACCESS_MODIFIER_PRIVATE);
 	}
 
 	@Override
 	public boolean isProtected() {
-		if (Objects.equals(
-				_accessModifier, JavaTerm.ACCESS_MODIFIER_PROTECTED)) {
-
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			_accessModifier, JavaTerm.ACCESS_MODIFIER_PROTECTED);
 	}
 
 	@Override
 	public boolean isPublic() {
-		if (Objects.equals(_accessModifier, JavaTerm.ACCESS_MODIFIER_PUBLIC)) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(_accessModifier, JavaTerm.ACCESS_MODIFIER_PUBLIC);
 	}
 
 	@Override

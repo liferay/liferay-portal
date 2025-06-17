@@ -5,17 +5,19 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.Build;
+import com.liferay.jenkins.results.parser.BuildReport;
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
-import com.liferay.jenkins.results.parser.TestClassResult;
-import com.liferay.jenkins.results.parser.TestResult;
-import com.liferay.jenkins.results.parser.TopLevelBuild;
+import com.liferay.jenkins.results.parser.TestClassReport;
+import com.liferay.jenkins.results.parser.TestReport;
+import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.SemVerModulesTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,10 +28,10 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 	extends BatchBuildTestrayCaseResult {
 
 	public SemVerModulesBatchBuildTestrayCaseResult(
-		TestrayBuild testrayBuild, TopLevelBuild topLevelBuild,
+		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport,
 		AxisTestClassGroup axisTestClassGroup, TestClass testClass) {
 
-		super(testrayBuild, topLevelBuild, axisTestClassGroup);
+		super(testrayBuild, topLevelBuildReport, axisTestClassGroup);
 
 		_semVerModulesTestClass = (SemVerModulesTestClass)testClass;
 	}
@@ -48,7 +50,7 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 
 	@Override
 	public long getDuration() {
-		List<TestResult> testResults = getTestResults();
+		List<TestReport> testResults = getTestReports();
 
 		if (testResults.isEmpty()) {
 			return super.getDuration();
@@ -56,7 +58,7 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 
 		long duration = 0;
 
-		for (TestResult testResult : testResults) {
+		for (TestReport testResult : testResults) {
 			duration += testResult.getDuration();
 		}
 
@@ -65,23 +67,23 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 
 	@Override
 	public String getErrors() {
-		List<TestResult> testResults = getTestResults();
+		List<TestReport> testReports = getTestReports();
 
-		Build build = getBuild();
+		BuildReport buildReport = getBuildReport();
 
-		if (testResults.isEmpty()) {
-			if (build == null) {
+		if (testReports.isEmpty()) {
+			if (buildReport == null) {
 				return "Unable to run build on CI";
 			}
 
-			String result = build.getResult();
+			String result = buildReport.getResult();
 
 			if (result == null) {
 				return "Unable to finish build on CI";
 			}
 
 			if (result.equals("ABORTED")) {
-				return build.getJobName() + " timed out after 2 hours";
+				return buildReport.getJobName() + " timed out after 2 hours";
 			}
 
 			if (result.equals("SUCCESS") || result.equals("UNSTABLE")) {
@@ -93,11 +95,11 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 
 		StringBuilder sb = new StringBuilder();
 
-		for (TestResult testResult : testResults) {
-			if (testResult.isFailing()) {
-				sb.append(testResult.getTestName());
+		for (TestReport testReport : testReports) {
+			if (testReport.isFailing()) {
+				sb.append(testReport.getTestName());
 				sb.append(": ");
-				sb.append(testResult.getErrorDetails());
+				sb.append(testReport.getErrorDetails());
 				sb.append("\n");
 			}
 		}
@@ -111,7 +113,7 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 		String errorMessage = sb.toString();
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
-			errorMessage = build.getFailureMessage();
+			errorMessage = buildReport.getFailureMessage();
 		}
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
@@ -143,16 +145,16 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 
 	@Override
 	public Status getStatus() {
-		Build build = getBuild();
+		BuildReport buildReport = getBuildReport();
 
-		if (build == null) {
+		if (buildReport == null) {
 			return Status.UNTESTED;
 		}
 
-		List<TestResult> testResults = getTestResults();
+		List<TestReport> testReports = getTestReports();
 
-		if (testResults.isEmpty()) {
-			String result = build.getResult();
+		if (testReports.isEmpty()) {
+			String result = buildReport.getResult();
 
 			if ((result == null) || result.equals("SUCCESS") ||
 				result.equals("UNSTABLE")) {
@@ -163,8 +165,8 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 			return Status.FAILED;
 		}
 
-		for (TestResult testResult : testResults) {
-			if (testResult.isFailing()) {
+		for (TestReport testReport : testReports) {
+			if (testReport.isFailing()) {
 				return Status.FAILED;
 			}
 		}
@@ -172,40 +174,50 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 		return Status.PASSED;
 	}
 
-	public List<TestResult> getTestResults() {
-		if (_testResults != null) {
-			return _testResults;
+	public List<TestReport> getTestReports() {
+		if (_testReports != null) {
+			return _testReports;
 		}
 
-		_testResults = new ArrayList<>();
+		_testReports = new ArrayList<>();
 
-		Build build = getBuild();
+		DownstreamBuildReport downstreamBuildReport =
+			getDownstreamBuildReport();
 
-		if (build == null) {
-			return _testResults;
+		if (downstreamBuildReport == null) {
+			return _testReports;
 		}
 
-		TestClassResult testClassResult = build.getTestClassResult(
-			_TEST_CLASS_NAME);
+		TestClassReport buildTestClassReport = null;
 
-		if (testClassResult == null) {
-			return _testResults;
+		for (TestClassReport testClassReport :
+				downstreamBuildReport.getTestClassReports()) {
+
+			if (Objects.equals(
+					testClassReport.getTestClassName(), _TEST_CLASS_NAME)) {
+
+				buildTestClassReport = testClassReport;
+			}
 		}
 
-		for (TestResult testResult : testClassResult.getTestResults()) {
+		if (buildTestClassReport == null) {
+			return _testReports;
+		}
+
+		for (TestReport testReport : buildTestClassReport.getTestReports()) {
 			Matcher matcher = _modulePathPattern.matcher(
-				testResult.getTestName());
+				testReport.getTestName());
 
 			if (matcher.find()) {
 				String modulePath = matcher.group("modulePath");
 
 				if (modulePath.startsWith(_getModulePath())) {
-					_testResults.add(testResult);
+					_testReports.add(testReport);
 				}
 			}
 		}
 
-		return _testResults;
+		return _testReports;
 	}
 
 	private String _getModulePath() {
@@ -225,6 +237,6 @@ public class SemVerModulesBatchBuildTestrayCaseResult
 		"testSemanticVersioning\\[(?<modulePath>[\\w\\/-]+)\\]");
 
 	private final SemVerModulesTestClass _semVerModulesTestClass;
-	private List<TestResult> _testResults;
+	private List<TestReport> _testReports;
 
 }

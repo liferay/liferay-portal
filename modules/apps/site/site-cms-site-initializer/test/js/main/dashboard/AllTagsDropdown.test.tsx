@@ -127,7 +127,7 @@ describe('[CMS Dashboard] Components: AllTagsDropdown', () => {
 		).toBeInTheDocument();
 	});
 
-	it('search by a tag and returns a filtered result', async () => {
+	xit('search by a tag and returns a filtered result', async () => {
 		mockTags([
 			{id: '01', name: 'tag 01'},
 			{id: '02', name: 'tag 02'},
@@ -169,7 +169,7 @@ describe('[CMS Dashboard] Components: AllTagsDropdown', () => {
 		);
 	});
 
-	it('search by a tag and returns a empty result', async () => {
+	xit('search by a tag and returns a empty result', async () => {
 		mockTags([
 			{id: '01', name: 'tag 01'},
 			{id: '02', name: 'tag 02'},

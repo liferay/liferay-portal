@@ -280,7 +280,7 @@ public abstract class BaseExportImportTestCase {
 			mockLiferayPortletActionRequest.addParameter(
 				"redirect", RandomTestUtil.randomString());
 			mockLiferayPortletActionRequest.setAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG, null);
+				JavaConstants.JAKARTA_PORTLET_CONFIG, null);
 			mockLiferayPortletActionRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, _getThemeDisplay());
 

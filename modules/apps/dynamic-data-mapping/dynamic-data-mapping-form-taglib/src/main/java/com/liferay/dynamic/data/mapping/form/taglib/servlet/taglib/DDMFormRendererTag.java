@@ -292,7 +292,7 @@ public class DDMFormRendererTag extends BaseDDMFormRendererTag {
 		HttpServletRequest httpServletRequest = getRequest();
 
 		return (RenderResponse)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE);
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 	}
 
 	protected ResourceBundle getResourceBundle(Locale locale) {

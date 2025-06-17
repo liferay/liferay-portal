@@ -11,8 +11,10 @@ import com.liferay.portal.search.engine.adapter.index.StatsIndexResponse;
 /**
  * @author Felipe Lorenz
  */
-public interface StatsIndexRequestExecutor {
+public class StatsIndexRequestExecutor {
 
-	public StatsIndexResponse execute(StatsIndexRequest statsIndexRequest);
+	public StatsIndexResponse execute(StatsIndexRequest statsIndexRequest) {
+		throw new UnsupportedOperationException();
+	}
 
 }

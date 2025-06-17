@@ -23,27 +23,6 @@ String linkId = HtmlUtil.escape(PortalUtil.generateRandomKey(request, "info-box"
 			String href = Validator.isNotNull(actionUrl) ? actionUrl : "#";
 			%>
 
-			<c:if test="<%= Validator.isNotNull(actionTargetId) %>">
-
-				<%
-				href = "#";
-				%>
-
-				<aui:script>
-					var link = document.getElementById('<%= linkId %>');
-
-					if (link) {
-						link.addEventListener('click', (e) => {
-							e.preventDefault();
-
-							Liferay.fire('open-modal', {
-								id: '<%= HtmlUtil.escapeJS(actionTargetId) %>',
-							});
-						});
-					}
-				</aui:script>
-			</c:if>
-
 			<c:if test="<%= Validator.isNotNull(actionContext) %>">
 
 				<%

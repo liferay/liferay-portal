@@ -21,7 +21,7 @@ public class KaleoFormsRequestHelper extends BaseRequestHelper {
 		super(httpServletRequest);
 
 		_renderRequest = (RenderRequest)httpServletRequest.getAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST);
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 	}
 
 	public RenderRequest getRenderRequest() {

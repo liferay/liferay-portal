@@ -94,7 +94,7 @@ public class AnonymizeNonreviewableUADDataMVCRenderCommand
 
 		PortletRequest portletRequest =
 			(PortletRequest)renderRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		SearchContainer<UADApplicationSummaryDisplay> searchContainer =
 			new SearchContainer<>(
@@ -103,7 +103,7 @@ public class AnonymizeNonreviewableUADDataMVCRenderCommand
 					_portal.getLiferayPortletRequest(portletRequest),
 					_portal.getLiferayPortletResponse(
 						(PortletResponse)renderRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE))),
+							JavaConstants.JAKARTA_PORTLET_RESPONSE))),
 				null, null);
 
 		searchContainer.setEmptyResultsMessage(

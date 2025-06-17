@@ -185,8 +185,8 @@ public class SolrIndexRequestExecutor implements IndexRequestExecutor {
 	@Reference
 	private RefreshIndexRequestExecutor _refreshIndexRequestExecutor;
 
-	@Reference
-	private StatsIndexRequestExecutor _statsIndexRequestExecutor;
+	private final StatsIndexRequestExecutor _statsIndexRequestExecutor =
+		new StatsIndexRequestExecutor();
 
 	@Reference
 	private UpdateIndexSettingsIndexRequestExecutor

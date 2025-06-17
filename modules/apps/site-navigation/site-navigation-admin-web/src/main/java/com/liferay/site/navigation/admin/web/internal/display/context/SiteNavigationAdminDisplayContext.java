@@ -483,10 +483,10 @@ public class SiteNavigationAdminDisplayContext {
 
 					RenderRequest renderRequest =
 						(RenderRequest)_httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_REQUEST);
+							JavaConstants.JAKARTA_PORTLET_REQUEST);
 					RenderResponse renderResponse =
 						(RenderResponse)_httpServletRequest.getAttribute(
-							JavaConstants.JAVAX_PORTLET_RESPONSE);
+							JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 					return String.valueOf(
 						siteNavigationMenuItemType.getAddURL(

@@ -123,7 +123,7 @@ public class RestoreTrashPortletConfigurationIcon
 		try {
 			PortletResponse portletResponse =
 				(PortletResponse)portletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_RESPONSE);
+					JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 			TrashDisplayContext trashDisplayContext = new TrashDisplayContext(
 				_portal.getHttpServletRequest(portletRequest),

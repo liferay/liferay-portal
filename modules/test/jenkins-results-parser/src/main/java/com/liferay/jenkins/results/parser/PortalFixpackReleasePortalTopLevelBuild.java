@@ -66,7 +66,8 @@ public class PortalFixpackReleasePortalTopLevelBuild
 			URL portalFixpackURL = new URL(
 				getParameterValue("TEST_BUILD_FIX_PACK_ZIP_URL"));
 
-			_portalFixpackRelease = new PortalFixpackRelease(portalFixpackURL);
+			_portalFixpackRelease =
+				PortalReleaseFactory.newPortalFixpackRelease(portalFixpackURL);
 		}
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);

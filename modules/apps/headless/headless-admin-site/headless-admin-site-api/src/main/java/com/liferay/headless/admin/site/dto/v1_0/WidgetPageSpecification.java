@@ -176,6 +176,25 @@ public class WidgetPageSpecification
 			sb.append(String.valueOf(settings));
 		}
 
+		String siteTemplatePageSpecificationExternalReferenceCode =
+			getSiteTemplatePageSpecificationExternalReferenceCode();
+
+		if (siteTemplatePageSpecificationExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append(
+				"\"siteTemplatePageSpecificationExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(siteTemplatePageSpecificationExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		Status status = getStatus();
 
 		if (status != null) {

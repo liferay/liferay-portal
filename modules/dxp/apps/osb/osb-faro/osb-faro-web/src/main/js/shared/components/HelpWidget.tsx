@@ -85,7 +85,7 @@ const HelpWidget: React.FC<IHelpWidgetProps> = ({
 					>
 						<ClayIcon
 							className='icon-root'
-							symbol='ac-question-mark'
+							symbol='ac_question_mark'
 						/>
 					</ClayButton>
 				}

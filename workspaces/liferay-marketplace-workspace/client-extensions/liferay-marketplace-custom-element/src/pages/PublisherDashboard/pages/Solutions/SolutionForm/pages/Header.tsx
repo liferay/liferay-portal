@@ -338,7 +338,7 @@ const Header = () => {
 						acceptFileTypes={ACCEPT_FILE_TYPES}
 						buttonText={i18n.translate('select-a-file')}
 						description={i18n.translate(
-							'only-gif-jpg-png-are-allowed-ax-file-size-is-5mb'
+							'only-gif-jpg-jpeg-png-are-allowed-max-file-size-is-5mb'
 						)}
 						disabled={
 							contentType.content.headerImages?.length ===

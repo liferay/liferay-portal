@@ -1,6 +1,7 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
+		"@clayui/core": "3.138.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/link": "3.128.0",
 		"@liferay/frontend-data-set-web": "*",

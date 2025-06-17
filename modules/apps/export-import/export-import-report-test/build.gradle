@@ -1,0 +1,4 @@
+dependencies {
+	testIntegrationImplementation project(":apps:export-import:export-import-report-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}

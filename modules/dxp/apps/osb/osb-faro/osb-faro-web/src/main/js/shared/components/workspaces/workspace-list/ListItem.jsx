@@ -241,7 +241,7 @@ export default class WorkspaceListItem extends React.Component {
 					</span>
 					<ClayIcon
 						className='icon-root icon-size-md'
-						symbol='envelope-close'
+						symbol='envelope_close'
 					/>
 				</div>
 			);

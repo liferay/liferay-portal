@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.test.rule;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -14,21 +15,24 @@ import org.junit.runner.Description;
 /**
  * @author Cristina González
  */
-public class CompanyProviderClassTestRule extends ClassTestRule<Long> {
+public class CompanyProviderClassTestRule extends ClassTestRule<SafeCloseable> {
 
 	public static final CompanyProviderClassTestRule INSTANCE =
 		new CompanyProviderClassTestRule();
 
 	@Override
-	protected void afterClass(Description description, Long previousCompanyId) {
-		CompanyThreadLocal.setCompanyId(previousCompanyId);
+	protected void afterClass(
+		Description description, SafeCloseable safeCloseable) {
+
+		safeCloseable.close();
 	}
 
 	@Override
-	protected Long beforeClass(Description description) throws PortalException {
-		CompanyThreadLocal.setCompanyId(TestPropsValues.getCompanyId());
+	protected SafeCloseable beforeClass(Description description)
+		throws PortalException {
 
-		return CompanyThreadLocal.getCompanyId();
+		return CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+			TestPropsValues.getCompanyId());
 	}
 
 	private CompanyProviderClassTestRule() {

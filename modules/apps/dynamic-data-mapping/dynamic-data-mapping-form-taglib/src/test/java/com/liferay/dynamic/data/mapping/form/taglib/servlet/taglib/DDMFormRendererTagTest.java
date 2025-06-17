@@ -421,7 +421,7 @@ public class DDMFormRendererTagTest {
 
 	protected void setUpHttpServletRequest() throws IllegalAccessException {
 		_httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE, new MockRenderResponse());
+			JavaConstants.JAKARTA_PORTLET_RESPONSE, new MockRenderResponse());
 		_httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, new ThemeDisplay());
 

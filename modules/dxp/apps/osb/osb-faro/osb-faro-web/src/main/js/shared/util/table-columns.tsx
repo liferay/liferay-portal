@@ -419,7 +419,7 @@ export const eventListColumns = {
 				{hidden && (
 					<ClayIcon
 						className={getCN('icon-root', Colors.Secondary)}
-						symbol='ac-hidden'
+						symbol='ac_hidden'
 					/>
 				)}
 			</td>

@@ -97,6 +97,13 @@ public class ObjectEntryLocalServiceWrapper
 			objectEntryFolderId, values, serviceContext);
 	}
 
+	@Override
+	public void checkObjectEntries(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryLocalService.checkObjectEntries(companyId);
+	}
+
 	/**
 	 * Creates a new object entry with the primary key. Does not add the object entry to the database.
 	 *

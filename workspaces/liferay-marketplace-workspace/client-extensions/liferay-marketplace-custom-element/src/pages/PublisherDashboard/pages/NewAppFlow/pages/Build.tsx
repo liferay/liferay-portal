@@ -76,14 +76,25 @@ const BuildContent = () => {
 					/>
 				))}
 			</Section>
-
-			<Section label={i18n.translate('upload-liferay-plugin-packages')}>
-				<small>
-					{i18n.translate(
-						'if-the-app-is-compatible-with-different-updates-of-74-please-upload-multiple-packages-for-each-update-or-update-compatibility-range'
-					)}
-				</small>
-
+			<Section
+				description={i18n.translate(
+					appType === ProductType.DXP
+						? 'if-the-app-is-compatible-with-different-updates-of-74-please-upload-multiple-packages-for-each-update-or-update-compatibility-range'
+						: 'select-a-local-file-to-upload'
+				)}
+				label={i18n.translate(
+					appType === ProductType.DXP
+						? 'upload-liferay-plugin-packages'
+						: 'upload-zip-files'
+				)}
+				required
+				tooltip={i18n.translate(
+					appType === ProductType.DXP
+						? 'only-jar-war-files-are-allowed-max-file-size-is-500mb'
+						: 'you-can-upload-one-or-many-zip-files-max-total-size-is-500-mb'
+				)}
+				tooltipText={i18n.translate('more-info')}
+			>
 				<hr />
 
 				{liferayPackages.map((liferayPackage, index) => (
@@ -92,8 +103,9 @@ const BuildContent = () => {
 						key={index}
 					>
 						<div className="align-center d-flex font-weight-bold justify-content-between p-3 provide-app-build-page-dropzone-container-header">
-							<span>{liferayPackage.version}</span>
-
+							<span>
+								{i18n.translate('package')} {index + 1}
+							</span>
 							<ClayButton
 								displayType="unstyled"
 								onClick={() => {
@@ -112,14 +124,28 @@ const BuildContent = () => {
 									});
 								}}
 							>
-								{i18n.translate('remove-a-version')}
+								{i18n.translate('remove')}
 							</ClayButton>
 						</div>
 
 						<NewAppUploadAppPackagesComponent
 							isProcessing={loading}
-							versionName={liferayPackage.version}
+							liferayPackage={liferayPackage}
 						/>
+
+						<div className="p-4">
+							<p className="font-weight-bold">
+								{i18n.translate('compatible-versions')}
+							</p>
+							{liferayPackage.versions.map((version, index) => (
+								<small key={index}>
+									{version}
+									{index + 1 <
+										liferayPackage.versions.length &&
+										','}{' '}
+								</small>
+							))}
+						</div>
 					</div>
 				))}
 

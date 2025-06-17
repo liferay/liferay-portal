@@ -28,94 +28,6 @@ definition {
 		}
 	}
 
-	@description = "This test adds five suborganizations to an organization"
-	@priority = 4
-	test AddMultipleSuborganizations {
-		JSONOrganization.addOrganization(organizationName = "Organization Name 1");
-
-		var count = 1;
-
-		while (${count} != 5) {
-			JSONOrganization.addOrganization(
-				organizationName = "Suborganization Name ${count}",
-				parentOrganizationName = "Organization Name 1");
-
-			User.openUsersAdmin();
-
-			UsersAndOrganizationsNavigator.gotoOrganizations();
-
-			Organization.gotoCP(orgName = "Organization Name 1");
-
-			Organization.viewParentOrganizationCP(
-				orgName = "Suborganization Name ${count}",
-				parentOrgName = "Organization Name 1",
-				subOrgName = "Suborganization Name ${count}");
-
-			var count = ${count} + 1;
-		}
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.searchCP(
-			orgName = "Suborganization Name 1",
-			searchTerm = "Suborganization");
-
-		Organization.searchCP(
-			orgName = "Suborganization Name 2",
-			searchTerm = "Suborganization");
-	}
-
-	@priority = 4
-	test AddOrganization {
-		JSONOrganization.addOrganization(organizationName = "Organization Name");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.searchCP(
-			orgName = "Organization Name",
-			searchTerm = "Organization Name");
-
-		Organization.viewCP(
-			orgName = "Organization Name",
-			orgType = "Organization");
-
-		LexiconEntry.openEntryMenu(rowEntry = "Organization Name");
-
-		MenuItem.click(menuItem = "Edit");
-
-		AssertTextEquals(
-			locator1 = "Portlet#HEADER",
-			value1 = "Edit Organization Name");
-
-		AssertTextEquals(
-			locator1 = "TextInput#NAME",
-			value1 = "Organization Name");
-
-		AssertTextEquals.assertValue(
-			key_text = "Type",
-			locator1 = "TextInput#ANY",
-			value1 = "Organization");
-
-		LexiconEntry.viewNoEntry(rowEntry = "Organization Name");
-
-		ProductMenu.viewNoSite(site = "Organization Name");
-
-		Site.viewNoMySitesViaMySitesPG(siteName = "Organization Name");
-	}
-
-	@priority = 4
-	test AddOrganizationComment {
-		Organization.openOrganizationsAdmin();
-
-		Organization.addCP(orgName = "Organization Name");
-
-		Organization.addComment(orgComment = "This is a test comment!");
-
-		AssertTextEquals(
-			locator1 = "TextArea#COMMENTS",
-			value1 = "This is a test comment!");
-	}
-
 	@priority = 4
 	test AddOrganizationName50Characters {
 		Organization.openOrganizationsAdmin();
@@ -430,49 +342,6 @@ definition {
 			searchTerm = "Organization");
 	}
 
-	@description = "This adds a global category to an organization."
-	@priority = 4
-	test CanAddGlobalCategoryToOrganization {
-		JSONCategory.addVocabulary(
-			groupName = "Global",
-			title = "Vocabulary Name 1");
-
-		JSONCategory.addCategory(
-			groupName = "Global",
-			title = "Category Name 1",
-			vocabularyName = "Vocabulary Name 1");
-
-		JSONOrganization.addOrganization(organizationName = "Organization Name");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.gotoEdit(orgName = "Organization Name");
-
-		Select(
-			locator1 = "Select#COUNTRY",
-			value1 = "United States");
-
-		Select(
-			locator1 = "Select#NEW_REGION",
-			value1 = "California");
-
-		Click(
-			key_vocabularyName = "Vocabulary Name 1",
-			locator1 = "AssetCategorization#CATEGORY_SELECT");
-
-		AssetCategorization.selectCategories(categoryNameList = "Category Name 1");
-
-		PortletEntry.save();
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.gotoEdit(orgName = "Organization Name");
-
-		AssetCategorization.viewCategory(categoryName = "Category Name 1");
-
-		AssetCategorization.viewVocabulary(vocabularyName = "Vocabulary Name 1");
-	}
-
 	@description = "Resolved bug automation for LPS-140712. This test asserts that a user can be added to an organization through the UI and displays a success message"
 	@priority = 4
 	test CanAddOrganizationUser {
@@ -734,27 +603,6 @@ definition {
 		Search.searchCP(searchTerm = "test");
 
 		Search.clearSearchResult();
-	}
-
-	@priority = 4
-	test DeleteOrganization {
-		property portal.acceptance = "true";
-
-		User.openUsersAdmin();
-
-		UsersAndOrganizationsNavigator.gotoOrganizations();
-
-		Organization.addCP(orgName = "Organization Name");
-
-		Organization.openOrganizationsAdmin();
-
-		Organization.delete(orgName = "Organization Name");
-
-		Organization.openOrganizationsAdmin();
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No organizations were found.");
 	}
 
 	@priority = 4

@@ -113,7 +113,7 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 		try {
 			PortletRequest portletRequest =
 				(PortletRequest)httpServletRequest.getAttribute(
-					JavaConstants.JAVAX_PORTLET_REQUEST);
+					JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 			return getRecentGroups(value, portletRequest);
 		}

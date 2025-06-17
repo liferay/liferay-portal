@@ -254,6 +254,12 @@ public class JournalFolderFinderTest {
 					title.equals("Article 1") || title.equals("Article 2"));
 			}
 		}
+
+		results = _journalFolderFinder.filterFindF_A_ByG_F_DDMSI_L_NotS(
+			_group.getGroupId(), _folder1.getFolderId(), 0, LocaleUtil.CHINESE,
+			new int[] {WorkflowConstants.STATUS_EXPIRED}, queryDefinition);
+
+		Assert.assertEquals(results.toString(), 3, results.size());
 	}
 
 	@Test

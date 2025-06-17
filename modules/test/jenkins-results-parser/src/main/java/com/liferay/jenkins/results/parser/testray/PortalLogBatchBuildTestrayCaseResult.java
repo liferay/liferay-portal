@@ -5,11 +5,11 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.Build;
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
-import com.liferay.jenkins.results.parser.TestClassResult;
-import com.liferay.jenkins.results.parser.TestResult;
-import com.liferay.jenkins.results.parser.TopLevelBuild;
+import com.liferay.jenkins.results.parser.TestClassReport;
+import com.liferay.jenkins.results.parser.TestReport;
+import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
 import java.io.IOException;
@@ -21,10 +21,10 @@ public class PortalLogBatchBuildTestrayCaseResult
 	extends BatchBuildTestrayCaseResult {
 
 	public PortalLogBatchBuildTestrayCaseResult(
-		TestrayBuild testrayBuild, TopLevelBuild topLevelBuild,
+		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport,
 		AxisTestClassGroup axisTestClassGroup) {
 
-		super(testrayBuild, topLevelBuild, axisTestClassGroup);
+		super(testrayBuild, topLevelBuildReport, axisTestClassGroup);
 	}
 
 	@Override
@@ -41,35 +41,35 @@ public class PortalLogBatchBuildTestrayCaseResult
 
 	@Override
 	public long getDuration() {
-		TestClassResult testClassResult = _getTestClassResult();
+		TestClassReport testClassReport = _getTestClassReport();
 
-		if (testClassResult == null) {
+		if (testClassReport == null) {
 			return 0;
 		}
 
-		return testClassResult.getDuration();
+		return testClassReport.getDuration();
 	}
 
 	@Override
 	public String getErrors() {
-		TestClassResult testClassResult = _getTestClassResult();
+		TestClassReport testClassReport = _getTestClassReport();
 
-		if (testClassResult == null) {
+		if (testClassReport == null) {
 			return null;
 		}
 
 		StringBuilder sb = new StringBuilder();
 
-		for (TestResult testResult : testClassResult.getTestResults()) {
-			if (!testResult.isFailing()) {
+		for (TestReport testReport : testClassReport.getTestReports()) {
+			if (!testReport.isFailing()) {
 				continue;
 			}
 
 			sb.append("PortalLogAssertorTest#");
-			sb.append(testResult.getTestName());
+			sb.append(testReport.getTestName());
 			sb.append(": ");
 
-			String errorDetails = testResult.getErrorDetails();
+			String errorDetails = testReport.getErrorDetails();
 
 			if (JenkinsResultsParserUtil.isNullOrEmpty(errorDetails)) {
 				sb.append("Failed for unknown reason | ");
@@ -107,25 +107,30 @@ public class PortalLogBatchBuildTestrayCaseResult
 		return "PortalLogAssertorTest-" + getAxisName();
 	}
 
-	private TestClassResult _getTestClassResult() {
-		if (_testClassResult != null) {
-			return _testClassResult;
+	private TestClassReport _getTestClassReport() {
+		if (_testClassReport != null) {
+			return _testClassReport;
 		}
 
-		Build build = getBuild();
+		DownstreamBuildReport downstreamBuildReport =
+			getDownstreamBuildReport();
 
-		if ((build == null) || !build.isFailing()) {
+		if ((downstreamBuildReport == null) ||
+			!downstreamBuildReport.isFailing()) {
+
 			return null;
 		}
 
-		String result = build.getResult();
+		String result = downstreamBuildReport.getResult();
 
 		if (result == null) {
 			return null;
 		}
 
-		for (TestClassResult testClassResult : build.getTestClassResults()) {
-			String className = testClassResult.getClassName();
+		for (TestClassReport testClassReport :
+				downstreamBuildReport.getTestClassReports()) {
+
+			String className = testClassReport.getTestClassName();
 
 			if (!className.equals(
 					"com.liferay.portal.log.assertor.PortalLogAssertorTest")) {
@@ -133,14 +138,14 @@ public class PortalLogBatchBuildTestrayCaseResult
 				continue;
 			}
 
-			_testClassResult = testClassResult;
+			_testClassReport = testClassReport;
 
-			return _testClassResult;
+			return _testClassReport;
 		}
 
 		return null;
 	}
 
-	private TestClassResult _testClassResult;
+	private TestClassReport _testClassReport;
 
 }

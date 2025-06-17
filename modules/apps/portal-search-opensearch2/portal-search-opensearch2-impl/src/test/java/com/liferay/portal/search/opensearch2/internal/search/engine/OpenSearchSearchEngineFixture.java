@@ -21,8 +21,8 @@ import com.liferay.portal.search.opensearch2.internal.configuration.OpenSearchCo
 import com.liferay.portal.search.opensearch2.internal.configuration.OpenSearchConfigurationWrapperImpl;
 import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
 import com.liferay.portal.search.opensearch2.internal.connection.TestOpenSearchConnectionManager;
-import com.liferay.portal.search.opensearch2.internal.index.CompanyIndexFactory;
 import com.liferay.portal.search.opensearch2.internal.index.CompanyIndexHelper;
+import com.liferay.portal.search.opensearch2.internal.index.IndexFactory;
 import com.liferay.portal.search.opensearch2.internal.search.engine.adapter.OpenSearchEngineAdapterFixture;
 import com.liferay.portal.search.test.util.search.engine.SearchEngineFixture;
 
@@ -89,11 +89,10 @@ public class OpenSearchSearchEngineFixture implements SearchEngineFixture {
 	public void tearDown() throws Exception {
 		_openSearchEngineAdapterFixture.tearDown();
 
-		if (_companyIndexFactory != null) {
-			ReflectionTestUtil.invoke(
-				_companyIndexFactory, "deactivate", new Class<?>[0]);
+		if (_indexFactory != null) {
+			_indexFactory.close();
 
-			_companyIndexFactory = null;
+			_indexFactory = null;
 		}
 
 		if (_companyIndexHelper != null) {
@@ -108,30 +107,6 @@ public class OpenSearchSearchEngineFixture implements SearchEngineFixture {
 
 			_frameworkUtilMockedStatic = null;
 		}
-	}
-
-	private CompanyIndexFactory _createCompanyIndexFactory(
-		CompanyIndexHelper companyIndexHelper,
-		OpenSearchConfigurationWrapper openSearchConfigurationWrapper) {
-
-		CompanyIndexFactory companyIndexFactory = new CompanyIndexFactory();
-
-		ReflectionTestUtil.setFieldValue(
-			companyIndexFactory, "_companyLocalService",
-			Mockito.mock(CompanyLocalService.class));
-		ReflectionTestUtil.setFieldValue(
-			companyIndexFactory, "_companyIndexHelper", companyIndexHelper);
-		ReflectionTestUtil.setFieldValue(
-			companyIndexFactory, "_openSearchConfigurationWrapper",
-			openSearchConfigurationWrapper);
-		ReflectionTestUtil.setFieldValue(
-			companyIndexFactory, "_openSearchConnectionManager",
-			_openSearchConnectionManager);
-
-		ReflectionTestUtil.invoke(
-			companyIndexFactory, "activate", new Class<?>[0]);
-
-		return companyIndexFactory;
 	}
 
 	private CompanyIndexHelper _createCompanyIndexHelper(
@@ -178,6 +153,15 @@ public class OpenSearchSearchEngineFixture implements SearchEngineFixture {
 		);
 
 		return frameworkUtilMockedStatic;
+	}
+
+	private IndexFactory _createIndexFactory(
+		CompanyIndexHelper companyIndexHelper,
+		OpenSearchConfigurationWrapper openSearchConfigurationWrapper) {
+
+		return new IndexFactory(
+			companyIndexHelper, Mockito.mock(CompanyLocalService.class),
+			openSearchConfigurationWrapper, _openSearchConnectionManager);
 	}
 
 	private IndexNameBuilder _createIndexNameBuilder(
@@ -240,11 +224,11 @@ public class OpenSearchSearchEngineFixture implements SearchEngineFixture {
 		_companyIndexHelper = _createCompanyIndexHelper(
 			indexNameBuilder, openSearchConfigurationWrapper);
 
-		_companyIndexFactory = _createCompanyIndexFactory(
+		_indexFactory = _createIndexFactory(
 			_companyIndexHelper, openSearchConfigurationWrapper);
 
 		ReflectionTestUtil.setFieldValue(
-			openSearchSearchEngine, "_indexFactory", _companyIndexFactory);
+			openSearchSearchEngine, "_indexFactory", _indexFactory);
 
 		ReflectionTestUtil.setFieldValue(
 			openSearchSearchEngine, "_indexNameBuilder", indexNameBuilder);
@@ -283,9 +267,9 @@ public class OpenSearchSearchEngineFixture implements SearchEngineFixture {
 		return searchEngineInformation;
 	}
 
-	private CompanyIndexFactory _companyIndexFactory;
 	private CompanyIndexHelper _companyIndexHelper;
 	private MockedStatic<FrameworkUtil> _frameworkUtilMockedStatic;
+	private IndexFactory _indexFactory;
 	private IndexNameBuilder _indexNameBuilder;
 	private final OpenSearchConnectionManager _openSearchConnectionManager;
 	private OpenSearchEngineAdapterFixture _openSearchEngineAdapterFixture;

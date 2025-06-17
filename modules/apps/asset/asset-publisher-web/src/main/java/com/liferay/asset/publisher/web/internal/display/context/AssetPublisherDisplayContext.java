@@ -1060,7 +1060,7 @@ public class AssetPublisherDisplayContext {
 	public String getPortletName() {
 		PortletConfig portletConfig =
 			(PortletConfig)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		if (portletConfig == null) {
 			return StringPool.BLANK;

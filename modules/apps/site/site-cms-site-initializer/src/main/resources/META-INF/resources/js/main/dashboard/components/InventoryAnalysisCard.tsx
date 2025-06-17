@@ -6,8 +6,9 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import {Body, Cell, Head, Row, Table, Text} from '@clayui/core';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
+import {ViewDashboardContext} from '../ViewDashboardContext';
 import {AllCategoriesDropdown} from './AllCategoriesDropdown';
 import {AllStructureTypesDropdown} from './AllStructureTypesDropdown';
 import {AllTagsDropdown} from './AllTagsDropdown';
@@ -109,6 +110,17 @@ export function InventoryAnalysisCard() {
 	const [structure, setStructure] = useState<Item>(initialStructure);
 	const [tag, setTag] = useState<Item>(initialTag);
 	const [vocabulary, setVocabulary] = useState<Item>(initialVocabulary);
+
+	const {
+		filters: {space},
+	} = useContext(ViewDashboardContext);
+
+	useEffect(() => {
+		setCategory(initialCategory);
+		setStructure(initialStructure);
+		setTag(initialTag);
+		setVocabulary(initialVocabulary);
+	}, [space?.value]);
 
 	const deltas = [
 		{

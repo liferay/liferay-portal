@@ -132,20 +132,6 @@ public class CPConfigurationListServiceImpl
 		return cpConfigurationList;
 	}
 
-	@Indexable(type = IndexableType.DELETE)
-	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public CPConfigurationList forceDeleteCPConfigurationList(
-			CPConfigurationList cpConfigurationList)
-		throws PortalException {
-
-		_checkCommerceCatalog(
-			cpConfigurationList.getGroupId(), ActionKeys.UPDATE);
-
-		return cpConfigurationListLocalService.forceDeleteCPConfigurationList(
-			cpConfigurationList);
-	}
-
 	@Override
 	public CPConfigurationList getCPConfigurationList(long cpConfigurationLisId)
 		throws PortalException {

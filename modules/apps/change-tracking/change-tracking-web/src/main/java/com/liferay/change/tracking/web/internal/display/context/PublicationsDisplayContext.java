@@ -269,14 +269,14 @@ public class PublicationsDisplayContext {
 					"longDescription",
 					_language.get(
 						_httpServletRequest,
-						"administrators-can-view,-edit,-publish,-and-invite-" +
-							"other-users")
+						"administrators-can-view,-edit,-delete,-publish,-and-" +
+							"invite-other-users")
 				).put(
 					"shortDescription",
 					_language.get(
 						_httpServletRequest,
-						"administrators-can-view,-edit,-publish,-and-invite-" +
-							"other-users")
+						"administrators-can-view,-edit,-delete,-publish,-and-" +
+							"invite-other-users")
 				).put(
 					"value", PublicationRoleConstants.ROLE_ADMIN
 				))

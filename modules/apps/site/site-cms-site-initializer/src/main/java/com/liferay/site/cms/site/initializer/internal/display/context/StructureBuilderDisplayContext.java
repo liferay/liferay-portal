@@ -11,6 +11,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.dto.v1_0.util.ObjectDefinitionUtil;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -100,6 +102,22 @@ public class StructureBuilderDisplayContext {
 				() -> StringBundler.concat(
 					_themeDisplay.getPortalURL(), _themeDisplay.getPathMain(),
 					"/cms/edit_structure_display_page")
+			).put(
+				"isReferenced",
+				() -> {
+					ObjectDefinition objectDefinition = _getObjectDefinition();
+
+					if ((objectDefinition == null) ||
+						!GetterUtil.getBoolean(_objectDefinition.getActive())) {
+
+						return false;
+					}
+
+					return ListUtil.isNotEmpty(
+						ObjectRelationshipLocalServiceUtil.
+							getObjectRelationshipsByObjectDefinitionId2(
+								objectDefinition.getId()));
+				}
 			).put(
 				"objectFolderExternalReferenceCode",
 				_getObjectFolderExternalReferenceCode()

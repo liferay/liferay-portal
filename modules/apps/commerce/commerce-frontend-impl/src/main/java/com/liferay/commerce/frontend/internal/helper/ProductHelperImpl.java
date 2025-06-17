@@ -154,6 +154,11 @@ public class ProductHelperImpl implements ProductHelper {
 						commerceContext.getCPConfigurationListId(
 							cpDefinition.getGroupId()));
 
+				if (cpConfigurationEntry == null) {
+					cpConfigurationEntry =
+						cpDefinition.fetchMasterCPConfigurationEntry();
+				}
+
 				minOrderQuantity = cpConfigurationEntry.getMinOrderQuantity();
 				maxOrderQuantity = cpConfigurationEntry.getMaxOrderQuantity();
 				multipleQuantity =

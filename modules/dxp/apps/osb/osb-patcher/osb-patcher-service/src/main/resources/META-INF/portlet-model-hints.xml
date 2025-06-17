@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="com.liferay.osb.patcher.model.PatcherAccount">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherAccountId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="accountEntryId" type="long" />
+		<field name="accountEntryCode" type="String" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherBuild">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherBuildId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="hotfixId" type="long" />
+		<field name="patcherAccountId" type="long" />
+		<field name="patcherFixId" type="long" />
+		<field name="patcherProductVersionId" type="long" />
+		<field name="patcherProjectVersionId" type="long" />
+		<field name="ticketEntryId" type="long" />
+		<field name="accountEntryCode" type="String" />
+		<field name="childBuild" type="boolean" />
+		<field name="comments" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="fileName" type="String">
+			<hint name="max-length">500</hint>
+		</field>
+		<field name="initialName" type="String" />
+		<field name="key" type="String" />
+		<field name="keyVersion" type="double" />
+		<field name="latestBuild" type="boolean" />
+		<field name="latestKeyBuild" type="boolean" />
+		<field name="latestLESATicketBuild" type="boolean" />
+		<field name="latestSupportTicketBuild" type="boolean" />
+		<field name="lesaTicket" type="String" />
+		<field name="lesaTicketVersion" type="double" />
+		<field name="name" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="notified" type="boolean" />
+		<field name="productVersion" type="int" />
+		<field name="qaComments" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="qaStatus" type="int" />
+		<field name="requestKey" type="String" />
+		<field name="sourceName" type="String">
+			<hint name="max-length">500</hint>
+		</field>
+		<field name="supportTicket" type="String" />
+		<field name="supportTicketVersion" type="double" />
+		<field name="type" type="int" />
+		<field name="status" type="int" />
+		<field name="statusByUserId" type="long" />
+		<field name="statusByUserName" type="String" />
+		<field name="statusDate" type="Date" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherBuildRel">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherBuildRelId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="childPatcherBuildId" type="long" />
+		<field name="parentPatcherBuildId" type="long" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherFix">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherFixId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="patcherProductVersionId" type="long" />
+		<field name="patcherProjectVersionId" type="long" />
+		<field name="comments" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="committish" type="String" />
+		<field name="dependencies" type="String">
+			<hint name="max-length">500</hint>
+		</field>
+		<field name="fixPackStatus" type="int" />
+		<field name="gitHash" type="String" />
+		<field name="gitRemoteURL" type="String">
+			<hint name="max-length">500</hint>
+		</field>
+		<field name="jenkinsResults" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="key" type="String" />
+		<field name="keyVersion" type="double" />
+		<field name="latestFix" type="boolean" />
+		<field name="name" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="notified" type="boolean" />
+		<field name="obsolete" type="boolean" />
+		<field name="productVersion" type="int" />
+		<field name="requestKey" type="String" />
+		<field name="requirements" type="String" />
+		<field name="type" type="int" />
+		<field name="status" type="int" />
+		<field name="statusByUserId" type="long" />
+		<field name="statusByUserName" type="String" />
+		<field name="statusDate" type="Date" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherFixComponent">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherFixComponentId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="name" type="String" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherFixPack">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherFixPackId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="patcherBuildId" type="long" />
+		<field name="patcherFixComponentId" type="long" />
+		<field name="patcherProjectVersionId" type="long" />
+		<field name="name" type="String" />
+		<field name="releasedDate" type="Date" />
+		<field name="requirements" type="String" />
+		<field name="version" type="int" />
+		<field name="status" type="int" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherFixRel">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherFixRelId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="childPatcherFixId" type="long" />
+		<field name="parentPatcherFixId" type="long" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherProductVersion">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherProductVersionId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="fixDeliveryMethod" type="int" />
+		<field name="moduleFolderName" type="String">
+			<hint name="max-length">500</hint>
+		</field>
+		<field name="name" type="String" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherProjectVersion">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherProjectVersionId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="patcherProductVersionId" type="long" />
+		<field name="rootPatcherProjectVersionId" type="long" />
+		<field name="combinedBranch" type="boolean" />
+		<field name="committish" type="String">
+			<hint name="max-length">150</hint>
+		</field>
+		<field name="fixedIssues" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="hide" type="boolean" />
+		<field name="name" type="String">
+			<hint name="max-length">150</hint>
+		</field>
+		<field name="productVersion" type="int" />
+		<field name="repositoryName" type="String" />
+	</model>
+	<model name="com.liferay.osb.patcher.model.PatcherTicketHint">
+		<field name="mvccVersion" type="long" />
+		<field name="patcherTicketHintId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="patcherProductVersionId" type="long" />
+		<field name="script" type="String" />
+	</model>
+</model-hints>

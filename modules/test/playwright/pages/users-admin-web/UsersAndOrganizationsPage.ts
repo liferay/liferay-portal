@@ -40,6 +40,7 @@ export const searchTableRowByValue = async function (
 export class UsersAndOrganizationsPage {
 	readonly activateButton: Locator;
 	readonly activateUserMenuItem: Locator;
+	readonly addOrganizationButton: Locator;
 	readonly addUserButton: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly assignOrganizationRolesIFrame: FrameLocator;
@@ -80,7 +81,9 @@ export class UsersAndOrganizationsPage {
 	readonly deactivateButton: Locator;
 	readonly deactivateUserMenuItem: Locator;
 	readonly deleteButton: Locator;
+	readonly deleteOrganizationMenuItem: Locator;
 	readonly deletePersonalDataMenuItem: Locator;
+	readonly editOrganizationMenuItem: Locator;
 	readonly exportImportOptionsMenuItem: Locator;
 	readonly exportPersonalDataItem: Locator;
 	readonly exportUsersOptionsMenuItem: Locator;
@@ -118,6 +121,7 @@ export class UsersAndOrganizationsPage {
 	readonly organizationChartLink: Locator;
 	readonly organizationsLink: Locator;
 	readonly organizationsTable: DataTablePage;
+	readonly organizationsTableEmptyMessage: Locator;
 	readonly organizationUsersTable: Locator;
 	readonly organizationUsersTableRow: (
 		colPosition: number,
@@ -166,6 +170,9 @@ export class UsersAndOrganizationsPage {
 		this.activateButton = page.getByRole('button', {name: 'Activate'});
 		this.activateUserMenuItem = page.getByRole('menuitem', {
 			name: 'Activate',
+		});
+		this.addOrganizationButton = page.getByRole('link', {
+			name: 'Add Organization',
 		});
 		this.addUserButton = page.getByRole('link', {name: 'Add User'});
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
@@ -271,8 +278,14 @@ export class UsersAndOrganizationsPage {
 			name: 'Deactivate',
 		});
 		this.deleteButton = page.getByRole('button', {name: 'Delete'});
+		this.deleteOrganizationMenuItem = page.getByRole('menuitem', {
+			name: 'Delete',
+		});
 		this.deletePersonalDataMenuItem = page.getByRole('menuitem', {
 			name: 'Delete Personal Data',
+		});
+		this.editOrganizationMenuItem = page.getByRole('menuitem', {
+			name: 'Edit',
 		});
 		this.exportImportOptionsMenuItem = page.getByRole('menuitem', {
 			name: 'Export / Import',
@@ -388,6 +401,9 @@ export class UsersAndOrganizationsPage {
 					'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_organizationsSearchContainer'
 				)
 				.first()
+		);
+		this.organizationsTableEmptyMessage = page.getByText(
+			'No organizations were found.'
 		);
 		this.organizationUsersTable = page.locator(
 			'[id$="_organizationUsersSearchContainer"]'

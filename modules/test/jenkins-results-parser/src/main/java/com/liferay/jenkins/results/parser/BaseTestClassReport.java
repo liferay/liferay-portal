@@ -121,11 +121,7 @@ public abstract class BaseTestClassReport implements TestClassReport {
 
 	@Override
 	public boolean isSkipped() {
-		if (Objects.equals(getStatus(), "SKIPPED")) {
-			return true;
-		}
-
-		return false;
+		return Objects.equals(getStatus(), "SKIPPED");
 	}
 
 	protected BaseTestClassReport(

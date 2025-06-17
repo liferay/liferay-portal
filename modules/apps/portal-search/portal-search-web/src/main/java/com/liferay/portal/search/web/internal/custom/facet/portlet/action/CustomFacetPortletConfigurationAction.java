@@ -47,7 +47,7 @@ public class CustomFacetPortletConfigurationAction
 
 		RenderRequest renderRequest =
 			(RenderRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		CustomFacetDisplayContextBuilder customFacetDisplayContextBuilder =
 			_createCustomFacetDisplayContextBuilder(renderRequest);

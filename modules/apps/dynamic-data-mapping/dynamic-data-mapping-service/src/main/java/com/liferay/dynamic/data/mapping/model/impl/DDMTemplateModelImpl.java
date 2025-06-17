@@ -10,8 +10,10 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplateModel;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
@@ -31,6 +33,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -46,6 +50,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1823,9 +1828,16 @@ public class DDMTemplateModelImpl
 			ddmTemplateCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
-		setResourceClassName(null);
+		try {
+			setResourceClassName(null);
 
-		ddmTemplateCacheModel._resourceClassName = getResourceClassName();
+			ddmTemplateCacheModel.resourceClassName =
+				(String)_resourceClassNameMethodHandle.invokeExact(
+					(DDMTemplateImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return ddmTemplateCacheModel;
 	}
@@ -2068,6 +2080,35 @@ public class DDMTemplateModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected final transient Consumer<String>
+		resourceClassNameUpdateEntityCacheConsumer = resourceClassName -> {
+			DDMTemplateCacheModel ddmTemplateCacheModel =
+				EntityCacheUtil.fetchCacheModel(
+					DDMTemplateImpl.class, _templateId,
+					DDMTemplateCacheModel.class);
+
+			if ((ddmTemplateCacheModel != null) &&
+				(ddmTemplateCacheModel.getMvccVersion() == getMvccVersion())) {
+
+				ddmTemplateCacheModel.resourceClassName = resourceClassName;
+			}
+		};
+
+	private static final MethodHandle _resourceClassNameMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_resourceClassNameMethodHandle = lookup.findGetter(
+				DDMTemplateImpl.class, "_resourceClassName", String.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private DDMTemplate _escapedModel;
 
 }

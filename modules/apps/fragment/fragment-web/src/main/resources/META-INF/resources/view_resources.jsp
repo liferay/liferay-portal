@@ -13,6 +13,7 @@ FragmentCollectionResourcesDisplayContext fragmentCollectionResourcesDisplayCont
 
 <liferay-document-library:repository-browser
 	folderId="<%= fragmentCollectionResourcesDisplayContext.getFolderId() %>"
+	includeExtension="<%= true %>"
 	repositoryId="<%= fragmentCollectionResourcesDisplayContext.getRepositoryId() %>"
 	viewableByGuest="<%= true %>"
 />

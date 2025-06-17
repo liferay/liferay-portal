@@ -104,11 +104,6 @@ public class MySQLSQLTransformerLogicTest
 		return "select * from Foo where foo = 0 and bar = 1";
 	}
 
-	protected String getCastFloatTransformedSQL() {
-		return "select CAST(1 + (CAST(foo AS DECIMAL(9, 7)) - (bar x 2)) AS " +
-			"DECIMAL(9, 7)), CAST(foo + (bar x 3) AS DECIMAL(9, 7)) from Foo";
-	}
-
 	@Override
 	protected String getIntegerDivisionTransformedSQL() {
 		return "select foo DIV bar from Foo";

@@ -165,7 +165,7 @@ test('ensure that next and previous buttons acessibility label in the mini calen
 
 		await page.getByRole('menuitem', {name: 'Account Settings'}).click();
 
-		await accountSettingsPage.selectAccountLanguage('pt_BR');
+		await accountSettingsPage.selectAccountLanguage({languageId: 'pt_BR'});
 
 		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
@@ -184,7 +184,7 @@ test('ensure that next and previous buttons acessibility label in the mini calen
 
 		await page.getByRole('menuitem', {name: 'Account Settings'}).click();
 
-		await accountSettingsPage.selectAccountLanguage('en_US');
+		await accountSettingsPage.selectAccountLanguage({languageId: 'en_US'});
 
 		await page.goto(liferayConfig.environment.baseUrl);
 

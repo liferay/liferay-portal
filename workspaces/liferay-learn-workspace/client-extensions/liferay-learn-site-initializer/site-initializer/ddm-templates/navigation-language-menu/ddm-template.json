@@ -1,6 +1,6 @@
 {
 	"className": "com.liferay.portal.kernel.servlet.taglib.ui.LanguageEntry",
-	"ddmTemplateKey": "NAVIGATION_LANGUAGE_MENU",
+	"ddmTemplateKey": "NAVIGATION-LANGUAGE-MENU",
 	"name": "Navigation Language Menu",
 	"resourceClassName": "com.liferay.portlet.display.template.PortletDisplayTemplate"
 }

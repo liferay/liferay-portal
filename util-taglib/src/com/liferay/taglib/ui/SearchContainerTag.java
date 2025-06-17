@@ -73,7 +73,7 @@ public class SearchContainerTag<R> extends ParamAndPropertyAncestorTagImpl {
 			if (_iteratorURL == null) {
 				PortletResponse portletResponse =
 					(PortletResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE);
+						JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 				MimeResponse mimeResponse = (MimeResponse)portletResponse;
 
@@ -83,7 +83,7 @@ public class SearchContainerTag<R> extends ParamAndPropertyAncestorTagImpl {
 			if (_searchContainer == null) {
 				PortletRequest portletRequest =
 					(PortletRequest)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_REQUEST);
+						JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 				_searchContainer = new SearchContainer<>(
 					portletRequest, _displayTerms, _searchTerms, getCurParam(),

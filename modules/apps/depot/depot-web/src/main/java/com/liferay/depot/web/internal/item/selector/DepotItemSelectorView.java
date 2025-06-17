@@ -179,13 +179,13 @@ public class DepotItemSelectorView
 		@Override
 		public PortletRequest getPortletRequest() {
 			return (PortletRequest)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 		}
 
 		@Override
 		public PortletResponse getPortletResponse() {
 			return (PortletResponse)_httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 		}
 
 		@Override

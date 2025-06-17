@@ -522,7 +522,7 @@ const ChannelList: React.FC<IChannelListProps> = ({
 							icon={{
 								border: false,
 								size: Sizes.XXXLarge,
-								symbol: 'ac-satellite'
+								symbol: 'ac_satellite'
 							}}
 							title={Liferay.Language.get('no-properties-found')}
 						/>

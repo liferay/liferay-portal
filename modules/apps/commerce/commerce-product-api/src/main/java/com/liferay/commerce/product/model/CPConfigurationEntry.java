@@ -59,4 +59,7 @@ public interface CPConfigurationEntry
 	public CPConfigurationList getParentCPConfigurationList()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
+	public boolean isMaster()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 }

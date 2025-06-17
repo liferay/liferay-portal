@@ -70,15 +70,15 @@ public abstract class BaseSQLTransformerLogic implements SQLTransformerLogic {
 			"CAST_CLOB_TEXT\\((.*)\\)", Pattern.CASE_INSENSITIVE);
 	}
 
-	protected Function<String, String> getCastFloatFunction() {
+	protected Function<String, String> getCastDecimalFunction() {
 		return _getCastFunction(
-			matcher -> replaceCastFloat(matcher), "CAST_FLOAT",
-			getCastFloatPattern());
+			matcher -> replaceCastDecimal(matcher), "CAST_DECIMAL",
+			getCastDecimalPattern());
 	}
 
-	protected Pattern getCastFloatPattern() {
+	protected Pattern getCastDecimalPattern() {
 		return Pattern.compile(
-			"CAST_FLOAT\\((.*)\\)", Pattern.CASE_INSENSITIVE);
+			"CAST_DECIMAL\\((.*)\\)", Pattern.CASE_INSENSITIVE);
 	}
 
 	protected Function<String, String> getCastLongFunction() {
@@ -227,8 +227,8 @@ public abstract class BaseSQLTransformerLogic implements SQLTransformerLogic {
 		return replaceCastText(matcher);
 	}
 
-	protected String replaceCastFloat(Matcher matcher) {
-		return matcher.replaceAll("CAST($1 AS FLOAT)");
+	protected String replaceCastDecimal(Matcher matcher) {
+		return matcher.replaceAll("CAST($1 AS DECIMAL(31, 2))");
 	}
 
 	protected String replaceCastLong(Matcher matcher) {

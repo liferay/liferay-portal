@@ -299,9 +299,9 @@ public class LoginMVCActionCommandTest {
 			};
 
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG, _getLiferayPortletConfig());
+			JavaConstants.JAKARTA_PORTLET_CONFIG, _getLiferayPortletConfig());
 		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_RESPONSE,
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletActionResponse());
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.COMPANY_ID, _company.getCompanyId());

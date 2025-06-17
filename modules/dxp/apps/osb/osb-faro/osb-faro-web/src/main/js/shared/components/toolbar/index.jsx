@@ -328,8 +328,8 @@ export default class Toolbar extends React.Component {
 									className='icon-root'
 									symbol={
 										ascending
-											? 'order-arrow-ascending'
-											: 'order-arrow-descending'
+											? 'order_arrow_ascending'
+											: 'order_arrow_descending'
 									}
 								/>
 							</ClayButton>
@@ -345,8 +345,8 @@ export default class Toolbar extends React.Component {
 									className='icon-root'
 									symbol={
 										ascending
-											? 'order-arrow-ascending'
-											: 'order-arrow-descending'
+											? 'order_arrow_ascending'
+											: 'order_arrow_descending'
 									}
 								/>
 							</ClayLink>

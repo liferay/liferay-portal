@@ -410,7 +410,7 @@ export class DataTransformation extends React.Component {
 						<p className='summary'>
 							<ClayIcon
 								className='icon-root'
-								symbol='faro-connection-success-ovals'
+								symbol='faro_connection_success_ovals'
 							/>
 
 							{sub(Liferay.Language.get('x-fields-mapped'), [
@@ -419,7 +419,7 @@ export class DataTransformation extends React.Component {
 
 							<ClayIcon
 								className='icon-root'
-								symbol='faro-connection-error-ovals'
+								symbol='faro_connection_error_ovals'
 							/>
 
 							{sub(Liferay.Language.get('x-fields-not-mapped'), [

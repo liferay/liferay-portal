@@ -16,22 +16,6 @@ String collapseSwitchId = Validator.isNotNull(collapseSwitchName) ? collapseSwit
 		<div class="align-items-center card-header d-flex h4 justify-content-between py-3">
 			<%= HtmlUtil.escape(title) %>
 
-			<c:if test="<%= Validator.isNotNull(actionTargetId) %>">
-				<aui:script>
-					var link = document.getElementById('<%= linkId %>');
-
-					if (link) {
-						link.addEventListener('click', (e) => {
-							e.preventDefault();
-
-							Liferay.fire('open-modal', {
-								id: '<%= HtmlUtil.escapeJS(actionTargetId) %>',
-							});
-						});
-					}
-				</aui:script>
-			</c:if>
-
 			<c:choose>
 				<c:when test="<%= Validator.isNotNull(actionLabel) %>">
 

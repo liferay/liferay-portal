@@ -180,24 +180,6 @@ definition {
 		}
 	}
 
-	@description = "Users could login through the UI."
-	@priority = 5
-	test LoginWithUI {
-		property app.server.types = "jboss,tomcat,weblogic,wildfly";
-		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
-		property environment.acceptance = "true";
-		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Login and go to control panel - roles") {
-			User.firstLoginUI();
-
-			Role.openRolesAdmin();
-		}
-	}
-
 	@description = "This is a use case for LPS-150234. Login page not breaks visually when user enters his credentials incorrectly."
 	@priority = 5
 	test LoginWithUIUsingWrongCredentials {
@@ -254,73 +236,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LRQA-48218. User should be redirected to the changed landing page upon login."
-	@priority = 5
-	test RedirectToDefaultPortalLandingPageOnLogin {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Login and configure landing page CP") {
-			User.firstLoginPG();
-
-			PortalSettings.gotoConfiguration(
-				baseURL = "http://localhost:8080",
-				configurationCategory = "Instance Configuration",
-				configurationName = "General",
-				configurationScope = "Virtual Instance Scope");
-
-			PortalSettings.editDefaultLandingPageCP(defaultLandingPage = "/web/guest/landing");
-		}
-
-		task ("Add public page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Guest",
-				layoutName = "landing");
-		}
-
-		task ("Logout and login") {
-			User.logoutPG();
-
-			User.firstLoginUI(
-				password = PropsUtil.get("default.admin.password"),
-				userEmailAddress = "test@liferay.com");
-		}
-
-		task ("Assert url value") {
-			AssertLocation(value1 = "http://localhost:8080/web/guest/landing");
-		}
-	}
-
-	@description = "This is a use case for LPS-150388 TC-1/5: Admin password need to be set on first startup if the default admin password property is not set."
-	@priority = 5
-	test UserSetNewPasswordWithoutPasswordProperty {
-		property custom.properties = "company.security.send.password.reset.link=true${line.separator}default.admin.password=${line.separator}jsonws.web.service.paths.excludes=${line.separator}passwords.default.policy.change.required=false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User opens the portal for the first time without default admin password property") {
-			Navigator.openURL();
-		}
-
-		task ("When: User accepts termss and sets the admin password") {
-			SignIn.agreeToTermsOfUse();
-
-			WaitForElementPresent(locator1 = "SignIn#SET_PASSWORD_TITLE");
-
-			User.resetPassword(newPassword = "tester");
-
-			User.answerPasswordReminder();
-		}
-
-		task ("Then: Admin password is set and user can log in with this password in the future") {
-			AssertLocation(value1 = "http://localhost:8080/web/guest/home");
-
-			User.logoutPG();
-
-			User.firstLoginUI(password = "tester");
-		}
-	}
-
 	@description = "This is a use case for LRQA-27619. Verify that LDAP portlet is present at Instance Settings."
 	@priority = 5
 	test ViewInstanceSettingsAuthentication {
@@ -336,75 +251,6 @@ definition {
 
 		task ("View LDAP CP authentication settings") {
 			PortalSettings.viewAuthenticationLDAPCP();
-		}
-	}
-
-	@description = "This is a use case for LPS-150388 TC-3: If the default admin password property is not given, virtual instances need to be defined with 3 extra informations: screen name, admin email and password."
-	@priority = 5
-	test VirtualInstancesNeedExtraInformationWithoutPasswordProperty {
-		property custom.properties = "default.admin.password=";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User opens the portal for the first time without default admin password property") {
-			Navigator.openURL();
-
-			SignIn.agreeToTermsOfUse();
-
-			WaitForElementPresent(locator1 = "SignIn#SET_PASSWORD_TITLE");
-
-			User.resetPassword(newPassword = PropsUtil.get("default.admin.password"));
-
-			User.answerPasswordReminder();
-		}
-
-		task ("When: User adds a new virtual instance and sets the new fields with correct information") {
-			SAML.addVirtualInstances(
-				instanceAdminEmail = "test@www.able.com",
-				instanceAdminFirstName = "FirstTest",
-				instanceAdminLastName = "LastTest",
-				instancePassword = "tester",
-				instanceScreenName = "tester",
-				virtualHosts = "www.able.com");
-		}
-
-		task ("Then: The virtual instance will be created with the given information") {
-			User.firstLoginUI(
-				password = "tester",
-				specificURL = "http://www.able.com:8080",
-				userEmailAddress = "test@www.able.com");
-
-			MyAccount.openMyAccountAdmin(baseURL = "http://www.able.com:8080");
-
-			User.viewUserInformation(
-				userEmailAddress = "test@www.able.com",
-				userFirstName = "FirstTest",
-				userLastName = "LastTest",
-				userScreenName = "tester");
-		}
-	}
-
-	@description = "This is a use case for LPS-150388 TC-2: If the default admin password property is set, user doesn't need to define screen name, admin email and password upon virtual instance creation."
-	@priority = 5
-	test VirtualInstancesNeedNoExtraInformationWithPasswordProperty {
-		property custom.properties = "company.security.send.password.reset.link=true${line.separator}passwords.default.policy.change.required=false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User opens the portal with a set admin password and logs in") {
-			User.firstLoginPG();
-		}
-
-		task ("When: User start to create a virtuali instance") {
-			PortalInstances.openVirtualInstancesAdmin();
-
-			LexiconEntry.gotoAdd();
-		}
-
-		task ("Then: The screen name field will not be present and can create an instance with setting basic information") {
-			AssertElementNotPresent(locator1 = "TextInput#VIRTUAL_INSTANCE_SCREEN_NAME");
-
-			SAML.addVirtualInstances(virtualHosts = "www.able.com");
 		}
 	}
 

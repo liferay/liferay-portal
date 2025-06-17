@@ -13,6 +13,7 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.ws.rs.BadRequestException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,10 @@ public abstract class BaseObjectRelationshipElementsParserImpl<T>
 	protected List<T> parseMany(Object object) {
 		List<T> objects = null;
 
-		if (object instanceof List) {
+		if (object == null) {
+			objects = new ArrayList<>();
+		}
+		else if (object instanceof List) {
 			objects = (List<T>)object;
 		}
 		else if (object instanceof Object[]) {

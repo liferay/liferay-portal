@@ -578,8 +578,7 @@ public class DDLRecordSetLocalServiceUtil {
 	 * @throws PortalException if a portal exception occurred
 	 */
 	public static com.liferay.dynamic.data.mapping.storage.DDMFormValues
-			getRecordSetSettingsDDMFormValues(DDLRecordSet recordSet)
-		throws PortalException {
+		getRecordSetSettingsDDMFormValues(DDLRecordSet recordSet) {
 
 		return getService().getRecordSetSettingsDDMFormValues(recordSet);
 	}

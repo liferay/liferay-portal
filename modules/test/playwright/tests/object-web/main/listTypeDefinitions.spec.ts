@@ -49,7 +49,7 @@ test.afterEach(async ({accountSettingsPage, page}) => {
 
 		await page.getByRole('menuitem', {name: 'Account Settings'}).click();
 
-		await accountSettingsPage.selectAccountLanguage('en_US');
+		await accountSettingsPage.selectAccountLanguage({languageId: 'en_US'});
 
 		userLanguage = 'en_US';
 	}
@@ -298,7 +298,7 @@ test.describe('ensure picklist translation', () => {
 			translatedListTypeDefinitionItems[0]
 		);
 
-		await expect(page.getByTitle('Limpar Todos')).toBeVisible();
+		await expect(page.getByTitle('Remover Tudo')).toBeVisible();
 	});
 
 	test('verify if translated picklist will be displayed on object admin', async ({
@@ -349,7 +349,7 @@ test.describe('ensure picklist translation', () => {
 
 		await page.getByRole('menuitem', {name: 'Account Settings'}).click();
 
-		await accountSettingsPage.selectAccountLanguage('pt_BR');
+		await accountSettingsPage.selectAccountLanguage({languageId: 'pt_BR'});
 
 		userLanguage = 'pt_BR';
 

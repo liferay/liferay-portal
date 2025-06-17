@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import jakarta.portlet.PortletPreferences;
@@ -77,8 +78,12 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 		_itemClassName = itemClassName;
 		_taskItemDelegateName = taskItemDelegateName;
 
-		_deletionsFileName = taskItemDelegateName + "_deletions.json";
-		_fileName = taskItemDelegateName + ".json";
+		String fileNamePrefix = GetterUtil.getString(
+			taskItemDelegateName, className);
+
+		_deletionsFileName = fileNamePrefix + "_deletions.json";
+
+		_fileName = fileNamePrefix + ".json";
 
 		if (ExportImportVulcanBatchEngineTaskItemDelegate.Scope.COMPANY.equals(
 				scope)) {

@@ -140,16 +140,6 @@ public interface GroupLocalService
 
 	public boolean addUserGroups(long userId, long[] groupIds);
 
-	/**
-	 * Adds a company group if it does not exist. This method is typically used
-	 * when a virtual host is added.
-	 *
-	 * @param companyId the primary key of the company
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public void checkCompanyGroup(long companyId) throws PortalException;
-
 	public Group checkScopeGroup(Layout layout, long userId)
 		throws PortalException;
 

@@ -45,7 +45,7 @@ public class PortletPanelAppAdapter extends BasePanelApp {
 		Portlet portlet = getPortlet();
 
 		String key =
-			JavaConstants.JAVAX_PORTLET_TITLE + StringPool.PERIOD +
+			JavaConstants.JAKARTA_PORTLET_TITLE + StringPool.PERIOD +
 				portlet.getPortletName();
 
 		String value = LanguageUtil.get(resourceBundle, key);

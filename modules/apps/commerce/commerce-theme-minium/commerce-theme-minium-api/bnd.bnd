@@ -1,4 +1,6 @@
 Bundle-Name: Liferay Commerce Theme Minium API
 Bundle-SymbolicName: com.liferay.commerce.theme.minium.api
-Bundle-Version: 5.1.9
-Export-Package: com.liferay.commerce.theme.minium
+Bundle-Version: 6.0.0
+Export-Package:\
+	com.liferay.commerce.theme.minium,\
+	com.liferay.commerce.theme.minium.util

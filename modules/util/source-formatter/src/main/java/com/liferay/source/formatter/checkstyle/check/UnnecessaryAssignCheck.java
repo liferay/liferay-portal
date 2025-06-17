@@ -168,11 +168,7 @@ public class UnnecessaryAssignCheck extends BaseUnnecessaryStatementCheck {
 
 		firstChildDetailAST = firstChildDetailAST.getFirstChild();
 
-		if (variableName.equals(firstChildDetailAST.getText())) {
-			return true;
-		}
-
-		return false;
+		return variableName.equals(firstChildDetailAST.getText());
 	}
 
 	private boolean _isUsedInFinallyStatement(

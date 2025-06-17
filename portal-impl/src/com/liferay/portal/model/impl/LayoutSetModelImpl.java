@@ -7,8 +7,10 @@ package com.liferay.portal.model.impl;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -22,6 +24,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -34,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -981,14 +986,23 @@ public class LayoutSetModelImpl
 		layoutSetCacheModel.layoutSetPrototypeLinkEnabled =
 			isLayoutSetPrototypeLinkEnabled();
 
-		setCompanyFallbackVirtualHostname(null);
+		try {
+			setCompanyFallbackVirtualHostname(null);
 
-		layoutSetCacheModel._companyFallbackVirtualHostname =
-			getCompanyFallbackVirtualHostname();
+			layoutSetCacheModel.companyFallbackVirtualHostname =
+				(String)_companyFallbackVirtualHostnameMethodHandle.invokeExact(
+					(LayoutSetImpl)this);
 
-		setVirtualHostnames(null);
+			setVirtualHostnames(null);
 
-		layoutSetCacheModel._virtualHostnames = getVirtualHostnames();
+			layoutSetCacheModel.virtualHostnames =
+				(java.util.TreeMap<String, String>)
+					_virtualHostnamesMethodHandle.invokeExact(
+						(LayoutSetImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return layoutSetCacheModel;
 	}
@@ -1176,6 +1190,60 @@ public class LayoutSetModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected final transient Consumer<String>
+		companyFallbackVirtualHostnameUpdateEntityCacheConsumer =
+			companyFallbackVirtualHostname -> {
+				LayoutSetCacheModel layoutSetCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						LayoutSetImpl.class, _layoutSetId,
+						LayoutSetCacheModel.class);
+
+				if ((layoutSetCacheModel != null) &&
+					(layoutSetCacheModel.getMvccVersion() ==
+						getMvccVersion())) {
+
+					layoutSetCacheModel.companyFallbackVirtualHostname =
+						companyFallbackVirtualHostname;
+				}
+			};
+
+	private static final MethodHandle
+		_companyFallbackVirtualHostnameMethodHandle;
+
+	protected final transient Consumer<java.util.TreeMap<String, String>>
+		virtualHostnamesUpdateEntityCacheConsumer = virtualHostnames -> {
+			LayoutSetCacheModel layoutSetCacheModel =
+				EntityCacheUtil.fetchCacheModel(
+					LayoutSetImpl.class, _layoutSetId,
+					LayoutSetCacheModel.class);
+
+			if ((layoutSetCacheModel != null) &&
+				(layoutSetCacheModel.getMvccVersion() == getMvccVersion())) {
+
+				layoutSetCacheModel.virtualHostnames = virtualHostnames;
+			}
+		};
+
+	private static final MethodHandle _virtualHostnamesMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_companyFallbackVirtualHostnameMethodHandle = lookup.findGetter(
+				LayoutSetImpl.class, "_companyFallbackVirtualHostname",
+				String.class);
+
+			_virtualHostnamesMethodHandle = lookup.findGetter(
+				LayoutSetImpl.class, "_virtualHostnames",
+				java.util.TreeMap.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private LayoutSet _escapedModel;
 
 }

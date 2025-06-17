@@ -73,8 +73,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
  */
 @FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
-public class SpaceListDisplayContextTest
-	extends BaseSectionDisplayContextTestCase {
+public class SpaceListDisplayContextTest extends BaseDisplayContextTestCase {
 
 	@ClassRule
 	@Rule
@@ -150,7 +149,7 @@ public class SpaceListDisplayContextTest
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 			StringPool.BLANK, 0,
 			"com.liferay.site.cms.site.initializer.internal.fragment." +
-				"renderer.SpaceListFragmentRenderer",
+				"renderer.SpaceListComponentSectionFragmentRenderer",
 			FragmentConstants.TYPE_COMPONENT,
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}
@@ -245,7 +244,7 @@ public class SpaceListDisplayContextTest
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpaceListFragmentRenderer"
+		filter = "component.name=com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpaceListComponentSectionFragmentRenderer"
 	)
 	private FragmentRenderer _fragmentRenderer;
 

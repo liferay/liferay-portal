@@ -22,7 +22,7 @@ ErrorData errorData = pageContext.getErrorData();
 
 int code = errorData.getStatusCode();
 
-String msg = String.valueOf(request.getAttribute(JavaConstants.JAVAX_SERVLET_ERROR_MESSAGE));
+String msg = String.valueOf(request.getAttribute(JavaConstants.JAKARTA_SERVLET_ERROR_MESSAGE));
 String uri = errorData.getRequestURI();
 
 if (_log.isWarnEnabled()) {

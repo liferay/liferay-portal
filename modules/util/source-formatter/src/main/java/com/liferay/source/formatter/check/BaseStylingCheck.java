@@ -37,6 +37,10 @@ public abstract class BaseStylingCheck extends BaseFileCheck {
 		content = _formatStyling(
 			content, "!MapUtil.isNotEmpty(", "MapUtil.isEmpty(");
 		content = _formatStyling(
+			content, "!Objects.isNull(", "Objects.nonNull(");
+		content = _formatStyling(
+			content, "!Objects.nonNull(", "Objects.isNull(");
+		content = _formatStyling(
 			content, "!SetUtil.isEmpty(", "SetUtil.isNotEmpty(");
 		content = _formatStyling(
 			content, "!SetUtil.isNotEmpty(", "SetUtil.isEmpty(");

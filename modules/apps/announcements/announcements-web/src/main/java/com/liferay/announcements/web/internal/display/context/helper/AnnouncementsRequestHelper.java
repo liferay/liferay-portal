@@ -34,7 +34,7 @@ public class AnnouncementsRequestHelper extends BaseRequestHelper {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		_portletPreferences = portletRequest.getPreferences();
 

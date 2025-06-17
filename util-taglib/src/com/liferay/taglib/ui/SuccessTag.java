@@ -52,7 +52,7 @@ public class SuccessTag extends IncludeTag implements BodyTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (portletRequest == null) {
 			if (SessionMessages.contains(httpServletRequest, _key)) {

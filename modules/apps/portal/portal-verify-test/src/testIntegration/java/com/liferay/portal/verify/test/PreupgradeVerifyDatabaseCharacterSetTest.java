@@ -6,15 +6,21 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
+import com.liferay.portal.kernel.model.ServiceComponent;
+import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.verify.PreupgradeVerifyDatabaseCharacterSet;
@@ -54,8 +60,8 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 
 		_dataSource = InfrastructureUtil.getDataSource();
 
-		if ((_db.getDBType() == DBType.MYSQL) ||
-			(_db.getDBType() == DBType.MARIADB)) {
+		if ((_db.getDBType() == DBType.MARIADB) ||
+			(_db.getDBType() == DBType.MYSQL)) {
 
 			_db.runSQL(
 				"create database unsupported_character_set_db default " +
@@ -90,10 +96,52 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 	}
 
 	@Test
-	public void testVerifyUnsupportedCharacterSet() throws Exception {
+	public void testVerifyMixedCharacterSet() throws Exception {
 		Assume.assumeTrue(
-			(_db.getDBType() == DBType.MYSQL) ||
 			(_db.getDBType() == DBType.MARIADB) ||
+			(_db.getDBType() == DBType.MYSQL));
+
+		ServiceComponent serviceComponent =
+			_serviceComponentLocalService.createServiceComponent(
+				RandomTestUtil.nextLong());
+
+		DBInspector dbInspector = new DBInspector(DataAccess.getConnection());
+
+		String tableName = dbInspector.normalizeName("TestTable");
+
+		serviceComponent.setMvccVersion(0);
+		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
+		serviceComponent.setData(
+			StringBundler.concat("<![CDATA[create table ", tableName, " ("));
+
+		_serviceComponentLocalService.addServiceComponent(serviceComponent);
+
+		_db.runSQL(
+			StringBundler.concat(
+				"create table ", tableName,
+				" (testColumn VARCHAR(75) primary key) collate utf8_bin"));
+
+		try {
+			testVerify();
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_verifyException(exception, "Mixed character set and collation:");
+		}
+		finally {
+			_serviceComponentLocalService.deleteServiceComponent(
+				serviceComponent);
+
+			_db.runSQL("drop table " + tableName);
+		}
+	}
+
+	@Test
+	public void testVerifyUnsupportedCharacterSet() {
+		Assume.assumeTrue(
+			(_db.getDBType() == DBType.MARIADB) ||
+			(_db.getDBType() == DBType.MYSQL) ||
 			(_db.getDBType() == DBType.POSTGRESQL));
 
 		try {
@@ -105,10 +153,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			Assert.fail();
 		}
 		catch (Exception exception) {
-			String message = exception.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Unsupported database character set: "));
+			_verifyException(exception, "Unsupported database character set: ");
 		}
 		finally {
 			InfrastructureUtil.setDataSource(_dataSource);
@@ -126,9 +171,19 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			"unsupported_character_set_db");
 	}
 
+	private void _verifyException(Exception exception, String expectedMessage) {
+		String message = exception.getMessage();
+
+		Assert.assertTrue(message.contains(expectedMessage));
+	}
+
 	private static Connection _connection;
 	private static DataSource _dataSource;
 	private static DB _db;
+
+	@Inject
+	private static ServiceComponentLocalService _serviceComponentLocalService;
+
 	private static DataSource _unsupportedCharacterSetDataSource;
 
 }

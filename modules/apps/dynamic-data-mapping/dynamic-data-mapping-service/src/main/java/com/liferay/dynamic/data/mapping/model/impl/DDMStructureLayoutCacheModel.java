@@ -7,6 +7,7 @@ package com.liferay.dynamic.data.mapping.model.impl;
 
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -183,7 +187,13 @@ public class DDMStructureLayoutCacheModel
 
 		ddmStructureLayoutImpl.resetOriginalValues();
 
-		ddmStructureLayoutImpl.setDDMFormLayout(_ddmFormLayout);
+		try {
+			_ddmFormLayoutMethodHandle.invokeExact(
+				ddmStructureLayoutImpl, ddmFormLayout);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return ddmStructureLayoutImpl;
 	}
@@ -216,7 +226,7 @@ public class DDMStructureLayoutCacheModel
 		description = (String)objectInput.readObject();
 		definition = (String)objectInput.readObject();
 
-		_ddmFormLayout =
+		ddmFormLayout =
 			(com.liferay.dynamic.data.mapping.model.DDMFormLayout)
 				objectInput.readObject();
 	}
@@ -284,7 +294,7 @@ public class DDMStructureLayoutCacheModel
 			objectOutput.writeObject(definition);
 		}
 
-		objectOutput.writeObject(_ddmFormLayout);
+		objectOutput.writeObject(ddmFormLayout);
 	}
 
 	public long mvccVersion;
@@ -303,6 +313,22 @@ public class DDMStructureLayoutCacheModel
 	public String name;
 	public String description;
 	public String definition;
-	public com.liferay.dynamic.data.mapping.model.DDMFormLayout _ddmFormLayout;
+	public volatile com.liferay.dynamic.data.mapping.model.DDMFormLayout
+		ddmFormLayout;
+
+	private static final MethodHandle _ddmFormLayoutMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_ddmFormLayoutMethodHandle = lookup.findSetter(
+				DDMStructureLayoutImpl.class, "_ddmFormLayout",
+				com.liferay.dynamic.data.mapping.model.DDMFormLayout.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

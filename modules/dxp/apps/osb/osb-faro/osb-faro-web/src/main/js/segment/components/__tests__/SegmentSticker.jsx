@@ -20,7 +20,7 @@ describe('SegmentSticker', () => {
 
 		expect(container.querySelector('use')).toHaveAttribute(
 			'href',
-			'#individual-dynamic-segment'
+			'#individual_dynamic_segment'
 		);
 	});
 

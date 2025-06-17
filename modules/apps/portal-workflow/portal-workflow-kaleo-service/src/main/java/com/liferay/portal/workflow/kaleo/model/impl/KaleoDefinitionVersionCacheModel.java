@@ -6,6 +6,7 @@
 package com.liferay.portal.workflow.kaleo.model.impl;
 
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -207,7 +211,13 @@ public class KaleoDefinitionVersionCacheModel
 
 		kaleoDefinitionVersionImpl.resetOriginalValues();
 
-		kaleoDefinitionVersionImpl.setContentAsXML(_contentAsXML);
+		try {
+			_contentAsXMLMethodHandle.invokeExact(
+				kaleoDefinitionVersionImpl, contentAsXML);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
 
 		return kaleoDefinitionVersionImpl;
 	}
@@ -246,7 +256,7 @@ public class KaleoDefinitionVersionCacheModel
 		statusByUserName = objectInput.readUTF();
 		statusDate = objectInput.readLong();
 
-		_contentAsXML = (String)objectInput.readObject();
+		contentAsXML = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -325,7 +335,7 @@ public class KaleoDefinitionVersionCacheModel
 
 		objectOutput.writeLong(statusDate);
 
-		objectOutput.writeObject(_contentAsXML);
+		objectOutput.writeObject(contentAsXML);
 	}
 
 	public long mvccVersion;
@@ -348,6 +358,21 @@ public class KaleoDefinitionVersionCacheModel
 	public long statusByUserId;
 	public String statusByUserName;
 	public long statusDate;
-	public String _contentAsXML;
+	public volatile String contentAsXML;
+
+	private static final MethodHandle _contentAsXMLMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_contentAsXMLMethodHandle = lookup.findSetter(
+				KaleoDefinitionVersionImpl.class, "_contentAsXML",
+				String.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

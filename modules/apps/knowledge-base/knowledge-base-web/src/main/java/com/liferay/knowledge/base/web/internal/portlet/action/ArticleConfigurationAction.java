@@ -49,7 +49,7 @@ public class ArticleConfigurationAction extends DefaultConfigurationAction {
 				httpServletRequest, _itemSelector, _kbArticleService,
 				_portal.getLiferayPortletResponse(
 					(PortletResponse)httpServletRequest.getAttribute(
-						JavaConstants.JAVAX_PORTLET_RESPONSE)),
+						JavaConstants.JAKARTA_PORTLET_RESPONSE)),
 				_portal));
 
 		super.include(portletConfig, httpServletRequest, httpServletResponse);

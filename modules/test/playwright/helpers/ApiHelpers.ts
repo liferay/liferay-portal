@@ -450,6 +450,9 @@ export class DataApiHelpers extends ApiHelpers {
 			else if (item.type === 'accountGroup') {
 				await this.headlessAdminUser.deleteAccountGroup(item.id);
 			}
+			else if (item.type === 'address') {
+				await this.headlessAdminUser.deletePostalAddress(item.id);
+			}
 			else if (item.type === 'announcement') {
 				await this.jsonWebServicesAnnouncementsEntryApiHelper.deleteEntry(
 					item.id

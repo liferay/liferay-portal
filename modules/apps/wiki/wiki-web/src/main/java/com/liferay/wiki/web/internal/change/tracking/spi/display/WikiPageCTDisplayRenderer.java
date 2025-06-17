@@ -83,7 +83,7 @@ public class WikiPageCTDisplayRenderer extends BaseCTDisplayRenderer<WikiPage> {
 
 		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_RESPONSE);
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		PortletURL viewPageURL = PortletURLBuilder.createRenderURL(
 			_portal.getLiferayPortletResponse(portletResponse)

@@ -90,7 +90,9 @@ public class UpgradeRecorder {
 		return _warningMessages;
 	}
 
-	public void recordErrorMessage(String loggerName, String message) {
+	public void recordErrorMessage(
+		String loggerName, String message, Throwable throwable) {
+
 		Map<String, Integer> messages = _errorMessages.computeIfAbsent(
 			loggerName, key -> new ConcurrentHashMap<>());
 
@@ -101,7 +103,8 @@ public class UpgradeRecorder {
 		messages.put(message, occurrences);
 
 		if (!_verifyProcessError &&
-			message.contains(VerifyException.class.getName())) {
+			(message.contains(VerifyException.class.getName()) ||
+			 (throwable instanceof VerifyException))) {
 
 			_verifyProcessError = true;
 		}

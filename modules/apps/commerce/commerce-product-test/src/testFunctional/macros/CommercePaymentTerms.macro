@@ -68,7 +68,7 @@ definition {
 			locator1 = "CommerceEntry#PRIORITY_FIELD",
 			value1 = ${valuePosition});
 
-		Click(locator1 = "Button#CANCEL_SPECIAL");
+		Click(locator1 = "Button#CANCEL");
 	}
 
 	@summary = "Default summary"

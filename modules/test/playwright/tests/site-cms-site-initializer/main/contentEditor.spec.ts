@@ -4,6 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -139,7 +140,7 @@ test(
 
 		// Create new structure for Default space
 
-		await structureBuilderPage.goto();
+		await structureBuilderPage.createStructure();
 
 		await structureBuilderPage.selectSpaces(['Default']);
 
@@ -162,7 +163,9 @@ test(
 
 		await contentsPage.createContent(label);
 
-		const fragment = page.locator('[class*="spacelistfragmentrenderer"]');
+		const fragment = page.locator(
+			'[class*="spacelistcomponentsectionfragmentrenderer"]'
+		);
 
 		await fragment.waitFor();
 
@@ -179,5 +182,109 @@ test(
 		// Delete structure
 
 		await structureBuilderPage.deleteStructure(id);
+	}
+);
+
+test(
+	'Blog can be published again without changing the content',
+	{tag: '@LPD-57478'},
+	async ({contentsPage, page}) => {
+
+		// Go to CMS Contents
+
+		await contentsPage.goto();
+
+		// Create new Blog content
+
+		await contentsPage.createContent('Blog');
+
+		// Fill data and save
+
+		const title = getRandomString();
+
+		await page.getByPlaceholder('New Blog').fill(title);
+
+		// Select file from computer in the default language
+
+		const fileChooserPromise = page.waitForEvent('filechooser');
+
+		const firstFileUploadFragment = page.locator('.file-upload').first();
+
+		await firstFileUploadFragment
+			.getByText('Select File', {exact: true})
+			.click();
+
+		const fileChooser = await fileChooserPromise;
+
+		await fileChooser.setFiles(
+			path.join(__dirname, '/dependencies/file_upload_image_1.jpg')
+		);
+
+		await expect(
+			firstFileUploadFragment.getByText('file_upload_image_1.jpg')
+		).toBeVisible();
+
+		await contentsPage.saveContent();
+
+		// Edit the content again and check values
+
+		await contentsPage.editContent(title);
+
+		await expect(
+			firstFileUploadFragment.getByText('file_upload_image_1.jpg')
+		).toBeVisible();
+
+		// Save content
+
+		await contentsPage.saveContent();
+
+		// Check the content is published
+
+		await expect(page).toHaveURL(/\/web\/cms\/contents$/);
+
+		await contentsPage.deleteContent(title);
+	}
+);
+
+test(
+	'When publishing a content in a folder the browser is redirected to the folder',
+	{tag: '@LPD-57478'},
+	async ({contentsPage, folderPage, page}) => {
+
+		// Go to CMS Contents
+
+		await contentsPage.goto();
+
+		// Create new Folder and a Knowledge Base content
+
+		const folderName = getRandomString();
+
+		await folderPage.createFolder(folderName);
+
+		await folderPage.clickOption(folderName, 'View Folder');
+
+		await contentsPage.createContent('Knowledge Base');
+
+		// Fill data and save
+
+		const title = getRandomString();
+
+		await page.getByLabel('Title').fill(title);
+
+		await contentsPage.saveContent();
+
+		// Check that the content is visible that means we redirected to the folder
+
+		await expect(page.getByTitle(title)).toBeVisible();
+
+		// Delete content and folder
+
+		await contentsPage.deleteContent(title);
+
+		await contentsPage.goto();
+
+		await folderPage.deleteFolder(folderName);
+
+		await expect(page.getByText(folderName)).not.toBeVisible();
 	}
 );

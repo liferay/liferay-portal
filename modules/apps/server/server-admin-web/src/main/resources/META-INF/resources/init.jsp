@@ -114,7 +114,7 @@ VideoConverter videoConverter = (VideoConverter)request.getAttribute(VideoConver
 <%@ include file="/init-ext.jsp" %>
 
 <%
-PortletRequest portletRequest = (PortletRequest)request.getAttribute(JavaConstants.JAVAX_PORTLET_REQUEST);
+PortletRequest portletRequest = (PortletRequest)request.getAttribute(JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 if (portletRequest != null) {
 	CaptchaUtil.enforceCaptcha(portletRequest);

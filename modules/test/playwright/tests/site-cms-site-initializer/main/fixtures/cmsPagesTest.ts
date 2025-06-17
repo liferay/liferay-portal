@@ -8,6 +8,7 @@ import {test} from '@playwright/test';
 import {ContentsPage} from '../pages/ContentsPage';
 import {EditVocabularyPage} from '../pages/EditVocabularyPage';
 import {FilesPage} from '../pages/FilesPage';
+import {FolderPage} from '../pages/FolderPage';
 import {PicklistBuilderPage} from '../pages/PicklistBuilderPage';
 import {StructureBuilderPage} from '../pages/StructureBuilderPage';
 import {StructuresPage} from '../pages/StructuresPage';
@@ -18,6 +19,7 @@ const cmsPagesTest = test.extend<{
 	contentsPage: ContentsPage;
 	editVocabularyPage: EditVocabularyPage;
 	filesPage: FilesPage;
+	folderPage: FolderPage;
 	picklistBuilderPage: PicklistBuilderPage;
 	structureBuilderPage: StructureBuilderPage;
 	structuresPage: StructuresPage;
@@ -32,6 +34,9 @@ const cmsPagesTest = test.extend<{
 	},
 	filesPage: async ({page}, use) => {
 		await use(new FilesPage(page));
+	},
+	folderPage: async ({page}, use) => {
+		await use(new FolderPage(page));
 	},
 	picklistBuilderPage: async ({page}, use) => {
 		await use(new PicklistBuilderPage(page));

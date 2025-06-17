@@ -128,7 +128,7 @@ const PublishAppOutlet = () => {
 					</div>
 
 					{isLastStep && (
-						<div className="submit-app-page-agreement">
+						<div className="app-review-page-agreement">
 							<Checkbox
 								checked={checkedUserAgreement}
 								onChange={() => {
@@ -139,7 +139,7 @@ const PublishAppOutlet = () => {
 							/>
 
 							<span>
-								<span className="submit-app-page-agreement-highlight">
+								<span className="app-review-page-agreement-highlight">
 									{'Attention: this cannot be undone. '}
 								</span>
 								I am aware I cannot edit any data or information

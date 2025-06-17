@@ -38,11 +38,11 @@ exports[`Workspace Empty State should render 1`] = `
         class="empty-card"
       >
         <svg
-          class="lexicon-icon lexicon-icon-ac-integration icon-root"
+          class="lexicon-icon lexicon-icon-ac_integration icon-root"
           role="presentation"
         >
           <use
-            href="#ac-integration"
+            href="#ac_integration"
           />
         </svg>
         <p>
@@ -63,11 +63,11 @@ exports[`Workspace Empty State should render 1`] = `
         class="empty-card"
       >
         <svg
-          class="lexicon-icon lexicon-icon-ac-page-analytics icon-root"
+          class="lexicon-icon lexicon-icon-ac_page_analytics icon-root"
           role="presentation"
         >
           <use
-            href="#ac-page-analytics"
+            href="#ac_page_analytics"
           />
         </svg>
         <p>

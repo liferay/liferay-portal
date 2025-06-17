@@ -7,17 +7,38 @@ import {FrameLocator, Locator, Page} from '@playwright/test';
 
 import {ApplicationsMenuPage} from '../../product-navigation-applications-menu/ApplicationsMenuPage';
 export class CommerceAdminCatalogsPage {
+	readonly addCatalogsButton: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly catalogActionsButton: Locator;
+	readonly catalogId: Locator;
+	readonly catalogSaveButton: Locator;
+	readonly modalFieldName: Locator;
+	readonly modalFrameLocator: FrameLocator;
+	readonly modalSubmitButton: Locator;
 	readonly page: Page;
 	readonly permissionsFrame: FrameLocator;
 	readonly permissionsMenuItem: Locator;
 
 	constructor(page: Page) {
+		this.addCatalogsButton = page
+			.getByTestId('management-toolbar')
+			.locator('[data-testid="fdsCreationActionButton"]');
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.catalogActionsButton = page.getByRole('button', {
 			exact: true,
 			name: 'Actions',
+		});
+		this.catalogId = page.locator('span:has-text("ID")+strong');
+		this.catalogSaveButton = page.getByRole('link', {
+			exact: true,
+			name: 'Save',
+		});
+		this.modalFrameLocator = page.frameLocator('.fds-modal-body iframe');
+		this.modalFieldName =
+			this.modalFrameLocator.getByLabel('Name Required');
+		this.modalSubmitButton = this.modalFrameLocator.getByRole('button', {
+			exact: true,
+			name: 'Submit',
 		});
 		this.page = page;
 		this.permissionsFrame = page.frameLocator(

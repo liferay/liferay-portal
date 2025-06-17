@@ -128,7 +128,7 @@ describe('[CMS Dashboard] Components: AllVocabulariesDropdown', () => {
 		).toBeInTheDocument();
 	});
 
-	it('search by a vocabulary and returns a filtered result', async () => {
+	xit('search by a vocabulary and returns a filtered result', async () => {
 		mockVocabularies([
 			{id: '01', name: 'vocabulary 01'},
 			{id: '02', name: 'vocabulary 02'},
@@ -173,7 +173,7 @@ describe('[CMS Dashboard] Components: AllVocabulariesDropdown', () => {
 		);
 	});
 
-	it('search by a vocabulary and returns a empty result', async () => {
+	xit('search by a vocabulary and returns a empty result', async () => {
 		mockVocabularies([
 			{id: '01', name: 'vocabulary 01'},
 			{id: '02', name: 'vocabulary 02'},

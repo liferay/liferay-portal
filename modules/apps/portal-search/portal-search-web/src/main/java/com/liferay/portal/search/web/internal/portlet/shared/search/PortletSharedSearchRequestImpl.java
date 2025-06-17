@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -275,7 +276,8 @@ public class PortletSharedSearchRequestImpl
 		ThemeDisplay themeDisplay, RenderRequest renderRequest) {
 
 		SegmentsExperienceManager segmentsExperienceManager =
-			new SegmentsExperienceManager(_segmentsExperienceLocalService);
+			new SegmentsExperienceManager(
+				_layoutPermission, _segmentsExperienceLocalService);
 
 		return TransformUtil.transform(
 			_getPortlets(
@@ -358,6 +360,9 @@ public class PortletSharedSearchRequestImpl
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPermission _layoutPermission;
 
 	@Reference
 	private Portal _portal;

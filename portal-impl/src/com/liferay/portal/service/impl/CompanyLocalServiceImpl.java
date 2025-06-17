@@ -513,10 +513,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 			_groupLocalService.checkSystemGroups(company.getCompanyId());
 
-			// Company group
-
-			_groupLocalService.checkCompanyGroup(company.getCompanyId());
-
 			// Default password policy
 
 			_passwordPolicyLocalService.checkDefaultPasswordPolicy(

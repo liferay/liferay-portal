@@ -83,22 +83,25 @@ public class CombineLines
 		};
 	}
 
-	public void method1(
+	public int method1(
 			String test1, String test2,
 			String test3, String test4)
 		throws Exception {
 
-		int i1 = 0;
-		int i2 = 0;
+		int i1 = test1.length();
+		int i2 = test2.length();
 
-		if ((i1 == 0) ||
-			(i2 == 0)) {
+		if ((i1 != 0) &&
+			(i2 != 0)) {
+			return i1 + i2;
 		}
 
 		if (StringUtil.contains(
-				test1, "Hello World Hello World Hello") ||
+				test3, "Hello World Hello World Hello") ||
 			StringUtil.contains(
-				test2, "Hello World Hello World Hello World Hello")) {
+				test4, "Hello World Hello World Hello World Hello")) {
+
+			return test3.length() + test4.length();
 		}
 	}
 

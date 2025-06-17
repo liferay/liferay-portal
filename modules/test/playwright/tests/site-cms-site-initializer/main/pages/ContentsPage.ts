@@ -55,7 +55,9 @@ export class ContentsPage {
 	}
 
 	async deleteContent(title: string) {
-		const card = this.page.locator('tr', {hasText: title});
+		const card = this.page
+			.locator('tr', {hasText: title})
+			.or(this.page.locator('.card-row', {hasText: title}));
 
 		this.page.once('dialog', async (dialog) => {
 			await dialog.accept();
@@ -71,7 +73,9 @@ export class ContentsPage {
 	}
 
 	async editContent(title: string) {
-		const card = this.page.locator('tr', {hasText: title});
+		const card = this.page
+			.locator('tr', {hasText: title})
+			.or(this.page.locator('.card-row', {hasText: title}));
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,

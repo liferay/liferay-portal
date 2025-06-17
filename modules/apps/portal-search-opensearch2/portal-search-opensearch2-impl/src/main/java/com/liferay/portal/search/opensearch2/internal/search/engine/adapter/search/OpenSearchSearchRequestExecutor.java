@@ -20,7 +20,9 @@ import com.liferay.portal.search.engine.adapter.search.SearchSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.SearchSearchResponse;
 import com.liferay.portal.search.engine.adapter.search.SuggestSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.SuggestSearchResponse;
+import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -84,7 +86,12 @@ public class OpenSearchSearchRequestExecutor implements SearchRequestExecutor {
 		return _suggestSearchRequestExecutor.execute(suggestSearchRequest);
 	}
 
-	@Reference
+	@Activate
+	protected void activate() {
+		_clearScrollRequestExecutor = new ClearScrollRequestExecutor(
+			_openSearchConnectionManager);
+	}
+
 	private ClearScrollRequestExecutor _clearScrollRequestExecutor;
 
 	@Reference
@@ -98,6 +105,9 @@ public class OpenSearchSearchRequestExecutor implements SearchRequestExecutor {
 
 	@Reference
 	private OpenPointInTimeRequestExecutor _openPointInTimeRequestExecutor;
+
+	@Reference
+	private OpenSearchConnectionManager _openSearchConnectionManager;
 
 	@Reference
 	private SearchSearchRequestExecutor _searchSearchRequestExecutor;

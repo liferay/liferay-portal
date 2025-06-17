@@ -127,11 +127,11 @@ exports[`AddReport should render a form AddReport 1`] = `
                   title="At this moment, it is not possible to change the visualization type for the reports. We are constantly adding more visualizations over time, so check back here later for more options."
                 >
                   <svg
-                    class="cerebro-thumb-line-chart"
+                    class="cerebro_thumb_line_chart"
                     viewBox=""
                   >
                     <use
-                      xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro-thumb-line-chart"
+                      xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro_thumb_line_chart"
                     />
                   </svg>
                 </button>

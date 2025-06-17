@@ -67,7 +67,7 @@ export const VariantCard = ({experiment}) => {
 							icon={{
 								border: false,
 								size: Sizes.XLarge,
-								symbol: 'ac-chart'
+								symbol: 'ac_chart'
 							}}
 							title={Liferay.Language.get(
 								'we-are-currently-collecting-data'

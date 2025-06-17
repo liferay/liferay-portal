@@ -44,11 +44,11 @@ public class StatsIndexRequestExecutorTest {
 		StatsIndexRequest statsIndexRequest = new StatsIndexRequest(
 			"liferay-1", "liferay-2", "liferay-3");
 
-		StatsIndexRequestExecutorImpl statsIndexRequestExecutorImpl =
-			new StatsIndexRequestExecutorImpl();
+		StatsIndexRequestExecutor statsIndexRequestExecutor =
+			new StatsIndexRequestExecutor(null, null);
 
 		Request request =
-			statsIndexRequestExecutorImpl.getElasticsearchIndexRequest(
+			statsIndexRequestExecutor.getElasticsearchIndexRequest(
 				statsIndexRequest);
 
 		Assert.assertEquals(
@@ -60,11 +60,11 @@ public class StatsIndexRequestExecutorTest {
 		StatsIndexRequest statsIndexRequest = new StatsIndexRequest(
 			"liferay-1");
 
-		StatsIndexRequestExecutorImpl statsIndexRequestExecutorImpl =
-			new StatsIndexRequestExecutorImpl();
+		StatsIndexRequestExecutor statsIndexRequestExecutor =
+			new StatsIndexRequestExecutor(null, null);
 
 		Request request =
-			statsIndexRequestExecutorImpl.getElasticsearchIndexRequest(
+			statsIndexRequestExecutor.getElasticsearchIndexRequest(
 				statsIndexRequest);
 
 		Assert.assertEquals("/liferay-1/_stats", request.getEndpoint());
@@ -74,11 +74,11 @@ public class StatsIndexRequestExecutorTest {
 	public void testStatsIndexRequestTranslationWithoutIndex() {
 		StatsIndexRequest statsIndexRequest = new StatsIndexRequest();
 
-		StatsIndexRequestExecutorImpl statsIndexRequestExecutorImpl =
-			new StatsIndexRequestExecutorImpl();
+		StatsIndexRequestExecutor statsIndexRequestExecutor =
+			new StatsIndexRequestExecutor(null, null);
 
 		Request request =
-			statsIndexRequestExecutorImpl.getElasticsearchIndexRequest(
+			statsIndexRequestExecutor.getElasticsearchIndexRequest(
 				statsIndexRequest);
 
 		Assert.assertEquals("/_all/_stats", request.getEndpoint());

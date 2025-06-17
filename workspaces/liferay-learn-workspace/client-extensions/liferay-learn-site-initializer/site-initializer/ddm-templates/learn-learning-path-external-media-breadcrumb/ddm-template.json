@@ -1,6 +1,6 @@
 {
 	"className": "com.liferay.template.model.TemplateEntry",
-	"ddmTemplateKey": "LEARN_LEARNING_PATH_EXTERNAL_MEDIA_BREADCRUMB",
+	"ddmTemplateKey": "LEARN-LEARNING-PATH-EXTERNAL-MEDIA-BREADCRUMB",
 	"infoItemClassName": "com.liferay.portal.kernel.repository.model.FileEntry",
 	"name": "Learn Learning Path External Media Breadcrumb",
 	"resourceClassName": "com.liferay.template.model.TemplateEntry"

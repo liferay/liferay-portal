@@ -99,15 +99,6 @@ public class CPConfigurationListServiceWrapper
 	}
 
 	@Override
-	public CPConfigurationList forceDeleteCPConfigurationList(
-			CPConfigurationList cpConfigurationList)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpConfigurationListService.forceDeleteCPConfigurationList(
-			cpConfigurationList);
-	}
-
-	@Override
 	public CPConfigurationList getCPConfigurationList(long cpConfigurationLisId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

@@ -27,27 +27,27 @@ exports[`ConnectDXP renders 1`] = `
       class="analytics-to-dxp-container"
     >
       <svg
-        class="lexicon-icon lexicon-icon-dxp-icon icon-root icon-size-xl"
+        class="lexicon-icon lexicon-icon-dxp_icon icon-root icon-size-xl"
         role="presentation"
       >
         <use
-          href="#dxp-icon"
+          href="#dxp_icon"
         />
       </svg>
       <svg
-        class="lexicon-icon lexicon-icon-ac-horizontal-arrows arrows icon-root icon-size-lg"
+        class="lexicon-icon lexicon-icon-ac_horizontal_arrows arrows icon-root icon-size-lg"
         role="presentation"
       >
         <use
-          href="#ac-horizontal-arrows"
+          href="#ac_horizontal_arrows"
         />
       </svg>
       <svg
-        class="lexicon-icon lexicon-icon-ac-logo-grayscale icon-root icon-size-xl"
+        class="lexicon-icon lexicon-icon-ac_logo_grayscale icon-root icon-size-xl"
         role="presentation"
       >
         <use
-          href="#ac-logo-grayscale"
+          href="#ac_logo_grayscale"
         />
       </svg>
     </div>

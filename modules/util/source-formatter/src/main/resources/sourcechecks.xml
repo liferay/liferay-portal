@@ -55,6 +55,10 @@
 			<category name="Miscellaneous" />
 			<description name="Checks for redundant `app.bnd` in deprecated or archived modules." />
 		</check>
+		<check name="BNDJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
 		<check name="BNDLineBreaksCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary line breaks in `.bnd` files." />
@@ -243,6 +247,10 @@
 			<category name="Styling" />
 			<description name="Sorts and groups imports in `.ftl` files." />
 		</check>
+		<check name="FTLJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
 		<check name="FTLLiferayVariableOrderCheck">
 			<category name="Styling" />
 			<description name="Sorts assign statement of `liferay_*` variables." />
@@ -309,6 +317,10 @@
 		<check name="GradleIndentationCheck">
 			<category name="Styling" />
 			<description name="Finds incorrect indentation in gradle build files." />
+		</check>
+		<check name="GradleJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="GradleJavaVersionCheck">
 			<category name="Bug Prevention" />
@@ -395,6 +407,10 @@
 		<check name="HTMLEmptyLinesCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary empty lines." />
+		</check>
+		<check name="HTMLJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="HTMLWhitespaceCheck">
 			<category name="Styling" />
@@ -549,6 +565,10 @@
 		<check name="JavaIOExceptionCheck">
 			<category name="Styling" />
 			<description name="Validates use of `IOException`." />
+		</check>
+		<check name="JavaJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="JavaLocalSensitiveComparisonCheck">
 			<category name="Bug Prevention" />
@@ -722,6 +742,10 @@
 			<property name="checkSelfRegistration" value="false" />
 			<property name="checkUsesInternalService" value="false" />
 		</check>
+		<check name="JavaConstantsFileCheck">
+			<category name="Naming Conventions" />
+			<description name="Checks if constants names follow naming conventions." />
+		</check>
 		<check name="JavaDeprecatedJavadocCheck">
 			<category name="Javadoc" />
 			<description name="Checks if the `@deprecated` javadoc is pointing to the correct version." />
@@ -829,6 +853,10 @@
 		<check name="JavaSignatureParametersCheck">
 			<category name="Styling" />
 			<description name="Checks the order of parameters." />
+		</check>
+		<check name="JavaSnapshotClassNameCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks the name of the class that is passed to `Snapshot` constructor." />
 		</check>
 		<check name="JavaSourceFormatterDocumentationCheck">
 			<category name="Documentation" />
@@ -1172,6 +1200,10 @@
 			<category name="Styling" />
 			<description name="Finds cases where variables can be inlined." />
 		</check>
+		<check name="JSPJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
 		<check name="JSPJavaParserCheck">
 			<category name="Styling" />
 			<description name="Performs JavaParser on `.java` files." />
@@ -1348,6 +1380,10 @@
 		</check>
 	</source-processor>
 	<source-processor name="JSSourceProcessor">
+		<check name="JSJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
 		<check name="JSLodashDependencyCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds incorrect use of `AUI._`." />
@@ -1473,6 +1509,10 @@
 			<category name="Styling" />
 			<description name="Finds incorrect indentation in Poshi Script files." />
 		</check>
+		<check name="PoshiJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
 		<check name="PoshiPauseUsageCheck">
 			<category name="Performance" />
 			<description name="Finds missing comment with JIRA project when using `Pause`." />
@@ -1544,6 +1584,10 @@
 		<check name="PropertiesImportedFilesContentCheck">
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on `imported-files.properties` file." />
+		</check>
+		<check name="PropertiesJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="PropertiesLanguageContractionsCheck">
 			<category name="Styling" />
@@ -1710,6 +1754,10 @@
 			<category name="Styling" />
 			<description name="Checks the order of attributes in `.tld` file." />
 		</check>
+		<check name="TLDJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
 		<check name="TLDStylingCheck">
 			<category name="Styling" />
 			<description name="Applies rules to enforce consistency in code style." />
@@ -1728,6 +1776,10 @@
 		</check>
 	</source-processor>
 	<source-processor name="TSSourceProcessor">
+		<check name="TSJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
 		<check name="WhitespaceCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary whitespace." />
@@ -1746,6 +1798,10 @@
 			<category name="Bug Prevention" />
 			<description name="Checks that `*.spec.ts` file should be inside a folder that contains a `config.ts`." />
 			<property name="enabled" value="false" />
+		</check>
+		<check name="TSSpecFileStylingCheck">
+			<category name="Styling" />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 	</source-processor>
 	<source-processor name="TXTSourceProcessor">
@@ -2021,6 +2077,10 @@
 		<check name="XMLInstanceWrappersFileCheck">
 			<category name="Styling" />
 			<description name="Checks the order of instance-wrappers in `instance_wrappers.xml` file." />
+		</check>
+		<check name="XMLJakartaTransformCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="XMLLog4jFileCheck">
 			<category name="Styling" />

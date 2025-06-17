@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.search;
 
+import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.engine.adapter.search.ClearScrollRequest;
 import com.liferay.portal.search.engine.adapter.search.ClearScrollResponse;
 import com.liferay.portal.search.engine.adapter.search.ClosePointInTimeRequest;
@@ -21,6 +22,7 @@ import com.liferay.portal.search.engine.adapter.search.SearchSearchResponse;
 import com.liferay.portal.search.engine.adapter.search.SuggestSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.SuggestSearchResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -85,7 +87,12 @@ public class ElasticsearchSearchRequestExecutor
 		return _suggestSearchRequestExecutor.execute(suggestSearchRequest);
 	}
 
-	@Reference
+	@Activate
+	protected void activate() {
+		_clearScrollRequestExecutor = new ClearScrollRequestExecutor(
+			_elasticsearchClientResolver);
+	}
+
 	private ClearScrollRequestExecutor _clearScrollRequestExecutor;
 
 	@Reference
@@ -93,6 +100,9 @@ public class ElasticsearchSearchRequestExecutor
 
 	@Reference
 	private CountSearchRequestExecutor _countSearchRequestExecutor;
+
+	@Reference
+	private ElasticsearchClientResolver _elasticsearchClientResolver;
 
 	@Reference
 	private MultisearchSearchRequestExecutor _multisearchSearchRequestExecutor;

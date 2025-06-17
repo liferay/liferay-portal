@@ -146,7 +146,7 @@ public class JournalContentTest {
 		renderRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
 		httpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, renderRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, renderRequest);
 
 		return renderRequest;
 	}

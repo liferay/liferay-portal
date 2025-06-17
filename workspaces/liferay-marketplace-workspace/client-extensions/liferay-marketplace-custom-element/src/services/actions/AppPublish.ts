@@ -218,7 +218,15 @@ export default class AppPublish extends BaseAppPublish {
 				}
 			);
 
-			return _product;
+			const product = await HeadlessCommerceAdminCatalogImpl.getProduct(
+				_product.productId,
+				new URLSearchParams({
+					nestedFields:
+						'attachments,catalog,images,productSpecifications,productOptions,productVirtualSettings,skus',
+				})
+			);
+
+			return product;
 		}
 
 		const product =
@@ -315,17 +323,19 @@ export default class AppPublish extends BaseAppPublish {
 			}
 		);
 
-		for (const liferayPackage of liferayPackages) {
-			const {files, version} = liferayPackage;
+		const liferayVersions = [];
 
-			for (const file of files) {
+		for (const liferayPackage of liferayPackages) {
+			const {file, versions} = liferayPackage;
+
+			if (file && file.file) {
 				const formData = new FormData();
 				const blob = new Blob([file.file]);
 
 				formData.append('file', blob, file.fileName);
 				formData.append(
 					'productVirtualSettingsFileEntry',
-					JSON.stringify({version})
+					JSON.stringify({version: versions.toString()})
 				);
 
 				await createProductVirtualEntry({
@@ -334,18 +344,22 @@ export default class AppPublish extends BaseAppPublish {
 					virtualSettingId: _product?.productVirtualSettings.id ?? '',
 				});
 			}
+
+			liferayVersions.push(...versions);
 		}
 
-		const liferayVersions = [
-			...new Set(liferayPackages.map(({version}) => version)),
-		].map((specification) => ({
-			key: ProductSpecificationKey.LIFERAY_VERSION,
-			value: specification,
-		}));
+		const liferayVersionSpecifications = Array.from(
+			new Set(liferayVersions)
+		)
+			.toSorted()
+			.map((version) => ({
+				key: ProductSpecificationKey.LIFERAY_VERSION,
+				value: version,
+			}));
 
 		await BaseAppPublish.updateSpecifications(product, [
 			...specifications,
-			...liferayVersions,
+			...liferayVersionSpecifications,
 		]);
 	}
 

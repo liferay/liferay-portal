@@ -154,7 +154,7 @@ public class GetObjectFieldInfoMVCResourceCommandTest {
 		mockLiferayResourceRequest.addParameter(
 			"objectFieldId", String.valueOf(objectFieldId));
 		mockLiferayResourceRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG,
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			PortletConfigFactoryUtil.create(
 				_portletLocalService.getPortletById(
 					ObjectPortletKeys.OBJECT_DEFINITIONS),

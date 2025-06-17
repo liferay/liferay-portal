@@ -432,7 +432,7 @@ definition {
 
 		PublicationsPermissions.viewPublicationRoleHelpText(
 			publicationRole = "Admin",
-			publicationRoleHelpText = "Administrators can view, edit, publish, and invite other users.");
+			publicationRoleHelpText = "Administrators can view, edit, delete, publish, and invite other users.");
 	}
 
 	@priority = 5

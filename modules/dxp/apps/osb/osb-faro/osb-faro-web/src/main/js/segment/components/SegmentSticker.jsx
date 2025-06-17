@@ -9,9 +9,9 @@ export default ({segmentType, state}) => {
 		if (disabled) {
 			return 'warning';
 		} else if (segmentType === SegmentTypes.Static) {
-			return 'individual-static-segment';
+			return 'individual_static_segment';
 		} else {
-			return 'individual-dynamic-segment';
+			return 'individual_dynamic_segment';
 		}
 	};
 

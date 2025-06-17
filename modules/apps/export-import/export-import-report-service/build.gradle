@@ -1,0 +1,14 @@
+buildService {
+	apiDir = "../export-import-report-api/src/main/java"
+	testDir = "../export-import-report-test/src/testIntegration/java"
+}
+
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly project(":apps:export-import:export-import-report-api")
+	compileOnly project(":apps:portal:portal-aop-api")
+	compileOnly project(":core:petra:petra-lang")
+	compileOnly project(":core:petra:petra-sql-dsl-api")
+	compileOnly project(":core:petra:petra-string")
+}

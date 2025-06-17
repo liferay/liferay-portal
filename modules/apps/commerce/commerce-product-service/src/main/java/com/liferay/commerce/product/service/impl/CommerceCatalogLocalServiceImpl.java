@@ -269,8 +269,8 @@ public class CommerceCatalogLocalServiceImpl
 					_cpConfigurationListLocalService.getCPConfigurationLists(
 						group.getGroupId(), commerceCatalog.getCompanyId())) {
 
-				_cpConfigurationListLocalService.forceDeleteCPConfigurationList(
-					cpConfigurationList);
+				_cpConfigurationListLocalService.deleteCPConfigurationList(
+					cpConfigurationList, true);
 			}
 
 			_groupLocalService.deleteGroup(group);

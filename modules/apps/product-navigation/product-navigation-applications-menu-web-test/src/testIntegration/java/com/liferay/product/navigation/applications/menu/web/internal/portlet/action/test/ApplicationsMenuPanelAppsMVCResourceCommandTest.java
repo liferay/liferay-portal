@@ -95,7 +95,7 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 		_mockPortletRequest.setAttribute(WebKeys.THEME_DISPLAY, _themeDisplay);
 
 		_mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST, _mockPortletRequest);
+			JavaConstants.JAKARTA_PORTLET_REQUEST, _mockPortletRequest);
 
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _themeDisplay);

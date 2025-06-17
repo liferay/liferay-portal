@@ -5,19 +5,19 @@ import {fireEvent, render} from '@testing-library/react';
 const items = [
 	{
 		selected: true,
-		svg: 'cerebro-thumb-line-chart',
+		svg: 'cerebro_thumb_line_chart',
 		text: 'this is a thumb 1',
 		value: 'line'
 	},
 	{
 		selected: false,
-		svg: 'cerebro-thumb-line-chart',
+		svg: 'cerebro_thumb_line_chart',
 		text: 'this is a thumb 2',
 		value: 'line'
 	},
 	{
 		selected: false,
-		svg: 'cerebro-thumb-line-chart',
+		svg: 'cerebro_thumb_line_chart',
 		text: 'this is a thumb 3',
 		value: 'line'
 	}

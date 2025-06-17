@@ -9,6 +9,9 @@ import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 
+const PLO_PORTLET_NAMESPACE =
+	'_com_liferay_portal_language_override_web_internal_portlet_PLOPortlet_value_';
+
 export type TLanguageKey = {
 	key: string;
 	translations: {
@@ -38,11 +41,12 @@ export class LanguageOverridePage {
 	async addLanguageKey({key, translations}: TLanguageKey) {
 		await this.newButton.click();
 
+		await this.page.waitForLoadState();
+
 		await this.page.getByLabel('key required').fill(key);
 
 		for (const {languageId, value} of translations) {
-			await this.page.getByLabel(languageId).click();
-			await this.page.getByLabel(languageId).fill(value);
+			await this.updateTranslation(languageId, value);
 		}
 
 		await this.saveButton.click();
@@ -54,6 +58,10 @@ export class LanguageOverridePage {
 		for (const languageOverride of languageOverrides) {
 			await this.addLanguageKey(languageOverride);
 		}
+	}
+
+	async assertLanguageKeyForSelectedLanguage(key: string) {
+		await expect(this.page.getByRole('link', {name: key})).toBeAttached();
 	}
 
 	async assertLanguageKeyInListView({key, translations}: TLanguageKey) {
@@ -69,9 +77,7 @@ export class LanguageOverridePage {
 			).toBeVisible();
 		}
 		else {
-			await expect(
-				this.page.getByRole('link', {name: key})
-			).toBeAttached();
+			await this.assertLanguageKeyForSelectedLanguage(key);
 		}
 	}
 
@@ -80,7 +86,13 @@ export class LanguageOverridePage {
 	}
 
 	async assertLanguageKeyTranslationIsEmpty(languageId: string) {
-		await expect(this.page.getByLabel(languageId)).toHaveValue('');
+		await expect(this.getTranslationInput(languageId)).toHaveValue('');
+	}
+
+	async assertLanguageKeyTranslationValue(languageId: string, value: string) {
+		const translationInput = this.getTranslationInput(languageId);
+
+		expect(await translationInput.inputValue()).toBe(value);
 	}
 
 	async assertLanguageKeyTranslations({key, translations}: TLanguageKey) {
@@ -89,8 +101,16 @@ export class LanguageOverridePage {
 		await this.page.waitForLoadState();
 
 		for (const {languageId, value} of translations) {
-			await expect(this.page.getByLabel(languageId)).toHaveValue(value);
+			await expect(this.getTranslationInput(languageId)).toHaveValue(
+				value
+			);
 		}
+	}
+
+	async assertNoLanguageEntriesWereFound() {
+		await expect(
+			this.page.getByText('No language entries were found.')
+		).toBeVisible();
 	}
 
 	async changeFilter(option: 'Any Language' | 'Selected Language') {
@@ -113,6 +133,12 @@ export class LanguageOverridePage {
 		});
 
 		await this.page.waitForLoadState();
+
+		await this.page.getByRole('button', {name: languageId}).waitFor();
+	}
+
+	async editLanguageKey(key: string) {
+		await this.page.getByRole('link', {name: key}).click();
 	}
 
 	async exportOverridenTranslations() {
@@ -127,6 +153,57 @@ export class LanguageOverridePage {
 		await this.page.goto(`/group/guest${PORTLET_URLS.languageOverride}`);
 	}
 
+	async importLanguageFile({
+		expectedErrorMessage,
+		filePath,
+		languageId,
+	}: {
+		expectedErrorMessage?: string;
+		filePath: string;
+		languageId?: string;
+	}) {
+		if (await this.page.getByText('Import Translations').isHidden()) {
+			await this.page.getByLabel('Options').click();
+
+			await this.page
+				.getByRole('menuitem', {name: 'Import Translations'})
+				.click();
+		}
+
+		if (languageId) {
+			await this.page.getByLabel('Language').selectOption(languageId);
+		}
+
+		await this.page.locator('input[type="file"]').setInputFiles(filePath);
+
+		await this.saveButton.click();
+
+		await this.page.waitForLoadState();
+
+		if (expectedErrorMessage) {
+			await expect(
+				this.page.getByText(expectedErrorMessage)
+			).toBeVisible();
+		}
+		else {
+			await waitForAlert(this.page);
+		}
+	}
+
+	async removeTranslationOverrideForCurrentLocale(key: string) {
+		await this.clickRowActionAndAcceptDialog(
+			key,
+			'Remove translation override for'
+		);
+	}
+
+	async removeAllTranslationOverrides(key: string) {
+		await this.clickRowActionAndAcceptDialog(
+			key,
+			'Remove all translation overrides'
+		);
+	}
+
 	async searchLanguageKey(key: string) {
 		await this.page.getByRole('searchbox').click();
 		await this.page.getByRole('searchbox').fill(key);
@@ -138,5 +215,40 @@ export class LanguageOverridePage {
 		await this.page.waitForLoadState();
 
 		await this.page.getByText('Search Results').waitFor({state: 'visible'});
+	}
+
+	async updateTranslation(languageId: string, value: string) {
+		const translationInput = this.getTranslationInput(languageId);
+
+		await translationInput.click();
+		await translationInput.fill(value);
+	}
+
+	private async clickRowActionAndAcceptDialog(
+		languageKey: string,
+		option: string
+	) {
+		const actionsButton = this.page
+			.getByTestId('row')
+			.filter({hasText: languageKey})
+			.getByRole('button');
+
+		this.page.once('dialog', (dialog) => {
+			dialog.accept();
+		});
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByText(option),
+			trigger: actionsButton,
+		});
+
+		await waitForAlert(this.page);
+	}
+
+	private getTranslationInput(languageId: string) {
+		return this.page.locator(
+			`[id="${PLO_PORTLET_NAMESPACE}${languageId.replace('-', '_')}"]`
+		);
 	}
 }

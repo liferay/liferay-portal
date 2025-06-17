@@ -898,7 +898,7 @@ public class LanguageImpl implements Language, Serializable {
 
 		PortletConfig portletConfig =
 			(PortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_CONFIG);
+				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		Locale locale = _getLocale(httpServletRequest);
 

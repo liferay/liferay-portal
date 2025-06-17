@@ -103,12 +103,13 @@ public class MarketplaceAppPluginsTopLevelBuild
 			buildProperties, "portal.version.latest", portalVersion);
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(latestPortalVersion)) {
-			_portalRelease = new PortalRelease(latestPortalVersion);
+			_portalRelease = PortalReleaseFactory.newPortalRelease(
+				latestPortalVersion);
 
 			return _portalRelease;
 		}
 
-		_portalRelease = new PortalRelease(portalVersion);
+		_portalRelease = PortalReleaseFactory.newPortalRelease(portalVersion);
 
 		return _portalRelease;
 	}

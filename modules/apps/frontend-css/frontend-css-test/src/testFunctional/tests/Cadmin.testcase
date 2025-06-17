@@ -5,7 +5,7 @@ definition {
 	property portal.acceptance = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property testray.main.component.name = "User Interface";
+	property testray.main.component.name = "Liferay Themes";
 
 	setUp {
 		TestCase.setUpPortalInstance();
@@ -41,11 +41,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-122068. Verifies admin component displays it's default theme after applying a theme"
+	@description = "LPS-122068. Verifies admin component displays it's default theme after applying a theme and that CSS can be overridden"
 	@priority = 5
 	test CanDisplayDefaultTheme {
-		property portal.acceptance = "quarantine";
-
 		task ("When assert classic theme background color") {
 			AssertCssValue(
 				key_class = "test",
@@ -59,7 +57,15 @@ definition {
 				key_class = "cadmin",
 				locator1 = "Cadmin#BODY",
 				locator2 = "background-color",
-				value1 = "rgba(0, 0, 0, 0)");
+				value1 = "rgba(255, 255, 255, 1)");
+		}
+
+		task ("And assert cadmin component default theme background color before applying theme") {
+			AssertCssValue(
+				key_class = "cadmin",
+				locator1 = "Cadmin#OVERRIDE_BODY_WITH_BLUE",
+				locator2 = "background-color",
+				value1 = "rgba(255, 255, 255, 1)");
 		}
 
 		task ("When deploy test-theme.war") {
@@ -77,6 +83,8 @@ definition {
 				pageName = "Cadmin Test Page",
 				themeName = "test-theme-7-4");
 
+			PortletEntry.save();
+
 			Navigator.openSitePage(
 				pageName = "Cadmin Test Page",
 				siteName = "Guest");
@@ -88,49 +96,6 @@ definition {
 				locator1 = "Cadmin#BODY",
 				locator2 = "background-color",
 				value1 = "rgba(255, 165, 0, 1)");
-		}
-
-		task ("And assert cadmin default theme background color") {
-			AssertCssValue(
-				key_class = "cadmin",
-				locator1 = "Cadmin#BODY",
-				locator2 = "background-color",
-				value1 = "rgba(0, 0, 0, 0)");
-
-			takeScreenshot();
-		}
-	}
-
-	@description = "LPS-122068. Verifies admin component CSS can be overridden"
-	@priority = 4
-	test CssCanBeOverridden {
-		property portal.acceptance = "false";
-		property portal.release = "false";
-
-		task ("When assert cadmin default theme is applied to a component") {
-			AssertCssValue(
-				key_class = "cadmin",
-				locator1 = "Cadmin#OVERRIDE_BODY_WITH_BLUE",
-				locator2 = "background-color",
-				value1 = "rgba(0, 0, 0, 0)");
-		}
-
-		task ("And apply theme with CSS changes higher than cadmin") {
-			FileInstall.deployFileOnServer(jarFile = "test-theme.war");
-
-			Navigator.openURL();
-
-			ProductMenu.gotoPortlet(
-				category = "Site Builder",
-				portlet = "Pages");
-
-			PagesAdmin.changeWidgetPageCurrentTheme(
-				pageName = "Cadmin Test Page",
-				themeName = "test-theme-7-4");
-
-			Navigator.openSitePage(
-				pageName = "Cadmin Test Page",
-				siteName = "Guest");
 		}
 
 		task ("Then assert admin component has its CSS overriden") {

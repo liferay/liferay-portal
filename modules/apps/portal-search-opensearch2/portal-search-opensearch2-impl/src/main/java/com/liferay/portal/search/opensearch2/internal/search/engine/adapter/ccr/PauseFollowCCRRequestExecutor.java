@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.ccr.PauseFollowCCRResponse;
 /**
  * @author Bryan Engler
  */
-public interface PauseFollowCCRRequestExecutor {
+public class PauseFollowCCRRequestExecutor {
 
 	public PauseFollowCCRResponse execute(
-		PauseFollowCCRRequest pauseFollowCCRRequest);
+		PauseFollowCCRRequest pauseFollowCCRRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

@@ -39,6 +39,18 @@ public interface BuildDatabase {
 
 	public JSONObject getJSONObject();
 
+	public PortalFixpackRelease getPortalFixpackRelease(String key);
+
+	public List<PortalFixpackRelease> getPortalFixpackReleases();
+
+	public PortalHotfixRelease getPortalHotfixRelease(String key);
+
+	public List<PortalHotfixRelease> getPortalHotfixReleases();
+
+	public PortalRelease getPortalRelease(String key);
+
+	public List<PortalRelease> getPortalReleases();
+
 	public Properties getProperties(String key);
 
 	public Properties getProperties(String key, Pattern pattern);
@@ -57,6 +69,12 @@ public interface BuildDatabase {
 
 	public boolean hasJob(String key);
 
+	public boolean hasPortalFixpackRelease(String key);
+
+	public boolean hasPortalHotfixRelease(String key);
+
+	public boolean hasPortalRelease(String key);
+
 	public boolean hasProperties(String key);
 
 	public boolean hasPullRequest(String key);
@@ -68,6 +86,14 @@ public interface BuildDatabase {
 	public void putBuildData(String key, BuildData buildData);
 
 	public void putJob(String key, Job job);
+
+	public void putPortalFixpackRelease(
+		String key, PortalFixpackRelease portalFixpackRelease);
+
+	public void putPortalHotfixRelease(
+		String key, PortalHotfixRelease portalHotfixRelease);
+
+	public void putPortalRelease(String key, PortalRelease portalRelease);
 
 	public void putProperties(String key, File propertiesFile);
 

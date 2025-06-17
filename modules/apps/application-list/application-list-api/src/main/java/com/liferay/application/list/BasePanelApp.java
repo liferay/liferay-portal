@@ -69,7 +69,7 @@ public abstract class BasePanelApp implements PanelApp {
 
 			return LanguageUtil.get(
 				resourceBundle,
-				JavaConstants.JAVAX_PORTLET_TITLE + StringPool.PERIOD +
+				JavaConstants.JAKARTA_PORTLET_TITLE + StringPool.PERIOD +
 					getPortletId());
 		}
 		catch (MissingResourceException missingResourceException) {
@@ -80,7 +80,7 @@ public abstract class BasePanelApp implements PanelApp {
 
 		return LanguageUtil.get(
 			locale,
-			JavaConstants.JAVAX_PORTLET_TITLE + StringPool.PERIOD +
+			JavaConstants.JAKARTA_PORTLET_TITLE + StringPool.PERIOD +
 				getPortletId());
 	}
 

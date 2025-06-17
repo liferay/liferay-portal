@@ -3,13 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {liferayConfig} from '../../../../liferay.config';
-
 const API_ENDPOINT_PATH = '/data-set-admin/data-sets';
-
-const ES_BASE_URL = `${liferayConfig.environment.baseUrl}/es`;
-const EN_BASE_URL = `${liferayConfig.environment.baseUrl}/en`;
-const PT_BASE_URL = `${liferayConfig.environment.baseUrl}/pt`;
 
 const DEFAULT_LABEL = {
 	DATA_SET: 'Sample Data Set',
@@ -44,10 +38,7 @@ export {
 	CLIENT_EXTENSION_FILTER_DATA_SET_RELATIONSHIP,
 	DATE_FILTER_DATA_SET_RELATIONSHIP,
 	DEFAULT_LABEL,
-	EN_BASE_URL,
-	ES_BASE_URL,
 	LIST_SECTION_DATA_SET_RELATIONSHIP,
-	PT_BASE_URL,
 	SELECTION_FILTER_DATA_SET_RELATIONSHIP,
 	SORT_DATA_SET_RELATIONSHIP,
 	TABLE_SECTION_DATA_SET_RELATIONSHIP,

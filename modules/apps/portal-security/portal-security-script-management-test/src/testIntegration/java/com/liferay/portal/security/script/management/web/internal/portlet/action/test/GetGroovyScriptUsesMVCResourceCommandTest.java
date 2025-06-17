@@ -81,7 +81,7 @@ public class GetGroovyScriptUsesMVCResourceCommandTest {
 		_mockLiferayResourceRequest = new MockLiferayResourceRequest();
 
 		_mockLiferayResourceRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_CONFIG,
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			PortletConfigFactoryUtil.create(
 				_portletLocalService.getPortletById(
 					ConfigurationAdminPortletKeys.SYSTEM_SETTINGS),

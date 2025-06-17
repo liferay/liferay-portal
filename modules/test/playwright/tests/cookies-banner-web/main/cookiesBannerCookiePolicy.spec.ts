@@ -5,18 +5,11 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
-export const test = mergeTests(
-	featureFlagsTest({
-		'LPD-10588': {enabled: true},
-	}),
-	loginTest(),
-	systemSettingsPageTest
-);
+export const test = mergeTests(loginTest(), systemSettingsPageTest);
 
 test('LPD-30561 Cookie Banner Cookie Policy Page', async ({
 	page,

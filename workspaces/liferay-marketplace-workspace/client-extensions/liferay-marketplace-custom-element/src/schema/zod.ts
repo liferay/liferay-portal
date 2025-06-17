@@ -124,7 +124,14 @@ const zodSchema = {
 	appPublishing: {
 		build: z.object({
 			appType: z.string(),
-			liferayPackages: z.array(z.any()).min(1),
+			liferayPackages: z
+				.array(
+					z.object({
+						file: z.object({}),
+						versions: z.array(z.string()).min(1),
+					})
+				)
+				.min(1),
 		}),
 		profile: z.object({
 			areas: z.array(z.any()).nonempty(),

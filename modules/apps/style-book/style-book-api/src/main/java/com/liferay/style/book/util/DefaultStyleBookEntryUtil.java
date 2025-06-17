@@ -144,6 +144,7 @@ public class DefaultStyleBookEntryUtil {
 
 	private static final Snapshot<FrontendTokenDefinitionRegistry>
 		_frontendTokenDefinitionRegistrySnapshot = new Snapshot<>(
-			StyleBookUtil.class, FrontendTokenDefinitionRegistry.class);
+			DefaultStyleBookEntryUtil.class,
+			FrontendTokenDefinitionRegistry.class);
 
 }

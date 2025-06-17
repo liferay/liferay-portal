@@ -22,6 +22,7 @@ export class FDSSamplePage {
 	readonly customViewsSaveModal: Locator;
 	readonly customViewsSelectorButton: Locator;
 	readonly itemActionButton: Locator;
+	readonly infoPanel: Locator;
 	readonly managementToolbar: Locator;
 	readonly page: Page;
 	readonly sidePanel: Locator;
@@ -35,6 +36,7 @@ export class FDSSamplePage {
 		itemActionsCells: Locator;
 		manageColumnsVisibilityButton: Locator;
 	};
+	readonly toggleInfoPanelButton: Locator;
 
 	constructor(page: Page) {
 		this.apiHelpers = new ApiHelpers(page);
@@ -56,6 +58,7 @@ export class FDSSamplePage {
 		this.customViewsSelectorButton = page.getByLabel('Views', {
 			exact: true,
 		});
+		this.infoPanel = page.locator('.fds-info-panel');
 		this.managementToolbar = page.getByTestId('management-toolbar');
 		this.page = page;
 		this.sidePanel = page.locator('.fds-side-panel');
@@ -75,6 +78,8 @@ export class FDSSamplePage {
 				'Manage Columns Visibility'
 			),
 		};
+
+		this.toggleInfoPanelButton = page.getByLabel('Toggle Info Panel');
 
 		const itemActionsCell = this.table.itemActionsCells.first();
 

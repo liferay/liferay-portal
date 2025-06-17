@@ -86,7 +86,7 @@ public class TranslateDisplayContextTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAVAX_PORTLET_REQUEST,
+			JavaConstants.JAKARTA_PORTLET_REQUEST,
 			new MockLiferayPortletRenderRequest());
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, Mockito.mock(ThemeDisplay.class));

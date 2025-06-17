@@ -66,11 +66,11 @@ exports[`AssociatedSegmentsCard should render 1`] = `
                 class="sticker sticker-root sticker-static sticker-rounded sticker-primary"
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-individual-dynamic-segment icon-root"
+                  class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#individual-dynamic-segment"
+                    href="#individual_dynamic_segment"
                   />
                 </svg>
               </div>
@@ -107,11 +107,11 @@ exports[`AssociatedSegmentsCard should render 1`] = `
                 class="sticker sticker-root sticker-static sticker-rounded sticker-primary"
               >
                 <svg
-                  class="lexicon-icon lexicon-icon-individual-dynamic-segment icon-root"
+                  class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
                   role="presentation"
                 >
                   <use
-                    href="#individual-dynamic-segment"
+                    href="#individual_dynamic_segment"
                   />
                 </svg>
               </div>

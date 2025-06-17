@@ -6,6 +6,7 @@
 export const ACTION_ITEM_TARGETS = {
 	BLANK: 'blank',
 	EVENT: 'event',
+	INFO_PANEL: 'infoPanel',
 	LINK: 'link',
 	MODAL: 'modal',
 	MODAL_FULL_SCREEN: 'modal-full-screen',

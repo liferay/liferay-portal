@@ -115,7 +115,7 @@ const Interests: React.FC<IInterestsProps> = ({channelId, groupId, id}) => {
 						icon={{
 							border: false,
 							size: Sizes.XXXLarge,
-							symbol: 'ac-satellite'
+							symbol: 'ac_satellite'
 						}}
 						title={Liferay.Language.get(
 							'there-are-no-interests-found'

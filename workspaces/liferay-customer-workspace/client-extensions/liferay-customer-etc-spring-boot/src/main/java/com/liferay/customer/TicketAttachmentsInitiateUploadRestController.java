@@ -50,8 +50,13 @@ public class TicketAttachmentsInitiateUploadRestController
 			JSONObject jsonObject = new JSONObject(json);
 
 			String fileName = jsonObject.getString("fileName");
+			String fileSize = jsonObject.getString("fileSize");
+			String gcsSessionURL = jsonObject.optString("gcsSessionURL");
 			String md5Checksum = jsonObject.optString("md5Checksum");
+
 			long zendeskTicketId = jsonObject.getLong("zendeskTicketId");
+
+			String accountKey = _getAccountKey(zendeskTicketId);
 
 			TicketAttachment ticketAttachment =
 				_ticketAttachmentService.fetchTicketAttachment(
@@ -70,26 +75,32 @@ public class TicketAttachmentsInitiateUploadRestController
 			else {
 				String externalReferenceCode = jsonObject.optString(
 					"externalReferenceCode");
-				String fileSize = jsonObject.getString("fileSize");
 				String type = jsonObject.optString("type");
 
 				ticketAttachment = _ticketAttachmentService.addTicketAttachment(
-					"Bearer " + jwt.getTokenValue(),
-					_getAccountKey(zendeskTicketId), externalReferenceCode,
-					fileName, fileSize, md5Checksum,
+					"Bearer " + jwt.getTokenValue(), accountKey,
+					externalReferenceCode, fileName, fileSize, md5Checksum,
 					TicketAttachment.STATUS_DRAFT, type, zendeskTicketId);
 			}
 
 			JSONObject responseJSONObject = new JSONObject();
 
 			responseJSONObject.put(
-				"gcsSessionURL",
-				_googleCloudStorageService.getUploadSessionURL(
-					origin, ticketAttachment.getGCSBucketName(),
-					ticketAttachment.getGCSObjectName())
+				"accountKey", accountKey
 			).put(
 				"ticketAttachmentId", ticketAttachment.getTicketAttachmentId()
 			);
+
+			if (!gcsSessionURL.equals("")) {
+				responseJSONObject.put("gcsSessionURL", gcsSessionURL);
+			}
+			else {
+				responseJSONObject.put(
+					"gcsSessionURL",
+					_googleCloudStorageService.getUploadSessionURL(
+						origin, ticketAttachment.getGCSBucketName(),
+						ticketAttachment.getGCSObjectName(), fileSize));
+			}
 
 			return new ResponseEntity<>(
 				responseJSONObject.toString(), HttpStatus.OK);

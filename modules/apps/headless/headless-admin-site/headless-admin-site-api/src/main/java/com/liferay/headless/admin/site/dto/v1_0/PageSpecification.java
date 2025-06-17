@@ -160,6 +160,61 @@ public abstract class PageSpecification implements Serializable {
 	private Supplier<Settings> _settingsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The site template page specification's external reference code."
+	)
+	public String getSiteTemplatePageSpecificationExternalReferenceCode() {
+		if (_siteTemplatePageSpecificationExternalReferenceCodeSupplier !=
+				null) {
+
+			siteTemplatePageSpecificationExternalReferenceCode =
+				_siteTemplatePageSpecificationExternalReferenceCodeSupplier.
+					get();
+
+			_siteTemplatePageSpecificationExternalReferenceCodeSupplier = null;
+		}
+
+		return siteTemplatePageSpecificationExternalReferenceCode;
+	}
+
+	public void setSiteTemplatePageSpecificationExternalReferenceCode(
+		String siteTemplatePageSpecificationExternalReferenceCode) {
+
+		this.siteTemplatePageSpecificationExternalReferenceCode =
+			siteTemplatePageSpecificationExternalReferenceCode;
+
+		_siteTemplatePageSpecificationExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSiteTemplatePageSpecificationExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			siteTemplatePageSpecificationExternalReferenceCodeUnsafeSupplier) {
+
+		_siteTemplatePageSpecificationExternalReferenceCodeSupplier = () -> {
+			try {
+				return siteTemplatePageSpecificationExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The site template page specification's external reference code."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String siteTemplatePageSpecificationExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String>
+		_siteTemplatePageSpecificationExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The status of the page specification."
 	)
 	@JsonGetter("status")
@@ -322,6 +377,25 @@ public abstract class PageSpecification implements Serializable {
 			sb.append("\"settings\": ");
 
 			sb.append(String.valueOf(settings));
+		}
+
+		String siteTemplatePageSpecificationExternalReferenceCode =
+			getSiteTemplatePageSpecificationExternalReferenceCode();
+
+		if (siteTemplatePageSpecificationExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append(
+				"\"siteTemplatePageSpecificationExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(siteTemplatePageSpecificationExternalReferenceCode));
+
+			sb.append("\"");
 		}
 
 		Status status = getStatus();

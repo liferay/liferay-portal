@@ -269,6 +269,7 @@ public class AccountGroupLocalServiceImpl
 		return accountGroupPersistence.fetchByC_D_First(companyId, true, null);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public AccountGroup getOrAddIncompleteAccountGroup(
 			String externalReferenceCode, long companyId, long userId,

@@ -189,10 +189,10 @@ const EditFolder: React.FC<EditFolderProps> = ({backURL, folderId}) => {
 					/>
 
 					<FieldPicker
+						disabled
 						items={spaceItems}
 						label={Liferay.Language.get('space')}
 						name="folderSpace"
-						readOnly
 						required
 						selectedKey={values.folderSpace}
 					/>

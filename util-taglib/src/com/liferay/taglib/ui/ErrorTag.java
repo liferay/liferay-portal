@@ -42,7 +42,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (MultiSessionErrors.isEmpty(portletRequest)) {
 			return SKIP_BODY;
@@ -172,7 +172,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		httpServletRequest.setAttribute(
 			"liferay-ui:error:alertIcon", _getAlertIcon());
@@ -220,7 +220,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (MultiSessionErrors.contains(portletRequest, "warning")) {
 			return "warning-full";
@@ -238,7 +238,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (MultiSessionErrors.contains(portletRequest, "warning")) {
 			String alertMessage = _message;
@@ -288,7 +288,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (MultiSessionErrors.contains(portletRequest, "warning")) {
 			return "warning";
@@ -306,7 +306,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if (MultiSessionErrors.contains(portletRequest, "warning")) {
 			return LanguageUtil.get(httpServletRequest, "warning-colon");
@@ -328,7 +328,7 @@ public class ErrorTag extends IncludeTag implements BodyTag {
 
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if ((_key != null) && Validator.isNull(_message)) {
 			if (MultiSessionErrors.contains(portletRequest, _key) &&
