@@ -195,8 +195,16 @@ public class ClientExtensionCommerceCheckoutStep
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
+			CommerceOrder commerceOrder =
+			(CommerceOrder)httpServletRequest.getAttribute(
+				CommerceCheckoutWebKeys.COMMERCE_ORDER);
+
+			httpServletRequest.setAttribute(
+			"orderId", commerceOrder.getCommerceOrderId());
+			
 		httpServletRequest.setAttribute(
 			CommerceClientExtensionWebKeys.RENDER_URL, _baseURL + "/index.js");
+			
 
 		if (Validator.isNotNull(_paymentMethodKey)) {
 			_renderPayment(httpServletRequest);
