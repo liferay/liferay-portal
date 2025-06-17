@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -94,6 +96,12 @@ public class MembershipsUserFieldExpressionHandler
 								user.getCompanyId(), value, StringPool.BLANK,
 								null);
 
+							ServiceContext serviceContext =
+								ServiceContextThreadLocal.getServiceContext();
+
+							String samlIdpEntityId = GetterUtil.getString(
+								serviceContext.getAttribute("SamlIdpEntityId"));
+
 							ExpandoColumn expandoColumn =
 								_getOrAddExpandoColumn(
 									UserGroup.class.getName(),
@@ -104,8 +112,7 @@ public class MembershipsUserFieldExpressionHandler
 									UserGroup.class.getName()),
 								expandoColumn.getTableId(),
 								expandoColumn.getColumnId(),
-								userGroup.getUserGroupId(),
-								"SamlIdpEntityIdNeeded");
+								userGroup.getUserGroupId(), samlIdpEntityId);
 						}
 						catch (Exception exception) {
 							if (_log.isWarnEnabled()) {

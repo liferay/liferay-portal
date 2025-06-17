@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -1826,10 +1827,22 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			httpServletRequest);
 
-		User user = _userResolver.resolveUser(
-			new UserResolverSAMLContextImpl(
-				(MessageContext<Response>)messageContext),
-			serviceContext);
+		serviceContext.setAttribute(
+			"SamlIdpEntityId", samlSpIdpConnection.getSamlIdpEntityId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		User user = null;
+
+		try {
+			user = _userResolver.resolveUser(
+				new UserResolverSAMLContextImpl(
+					(MessageContext<Response>)messageContext),
+				serviceContext);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 
 		if (user == null) {
 			throw new SubjectException(
