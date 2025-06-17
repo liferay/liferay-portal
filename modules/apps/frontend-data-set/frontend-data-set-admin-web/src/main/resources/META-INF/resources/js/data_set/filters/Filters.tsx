@@ -73,9 +73,8 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 	[EFilterType.SELECTION]: {
 		Component: SelectionFilterFormContent,
 		availableFieldsFilter: (item: IField) =>
-			((item.type === EFieldType.STRING && !item.format) ||
-				item.type === EFieldType.INTEGER) &&
-			item.filterable,
+			((item.type === EFieldType.STRING && !item.format) || item.type === EFieldType.INTEGER || item.type === EFieldType.ARRAY)
+				&& item.filterable,
 		displayType: (filter: IFilter | undefined) => {
 			if (filter?.sourceType === ESelectionFilterSourceType.ITEM_PROXY) {
 				return Liferay.Language.get('system-filter');
@@ -257,6 +256,16 @@ function Filters({
 		getFilters();
 	}, [dataSet]);
 
+	const updateEntityFieldType = ({ item }: {item : IFilter}):string => {
+		let entityFieldType = "";
+		visit(fields, (field:IFieldTreeItem) => {
+			if(field.name === item.fieldName && field.entityFieldType) {
+				entityFieldType = field.entityFieldType;
+			}
+		});
+		return entityFieldType
+	};
+
 	const updateFiltersOrder = async ({
 		filtersOrder,
 	}: {
@@ -428,6 +437,9 @@ function Filters({
 			noFilterClientExtensionsAvailableModal();
 		}
 		else {
+
+			item.entityFieldType = updateEntityFieldType({item});
+
 			setActiveMode(FILTER_MODE.EDITION);
 			setActiveFilter(item);
 		}

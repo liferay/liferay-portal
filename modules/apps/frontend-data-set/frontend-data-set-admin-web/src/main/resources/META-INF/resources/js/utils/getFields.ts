@@ -8,6 +8,8 @@ import {
 	FDS_ARRAY_FIELD_NAME_PARENT_SUFFIX,
 	FDS_NESTED_FIELD_NAME_DELIMITER,
 	FDS_NESTED_FIELD_NAME_PARENT_SUFFIX,
+	FDS_ARRAY_FIELD_CHILD_TYPE_DELIMITER,
+	FDS_ARRAY_FIELD_TYPE_DELIMITER
 } from '@liferay/frontend-data-set-web';
 import {fetch} from 'frontend-js-web';
 
@@ -39,7 +41,7 @@ interface ISchemas {
 	[key: string]: {
 		properties: IProperties;
 		type: string;
-		['x-filterable']?: Array<string>;
+		'x-filterable'?: Array<string>;
 	};
 }
 
@@ -50,20 +52,31 @@ const validSchemaPropertyFilter = (propertyKey: string) => {
 	);
 };
 
+const generateEntityFieldType = (parentType: EFieldType, property: IProperty): EFieldType | undefined => {
+
+	let entityFieldType = parentType;
+
+	if(property.items?.type) {
+		entityFieldType = `${parentType}${FDS_ARRAY_FIELD_TYPE_DELIMITER}${FDS_ARRAY_FIELD_CHILD_TYPE_DELIMITER}${property.items?.type}` as EFieldType;
+	}
+
+	return entityFieldType;
+};
+
 function getValidFields({
 	contextPath,
 	parentPath,
 	schemaName,
 	schemas,
 	visitedFields,
-	xFilterable = [],
+	filterablePaths = [],
 }: {
 	contextPath: string;
 	parentPath?: string;
 	schemaName: string;
 	schemas: ISchemas;
 	visitedFields: string[];
-	xFilterable?: string[];
+	filterablePaths?: string[];
 }): Array<IField> {
 	const fields: Array<IField> = [];
 
@@ -73,12 +86,12 @@ function getValidFields({
 		return fields;
 	}
 
-	if (xFilterable.length) {
-		const parentsFilterable = xFilterable
+	if (filterablePaths.length) {
+		const parentsFilterable = filterablePaths
 			.filter((item) => item.includes('/'))
 			.map((item) => item.split('/')[0]);
 
-		xFilterable = [...xFilterable, ...parentsFilterable];
+		filterablePaths = [...filterablePaths, ...parentsFilterable];
 	}
 
 	Object.keys(properties)
@@ -88,6 +101,8 @@ function getValidFields({
 
 			const type = propertyValue.type;
 			contextPath = contextPath.replace(/\*/g, '');
+			const fullPath = parentPath ? `${parentPath}/${propertyKey}` : propertyKey;
+
 			const field: IField = {
 				filterable: false,
 				format: propertyValue.format,
@@ -134,9 +149,6 @@ function getValidFields({
 				!contextPath.includes(FDS_ARRAY_FIELD_NAME_DELIMITER);
 
 			if (targetSchemaName && !visitedFields.includes(targetSchemaName)) {
-				const fullPath = parentPath
-					? `${parentPath}/${propertyKey}`
-					: propertyKey;
 
 				field.children = getValidFields({
 					contextPath: field.name,
@@ -144,14 +156,13 @@ function getValidFields({
 					schemaName: targetSchemaName,
 					schemas,
 					visitedFields: [...visitedFields, targetSchemaName],
-					xFilterable,
+					filterablePaths,
 				});
 			}
+				
+			field.filterable = filterablePaths.includes(fullPath);
 
-			const fullPath = parentPath
-				? `${parentPath}/${propertyKey}`
-				: propertyKey;
-			field.filterable = xFilterable.includes(fullPath);
+			field.entityFieldType = type === EFieldType.ARRAY ? generateEntityFieldType(type, propertyValue) : type;
 
 			fields.push(field);
 		});
@@ -184,14 +195,14 @@ export default async function getFields({
 		return [];
 	}
 
-	const xFilterable = schemas[restSchema]['x-filterable'] || [];
+	const filterablePaths = schemas[restSchema]['x-filterable'] || [];
 
 	return getValidFields({
 		contextPath: '',
 		schemaName: restSchema,
 		schemas,
 		visitedFields: [],
-		xFilterable,
+		filterablePaths,
 	});
 }
 

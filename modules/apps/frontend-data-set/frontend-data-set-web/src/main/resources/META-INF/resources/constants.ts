@@ -16,5 +16,7 @@ export enum ETimeZoneBehaviors {
 
 export const FDS_ARRAY_FIELD_NAME_DELIMITER: string = '[]';
 export const FDS_ARRAY_FIELD_NAME_PARENT_SUFFIX: string = `${FDS_ARRAY_FIELD_NAME_DELIMITER}*`;
+export const FDS_ARRAY_FIELD_CHILD_TYPE_DELIMITER: string = 'type:';
+export const FDS_ARRAY_FIELD_TYPE_DELIMITER: string = '/';
 export const FDS_NESTED_FIELD_NAME_DELIMITER: string = '.';
 export const FDS_NESTED_FIELD_NAME_PARENT_SUFFIX: string = `${FDS_NESTED_FIELD_NAME_DELIMITER}*`;

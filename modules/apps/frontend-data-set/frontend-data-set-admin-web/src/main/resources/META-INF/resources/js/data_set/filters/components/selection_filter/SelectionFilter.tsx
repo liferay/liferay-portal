@@ -86,7 +86,7 @@ function Body({
 		JSON.parse(filter?.preselectedValues || '[]')
 	);
 	const [selectedField, setSelectedField] = useState<IField | undefined>(
-		filter ? {label: filter.fieldName, name: filter.fieldName} : undefined
+		filter ? {label: filter.fieldName, name: filter.fieldName, filterable: filter.filterable, entityFieldType: filter.entityFieldType} : undefined
 	);
 	const [source, setSource] = useState<string | undefined>(filter?.source);
 	const [sourceType, setSourceType] = useState(filter?.sourceType);
@@ -214,6 +214,7 @@ function Body({
 
 		if (success) {
 			let formData: any = {
+				entityFieldType: selectedField?.entityFieldType,
 				fieldName: selectedField?.name,
 				include: includeMode === 'include',
 				label_i18n: i18nFilterLabels,

@@ -93,6 +93,7 @@ export interface IDateFilter extends IFilter {
 
 export interface IField {
 	children?: Array<IField>;
+	entityFieldType?: string;
 	filterable: boolean;
 	format?: EFieldFormat;
 	id?: string;
@@ -115,7 +116,9 @@ export interface IFieldTreeItem extends IField {
 }
 
 export interface IFilter extends IOrderable {
+	entityFieldType: string;
 	fieldName: string;
+	filterable: boolean;
 	filterType?: EFilterType;
 	include?: boolean;
 	itemKey?: string;

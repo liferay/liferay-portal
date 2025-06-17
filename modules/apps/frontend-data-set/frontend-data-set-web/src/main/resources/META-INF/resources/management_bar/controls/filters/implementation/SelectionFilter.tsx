@@ -120,7 +120,8 @@ function getOdataString({
 			: item.value
 	);
 
-	if (entityFieldType === EEntityFieldType.COLLECTION) {
+	if (entityFieldType === EEntityFieldType.COLLECTION || 
+		entityFieldType === EEntityFieldType.ARRAY) {
 		return `${id}/any(x:${quotedSelectedItems
 			.map((value) => `(x ${exclude ? 'ne' : 'eq'} ${value})`)
 			.join(exclude ? ' and ' : ' or ')})`;
