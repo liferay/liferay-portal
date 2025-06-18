@@ -11,17 +11,6 @@ export default function ({namespace}) {
 		'change',
 		'input[type="checkbox"]',
 		(event) => {
-			const target = document.querySelector(
-				`input[type='hidden'][name='${event.delegateTarget.id}']`
-			);
-
-			if (event.delegateTarget.checked) {
-				target.setAttribute('disabled', '');
-			}
-			else {
-				target.removeAttribute('disabled');
-			}
-
 			const explicitConsentMode = document.querySelector(
 				`input[type='checkbox'][name='${namespace}explicitConsentMode']`
 			);

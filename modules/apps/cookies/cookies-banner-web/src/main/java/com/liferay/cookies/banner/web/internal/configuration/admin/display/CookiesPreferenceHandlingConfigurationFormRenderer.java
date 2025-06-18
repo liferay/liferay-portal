@@ -5,18 +5,21 @@
 
 package com.liferay.cookies.banner.web.internal.configuration.admin.display;
 
-import com.liferay.configuration.admin.display.ConfigurationScreen;
+import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.cookies.banner.web.internal.constants.CookiesBannerWebKeys;
 import com.liferay.cookies.banner.web.internal.display.context.CookiesPreferenceHandlingConfigurationDisplayContext;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
+import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import jakarta.portlet.PortletResponse;
+import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -25,35 +28,33 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import java.util.Locale;
+import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Rachael Koestartyo
+ * @author Thiago Buarque
  */
-public abstract class BaseCookiesPreferenceHandlingConfigurationScreen
-	implements ConfigurationScreen {
+@Component(service = ConfigurationFormRenderer.class)
+public class CookiesPreferenceHandlingConfigurationFormRenderer
+	implements ConfigurationFormRenderer {
 
 	@Override
-	public String getCategoryKey() {
-		return "cookies";
+	public String getPid() {
+		return CookiesPreferenceHandlingConfiguration.class.getName();
 	}
 
 	@Override
-	public String getKey() {
-		return "cookie-preference-handling-configuration-" + getScope();
-	}
+	public Map<String, Object> getRequestParameters(
+		HttpServletRequest httpServletRequest) {
 
-	@Override
-	public String getName(Locale locale) {
-		return language.get(
-			locale, "cookie-preference-handling-configuration-name");
-	}
-
-	@Override
-	public boolean isVisible() {
-		return true;
+		return HashMapBuilder.<String, Object>put(
+			"enabled", ParamUtil.getBoolean(httpServletRequest, "enabled")
+		).put(
+			"explicitConsentMode",
+			ParamUtil.getBoolean(httpServletRequest, "explicitConsentMode")
+		).build();
 	}
 
 	@Override
@@ -63,21 +64,19 @@ public abstract class BaseCookiesPreferenceHandlingConfigurationScreen
 		throws IOException {
 
 		try {
-			ExtendedObjectClassDefinition.Scope scope =
-				ExtendedObjectClassDefinition.Scope.getScope(getScope());
+			ExtendedObjectClassDefinition.Scope scope = _getScope(
+				(PortletRequest)httpServletRequest.getAttribute(
+					JavaConstants.JAKARTA_PORTLET_REQUEST));
 
 			httpServletRequest.setAttribute(
 				CookiesBannerWebKeys.
 					COOKIES_PREFERENCE_HANDLING_CONFIGURATION_DISPLAY_CONTEXT,
 				new CookiesPreferenceHandlingConfigurationDisplayContext(
-					cookiesConfigurationProvider, httpServletRequest,
-					portal.getLiferayPortletResponse(
-						(PortletResponse)httpServletRequest.getAttribute(
-							JavaConstants.JAKARTA_PORTLET_RESPONSE)),
-					scope, _getScopePK(httpServletRequest, scope)));
+					_cookiesConfigurationProvider, scope,
+					_getScopePK(httpServletRequest, scope)));
 
 			RequestDispatcher requestDispatcher =
-				servletContext.getRequestDispatcher(
+				_servletContext.getRequestDispatcher(
 					"/cookies_preference_handling_configuration/view.jsp");
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
@@ -90,19 +89,22 @@ public abstract class BaseCookiesPreferenceHandlingConfigurationScreen
 		}
 	}
 
-	@Reference
-	protected CookiesConfigurationProvider cookiesConfigurationProvider;
+	private ExtendedObjectClassDefinition.Scope _getScope(
+		PortletRequest portletRequest) {
 
-	@Reference
-	protected Language language;
+		String portletId = PortalUtil.getPortletId(portletRequest);
 
-	@Reference
-	protected Portal portal;
+		if (portletId.equals(ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
+			return ExtendedObjectClassDefinition.Scope.COMPANY;
+		}
+		else if (portletId.equals(
+					ConfigurationAdminPortletKeys.SITE_SETTINGS)) {
 
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.cookies.banner.web)"
-	)
-	protected ServletContext servletContext;
+			return ExtendedObjectClassDefinition.Scope.GROUP;
+		}
+
+		return ExtendedObjectClassDefinition.Scope.SYSTEM;
+	}
 
 	private long _getScopePK(
 		HttpServletRequest httpServletRequest,
@@ -124,5 +126,13 @@ public abstract class BaseCookiesPreferenceHandlingConfigurationScreen
 
 		throw new IllegalArgumentException("Unsupported scope: " + scope);
 	}
+
+	@Reference
+	private CookiesConfigurationProvider _cookiesConfigurationProvider;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.cookies.banner.web)"
+	)
+	private ServletContext _servletContext;
 
 }
