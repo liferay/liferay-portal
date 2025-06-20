@@ -1,8 +1,8 @@
 {
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
-		"@clayui/core": "3.139.1",
-		"@clayui/form": "3.139.0",
+		"@clayui/core": "3.140.0",
+		"@clayui/form": "3.140.0",
 		"@clayui/link": "3.128.0",
 		"@liferay/layout-js-components-web": "*",
 		"frontend-js-components-web": "*",

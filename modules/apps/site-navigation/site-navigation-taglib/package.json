@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@clayui/core": "3.139.1",
+		"@clayui/core": "3.140.0",
 		"@clayui/icon": "3.128.0",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",

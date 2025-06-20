@@ -1,8 +1,8 @@
 {
 	"dependencies": {
 		"@clayui/empty-state": "3.128.0",
-		"@clayui/form": "3.139.0",
-		"@clayui/list": "3.139.1",
+		"@clayui/form": "3.140.0",
+		"@clayui/list": "3.140.0",
 		"frontend-js-web": "*",
 		"react": "18.2.0"
 	},

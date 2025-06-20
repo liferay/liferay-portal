@@ -2,8 +2,8 @@
 	"dependencies": {
 		"@clayui/label": "3.128.0",
 		"@clayui/link": "3.128.0",
-		"@clayui/modal": "3.139.0",
-		"@clayui/tooltip": "3.139.0",
+		"@clayui/modal": "3.140.0",
+		"@clayui/tooltip": "3.140.0",
 		"@liferay/portal-workflow-instance-tracker-web": "*",
 		"react": "18.2.0"
 	},

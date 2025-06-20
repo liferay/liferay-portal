@@ -1,10 +1,10 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/form": "3.139.0",
+		"@clayui/form": "3.140.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/layout": "3.128.0",
-		"@clayui/multi-select": "3.139.1",
+		"@clayui/multi-select": "3.140.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",

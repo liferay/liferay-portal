@@ -2,8 +2,8 @@
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
 		"@clayui/button": "3.136.0",
-		"@clayui/form": "3.139.0",
-		"@clayui/modal": "3.139.0",
+		"@clayui/form": "3.140.0",
+		"@clayui/modal": "3.140.0",
 		"@liferay/accessibility-settings-state-web": "*",
 		"@liferay/cookies-banner-web": "*",
 		"@liferay/frontend-js-state-web": "*",

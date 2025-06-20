@@ -1,7 +1,7 @@
 {
 	"dependencies": {
-		"@clayui/autocomplete": "3.139.1",
-		"@clayui/form": "3.139.0",
+		"@clayui/autocomplete": "3.140.0",
+		"@clayui/form": "3.140.0",
 		"@clayui/icon": "3.128.0",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-js-react-web": "*",
