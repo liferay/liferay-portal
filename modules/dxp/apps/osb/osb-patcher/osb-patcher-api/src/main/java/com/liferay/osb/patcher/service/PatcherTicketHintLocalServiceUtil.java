@@ -210,6 +210,13 @@ public class PatcherTicketHintLocalServiceUtil {
 		return getService().fetchPatcherTicketHint(patcherTicketHintId);
 	}
 
+	public static PatcherTicketHint fetchPatcherTicketHintByProductVersionId(
+		long patcherProductVersionId) {
+
+		return getService().fetchPatcherTicketHintByProductVersionId(
+			patcherProductVersionId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
