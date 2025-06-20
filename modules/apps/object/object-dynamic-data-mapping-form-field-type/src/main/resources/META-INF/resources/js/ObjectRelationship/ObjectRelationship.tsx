@@ -114,12 +114,14 @@ function LoadingWithDebounce({
 					key={item.id}
 					match={searchTerm}
 					onClick={() => onSelect(item)}
-					value={getLabel(
-						item,
-						labelKey,
-						objectDefinitionDefaultLanguageId,
-						objectFieldBusinessType
-					)}
+					value={
+						getLabel(
+							item,
+							labelKey,
+							objectDefinitionDefaultLanguageId,
+							objectFieldBusinessType
+						) || undefined
+					}
 				/>
 			))}
 		</>
