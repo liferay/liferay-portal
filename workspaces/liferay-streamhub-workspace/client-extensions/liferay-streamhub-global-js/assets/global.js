@@ -13,7 +13,7 @@ async function liferayStreamHubConnect() {
 			'liferay-streamhub-etc-spring-boot-oauth-application-user-agent'
 		);
 
-		const [protocol, hostname] = oAuthApplication.homePageURL.split('//');
+		const [, hostname] = oAuthApplication.homePageURL.split('//');
 
 		const token = Liferay.ThemeDisplay.isSignedIn()
 			? await oAuthApplication._getOrRequestToken()
@@ -25,7 +25,9 @@ async function liferayStreamHubConnect() {
 		);
 
 		socket.onopen = () => {
-			console.log('Connected to Liferay Stream Hub');
+
+			/* eslint-disable-next-line no-console */
+			console.info('Connected to Liferay Stream Hub');
 			retryCount = 0;
 		};
 
@@ -63,7 +65,8 @@ function retryWithBackoff() {
 		const delay = Math.min(baseDelay * 2 ** retryCount, 30000); // cap at 30s
 		retryCount++;
 
-		console.log(
+		/* eslint-disable-next-line no-console */
+		console.info(
 			`⏳ Retrying in ${delay / 1000}s... (attempt ${retryCount})`
 		);
 
