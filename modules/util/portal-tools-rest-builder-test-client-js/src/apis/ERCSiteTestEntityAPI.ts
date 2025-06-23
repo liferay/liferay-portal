@@ -29,6 +29,66 @@ export class ERCSiteTestEntityAPI {
 
 		/**
 		 * 
+				 * @param ercSiteTestEntityExternalReferenceCode
+				 * @param siteExternalReferenceCode
+		 * @param headers Optional custom request headers
+		 */
+		public async deleteSiteERCSiteTestEntity(
+						ercSiteTestEntityExternalReferenceCode: string,
+						siteExternalReferenceCode: string,
+			headers?: {[name: string]: string},
+		): Promise<{
+				body?: any;
+			response: Response;
+		}> {
+
+			const path = this._basePath + "/test/v1.0/sites/{siteExternalReferenceCode}/erc-site-test-entities/{ercSiteTestEntityExternalReferenceCode}"
+						.replace("{ercSiteTestEntityExternalReferenceCode}",encodeURIComponent(ercSiteTestEntityExternalReferenceCode))
+										.replace("{siteExternalReferenceCode}",encodeURIComponent(siteExternalReferenceCode))
+				;
+
+			const queryParameters: any = {};
+
+						if (ercSiteTestEntityExternalReferenceCode === null || ercSiteTestEntityExternalReferenceCode === undefined) {
+							throw new Error("Required parameter ercSiteTestEntityExternalReferenceCode was null or undefined when calling deleteSiteERCSiteTestEntity.");
+						}
+
+						if (siteExternalReferenceCode === null || siteExternalReferenceCode === undefined) {
+							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling deleteSiteERCSiteTestEntity.");
+						}
+
+			const queryString = Object.keys(queryParameters).length ?
+				"?" + new URLSearchParams(queryParameters).toString() :
+					"";
+
+			const response = await fetch(path + queryString, {
+				headers:
+					Object.assign({}, this._defaultHeaders
+						,{
+								Accept: "application/json"
+						}
+					,headers || {}
+					),
+				method: "DELETE",
+			});
+
+			if (response.ok) {
+				const contentType = response.headers.get("content-type") || "";
+
+					if (contentType.includes("application/json")) {
+						return {body: await response.json(), response};
+					}
+					else {
+						return {body: await response.text(), response};
+					}
+			}
+			else {
+				throw new Error("HTTP Error " + response.status + ": " + response.statusText + ". " + await response.text());
+			}
+		}
+
+		/**
+		 * 
 				 * @param siteExternalReferenceCode
 		 * @param headers Optional custom request headers
 		 */
@@ -86,7 +146,7 @@ export class ERCSiteTestEntityAPI {
 				 * @param siteExternalReferenceCode
 		 * @param headers Optional custom request headers
 		 */
-		public async getSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode(
+		public async getSiteERCSiteTestEntity(
 						ercSiteTestEntityExternalReferenceCode: string,
 						siteExternalReferenceCode: string,
 			headers?: {[name: string]: string},
@@ -103,11 +163,11 @@ export class ERCSiteTestEntityAPI {
 			const queryParameters: any = {};
 
 						if (ercSiteTestEntityExternalReferenceCode === null || ercSiteTestEntityExternalReferenceCode === undefined) {
-							throw new Error("Required parameter ercSiteTestEntityExternalReferenceCode was null or undefined when calling getSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode.");
+							throw new Error("Required parameter ercSiteTestEntityExternalReferenceCode was null or undefined when calling getSiteERCSiteTestEntity.");
 						}
 
 						if (siteExternalReferenceCode === null || siteExternalReferenceCode === undefined) {
-							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling getSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode.");
+							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling getSiteERCSiteTestEntity.");
 						}
 
 			const queryString = Object.keys(queryParameters).length ?
@@ -249,7 +309,7 @@ export class ERCSiteTestEntityAPI {
 		 		* @param requestBody Request body that can be one of multiple content types
 		 * @param headers Optional custom request headers
 		 */
-		public async putSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCodeWithContentType(
+		public async putSiteERCSiteTestEntityWithContentType(
 						ercSiteTestEntityExternalReferenceCode: string,
 						siteExternalReferenceCode: string,
 					requestBody:
@@ -288,11 +348,11 @@ export class ERCSiteTestEntityAPI {
 			const queryParameters: any = {};
 
 						if (ercSiteTestEntityExternalReferenceCode === null || ercSiteTestEntityExternalReferenceCode === undefined) {
-							throw new Error("Required parameter ercSiteTestEntityExternalReferenceCode was null or undefined when calling putSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode.");
+							throw new Error("Required parameter ercSiteTestEntityExternalReferenceCode was null or undefined when calling putSiteERCSiteTestEntity.");
 						}
 
 						if (siteExternalReferenceCode === null || siteExternalReferenceCode === undefined) {
-							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling putSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode.");
+							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling putSiteERCSiteTestEntity.");
 						}
 
 			const queryString = Object.keys(queryParameters).length ?
@@ -333,7 +393,7 @@ export class ERCSiteTestEntityAPI {
 							 * @param siteExternalReferenceCode
 						 * @param eRCSiteTestEntity
 					 */
-					public async putSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode(
+					public async putSiteERCSiteTestEntity(
 									ercSiteTestEntityExternalReferenceCode: string,
 									siteExternalReferenceCode: string,
 							eRCSiteTestEntity?: ERCSiteTestEntity,
@@ -342,7 +402,7 @@ export class ERCSiteTestEntityAPI {
 							body: ERCSiteTestEntity;
 						response: Response;
 					}> {
-						return this.putSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCodeWithContentType(
+						return this.putSiteERCSiteTestEntityWithContentType(
 										ercSiteTestEntityExternalReferenceCode,
 										siteExternalReferenceCode,
 							{

@@ -34,6 +34,7 @@ function MarketplaceButton({
 	...marketplaceViewProps
 }: MarketplaceButtonProps & ComponentProps<typeof MarketplaceViews>) {
 	const [visited, setVisited] = useState(false);
+	const [ready, setReady] = useState(false);
 
 	const hasButtonBeenVisited = useCallback(
 		() =>
@@ -59,7 +60,7 @@ function MarketplaceButton({
 			setVisited(visited === 'true');
 		};
 
-		handleVisited();
+		handleVisited().then(() => setReady(true));
 	}, [hasButtonBeenVisited]);
 
 	const handleClick = useCallback(() => {
@@ -83,6 +84,10 @@ function MarketplaceButton({
 		marketplaceViewProps,
 		markButtonAsVisited,
 	]);
+
+	if (!ready) {
+		return null;
+	}
 
 	if (visited) {
 		return (

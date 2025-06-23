@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Object REST Test Utilities
 Bundle-SymbolicName: com.liferay.object.rest.test.util
-Bundle-Version: 2.0.8
+Bundle-Version: 2.0.9
 Export-Package: com.liferay.object.rest.test.util

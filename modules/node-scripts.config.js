@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '133910df067de36aee16a4739f83f0a06b83511d939ecb371862ab083467f0a5',
+	hash: 'cac6b8ea804d21118a3e2177c78eb5f99eebaa49455dc1992c173ebfdf65f2b3',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -431,6 +431,7 @@ module.exports = {
 			'Alignment',
 			'BalloonEditor',
 			'BlockQuote',
+			'BlockToolbar',
 			'Bold',
 			'ButtonView',
 			'ClassicEditor',

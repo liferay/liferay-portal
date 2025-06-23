@@ -17,27 +17,13 @@ public class LazyReferencingThreadLocal {
 		return _enabled.get();
 	}
 
-	public static boolean isIncompleteModel() {
-		return _incompleteModel.get();
-	}
-
 	public static SafeCloseable setEnabledWithSafeCloseable(boolean enabled) {
 		return _enabled.setWithSafeCloseable(enabled);
-	}
-
-	public static SafeCloseable setIncompleteModelWithSafeCloseable(
-		boolean incompleteModel) {
-
-		return _incompleteModel.setWithSafeCloseable(incompleteModel);
 	}
 
 	private static final CentralizedThreadLocal<Boolean> _enabled =
 		new CentralizedThreadLocal<>(
 			LazyReferencingThreadLocal.class + "._enabled",
-			() -> Boolean.FALSE);
-	private static final CentralizedThreadLocal<Boolean> _incompleteModel =
-		new CentralizedThreadLocal<>(
-			LazyReferencingThreadLocal.class + "._incompleteModel",
 			() -> Boolean.FALSE);
 
 }

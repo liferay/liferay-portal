@@ -9,7 +9,8 @@ import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchFixture;
-import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslatorFixture;
+import com.liferay.portal.search.elasticsearch7.internal.legacy.query.ElasticsearchQueryTranslatorFixture;
+import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslator;
 import com.liferay.portal.search.engine.adapter.document.UpdateByQueryDocumentRequest;
 import com.liferay.portal.search.internal.script.ScriptsImpl;
 import com.liferay.portal.search.script.Scripts;
@@ -70,11 +71,9 @@ public class UpdateByQueryDocumentRequestExecutorTest {
 			updateByQueryDocumentRequestExecutorImpl =
 				new UpdateByQueryDocumentRequestExecutorImpl();
 
-		com.liferay.portal.search.elasticsearch7.internal.legacy.query.
-			ElasticsearchQueryTranslatorFixture
-				lecacyElasticsearchQueryTranslatorFixture =
-					new com.liferay.portal.search.elasticsearch7.internal.
-						legacy.query.ElasticsearchQueryTranslatorFixture();
+		ElasticsearchQueryTranslatorFixture
+			lecacyElasticsearchQueryTranslatorFixture =
+				new ElasticsearchQueryTranslatorFixture();
 
 		ReflectionTestUtil.setFieldValue(
 			updateByQueryDocumentRequestExecutorImpl,
@@ -84,14 +83,9 @@ public class UpdateByQueryDocumentRequestExecutorTest {
 			lecacyElasticsearchQueryTranslatorFixture.
 				getElasticsearchQueryTranslator());
 
-		ElasticsearchQueryTranslatorFixture
-			elasticsearchQueryTranslatorFixture =
-				new ElasticsearchQueryTranslatorFixture();
-
 		ReflectionTestUtil.setFieldValue(
 			updateByQueryDocumentRequestExecutorImpl, "_queryTranslator",
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator());
+			new ElasticsearchQueryTranslator());
 
 		ReflectionTestUtil.setFieldValue(
 			updateByQueryDocumentRequestExecutorImpl, "_scripts", _scripts);

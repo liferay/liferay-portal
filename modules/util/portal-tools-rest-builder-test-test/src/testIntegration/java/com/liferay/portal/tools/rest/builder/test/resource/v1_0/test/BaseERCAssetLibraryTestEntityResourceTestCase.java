@@ -15,6 +15,9 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -98,16 +101,28 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null,
 			new ServiceContext() {
 				{
-					setCompanyId(testGroup.getCompanyId());
+					setCompanyId(testCompany.getCompanyId());
 					setUserId(TestPropsValues.getUserId());
 				}
 			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
 
 		_ercAssetLibraryTestEntityResource.setContextCompany(testCompany);
 
@@ -124,6 +139,16 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 			).locale(
 				LocaleUtil.getDefault()
 			).build();
+
+		importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	@After
@@ -207,6 +232,48 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 		Assert.assertEquals(regex, ercAssetLibraryTestEntity.getDescription());
 		Assert.assertEquals(
 			regex, ercAssetLibraryTestEntity.getExternalReferenceCode());
+	}
+
+	@Test
+	public void testDeleteAssetLibraryERCAssetLibraryTestEntity()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ERCAssetLibraryTestEntity ercAssetLibraryTestEntity =
+			testDeleteAssetLibraryERCAssetLibraryTestEntity_addERCAssetLibraryTestEntity();
+
+		assertHttpResponseStatusCode(
+			204,
+			ercAssetLibraryTestEntityResource.
+				deleteAssetLibraryERCAssetLibraryTestEntityHttpResponse(
+					ercAssetLibraryTestEntity.
+						getAssetLibraryExternalReferenceCode(),
+					ercAssetLibraryTestEntity.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			ercAssetLibraryTestEntityResource.
+				getAssetLibraryERCAssetLibraryTestEntityHttpResponse(
+					ercAssetLibraryTestEntity.
+						getAssetLibraryExternalReferenceCode(),
+					ercAssetLibraryTestEntity.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			ercAssetLibraryTestEntityResource.
+				getAssetLibraryERCAssetLibraryTestEntityHttpResponse(
+					ercAssetLibraryTestEntity.
+						getAssetLibraryExternalReferenceCode(),
+					"-"));
+	}
+
+	protected ERCAssetLibraryTestEntity
+			testDeleteAssetLibraryERCAssetLibraryTestEntity_addERCAssetLibraryTestEntity()
+		throws Exception {
+
+		return ercAssetLibraryTestEntityResource.
+			postAssetLibraryERCAssetLibraryTestEntity(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				randomERCAssetLibraryTestEntity());
 	}
 
 	@Test
@@ -312,22 +379,43 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 			testGetAssetLibraryERCAssetLibraryTestEntitiesPage_getAssetLibraryExternalReferenceCode()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDepotEntryGroup.getExternalReferenceCode();
 	}
 
 	protected String
 			testGetAssetLibraryERCAssetLibraryTestEntitiesPage_getIrrelevantAssetLibraryExternalReferenceCode()
 		throws Exception {
 
-		return null;
+		return irrelevantDepotEntryGroup.getExternalReferenceCode();
 	}
 
 	@Test
-	public void testGetAssetLibraryERCAssetLibraryTestEntityErcAssetLibraryTestEntityExternalReferenceCode()
+	public void testGetAssetLibraryERCAssetLibraryTestEntity()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		ERCAssetLibraryTestEntity postERCAssetLibraryTestEntity =
+			testGetAssetLibraryERCAssetLibraryTestEntity_addERCAssetLibraryTestEntity();
+
+		ERCAssetLibraryTestEntity getERCAssetLibraryTestEntity =
+			ercAssetLibraryTestEntityResource.
+				getAssetLibraryERCAssetLibraryTestEntity(
+					postERCAssetLibraryTestEntity.
+						getAssetLibraryExternalReferenceCode(),
+					postERCAssetLibraryTestEntity.getExternalReferenceCode());
+
+		assertEquals(
+			postERCAssetLibraryTestEntity, getERCAssetLibraryTestEntity);
+		assertValid(getERCAssetLibraryTestEntity);
+	}
+
+	protected ERCAssetLibraryTestEntity
+			testGetAssetLibraryERCAssetLibraryTestEntity_addERCAssetLibraryTestEntity()
+		throws Exception {
+
+		return ercAssetLibraryTestEntityResource.
+			postAssetLibraryERCAssetLibraryTestEntity(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				randomERCAssetLibraryTestEntity());
 	}
 
 	@Test
@@ -356,10 +444,106 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 	}
 
 	@Test
-	public void testPutAssetLibraryERCAssetLibraryTestEntityErcAssetLibraryTestEntityExternalReferenceCode()
+	public void testPutAssetLibraryERCAssetLibraryTestEntity()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		ERCAssetLibraryTestEntity postERCAssetLibraryTestEntity =
+			testPutAssetLibraryERCAssetLibraryTestEntity_addERCAssetLibraryTestEntity();
+
+		ERCAssetLibraryTestEntity randomERCAssetLibraryTestEntity =
+			randomERCAssetLibraryTestEntity();
+
+		ERCAssetLibraryTestEntity putERCAssetLibraryTestEntity =
+			ercAssetLibraryTestEntityResource.
+				putAssetLibraryERCAssetLibraryTestEntity(
+					postERCAssetLibraryTestEntity.
+						getAssetLibraryExternalReferenceCode(),
+					postERCAssetLibraryTestEntity.getExternalReferenceCode(),
+					randomERCAssetLibraryTestEntity);
+
+		assertEquals(
+			randomERCAssetLibraryTestEntity, putERCAssetLibraryTestEntity);
+		assertValid(putERCAssetLibraryTestEntity);
+
+		ERCAssetLibraryTestEntity getERCAssetLibraryTestEntity =
+			ercAssetLibraryTestEntityResource.
+				getAssetLibraryERCAssetLibraryTestEntity(
+					putERCAssetLibraryTestEntity.
+						getAssetLibraryExternalReferenceCode(),
+					putERCAssetLibraryTestEntity.getExternalReferenceCode());
+
+		assertEquals(
+			randomERCAssetLibraryTestEntity, getERCAssetLibraryTestEntity);
+		assertValid(getERCAssetLibraryTestEntity);
+	}
+
+	protected ERCAssetLibraryTestEntity
+			testPutAssetLibraryERCAssetLibraryTestEntity_addERCAssetLibraryTestEntity()
+		throws Exception {
+
+		return ercAssetLibraryTestEntityResource.
+			postAssetLibraryERCAssetLibraryTestEntity(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				randomERCAssetLibraryTestEntity());
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ERCAssetLibraryTestEntity ercAssetLibraryTestEntity1 =
+			testBatchEngineDeleteImportTask_addAssetLibraryERCAssetLibraryTestEntity();
+
+		testBatchEngineDeleteImportTask_deleteERCAssetLibraryTestEntity(
+			200, ercAssetLibraryTestEntity1.getExternalReferenceCode(),
+			"assetLibraryExternalReferenceCode",
+			testDepotEntryGroup.getExternalReferenceCode());
+
+		assertHttpResponseStatusCode(
+			404,
+			ercAssetLibraryTestEntityResource.
+				getAssetLibraryERCAssetLibraryTestEntityHttpResponse(
+					ercAssetLibraryTestEntity1.
+						getAssetLibraryExternalReferenceCode(),
+					ercAssetLibraryTestEntity1.getExternalReferenceCode()));
+	}
+
+	protected ERCAssetLibraryTestEntity
+			testBatchEngineDeleteImportTask_addAssetLibraryERCAssetLibraryTestEntity()
+		throws Exception {
+
+		return testDeleteAssetLibraryERCAssetLibraryTestEntity_addERCAssetLibraryTestEntity();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deleteERCAssetLibraryTestEntity(
+				int expectedStatusCode, String externalReferenceCode,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.portal.tools.rest.builder.test.dto.v1_0.ERCAssetLibraryTestEntity",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected void assertContains(
@@ -1069,8 +1253,8 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 
 		return new ERCAssetLibraryTestEntity() {
 			{
-				assetLibraryExternalReferenceCode = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				assetLibraryExternalReferenceCode =
+					testDepotEntryGroup.getExternalReferenceCode();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				description = StringUtil.toLowerCase(
@@ -1088,6 +1272,10 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 		ERCAssetLibraryTestEntity randomIrrelevantERCAssetLibraryTestEntity =
 			randomERCAssetLibraryTestEntity();
 
+		randomIrrelevantERCAssetLibraryTestEntity.
+			setAssetLibraryExternalReferenceCode(
+				irrelevantDepotEntryGroup.getExternalReferenceCode());
+
 		return randomIrrelevantERCAssetLibraryTestEntity;
 	}
 
@@ -1097,11 +1285,37 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 		return randomERCAssetLibraryTestEntity();
 	}
 
+	protected final JSONObject waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			ImportTask.ExecuteStatus executeStatus =
+				importTask.getExecuteStatus();
+
+			if (StringUtil.equals(executeStatus.getValue(), "COMPLETED") ||
+				StringUtil.equals(executeStatus.getValue(), "FAILED")) {
+
+				Assert.assertEquals(
+					expectedExecuteStatus, executeStatus.getValue());
+
+				return jsonObject;
+			}
+		}
+	}
+
 	protected ERCAssetLibraryTestEntityResource
 		ercAssetLibraryTestEntityResource;
+	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
 	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {

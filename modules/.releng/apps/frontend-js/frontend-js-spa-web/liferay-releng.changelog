@@ -352,3 +352,8 @@ aa1dde29411101966c4c21a5c23312ecd95fa829^..639e2f0893c8780aa603fd3642fdd0f119559
 # Bundle Version 5.0.64
 #
 4f4baab8f90aabf1c11a4d3a5605bbe12968c6b7^..e5e8f12863c021badbd366ecddf0d51b6e8dc0bf=LPD-50969 LPD-56284
+
+#
+# Bundle Version 5.0.65
+#
+e5e8f12863c021badbd366ecddf0d51b6e8dc0bf^..b2a9c8f2bba1bed350af37e46d0210db21bfe961=LPD-55693 LRCI-5980

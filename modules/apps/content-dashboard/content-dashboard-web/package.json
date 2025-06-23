@@ -2,22 +2,22 @@
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
 		"@clayui/button": "3.136.0",
-		"@clayui/core": "3.138.0",
-		"@clayui/date-picker": "3.138.0",
-		"@clayui/drop-down": "3.138.0",
+		"@clayui/core": "3.139.1",
+		"@clayui/date-picker": "3.139.1",
+		"@clayui/drop-down": "3.139.1",
 		"@clayui/empty-state": "3.128.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/label": "3.128.0",
 		"@clayui/layout": "3.128.0",
 		"@clayui/link": "3.128.0",
 		"@clayui/loading-indicator": "3.128.0",
-		"@clayui/modal": "3.137.0",
-		"@clayui/panel": "3.137.0",
-		"@clayui/popover": "3.137.0",
+		"@clayui/modal": "3.139.0",
+		"@clayui/panel": "3.139.0",
+		"@clayui/popover": "3.139.0",
 		"@clayui/sticker": "3.138.0",
-		"@clayui/tabs": "3.137.0",
-		"@clayui/tooltip": "3.137.0",
+		"@clayui/tabs": "3.139.0",
+		"@clayui/tooltip": "3.139.0",
 		"@liferay/analytics-reports-js-components-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
@@ -42,5 +42,5 @@
 		"format": "node-scripts format",
 		"test": "USE_REACT_16=true node-scripts test"
 	},
-	"version": "2.0.143"
+	"version": "2.0.144"
 }

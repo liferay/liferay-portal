@@ -105,6 +105,13 @@ public class ShipmentItemResourceTest extends BaseShipmentItemResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testDeleteShipmentItemBatch() throws Exception {
 		super.testDeleteShipmentItemBatch();
 	}
@@ -306,6 +313,15 @@ public class ShipmentItemResourceTest extends BaseShipmentItemResourceTestCase {
 			_commerceShipment.getExternalReferenceCode());
 
 		return shipmentItem;
+	}
+
+	@Override
+	protected String
+			testPutShipmentByExternalReferenceCodeItem_getExternalReferenceCode(
+				ShipmentItem shipmentItem)
+		throws Exception {
+
+		return shipmentItem.getExternalReferenceCode();
 	}
 
 	private CommerceInventoryWarehouse _addCommerceInventoryWarehouse(

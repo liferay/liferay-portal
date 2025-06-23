@@ -1,19 +1,19 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/card": "3.138.0",
-		"@clayui/data-provider": "3.137.0",
-		"@clayui/drop-down": "3.138.0",
+		"@clayui/card": "3.139.1",
+		"@clayui/data-provider": "3.139.0",
+		"@clayui/drop-down": "3.139.1",
 		"@clayui/empty-state": "3.128.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/layout": "3.128.0",
 		"@clayui/loading-indicator": "3.128.0",
-		"@clayui/modal": "3.137.0",
-		"@clayui/nav": "3.138.0",
-		"@clayui/pagination": "3.138.0",
+		"@clayui/modal": "3.139.0",
+		"@clayui/nav": "3.139.1",
+		"@clayui/pagination": "3.139.1",
 		"@clayui/table": "3.111.0",
-		"@clayui/tabs": "3.137.0",
+		"@clayui/tabs": "3.139.0",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
 		"dom-align": "1.12.2",
@@ -47,5 +47,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.151"
+	"version": "1.0.152"
 }

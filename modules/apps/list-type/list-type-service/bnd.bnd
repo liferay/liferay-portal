@@ -1,6 +1,6 @@
 Bundle-Name: Liferay List Type Service
 Bundle-SymbolicName: com.liferay.list.type.service
-Bundle-Version: 1.0.53
+Bundle-Version: 1.0.54
 Liferay-Require-SchemaVersion: 1.5.0
 Liferay-Service: true
 -dsannotations-options: inherit

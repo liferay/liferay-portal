@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Marketplace Settings Web
 Bundle-SymbolicName: com.liferay.marketplace.settings.web
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
 Web-ContextPath: /marketplace-settings-web
 -dsannotations-options: inherit

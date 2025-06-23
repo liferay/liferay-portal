@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexRe
 /**
  * @author Bryan Engler
  */
-public interface UpdateIndexSettingsIndexRequestExecutor {
+public class UpdateIndexSettingsIndexRequestExecutor {
 
 	public UpdateIndexSettingsIndexResponse execute(
-		UpdateIndexSettingsIndexRequest updateIndexSettingsIndexRequest);
+		UpdateIndexSettingsIndexRequest updateIndexSettingsIndexRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

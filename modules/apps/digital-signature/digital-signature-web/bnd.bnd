@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Digital Signature Web
 Bundle-SymbolicName: com.liferay.digital.signature.web
-Bundle-Version: 1.0.83
+Bundle-Version: 1.0.84
 Web-ContextPath: /digital-signature-web

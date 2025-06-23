@@ -344,13 +344,56 @@ public class AssetVocabularyServiceHttp {
 	}
 
 	public static com.liferay.asset.kernel.model.AssetVocabulary
+			deleteVocabularyByExternalReferenceCode(
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				AssetVocabularyServiceUtil.class,
+				"deleteVocabularyByExternalReferenceCode",
+				_deleteVocabularyByExternalReferenceCodeParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, groupId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.asset.kernel.model.AssetVocabulary)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.asset.kernel.model.AssetVocabulary
 			fetchVocabulary(HttpPrincipal httpPrincipal, long vocabularyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "fetchVocabulary",
-				_fetchVocabularyParameterTypes7);
+				_fetchVocabularyParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, vocabularyId);
@@ -393,7 +436,7 @@ public class AssetVocabularyServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class,
 				"fetchVocabularyByExternalReferenceCode",
-				_fetchVocabularyByExternalReferenceCodeParameterTypes8);
+				_fetchVocabularyByExternalReferenceCodeParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId);
@@ -436,7 +479,7 @@ public class AssetVocabularyServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class,
 				"getAssetVocabularyByExternalReferenceCode",
-				_getAssetVocabularyByExternalReferenceCodeParameterTypes9);
+				_getAssetVocabularyByExternalReferenceCodeParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, externalReferenceCode);
@@ -475,7 +518,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupsVocabularies",
-				_getGroupsVocabulariesParameterTypes10);
+				_getGroupsVocabulariesParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupIds);
@@ -509,7 +552,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupsVocabularies",
-				_getGroupsVocabulariesParameterTypes11);
+				_getGroupsVocabulariesParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupIds, className);
@@ -544,7 +587,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupsVocabularies",
-				_getGroupsVocabulariesParameterTypes12);
+				_getGroupsVocabulariesParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupIds, className, classTypePK);
@@ -578,7 +621,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes13);
+				_getGroupVocabulariesParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, groupId);
 
@@ -620,7 +663,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes14);
+				_getGroupVocabulariesParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, createDefaultVocabulary);
@@ -666,7 +709,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes15);
+				_getGroupVocabulariesParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, createDefaultVocabulary, start, end,
@@ -708,7 +751,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes16);
+				_getGroupVocabulariesParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, visibilityType);
@@ -745,7 +788,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes17);
+				_getGroupVocabulariesParameterTypes18);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, start, end, orderByComparator);
@@ -783,7 +826,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes18);
+				_getGroupVocabulariesParameterTypes19);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, name, start, end, orderByComparator);
@@ -816,7 +859,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes19);
+				_getGroupVocabulariesParameterTypes20);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupIds);
@@ -851,7 +894,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabularies",
-				_getGroupVocabulariesParameterTypes20);
+				_getGroupVocabulariesParameterTypes21);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupIds, visibilityTypes);
@@ -884,7 +927,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabulariesCount",
-				_getGroupVocabulariesCountParameterTypes21);
+				_getGroupVocabulariesCountParameterTypes22);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, groupId);
 
@@ -915,7 +958,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabulariesCount",
-				_getGroupVocabulariesCountParameterTypes22);
+				_getGroupVocabulariesCountParameterTypes23);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, name);
@@ -947,7 +990,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabulariesCount",
-				_getGroupVocabulariesCountParameterTypes23);
+				_getGroupVocabulariesCountParameterTypes24);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupIds);
@@ -985,7 +1028,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabulariesDisplay",
-				_getGroupVocabulariesDisplayParameterTypes24);
+				_getGroupVocabulariesDisplayParameterTypes25);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, name, start, end, addDefaultVocabulary,
@@ -1032,7 +1075,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getGroupVocabulariesDisplay",
-				_getGroupVocabulariesDisplayParameterTypes25);
+				_getGroupVocabulariesDisplayParameterTypes26);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, name, start, end, orderByComparator);
@@ -1076,7 +1119,7 @@ public class AssetVocabularyServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class,
 				"getOrAddIncompleteVocabulary",
-				_getOrAddIncompleteVocabularyParameterTypes26);
+				_getOrAddIncompleteVocabularyParameterTypes27);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId);
@@ -1116,7 +1159,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "getVocabulary",
-				_getVocabularyParameterTypes27);
+				_getVocabularyParameterTypes28);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, vocabularyId);
@@ -1158,7 +1201,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "searchVocabulariesDisplay",
-				_searchVocabulariesDisplayParameterTypes28);
+				_searchVocabulariesDisplayParameterTypes29);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, title, addDefaultVocabulary, start, end);
@@ -1202,7 +1245,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "searchVocabulariesDisplay",
-				_searchVocabulariesDisplayParameterTypes29);
+				_searchVocabulariesDisplayParameterTypes30);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, title, addDefaultVocabulary, start, end,
@@ -1248,7 +1291,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "updateVocabulary",
-				_updateVocabularyParameterTypes30);
+				_updateVocabularyParameterTypes31);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, vocabularyId, titleMap, descriptionMap, settings);
@@ -1292,7 +1335,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "updateVocabulary",
-				_updateVocabularyParameterTypes31);
+				_updateVocabularyParameterTypes32);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, vocabularyId, titleMap, descriptionMap, settings,
@@ -1338,7 +1381,7 @@ public class AssetVocabularyServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				AssetVocabularyServiceUtil.class, "updateVocabulary",
-				_updateVocabularyParameterTypes32);
+				_updateVocabularyParameterTypes33);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, vocabularyId, title, titleMap, descriptionMap,
@@ -1409,87 +1452,91 @@ public class AssetVocabularyServiceHttp {
 		};
 	private static final Class<?>[] _deleteVocabularyParameterTypes6 =
 		new Class[] {long.class};
-	private static final Class<?>[] _fetchVocabularyParameterTypes7 =
+	private static final Class<?>[]
+		_deleteVocabularyByExternalReferenceCodeParameterTypes7 = new Class[] {
+			String.class, long.class
+		};
+	private static final Class<?>[] _fetchVocabularyParameterTypes8 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_fetchVocabularyByExternalReferenceCodeParameterTypes8 = new Class[] {
+		_fetchVocabularyByExternalReferenceCodeParameterTypes9 = new Class[] {
 			String.class, long.class
 		};
 	private static final Class<?>[]
-		_getAssetVocabularyByExternalReferenceCodeParameterTypes9 =
+		_getAssetVocabularyByExternalReferenceCodeParameterTypes10 =
 			new Class[] {long.class, String.class};
-	private static final Class<?>[] _getGroupsVocabulariesParameterTypes10 =
-		new Class[] {long[].class};
 	private static final Class<?>[] _getGroupsVocabulariesParameterTypes11 =
-		new Class[] {long[].class, String.class};
+		new Class[] {long[].class};
 	private static final Class<?>[] _getGroupsVocabulariesParameterTypes12 =
+		new Class[] {long[].class, String.class};
+	private static final Class<?>[] _getGroupsVocabulariesParameterTypes13 =
 		new Class[] {long[].class, String.class, long.class};
-	private static final Class<?>[] _getGroupVocabulariesParameterTypes13 =
-		new Class[] {long.class};
 	private static final Class<?>[] _getGroupVocabulariesParameterTypes14 =
-		new Class[] {long.class, boolean.class};
+		new Class[] {long.class};
 	private static final Class<?>[] _getGroupVocabulariesParameterTypes15 =
+		new Class[] {long.class, boolean.class};
+	private static final Class<?>[] _getGroupVocabulariesParameterTypes16 =
 		new Class[] {
 			long.class, boolean.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getGroupVocabulariesParameterTypes16 =
-		new Class[] {long.class, int.class};
 	private static final Class<?>[] _getGroupVocabulariesParameterTypes17 =
+		new Class[] {long.class, int.class};
+	private static final Class<?>[] _getGroupVocabulariesParameterTypes18 =
 		new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getGroupVocabulariesParameterTypes18 =
+	private static final Class<?>[] _getGroupVocabulariesParameterTypes19 =
 		new Class[] {
 			long.class, String.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getGroupVocabulariesParameterTypes19 =
-		new Class[] {long[].class};
 	private static final Class<?>[] _getGroupVocabulariesParameterTypes20 =
+		new Class[] {long[].class};
+	private static final Class<?>[] _getGroupVocabulariesParameterTypes21 =
 		new Class[] {long[].class, int[].class};
-	private static final Class<?>[] _getGroupVocabulariesCountParameterTypes21 =
-		new Class[] {long.class};
 	private static final Class<?>[] _getGroupVocabulariesCountParameterTypes22 =
-		new Class[] {long.class, String.class};
+		new Class[] {long.class};
 	private static final Class<?>[] _getGroupVocabulariesCountParameterTypes23 =
+		new Class[] {long.class, String.class};
+	private static final Class<?>[] _getGroupVocabulariesCountParameterTypes24 =
 		new Class[] {long[].class};
 	private static final Class<?>[]
-		_getGroupVocabulariesDisplayParameterTypes24 = new Class[] {
+		_getGroupVocabulariesDisplayParameterTypes25 = new Class[] {
 			long.class, String.class, int.class, int.class, boolean.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getGroupVocabulariesDisplayParameterTypes25 = new Class[] {
+		_getGroupVocabulariesDisplayParameterTypes26 = new Class[] {
 			long.class, String.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getOrAddIncompleteVocabularyParameterTypes26 = new Class[] {
+		_getOrAddIncompleteVocabularyParameterTypes27 = new Class[] {
 			String.class, long.class
 		};
-	private static final Class<?>[] _getVocabularyParameterTypes27 =
+	private static final Class<?>[] _getVocabularyParameterTypes28 =
 		new Class[] {long.class};
-	private static final Class<?>[] _searchVocabulariesDisplayParameterTypes28 =
+	private static final Class<?>[] _searchVocabulariesDisplayParameterTypes29 =
 		new Class[] {
 			long.class, String.class, boolean.class, int.class, int.class
 		};
-	private static final Class<?>[] _searchVocabulariesDisplayParameterTypes29 =
+	private static final Class<?>[] _searchVocabulariesDisplayParameterTypes30 =
 		new Class[] {
 			long.class, String.class, boolean.class, int.class, int.class,
 			com.liferay.portal.kernel.search.Sort.class
 		};
-	private static final Class<?>[] _updateVocabularyParameterTypes30 =
+	private static final Class<?>[] _updateVocabularyParameterTypes31 =
 		new Class[] {
 			long.class, java.util.Map.class, java.util.Map.class, String.class
 		};
-	private static final Class<?>[] _updateVocabularyParameterTypes31 =
+	private static final Class<?>[] _updateVocabularyParameterTypes32 =
 		new Class[] {
 			long.class, java.util.Map.class, java.util.Map.class, String.class,
 			int.class
 		};
-	private static final Class<?>[] _updateVocabularyParameterTypes32 =
+	private static final Class<?>[] _updateVocabularyParameterTypes33 =
 		new Class[] {
 			long.class, String.class, java.util.Map.class, java.util.Map.class,
 			String.class, com.liferay.portal.kernel.service.ServiceContext.class

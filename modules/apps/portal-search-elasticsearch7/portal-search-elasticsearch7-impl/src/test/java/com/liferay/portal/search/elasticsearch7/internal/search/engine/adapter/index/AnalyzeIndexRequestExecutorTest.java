@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchFixture;
 import com.liferay.portal.search.engine.adapter.index.AnalyzeIndexRequest;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -46,15 +45,11 @@ public class AnalyzeIndexRequestExecutorTest {
 
 		analyzeIndexRequest.setIndexName(_INDEX_NAME);
 
-		AnalyzeIndexRequestExecutorImpl analyzeIndexRequestExecutorImpl =
-			new AnalyzeIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			analyzeIndexRequestExecutorImpl, "_elasticsearchClientResolver",
-			_elasticsearchFixture);
+		AnalyzeIndexRequestExecutor analyzeIndexRequestExecutor =
+			new AnalyzeIndexRequestExecutor(_elasticsearchFixture);
 
 		AnalyzeRequest analyzeRequest =
-			analyzeIndexRequestExecutorImpl.createAnalyzeRequest(
+			analyzeIndexRequestExecutor.createAnalyzeRequest(
 				analyzeIndexRequest);
 
 		Assert.assertEquals(_INDEX_NAME, analyzeRequest.index());

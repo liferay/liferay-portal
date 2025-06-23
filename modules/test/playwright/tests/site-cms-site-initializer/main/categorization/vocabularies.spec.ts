@@ -22,7 +22,7 @@ const test = mergeTests(
 
 test(
 	'Assert can delete vocabulary from dropdown actions',
-	{tag: '@LPD-32750LPD-32750LPD-32750LPD-32750LPD-32750LPD-32750'},
+	{tag: '@LPD-32750'},
 	async ({editVocabularyPage, page, vocabulariesPage}) => {
 		editVocabularyPage.goto();
 

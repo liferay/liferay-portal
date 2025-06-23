@@ -15,10 +15,20 @@ import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import org.springframework.security.oauth2.jwt.Jwt;
+
 /**
  * @author Keven Leone
  */
 public class MarketplaceUtil {
+
+	public static void checkPermission(Jwt jwt) throws Exception {
+		if (!Objects.equals(
+				jwt.getClaim("username"), "default-service-account")) {
+
+			throw new Exception("Unauthorized");
+		}
+	}
 
 	public static JSONArray createCloudProvisioningJSONArray(
 		Page<OrderItem> orderItemPage) {

@@ -11,6 +11,9 @@ import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeRunnable;
@@ -195,9 +198,24 @@ public class PageSpecificationsTestUtil {
 
 			PageSpecification pageSpecification = pageSpecifications[0];
 
+			String externalReferenceCode = layout.getExternalReferenceCode();
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
+
+			if ((layoutPageTemplateEntry != null) &&
+				(layoutPageTemplateEntry.getType() ==
+					LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE)) {
+
+				externalReferenceCode =
+					layoutPageTemplateEntry.getExternalReferenceCode();
+			}
+
 			Assert.assertEquals(
-				layout.getExternalReferenceCode(),
+				externalReferenceCode,
 				pageSpecification.getExternalReferenceCode());
+
 			Assert.assertEquals(
 				PageSpecification.Status.APPROVED,
 				pageSpecification.getStatus());

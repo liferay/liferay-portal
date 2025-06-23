@@ -19,11 +19,8 @@ import com.liferay.portal.search.elasticsearch7.internal.facet.FacetTranslator;
 import com.liferay.portal.search.elasticsearch7.internal.facet.NestedFacetProcessor;
 import com.liferay.portal.search.elasticsearch7.internal.facet.RangeFacetProcessor;
 import com.liferay.portal.search.elasticsearch7.internal.filter.ElasticsearchFilterTranslatorFixture;
-import com.liferay.portal.search.elasticsearch7.internal.groupby.DefaultGroupByTranslator;
-import com.liferay.portal.search.elasticsearch7.internal.highlight.DefaultHighlighterTranslator;
+import com.liferay.portal.search.elasticsearch7.internal.legacy.query.ElasticsearchQueryTranslatorFixture;
 import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslator;
-import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslatorFixture;
-import com.liferay.portal.search.elasticsearch7.internal.search.response.DefaultSearchResponseTranslator;
 import com.liferay.portal.search.elasticsearch7.internal.search.response.SearchResponseTranslator;
 import com.liferay.portal.search.elasticsearch7.internal.sort.ElasticsearchSortFieldTranslator;
 import com.liferay.portal.search.elasticsearch7.internal.sort.ElasticsearchSortFieldTranslatorFixture;
@@ -69,13 +66,8 @@ public class SearchRequestExecutorFixture {
 	}
 
 	public void setUp() {
-		ElasticsearchQueryTranslatorFixture
-			elasticsearchQueryTranslatorFixture =
-				new ElasticsearchQueryTranslatorFixture();
-
 		ElasticsearchQueryTranslator elasticsearchQueryTranslator =
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator();
+			new ElasticsearchQueryTranslator();
 
 		ElasticsearchSortFieldTranslatorFixture
 			elasticsearchSortFieldTranslatorFixture =
@@ -127,11 +119,9 @@ public class SearchRequestExecutorFixture {
 			commonSearchSourceBuilderAssembler, "_complexQueryBuilderFactory",
 			complexQueryBuilderFactory);
 
-		com.liferay.portal.search.elasticsearch7.internal.legacy.query.
-			ElasticsearchQueryTranslatorFixture
-				legacyElasticsearchQueryTranslatorFixture =
-					new com.liferay.portal.search.elasticsearch7.internal.
-						legacy.query.ElasticsearchQueryTranslatorFixture();
+		ElasticsearchQueryTranslatorFixture
+			legacyElasticsearchQueryTranslatorFixture =
+				new ElasticsearchQueryTranslatorFixture();
 
 		com.liferay.portal.search.elasticsearch7.internal.legacy.query.
 			ElasticsearchQueryTranslator legacyElasticsearchQueryTranslator =
@@ -398,12 +388,6 @@ public class SearchRequestExecutorFixture {
 			searchSearchRequestAssembler, "_groupByRequestFactory",
 			new GroupByRequestFactoryImpl());
 		ReflectionTestUtil.setFieldValue(
-			searchSearchRequestAssembler, "_groupByTranslator",
-			new DefaultGroupByTranslator());
-		ReflectionTestUtil.setFieldValue(
-			searchSearchRequestAssembler, "_highlighterTranslator",
-			new DefaultHighlighterTranslator());
-		ReflectionTestUtil.setFieldValue(
 			searchSearchRequestAssembler, "_queryTranslator",
 			elasticsearchQueryTranslator);
 		ReflectionTestUtil.setFieldValue(
@@ -476,27 +460,13 @@ public class SearchRequestExecutorFixture {
 			searchSearchResponseAssembler, "_searchHitsBuilderFactory",
 			new SearchHitsBuilderFactoryImpl());
 
-		SearchResponseTranslator searchResponseTranslator =
-			new DefaultSearchResponseTranslator();
-
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_groupByResponseFactory",
-			new GroupByResponseFactoryImpl());
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_searchHitDocumentTranslator",
-			new SearchHitDocumentTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_statsRequestBuilderFactory",
-			statsRequestBuilderFactory);
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_statsResultsTranslator",
-			new StatsResultsTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_statsTranslator", statsTranslator);
-
 		ReflectionTestUtil.setFieldValue(
 			searchSearchResponseAssembler, "_searchResponseTranslator",
-			searchResponseTranslator);
+			new SearchResponseTranslator(
+				new GroupByResponseFactoryImpl(),
+				new SearchHitDocumentTranslatorImpl(),
+				statsRequestBuilderFactory, new StatsResultsTranslatorImpl(),
+				statsTranslator));
 
 		return searchSearchResponseAssembler;
 	}

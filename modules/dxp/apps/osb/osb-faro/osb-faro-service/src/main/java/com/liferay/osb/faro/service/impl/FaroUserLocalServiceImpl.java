@@ -11,6 +11,7 @@ import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroPreferencesLocalService;
+import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
 import com.liferay.osb.faro.service.base.FaroUserLocalServiceBaseImpl;
 import com.liferay.osb.faro.service.persistence.FaroProjectPersistence;
 import com.liferay.osb.faro.util.EmailUtil;
@@ -415,7 +416,11 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 		FaroProject faroProject = _faroProjectPersistence.findByGroupId(
 			groupId);
 
-		User receiverUser = _userLocalService.getUser(faroProject.getUserId());
+		FaroUser faroUser = FaroUserLocalServiceUtil.fetchOwnerFaroUser(
+			groupId);
+
+		User receiverUser = _userLocalService.getUserByEmailAddress(
+			_portal.getDefaultCompanyId(), faroUser.getEmailAddress());
 
 		InternetAddress to = new InternetAddress(
 			receiverUser.getEmailAddress(), receiverUser.getFullName());

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Sitemap Web
 Bundle-SymbolicName: com.liferay.site.sitemap.web
-Bundle-Version: 1.0.20
+Bundle-Version: 1.0.21
 Web-ContextPath: /site-sitemap-web

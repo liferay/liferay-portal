@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal DB Schema Definition
 Bundle-SymbolicName: com.liferay.portal.db.schema.definition
-Bundle-Version: 4.0.2
+Bundle-Version: 4.0.3
 -dsannotations-options: inherit

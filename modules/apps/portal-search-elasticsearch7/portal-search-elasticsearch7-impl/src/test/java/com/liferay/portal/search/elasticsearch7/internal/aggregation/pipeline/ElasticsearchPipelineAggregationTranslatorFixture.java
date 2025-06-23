@@ -6,7 +6,7 @@
 package com.liferay.portal.search.elasticsearch7.internal.aggregation.pipeline;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslatorFixture;
+import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslator;
 import com.liferay.portal.search.elasticsearch7.internal.sort.ElasticsearchSortFieldTranslatorFixture;
 
 /**
@@ -35,15 +35,10 @@ public class ElasticsearchPipelineAggregationTranslatorFixture {
 		ElasticsearchPipelineAggregationTranslator
 			elasticsearchPipelineAggregationTranslator) {
 
-		ElasticsearchQueryTranslatorFixture
-			elasticsearchQueryTranslatorFixture =
-				new ElasticsearchQueryTranslatorFixture();
-
 		ElasticsearchSortFieldTranslatorFixture
 			elasticsearchSortFieldTranslatorFixture =
 				new ElasticsearchSortFieldTranslatorFixture(
-					elasticsearchQueryTranslatorFixture.
-						getElasticsearchQueryTranslator());
+					new ElasticsearchQueryTranslator());
 
 		ReflectionTestUtil.setFieldValue(
 			elasticsearchPipelineAggregationTranslator, "_sortFieldTranslator",

@@ -3,7 +3,7 @@
 <project basedir="." default="war" name="portal-web" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:if="ant:if">
 	<import file="../build-common-web.xml" />
 
-	<property name="artifact.version" value="5.0.235" />
+	<property name="artifact.version" value="5.0.236" />
 	<property name="war.file" value="${ant.project.name}" />
 
 	<path id="jspc.common.classpath">

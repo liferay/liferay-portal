@@ -48,6 +48,7 @@ export const test = mergeTests(
 	featureFlagsTest({
 		'LPD-35013': {enabled: true},
 		'LPD-35914': {enabled: false, system: true},
+		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
 	}),
 	isolatedSiteTest,
@@ -68,42 +69,35 @@ export const testWithExportImportAtInstanceLevelFF = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-35914': {enabled: true, system: true},
+		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
 	}),
 	loginTest(),
 	uiElementsPageTest
 );
 
-const testWithDeleteApplicationDataBeforeImportingFFDisabled = mergeTests(
+const testWithDeprecationFFDisabled = mergeTests(
 	exportImportPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-35914': {enabled: true, system: true},
+		'LPD-44307': {enabled: false},
 		'LPD-44771': {enabled: false},
 	}),
 	loginTest(),
 	uiElementsPageTest
 );
 
-const testWithDeleteApplicationDataBeforeImportingFF = mergeTests(
+const testWithDeprecationFF = mergeTests(
 	exportImportPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-35914': {enabled: true, system: true},
+		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
 	}),
 	loginTest(),
 	uiElementsPageTest
-);
-
-const testDataDeletionHiddenDeprecationFF = mergeTests(
-	dataApiHelpersTest,
-	exportImportPagesTest,
-	featureFlagsTest({
-		'LPD-44771': {enabled: false},
-	}),
-	isolatedSiteTest,
-	loginTest()
 );
 
 async function getSiteHomePageScreenshot(
@@ -540,9 +534,9 @@ test('can see corresponding elements at site level', async ({
 	await expect(exportImportPage.page.getByText('Copy as New:')).toBeVisible();
 });
 
-testDataDeletionHiddenDeprecationFF(
-	"hides 'Delete Application Data' checkbox when deprecation FF is false",
-	{tag: ['@LPD-44771']},
+testWithDeprecationFFDisabled(
+	"hide 'Delete Application Data' checkbox and 'Copy as New' radio button when deprecation FF is false",
+	{tag: ['@LPD-44771', '@LPD-44307']},
 	async ({apiHelpers, exportImportPage}) => {
 		const objectActionAPIClient =
 			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
@@ -576,12 +570,16 @@ testDataDeletionHiddenDeprecationFF(
 		await exportImportPage.goToImportOptions(exportFilePath);
 
 		await expect(
+			exportImportPage.page.getByText('Copy as New:')
+		).not.toBeVisible();
+
+		await expect(
 			exportImportPage.page.getByLabel('Delete Application Data')
 		).not.toBeVisible();
 	}
 );
 
-testWithDeleteApplicationDataBeforeImportingFF(
+testWithDeprecationFF(
 	'show modal warning at site level',
 	{tag: ['@LPD-54835', '@LPD-54836']},
 	async ({apiHelpers, exportImportPage, page, uiElementsPage}) => {
@@ -617,7 +615,7 @@ testWithDeleteApplicationDataBeforeImportingFF(
 
 		await openFieldset(page, 'Update Data');
 
-		await testWithDeleteApplicationDataBeforeImportingFF.step(
+		await testWithDeprecationFF.step(
 			'object entry selected and "Delete Application Data Before Importing" checked',
 			async () => {
 				await expect(
@@ -695,7 +693,7 @@ testWithDeleteApplicationDataBeforeImportingFF(
 			}
 		);
 
-		await testWithDeleteApplicationDataBeforeImportingFF.step(
+		await testWithDeprecationFF.step(
 			'object entry is selected and "Delete Application Data Before Importing" and "Copy as new" checked',
 			async () => {
 				await exportImportPage.copyAsNewRadioButton.click();
@@ -719,7 +717,7 @@ testWithDeleteApplicationDataBeforeImportingFF(
 			}
 		);
 
-		await testWithDeleteApplicationDataBeforeImportingFF.step(
+		await testWithDeprecationFF.step(
 			'object entry is selected and "Delete Application Data Before Importing" and "Mirror with overwriting" checked',
 			async () => {
 				await exportImportPage.deleteApplicationDataCheckbox.check();
@@ -743,26 +741,23 @@ testWithDeleteApplicationDataBeforeImportingFF(
 			}
 		);
 
-		await testWithDeleteApplicationDataBeforeImportingFF.step(
-			'can import from modal',
-			async () => {
-				page.on('dialog', (dialog) => dialog.accept());
+		await testWithDeprecationFF.step('can import from modal', async () => {
+			page.on('dialog', (dialog) => dialog.accept());
 
-				await exportImportPage.deleteApplicationDataCheckbox.check();
-				await exportImportPage.importButton.click();
-				await exportImportPage.importModalButton.click();
-				await expect(
-					page
-						.getByText(exportName)
-						.locator('../../..')
-						.getByText('Successful')
-				).toBeVisible();
-			}
-		);
+			await exportImportPage.deleteApplicationDataCheckbox.check();
+			await exportImportPage.importButton.click();
+			await exportImportPage.importModalButton.click();
+			await expect(
+				page
+					.getByText(exportName)
+					.locator('../../..')
+					.getByText('Successful')
+			).toBeVisible();
+		});
 	}
 );
 
-testWithDeleteApplicationDataBeforeImportingFFDisabled(
+testWithDeprecationFFDisabled(
 	'show modal warning at site level - FF disabled',
 	{tag: ['@LPD-54835', '@LPD-54836']},
 	async ({apiHelpers, exportImportPage, page, uiElementsPage}) => {
@@ -798,31 +793,10 @@ testWithDeleteApplicationDataBeforeImportingFFDisabled(
 
 		await openFieldset(page, 'Update Data');
 
-		await testWithDeleteApplicationDataBeforeImportingFFDisabled.step(
+		await testWithDeprecationFFDisabled.step(
 			'object entry selected and “Mirror with overwriting” checked',
 			async () => {
 				await exportImportPage.mirrorWithOverwritingRadioButton.click();
-
-				await expect(exportImportPage.updateDataAlert).toBeVisible();
-				await expect(
-					exportImportPage.deleteApplicationDataAlert
-				).not.toBeVisible();
-
-				await exportImportPage.importButton.click();
-
-				await expect(exportImportPage.warningHeader).toBeVisible();
-				await expect(
-					exportImportPage.updateDataMirrorWarningLabel
-				).toBeVisible();
-
-				await uiElementsPage.cancelButton.click();
-			}
-		);
-
-		await testWithDeleteApplicationDataBeforeImportingFFDisabled.step(
-			'object entry selected and "Copy as new" checked',
-			async () => {
-				await exportImportPage.copyAsNewRadioButton.click();
 
 				await expect(exportImportPage.updateDataAlert).toBeVisible();
 				await expect(

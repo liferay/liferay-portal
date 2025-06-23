@@ -32,6 +32,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {getObjectERC} from '../../setup/page-management-site/main/utils/getObjectERC';
 import {goToObjectEntity} from '../../setup/page-management-site/main/utils/goToObjectEntity';
+import chooseFileFromDocumentLibrary from './utils/chooseFileFromDocumentLibrary';
 import getContainerDefinition from './utils/getContainerDefinition';
 import getFormContainerDefinition from './utils/getFormContainerDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
@@ -48,7 +49,6 @@ const test = mergeTests(
 		'LPD-17564': {enabled: true},
 		'LPD-21926': {enabled: true},
 		'LPD-32050': {enabled: true},
-		'LPD-37927': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
@@ -67,7 +67,6 @@ const testWithCKEditor4 = mergeTests(
 		'LPD-17564': {enabled: true},
 		'LPD-21926': {enabled: true},
 		'LPD-32050': {enabled: true},
-		'LPD-37927': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
@@ -7547,7 +7546,9 @@ test.describe('Rich Text Fragment', () => {
 
 			await page.getByText('student description').selectText();
 
-			const toolbar = page.locator('.ck-toolbar');
+			const toolbar = page.locator('.ck-toolbar', {
+				hasText: 'Text alignment',
+			});
 
 			await toolbar.waitFor();
 
@@ -10698,30 +10699,6 @@ test(
 		).not.toBeVisible();
 	}
 );
-
-async function chooseFileFromDocumentLibrary({
-	fileName,
-	page,
-	trigger,
-}: {
-	fileName: string;
-	page: Page;
-	trigger: Locator;
-}) {
-	const iframe = page.frameLocator('iframe');
-
-	await clickAndExpectToBeVisible({
-		target: iframe.getByText('Drag & Drop Your Files or Browse to Upload'),
-		timeout: 2000,
-		trigger,
-	});
-
-	await clickAndExpectToBeHidden({
-		target: iframe.getByText(fileName),
-		timeout: 2000,
-		trigger: iframe.locator('.card', {hasText: fileName}).locator('img'),
-	});
-}
 
 test.describe('URL Video Previewer Fragment', () => {
 	test(

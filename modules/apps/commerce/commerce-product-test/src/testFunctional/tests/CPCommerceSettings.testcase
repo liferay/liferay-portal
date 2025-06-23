@@ -364,7 +364,7 @@ definition {
 	@description = "This is a test to check the instance currencies available"
 	@priority = 5
 	test ViewInstanceCurrenciesAvailable {
-		property environment.acceptance = "true";
+		property environment.acceptance = "false";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 		property portal.upstream = "true";

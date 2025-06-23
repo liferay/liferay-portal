@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.inventory.client.dto.v1_0.WarehouseAccount;
 import com.liferay.headless.commerce.admin.inventory.client.http.HttpInvoker;
@@ -199,12 +200,75 @@ public abstract class BaseWarehouseAccountResourceTestCase {
 
 	@Test
 	public void testDeleteWarehouseAccount() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		WarehouseAccount warehouseAccount =
+			testDeleteWarehouseAccount_addWarehouseAccount();
+
+		assertHttpResponseStatusCode(
+			204,
+			warehouseAccountResource.deleteWarehouseAccountHttpResponse(
+				warehouseAccount.getWarehouseAccountId()));
+	}
+
+	protected WarehouseAccount testDeleteWarehouseAccount_addWarehouseAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteWarehouseAccount() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		WarehouseAccount warehouseAccount1 =
+			testGraphQLDeleteWarehouseAccount_addWarehouseAccount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteWarehouseAccount",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"warehouseAccountId",
+									warehouseAccount1.getWarehouseAccountId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteWarehouseAccount"));
+
+		// Using the namespace headlessCommerceAdminInventory_v1_0
+
+		WarehouseAccount warehouseAccount2 =
+			testGraphQLDeleteWarehouseAccount_addWarehouseAccount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminInventory_v1_0",
+						new GraphQLField(
+							"deleteWarehouseAccount",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"warehouseAccountId",
+										warehouseAccount2.
+											getWarehouseAccountId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminInventory_v1_0",
+				"Object/deleteWarehouseAccount"));
+	}
+
+	protected WarehouseAccount
+			testGraphQLDeleteWarehouseAccount_addWarehouseAccount()
+		throws Exception {
+
+		return testGraphQLWarehouseAccount_addWarehouseAccount();
 	}
 
 	@Test
@@ -213,19 +277,18 @@ public abstract class BaseWarehouseAccountResourceTestCase {
 			testDeleteWarehouseAccountBatch_addWarehouseAccount();
 
 		testDeleteWarehouseAccountBatch_deleteWarehouseAccount(
-			"COMPLETED", null, warehouseAccount1.getWarehouseAccountId());
+			202, null, warehouseAccount1.getWarehouseAccountId());
 	}
 
 	protected WarehouseAccount
 			testDeleteWarehouseAccountBatch_addWarehouseAccount()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteWarehouseAccount_addWarehouseAccount();
 	}
 
 	protected void testDeleteWarehouseAccountBatch_deleteWarehouseAccount(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -238,10 +301,10 @@ public abstract class BaseWarehouseAccountResourceTestCase {
 						"warehouseAccountId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -307,6 +370,12 @@ public abstract class BaseWarehouseAccountResourceTestCase {
 			page,
 			testGetWarehouseByExternalReferenceCodeWarehouseAccountsPage_getExpectedActions(
 				externalReferenceCode));
+
+		warehouseAccountResource.deleteWarehouseAccount(
+			warehouseAccount1.getWarehouseAccountId());
+
+		warehouseAccountResource.deleteWarehouseAccount(
+			warehouseAccount2.getWarehouseAccountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -505,6 +574,12 @@ public abstract class BaseWarehouseAccountResourceTestCase {
 		assertValid(
 			page,
 			testGetWarehouseIdWarehouseAccountsPage_getExpectedActions(id));
+
+		warehouseAccountResource.deleteWarehouseAccount(
+			warehouseAccount1.getWarehouseAccountId());
+
+		warehouseAccountResource.deleteWarehouseAccount(
+			warehouseAccount2.getWarehouseAccountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -937,8 +1012,66 @@ public abstract class BaseWarehouseAccountResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WarehouseAccount warehouseAccount1 =
+			testBatchEngineDeleteImportTask_addWarehouseAccount();
+
+		testBatchEngineDeleteImportTask_deleteWarehouseAccount(
+			200, null, warehouseAccount1.getWarehouseAccountId());
+	}
+
+	protected WarehouseAccount
+			testBatchEngineDeleteImportTask_addWarehouseAccount()
+		throws Exception {
+
+		return testDeleteWarehouseAccount_addWarehouseAccount();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWarehouseAccount(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseAccount",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"warehouseAccountId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected WarehouseAccount testGraphQLWarehouseAccount_addWarehouseAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		WarehouseAccount warehouseAccount,
@@ -1019,6 +1152,10 @@ public abstract class BaseWarehouseAccountResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (warehouseAccount.getWarehouseAccountId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

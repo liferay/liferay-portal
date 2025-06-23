@@ -1,9 +1,9 @@
 {
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
-		"@clayui/drop-down": "3.138.0",
+		"@clayui/drop-down": "3.139.1",
 		"@clayui/icon": "3.128.0",
-		"@clayui/tooltip": "3.137.0",
+		"@clayui/tooltip": "3.139.0",
 		"classnames": "2.3.1",
 		"dagre": "0.8.2",
 		"frontend-js-web": "*",
@@ -25,5 +25,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.55"
+	"version": "1.0.56"
 }

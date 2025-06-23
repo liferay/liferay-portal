@@ -74,6 +74,8 @@ portletDisplay.setURLBack(backURL);
 								"portletNamespace", portletNamespace
 							).put(
 								"scheduleProperties", objectEntryDisplayContext.getScheduleProperties()
+							).put(
+								"submitRef", portletNamespace + "submitObjectEntry"
 							).build()
 						%>'
 					/>
@@ -86,7 +88,7 @@ portletDisplay.setURLBack(backURL);
 
 	<c:if test="<%= !objectEntryDisplayContext.isReadOnly() %>">
 		<c:choose>
-			<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-17564") %>'>
+			<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-17564") && (objectEntryDisplayContext.getObjectLayoutTab() == null) %>'>
 				<div>
 					<react:component
 						module="{ObjectEntryFooter} from object-web"
@@ -104,7 +106,6 @@ portletDisplay.setURLBack(backURL);
 				<liferay-frontend:edit-form-footer>
 					<liferay-frontend:edit-form-buttons
 						redirect="<%= backURL %>"
-						submitId="saveObjectEntryButton"
 						submitOnClick='<%= "event.preventDefault(); " + portletNamespace + "submitObjectEntry();" %>'
 					/>
 				</liferay-frontend:edit-form-footer>
@@ -187,8 +188,11 @@ portletDisplay.setURLBack(backURL);
 				return false;
 			}
 
+			const localDate = date.replace(/Z$/, '');
+
 			const currentDateTime = new Date();
-			const dateTime = new Date(date);
+
+			const dateTime = new Date(localDate);
 
 			return currentDateTime >= dateTime;
 		}
@@ -239,11 +243,11 @@ portletDisplay.setURLBack(backURL);
 
 					let scheduleContainerInputValue;
 
-					if (Liferay.FeatureFlags['LPD-17564'] && !hasObjectLayout) {
-						const scheduleContainerInput = document.getElementById(
-							'<portlet:namespace />scheduleContainer'
-						);
+					const scheduleContainerInput = document.getElementById(
+						'<portlet:namespace />scheduleContainer'
+					);
 
+					if (Liferay.FeatureFlags['LPD-17564'] && scheduleContainerInput) {
 						scheduleContainerInputValue = JSON.parse(
 							scheduleContainerInput.value
 						);

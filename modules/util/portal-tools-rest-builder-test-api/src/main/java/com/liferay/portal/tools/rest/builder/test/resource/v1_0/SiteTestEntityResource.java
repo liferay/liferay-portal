@@ -49,6 +49,10 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SiteTestEntityResource {
 
+	public void deleteSiteSiteTestEntityByExternalReferenceCode(
+			String externalReferenceCode, Long siteId)
+		throws Exception;
+
 	public Page<SiteTestEntity> getSiteSiteTestEntitiesPage(Long siteId)
 		throws Exception;
 

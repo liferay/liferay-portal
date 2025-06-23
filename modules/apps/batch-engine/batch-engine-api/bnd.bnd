@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Batch Engine API
 Bundle-SymbolicName: com.liferay.batch.engine.api
-Bundle-Version: 30.0.1
+Bundle-Version: 30.1.1
 Export-Package:\
 	com.liferay.batch.engine,\
 	com.liferay.batch.engine.action,\
@@ -10,6 +10,7 @@ Export-Package:\
 	com.liferay.batch.engine.context,\
 	com.liferay.batch.engine.csv,\
 	com.liferay.batch.engine.exception,\
+	com.liferay.batch.engine.exception.handler,\
 	com.liferay.batch.engine.jaxrs.uri,\
 	com.liferay.batch.engine.model,\
 	com.liferay.batch.engine.pagination,\

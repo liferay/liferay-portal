@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Object Info API
 Bundle-SymbolicName: com.liferay.object.info.api
-Bundle-Version: 3.0.2
+Bundle-Version: 3.0.3
 Export-Package:\
 	com.liferay.object.info.collection.provider.util,\
 	com.liferay.object.info.field.converter,\

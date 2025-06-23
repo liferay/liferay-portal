@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Friendly URL Taglib
 Bundle-SymbolicName: com.liferay.friendly.url.taglib
-Bundle-Version: 2.0.1
+Bundle-Version: 2.0.2
 Export-Package: com.liferay.friendly.url.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

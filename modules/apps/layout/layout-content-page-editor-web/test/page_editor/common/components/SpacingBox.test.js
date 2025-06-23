@@ -39,18 +39,6 @@ jest.mock(
 	})
 );
 
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	sub: jest.fn((key, args) => {
-		if (typeof args === 'object') {
-			return args.reduce((key, arg) => key.replace('x', arg), key);
-		}
-		else {
-			return key.replace('x', args);
-		}
-	}),
-}));
-
 const SpacingBoxTest = ({
 	itemConfig = {},
 	canSetCustomValue = true,

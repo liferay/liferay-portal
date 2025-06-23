@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.index;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexRequest;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
@@ -38,16 +37,11 @@ public class IndicesExistsIndexRequestExecutorTest
 		IndicesExistsIndexRequest indicesExistsIndexRequest =
 			new IndicesExistsIndexRequest(_INDEX_NAME_1, _INDEX_NAME_2);
 
-		IndicesExistsIndexRequestExecutorImpl
-			indicesExistsIndexRequestExecutorImpl =
-				new IndicesExistsIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			indicesExistsIndexRequestExecutorImpl,
-			"_openSearchConnectionManager", openSearchConnectionManager);
+		IndicesExistsIndexRequestExecutor indicesExistsIndexRequestExecutor =
+			new IndicesExistsIndexRequestExecutor(openSearchConnectionManager);
 
 		ExistsRequest existsRequest =
-			indicesExistsIndexRequestExecutorImpl.createExistsRequest(
+			indicesExistsIndexRequestExecutor.createExistsRequest(
 				indicesExistsIndexRequest);
 
 		List<String> indices = existsRequest.index();

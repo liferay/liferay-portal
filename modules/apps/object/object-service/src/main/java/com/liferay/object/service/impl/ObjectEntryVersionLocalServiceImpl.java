@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -111,32 +112,22 @@ public class ObjectEntryVersionLocalServiceImpl
 
 	@Override
 	public ObjectEntryVersion expireObjectEntryVersion(
-			long userId, long objectEntryId, int version)
+			long userId, ObjectEntry objectEntry, int version,
+			ServiceContext serviceContext)
 		throws PortalException {
 
-		ObjectEntryVersion objectEntryVersion =
-			objectEntryVersionPersistence.findByOEI_V(objectEntryId, version);
+		return _expireObjectEntryVersion(
+			userId,
+			objectEntryVersionPersistence.findByOEI_V(
+				objectEntry.getObjectEntryId(), version));
+	}
 
-		if (objectEntryVersion.isDraft() || objectEntryVersion.isExpired() ||
-			objectEntryVersion.isPending()) {
+	@Override
+	public ObjectEntryVersion expireObjectEntryVersion(
+			long userId, ObjectEntryVersion objectEntryVersion)
+		throws PortalException {
 
-			return objectEntryVersion;
-		}
-
-		Date date = new Date();
-
-		objectEntryVersion.setExpirationDate(date);
-
-		objectEntryVersion.setStatus(WorkflowConstants.STATUS_EXPIRED);
-
-		User user = _userLocalService.getUser(userId);
-
-		objectEntryVersion.setStatusByUserId(user.getUserId());
-		objectEntryVersion.setStatusByUserName(user.getFullName());
-
-		objectEntryVersion.setStatusDate(date);
-
-		return objectEntryVersionPersistence.update(objectEntryVersion);
+		return _expireObjectEntryVersion(userId, objectEntryVersion);
 	}
 
 	@Override
@@ -215,6 +206,32 @@ public class ObjectEntryVersionLocalServiceImpl
 		}
 
 		return exceedsMaximumVersions;
+	}
+
+	private ObjectEntryVersion _expireObjectEntryVersion(
+			long userId, ObjectEntryVersion objectEntryVersion)
+		throws PortalException {
+
+		if (objectEntryVersion.isDraft() || objectEntryVersion.isExpired() ||
+			objectEntryVersion.isPending()) {
+
+			return objectEntryVersion;
+		}
+
+		Date date = new Date();
+
+		objectEntryVersion.setExpirationDate(date);
+
+		objectEntryVersion.setStatus(WorkflowConstants.STATUS_EXPIRED);
+
+		User user = _userLocalService.getUser(userId);
+
+		objectEntryVersion.setStatusByUserId(user.getUserId());
+		objectEntryVersion.setStatusByUserName(user.getFullName());
+
+		objectEntryVersion.setStatusDate(date);
+
+		return objectEntryVersionPersistence.update(objectEntryVersion);
 	}
 
 	private ObjectEntryVersion _updateObjectEntryVersion(

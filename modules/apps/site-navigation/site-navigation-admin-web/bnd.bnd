@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site Navigation Admin Web
 Bundle-SymbolicName: com.liferay.site.navigation.admin.web
-Bundle-Version: 4.0.118
+Bundle-Version: 4.0.119
 Web-ContextPath: /site-navigation-admin-web
 -dsannotations-options: inherit

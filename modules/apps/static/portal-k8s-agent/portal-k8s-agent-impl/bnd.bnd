@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal K8s Agent Implementation
 Bundle-SymbolicName: com.liferay.portal.k8s.agent.impl
-Bundle-Version: 3.0.45
+Bundle-Version: 3.0.46
 Export-Package:\
 	io.fabric8.kubernetes.internal;mandatory:=usage;usage=test,\
 	io.fabric8.kubernetes.*;mandatory:=usage;usage=test,\

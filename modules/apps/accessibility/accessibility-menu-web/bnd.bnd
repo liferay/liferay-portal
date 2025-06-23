@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Accessibility Menu Web
 Bundle-SymbolicName: com.liferay.accessibility.menu.web
-Bundle-Version: 1.0.30
+Bundle-Version: 1.0.31
 Web-ContextPath: /accessibility-menu-web

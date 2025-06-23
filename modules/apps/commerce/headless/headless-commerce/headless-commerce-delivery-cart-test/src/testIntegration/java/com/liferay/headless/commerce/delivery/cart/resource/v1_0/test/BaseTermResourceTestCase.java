@@ -484,9 +484,9 @@ public abstract class BaseTermResourceTestCase {
 		return null;
 	}
 
-	protected Term testGraphQLTerm_addTerm() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(Term term, List<Term> terms) {

@@ -706,7 +706,7 @@ public class ObjectViewLocalServiceTest {
 			errorMessage, "[ , ]", relationshipObjectFieldName);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(),

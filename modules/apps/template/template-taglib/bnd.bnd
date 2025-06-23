@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Template Taglib
 Bundle-SymbolicName: com.liferay.template.taglib
-Bundle-Version: 2.0.1
+Bundle-Version: 2.0.2
 Export-Package: com.liferay.template.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

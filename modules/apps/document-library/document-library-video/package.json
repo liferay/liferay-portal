@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/loading-indicator": "3.128.0",
 		"@liferay/frontend-js-react-web": "*",
@@ -18,5 +18,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.89"
+	"version": "1.0.90"
 }

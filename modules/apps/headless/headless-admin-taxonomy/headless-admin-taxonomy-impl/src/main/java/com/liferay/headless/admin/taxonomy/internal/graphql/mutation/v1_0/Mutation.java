@@ -417,6 +417,44 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Deletes the asset library's taxonomy category by external reference code."
+	)
+	public boolean deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+			@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.
+					deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+						Long.valueOf(assetLibraryId), externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Deletes the site's taxonomy category by external reference code."
+	)
+	public boolean deleteSiteTaxonomyCategoryByExternalReferenceCode(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.
+					deleteSiteTaxonomyCategoryByExternalReferenceCode(
+						Long.valueOf(siteKey), externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField(
 		description = "Deletes the taxonomy category and returns a 204 if the operation succeeds."
 	)
 	public boolean deleteTaxonomyCategory(
@@ -482,6 +520,114 @@ public class Mutation {
 			taxonomyCategoryResource ->
 				taxonomyCategoryResource.patchTaxonomyCategory(
 					taxonomyCategoryId, taxonomyCategory));
+	}
+
+	@GraphQLField
+	public Response createAssetLibraryTaxonomyCategoriesPageExportBatch(
+			@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
+			@GraphQLName("search") String search,
+			@GraphQLName("filter") String filterString,
+			@GraphQLName("sort") String sortsString,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("fieldNames") String fieldNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.
+					postAssetLibraryTaxonomyCategoriesPageExportBatch(
+						Long.valueOf(assetLibraryId), search,
+						_filterBiFunction.apply(
+							taxonomyCategoryResource, filterString),
+						_sortsBiFunction.apply(
+							taxonomyCategoryResource, sortsString),
+						callbackURL, contentType, fieldNames));
+	}
+
+	@GraphQLField(description = "Inserts a new Category in a Scope.")
+	public TaxonomyCategory createAssetLibraryTaxonomyCategory(
+			@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
+			@GraphQLName("taxonomyCategory") TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.postAssetLibraryTaxonomyCategory(
+					Long.valueOf(assetLibraryId), taxonomyCategory));
+	}
+
+	@GraphQLField
+	public Response createAssetLibraryTaxonomyCategoryBatch(
+			@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.postAssetLibraryTaxonomyCategoryBatch(
+					Long.valueOf(assetLibraryId), callbackURL, object));
+	}
+
+	@GraphQLField
+	public Response createSiteTaxonomyCategoriesPageExportBatch(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("search") String search,
+			@GraphQLName("filter") String filterString,
+			@GraphQLName("sort") String sortsString,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("fieldNames") String fieldNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.
+					postSiteTaxonomyCategoriesPageExportBatch(
+						Long.valueOf(siteKey), search,
+						_filterBiFunction.apply(
+							taxonomyCategoryResource, filterString),
+						_sortsBiFunction.apply(
+							taxonomyCategoryResource, sortsString),
+						callbackURL, contentType, fieldNames));
+	}
+
+	@GraphQLField(description = "Inserts a new Category in a Scope.")
+	public TaxonomyCategory createSiteTaxonomyCategory(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("taxonomyCategory") TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.postSiteTaxonomyCategory(
+					Long.valueOf(siteKey), taxonomyCategory));
+	}
+
+	@GraphQLField
+	public Response createSiteTaxonomyCategoryBatch(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.postSiteTaxonomyCategoryBatch(
+					Long.valueOf(siteKey), callbackURL, object));
 	}
 
 	@GraphQLField(description = "Inserts a new child taxonomy category.")
@@ -554,6 +700,47 @@ public class Mutation {
 				taxonomyCategoryResource.
 					postTaxonomyVocabularyTaxonomyCategoryBatch(
 						taxonomyVocabularyId, callbackURL, object));
+	}
+
+	@GraphQLField(
+		description = "Updates the asset library's taxonomy category with the given external reference code, or creates it if it not exists."
+	)
+	public TaxonomyCategory
+			updateAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+				@GraphQLName("assetLibraryId") @NotEmpty String assetLibraryId,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("taxonomyCategory") TaxonomyCategory
+					taxonomyCategory)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.
+					putAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+						Long.valueOf(assetLibraryId), externalReferenceCode,
+						taxonomyCategory));
+	}
+
+	@GraphQLField(
+		description = "Updates the site's taxonomy category with the given external reference code, or creates it if it not exists."
+	)
+	public TaxonomyCategory updateSiteTaxonomyCategoryByExternalReferenceCode(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("taxonomyCategory") TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxonomyCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxonomyCategoryResource ->
+				taxonomyCategoryResource.
+					putSiteTaxonomyCategoryByExternalReferenceCode(
+						Long.valueOf(siteKey), externalReferenceCode,
+						taxonomyCategory));
 	}
 
 	@GraphQLField(

@@ -344,12 +344,10 @@ public class SearchSearchRequestAssemblerImpl
 	@Reference
 	private GroupByRequestFactory _groupByRequestFactory;
 
-	@Reference
-	private GroupByTranslator _groupByTranslator;
-
-	@Reference
-	private HighlighterTranslator _highlighterTranslator;
-
+	private final GroupByTranslator _groupByTranslator =
+		new GroupByTranslator();
+	private final HighlighterTranslator _highlighterTranslator =
+		new HighlighterTranslator();
 	private final HighlightTranslator _highlightTranslator =
 		new HighlightTranslator();
 

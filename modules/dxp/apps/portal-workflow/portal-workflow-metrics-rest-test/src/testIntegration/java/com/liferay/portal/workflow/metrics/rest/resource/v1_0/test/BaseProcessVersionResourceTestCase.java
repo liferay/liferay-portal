@@ -256,6 +256,11 @@ public abstract class BaseProcessVersionResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		ProcessVersion processVersion, List<ProcessVersion> processVersions) {
 

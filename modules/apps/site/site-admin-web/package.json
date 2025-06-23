@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
-		"@clayui/form": "3.137.0",
+		"@clayui/form": "3.139.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
@@ -14,5 +14,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "5.0.133"
+	"version": "5.0.134"
 }

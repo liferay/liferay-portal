@@ -1,7 +1,7 @@
 Bundle-Activator: com.liferay.portal.osgi.web.http.servlet.internal.activator.HttpServletImplBundleActivator
 Bundle-Name: Liferay Portal OSGi Web HTTP Servlet Implementation
 Bundle-SymbolicName: com.liferay.portal.osgi.web.http.servlet.impl
-Bundle-Version: 1.0.13
+Bundle-Version: 1.0.14
 Import-Package:\
 	org.osgi.service.http.whiteboard,\
 	\

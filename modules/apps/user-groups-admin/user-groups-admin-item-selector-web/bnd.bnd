@@ -1,4 +1,4 @@
 Bundle-Name: Liferay User Groups Admin Item Selector Web
 Bundle-SymbolicName: com.liferay.user.groups.admin.item.selector.web
-Bundle-Version: 4.0.19
+Bundle-Version: 4.0.20
 Web-ContextPath: /user-groups-admin-item-selector-web

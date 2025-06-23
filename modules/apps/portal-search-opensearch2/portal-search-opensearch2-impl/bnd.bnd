@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search OpenSearch 2 Implementation
 Bundle-SymbolicName: com.liferay.portal.search.opensearch2.impl
-Bundle-Version: 1.0.7
+Bundle-Version: 1.0.8
 Import-Package:\
 	!jakarta.enterprise.context.*,\
 	!jakarta.enterprise.inject.*,\

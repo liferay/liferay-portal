@@ -13,7 +13,7 @@ ReactFDSDisplayContext reactFDSDisplayContext = new ReactFDSDisplayContext(reque
 
 <div>
 	<react:component
-		module="{SampleReactFrontendDataSet} from frontend-data-set-sample-web"
+		module="{ReactFrontendDataSet} from frontend-data-set-sample-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
 				"apiURL", reactFDSDisplayContext.getAPIURL()

@@ -533,6 +533,7 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 
 	@Test
 	public void testGetCompanyTestEntityPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		CompanyTestEntity postCompanyTestEntity =
 			testGetCompanyTestEntityPermissionsPage_addCompanyTestEntity();
 
@@ -758,18 +759,18 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 	}
 
 	protected CompanyTestEntity
-			testPutCompanyTestEntityByExternalReferenceCode_createCompanyTestEntity()
-		throws Exception {
-
-		return randomCompanyTestEntity();
-	}
-
-	protected CompanyTestEntity
 			testPutCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected CompanyTestEntity
+			testPutCompanyTestEntityByExternalReferenceCode_createCompanyTestEntity()
+		throws Exception {
+
+		return randomCompanyTestEntity();
 	}
 
 	@Test
@@ -819,12 +820,9 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	protected CompanyTestEntity
-			testGraphQLCompanyTestEntity_addCompanyTestEntity()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(

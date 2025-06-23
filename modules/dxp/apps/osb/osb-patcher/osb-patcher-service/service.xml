@@ -25,6 +25,16 @@
 		<!-- Relationships -->
 
 		<column entity="PatcherBuild" mapping-table="PAccounts_PBuilds" name="patcherBuilds" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="AccountEntryCode" return-type="PatcherAccount" unique="true">
+			<finder-column name="accountEntryCode" />
+		</finder>
+		<finder name="C_LikeA" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column comparator="LIKE" name="accountEntryCode" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherBuild" remote-service="false">
 
@@ -42,7 +52,6 @@
 
 		<!-- Other fields -->
 
-		<column name="hotfixId" type="long" />
 		<column name="patcherAccountId" type="long" />
 		<column name="patcherFixId" type="long" />
 		<column name="patcherProductVersionId" type="long" />
@@ -52,6 +61,7 @@
 		<column name="childBuild" type="boolean" />
 		<column name="comments" type="String" />
 		<column name="fileName" type="String" />
+		<column name="hotfixId" type="long" />
 		<column name="initialName" type="String" />
 		<column name="key" type="String" />
 		<column name="keyVersion" type="double" />
@@ -83,9 +93,67 @@
 
 		<!-- Finder methods -->
 
+		<finder name="PatcherFixId" return-type="Collection">
+			<finder-column name="patcherFixId" />
+		</finder>
+		<finder name="PatcherProjectVersionId" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+		</finder>
+		<finder name="Key" return-type="Collection">
+			<finder-column name="key" />
+		</finder>
+		<finder name="P_P" return-type="Collection">
+			<finder-column name="patcherAccountId" />
+			<finder-column name="patcherProductVersionId" />
+		</finder>
+		<finder name="P_C" return-type="Collection">
+			<finder-column name="patcherFixId" />
+			<finder-column name="childBuild" />
+		</finder>
 		<finder name="K_KV" return-type="PatcherBuild" unique="true">
 			<finder-column name="key" />
 			<finder-column name="keyVersion" />
+		</finder>
+		<finder name="K_GtKV" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&gt;" name="keyVersion" />
+		</finder>
+		<finder name="K_LtKV" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&lt;" name="keyVersion" />
+		</finder>
+		<finder name="K_L" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column name="latestKeyBuild" />
+		</finder>
+		<finder name="L_S" return-type="Collection">
+			<finder-column name="latestSupportTicketBuild" />
+			<finder-column name="supportTicket" />
+		</finder>
+		<finder name="S_GtS" return-type="Collection">
+			<finder-column name="supportTicket" />
+			<finder-column comparator="&gt;" name="supportTicketVersion" />
+		</finder>
+		<finder name="S_LtS" return-type="Collection">
+			<finder-column name="supportTicket" />
+			<finder-column comparator="&lt;" name="supportTicketVersion" />
+		</finder>
+		<finder name="LtM_N_S" return-type="Collection">
+			<finder-column comparator="&lt;" name="modifiedDate" />
+			<finder-column name="notified" />
+			<finder-column arrayable-operator="OR" name="status" />
+		</finder>
+		<finder name="P_NotP_C_NotT" return-type="Collection">
+			<finder-column name="patcherFixId" />
+			<finder-column comparator="!=" name="patcherProductVersionId" />
+			<finder-column name="childBuild" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="P_N_L_A" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="accountEntryCode" />
+			<finder-column name="latestKeyBuild" />
+			<finder-column name="name" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherBuildRel" remote-service="false">
@@ -102,6 +170,15 @@
 
 		<column name="childPatcherBuildId" type="long" />
 		<column name="parentPatcherBuildId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ChildPatcherBuildId" return-type="Collection">
+			<finder-column name="childPatcherBuildId" />
+		</finder>
+		<finder name="ParentPatcherBuildId" return-type="Collection">
+			<finder-column name="parentPatcherBuildId" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherFix" remote-service="false">
 
@@ -147,6 +224,55 @@
 
 		<column entity="PatcherBuild" mapping-table="PBuilds_PFixes" name="patcherBuilds" type="Collection" />
 		<column entity="PatcherFixPack" mapping-table="PFixes_PFixPacks" name="patcherFixPack" type="Collection" />
+
+		<!-- Finder methods -->
+
+		<finder name="PatcherProjectVersionId" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+		</finder>
+		<finder name="P_L_T" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="latestFix" />
+			<finder-column name="type" />
+		</finder>
+		<finder name="P_L_NotT" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="latestFix" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="K_GtKV_NotT" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&gt;" name="keyVersion" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="K_LtKV_NotT" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column comparator="&lt;" name="keyVersion" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="K_L_NotT" return-type="Collection">
+			<finder-column name="key" />
+			<finder-column name="latestFix" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="LtM_N_T_S" return-type="Collection">
+			<finder-column comparator="&lt;" name="modifiedDate" />
+			<finder-column name="notified" />
+			<finder-column arrayable-operator="OR" name="type" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="P_L_N_NotT" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="latestFix" />
+			<finder-column name="name" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="P_L_NotT_S" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="latestFix" />
+			<finder-column comparator="!=" name="type" />
+			<finder-column name="status" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherFixComponent" remote-service="false">
 
@@ -165,6 +291,12 @@
 		<!-- Other fields -->
 
 		<column name="name" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="Name" return-type="PatcherFixComponent" unique="true">
+			<finder-column name="name" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherFixPack" remote-service="false">
 
@@ -197,6 +329,41 @@
 
 		<!-- Finder methods -->
 
+		<finder name="PatcherBuildId" return-type="PatcherFixComponent" unique="true">
+			<finder-column name="patcherBuildId" />
+		</finder>
+		<finder name="PatcherFixComponentId" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+		</finder>
+		<finder name="Version" return-type="Collection">
+			<finder-column name="version" />
+		</finder>
+		<finder name="PFCI_PPVI" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="patcherProjectVersionId" />
+		</finder>
+		<finder name="PFCI_V" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="version" />
+		</finder>
+		<finder name="PFCI_N" return-type="PatcherFixPack" unique="true">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="name" />
+		</finder>
+		<finder name="PFCI_S" return-type="Collection">
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="PFCI_PPVI_GtV" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column comparator="&gt;" name="version" />
+		</finder>
+		<finder name="PFCI_PPVI_LtV" return-type="Collection">
+			<finder-column name="patcherFixComponentId" />
+			<finder-column name="patcherProjectVersionId" />
+			<finder-column comparator="&lt;" name="version" />
+		</finder>
 		<finder name="PFCI_PPVI_N_V" return-type="PatcherFixPack" unique="true">
 			<finder-column name="patcherFixComponentId" />
 			<finder-column name="patcherProjectVersionId" />
@@ -218,6 +385,15 @@
 
 		<column name="childPatcherFixId" type="long" />
 		<column name="parentPatcherFixId" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="ChildPatcherFixId" return-type="Collection">
+			<finder-column name="childPatcherFixId" />
+		</finder>
+		<finder name="ParentPatcherFixId" return-type="Collection">
+			<finder-column name="parentPatcherFixId" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherProductVersion" remote-service="false" table="PProductVersion">
 
@@ -238,6 +414,15 @@
 		<column name="fixDeliveryMethod" type="int" />
 		<column name="moduleFolderName" type="String" />
 		<column name="name" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="FixDeliveryMethod" return-type="Collection">
+			<finder-column name="fixDeliveryMethod" />
+		</finder>
+		<finder name="Name" return-type="PatcherProductVersion" unique="true">
+			<finder-column name="name" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherProjectVersion" remote-service="false" table="PProjectVersion">
 
@@ -264,6 +449,29 @@
 		<column name="name" type="String" />
 		<column name="productVersion" type="int" />
 		<column name="repositoryName" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="PatcherProductVersionId" return-type="Collection">
+			<finder-column name="patcherProductVersionId" />
+		</finder>
+		<finder name="RootPatcherProjectVersionId" return-type="Collection">
+			<finder-column name="rootPatcherProjectVersionId" />
+		</finder>
+		<finder name="Committish" return-type="PatcherProjectVersion" unique="true">
+			<finder-column name="committish" />
+		</finder>
+		<finder name="Name" return-type="PatcherProjectVersion" unique="true">
+			<finder-column name="name" />
+		</finder>
+		<finder name="P_R" return-type="Collection">
+			<finder-column name="patcherProductVersionId" />
+			<finder-column name="rootPatcherProjectVersionId" />
+		</finder>
+		<finder name="P_RN" return-type="Collection">
+			<finder-column name="patcherProductVersionId" />
+			<finder-column name="repositoryName" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="PatcherTicketHint" remote-service="false">
 

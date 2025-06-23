@@ -5,6 +5,7 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {getRandomInt} from '../../../../utils/getRandomInt';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 
 export class EditVocabularyPage {
@@ -79,6 +80,18 @@ export class EditVocabularyPage {
 
 	async changeVisibility(visibility: string) {
 		await this.visibilitySelector.selectOption({label: visibility});
+	}
+
+	async createVocabulary() {
+		this.goto();
+
+		const name = `Vocabulary${getRandomInt()}`;
+
+		await this.changeGeneralInfo({name});
+
+		await this.saveButton.click();
+
+		return name;
 	}
 
 	async selectAssetTypes(assetType: string) {

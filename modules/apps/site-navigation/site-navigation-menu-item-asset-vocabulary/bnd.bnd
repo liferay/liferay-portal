@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site Navigation Menu Item Asset Vocabulary
 Bundle-SymbolicName: com.liferay.site.navigation.menu.item.asset.vocabulary
-Bundle-Version: 1.0.40
+Bundle-Version: 1.0.41
 Web-ContextPath: /site-navigation-menu-item-asset-vocabulary
 -dsannotations-options: inherit

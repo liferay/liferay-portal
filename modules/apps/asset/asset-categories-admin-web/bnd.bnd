@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Asset Categories Admin Web
 Bundle-SymbolicName: com.liferay.asset.categories.admin.web
-Bundle-Version: 5.0.116
+Bundle-Version: 5.0.117
 Web-ContextPath: /asset-categories-admin-web
 -dsannotations-options: inherit

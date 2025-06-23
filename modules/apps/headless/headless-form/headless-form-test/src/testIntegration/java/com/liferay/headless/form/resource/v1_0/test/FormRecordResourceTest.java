@@ -76,6 +76,14 @@ public class FormRecordResourceTest extends BaseFormRecordResourceTestCase {
 	}
 
 	@Override
+	protected Long testGetFormFormRecordByLatestDraft_getFormId(
+			FormRecord formRecord)
+		throws Exception {
+
+		return formRecord.getFormId();
+	}
+
+	@Override
 	protected Map<String, Map<String, String>>
 			testGetFormFormRecordsPage_getExpectedActions(Long formId)
 		throws Exception {
@@ -102,6 +110,14 @@ public class FormRecordResourceTest extends BaseFormRecordResourceTestCase {
 		formRecord.setFormId(_ddmFormInstance.getFormInstanceId());
 
 		return formRecord;
+	}
+
+	@Override
+	protected Long testGraphQLGetFormFormRecordByLatestDraft_getFormId(
+			FormRecord formRecord)
+		throws Exception {
+
+		return formRecord.getFormId();
 	}
 
 	@Override

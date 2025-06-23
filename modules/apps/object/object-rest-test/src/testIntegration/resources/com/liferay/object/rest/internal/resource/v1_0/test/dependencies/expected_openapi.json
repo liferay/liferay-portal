@@ -3537,6 +3537,41 @@
 				]
 			}
 		},
+		"/{object1Id}/expire": {
+			"post": {
+				"operationId": "postObject1Expire",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "object1Id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"default": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Object1"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/Object1"
+								}
+							}
+						},
+						"description": "default response"
+					}
+				},
+				"tags": [
+					"Object1"
+				]
+			}
+		},
 		"/{object1Id}/permissions": {
 			"get": {
 				"operationId": "getObject1PermissionsPage",

@@ -1,0 +1,9 @@
+**/*.min.js
+build/*
+classes/**
+dist/**
+node_modules/**
+tmp/**
+types/**/*.d.ts
+yarn-*.js
+zippableResources/**

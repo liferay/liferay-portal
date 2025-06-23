@@ -10,6 +10,7 @@ import React, {useState} from 'react';
 import {Error} from '../../utils/errors';
 
 interface SeparatorContainerProps {
+	disabled?: boolean;
 	errors: FormError<ObjectDefinition>;
 	onSubmit?: (editedObjectDefinition?: Partial<ObjectDefinition>) => void;
 	setErrors?: (errors: Error) => void;
@@ -33,6 +34,7 @@ export function hasLegacySeparator(value: any) {
 }
 
 export function SeparatorContainer({
+	disabled,
 	errors,
 	onSubmit,
 	setErrors,
@@ -75,6 +77,7 @@ export function SeparatorContainer({
 	return (
 		<>
 			<SeparatorFields
+				disabled={disabled}
 				errors={{fields: errors}}
 				fields={[
 					{

@@ -159,7 +159,10 @@ function BulkActions({
 				selectable,
 				sidePanelId,
 			}) => (
-				<nav className="management-bar management-bar-primary navbar navbar-expand-md">
+				<nav
+					className="management-bar management-bar-primary navbar navbar-expand-md"
+					data-qa-id="selectionToolbar"
+				>
 					<div
 						className={classNames(
 							'container-fluid',

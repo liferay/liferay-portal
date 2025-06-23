@@ -89,6 +89,8 @@ public class UserUserGroupItemSelectorViewDisplayContext {
 	private LinkedHashMap<String, Object> _getParams(
 		ThemeDisplay themeDisplay) {
 
+		LinkedHashMap<String, Object> userParams = new LinkedHashMap<>();
+
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
 		String portletName = portletDisplay.getPortletName();
@@ -107,10 +109,8 @@ public class UserUserGroupItemSelectorViewDisplayContext {
 				themeDisplay.getScopeGroup(), User.class.getName(),
 				User.class.getName(), ActionKeys.VIEW)) {
 
-			return null;
+			return userParams;
 		}
-
-		LinkedHashMap<String, Object> userParams = new LinkedHashMap<>();
 
 		User user = themeDisplay.getUser();
 
@@ -121,8 +121,6 @@ public class UserUserGroupItemSelectorViewDisplayContext {
 			if (_log.isDebugEnabled()) {
 				_log.debug(portalException);
 			}
-
-			return null;
 		}
 
 		return userParams;

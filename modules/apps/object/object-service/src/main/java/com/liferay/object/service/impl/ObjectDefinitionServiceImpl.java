@@ -167,7 +167,11 @@ public class ObjectDefinitionServiceImpl
 						fetchObjectFolderByExternalReferenceCode(
 							objectFolderExternalReferenceCode, companyId);
 
-				return objectFolder.getObjectFolderId();
+				if (objectFolder != null) {
+					return objectFolder.getObjectFolderId();
+				}
+
+				return null;
 			});
 
 		return objectDefinitionPersistence.filterFindByC_OFI_A_E_S_S(

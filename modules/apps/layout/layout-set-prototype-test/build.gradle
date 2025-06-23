@@ -1,5 +1,6 @@
 dependencies {
 	testIntegrationImplementation project(":apps:asset:asset-link-api")
+	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-set-prototype-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")

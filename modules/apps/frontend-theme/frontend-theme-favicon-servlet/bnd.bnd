@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend Theme Favicon Servlet
 Bundle-SymbolicName: com.liferay.frontend.theme.favicon.servlet
-Bundle-Version: 5.0.73
+Bundle-Version: 5.0.74
 Web-ContextPath: /frontend-theme-favicon-servlet

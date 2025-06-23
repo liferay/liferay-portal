@@ -20,7 +20,6 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="hotfixId" type="long" />
 		<field name="patcherAccountId" type="long" />
 		<field name="patcherFixId" type="long" />
 		<field name="patcherProductVersionId" type="long" />
@@ -34,6 +33,7 @@
 		<field name="fileName" type="String">
 			<hint name="max-length">500</hint>
 		</field>
+		<field name="hotfixId" type="long" />
 		<field name="initialName" type="String" />
 		<field name="key" type="String" />
 		<field name="keyVersion" type="double" />
@@ -44,7 +44,7 @@
 		<field name="lesaTicket" type="String" />
 		<field name="lesaTicketVersion" type="double" />
 		<field name="name" type="String">
-			<hint-collection name="CLOB" />
+			<hint name="max-length">4000</hint>
 		</field>
 		<field name="notified" type="boolean" />
 		<field name="productVersion" type="int" />
@@ -100,7 +100,7 @@
 		<field name="keyVersion" type="double" />
 		<field name="latestFix" type="boolean" />
 		<field name="name" type="String">
-			<hint-collection name="CLOB" />
+			<hint name="max-length">4000</hint>
 		</field>
 		<field name="notified" type="boolean" />
 		<field name="obsolete" type="boolean" />

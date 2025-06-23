@@ -93,6 +93,7 @@ export default {
 	'by-requesting-a-publisher-account-you-agree-to-the':
 		'By requesting a Publisher account, you agree to the',
 	'cancel': 'Cancel',
+	'canceled': 'Canceled',
 	'cash': 'Cash',
 	'categories': 'Categories',
 	'category': 'Category',
@@ -118,6 +119,7 @@ export default {
 	'compatible-offering': 'Compatible Offering',
 	'compatible-versions': 'Compatible Versions',
 	'complete-publisher-account-request': 'Complete Publisher Account Request',
+	'completed': 'Completed',
 	'composite-app': 'Composite App',
 	'confirm': 'Confirm',
 	'confirm-deactivate-keys': 'Confirm & Deactivate Keys',
@@ -159,6 +161,7 @@ export default {
 		'Customize storefront solutions details',
 	'dashboard': 'Dashboard',
 	'data-center-location': 'Data Center Location',
+	'date-created': 'Date Created',
 	'deactivate': 'Deactivate',
 	'deactivated': 'Deactivated',
 	'decline': 'Decline',
@@ -323,6 +326,7 @@ export default {
 		'Manage and publish apps on the Marketplace',
 	'manage-license-keys': 'Manage License Key(s)',
 	'maximum-number-of-upload-reached': 'Maximum Number of Upload Reached',
+	'modified-date': 'Modifed Date',
 	'modular-components-built-with-html-css-and-javascript-offer-extensible-and-reusable-elements-or-collections-of-elements-for-constructing-content-pages-and-templates':
 		'Modular components, built with HTML, CSS, and JavaScript, offer extensible and reusable elements or collections of elements for constructing content pages and templates.',
 	'module-based-apps-delivered-as-lpkg-files-that-the-user-can-install-to-modify-native-liferay-behavior':
@@ -347,6 +351,7 @@ export default {
 	'no-licenses-yet': 'No Licenses yet',
 	'no-orders-yet': 'No Orders Yet',
 	'no-results-found': 'No results found',
+	'no-x': 'No {0}',
 	'not-installed': 'Not Installed',
 	'not-seeing-a-specific-project': 'Not seeing a specific Project?',
 	'notes': 'Notes',
@@ -372,6 +377,7 @@ export default {
 	'payment-method': 'Payment Method',
 	'payment-status': 'Payment Status',
 	'paypal-account': 'Paypal Account',
+	'pending': 'Pending',
 	'phone': 'Phone',
 	'phone-number': 'Phone Number',
 	'please-be-aware-that-since-you-are-adding-a-new-version-of-the-app-the-only-section-visible-is-the-build':
@@ -388,6 +394,7 @@ export default {
 	'price': 'Price',
 	'pricing': 'Pricing',
 	'privacy-policy': 'Privacy Policy',
+	'processing': 'Processing',
 	'product': 'Product',
 	'product-unavailable': 'Product Unavailable',
 	'profile': 'Profile',

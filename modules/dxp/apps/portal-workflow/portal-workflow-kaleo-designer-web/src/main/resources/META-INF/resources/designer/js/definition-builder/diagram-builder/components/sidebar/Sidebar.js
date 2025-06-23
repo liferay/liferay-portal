@@ -4,7 +4,7 @@
  */
 
 import React, {useContext, useEffect, useState} from 'react';
-import {isNode} from 'react-flow-renderer';
+import {isEdge, isNode} from 'react-flow-renderer';
 
 import {DefinitionBuilderContext} from '../../../DefinitionBuilderContext';
 import {DiagramBuilderContext} from '../../DiagramBuilderContext';
@@ -147,9 +147,12 @@ export default function Sidebar() {
 		DefinitionBuilderContext
 	);
 
-	const {selectedItem, setSelectedItem, setSelectedItemNewId} = useContext(
-		DiagramBuilderContext
-	);
+	const {
+		selectedItem,
+		setSelectedItem,
+		setSelectedItemNewId,
+		setSelectedTransitionNewName,
+	} = useContext(DiagramBuilderContext);
 	const [contentName, setContentName] = useState('');
 	const [errors, setErrors] = useState(errorsDefaultValues);
 
@@ -160,6 +163,7 @@ export default function Sidebar() {
 	const defaultBackButton = () => {
 		setSelectedItem(null);
 		setSelectedItemNewId(null);
+		setSelectedTransitionNewName(null);
 		clearErrors();
 	};
 
@@ -190,21 +194,25 @@ export default function Sidebar() {
 	}, [errors]);
 
 	useEffect(() => {
-		setSelectedItemNewId(null);
 		clearErrors();
 
 		let contentKey = '';
 
 		if (selectedItem?.id) {
-			contentKey = isNode(selectedItem)
-				? selectedItem?.type
-				: 'transition';
+			if (isNode(selectedItem)) {
+				setSelectedItemNewId(null);
+				contentKey = selectedItem?.type;
+			}
+			else if (isEdge(selectedItem)) {
+				setSelectedTransitionNewName(null);
+				contentKey = 'transition';
+			}
 		}
 
 		setContentName(contentKey);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedItem?.id, setSelectedItemNewId]);
+	}, [selectedItem?.id, setSelectedItemNewId, setSelectedTransitionNewName]);
 
 	const content = contents[contentName];
 	const title = content?.title ?? Liferay.Language.get('nodes');

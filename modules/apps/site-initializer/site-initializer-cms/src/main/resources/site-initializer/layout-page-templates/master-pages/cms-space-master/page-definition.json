@@ -1,0 +1,205 @@
+{
+	"pageElement": {
+		"id": "307eeda7-c54b-70c6-6a79-c20994668d81",
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "sidebar",
+						"siteKey": "CMS"
+					},
+					"fragmentConfig": {
+						"sidebarAriaLabel": "CMS Product Menu"
+					},
+					"fragmentFields": [
+						{
+							"id": "sidebarTitle",
+							"value": {
+								"fragmentLink": {
+								}
+							}
+						}
+					],
+					"indexed": true
+				},
+				"id": "6a354764-416e-2b1b-1cb0-47e49cb25627",
+				"pageElements": [
+					{
+						"definition": {
+							"fragmentDropZoneId": "topBar"
+						},
+						"id": "5aeb1eb5-f96e-96cb-06b7-61e612a0485b",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "page-bar",
+										"siteKey": "CMS"
+									},
+									"fragmentConfig": {
+										"alt": "Site Logo"
+									},
+									"fragmentFields": [
+										{
+											"id": "sidebarImage",
+											"value": {
+												"fragmentImage": {
+													"url": {
+														"value_i18n": {
+														}
+													}
+												},
+												"fragmentLink": {
+												}
+											}
+										},
+										{
+											"id": "sidebarTitle",
+											"value": {
+												"fragmentLink": {
+												}
+											}
+										}
+									],
+									"indexed": true,
+									"widgetInstances": [
+										{
+											"widgetConfig": {
+											},
+											"widgetName": "com_liferay_product_navigation_applications_menu_web_internal_portlet_ProductNavigationApplicationsMenuPortlet"
+										}
+									]
+								},
+								"id": "32f64cbe-57dd-937b-1d9e-edc1de70b958",
+								"pageElements": [
+									{
+										"definition": {
+											"fragmentDropZoneId": "sidebarTrigger"
+										},
+										"id": "57750634-2ad5-dbdb-bf52-0577eeca1155",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "sidebar-trigger",
+														"siteKey": "CMS"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"indexed": true
+												},
+												"id": "88b7f132-967b-ca14-4875-04240379f1e0",
+												"type": "Fragment"
+											}
+										],
+										"type": "FragmentDropZone"
+									}
+								],
+								"type": "Fragment"
+							}
+						],
+						"type": "FragmentDropZone"
+					},
+					{
+						"definition": {
+							"fragmentDropZoneId": "sidebarBody"
+						},
+						"id": "212eb06f-da24-4b75-cde8-face21ecf4e5",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "vertical-navigation",
+										"siteKey": "CMS"
+									},
+									"fragmentConfig": {
+										"displayStyle": "stacked",
+										"hoveredItemColor": "",
+										"selectedItemColor": "",
+										"source": "",
+										"sublevels": "-1"
+									},
+									"fragmentFields": [
+									],
+									"indexed": true
+								},
+								"id": "339a84e4-b200-a686-2e8e-724ca1458332",
+								"type": "Fragment"
+							},
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSpacesComponentSectionFragmentRenderer"
+									},
+									"fragmentConfig": {
+										"displayStyle": "stacked",
+										"hoveredItemColor": "",
+										"selectedItemColor": "",
+										"source": "",
+										"sublevels": "-1"
+									},
+									"fragmentFields": [
+									],
+									"indexed": true
+								},
+								"id": "4f273db5-b9c7-6ff3-7c79-653b88a42fc3",
+								"type": "Fragment"
+							}
+						],
+						"type": "FragmentDropZone"
+					},
+					{
+						"definition": {
+							"fragmentDropZoneId": "content"
+						},
+						"id": "5400998b-15ff-c784-f346-4c6a2bf62947",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpaceStickerComponentSectionFragmentRenderer"
+									},
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
+									"fragmentStyle": {
+										"fontSize": "24px",
+										"fontWeight": "600",
+										"marginBottom": "4",
+										"marginLeft": "4",
+										"marginRight": "4",
+										"marginTop": "5"
+									},
+									"indexed": true
+								},
+								"id": "fd38cfde-83f2-745e-d822-96f2e10f5963",
+								"type": "Fragment"
+							},
+							{
+								"definition": {
+									"fragmentSettings": {
+										"unallowedFragments": [
+										]
+									}
+								},
+								"id": "5b085050-70dd-18d8-7227-06afb1ebac78",
+								"type": "DropZone"
+							}
+						],
+						"type": "FragmentDropZone"
+					}
+				],
+				"type": "Fragment"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"themeName": "CMS"
+	},
+	"version": 1.1
+}

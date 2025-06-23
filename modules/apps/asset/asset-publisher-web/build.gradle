@@ -18,6 +18,7 @@ dependencies {
 	compileOnly project(":apps:asset:asset-taglib")
 	compileOnly project(":apps:asset:asset-tags-item-selector-api")
 	compileOnly project(":apps:comment:comment-taglib")
+	compileOnly project(":apps:data-engine:data-engine-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-taglib")
 	compileOnly project(":apps:export-import:export-import-api")

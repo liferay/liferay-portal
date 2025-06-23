@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend JS AUI Web
 Bundle-SymbolicName: com.liferay.frontend.js.aui.web
-Bundle-Version: 5.0.112
+Bundle-Version: 5.0.113
 Web-ContextPath: /frontend-js-aui-web
 -donotcopy: (\.touch|.*_diffs.*)
 -includeresource: META-INF/resources=tmp/META-INF/resources

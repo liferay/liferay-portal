@@ -6,3 +6,9 @@
 export enum AccountRoleType {
 	SOLUTION_PUBLISHER = 'Solution Publisher',
 }
+
+export enum AccountType {
+	MARKETPLACE_DEVELOPER = 'Marketplace Developer',
+	TECHNOLOGY_PARTNER = 'Technology Partner',
+	STRATEGIC_PARTNER = 'Strategic Partner',
+}

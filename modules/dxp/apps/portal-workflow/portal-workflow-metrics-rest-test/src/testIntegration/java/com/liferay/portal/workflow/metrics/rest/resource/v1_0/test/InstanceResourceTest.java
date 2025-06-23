@@ -453,6 +453,13 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 	}
 
 	@Override
+	protected Long testDeleteProcessInstance_getProcessId(Instance instance)
+		throws Exception {
+
+		return instance.getProcessId();
+	}
+
+	@Override
 	protected Instance testGetProcessInstance_addInstance() throws Exception {
 		return testGetProcessInstancesPage_addInstance(
 			_process.getId(), randomInstance());
@@ -481,6 +488,13 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 	}
 
 	@Override
+	protected Long testGraphQLGetProcessInstance_getProcessId(Instance instance)
+		throws Exception {
+
+		return instance.getProcessId();
+	}
+
+	@Override
 	protected Instance testGraphQLInstance_addInstance() throws Exception {
 		return testGetProcessInstance_addInstance();
 	}
@@ -488,6 +502,13 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 	@Override
 	protected Instance testPatchProcessInstance_addInstance() throws Exception {
 		return testGetProcessInstance_addInstance();
+	}
+
+	@Override
+	protected Long testPatchProcessInstance_getProcessId(Instance instance)
+		throws Exception {
+
+		return instance.getProcessId();
 	}
 
 	@Override
@@ -500,6 +521,14 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 		instance.setDateCompletion(RandomTestUtil.nextDate());
 
 		return instance;
+	}
+
+	@Override
+	protected Long testPatchProcessInstanceComplete_getProcessId(
+			Instance instance)
+		throws Exception {
+
+		return instance.getProcessId();
 	}
 
 	@Override

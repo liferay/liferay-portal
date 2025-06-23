@@ -81,6 +81,13 @@ public class WarehouseAccountGroupResourceTest
 		}
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
 	@Override
 	@Test
 	public void testDeleteWarehouseAccountGroup() throws Exception {
@@ -158,15 +165,9 @@ public class WarehouseAccountGroupResourceTest
 				WarehouseAccountGroup warehouseAccountGroup)
 		throws Exception {
 
-		WarehouseAccountGroup postWarehouseAccountGroup =
-			warehouseAccountGroupResource.
-				postWarehouseByExternalReferenceCodeWarehouseAccountGroup(
-					externalReferenceCode, warehouseAccountGroup);
-
-		_warehouseAccountGroupIds.add(
-			postWarehouseAccountGroup.getWarehouseAccountGroupId());
-
-		return postWarehouseAccountGroup;
+		return warehouseAccountGroupResource.
+			postWarehouseByExternalReferenceCodeWarehouseAccountGroup(
+				externalReferenceCode, warehouseAccountGroup);
 	}
 
 	@Override
@@ -183,14 +184,8 @@ public class WarehouseAccountGroupResourceTest
 				Long id, WarehouseAccountGroup warehouseAccountGroup)
 		throws Exception {
 
-		WarehouseAccountGroup postWarehouseAccountGroup =
-			warehouseAccountGroupResource.postWarehouseIdWarehouseAccountGroup(
-				id, warehouseAccountGroup);
-
-		_warehouseAccountGroupIds.add(
-			postWarehouseAccountGroup.getWarehouseAccountGroupId());
-
-		return postWarehouseAccountGroup;
+		return warehouseAccountGroupResource.
+			postWarehouseIdWarehouseAccountGroup(id, warehouseAccountGroup);
 	}
 
 	@Override

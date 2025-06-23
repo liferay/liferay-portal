@@ -43,6 +43,7 @@ import com.liferay.asset.util.AssetPublisherAddItemHolder;
 import com.liferay.asset.util.LinkedAssetEntryIdsUtil;
 import com.liferay.asset.util.comparator.AssetRendererFactoryTypeNameComparator;
 import com.liferay.asset.util.comparator.ClassTypeNameComparator;
+import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
@@ -108,6 +109,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsParamUtil;
@@ -908,11 +911,37 @@ public class AssetPublisherDisplayContext {
 	}
 
 	public LocalizedValuesMap getEmailAssetEntryAddedBody() {
+		Map<Locale, String> emailAssetEntryAddedBodyMap =
+			LocalizationUtil.getLocalizationMap(
+				_portletPreferences, "emailAssetEntryAddedBody",
+				StringPool.BLANK, StringPool.BLANK,
+				AssetPublisherWebHelper.class.getClassLoader());
+
+		Locale locale = LocaleUtil.getSiteDefault();
+
+		if (Validator.isNotNull(emailAssetEntryAddedBodyMap.get(locale))) {
+			return LocalizedValueUtil.toLocalizedValuesMap(
+				emailAssetEntryAddedBodyMap);
+		}
+
 		return _assetPublisherPortletInstanceConfiguration.
 			emailAssetEntryAddedBody();
 	}
 
 	public LocalizedValuesMap getEmailAssetEntryAddedSubject() {
+		Map<Locale, String> emailAssetEntryAddedSubjectMap =
+			LocalizationUtil.getLocalizationMap(
+				_portletPreferences, "emailAssetEntryAddedSubject",
+				StringPool.BLANK, StringPool.BLANK,
+				AssetPublisherWebHelper.class.getClassLoader());
+
+		Locale locale = LocaleUtil.getSiteDefault();
+
+		if (Validator.isNotNull(emailAssetEntryAddedSubjectMap.get(locale))) {
+			return LocalizedValueUtil.toLocalizedValuesMap(
+				emailAssetEntryAddedSubjectMap);
+		}
+
 		return _assetPublisherPortletInstanceConfiguration.
 			emailAssetEntryAddedSubject();
 	}

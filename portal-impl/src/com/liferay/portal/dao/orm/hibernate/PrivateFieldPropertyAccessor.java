@@ -12,7 +12,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 
-import java.lang.reflect.Field;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
@@ -55,7 +56,8 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 			StringBundler.concat(
 				clazz.hashCode(), StringPool.POUND, clazz.getName(),
 				StringPool.POUND, propertyName),
-			key -> new FieldPropertyAccess(new FieldHolder(clazz, fieldName)));
+			key -> new VarHandlePropertyAccess(
+				new VarHandleHolder(clazz, fieldName)));
 	}
 
 	private static final Map<String, PropertyAccess> _propertyAccesses =
@@ -68,14 +70,9 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 
 		@Override
 		public Object get(Object target) {
-			Field field = _fieldHolder.getField();
+			VarHandle varHandle = _varHandleHolder.getVarHandle();
 
-			try {
-				return field.get(target);
-			}
-			catch (IllegalAccessException illegalAccessException) {
-				return ReflectionUtil.throwException(illegalAccessException);
-			}
+			return varHandle.get(target);
 		}
 
 		@Override
@@ -103,58 +100,16 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 
 		@Override
 		public Class getReturnType() {
-			Field field = _fieldHolder.getField();
+			VarHandle verHandle = _varHandleHolder.getVarHandle();
 
-			return field.getType();
+			return verHandle.varType();
 		}
 
-		private FieldGetter(FieldHolder fieldHolder) {
-			_fieldHolder = fieldHolder;
+		private FieldGetter(VarHandleHolder varHandleHolder) {
+			_varHandleHolder = varHandleHolder;
 		}
 
-		private final FieldHolder _fieldHolder;
-
-	}
-
-	private static class FieldHolder {
-
-		public Field getField() {
-			if (_field == null) {
-				Class<?> modelClass = _containerJavaType;
-
-				if (BaseModelImpl.class.isAssignableFrom(modelClass)) {
-					Class<?> superClass = modelClass.getSuperclass();
-
-					while (BaseModelImpl.class != superClass) {
-						modelClass = superClass;
-
-						superClass = modelClass.getSuperclass();
-					}
-				}
-
-				try {
-					Field field = modelClass.getDeclaredField(_propertyName);
-
-					field.setAccessible(true);
-
-					_field = field;
-				}
-				catch (NoSuchFieldException noSuchFieldException) {
-					return ReflectionUtil.throwException(noSuchFieldException);
-				}
-			}
-
-			return _field;
-		}
-
-		private FieldHolder(Class<?> containerJavaType, String propertyName) {
-			_containerJavaType = containerJavaType;
-			_propertyName = propertyName;
-		}
-
-		private final Class<?> _containerJavaType;
-		private Field _field;
-		private final String _propertyName;
+		private final VarHandleHolder _varHandleHolder;
 
 	}
 
@@ -175,25 +130,66 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 			Object target, Object value,
 			SessionFactoryImplementor sessionFactoryImplementor) {
 
-			Field field = _fieldHolder.getField();
+			VarHandle varHandle = _varHandleHolder.getVarHandle();
 
-			try {
-				field.set(target, value);
-			}
-			catch (IllegalAccessException illegalAccessException) {
-				ReflectionUtil.throwException(illegalAccessException);
-			}
+			varHandle.set(target, value);
 		}
 
-		private FieldSetter(FieldHolder fieldHolder) {
-			_fieldHolder = fieldHolder;
+		private FieldSetter(VarHandleHolder varHandleHolder) {
+			_varHandleHolder = varHandleHolder;
 		}
 
-		private final FieldHolder _fieldHolder;
+		private final VarHandleHolder _varHandleHolder;
 
 	}
 
-	private class FieldPropertyAccess implements PropertyAccess {
+	private static class VarHandleHolder {
+
+		public VarHandle getVarHandle() {
+			if (_varHandle == null) {
+				Class<?> modelClass = _containerJavaType;
+
+				if (BaseModelImpl.class.isAssignableFrom(modelClass)) {
+					Class<?> superClass = modelClass.getSuperclass();
+
+					while (BaseModelImpl.class != superClass) {
+						modelClass = superClass;
+
+						superClass = modelClass.getSuperclass();
+					}
+				}
+
+				MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+				try {
+					_varHandle = lookup.unreflectVarHandle(
+						modelClass.getDeclaredField(_propertyName));
+				}
+				catch (ReflectiveOperationException
+							reflectiveOperationException) {
+
+					return ReflectionUtil.throwException(
+						reflectiveOperationException);
+				}
+			}
+
+			return _varHandle;
+		}
+
+		private VarHandleHolder(
+			Class<?> containerJavaType, String propertyName) {
+
+			_containerJavaType = containerJavaType;
+			_propertyName = propertyName;
+		}
+
+		private final Class<?> _containerJavaType;
+		private final String _propertyName;
+		private VarHandle _varHandle;
+
+	}
+
+	private class VarHandlePropertyAccess implements PropertyAccess {
 
 		@Override
 		public Getter getGetter() {
@@ -210,9 +206,9 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 			return _setter;
 		}
 
-		private FieldPropertyAccess(FieldHolder fieldHolder) {
-			_getter = new FieldGetter(fieldHolder);
-			_setter = new FieldSetter(fieldHolder);
+		private VarHandlePropertyAccess(VarHandleHolder varHandleHolder) {
+			_getter = new FieldGetter(varHandleHolder);
+			_setter = new FieldSetter(varHandleHolder);
 		}
 
 		private final Getter _getter;

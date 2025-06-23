@@ -388,6 +388,13 @@ public class PatcherFixLocalServiceUtil {
 		return getService().getPatcherFix(patcherFixId);
 	}
 
+	public static List<PatcherFix> getPatcherFixes(
+		java.util.Date modifiedDate, boolean notified, int[] type, int status) {
+
+		return getService().getPatcherFixes(
+			modifiedDate, notified, type, status);
+	}
+
 	/**
 	 * Returns a range of all the patcher fixes.
 	 *
@@ -403,6 +410,40 @@ public class PatcherFixLocalServiceUtil {
 		return getService().getPatcherFixes(start, end);
 	}
 
+	public static List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, boolean latestFix, int type) {
+
+		return getService().getPatcherFixes(
+			patcherProjectVersionId, latestFix, type);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, boolean latestFix, int type, int status) {
+
+		return getService().getPatcherFixes(
+			patcherProjectVersionId, latestFix, type, status);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, boolean latestFix, String name,
+		int type) {
+
+		return getService().getPatcherFixes(
+			patcherProjectVersionId, latestFix, name, type);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		String key, boolean latestFix, int type) {
+
+		return getService().getPatcherFixes(key, latestFix, type);
+	}
+
+	public static List<PatcherFix> getPatcherFixes(
+		String key, double keyVersion, int type, boolean older) {
+
+		return getService().getPatcherFixes(key, keyVersion, type, older);
+	}
+
 	/**
 	 * Returns the number of patcher fixes.
 	 *
@@ -410,6 +451,13 @@ public class PatcherFixLocalServiceUtil {
 	 */
 	public static int getPatcherFixesCount() {
 		return getService().getPatcherFixesCount();
+	}
+
+	public static int getPatcherFixesCountByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return getService().getPatcherFixesCountByPatcherProjectVersionId(
+			patcherProjectVersionId);
 	}
 
 	public static List<PatcherFix> getPatcherFixPackPatcherFixes(

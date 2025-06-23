@@ -138,14 +138,6 @@ public class ListTypeDefinitionResourceTest
 
 	@Override
 	protected ListTypeDefinition
-			testGraphQLListTypeDefinition_addListTypeDefinition()
-		throws Exception {
-
-		return _addListTypeDefinition(randomListTypeDefinition());
-	}
-
-	@Override
-	protected ListTypeDefinition
 			testPostSpecificationIdListTypeDefinition_addListTypeDefinition(
 				ListTypeDefinition listTypeDefinition)
 		throws Exception {

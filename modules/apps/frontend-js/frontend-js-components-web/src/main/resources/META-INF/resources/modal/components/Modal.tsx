@@ -323,11 +323,11 @@ export default function Modal({
 										title
 									)}
 
-									{loading && (
-										<span className="sr-only">
-											- {Liferay.Language.get('loading')}
-										</span>
-									)}
+									<span className="sr-only">
+										{loading
+											? `- ${Liferay.Language.get('loading')}`
+											: ''}
+									</span>
 								</ClayModal.Header>
 							)}
 
@@ -426,41 +426,6 @@ export default function Modal({
 		</>
 	);
 }
-
-/*
-export function openAlertModal({message}: {message: string}): void;
-
-export function openConfirmModal({
-	message,
-	onConfirm,
-	status,
-	title,
-}: {
-	message: string;
-	onConfirm: (confirmed: boolean) => void;
-	status?: string;
-	title?: string;
-}): void;
-
-export function openSelectionModal<T>(init: {
-	buttonAddLabel?: string;
-	buttonCancelLabel?: string;
-	containerProps?: Object;
-	customSelectEvent?: boolean;
-	height?: string;
-	id?: string;
-	iframeBodyCssClass?: string;
-	multiple?: boolean;
-	onClose?: () => void;
-	onSelect?: (item: T) => void;
-	selectEventName?: string;
-	selectedData?: any;
-	size?: 'full-screen' | 'lg' | 'md' | 'sm';
-	title?: string;
-	url?: string;
-	zIndex?: number;
-}): void;
- */
 
 Modal.propTypes = {
 	bodyHTML: PropTypes.string,

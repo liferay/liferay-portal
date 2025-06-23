@@ -112,57 +112,6 @@ definition {
 			locator1 = "WorkflowCalendar#CALENDAR_EVENT_BY_TITLE");
 	}
 
-	@priority = 5
-	test ApproveEventWithInvitedUser {
-		property app.server.types = "jboss,tomcat,weblogic,wildfly";
-		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
-		property portal.acceptance = "true";
-
-		var siteName = TestCase.getSiteName();
-
-		CalendarNavigator.gotoView(viewType = "Week");
-
-		CalendarEvent.viewSiteRSVPWithUnapprovedWorkflow(
-			eventTitle = "Calendar Event Title",
-			siteCalendarName = ${siteName});
-
-		Navigator.gotoPage(pageName = "Calendar Page");
-
-		CalendarNavigator.gotoView(viewType = "Week");
-
-		CalendarEvent.viewNoUserInviteWithUnapprovedWorkflow(
-			eventTitle = "Calendar Event Title",
-			siteCalendarName = ${siteName});
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
-
-		Workflow.assignToMeTaskByActions(
-			workflowAssetTitle = "Calendar Event Title",
-			workflowAssetType = "Calendar Event",
-			workflowTask = "Review");
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
-
-		Workflow.approveTaskByActions(
-			workflowAssetTitle = "Calendar Event Title",
-			workflowAssetType = "Calendar Event",
-			workflowTask = "Review");
-
-		Navigator.gotoPage(pageName = "Calendar Page");
-
-		CalendarNavigator.gotoView(viewType = "Week");
-
-		CalendarEvent.viewSiteRSVPWithApprovedWorkflow(
-			eventTitle = "Calendar Event Title",
-			rsvp = "Yes",
-			userCalendarName = "Test Test");
-
-		CalendarEvent.viewInvitedUserRSVPWithApprovedWorkflow(
-			eventTitle = "Calendar Event Title",
-			siteCalendarName = ${siteName},
-			userCalendarName = "Test Test");
-	}
-
 	@description = "Verify that a calendar event created on the pop up can be approved"
 	@priority = 4
 	test CalendarPopUpCanBeApproved {

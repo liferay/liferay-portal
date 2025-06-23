@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site Navigation Menu Item Display Page
 Bundle-SymbolicName: com.liferay.site.navigation.menu.item.display.page
-Bundle-Version: 1.0.79
+Bundle-Version: 1.0.80
 Web-ContextPath: /site-navigation-menu-item-display-page
 -dsannotations-options: inherit

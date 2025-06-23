@@ -56,39 +56,35 @@ function main() {
 
 				textarea.addEventListener('keyup', onKeyup);
 
-				if (Liferay.FeatureFlags['LPD-37927']) {
-					const defaultLanguageId =
-						themeDisplay.getDefaultLanguageId();
+				const defaultLanguageId = themeDisplay.getDefaultLanguageId();
 
-					if (input.localizable) {
-						const {onChange} = registerLocalizedInput({
-							defaultLanguageId,
-							initialValues: input.valueI18n,
-							inputElement: textarea,
-							inputName: input.name,
-							localizationInputsContainer: textarea.parentNode,
-							namespace: fragmentNamespace,
-						});
+				if (input.localizable) {
+					const {onChange} = registerLocalizedInput({
+						defaultLanguageId,
+						initialValues: input.valueI18n,
+						inputElement: textarea,
+						inputName: input.name,
+						localizationInputsContainer: textarea.parentNode,
+						namespace: fragmentNamespace,
+					});
 
-						textarea.addEventListener('change', (event) => {
-							onChange(event.target.value);
-						});
-					}
-					else {
-						registerUnlocalizedInput({
-							defaultLanguageId,
-							inputElement: textarea,
-							readOnlyInputLabel: document.getElementById(
-								`${fragmentNamespace}-textarea-readonly`
-							),
-							unlocalizedFieldsState:
-								input.attributes.unlocalizedFieldsState,
-							unlocalizedMessageContainer:
-								document.getElementById(
-									`${fragmentNamespace}-unlocalized-info`
-								),
-						});
-					}
+					textarea.addEventListener('change', (event) => {
+						onChange(event.target.value);
+					});
+				}
+				else {
+					registerUnlocalizedInput({
+						defaultLanguageId,
+						inputElement: textarea,
+						readOnlyInputLabel: document.getElementById(
+							`${fragmentNamespace}-textarea-readonly`
+						),
+						unlocalizedFieldsState:
+							input.attributes.unlocalizedFieldsState,
+						unlocalizedMessageContainer: document.getElementById(
+							`${fragmentNamespace}-unlocalized-info`
+						),
+					});
 				}
 			}
 		);

@@ -187,14 +187,14 @@ public abstract class BaseAccountResourceTestCase {
 		assertValid(getAccount);
 	}
 
-	protected Long testGetChannelAccountAccount_getChannelAccountId()
+	protected Account testGetChannelAccountAccount_addAccount()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Account testGetChannelAccountAccount_addAccount()
+	protected Long testGetChannelAccountAccount_getChannelAccountId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

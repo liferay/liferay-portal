@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.index;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.engine.adapter.index.RefreshIndexRequest;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
@@ -36,19 +35,11 @@ public class RefreshIndexRequestExecutorTest extends BaseOpenSearchTestCase {
 		RefreshIndexRequest refreshIndexRequest = new RefreshIndexRequest(
 			TEST_INDEX_NAME);
 
-		RefreshIndexRequestExecutorImpl refreshIndexRequestExecutorImpl =
-			new RefreshIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			refreshIndexRequestExecutorImpl,
-			"_indexRequestShardFailureTranslator",
-			new IndexRequestShardFailureTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			refreshIndexRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
+		RefreshIndexRequestExecutor refreshIndexRequestExecutor =
+			new RefreshIndexRequestExecutor(openSearchConnectionManager);
 
 		RefreshRequest refreshRequest =
-			refreshIndexRequestExecutorImpl.createRefreshRequest(
+			refreshIndexRequestExecutor.createRefreshRequest(
 				refreshIndexRequest);
 
 		Assert.assertArrayEquals(

@@ -463,6 +463,24 @@ public class PatcherBuildLocalServiceWrapper
 		return _patcherBuildLocalService.getPatcherBuild(patcherBuildId);
 	}
 
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuilds(
+			boolean latestSupportTicketBuild, String supportTicket) {
+
+		return _patcherBuildLocalService.getPatcherBuilds(
+			latestSupportTicketBuild, supportTicket);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuilds(
+			java.util.Date modifiedDate, boolean notified, int[] statuses) {
+
+		return _patcherBuildLocalService.getPatcherBuilds(
+			modifiedDate, notified, statuses);
+	}
+
 	/**
 	 * Returns a range of all the patcher builds.
 	 *
@@ -481,6 +499,91 @@ public class PatcherBuildLocalServiceWrapper
 		return _patcherBuildLocalService.getPatcherBuilds(start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuilds(long patcherFixId, boolean childBuild) {
+
+		return _patcherBuildLocalService.getPatcherBuilds(
+			patcherFixId, childBuild);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuilds(
+			long patcherAccountId, long patcherProductVersionId, int start,
+			int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.osb.patcher.model.PatcherBuild>
+					orderByComparator) {
+
+		return _patcherBuildLocalService.getPatcherBuilds(
+			patcherAccountId, patcherProductVersionId, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuilds(
+			long patcherProjectVersionId, String name, boolean latestKeyBuild,
+			String accountEntryCode) {
+
+		return _patcherBuildLocalService.getPatcherBuilds(
+			patcherProjectVersionId, name, latestKeyBuild, accountEntryCode);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuilds(String key, boolean latestKeyBuild) {
+
+		return _patcherBuildLocalService.getPatcherBuilds(key, latestKeyBuild);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuilds(
+			String key, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.osb.patcher.model.PatcherBuild>
+					orderByComparator) {
+
+		return _patcherBuildLocalService.getPatcherBuilds(
+			key, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuildsByKey(String key, double keyVersion, boolean older) {
+
+		return _patcherBuildLocalService.getPatcherBuildsByKey(
+			key, keyVersion, older);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuildsByPatcherFixId(long patcherFixId) {
+
+		return _patcherBuildLocalService.getPatcherBuildsByPatcherFixId(
+			patcherFixId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuildsByPatcherProjectVersionId(
+			long patcherProjectVersionId) {
+
+		return _patcherBuildLocalService.
+			getPatcherBuildsByPatcherProjectVersionId(patcherProjectVersionId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherBuild>
+		getPatcherBuildsBySupportTicket(
+			String supportTicket, double supportTicketVersion, boolean older) {
+
+		return _patcherBuildLocalService.getPatcherBuildsBySupportTicket(
+			supportTicket, supportTicketVersion, older);
+	}
+
 	/**
 	 * Returns the number of patcher builds.
 	 *
@@ -489,6 +592,24 @@ public class PatcherBuildLocalServiceWrapper
 	@Override
 	public int getPatcherBuildsCount() {
 		return _patcherBuildLocalService.getPatcherBuildsCount();
+	}
+
+	@Override
+	public int getPatcherBuildsCount(
+		long patcherFixId, long patcherProductVersionId, boolean childBuild,
+		int type) {
+
+		return _patcherBuildLocalService.getPatcherBuildsCount(
+			patcherFixId, patcherProductVersionId, childBuild, type);
+	}
+
+	@Override
+	public int getPatcherBuildsCountByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return _patcherBuildLocalService.
+			getPatcherBuildsCountByPatcherProjectVersionId(
+				patcherProjectVersionId);
 	}
 
 	@Override
@@ -563,6 +684,11 @@ public class PatcherBuildLocalServiceWrapper
 	}
 
 	@Override
+	public boolean hasPatcherFixes(long patcherFixId) {
+		return _patcherBuildLocalService.hasPatcherFixes(patcherFixId);
+	}
+
+	@Override
 	public boolean hasPatcherFixPatcherBuild(
 		long patcherFixId, long patcherBuildId) {
 
@@ -590,6 +716,25 @@ public class PatcherBuildLocalServiceWrapper
 
 		_patcherBuildLocalService.setPatcherFixPatcherBuilds(
 			patcherFixId, patcherBuildIds);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updateNotified(
+			long patcherBuildId, boolean notified)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherBuildLocalService.updateNotified(
+			patcherBuildId, notified);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updatePatcherBuild(
+			long patcherBuildId, boolean latestKeyBuild,
+			boolean latestSupportTicketBuild)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherBuildLocalService.updatePatcherBuild(
+			patcherBuildId, latestKeyBuild, latestSupportTicketBuild);
 	}
 
 	/**

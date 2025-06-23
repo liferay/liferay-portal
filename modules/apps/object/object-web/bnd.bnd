@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Object Web
 Bundle-SymbolicName: com.liferay.object.web
-Bundle-Version: 1.0.224
+Bundle-Version: 1.0.225
 Web-ContextPath: /object-web
 -dsannotations-options: inherit

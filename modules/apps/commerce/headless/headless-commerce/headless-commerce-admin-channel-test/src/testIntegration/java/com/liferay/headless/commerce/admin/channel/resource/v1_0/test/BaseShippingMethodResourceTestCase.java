@@ -359,11 +359,9 @@ public abstract class BaseShippingMethodResourceTestCase {
 		return null;
 	}
 
-	protected ShippingMethod testGraphQLShippingMethod_addShippingMethod()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(

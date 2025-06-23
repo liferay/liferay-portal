@@ -2,9 +2,9 @@
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
 		"@clayui/button": "3.136.0",
-		"@clayui/core": "3.138.0",
+		"@clayui/core": "3.139.1",
 		"@clayui/empty-state": "3.128.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/layout": "3.128.0",
 		"@liferay/layout-js-components-web": "*",
@@ -18,5 +18,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "1.0.78"
+	"version": "1.0.79"
 }

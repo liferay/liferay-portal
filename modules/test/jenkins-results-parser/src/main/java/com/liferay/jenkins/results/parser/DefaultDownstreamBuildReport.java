@@ -12,6 +12,10 @@ import org.json.JSONObject;
  */
 public class DefaultDownstreamBuildReport extends BaseDownstreamBuildReport {
 
+	protected DefaultDownstreamBuildReport(DownstreamBuild downstreamBuild) {
+		super(downstreamBuild);
+	}
+
 	protected DefaultDownstreamBuildReport(
 		String batchName, JSONObject buildReportJSONObject,
 		TopLevelBuildReport topLevelBuildReport) {

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectRelationship;
@@ -360,7 +361,7 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 			testDeleteObjectRelationshipBatch_addObjectRelationship();
 
 		testDeleteObjectRelationshipBatch_deleteObjectRelationship(
-			"COMPLETED", null, objectRelationship1.getId());
+			202, null, objectRelationship1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -376,7 +377,7 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 	}
 
 	protected void testDeleteObjectRelationshipBatch_deleteObjectRelationship(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -390,10 +391,10 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1846,18 +1847,74 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 	}
 
 	protected ObjectRelationship
+			testPutObjectRelationshipByExternalReferenceCode_addObjectRelationship()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected ObjectRelationship
 			testPutObjectRelationshipByExternalReferenceCode_createObjectRelationship()
 		throws Exception {
 
 		return randomObjectRelationship();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ObjectRelationship objectRelationship1 =
+			testBatchEngineDeleteImportTask_addObjectRelationship();
+
+		testBatchEngineDeleteImportTask_deleteObjectRelationship(
+			200, null, objectRelationship1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			objectRelationshipResource.getObjectRelationshipHttpResponse(
+				objectRelationship1.getId()));
+	}
+
 	protected ObjectRelationship
-			testPutObjectRelationshipByExternalReferenceCode_addObjectRelationship()
+			testBatchEngineDeleteImportTask_addObjectRelationship()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteObjectRelationship_addObjectRelationship();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteObjectRelationship(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

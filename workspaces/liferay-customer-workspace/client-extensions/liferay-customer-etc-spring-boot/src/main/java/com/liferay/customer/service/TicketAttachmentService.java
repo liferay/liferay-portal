@@ -6,8 +6,10 @@
 package com.liferay.customer.service;
 
 import com.liferay.client.extension.util.spring.boot3.service.BaseService;
+import com.liferay.customer.exception.TicketAttachmentNotFoundException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -114,7 +117,8 @@ public class TicketAttachmentService extends BaseService {
 	}
 
 	public TicketAttachment fetchTicketAttachment(
-		String authorization, long ticketAttachmentId) {
+			String authorization, long ticketAttachmentId)
+		throws TicketAttachmentNotFoundException {
 
 		try {
 			JSONObject jsonObject = new JSONObject(
@@ -125,18 +129,21 @@ public class TicketAttachmentService extends BaseService {
 					).build(
 					).toUri()));
 
+			if (jsonObject.isNull("ticketAttachmentId")) {
+				throw new TicketAttachmentNotFoundException();
+			}
+
 			return new TicketAttachment(jsonObject);
 		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to fetch ticket attachment with ID " +
-						ticketAttachmentId,
-					exception);
-			}
+		catch (HttpClientErrorException.NotFound httpClientErrorException) {
+			throw new TicketAttachmentNotFoundException(
+				httpClientErrorException);
 		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
 
-		return null;
+			throw exception;
+		}
 	}
 
 	public TicketAttachment fetchTicketAttachment(
@@ -157,15 +164,20 @@ public class TicketAttachmentService extends BaseService {
 		sb.append("' and zendeskTicketId eq ");
 		sb.append(zendeskTicketId);
 
-		JSONObject jsonObject = new JSONObject(
-			get(
-				authorization,
-				UriComponentsBuilder.fromPath(
-					"/o/c/ticketattachments"
-				).queryParam(
-					"filter", sb.toString()
-				).build(
-				).toUri()));
+		String response = get(
+			authorization,
+			UriComponentsBuilder.fromPath(
+				"/o/c/ticketattachments"
+			).queryParam(
+				"filter", sb.toString()
+			).build(
+			).toUri());
+
+		if (Validator.isNull(response)) {
+			return null;
+		}
+
+		JSONObject jsonObject = new JSONObject(response);
 
 		JSONArray jsonArray = jsonObject.getJSONArray("items");
 

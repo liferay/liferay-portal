@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Search Experiences REST API
 Bundle-SymbolicName: com.liferay.search.experiences.rest.api
-Bundle-Version: 15.1.0
+Bundle-Version: 15.1.1
 Export-Package:\
 	com.liferay.search.experiences.rest.dto.v1_0,\
 	com.liferay.search.experiences.rest.dto.v1_0.util,\

@@ -1,0 +1,85 @@
+.sales-enablement-hub-card {
+	background-color: #FBFCFE;
+	border-color: #E7EFFF;
+	border-radius: 10px;
+	border-style: solid;
+	border-width: 1px;
+	border-width: 1pxpx;
+	display: flex;
+	flex-direction: column;
+	font-family: 'source sans 3';
+	gap: 2rem;
+	min-height: 313px;
+	padding-bottom: 24px;
+	padding-left: 24px;
+	padding-right: 24px;
+	padding-top: 24px;
+	text-decoration: none;
+	width: 100%;
+
+	h2 {
+		color: #282934;
+		font-size: 2rem;
+		font-weight: 700;
+	}
+
+	&:hover {
+		background-color: var(--color-action-primary-hover-10, #edf3fe);
+		border-color: var(--color-brand-primary-darken-1, #0053f0);
+		border-radius: 10px;
+		border-width: 1px;
+	}
+}
+
+.sales-enablement-hub-card-description {
+	color: #00318F !important;
+	font-size: 1.25rem;
+	font-weight: 400;
+
+	p {
+		font-size: var(--text-paragraph-font-size);
+		line-height: var(--text-paragraph-line-height);
+	}
+}
+
+.sales-enablement-hub-card-go-to-text {
+	font-size: var(--text-paragraph-lg-font-size);
+	font-weight: 600;
+	line-height: var(--text-paragraph-lg-line-height);
+
+	p {
+		align-items: center;
+		display: flex;
+		gap: 0.5rem;
+
+		&:after {
+			background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cmask id='mask0_749_3383' style='mask-type:alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='16' height='16'%3E%3Cpath d='M14 11C14 10.4477 14.4473 10 15 10C15.5527 10 16 10.4477 16 11V14C16 15.1028 15.1025 16 14 16H2C0.897461 16 0 15.1028 0 14V2C0 0.897202 0.897461 0 2 0H5C5.55273 0 6 0.447723 6 1C6 1.55228 5.55273 2 5 2H2V14H14V11Z' fill='%236B6C7E'/%3E%3Cpath d='M10 0H15C15.5527 0 16 0.447708 16 1V6C16 6.55229 15.5527 7 15 7C14.4473 7 14 6.55229 14 6V3.4142L9.70703 7.70711C9.51172 7.90237 9.25586 8 9 8C8.74414 8 8.48828 7.90237 8.29297 7.70711C7.90234 7.31657 7.90234 6.68343 8.29297 6.29289L12.5859 2H10C9.44727 2 9 1.55229 9 1C9 0.447708 9.44727 0 10 0Z' fill='%236B6C7E'/%3E%3C/mask%3E%3Cg mask='url(%23mask0_749_3383)'%3E%3Crect width='16' height='16' fill='%230B5FFF'/%3E%3C/g%3E%3C/svg%3E%0A");
+			content: '';
+			display: inline-block;
+			height: 1rem;
+			width: 1rem;
+		}
+	}
+}
+
+.sales-enablement-hub-card-icon {
+	align-items: center;
+	background: linear-gradient(100deg, #0a0c23, #0d1a50, #103b9e, #179fbe, #3be6b3);
+	border-radius: 10px;
+	display: flex;
+	height: 80px;
+	justify-content: center;
+	width: 80px;
+
+	span {
+		align-items: center;
+		display: flex;
+		&:before {
+			background-image: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cmask id='mask0_1431_14226' style='mask-type:alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='48' height='48'%3E%3Cpath d='M34.1878 15.8681C35.5939 14.4711 33.438 12.3242 32.0413 13.7211L30.8415 14.9305C26.6702 12.0054 19.565 16.1962 23.7644 22.2996C29.098 29.8656 19.9868 29.2937 19.5182 23.5747C19.64 21.6058 16.5842 21.5683 16.4717 23.4059C16.3968 24.6716 17.2591 26.6873 17.9715 27.803L16.8842 28.8905C15.4407 30.325 17.5872 32.4813 19.0307 31.0375L20.1274 29.9406C27.1108 33.5595 31.0571 26.2748 26.689 21.2964L26.6796 21.2871C23.0239 16.0275 30.2416 15.1274 30.9446 20.5745C30.8415 22.5528 33.8785 22.5996 33.991 20.7246C34.0566 19.4682 33.7004 18.1932 32.9974 17.0775L34.1878 15.8681Z' fill='black'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M23.6332 0.726775C22.0959 0.783028 20.643 1.42056 19.5557 2.50811L1.7927 20.2745C-0.597567 22.6559 -0.597567 26.5279 1.7927 28.9187L19.087 46.207C21.4679 48.5977 25.3392 48.5977 27.7294 46.207L45.4924 28.4499C46.5704 27.3624 47.2078 25.9092 47.2734 24.3716L47.9951 6.3614C48.1357 2.78937 45.2018 -0.135764 41.6399 0.00486782L23.6332 0.726775ZM21.2429 39.7192C22.4334 40.9098 24.3737 40.9098 25.5641 39.7192L40.3275 24.9716C40.8712 24.4278 41.1899 23.6966 41.218 22.9278L41.7617 9.41779C41.8273 7.63646 40.365 6.16452 38.5841 6.23952L25.0767 6.7833C24.3081 6.81142 23.5769 7.13019 23.0333 7.67396L8.27923 22.4309C7.08878 23.6216 7.08878 25.5623 8.27923 26.7529L21.2429 39.7192Z' fill='black'/%3E%3C/mask%3E%3Cg mask='url(%23mask0_1431_14226)'%3E%3Crect width='48' height='48' fill='white'/%3E%3C/g%3E%3C/svg%3E%0A");
+			content: '';
+			display: inline-block;
+			height: 3rem;
+			width: 3rem;
+		}
+	}
+}

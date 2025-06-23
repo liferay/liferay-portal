@@ -222,6 +222,11 @@ public abstract class BaseLowStockActionResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		LowStockAction lowStockAction, List<LowStockAction> lowStockActions) {
 

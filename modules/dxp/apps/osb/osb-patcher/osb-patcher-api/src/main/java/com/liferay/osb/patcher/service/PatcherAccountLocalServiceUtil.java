@@ -265,6 +265,10 @@ public class PatcherAccountLocalServiceUtil {
 		return getService().fetchPatcherAccount(patcherAccountId);
 	}
 
+	public static PatcherAccount fetchPatcherAccount(String accountEntryCode) {
+		return getService().fetchPatcherAccount(accountEntryCode);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -300,6 +304,12 @@ public class PatcherAccountLocalServiceUtil {
 		return getService().getPatcherAccount(patcherAccountId);
 	}
 
+	public static PatcherAccount getPatcherAccount(String accountEntryCode)
+		throws Exception {
+
+		return getService().getPatcherAccount(accountEntryCode);
+	}
+
 	/**
 	 * Returns a range of all the patcher accounts.
 	 *
@@ -313,6 +323,14 @@ public class PatcherAccountLocalServiceUtil {
 	 */
 	public static List<PatcherAccount> getPatcherAccounts(int start, int end) {
 		return getService().getPatcherAccounts(start, end);
+	}
+
+	public static List<PatcherAccount> getPatcherAccounts(
+		long companyId, String keyword, int start, int end,
+		OrderByComparator<PatcherAccount> orderByComparator) {
+
+		return getService().getPatcherAccounts(
+			companyId, keyword, start, end, orderByComparator);
 	}
 
 	/**

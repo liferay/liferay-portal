@@ -9,15 +9,10 @@ import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.query.QueryTranslator;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author André de Oliveira
  * @author Miguel Angelo Caldas Gallindo
  */
-@Component(
-	property = "search.engine.impl=Solr", service = QueryTranslator.class
-)
 public class SolrQueryTranslator
 	extends BaseQueryVisitor implements QueryTranslator<String> {
 

@@ -177,6 +177,11 @@ public abstract class BaseAssigneeMetricResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		AssigneeMetric assigneeMetric, List<AssigneeMetric> assigneeMetrics) {
 

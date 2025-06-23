@@ -107,6 +107,11 @@ public class NodeResourceTest extends BaseNodeResourceTestCase {
 	}
 
 	@Override
+	protected Long testDeleteProcessNode_getProcessId(Node node) {
+		return node.getProcessId();
+	}
+
+	@Override
 	protected Node testGetProcessNodesPage_addNode(Long processId, Node node)
 		throws Exception {
 

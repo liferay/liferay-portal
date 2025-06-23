@@ -379,7 +379,7 @@ public class CollaboratorResourceTest extends BaseCollaboratorResourceTestCase {
 
 	private ObjectEntryFolder _addObjectEntryFolder() throws Exception {
 		return _objectEntryFolderLocalService.addObjectEntryFolder(
-			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
+			null, testGroup.getGroupId(), TestPropsValues.getUserId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			RandomTestUtil.randomString(),
 			HashMapBuilder.put(

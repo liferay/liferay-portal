@@ -6,9 +6,9 @@
 import {openConfirmModal} from 'frontend-js-components-web';
 import {navigate} from 'frontend-js-web';
 
-import {IItemsActions} from '../../index';
 import {openPermissionsModal} from '../modals/openPermissionsModal';
 import {resolveModalSize} from '../modals/resolveModalSize';
+import {IItemsActions} from '../types';
 import {ACTION_ITEM_TARGETS} from './constants';
 import formatActionURL from './formatActionURL';
 

@@ -15,18 +15,24 @@ public class UpgradeJavaSetResultsSetTotalMethodCheck {
 		return searchContainer;
 	}
 
-	public SearchContainer<User> setTotal(int total) {
+	public SearchContainer<User> setResultsAndTotal(List<User> results, int total) {
+
 		SearchContainer<Entry> searchContainer = new SearchContainer();
 
-		searchContainer.setResultsAndTotal(searchContainer::getResults, total);
+		try {
+			searchContainer.setResultsAndTotal(() -> results, total);
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
+		}
 
 		return searchContainer;
 	}
 
-	public SearchContainer<User> setResultsAndTotal(List<User> results, int total) {
+	public SearchContainer<User> setTotal(int total) {
 		SearchContainer<Entry> searchContainer = new SearchContainer();
 
-		searchContainer.setResultsAndTotal(() -> results, total);
+		searchContainer.setResultsAndTotal(searchContainer::getResults, total);
 
 		return searchContainer;
 	}

@@ -11,6 +11,8 @@ class DDMFormHandler {
 		accountId = 0,
 		channelId = 0,
 		cpDefinitionId,
+		forceRequired = false,
+		key,
 		namespace,
 		quantity,
 	}) {
@@ -27,6 +29,8 @@ class DDMFormHandler {
 		this.fields = getDefaultFieldsShape(
 			DDMFormInstance.reactComponentRef.current.toJSON()
 		);
+		this.forceRequired = forceRequired;
+		this.key = key;
 		this.namespace = namespace;
 		this.productId = cpDefinitionId;
 		this.quantity = quantity;
@@ -41,12 +45,17 @@ class DDMFormHandler {
 					this.fields = updateFields(this.fields, field);
 
 					Liferay.fire('product-option-upload-update', {
-						key: field.fieldInstance.fieldName,
-						value: field.value,
+						value: field?.value,
 					});
 				}
 			}
 		);
+
+		if (this.forceRequired) {
+			Liferay.fire('product-option-upload-update', {
+				value: '{}',
+			});
+		}
 	}
 }
 

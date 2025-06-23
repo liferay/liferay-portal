@@ -306,6 +306,16 @@ export class HeadlessAdminUserApiHelper {
 		);
 	}
 
+	async deleteUserRole(
+		roleExternalReferenceCode: string,
+		userId: number | string
+	) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}roles/by-external-reference-code/${roleExternalReferenceCode}/association/user-account/${userId}`,
+			{data: {}, failOnStatusCode: true}
+		);
+	}
+
 	async getAccountByName(accountName: string): Promise<TAccount> {
 		const accountResponse = await this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/accounts?filter=name eq '${accountName}'`

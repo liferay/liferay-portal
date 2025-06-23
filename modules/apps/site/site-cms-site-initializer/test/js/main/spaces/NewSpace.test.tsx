@@ -15,7 +15,7 @@ import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/serv
 
 describe('NewSpace', () => {
 	const props: NewSpaceProps = {
-		baseRedirectUrl: 'fake-redirect-url/',
+		baseAddSpaceMembersURL: 'fake-add-member-url/',
 	};
 
 	let apiPostSpy: jest.SpyInstance;
@@ -42,20 +42,26 @@ describe('NewSpace', () => {
 			)
 		).toBeInTheDocument();
 
-		const learnMoreLink = screen.getByRole('link', {
-			name: 'learn-more-about-spaces',
-		});
-		expect(learnMoreLink).toBeInTheDocument();
-		expect(learnMoreLink).toHaveAttribute('href', '/');
+		expect(
+			screen.getByRole('button', {name: 'continue'})
+		).toBeInTheDocument();
+	});
+
+	it('disables continue button until it has a value', async () => {
+		render(<NewSpace {...props} />);
+
+		expect(screen.getByRole('button', {name: 'continue'})).toBeDisabled();
+
+		await userEvent.type(
+			screen.getByRole('textbox', {
+				name: /space-name/i,
+			}),
+			'test'
+		);
 
 		expect(
-			screen.getByRole('button', {name: 'add-members'})
-		).toBeInTheDocument();
-		expect(
-			screen.getByRole('button', {
-				name: 'create-a-space-without-members',
-			})
-		).toBeInTheDocument();
+			screen.getByRole('button', {name: 'continue'})
+		).not.toBeDisabled();
 	});
 
 	it('submits form with correct values', async () => {
@@ -82,7 +88,7 @@ describe('NewSpace', () => {
 
 		await userEvent.click(
 			screen.getByRole('button', {
-				name: 'create-a-space-without-members',
+				name: 'continue',
 			})
 		);
 
@@ -126,12 +132,12 @@ describe('NewSpace', () => {
 		expect(colorsMenu).toBeInTheDocument();
 
 		await userEvent.click(
-			within(colorsMenu).getAllByRole('menuitem', {name: 'color-x'})[1]
+			within(colorsMenu).getByRole('menuitem', {name: 'purple'})
 		);
 
 		await userEvent.click(
 			screen.getByRole('button', {
-				name: 'create-a-space-without-members',
+				name: 'continue',
 			})
 		);
 
@@ -143,5 +149,123 @@ describe('NewSpace', () => {
 				},
 			})
 		);
+	});
+
+	describe('hasErrors', () => {
+		it('shows error message when space name is empty', async () => {
+			render(<NewSpace {...props} />);
+
+			await userEvent.click(
+				screen.getByRole('button', {
+					name: 'create-a-space-without-members',
+				})
+			);
+
+			expect(apiPostSpy).not.toHaveBeenCalled();
+
+			expect(
+				screen.getByText('this-field-is-required')
+			).toBeInTheDocument();
+		});
+
+		it('shows error message when space name is numeric', async () => {
+			render(<NewSpace {...props} />);
+
+			const spaceName = '123';
+
+			await userEvent.type(
+				screen.getByRole('textbox', {
+					name: /space-name/i,
+				}),
+				spaceName
+			);
+
+			await userEvent.click(
+				screen.getByRole('button', {
+					name: 'create-a-space-without-members',
+				})
+			);
+
+			expect(apiPostSpy).not.toHaveBeenCalled();
+
+			expect(
+				screen.getByText('please-enter-a-nonnumeric-name')
+			).toBeInTheDocument();
+		});
+
+		it('shows error message when space name is equal to null', async () => {
+			render(<NewSpace {...props} />);
+
+			const spaceName = 'null';
+
+			await userEvent.type(
+				screen.getByRole('textbox', {
+					name: /space-name/i,
+				}),
+				spaceName
+			);
+
+			await userEvent.click(
+				screen.getByRole('button', {
+					name: 'create-a-space-without-members',
+				})
+			);
+
+			expect(apiPostSpy).not.toHaveBeenCalled();
+
+			expect(screen.getByText('name-cannot-be-null')).toBeInTheDocument();
+		});
+
+		it('shows error message when space name has an invalid character', async () => {
+			render(<NewSpace {...props} />);
+
+			const spaceName = 'Space*Name';
+
+			await userEvent.type(
+				screen.getByRole('textbox', {
+					name: /space-name/i,
+				}),
+				spaceName
+			);
+
+			await userEvent.click(
+				screen.getByRole('button', {
+					name: 'create-a-space-without-members',
+				})
+			);
+
+			expect(apiPostSpy).not.toHaveBeenCalled();
+
+			expect(
+				screen.getByText(
+					'name-cannot-contain-the-following-invalid-characters-x'
+				)
+			).toBeInTheDocument();
+		});
+
+		it('shows error message when space name is more than 150 characters long', async () => {
+			render(<NewSpace {...props} />);
+
+			const spaceName = 'a'.repeat(151);
+
+			await userEvent.type(
+				screen.getByRole('textbox', {
+					name: /space-name/i,
+				}),
+				spaceName
+			);
+
+			await userEvent.click(
+				screen.getByRole('button', {
+					name: 'create-a-space-without-members',
+				})
+			);
+
+			expect(apiPostSpy).not.toHaveBeenCalled();
+
+			expect(
+				screen.getByText('please-enter-no-more-than-x-characters')
+			).toBeInTheDocument();
+		});
 	});
 });

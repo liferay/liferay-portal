@@ -90,6 +90,13 @@ public class ProductConfigurationListAccountResourceTest
 		}
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
 	@Override
 	@Test
 	public void testDeleteProductConfigurationListAccount() throws Exception {
@@ -169,16 +176,9 @@ public class ProductConfigurationListAccountResourceTest
 				ProductConfigurationListAccount productConfigurationListAccount)
 		throws Exception {
 
-		ProductConfigurationListAccount postProductConfigurationListAccount =
-			productConfigurationListAccountResource.
-				postProductConfigurationListByExternalReferenceCodeProductConfigurationListAccount(
-					externalReferenceCode, productConfigurationListAccount);
-
-		_productConfigurationListAccountIds.add(
-			postProductConfigurationListAccount.
-				getProductConfigurationListAccountId());
-
-		return postProductConfigurationListAccount;
+		return productConfigurationListAccountResource.
+			postProductConfigurationListByExternalReferenceCodeProductConfigurationListAccount(
+				externalReferenceCode, productConfigurationListAccount);
 	}
 
 	@Override
@@ -196,16 +196,9 @@ public class ProductConfigurationListAccountResourceTest
 				ProductConfigurationListAccount productConfigurationListAccount)
 		throws Exception {
 
-		ProductConfigurationListAccount postProductConfigurationListAccount =
-			productConfigurationListAccountResource.
-				postProductConfigurationListIdProductConfigurationListAccount(
-					id, productConfigurationListAccount);
-
-		_productConfigurationListAccountIds.add(
-			postProductConfigurationListAccount.
-				getProductConfigurationListAccountId());
-
-		return postProductConfigurationListAccount;
+		return productConfigurationListAccountResource.
+			postProductConfigurationListIdProductConfigurationListAccount(
+				id, productConfigurationListAccount);
 	}
 
 	@Override

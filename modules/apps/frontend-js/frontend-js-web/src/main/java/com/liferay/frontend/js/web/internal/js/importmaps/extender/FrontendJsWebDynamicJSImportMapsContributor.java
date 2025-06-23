@@ -15,10 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -35,23 +32,28 @@ public class FrontendJsWebDynamicJSImportMapsContributor
 
 		writer.write("\"@liferay/language/\": \"/o/js/language/\"");
 
-		_hashedFilesRegistry.forEach(
-			(unhashedFileURI, hashedFileURI) -> {
-				if (!unhashedFileURI.endsWith(".js")) {
-					return;
-				}
+		HashedFilesRegistry hashedFilesRegistry =
+			HashedFilesRegistry.getHashedFilesRegistry();
 
-				try {
-					writer.write(", \"");
-					writer.write(unhashedFileURI);
-					writer.write("\": \"");
-					writer.write(hashedFileURI);
-					writer.write(StringPool.QUOTE);
-				}
-				catch (IOException ioException) {
-					throw new RuntimeException(ioException);
-				}
-			});
+		if (hashedFilesRegistry != null) {
+			hashedFilesRegistry.forEach(
+				(unhashedFileURI, hashedFileURI) -> {
+					if (!unhashedFileURI.endsWith(".js")) {
+						return;
+					}
+
+					try {
+						writer.write(", \"");
+						writer.write(unhashedFileURI);
+						writer.write("\": \"");
+						writer.write(hashedFileURI);
+						writer.write(StringPool.QUOTE);
+					}
+					catch (IOException ioException) {
+						throw new RuntimeException(ioException);
+					}
+				});
+		}
 	}
 
 	@Override
@@ -59,20 +61,6 @@ public class FrontendJsWebDynamicJSImportMapsContributor
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException {
 	}
-
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		_hashedFilesRegistry = new HashedFilesRegistry(bundleContext);
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_hashedFilesRegistry.close();
-
-		_hashedFilesRegistry = null;
-	}
-
-	private HashedFilesRegistry _hashedFilesRegistry;
 
 	@Reference
 	private Portal _portal;

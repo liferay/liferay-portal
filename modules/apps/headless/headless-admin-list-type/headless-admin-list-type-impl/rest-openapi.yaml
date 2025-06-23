@@ -77,7 +77,7 @@ info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
         'om.liferay.headless.admin.list.type.client', and version '1.0.0'.. A Java client JAR is available for use with
-        the group ID 'com.liferay', artifact ID 'com.liferay.headless.admin.list.type.client', and version '1.0.36'."
+        the group ID 'com.liferay', artifact ID 'com.liferay.headless.admin.list.type.client', and version '1.0.37'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

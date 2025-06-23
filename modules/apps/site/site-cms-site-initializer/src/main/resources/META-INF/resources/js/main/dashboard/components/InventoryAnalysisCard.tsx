@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ClayButtonWithIcon} from '@clayui/button';
 import {Body, Cell, Head, Row, Table, Text} from '@clayui/core';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import React, {useContext, useEffect, useState} from 'react';
@@ -15,6 +14,7 @@ import {AllTagsDropdown} from './AllTagsDropdown';
 import {AllVocabulariesDropdown} from './AllVocabulariesDropdown';
 import {BaseCard} from './BaseCard';
 import {Item} from './FilterDropdown';
+import {GroupByDropdown, IStructureProps} from './GroupByDropdown';
 
 export interface IAllFiltersDropdown extends React.HTMLAttributes<HTMLElement> {
 	item: Item;
@@ -83,6 +83,11 @@ const mapData = (data: Data) => {
 	});
 };
 
+export const initialStructureType = {
+	label: Liferay.Language.get('category'),
+	value: 'category',
+};
+
 export const initialCategory = {
 	label: Liferay.Language.get('all-categories'),
 	value: 'all',
@@ -108,6 +113,14 @@ export function InventoryAnalysisCard() {
 
 	const [category, setCategory] = useState<Item>(initialCategory);
 	const [structure, setStructure] = useState<Item>(initialStructure);
+	const [structureType, setStructureType] =
+		useState<Item>(initialStructureType);
+
+	// TODO LPD-50207
+
+	const [_structureTypeData, setStructureTypeData] =
+		useState<IStructureProps>();
+
 	const [tag, setTag] = useState<Item>(initialTag);
 	const [vocabulary, setVocabulary] = useState<Item>(initialVocabulary);
 
@@ -142,43 +155,65 @@ export function InventoryAnalysisCard() {
 	return (
 		<div className="cms-dashboard__inventory-analysis">
 			<BaseCard
-				Preferences={
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('download')}
-						borderless
-						displayType="secondary"
-						size="sm"
-						symbol="download"
-					/>
-				}
 				description={Liferay.Language.get(
 					'this-report-provides-a-breakdown-of-total-assets-by-categorization,-structure-type,-or-space'
 				)}
 				title={Liferay.Language.get('inventory-analysis')}
 			>
-				<div className="align-items-center d-flex">
-					<span className="ml-3 mr-2">
-						<Text size={3} weight="semi-bold">
-							{Liferay.Language.get('filter-by')}
-						</Text>
-					</span>
+				<div className="align-items-lg-center d-flex flex-column flex-lg-row">
+					<div className="align-items-center d-flex mb-2 mb-md-0 mr-md-4">
+						<span className="mr-2">
+							<Text size={3} weight="semi-bold">
+								{Liferay.Language.get('group-by')}
+							</Text>
+						</span>
 
-					<AllStructureTypesDropdown
-						item={structure}
-						onSelectItem={setStructure}
-					/>
+						<GroupByDropdown
+							item={structureType}
+							onSelectItem={setStructureType}
+							setStructureTypeData={setStructureTypeData}
+						/>
+					</div>
 
-					<AllVocabulariesDropdown
-						item={vocabulary}
-						onSelectItem={setVocabulary}
-					/>
+					<div className="d-flex flex-md-row flex-row flex-xs-column">
+						<div className="align-items-center d-flex mb-2 mb-lg-0 mr-lg-3">
+							<span className="align-self-lg-auto align-self-start mr-2">
+								<Text size={3} weight="semi-bold">
+									{Liferay.Language.get('filter-by')}
+								</Text>
+							</span>
+						</div>
 
-					<AllCategoriesDropdown
-						item={category}
-						onSelectItem={setCategory}
-					/>
+						<div className="d-flex flex-wrap">
+							<div className="mb-2 mb-lg-0 mr-2">
+								<AllStructureTypesDropdown
+									item={structure}
+									onSelectItem={setStructure}
+								/>
+							</div>
 
-					<AllTagsDropdown item={tag} onSelectItem={setTag} />
+							<div className="mb-2 mb-lg-0 mr-2">
+								<AllVocabulariesDropdown
+									item={vocabulary}
+									onSelectItem={setVocabulary}
+								/>
+							</div>
+
+							<div className="mb-2 mb-lg-0 mr-2">
+								<AllCategoriesDropdown
+									item={category}
+									onSelectItem={setCategory}
+								/>
+							</div>
+
+							<div className="mb-2 mb-lg-0">
+								<AllTagsDropdown
+									item={tag}
+									onSelectItem={setTag}
+								/>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<Table
@@ -191,7 +226,7 @@ export function InventoryAnalysisCard() {
 						items={[
 							{
 								id: 'title',
-								name: Liferay.Language.get('structure-title'),
+								name: Liferay.Language.get('structure-label'),
 								width: '200px',
 							},
 							{

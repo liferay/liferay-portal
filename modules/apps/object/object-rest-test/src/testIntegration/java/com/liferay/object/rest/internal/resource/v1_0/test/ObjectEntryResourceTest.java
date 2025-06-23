@@ -5165,7 +5165,7 @@ public class ObjectEntryResourceTest {
 
 		ObjectEntry serviceBuilderObjectEntry =
 			_objectEntryLocalService.addObjectEntry(
-				user.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+				0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
@@ -6821,7 +6821,7 @@ public class ObjectEntryResourceTest {
 
 			ObjectEntry serviceBuilderObjectEntry =
 				_objectEntryLocalService.addObjectEntry(
-					TestPropsValues.getUserId(), 0,
+					0, TestPropsValues.getUserId(),
 					objectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -18260,7 +18260,7 @@ public class ObjectEntryResourceTest {
 	private String _toDateString(Date date) {
 		Instant instant = date.toInstant();
 
-		return String.valueOf(instant.truncatedTo(ChronoUnit.SECONDS));
+		return String.valueOf(instant.truncatedTo(ChronoUnit.MINUTES));
 	}
 
 	private JSONObject _toEmbeddedTaxonomyCategoryJSONObject(

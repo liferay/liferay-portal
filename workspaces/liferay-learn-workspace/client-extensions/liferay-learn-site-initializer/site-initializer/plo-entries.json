@@ -110,6 +110,12 @@
 		}
 	},
 	{
+		"key": "published-date",
+		"value": {
+			"en-US": "Published Date"
+		}
+	},
+	{
 		"key": "recipe",
 		"value": {
 			"en-US": "Recipe"

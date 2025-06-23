@@ -7,26 +7,26 @@ import ClayAlert from '@clayui/alert';
 import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {isEdge} from 'react-flow-renderer';
 
 import {DefinitionBuilderContext} from '../../../../DefinitionBuilderContext';
 import {defaultLanguageId} from '../../../../constants';
 import {DiagramBuilderContext} from '../../../DiagramBuilderContext';
 import SidebarPanel from '../SidebarPanel';
-import {checkIdErrors, checkLabelErrors, getUpdatedLabelItem} from './utils';
+import {isTransitionNameDuplicated} from '../utils';
+import {checkLabelErrors, getUpdatedLabelItem} from './utils';
 
 export default function EdgeInformation({errors, setErrors}) {
 	const {elements, selectedLanguageId, setElements} = useContext(
 		DefinitionBuilderContext
 	);
-	const {
-		selectedItem,
-		selectedItemNewId,
-		setSelectedItem,
-		setSelectedItemNewId,
-	} = useContext(DiagramBuilderContext);
+	const {selectedItem, setSelectedItem, setSelectedTransitionNewName} =
+		useContext(DiagramBuilderContext);
 
+	const [transitionName, setTransitionName] = useState(
+		selectedItem?.data.name ?? ''
+	);
 	const [showWarningAlert, setShowWarningAlert] = useState(false);
 
 	const onToggleDefault = (defaultEdge) => {
@@ -62,6 +62,34 @@ export default function EdgeInformation({errors, setErrors}) {
 			},
 		});
 	};
+
+	const handleTransitionNameChange = (value) => {
+		setTransitionName(value);
+
+		const duplicated = isTransitionNameDuplicated(
+			elements,
+			selectedItem,
+			value.trim()
+		);
+
+		const empty = value.trim() === '';
+
+		setErrors((previous) => ({
+			...previous,
+			id: {
+				duplicated,
+				empty,
+			},
+		}));
+
+		if (!empty && !duplicated) {
+			setSelectedTransitionNewName(value);
+		}
+	};
+
+	useEffect(() => {
+		setTransitionName(selectedItem?.data.name ?? '');
+	}, [selectedItem]);
 
 	return (
 		<>
@@ -146,11 +174,10 @@ export default function EdgeInformation({errors, setErrors}) {
 					<ClayInput
 						id="transitionName"
 						onChange={({target}) => {
-							setErrors(checkIdErrors(elements, errors, target));
-							setSelectedItemNewId(target.value);
+							handleTransitionNameChange(target.value);
 						}}
 						type="text"
-						value={(selectedItemNewId ?? selectedItem?.id) || ''}
+						value={transitionName}
 					/>
 
 					<ClayForm.FeedbackItem>

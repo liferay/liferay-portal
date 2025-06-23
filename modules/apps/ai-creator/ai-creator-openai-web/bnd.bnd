@@ -1,5 +1,5 @@
 Bundle-Name: Liferay AI Creator OpenAI Web
 Bundle-SymbolicName: com.liferay.ai.creator.openai.web
-Bundle-Version: 1.0.37
+Bundle-Version: 1.0.38
 Web-ContextPath: /ai-creator-openai-web
 -dsannotations-options: inherit

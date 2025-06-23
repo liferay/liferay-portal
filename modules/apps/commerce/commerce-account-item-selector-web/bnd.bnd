@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Account Item Selector Web
 Bundle-SymbolicName: com.liferay.commerce.account.item.selector.web
-Bundle-Version: 4.0.30
+Bundle-Version: 4.0.31
 Web-ContextPath: /commerce-account-item-selector-web

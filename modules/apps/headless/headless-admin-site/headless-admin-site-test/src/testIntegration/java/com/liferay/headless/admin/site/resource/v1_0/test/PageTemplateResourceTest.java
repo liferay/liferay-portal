@@ -11,12 +11,14 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageTemplate;
+import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageTemplate;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageTemplateSet;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageTemplate;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.PageTemplateResource;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.AssetTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
@@ -32,7 +34,6 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -139,7 +140,10 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		_testGetSiteSiteByExternalReferenceCodePageTemplate(pageTemplate);
 
-		_testGetSiteSiteByExternalReferenceCodePageTemplateWithNestedFields();
+		_testGetSiteSiteByExternalReferenceCodePageTemplateWithNestedFields(
+			_getContentPageTemplate(testGroup));
+		_testGetSiteSiteByExternalReferenceCodePageTemplateWithNestedFields(
+			_getWidgetPageTemplate(testGroup));
 
 		_assertProblemException(
 			"NOT_FOUND",
@@ -246,6 +250,15 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		super.
 			testGetSiteSiteByExternalReferenceCodePageTemplatesPageWithSortInteger();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSiteSiteByExternalReferenceCodePageTemplate()
+		throws Exception {
+
+		super.testGraphQLGetSiteSiteByExternalReferenceCodePageTemplate();
 	}
 
 	@Override
@@ -493,8 +506,9 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"active", "description_i18n", "externalReferenceCode", "name",
-			"name_i18n", "pageTemplateSet"
+			"active", "description_i18n", "externalReferenceCode",
+			"keywordItemExternalReferences", "name", "name_i18n",
+			"pageTemplateSet", "taxonomyCategoryItemExternalReferences"
 		};
 	}
 
@@ -545,14 +559,6 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 	@Override
 	protected String
-			testGetSiteSiteByExternalReferenceCodePageTemplateSetPageTemplatesPage_getIrrelevantSiteExternalReferenceCode()
-		throws Exception {
-
-		return irrelevantGroup.getExternalReferenceCode();
-	}
-
-	@Override
-	protected String
 			testGetSiteSiteByExternalReferenceCodePageTemplateSetPageTemplatesPage_getPageTemplateSetExternalReferenceCode()
 		throws Exception {
 
@@ -560,14 +566,6 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			_getLayoutPageTemplateCollection(testGroup);
 
 		return layoutPageTemplateCollection.getExternalReferenceCode();
-	}
-
-	@Override
-	protected String
-			testGetSiteSiteByExternalReferenceCodePageTemplateSetPageTemplatesPage_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return testGroup.getExternalReferenceCode();
 	}
 
 	@Override
@@ -579,22 +577,6 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 		return pageTemplateResource.
 			postSiteSiteByExternalReferenceCodePageTemplate(
 				siteExternalReferenceCode, pageTemplate);
-	}
-
-	@Override
-	protected String
-			testGetSiteSiteByExternalReferenceCodePageTemplatesPage_getIrrelevantSiteExternalReferenceCode()
-		throws Exception {
-
-		return irrelevantGroup.getExternalReferenceCode();
-	}
-
-	@Override
-	protected String
-			testGetSiteSiteByExternalReferenceCodePageTemplatesPage_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return testGroup.getExternalReferenceCode();
 	}
 
 	@Override
@@ -677,6 +659,9 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 	private ContentPageTemplate _getContentPageTemplate(Group group)
 		throws Exception {
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
 		return new ContentPageTemplate() {
 			{
 				creatorExternalReferenceCode = StringUtil.toLowerCase(
@@ -687,8 +672,14 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				keywordItemExternalReferences =
+					AssetTestUtil.randomKeywordItemExternalReferences(
+						serviceContext);
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				pageTemplateSet = _getPageTemplateSet(group);
+				taxonomyCategoryItemExternalReferences =
+					AssetTestUtil.randomTaxonomyCategoryItemExternalReferences(
+						testCompany.getGroupId(), serviceContext);
 				type = Type.CONTENT_PAGE_TEMPLATE;
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
@@ -826,6 +817,9 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 	private WidgetPageTemplate _getWidgetPageTemplate(Group group)
 		throws Exception {
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
 		return new WidgetPageTemplate() {
 			{
 				active = RandomTestUtil.randomBoolean();
@@ -842,6 +836,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 					RandomTestUtil.randomString());
 				hiddenFromNavigation = RandomTestUtil.randomBoolean();
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				keywordItemExternalReferences = new ItemExternalReference[0];
 
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
@@ -850,6 +845,9 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 				).build();
 
 				pageTemplateSet = _getPageTemplateSet(group);
+				taxonomyCategoryItemExternalReferences =
+					AssetTestUtil.randomTaxonomyCategoryItemExternalReferences(
+						testCompany.getGroupId(), serviceContext);
 				type = PageTemplate.Type.WIDGET_PAGE_TEMPLATE;
 				uuid = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
@@ -922,23 +920,24 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 		assertValid(getPageTemplate);
 	}
 
-	private void _testGetSiteSiteByExternalReferenceCodePageTemplateWithNestedFields()
+	private void
+			_testGetSiteSiteByExternalReferenceCodePageTemplateWithNestedFields(
+				PageTemplate pageTemplate)
 		throws Exception {
 
 		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
 
-		PageTemplate pageTemplate =
+		PageTemplate postPageTemplate =
 			pageTemplateResource.
 				postSiteSiteByExternalReferenceCodePageTemplate(
-					testGroup.getExternalReferenceCode(),
-					_getContentPageTemplate(testGroup));
+					testGroup.getExternalReferenceCode(), pageTemplate);
 
 		PageTemplate getPageTemplate =
 			pageTemplateResource.getSiteSiteByExternalReferenceCodePageTemplate(
 				testGroup.getExternalReferenceCode(),
-				pageTemplate.getExternalReferenceCode());
+				postPageTemplate.getExternalReferenceCode());
 
-		assertEquals(pageTemplate, getPageTemplate);
+		assertEquals(postPageTemplate, getPageTemplate);
 		assertValid(getPageTemplate);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -947,13 +946,9 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 					getPageTemplate.getExternalReferenceCode(),
 					testGroup.getGroupId());
 
-		Layout layout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		Assert.assertFalse(layout.isPublished());
-
 		PageSpecificationsTestUtil.assertPageSpecifications(
-			layout, getPageTemplate.getPageSpecifications());
+			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
+			getPageTemplate.getPageSpecifications());
 	}
 
 	private void _testPatchSiteSiteByExternalReferenceCodePageTemplate(

@@ -1664,6 +1664,8 @@ ${httpUtil.URLtoString(request.getAttribute("CTX").getResource(".").toURI().crea
 	@description = "View pagination in related assets within a web content."
 	@priority = 3
 	test ViewRelatedAssetsAfterChangePagination {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		task ("Add six web contents") {
 			for (var i : list "1,2,3,4,5,6") {
 				JSONWebcontent.addWebContent(

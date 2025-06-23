@@ -73,6 +73,10 @@ public interface AssetCategoryService extends BaseService {
 
 	public void deleteCategory(long categoryId) throws PortalException;
 
+	public AssetCategory deleteCategoryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public AssetCategory fetchCategory(long categoryId) throws PortalException;
 

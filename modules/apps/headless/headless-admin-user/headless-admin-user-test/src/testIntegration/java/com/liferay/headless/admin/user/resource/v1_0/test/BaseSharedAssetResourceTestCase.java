@@ -973,15 +973,13 @@ public abstract class BaseSharedAssetResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
-
-	protected SharedAsset testGraphQLSharedAsset_addSharedAsset()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
 
 	protected void assertContains(
 		SharedAsset sharedAsset, List<SharedAsset> sharedAssets) {

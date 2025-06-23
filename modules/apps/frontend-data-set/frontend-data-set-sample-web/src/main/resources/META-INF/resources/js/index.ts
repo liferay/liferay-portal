@@ -8,7 +8,7 @@ import ControlledFrontendDataSet from './ControlledFrontendDataSet';
 import CustomAuthorTableCell from './CustomAuthorTableCell';
 import CustomInternalViewPropsTransformer from './CustomInternalViewPropsTransformer';
 import GreenCheckColorTableCell from './GreenCheckColorTableCell';
-import SampleReactFrontendDataSet from './SampleReactFrontendDataSet';
+import ReactFrontendDataSet from './ReactFrontendDataSet';
 
 export {
 	AdvancedPropsTransformer,
@@ -16,5 +16,5 @@ export {
 	CustomAuthorTableCell,
 	CustomInternalViewPropsTransformer,
 	GreenCheckColorTableCell,
-	SampleReactFrontendDataSet,
+	ReactFrontendDataSet,
 };

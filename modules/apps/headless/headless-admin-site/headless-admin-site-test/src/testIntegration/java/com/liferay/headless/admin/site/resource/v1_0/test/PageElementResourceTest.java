@@ -152,6 +152,25 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		}
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSiteSiteByExternalReferenceCodePageElement()
+		throws Exception {
+
+		super.testGraphQLGetSiteSiteByExternalReferenceCodePageElement();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSiteSiteByExternalReferenceCodePageElementNotFound()
+		throws Exception {
+
+		super.
+			testGraphQLGetSiteSiteByExternalReferenceCodePageElementNotFound();
+	}
+
 	@Override
 	@Test
 	public void testPatchSiteSiteByExternalReferenceCodePageElement()
@@ -390,14 +409,6 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		throws Exception {
 
 		return _draftLayout.getExternalReferenceCode();
-	}
-
-	@Override
-	protected String
-			testGetSiteSiteByExternalReferenceCodePageElementPageElementsPage_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return testGroup.getExternalReferenceCode();
 	}
 
 	@Override

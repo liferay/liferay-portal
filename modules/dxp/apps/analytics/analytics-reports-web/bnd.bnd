@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Analytics Reports Web
 Bundle-SymbolicName: com.liferay.analytics.reports.web
-Bundle-Version: 2.0.110
+Bundle-Version: 2.0.111
 Web-ContextPath: /analytics-reports-web

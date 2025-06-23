@@ -1,8 +1,8 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/form": "3.137.0",
-		"@clayui/tabs": "3.137.0",
+		"@clayui/form": "3.139.0",
+		"@clayui/tabs": "3.139.0",
 		"asset-taglib": "*",
 		"commerce-frontend-js": "*",
 		"frontend-js-web": "*",
@@ -16,5 +16,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "4.0.136"
+	"version": "4.0.137"
 }

@@ -189,16 +189,16 @@ public abstract class BaseAccountGroupResourceTestCase {
 		assertValid(getAccountGroup);
 	}
 
-	protected Long
-			testGetWarehouseAccountGroupAccountGroup_getWarehouseAccountGroupId()
+	protected AccountGroup
+			testGetWarehouseAccountGroupAccountGroup_addAccountGroup()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected AccountGroup
-			testGetWarehouseAccountGroupAccountGroup_addAccountGroup()
+	protected Long
+			testGetWarehouseAccountGroupAccountGroup_getWarehouseAccountGroupId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

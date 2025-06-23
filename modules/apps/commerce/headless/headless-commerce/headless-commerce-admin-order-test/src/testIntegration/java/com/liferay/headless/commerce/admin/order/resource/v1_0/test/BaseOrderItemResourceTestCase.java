@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderItem;
 import com.liferay.headless.commerce.admin.order.client.http.HttpInvoker;
@@ -347,27 +348,25 @@ public abstract class BaseOrderItemResourceTestCase {
 		OrderItem orderItem1 = testDeleteOrderItemBatch_addOrderItem();
 
 		testDeleteOrderItemBatch_deleteOrderItem(
-			"COMPLETED", null, orderItem1.getId());
+			202, orderItem1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			orderItemResource.getOrderItemHttpResponse(orderItem1.getId()));
 
-		OrderItem orderItem2 = testDeleteOrderItemBatch_addOrderItem();
+		orderItem1 = testDeleteOrderItemBatch_addOrderItem();
 
-		testDeleteOrderItemBatch_deleteOrderItem(
-			"COMPLETED", orderItem2.getExternalReferenceCode(), null);
+		testDeleteOrderItemBatch_deleteOrderItem(202, null, orderItem1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
-			orderItemResource.getOrderItemHttpResponse(orderItem2.getId()));
+			orderItemResource.getOrderItemHttpResponse(orderItem1.getId()));
 
 		orderItem1 = testDeleteOrderItemBatch_addOrderItem();
-		orderItem2 = testDeleteOrderItemBatch_addOrderItem();
+		OrderItem orderItem2 = testDeleteOrderItemBatch_addOrderItem();
 
 		testDeleteOrderItemBatch_deleteOrderItem(
-			"COMPLETED", orderItem2.getExternalReferenceCode(),
-			orderItem1.getId());
+			202, orderItem2.getExternalReferenceCode(), orderItem1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -377,8 +376,7 @@ public abstract class BaseOrderItemResourceTestCase {
 			orderItemResource.getOrderItemHttpResponse(orderItem2.getId()));
 
 		testDeleteOrderItemBatch_deleteOrderItem(
-			"COMPLETED", orderItem2.getExternalReferenceCode(),
-			orderItem1.getId());
+			202, orderItem2.getExternalReferenceCode(), orderItem1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -392,7 +390,7 @@ public abstract class BaseOrderItemResourceTestCase {
 	}
 
 	protected void testDeleteOrderItemBatch_deleteOrderItem(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -405,10 +403,10 @@ public abstract class BaseOrderItemResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1770,6 +1768,13 @@ public abstract class BaseOrderItemResourceTestCase {
 			putOrderItem.getExternalReferenceCode());
 	}
 
+	protected OrderItem testPutOrderItemByExternalReferenceCode_addOrderItem()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected OrderItem
 			testPutOrderItemByExternalReferenceCode_createOrderItem()
 		throws Exception {
@@ -1777,11 +1782,86 @@ public abstract class BaseOrderItemResourceTestCase {
 		return randomOrderItem();
 	}
 
-	protected OrderItem testPutOrderItemByExternalReferenceCode_addOrderItem()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		OrderItem orderItem1 = testBatchEngineDeleteImportTask_addOrderItem();
+
+		testBatchEngineDeleteImportTask_deleteOrderItem(
+			200, orderItem1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			orderItemResource.getOrderItemHttpResponse(orderItem1.getId()));
+
+		orderItem1 = testBatchEngineDeleteImportTask_addOrderItem();
+
+		testBatchEngineDeleteImportTask_deleteOrderItem(
+			200, null, orderItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			orderItemResource.getOrderItemHttpResponse(orderItem1.getId()));
+
+		orderItem1 = testBatchEngineDeleteImportTask_addOrderItem();
+		OrderItem orderItem2 = testBatchEngineDeleteImportTask_addOrderItem();
+
+		testBatchEngineDeleteImportTask_deleteOrderItem(
+			200, orderItem2.getExternalReferenceCode(), orderItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			orderItemResource.getOrderItemHttpResponse(orderItem1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			orderItemResource.getOrderItemHttpResponse(orderItem2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteOrderItem(
+			200, orderItem2.getExternalReferenceCode(), orderItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			orderItemResource.getOrderItemHttpResponse(orderItem2.getId()));
+	}
+
+	protected OrderItem testBatchEngineDeleteImportTask_addOrderItem()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteOrderItem_addOrderItem();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteOrderItem(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.order.dto.v1_0.OrderItem",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Data Engine JS Components Web
 Bundle-SymbolicName: com.liferay.data.engine.js.components.web
-Bundle-Version: 1.0.151
+Bundle-Version: 1.0.152
 Web-ContextPath: /data-engine-js-components-web

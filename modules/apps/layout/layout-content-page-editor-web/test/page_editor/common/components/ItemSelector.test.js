@@ -29,11 +29,6 @@ jest.mock(
 	})
 );
 
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	sub: jest.fn((langKey, args) => langKey.replace('x', args)),
-}));
-
 function renderItemSelector({
 	pageContents = [],
 	selectedItemClassPK = '',

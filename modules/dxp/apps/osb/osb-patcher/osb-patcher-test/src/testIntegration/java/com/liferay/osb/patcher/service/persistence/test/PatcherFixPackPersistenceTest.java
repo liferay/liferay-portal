@@ -193,6 +193,78 @@ public class PatcherFixPackPersistenceTest {
 	}
 
 	@Test
+	public void testCountByPatcherBuildId() throws Exception {
+		_persistence.countByPatcherBuildId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherBuildId(0L);
+	}
+
+	@Test
+	public void testCountByPatcherFixComponentId() throws Exception {
+		_persistence.countByPatcherFixComponentId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherFixComponentId(0L);
+	}
+
+	@Test
+	public void testCountByVersion() throws Exception {
+		_persistence.countByVersion(RandomTestUtil.nextInt());
+
+		_persistence.countByVersion(0);
+	}
+
+	@Test
+	public void testCountByPFCI_PPVI() throws Exception {
+		_persistence.countByPFCI_PPVI(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+
+		_persistence.countByPFCI_PPVI(0L, 0L);
+	}
+
+	@Test
+	public void testCountByPFCI_V() throws Exception {
+		_persistence.countByPFCI_V(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByPFCI_V(0L, 0);
+	}
+
+	@Test
+	public void testCountByPFCI_N() throws Exception {
+		_persistence.countByPFCI_N(RandomTestUtil.nextLong(), "");
+
+		_persistence.countByPFCI_N(0L, "null");
+
+		_persistence.countByPFCI_N(0L, (String)null);
+	}
+
+	@Test
+	public void testCountByPFCI_S() throws Exception {
+		_persistence.countByPFCI_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByPFCI_S(0L, 0);
+	}
+
+	@Test
+	public void testCountByPFCI_PPVI_GtV() throws Exception {
+		_persistence.countByPFCI_PPVI_GtV(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextInt());
+
+		_persistence.countByPFCI_PPVI_GtV(0L, 0L, 0);
+	}
+
+	@Test
+	public void testCountByPFCI_PPVI_LtV() throws Exception {
+		_persistence.countByPFCI_PPVI_LtV(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextInt());
+
+		_persistence.countByPFCI_PPVI_LtV(0L, 0L, 0);
+	}
+
+	@Test
 	public void testCountByPFCI_PPVI_N_V() throws Exception {
 		_persistence.countByPFCI_PPVI_N_V(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "",
@@ -501,6 +573,23 @@ public class PatcherFixPackPersistenceTest {
 	}
 
 	private void _assertOriginalValues(PatcherFixPack patcherFixPack) {
+		Assert.assertEquals(
+			Long.valueOf(patcherFixPack.getPatcherBuildId()),
+			ReflectionTestUtil.<Long>invoke(
+				patcherFixPack, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "patcherBuildId"));
+
+		Assert.assertEquals(
+			Long.valueOf(patcherFixPack.getPatcherProjectVersionId()),
+			ReflectionTestUtil.<Long>invoke(
+				patcherFixPack, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "patcherProjectVersionId"));
+		Assert.assertEquals(
+			patcherFixPack.getName(),
+			ReflectionTestUtil.invoke(
+				patcherFixPack, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "name"));
+
 		Assert.assertEquals(
 			Long.valueOf(patcherFixPack.getPatcherFixComponentId()),
 			ReflectionTestUtil.<Long>invoke(

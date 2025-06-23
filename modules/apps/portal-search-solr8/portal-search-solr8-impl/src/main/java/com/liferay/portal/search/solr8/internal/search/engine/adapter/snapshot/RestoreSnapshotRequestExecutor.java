@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.snapshot.RestoreSnapshotResponse
 /**
  * @author Bryan Engler
  */
-public interface RestoreSnapshotRequestExecutor {
+public class RestoreSnapshotRequestExecutor {
 
 	public RestoreSnapshotResponse execute(
-		RestoreSnapshotRequest restoreSnapshotRequest);
+		RestoreSnapshotRequest restoreSnapshotRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

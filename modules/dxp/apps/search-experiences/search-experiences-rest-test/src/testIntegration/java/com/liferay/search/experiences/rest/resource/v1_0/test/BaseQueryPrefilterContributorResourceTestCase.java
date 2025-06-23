@@ -244,6 +244,11 @@ public abstract class BaseQueryPrefilterContributorResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		QueryPrefilterContributor queryPrefilterContributor,
 		List<QueryPrefilterContributor> queryPrefilterContributors) {

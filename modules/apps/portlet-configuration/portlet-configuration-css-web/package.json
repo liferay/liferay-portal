@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@clayui/color-picker": "3.138.0",
+		"@clayui/color-picker": "3.139.1",
 		"react": "18.2.0"
 	},
 	"main": "js/index.js",
@@ -10,5 +10,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "USE_REACT_16=true node-scripts format"
 	},
-	"version": "6.0.74"
+	"version": "6.0.75"
 }

@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Saved Content Web
 Bundle-SymbolicName: com.liferay.saved.content.web
-Bundle-Version: 1.0.13
+Bundle-Version: 1.0.14
 Web-ContextPath: /saved-content-web
 -dsannotations-options: inherit

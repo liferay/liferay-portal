@@ -20,6 +20,7 @@ apply plugin: "java-library"
 apply plugin: "org.springframework.boot"
 
 dependencies {
+	implementation group: "com.google.auth", name: "google-auth-library-oauth2-http", version: "1.31.0"
 	implementation group: "com.liferay", name: "com.liferay.client.extension.util.spring.boot3", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.function", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.string", version: "latest.release"

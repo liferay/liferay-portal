@@ -73,8 +73,7 @@ public interface ObjectEntryService extends BaseService {
 		throws PortalException;
 
 	public ObjectEntry expireObjectEntry(
-			long userId, long objectEntryId, int version,
-			ServiceContext serviceContext)
+			long userId, long objectEntryId, ServiceContext serviceContext)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

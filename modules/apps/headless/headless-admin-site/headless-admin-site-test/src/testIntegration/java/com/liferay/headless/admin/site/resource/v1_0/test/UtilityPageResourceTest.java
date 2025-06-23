@@ -227,6 +227,15 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		super.testGetSiteUtilityPagePermissionsPage();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSiteSiteByExternalReferenceCodeUtilityPage()
+		throws Exception {
+
+		super.testGraphQLGetSiteSiteByExternalReferenceCodeUtilityPage();
+	}
+
 	@Override
 	@Test
 	public void testPatchSiteSiteByExternalReferenceCodeUtilityPage()
@@ -533,22 +542,6 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		return utilityPageResource.
 			postSiteSiteByExternalReferenceCodeUtilityPage(
 				siteExternalReferenceCode, utilityPage);
-	}
-
-	@Override
-	protected String
-			testGetSiteSiteByExternalReferenceCodeUtilityPagesPage_getIrrelevantSiteExternalReferenceCode()
-		throws Exception {
-
-		return irrelevantGroup.getExternalReferenceCode();
-	}
-
-	@Override
-	protected String
-			testGetSiteSiteByExternalReferenceCodeUtilityPagesPage_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return testGroup.getExternalReferenceCode();
 	}
 
 	@Ignore

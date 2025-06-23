@@ -98,6 +98,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -172,7 +173,7 @@ public class DefaultObjectEntryManagerImpl
 		long groupId = getGroupId(objectDefinition, scopeKey);
 
 		ServiceContext serviceContext = _createServiceContext(
-			dtoConverterContext, objectDefinition, objectEntry);
+			dtoConverterContext, objectDefinition, objectEntry, scopeKey);
 
 		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
 			_objectEntryService.addObjectEntry(
@@ -391,12 +392,25 @@ public class DefaultObjectEntryManagerImpl
 	}
 
 	@Override
+	public ObjectEntry expireObjectEntry(
+			DTOConverterContext dtoConverterContext, long objectEntryId)
+		throws Exception {
+
+		com.liferay.object.model.ObjectEntry objectEntry =
+			_objectEntryService.expireObjectEntry(
+				dtoConverterContext.getUserId(), objectEntryId,
+				ServiceContextUtil.createServiceContext(objectEntryId));
+
+		return _objectEntryDTOConverter.toDTO(dtoConverterContext, objectEntry);
+	}
+
+	@Override
 	public ObjectEntry expireObjectEntryByVersion(
 			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, long objectEntryId, int version)
 		throws Exception {
 
-		return _expireObjectEntry(
+		return _expireObjectEntryVersion(
 			dtoConverterContext, objectDefinition,
 			_objectEntryService.getObjectEntry(objectEntryId), version);
 	}
@@ -408,7 +422,7 @@ public class DefaultObjectEntryManagerImpl
 			int version)
 		throws Exception {
 
-		return _expireObjectEntry(
+		return _expireObjectEntryVersion(
 			dtoConverterContext, objectDefinition,
 			_objectEntryService.getObjectEntry(
 				externalReferenceCode, objectDefinition.getCompanyId(),
@@ -984,7 +998,7 @@ public class DefaultObjectEntryManagerImpl
 			externalReferenceCode, objectDefinition, objectEntry);
 
 		ServiceContext serviceContext = _createServiceContext(
-			dtoConverterContext, objectDefinition, objectEntry);
+			dtoConverterContext, objectDefinition, objectEntry, scopeKey);
 
 		serviceContext.setCompanyId(companyId);
 
@@ -1029,13 +1043,14 @@ public class DefaultObjectEntryManagerImpl
 				dtoConverterContext.getLocale(), objectDefinition, objectEntry,
 				scopeKey,
 				_createServiceContext(
-					dtoConverterContext, objectDefinition, objectEntry)));
+					dtoConverterContext, objectDefinition, objectEntry,
+					scopeKey)));
 
 		_objectEntryService.validate(
 			getGroupId(objectDefinition, scopeKey), serviceBuilderObjectEntry,
 			objectValidationRuleExternalReferenceCodes,
 			_createServiceContext(
-				dtoConverterContext, objectDefinition, objectEntry));
+				dtoConverterContext, objectDefinition, objectEntry, scopeKey));
 	}
 
 	private Map<String, String> _addAction(
@@ -1169,13 +1184,23 @@ public class DefaultObjectEntryManagerImpl
 							throw objectEntryValuesException;
 						}
 
+						long groupId = 0;
+
+						if ((serviceBuilderObjectEntry.getGroupId() > 0) &&
+							Objects.equals(
+								relatedObjectDefinition.getScope(),
+								ObjectDefinitionConstants.SCOPE_SITE)) {
+
+							groupId = serviceBuilderObjectEntry.getGroupId();
+						}
+
 						nestedObjectEntry = _toObjectEntry(
 							dtoConverterContext, relatedObjectDefinition,
 							objectEntryLocalService.
 								getOrAddIncompleteObjectEntry(
 									nestedObjectEntry.
 										getExternalReferenceCode(),
-									dtoConverterContext.getUserId(),
+									groupId, dtoConverterContext.getUserId(),
 									relatedObjectDefinition.
 										getObjectDefinitionId()));
 					}
@@ -1186,6 +1211,8 @@ public class DefaultObjectEntryManagerImpl
 							serviceBuilderObjectEntry.getPrimaryKey(),
 							nestedObjectEntry.getId(),
 							ServiceContextUtil.createServiceContext(
+								objectDefinition.getCompanyId(),
+								getGroupId(objectDefinition, scopeKey),
 								nestedObjectEntry,
 								dtoConverterContext.getUserId()));
 					}
@@ -1261,7 +1288,8 @@ public class DefaultObjectEntryManagerImpl
 
 	private ServiceContext _createServiceContext(
 			DTOConverterContext dtoConverterContext,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			String scopeKey)
 		throws Exception {
 
 		ModelPermissions modelPermissions =
@@ -1272,8 +1300,10 @@ public class DefaultObjectEntryManagerImpl
 				_resourcePermissionLocalService, _roleLocalService);
 
 		return ServiceContextUtil.createServiceContext(
-			objectDefinition.getCompanyId(), dtoConverterContext.getLocale(),
-			modelPermissions, objectEntry, dtoConverterContext.getUserId());
+			objectDefinition.getCompanyId(),
+			getGroupId(objectDefinition, scopeKey),
+			dtoConverterContext.getLocale(), modelPermissions, objectEntry,
+			dtoConverterContext.getUserId());
 	}
 
 	private byte[] _decode(String fileBase64) {
@@ -1378,7 +1408,7 @@ public class DefaultObjectEntryManagerImpl
 			dtoConverterContext.getUserId());
 	}
 
-	private ObjectEntry _expireObjectEntry(
+	private ObjectEntry _expireObjectEntryVersion(
 			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition,
 			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry,
@@ -1388,11 +1418,11 @@ public class DefaultObjectEntryManagerImpl
 		_checkObjectEntryObjectDefinitionId(
 			objectDefinition, serviceBuilderObjectEntry);
 
-		_objectEntryService.expireObjectEntry(
-			dtoConverterContext.getUserId(),
-			serviceBuilderObjectEntry.getObjectEntryId(), version,
+		_objectEntryVersionService.expireObjectEntryVersion(
+			serviceBuilderObjectEntry,
 			ServiceContextUtil.createServiceContext(
-				serviceBuilderObjectEntry.getObjectEntryId()));
+				serviceBuilderObjectEntry.getObjectEntryId()),
+			dtoConverterContext.getUserId(), version);
 
 		dtoConverterContext.setAttribute(
 			"objectEntryVersion",
@@ -1401,6 +1431,14 @@ public class DefaultObjectEntryManagerImpl
 
 		return _objectEntryDTOConverter.toDTO(
 			dtoConverterContext, serviceBuilderObjectEntry);
+	}
+
+	private String _getDateString(Date date) {
+		if (date == null) {
+			return StringPool.BLANK;
+		}
+
+		return DateUtil.getDate(date, "yyyy-MM-dd HH:mm", LocaleUtil.US);
 	}
 
 	private int _getEndPosition(Pagination pagination) {
@@ -2027,6 +2065,22 @@ public class DefaultObjectEntryManagerImpl
 					ActionKeys.DELETE, "deleteObjectEntry",
 					serviceBuilderObjectEntry, dtoConverterContext.getUriInfo())
 			).put(
+				"expire",
+				() -> {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							objectDefinition.getCompanyId(), "LPD-17564") ||
+						serviceBuilderObjectEntry.isDraft() ||
+						serviceBuilderObjectEntry.isPending()) {
+
+						return null;
+					}
+
+					return _addAction(
+						ActionKeys.UPDATE, "postObjectEntryExpire",
+						serviceBuilderObjectEntry,
+						dtoConverterContext.getUriInfo());
+				}
+			).put(
 				"get",
 				_addAction(
 					ActionKeys.VIEW, "getObjectEntry",
@@ -2125,6 +2179,16 @@ public class DefaultObjectEntryManagerImpl
 
 		Map<String, Serializable> values = new HashMap<>();
 
+		Map<String, Object> properties = HashMapBuilder.<String, Object>putAll(
+			objectEntry.getProperties()
+		).put(
+			"displayDate", _getDateString(objectEntry.getDisplayDate())
+		).put(
+			"expirationDate", _getDateString(objectEntry.getExpirationDate())
+		).put(
+			"reviewDate", _getDateString(objectEntry.getReviewDate())
+		).build();
+
 		for (ObjectField objectField :
 				objectFieldLocalService.getObjectFields(
 					objectDefinition.getObjectDefinitionId())) {
@@ -2139,9 +2203,10 @@ public class DefaultObjectEntryManagerImpl
 			}
 
 			Object value = ObjectEntryValuesUtil.getValue(
-				_objectDefinitionLocalService, objectEntryLocalService,
-				objectField, _objectFieldBusinessTypeRegistry,
-				serviceContext.getUserId(), objectEntry.getProperties());
+				objectEntry.getScopeId(), _objectDefinitionLocalService,
+				objectEntryLocalService, objectField,
+				_objectFieldBusinessTypeRegistry, serviceContext.getUserId(),
+				properties);
 
 			if (Objects.equals(
 					objectField.getName(), "externalReferenceCode") &&
@@ -2162,8 +2227,7 @@ public class DefaultObjectEntryManagerImpl
 
 				Map<String, Object> localizedValues =
 					objectFieldBusinessType.getLocalizedValues(
-						objectField, serviceContext.getUserId(),
-						objectEntry.getProperties());
+						objectField, serviceContext.getUserId(), properties);
 
 				if (localizedValues != null) {
 					values.put(
@@ -2205,10 +2269,6 @@ public class DefaultObjectEntryManagerImpl
 				objectField.getName(), _getValue(locale, objectField, value));
 		}
 
-		values.put("displayDate", objectEntry.getDisplayDate());
-		values.put("expirationDate", objectEntry.getExpirationDate());
-		values.put("reviewDate", objectEntry.getReviewDate());
-
 		return values;
 	}
 
@@ -2232,7 +2292,7 @@ public class DefaultObjectEntryManagerImpl
 			serviceBuilderObjectEntry.getGroupId());
 
 		ServiceContext serviceContext = _createServiceContext(
-			dtoConverterContext, objectDefinition, objectEntry);
+			dtoConverterContext, objectDefinition, objectEntry, scopeKey);
 
 		if (partialUpdate) {
 			serviceBuilderObjectEntry =

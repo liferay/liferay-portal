@@ -5,6 +5,8 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.cluster;
 
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.engine.adapter.cluster.ClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.ClusterRequestExecutor;
 import com.liferay.portal.search.engine.adapter.cluster.ClusterResponse;
@@ -17,6 +19,7 @@ import com.liferay.portal.search.engine.adapter.cluster.StatsClusterResponse;
 import com.liferay.portal.search.engine.adapter.cluster.UpdateSettingsClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.UpdateSettingsClusterResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -66,16 +69,29 @@ public class ElasticsearchClusterRequestExecutor
 			updateSettingsClusterRequest);
 	}
 
+	@Activate
+	protected void activate() {
+		_healthClusterRequestExecutor = new HealthClusterRequestExecutor(
+			_elasticsearchClientResolver);
+		_stateClusterRequestExecutor = new StateClusterRequestExecutor(
+			_elasticsearchClientResolver);
+		_statsClusterRequestExecutor = new StatsClusterRequestExecutor(
+			_elasticsearchClientResolver, _jsonFactory);
+		_updateSettingsClusterRequestExecutor =
+			new UpdateSettingsClusterRequestExecutor(
+				_elasticsearchClientResolver);
+	}
+
 	@Reference
+	private ElasticsearchClientResolver _elasticsearchClientResolver;
+
 	private HealthClusterRequestExecutor _healthClusterRequestExecutor;
 
 	@Reference
+	private JSONFactory _jsonFactory;
+
 	private StateClusterRequestExecutor _stateClusterRequestExecutor;
-
-	@Reference
 	private StatsClusterRequestExecutor _statsClusterRequestExecutor;
-
-	@Reference
 	private UpdateSettingsClusterRequestExecutor
 		_updateSettingsClusterRequestExecutor;
 

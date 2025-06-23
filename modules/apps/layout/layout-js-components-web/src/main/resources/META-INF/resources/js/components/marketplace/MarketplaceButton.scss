@@ -10,7 +10,3 @@
 	transform: translate(7px, -7px);
 	z-index: 1;
 }
-
-div:has(.marketplace-modal-trigger) {
-	flex-shrink: 0;
-}

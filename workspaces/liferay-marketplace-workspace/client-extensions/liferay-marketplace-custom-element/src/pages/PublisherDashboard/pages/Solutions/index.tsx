@@ -94,6 +94,15 @@ const Solutions = () => {
 			)}
 
 			<ListView<Product>
+				defaultFilters={{
+					filter: new SearchBuilder()
+						.eq('catalogId', catalogId as number, {
+							unquote: true,
+						})
+						.and()
+						.lambda('categoryNames', ProductTypeVocabulary.SOLUTION)
+						.build(),
+				}}
 				emptyStateProps={{
 					className:
 						'border px-4 py-6 d-flex align-items-center flex-column justify-content-center',
@@ -104,27 +113,14 @@ const Solutions = () => {
 					type: 'BLANK',
 				}}
 				id={`publisher-solutions/${catalogId}`}
-				resource={function getPublisherSolutions({page, pageSize}) {
-					return HeadlessCommerceAdminCatalog.getProducts(
-						new URLSearchParams({
-							'accountId': '-1',
-							'filter': new SearchBuilder()
-								.eq('catalogId', catalogId as number, {
-									unquote: true,
-								})
-								.and()
-								.lambda(
-									'categoryNames',
-									ProductTypeVocabulary.SOLUTION
-								)
-								.build(),
-							'images.accountId': '-1',
-							'nestedFields': 'productSpecifications',
-							'page': page.toString(),
-							'pageSize': pageSize.toString(),
-						})
-					);
-				}}
+				resource={`/o/headless-commerce-admin-catalog/v1.0/products?${new URLSearchParams(
+					{
+						'accountId': '-1',
+						'images.accountId': '-1',
+						'nestedFields': 'productSpecifications',
+						'sort': 'createDate:desc',
+					}
+				)}`}
 				tableProps={{
 					actions: [
 						{

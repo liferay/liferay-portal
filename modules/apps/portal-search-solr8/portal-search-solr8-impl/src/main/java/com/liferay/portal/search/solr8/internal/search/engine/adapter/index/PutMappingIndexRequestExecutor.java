@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.index.PutMappingIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface PutMappingIndexRequestExecutor {
+public class PutMappingIndexRequestExecutor {
 
 	public PutMappingIndexResponse execute(
-		PutMappingIndexRequest putMappingIndexRequest);
+		PutMappingIndexRequest putMappingIndexRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

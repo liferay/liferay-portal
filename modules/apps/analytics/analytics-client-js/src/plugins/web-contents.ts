@@ -40,8 +40,11 @@ function getWebContentPayload({dataset}: AnalyticsType.HTMLElement) {
 		});
 	}
 
-	if (dataset.analyticsAssetErc) {
-		Object.assign(payload, {erc: dataset.analyticsAssetErc.trim()});
+	if (dataset.analyticsAssetExternalReferenceCode) {
+		Object.assign(payload, {
+			externalReferenceCode:
+				dataset.analyticsAssetExternalReferenceCode.trim(),
+		});
 	}
 
 	return payload;

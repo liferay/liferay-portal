@@ -2330,6 +2330,8 @@ public class ObjectEntryLocalServiceTest {
 				HashMapBuilder.<String, Serializable>put(
 					"emailAddressRequired", "bob@liferay.com"
 				).put(
+					"listTypeEntryKey", ""
+				).put(
 					"listTypeEntryKeyRequired", listTypeEntryKey
 				).build());
 
@@ -2337,9 +2339,12 @@ public class ObjectEntryLocalServiceTest {
 				_listTypeDefinition.getListTypeDefinitionId(),
 				listTypeEntryKey);
 
-			Assert.assertNotNull(listTypeEntry);
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_INCOMPLETE, listTypeEntry.getStatus());
+
+			Assert.assertNull(
+				_listTypeEntryLocalService.fetchListTypeEntry(
+					_listTypeDefinition.getListTypeDefinitionId(), ""));
 		}
 	}
 
@@ -2372,7 +2377,7 @@ public class ObjectEntryLocalServiceTest {
 					).build()));
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -2395,7 +2400,7 @@ public class ObjectEntryLocalServiceTest {
 				expectedMaxLength, " characters for object field ",
 				"\"multiselectPicklistObjectField\""),
 			() -> _objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -2671,11 +2676,89 @@ public class ObjectEntryLocalServiceTest {
 
 		_assertCount(4);
 
+		// Field must not be empty
+
+		ObjectField localizedObjectField = ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).localized(
+				true
+			).name(
+				"textLocalized"
+			).objectDefinitionId(
+				_objectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		ObjectValidationRule objectValidationRule5 = _addObjectValidationRule(
+			ObjectValidationRuleConstants.ENGINE_TYPE_DDM,
+			LocalizedMapUtil.getLocalizedMap("Field must not be empty"),
+			"NOT(isEmpty(textLocalized))");
+
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				localizedObjectField.getI18nObjectFieldName(),
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).put(
+					"pt_BR", RandomTestUtil.randomString()
+				).build()
+			).put(
+				"date", tomorrowLocalDate.toString()
+			).put(
+				"emailAddressRequired", "bob@liferay.com"
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).put(
+				"time", timeString
+			).build());
+
+		_assertCount(5);
+
+		try {
+			_addObjectEntry(
+				HashMapBuilder.<String, Serializable>put(
+					localizedObjectField.getI18nObjectFieldName(),
+					HashMapBuilder.put(
+						"en_US", StringPool.BLANK
+					).put(
+						"pt_BR", StringPool.BLANK
+					).build()
+				).put(
+					"emailAddressRequired", RandomTestUtil.randomString()
+				).put(
+					"listTypeEntryKeyRequired", "listTypeEntryKey1"
+				).build());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			ObjectValidationRuleEngineException
+				objectValidationRuleEngineException =
+					(ObjectValidationRuleEngineException)
+						modelListenerException.getCause();
+
+			List<ObjectValidationRuleResult> objectValidationRuleResults =
+				objectValidationRuleEngineException.
+					getObjectValidationRuleResults();
+
+			_assertObjectValidationRuleResult(
+				objectValidationRule5.getErrorLabel(LocaleUtil.getDefault()),
+				null,
+				objectValidationRuleResults.get(
+					objectValidationRuleResults.size() - 1));
+		}
+
+		_objectValidationRuleLocalService.deleteObjectValidationRule(
+			objectValidationRule5);
+
 		// Must be over 18 years old
 
 		Class<?> clazz = getClass();
 
-		ObjectValidationRule objectValidationRule5 = _addObjectValidationRule(
+		ObjectValidationRule objectValidationRule6 = _addObjectValidationRule(
 			ObjectValidationRuleConstants.ENGINE_TYPE_GROOVY,
 			LocalizedMapUtil.getLocalizedMap("Must be over 18 years old"),
 			StringUtil.read(
@@ -2697,11 +2780,11 @@ public class ObjectEntryLocalServiceTest {
 				"time", timeString
 			).build());
 
-		_assertCount(5);
+		_assertCount(6);
 
 		// Names must be equals
 
-		ObjectValidationRule objectValidationRule6 = _addObjectValidationRule(
+		ObjectValidationRule objectValidationRule7 = _addObjectValidationRule(
 			ObjectValidationRuleConstants.ENGINE_TYPE_DDM,
 			LocalizedMapUtil.getLocalizedMap("Names must be equals"),
 			"equals(lastName, middleName)");
@@ -2725,7 +2808,7 @@ public class ObjectEntryLocalServiceTest {
 				"time", timeString
 			).build());
 
-		_assertCount(6);
+		_assertCount(7);
 
 		values = HashMapBuilder.<String, Serializable>put(
 			"birthday", "2010-12-25"
@@ -2774,19 +2857,19 @@ public class ObjectEntryLocalServiceTest {
 				objectValidationRule4.getErrorLabel(LocaleUtil.getDefault()),
 				null, objectValidationRuleResults.get(2));
 			_assertObjectValidationRuleResult(
-				objectValidationRule5.getErrorLabel(LocaleUtil.getDefault()),
+				objectValidationRule6.getErrorLabel(LocaleUtil.getDefault()),
 				null, objectValidationRuleResults.get(3));
 			_assertObjectValidationRuleResult(
-				objectValidationRule6.getErrorLabel(LocaleUtil.getDefault()),
+				objectValidationRule7.getErrorLabel(LocaleUtil.getDefault()),
 				null, objectValidationRuleResults.get(4));
 		}
 
-		// Disable object validation rule 6
+		// Disable object validation rule 7
 
-		objectValidationRule6.setActive(false);
+		objectValidationRule7.setActive(false);
 
 		_objectValidationRuleLocalService.updateObjectValidationRule(
-			objectValidationRule6);
+			objectValidationRule7);
 
 		_addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
@@ -2805,7 +2888,7 @@ public class ObjectEntryLocalServiceTest {
 				"time", timeString
 			).build());
 
-		_assertCount(7);
+		_assertCount(8);
 
 		// No such engine
 
@@ -2838,12 +2921,12 @@ public class ObjectEntryLocalServiceTest {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values, serviceContext);
 
-		_assertCount(8);
+		_assertCount(9);
 	}
 
 	@FeatureFlag("LPD-31212")
@@ -3389,7 +3472,7 @@ public class ObjectEntryLocalServiceTest {
 				TestPropsValues.getCompanyId(), "C_AA");
 
 		_objectEntryLocalService.addOrUpdateObjectEntry(
-			"AA1", TestPropsValues.getUserId(), 0,
+			"AA1", 0, TestPropsValues.getUserId(),
 			objectDefinitionAA.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			HashMapBuilder.<String, Serializable>put(
@@ -4337,7 +4420,7 @@ public class ObjectEntryLocalServiceTest {
 				externalReferenceCode, _objectDefinition.getCompanyId(),
 				_objectDefinition.getObjectDefinitionId()),
 			() -> _objectEntryLocalService.getOrAddIncompleteObjectEntry(
-				externalReferenceCode, TestPropsValues.getUserId(),
+				externalReferenceCode, 0, TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId()));
 
 		// Lazy referencing enabled
@@ -4345,11 +4428,15 @@ public class ObjectEntryLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
+			long groupId = RandomTestUtil.randomLong();
+
 			ObjectEntry objectEntry =
 				_objectEntryLocalService.getOrAddIncompleteObjectEntry(
-					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+					RandomTestUtil.randomString(), groupId,
+					TestPropsValues.getUserId(),
 					_objectDefinition.getObjectDefinitionId());
 
+			Assert.assertEquals(groupId, objectEntry.getGroupId());
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_INCOMPLETE, objectEntry.getStatus());
 		}
@@ -4985,7 +5072,7 @@ public class ObjectEntryLocalServiceTest {
 		AssertUtils.assertFailure(
 			NoSuchObjectDefinitionException.class, null,
 			() -> _objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), depotEntry1.getGroupId(),
+				depotEntry1.getGroupId(), TestPropsValues.getUserId(),
 				depotObjectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -5000,7 +5087,7 @@ public class ObjectEntryLocalServiceTest {
 				String.valueOf(depotEntry1.getGroupId()));
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), depotEntry1.getGroupId(),
+			depotEntry1.getGroupId(), TestPropsValues.getUserId(),
 			depotObjectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(),
@@ -5016,7 +5103,7 @@ public class ObjectEntryLocalServiceTest {
 		AssertUtils.assertFailure(
 			NoSuchObjectDefinitionException.class, null,
 			() -> _objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), depotEntry2.getGroupId(),
+				depotEntry2.getGroupId(), TestPropsValues.getUserId(),
 				depotObjectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -5032,7 +5119,7 @@ public class ObjectEntryLocalServiceTest {
 			objectDefinitionSetting);
 
 		objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), depotEntry2.getGroupId(),
+			depotEntry2.getGroupId(), TestPropsValues.getUserId(),
 			depotObjectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(),
@@ -5294,7 +5381,8 @@ public class ObjectEntryLocalServiceTest {
 
 			ObjectEntry objectEntry =
 				_objectEntryLocalService.getOrAddIncompleteObjectEntry(
-					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+					RandomTestUtil.randomString(), 0,
+					TestPropsValues.getUserId(),
 					_irrelevantObjectDefinition.getObjectDefinitionId());
 
 			Assert.assertEquals(
@@ -6310,7 +6398,7 @@ public class ObjectEntryLocalServiceTest {
 		throws Exception {
 
 		return _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), groupId, objectDefinitionId,
+			groupId, TestPropsValues.getUserId(), objectDefinitionId,
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values, ServiceContextTestUtil.getServiceContext());
 	}
@@ -6328,7 +6416,7 @@ public class ObjectEntryLocalServiceTest {
 		throws PortalException {
 
 		return _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values, serviceContext);
@@ -6391,7 +6479,7 @@ public class ObjectEntryLocalServiceTest {
 		throws Exception {
 
 		return _objectEntryLocalService.addOrUpdateObjectEntry(
-			externalReferenceCode, TestPropsValues.getUserId(), groupId,
+			externalReferenceCode, groupId, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			values, ServiceContextTestUtil.getServiceContext());
@@ -6797,7 +6885,7 @@ public class ObjectEntryLocalServiceTest {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values1, serviceContext);
@@ -6842,7 +6930,7 @@ public class ObjectEntryLocalServiceTest {
 				serviceContext));
 
 		objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values2, serviceContext);
@@ -7518,7 +7606,7 @@ public class ObjectEntryLocalServiceTest {
 					"Group ID ", groupId, " is not valid for scope \"", scope,
 					"\""),
 				() -> _objectEntryLocalService.addObjectEntry(
-					TestPropsValues.getUserId(), groupId,
+					groupId, TestPropsValues.getUserId(),
 					objectDefinition.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -7527,7 +7615,7 @@ public class ObjectEntryLocalServiceTest {
 		}
 		else {
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), groupId,
+				groupId, TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,

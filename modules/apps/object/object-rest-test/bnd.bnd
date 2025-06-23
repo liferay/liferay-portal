@@ -9,6 +9,7 @@ Import-Package:\
 	*
 -includeresource:\
 	com.liferay.headless.admin.taxonomy.client.jar=com.liferay.headless.admin.taxonomy.client-*.jar;lib:=true,\
+	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
 	@jackson-dataformat-yaml-[0-9.]*.jar,\
 	@jsonassert-[0-9.]*.jar,\
 	@snakeyaml-[0-9.]*.jar

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.inventory.client.dto.v1_0.WarehouseItem;
 import com.liferay.headless.commerce.admin.inventory.client.http.HttpInvoker;
@@ -334,29 +335,29 @@ public abstract class BaseWarehouseItemResourceTestCase {
 			testDeleteWarehouseItemBatch_addWarehouseItem();
 
 		testDeleteWarehouseItemBatch_deleteWarehouseItem(
-			"COMPLETED", null, warehouseItem1.getId());
+			202, warehouseItem1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			warehouseItemResource.getWarehouseItemHttpResponse(
 				warehouseItem1.getId()));
 
-		WarehouseItem warehouseItem2 =
-			testDeleteWarehouseItemBatch_addWarehouseItem();
+		warehouseItem1 = testDeleteWarehouseItemBatch_addWarehouseItem();
 
 		testDeleteWarehouseItemBatch_deleteWarehouseItem(
-			"COMPLETED", warehouseItem2.getExternalReferenceCode(), null);
+			202, null, warehouseItem1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			warehouseItemResource.getWarehouseItemHttpResponse(
-				warehouseItem2.getId()));
+				warehouseItem1.getId()));
 
 		warehouseItem1 = testDeleteWarehouseItemBatch_addWarehouseItem();
-		warehouseItem2 = testDeleteWarehouseItemBatch_addWarehouseItem();
+		WarehouseItem warehouseItem2 =
+			testDeleteWarehouseItemBatch_addWarehouseItem();
 
 		testDeleteWarehouseItemBatch_deleteWarehouseItem(
-			"COMPLETED", warehouseItem2.getExternalReferenceCode(),
+			202, warehouseItem2.getExternalReferenceCode(),
 			warehouseItem1.getId());
 
 		assertHttpResponseStatusCode(
@@ -369,7 +370,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 				warehouseItem2.getId()));
 
 		testDeleteWarehouseItemBatch_deleteWarehouseItem(
-			"COMPLETED", warehouseItem2.getExternalReferenceCode(),
+			202, warehouseItem2.getExternalReferenceCode(),
 			warehouseItem1.getId());
 
 		assertHttpResponseStatusCode(
@@ -385,7 +386,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	protected void testDeleteWarehouseItemBatch_deleteWarehouseItem(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -398,10 +399,10 @@ public abstract class BaseWarehouseItemResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1534,18 +1535,109 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	protected WarehouseItem
+			testPutWarehouseItemByExternalReferenceCode_addWarehouseItem()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected WarehouseItem
 			testPutWarehouseItemByExternalReferenceCode_createWarehouseItem()
 		throws Exception {
 
 		return randomWarehouseItem();
 	}
 
-	protected WarehouseItem
-			testPutWarehouseItemByExternalReferenceCode_addWarehouseItem()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WarehouseItem warehouseItem1 =
+			testBatchEngineDeleteImportTask_addWarehouseItem();
+
+		testBatchEngineDeleteImportTask_deleteWarehouseItem(
+			200, warehouseItem1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			warehouseItemResource.getWarehouseItemHttpResponse(
+				warehouseItem1.getId()));
+
+		warehouseItem1 = testBatchEngineDeleteImportTask_addWarehouseItem();
+
+		testBatchEngineDeleteImportTask_deleteWarehouseItem(
+			200, null, warehouseItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			warehouseItemResource.getWarehouseItemHttpResponse(
+				warehouseItem1.getId()));
+
+		warehouseItem1 = testBatchEngineDeleteImportTask_addWarehouseItem();
+		WarehouseItem warehouseItem2 =
+			testBatchEngineDeleteImportTask_addWarehouseItem();
+
+		testBatchEngineDeleteImportTask_deleteWarehouseItem(
+			200, warehouseItem2.getExternalReferenceCode(),
+			warehouseItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			warehouseItemResource.getWarehouseItemHttpResponse(
+				warehouseItem1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			warehouseItemResource.getWarehouseItemHttpResponse(
+				warehouseItem2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteWarehouseItem(
+			200, warehouseItem2.getExternalReferenceCode(),
+			warehouseItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			warehouseItemResource.getWarehouseItemHttpResponse(
+				warehouseItem2.getId()));
+	}
+
+	protected WarehouseItem testBatchEngineDeleteImportTask_addWarehouseItem()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteWarehouseItem_addWarehouseItem();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWarehouseItem(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseItem",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected WarehouseItem testGraphQLWarehouseItem_addWarehouseItem()

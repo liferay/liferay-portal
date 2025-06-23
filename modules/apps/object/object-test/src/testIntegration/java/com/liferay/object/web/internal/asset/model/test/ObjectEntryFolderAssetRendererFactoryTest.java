@@ -56,7 +56,7 @@ public class ObjectEntryFolderAssetRendererFactoryTest {
 	public void testGetAssetRenderer() throws Exception {
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.addObjectEntryFolder(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				null, _group.getGroupId(), TestPropsValues.getUserId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				RandomTestUtil.randomString(),

@@ -196,15 +196,16 @@ public abstract class BaseAccountResourceTestCase {
 		assertValid(getAccount);
 	}
 
+	protected Account testGetOrderByExternalReferenceCodeAccount_addAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetOrderByExternalReferenceCodeAccount_getExternalReferenceCode(
 				Account account)
-		throws Exception {
-
-		return account.getExternalReferenceCode();
-	}
-
-	protected Account testGetOrderByExternalReferenceCodeAccount_addAccount()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -273,7 +274,8 @@ public abstract class BaseAccountResourceTestCase {
 				Account account)
 		throws Exception {
 
-		return account.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -342,13 +344,14 @@ public abstract class BaseAccountResourceTestCase {
 		assertValid(getAccount);
 	}
 
+	protected Account testGetOrderIdAccount_addAccount() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long testGetOrderIdAccount_getId(Account account)
 		throws Exception {
 
-		return account.getId();
-	}
-
-	protected Account testGetOrderIdAccount_addAccount() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -407,7 +410,8 @@ public abstract class BaseAccountResourceTestCase {
 	protected Long testGraphQLGetOrderIdAccount_getId(Account account)
 		throws Exception {
 
-		return account.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -468,14 +472,14 @@ public abstract class BaseAccountResourceTestCase {
 		assertValid(getAccount);
 	}
 
-	protected Long testGetOrderRuleAccountAccount_getOrderRuleAccountId()
+	protected Account testGetOrderRuleAccountAccount_addAccount()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Account testGetOrderRuleAccountAccount_addAccount()
+	protected Long testGetOrderRuleAccountAccount_getOrderRuleAccountId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

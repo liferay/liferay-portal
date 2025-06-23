@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Product Navigation Product Menu Web
 Bundle-SymbolicName: com.liferay.product.navigation.product.menu.web
-Bundle-Version: 6.0.123
+Bundle-Version: 6.0.124
 Web-ContextPath: /product-navigation-product-menu-web

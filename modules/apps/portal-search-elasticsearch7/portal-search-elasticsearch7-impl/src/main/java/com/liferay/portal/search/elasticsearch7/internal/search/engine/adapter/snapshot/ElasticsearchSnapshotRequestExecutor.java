@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.snapshot;
 
+import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.engine.adapter.snapshot.CreateSnapshotRepositoryRequest;
 import com.liferay.portal.search.engine.adapter.snapshot.CreateSnapshotRepositoryResponse;
 import com.liferay.portal.search.engine.adapter.snapshot.CreateSnapshotRequest;
@@ -19,6 +20,7 @@ import com.liferay.portal.search.engine.adapter.snapshot.RestoreSnapshotRequest;
 import com.liferay.portal.search.engine.adapter.snapshot.RestoreSnapshotResponse;
 import com.liferay.portal.search.engine.adapter.snapshot.SnapshotRequestExecutor;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -76,24 +78,34 @@ public class ElasticsearchSnapshotRequestExecutor
 		return restoreSnapshotRequestExecutor.execute(restoreSnapshotRequest);
 	}
 
-	@Reference
+	@Activate
+	protected void activate() {
+		createSnapshotRepositoryRequestExecutor =
+			new CreateSnapshotRepositoryRequestExecutor(
+				_elasticsearchClientResolver);
+		createSnapshotRequestExecutor = new CreateSnapshotRequestExecutor(
+			_elasticsearchClientResolver);
+		deleteSnapshotRequestExecutor = new DeleteSnapshotRequestExecutor(
+			_elasticsearchClientResolver);
+		getSnapshotRepositoriesRequestExecutor =
+			new GetSnapshotRepositoriesRequestExecutor(
+				_elasticsearchClientResolver);
+		getSnapshotsRequestExecutor = new GetSnapshotsRequestExecutor(
+			_elasticsearchClientResolver);
+		restoreSnapshotRequestExecutor = new RestoreSnapshotRequestExecutor(
+			_elasticsearchClientResolver);
+	}
+
 	protected CreateSnapshotRepositoryRequestExecutor
 		createSnapshotRepositoryRequestExecutor;
-
-	@Reference
 	protected CreateSnapshotRequestExecutor createSnapshotRequestExecutor;
-
-	@Reference
 	protected DeleteSnapshotRequestExecutor deleteSnapshotRequestExecutor;
-
-	@Reference
 	protected GetSnapshotRepositoriesRequestExecutor
 		getSnapshotRepositoriesRequestExecutor;
-
-	@Reference
 	protected GetSnapshotsRequestExecutor getSnapshotsRequestExecutor;
+	protected RestoreSnapshotRequestExecutor restoreSnapshotRequestExecutor;
 
 	@Reference
-	protected RestoreSnapshotRequestExecutor restoreSnapshotRequestExecutor;
+	private ElasticsearchClientResolver _elasticsearchClientResolver;
 
 }

@@ -188,14 +188,14 @@ public abstract class BaseSLAResultResourceTestCase {
 		assertValid(getSLAResult);
 	}
 
-	protected Long testGetProcessLastSLAResult_getProcessId() throws Exception {
+	protected SLAResult testGetProcessLastSLAResult_addSLAResult()
+		throws Exception {
+
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected SLAResult testGetProcessLastSLAResult_addSLAResult()
-		throws Exception {
-
+	protected Long testGetProcessLastSLAResult_getProcessId() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}

@@ -180,7 +180,16 @@ public abstract class BaseDataSourceResourceTestCase {
 
 	@Test
 	public void testDeleteDataSource() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DataSource dataSource = testDeleteDataSource_addDataSource();
+
+		assertHttpResponseStatusCode(
+			204, dataSourceResource.deleteDataSourceHttpResponse());
+	}
+
+	protected DataSource testDeleteDataSource_addDataSource() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -274,6 +283,10 @@ public abstract class BaseDataSourceResourceTestCase {
 
 	protected void assertValid(DataSource dataSource) throws Exception {
 		boolean valid = true;
+
+		if (dataSource.getDataSourceId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

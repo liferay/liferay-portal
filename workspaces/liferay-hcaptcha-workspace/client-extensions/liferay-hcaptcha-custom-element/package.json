@@ -1,0 +1,16 @@
+{
+	"dependencies": {
+		"@hcaptcha/react-hcaptcha": "^1.12.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"devDependencies": {
+		"esbuild": "^0.20.2"
+	},
+	"name": "@liferay/liferay-hcaptcha-custom-element",
+	"private": true,
+	"scripts": {
+		"build": "esbuild src/index.js --outdir=build/static --bundle --entry-names=[name].[hash] --format=esm --external:react --external:react-dom --loader:.js=jsx"
+	},
+	"version": "0.0.0"
+}

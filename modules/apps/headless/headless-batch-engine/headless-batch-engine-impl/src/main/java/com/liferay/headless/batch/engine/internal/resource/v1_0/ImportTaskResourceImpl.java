@@ -30,6 +30,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
@@ -412,6 +413,33 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 		return unsyncByteArrayOutputStream;
 	}
 
+	private boolean _hasUniqueScopeParameters(
+		Map<String, Serializable> parameters) {
+
+		Set<String> assetLibraryScopeKeys = SetUtil.fromArray(
+			"assetLibraryExternalReferenceCode", "assetLibraryId");
+		Set<String> siteScopeKeys = SetUtil.fromArray(
+			"siteExternalReferenceCode", "siteId");
+
+		boolean hasAssetLibraryScopeKey = false;
+		boolean hasSiteScopeKey = false;
+
+		for (String key : parameters.keySet()) {
+			if (assetLibraryScopeKeys.contains(key)) {
+				hasAssetLibraryScopeKey = true;
+			}
+			else if (siteScopeKeys.contains(key)) {
+				hasSiteScopeKey = true;
+			}
+
+			if (hasAssetLibraryScopeKey && hasSiteScopeKey) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private ImportTask _importFile(
 			BatchEngineTaskOperation batchEngineTaskOperation,
 			String batchExternalReferenceCode, BinaryFile binaryFile,
@@ -455,12 +483,13 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 				"Unknown class name: " + className);
 		}
 
-		ExecutorService executorService =
-			_portalExecutorManager.getPortalExecutor(
-				ImportTaskResourceImpl.class.getName());
-
 		Map<String, Serializable> parameters = ParametersUtil.toParameters(
 			contextUriInfo, _ignoredParameters);
+
+		if (!_hasUniqueScopeParameters(parameters)) {
+			throw new IllegalArgumentException(
+				"Unsupported combination of scope parameters");
+		}
 
 		if (Validator.isNotNull(batchExternalReferenceCode)) {
 			parameters.put("externalReferenceCode", batchExternalReferenceCode);
@@ -492,6 +521,10 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 				_toImportStrategy(importStrategy),
 				batchEngineTaskOperation.name(), parameters,
 				taskItemDelegateName);
+
+		ExecutorService executorService =
+			_portalExecutorManager.getPortalExecutor(
+				ImportTaskResourceImpl.class.getName());
 
 		executorService.submit(
 			() -> _batchEngineImportTaskExecutor.execute(

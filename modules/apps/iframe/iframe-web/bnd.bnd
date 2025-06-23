@@ -1,4 +1,4 @@
 Bundle-Name: Liferay IFrame Web
 Bundle-SymbolicName: com.liferay.iframe.web
-Bundle-Version: 5.0.45
+Bundle-Version: 5.0.46
 Web-ContextPath: /iframe-web

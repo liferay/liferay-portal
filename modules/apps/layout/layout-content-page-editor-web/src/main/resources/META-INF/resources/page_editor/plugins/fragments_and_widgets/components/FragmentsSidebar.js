@@ -243,78 +243,78 @@ export default function FragmentsSidebar() {
 						onChange={setSearchValue}
 					/>
 
-					<ClayDropDownWithItems
-						className="flex-shrink-0"
-						items={[
-							{
-								label: Liferay.Language.get('reorder-sets'),
-								onClick: () => {
-									setShowReorderModal(true);
+					<div className="d-flex flex-shrink-0">
+						<ClayDropDownWithItems
+							items={[
+								{
+									label: Liferay.Language.get('reorder-sets'),
+									onClick: () => {
+										setShowReorderModal(true);
+									},
+									symbolLeft: 'order-arrow',
 								},
-								symbolLeft: 'order-arrow',
-							},
-							{
-								disabled: displayStyleButtonDisabled,
-								label: viewButtonLabel,
-								onClick: () => {
-									setDisplayStyle(
+								{
+									disabled: displayStyleButtonDisabled,
+									label: viewButtonLabel,
+									onClick: () => {
+										setDisplayStyle(
+											displayStyle ===
+												FRAGMENTS_DISPLAY_STYLES.LIST
+												? FRAGMENTS_DISPLAY_STYLES.CARDS
+												: FRAGMENTS_DISPLAY_STYLES.LIST
+										);
+									},
+									symbolLeft:
+										displayStyleButtonDisabled ||
 										displayStyle ===
 											FRAGMENTS_DISPLAY_STYLES.LIST
-											? FRAGMENTS_DISPLAY_STYLES.CARDS
-											: FRAGMENTS_DISPLAY_STYLES.LIST
-									);
+											? 'cards2'
+											: 'list',
 								},
-								symbolLeft:
-									displayStyleButtonDisabled ||
-									displayStyle ===
-										FRAGMENTS_DISPLAY_STYLES.LIST
-										? 'cards2'
-										: 'list',
-							},
-						]}
-						renderMenuOnClick
-						trigger={
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get(
-									'components-options'
-								)}
-								className="components-options ml-2"
-								data-tooltip-align="top"
-								displayType="unstyled"
-								size="sm"
-								symbol="ellipsis-v"
-								title={Liferay.Language.get(
-									'components-options'
-								)}
-							/>
-						}
-					/>
-
-					{Liferay.FeatureFlags['LPD-34938'] &&
-					permissions.VIEW_MARKETPLACE ? (
-						<MarketplaceButton
-							body={Liferay.Language.get(
-								'we-are-excited-to-share-that-marketplace-is-now-part-of-page-builder'
-							)}
-							className="ml-1"
-							fragmentPortletNamespace={
-								config.fragmentPortletNamespace
+							]}
+							renderMenuOnClick
+							trigger={
+								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get(
+										'components-options'
+									)}
+									className="components-options ml-2"
+									data-tooltip-align="top"
+									displayType="unstyled"
+									size="sm"
+									symbol="ellipsis-v"
+									title={Liferay.Language.get(
+										'components-options'
+									)}
+								/>
 							}
-							fragmentsImportURL={config.fragmentsImportURL}
-							heading={Liferay.Language.get(
-								'marketplace-is-now-in-page-builder'
-							)}
-							permissions={{
-								installFreeApps:
-									permissions.INSTALL_FREE_BUNDLED_APPS_MARKETPLACE,
-								manageFragmentsEntries:
-									permissions.MANAGE_FRAGMENT_ENTRIES,
-								purchaseAndInstallPaidApps:
-									permissions.PURCHASE_AND_INSTALL_PAID_APPS_MARKETPLACE,
-							}}
-							portletNamespace={config.portletNamespace}
 						/>
-					) : null}
+
+						{permissions.VIEW_MARKETPLACE ? (
+							<MarketplaceButton
+								body={Liferay.Language.get(
+									'we-are-excited-to-share-that-marketplace-is-now-part-of-page-builder'
+								)}
+								className="ml-1"
+								fragmentPortletNamespace={
+									config.fragmentPortletNamespace
+								}
+								fragmentsImportURL={config.fragmentsImportURL}
+								heading={Liferay.Language.get(
+									'marketplace-is-now-in-page-builder'
+								)}
+								permissions={{
+									installFreeApps:
+										permissions.INSTALL_FREE_BUNDLED_APPS_MARKETPLACE,
+									manageFragmentsEntries:
+										permissions.MANAGE_FRAGMENT_ENTRIES,
+									purchaseAndInstallPaidApps:
+										permissions.PURCHASE_AND_INSTALL_PAID_APPS_MARKETPLACE,
+								}}
+								portletNamespace={config.portletNamespace}
+							/>
+						) : null}
+					</div>
 				</div>
 
 				{searchValue ? (

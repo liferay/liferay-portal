@@ -185,14 +185,14 @@ public abstract class BaseOrderTypeResourceTestCase {
 		assertValid(getOrderType);
 	}
 
-	protected Long testGetDiscountOrderTypeOrderType_getDiscountOrderTypeId()
+	protected OrderType testGetDiscountOrderTypeOrderType_addOrderType()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderType testGetDiscountOrderTypeOrderType_addOrderType()
+	protected Long testGetDiscountOrderTypeOrderType_getDiscountOrderTypeId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -324,14 +324,14 @@ public abstract class BaseOrderTypeResourceTestCase {
 		assertValid(getOrderType);
 	}
 
-	protected Long testGetPriceListOrderTypeOrderType_getPriceListOrderTypeId()
+	protected OrderType testGetPriceListOrderTypeOrderType_addOrderType()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderType testGetPriceListOrderTypeOrderType_addOrderType()
+	protected Long testGetPriceListOrderTypeOrderType_getPriceListOrderTypeId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

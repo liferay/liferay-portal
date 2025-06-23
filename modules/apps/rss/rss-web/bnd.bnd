@@ -1,5 +1,5 @@
 Bundle-Name: Liferay RSS Web
 Bundle-SymbolicName: com.liferay.rss.web
-Bundle-Version: 7.0.54
+Bundle-Version: 7.0.55
 Web-ContextPath: /rss-web
 -dsannotations-options: inherit

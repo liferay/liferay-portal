@@ -237,7 +237,7 @@ describe('FormInputGeneralPanel', () => {
 	it('shows configuration fieldset when fragment is mapped', () => {
 		renderComponent({mappedFieldId: 'requiredField'});
 
-		expect(screen.getByText('x-configuration')).toBeInTheDocument();
+		expect(screen.getByText('fragment-configuration')).toBeInTheDocument();
 	});
 
 	it('shows checkbox to set field as required disabled when fragment is mapped to a required field', () => {

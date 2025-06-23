@@ -3016,6 +3016,24 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
+					"externalReferenceCode": "DURATION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Duration"
+					},
+					"localized": false,
+					"name": "duration",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
 					"externalReferenceCode": "EMAIL_TEMPLATES_URL",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -3279,7 +3297,12 @@
 												{
 													"objectFieldName": "emailTemplatesURL",
 													"priority": 0,
-													"size": 12
+													"size": 6
+												},
+												{
+													"objectFieldName": "duration",
+													"priority": 0,
+													"size": 6
 												}
 											],
 											"priority": 0

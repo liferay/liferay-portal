@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Utility Page Cookie Policy
 Bundle-SymbolicName: com.liferay.layout.utility.page.cookie.policy
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Web-ContextPath: /layout-utility-page-cookie-policy

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -346,7 +347,7 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 			testDeleteSXPBlueprintBatch_addSXPBlueprint();
 
 		testDeleteSXPBlueprintBatch_deleteSXPBlueprint(
-			"COMPLETED", null, sxpBlueprint1.getId());
+			202, null, sxpBlueprint1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -361,7 +362,7 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 	}
 
 	protected void testDeleteSXPBlueprintBatch_deleteSXPBlueprint(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -374,10 +375,10 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1332,18 +1333,73 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 	}
 
 	protected SXPBlueprint
+			testPutSXPBlueprintByExternalReferenceCode_addSXPBlueprint()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected SXPBlueprint
 			testPutSXPBlueprintByExternalReferenceCode_createSXPBlueprint()
 		throws Exception {
 
 		return randomSXPBlueprint();
 	}
 
-	protected SXPBlueprint
-			testPutSXPBlueprintByExternalReferenceCode_addSXPBlueprint()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		SXPBlueprint sxpBlueprint1 =
+			testBatchEngineDeleteImportTask_addSXPBlueprint();
+
+		testBatchEngineDeleteImportTask_deleteSXPBlueprint(
+			200, null, sxpBlueprint1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			sxpBlueprintResource.getSXPBlueprintHttpResponse(
+				sxpBlueprint1.getId()));
+	}
+
+	protected SXPBlueprint testBatchEngineDeleteImportTask_addSXPBlueprint()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteSXPBlueprint_addSXPBlueprint();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteSXPBlueprint(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.search.experiences.rest.dto.v1_0.SXPBlueprint",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

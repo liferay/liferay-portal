@@ -2,13 +2,13 @@
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
 		"@clayui/button": "3.136.0",
-		"@clayui/css": "3.138.0",
-		"@clayui/drop-down": "3.138.0",
+		"@clayui/css": "3.139.1",
+		"@clayui/drop-down": "3.139.1",
 		"@clayui/icon": "3.128.0",
 		"@clayui/layout": "3.128.0",
 		"@clayui/link": "3.128.0",
-		"@clayui/modal": "3.137.0",
-		"@clayui/popover": "3.137.0",
+		"@clayui/modal": "3.139.0",
+		"@clayui/popover": "3.139.0",
 		"graphiql": "1.4.7",
 		"graphql": "^15.0.0",
 		"react": "18.2.0",
@@ -21,5 +21,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "4.0.58"
+	"version": "4.0.59"
 }

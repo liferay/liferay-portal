@@ -320,6 +320,11 @@ public abstract class BaseEmbeddingModelResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		EmbeddingModel embeddingModel, List<EmbeddingModel> embeddingModels) {
 

@@ -729,6 +729,11 @@ public abstract class BaseSiteResourceTestCase {
 		return testGraphQLSite_addSite();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected Site testGraphQLSite_addSite() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");

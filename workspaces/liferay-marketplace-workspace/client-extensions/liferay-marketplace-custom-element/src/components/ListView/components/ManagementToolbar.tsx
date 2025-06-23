@@ -3,189 +3,76 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import Button, {ClayButtonWithIcon} from '@clayui/button';
-import DropDown from '@clayui/drop-down';
-import {Item} from '@clayui/drop-down/lib/Items';
-import {ClayInput} from '@clayui/form';
-import Icon from '@clayui/icon';
-import {ClayResultsBar} from '@clayui/management-toolbar';
-import ManagementToolbar from '@clayui/management-toolbar/lib/ManagementToolbar';
-import {ReactElement, useContext, useState} from 'react';
+import ClayManagementToolbar from '@clayui/management-toolbar';
+import {ReactElement, ReactNode, useContext} from 'react';
 
-import i18n from '../../../i18n';
 import {
-	AppActions,
-	ListViewContext,
-	ListViewTypes,
-} from '../hooks/ListViewContext';
-
-type FilterGroup = {
-	children: FilterOption[];
-	name: string;
-};
-
-export type FilterOption = Omit<Item, 'onClick'> & {
-	onClick: ((param: React.Dispatch<AppActions>) => void) | (() => void);
-};
+	FilterSchemaOption,
+	filterSchema as filterSchemas,
+} from '../../../schema/filters';
+import {ListViewContext} from '../hooks/ListViewContext';
+import ManagementToolbarFilter from './ManagementToolbarFilters/ManagementToolbarFilters';
+import ManagementToolbarResultsBar from './ManagementToolbarResultsBar/ManagementToolbarResultsBar';
+import ManagementToolbarSearch from './ManagementToolbarSearch';
 
 export type ManagementToolbarProps = {
-	actionButton?: ({filter}: {filter: string}) => ReactElement;
-	filterItems?: FilterGroup[];
-	hasOrderExportCSV?: boolean;
-	results?: number;
-};
-
-export function ListViewManagementToolbar({
-	actionButton,
-	filterItems,
-	results,
-}: ManagementToolbarProps) {
-	const [{filters, keywords}, dispatch] = useContext(ListViewContext);
-	const [searchInput, setSearchInput] = useState(keywords);
-
-	const [filterKey] = Object.keys(filters.filter);
-	const filter = filters.filter[filterKey];
-
-	const clearSearch = () => {
-		dispatch({
-			payload: null,
-			type: ListViewTypes.SET_CLEAR,
-		});
-
-		setSearchInput('');
+	actionButton?: (
+		filter: {
+			[key: string]: string;
+		},
+		filterSchema?: FilterSchemaOption
+	) => ReactElement;
+	actions: any;
+	buttons?: ReactNode | ((actions: any) => ReactNode);
+	display?: {
+		columns?: boolean;
 	};
 
+	/**
+	 * Check out the file {src/schema/filter.ts}
+	 */
+	filterSchema?: FilterSchemaOption;
+	searchVisible?: boolean;
+	title?: string;
+	totalItems: number;
+	visible?: boolean;
+};
+
+const ManagementToolbar: React.FC<ManagementToolbarProps> = ({
+	actionButton,
+	filterSchema,
+	searchVisible = false,
+	totalItems,
+}) => {
+	const [{filters}] = useContext(ListViewContext);
+
 	return (
-		<ManagementToolbar>
-			{filterItems && (
-				<DropDown
-					closeOnClick
-					trigger={
-						<Button className="nav-link" displayType="unstyled">
-							<span className="mr-3">
-								<Icon symbol="filter" />
-							</span>
-							<span className="navbar-text-truncate">
-								{i18n.translate('filter')}
-							</span>
-						</Button>
-					}
-				>
-					<DropDown.ItemList>
-						{filterItems.map((items) => {
-							return (
-								<DropDown.Group
-									header={items.name}
-									items={items.children}
-									key={items.name}
-								>
-									{(item) => (
-										<DropDown.Item
-											key={item.name}
-											onClick={() => {
-												item.onClick?.(dispatch);
-											}}
-										>
-											{item.name}
-										</DropDown.Item>
-									)}
-								</DropDown.Group>
-							);
-						})}
-					</DropDown.ItemList>
-				</DropDown>
-			)}
-			<ManagementToolbar.Search
-				onSubmit={(event) => {
-					event.preventDefault();
-
-					dispatch({
-						payload: searchInput,
-						type: ListViewTypes.SET_SEARCH,
-					});
-				}}
-			>
-				<ClayInput.Group>
-					<ClayInput.GroupItem>
-						<ClayInput
-							aria-label="Search"
-							className="bg-white form-control input-group-inset input-group-inset-after"
-							onChange={(event) =>
-								setSearchInput(event.target.value)
+		<>
+			<ClayManagementToolbar>
+				<div className="d-flex justify-content-between w-100">
+					{filterSchema && (
+						<ManagementToolbarFilter
+							filterSchema={
+								(filterSchemas as any)[filterSchema ?? '']
 							}
-							placeholder="Search"
-							type="text"
-							value={searchInput}
 						/>
+					)}
 
-						<ClayInput.GroupInsetItem
-							after
-							className="bg-white"
-							tag="span"
-						>
-							<ClayButtonWithIcon
-								aria-label="Search"
-								displayType="unstyled"
-								onClick={() =>
-									dispatch({
-										payload: searchInput,
-										type: ListViewTypes.SET_SEARCH,
-									})
-								}
-								symbol="search"
-							/>
-
-							{(keywords || filter) && (
-								<ClayButtonWithIcon
-									aria-label="Clear"
-									displayType="unstyled"
-									onClick={clearSearch}
-									symbol="times"
-								/>
-							)}
-						</ClayInput.GroupInsetItem>
-					</ClayInput.GroupItem>
-				</ClayInput.Group>
-			</ManagementToolbar.Search>
-
-			{actionButton && actionButton({filter})}
-
-			{(filter || keywords) && (
-				<div className="d-block w-100">
-					<ClayResultsBar>
-						<ClayResultsBar.Item>
-							<span className="component-text text-truncate-inline">
-								<span className="text-truncate">
-									{i18n.sub('x-results-for', String(results))}
-
-									<strong className="m-1">
-										{keywords || filter}
-									</strong>
-
-									{keywords && filter && (
-										<span>
-											{i18n.translate('and')}
-											<strong className="ml-1">
-												{filter}
-											</strong>
-										</span>
-									)}
-								</span>
-							</span>
-						</ClayResultsBar.Item>
-
-						<ClayResultsBar.Item className="ml-auto">
-							<Button
-								className="component-link tbar-link"
-								displayType="unstyled"
-								onClick={clearSearch}
-							>
-								{i18n.translate('clear')}
-							</Button>
-						</ClayResultsBar.Item>
-					</ClayResultsBar>
+					{!!searchVisible && (
+						<div className="d-flex w-100">
+							<ManagementToolbarSearch />
+							{actionButton &&
+								actionButton(filters.filter, filterSchema)}
+						</div>
+					)}
 				</div>
-			)}
-		</ManagementToolbar>
+
+				{!!filters.entries?.filter(({value}) => value).length && (
+					<ManagementToolbarResultsBar totalItems={totalItems} />
+				)}
+			</ClayManagementToolbar>
+		</>
 	);
-}
+};
+
+export default ManagementToolbar;

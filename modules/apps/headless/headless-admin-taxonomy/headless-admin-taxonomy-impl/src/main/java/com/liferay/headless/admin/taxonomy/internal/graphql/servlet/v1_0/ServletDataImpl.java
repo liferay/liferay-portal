@@ -188,6 +188,16 @@ public class ServletDataImpl implements ServletData {
 							KeywordResourceImpl.class,
 							"putSiteKeywordPermissionsPage"));
 					put(
+						"mutation#deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode"));
+					put(
+						"mutation#deleteSiteTaxonomyCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"deleteSiteTaxonomyCategoryByExternalReferenceCode"));
+					put(
 						"mutation#deleteTaxonomyCategory",
 						new ObjectValuePair<>(
 							TaxonomyCategoryResourceImpl.class,
@@ -208,6 +218,36 @@ public class ServletDataImpl implements ServletData {
 							TaxonomyCategoryResourceImpl.class,
 							"patchTaxonomyCategory"));
 					put(
+						"mutation#createAssetLibraryTaxonomyCategoriesPageExportBatch",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"postAssetLibraryTaxonomyCategoriesPageExportBatch"));
+					put(
+						"mutation#createAssetLibraryTaxonomyCategory",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"postAssetLibraryTaxonomyCategory"));
+					put(
+						"mutation#createAssetLibraryTaxonomyCategoryBatch",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"postAssetLibraryTaxonomyCategoryBatch"));
+					put(
+						"mutation#createSiteTaxonomyCategoriesPageExportBatch",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"postSiteTaxonomyCategoriesPageExportBatch"));
+					put(
+						"mutation#createSiteTaxonomyCategory",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"postSiteTaxonomyCategory"));
+					put(
+						"mutation#createSiteTaxonomyCategoryBatch",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"postSiteTaxonomyCategoryBatch"));
+					put(
 						"mutation#createTaxonomyCategoryTaxonomyCategory",
 						new ObjectValuePair<>(
 							TaxonomyCategoryResourceImpl.class,
@@ -227,6 +267,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							TaxonomyCategoryResourceImpl.class,
 							"postTaxonomyVocabularyTaxonomyCategoryBatch"));
+					put(
+						"mutation#updateAssetLibraryTaxonomyCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"putAssetLibraryTaxonomyCategoryByExternalReferenceCode"));
+					put(
+						"mutation#updateSiteTaxonomyCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"putSiteTaxonomyCategoryByExternalReferenceCode"));
 					put(
 						"mutation#updateTaxonomyCategory",
 						new ObjectValuePair<>(
@@ -395,6 +445,26 @@ public class ServletDataImpl implements ServletData {
 						"query#siteKeywords",
 						new ObjectValuePair<>(
 							KeywordResourceImpl.class, "getSiteKeywordsPage"));
+					put(
+						"query#assetLibraryTaxonomyCategories",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"getAssetLibraryTaxonomyCategoriesPage"));
+					put(
+						"query#assetLibraryTaxonomyCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"getAssetLibraryTaxonomyCategoryByExternalReferenceCode"));
+					put(
+						"query#taxonomyCategories",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"getSiteTaxonomyCategoriesPage"));
+					put(
+						"query#taxonomyCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxonomyCategoryResourceImpl.class,
+							"getSiteTaxonomyCategoryByExternalReferenceCode"));
 					put(
 						"query#taxonomyCategoriesRanked",
 						new ObjectValuePair<>(

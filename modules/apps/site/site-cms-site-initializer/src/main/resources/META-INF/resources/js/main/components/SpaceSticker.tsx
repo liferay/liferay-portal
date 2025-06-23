@@ -6,7 +6,17 @@
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
-export type LogoColor = React.ComponentProps<typeof ClaySticker>['displayType'];
+export type LogoColor =
+	| 'outline-0'
+	| 'outline-1'
+	| 'outline-2'
+	| 'outline-3'
+	| 'outline-4'
+	| 'outline-5'
+	| 'outline-6'
+	| 'outline-7'
+	| 'outline-8'
+	| 'outline-9';
 
 export const logoColors: LogoColor[] = [
 	'outline-0',
@@ -39,7 +49,7 @@ export default function SpaceSticker({
 	'className' | 'displayType' | 'id' | 'size'
 >) {
 	return (
-		<>
+		<div className="align-items-center d-flex">
 			<ClaySticker
 				displayType={displayType || getDisplayType(name)}
 				size={size}
@@ -49,6 +59,6 @@ export default function SpaceSticker({
 			</ClaySticker>
 
 			{!hideName && <span className="ml-2">{name}</span>}
-		</>
+		</div>
 	);
 }

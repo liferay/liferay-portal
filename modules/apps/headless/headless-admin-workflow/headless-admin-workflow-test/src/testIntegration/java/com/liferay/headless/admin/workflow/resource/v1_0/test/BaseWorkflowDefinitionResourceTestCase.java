@@ -20,6 +20,7 @@ import com.liferay.headless.admin.workflow.client.pagination.Pagination;
 import com.liferay.headless.admin.workflow.client.resource.v1_0.WorkflowDefinitionResource;
 import com.liferay.headless.admin.workflow.client.serdes.v1_0.WorkflowDefinitionSerDes;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -350,7 +351,7 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 			testDeleteWorkflowDefinitionBatch_addWorkflowDefinition();
 
 		testDeleteWorkflowDefinitionBatch_deleteWorkflowDefinition(
-			"COMPLETED", null, workflowDefinition1.getId());
+			202, null, workflowDefinition1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -366,7 +367,7 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 	}
 
 	protected void testDeleteWorkflowDefinitionBatch_deleteWorkflowDefinition(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -380,10 +381,10 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1356,6 +1357,62 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WorkflowDefinition workflowDefinition1 =
+			testBatchEngineDeleteImportTask_addWorkflowDefinition();
+
+		testBatchEngineDeleteImportTask_deleteWorkflowDefinition(
+			200, null, workflowDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			workflowDefinitionResource.getWorkflowDefinitionHttpResponse(
+				workflowDefinition1.getId()));
+	}
+
+	protected WorkflowDefinition
+			testBatchEngineDeleteImportTask_addWorkflowDefinition()
+		throws Exception {
+
+		return testDeleteWorkflowDefinition_addWorkflowDefinition();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWorkflowDefinition(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.admin.workflow.dto.v1_0.WorkflowDefinition",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected WorkflowDefinition

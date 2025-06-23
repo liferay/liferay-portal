@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Workflow Instance Tracker Web
 Bundle-SymbolicName: com.liferay.portal.workflow.instance.tracker.web
-Bundle-Version: 1.0.55
+Bundle-Version: 1.0.56
 Web-ContextPath: /portal-workflow-instance-tracker-web

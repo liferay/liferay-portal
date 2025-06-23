@@ -13,6 +13,7 @@ import com.liferay.object.service.base.ObjectEntryVersionServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.List;
 
@@ -41,6 +42,20 @@ public class ObjectEntryVersionServiceImpl
 
 		return objectEntryVersionLocalService.deleteObjectEntryVersion(
 			objectEntryId, version);
+	}
+
+	@Override
+	public ObjectEntryVersion expireObjectEntryVersion(
+			ObjectEntry objectEntry, ServiceContext serviceContext, long userId,
+			int version)
+		throws PortalException {
+
+		_objectEntryService.checkModelResourcePermission(
+			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
+			ActionKeys.UPDATE);
+
+		return objectEntryVersionLocalService.expireObjectEntryVersion(
+			userId, objectEntry, version, serviceContext);
 	}
 
 	@Override

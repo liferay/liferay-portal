@@ -28,6 +28,13 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 public class NotificationQueueEntryResourceTest
 	extends BaseNotificationQueueEntryResourceTestCase {
 
+	@Ignore
+	@Override
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
 	@Override
 	@Test
 	public void testClientSerDesToDTO() throws Exception {

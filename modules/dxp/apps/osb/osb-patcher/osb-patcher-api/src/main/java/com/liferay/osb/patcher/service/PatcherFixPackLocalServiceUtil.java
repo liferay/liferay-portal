@@ -36,6 +36,15 @@ public class PatcherFixPackLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherFixPackLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static PatcherFixPack addPatcherFixPack(
+			long userId, long patcherFixComponentId,
+			long patcherProjectVersionId, int version, int status)
+		throws PortalException {
+
+		return getService().addPatcherFixPack(
+			userId, patcherFixComponentId, patcherProjectVersionId, version,
+			status);
+	}
 
 	/**
 	 * Adds the patcher fix pack to the database. Also notifies the appropriate model listeners.
@@ -265,6 +274,18 @@ public class PatcherFixPackLocalServiceUtil {
 		return getService().fetchPatcherFixPack(patcherFixPackId);
 	}
 
+	public static PatcherFixPack fetchPatcherFixPack(
+		long patcherProjectVersionId, String name) {
+
+		return getService().fetchPatcherFixPack(patcherProjectVersionId, name);
+	}
+
+	public static PatcherFixPack fetchPatcherFixPackByPatcherBuildId(
+		long patcherBuildId) {
+
+		return getService().fetchPatcherFixPackByPatcherBuildId(patcherBuildId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -300,6 +321,20 @@ public class PatcherFixPackLocalServiceUtil {
 		return getService().getPatcherFixPack(patcherFixPackId);
 	}
 
+	public static PatcherFixPack getPatcherFixPack(
+			long patcherProjectVersionId, String name)
+		throws PortalException {
+
+		return getService().getPatcherFixPack(patcherProjectVersionId, name);
+	}
+
+	public static PatcherFixPack getPatcherFixPackByPatcherBuildId(
+			long patcherBuildId)
+		throws PortalException {
+
+		return getService().getPatcherFixPackByPatcherBuildId(patcherBuildId);
+	}
+
 	/**
 	 * Returns a range of all the patcher fix packs.
 	 *
@@ -313,6 +348,34 @@ public class PatcherFixPackLocalServiceUtil {
 	 */
 	public static List<PatcherFixPack> getPatcherFixPacks(int start, int end) {
 		return getService().getPatcherFixPacks(start, end);
+	}
+
+	public static List<PatcherFixPack> getPatcherFixPacks(
+		long patcherFixComponentId, int version) {
+
+		return getService().getPatcherFixPacks(patcherFixComponentId, version);
+	}
+
+	public static List<PatcherFixPack> getPatcherFixPacks(
+		long patcherFixComponentId, long patcherProjectVersionId, int version,
+		boolean older) {
+
+		return getService().getPatcherFixPacks(
+			patcherFixComponentId, patcherProjectVersionId, version, older);
+	}
+
+	public static List<PatcherFixPack>
+		getPatcherFixPacksByPatcherFixComponentId(long patcherFixComponentId) {
+
+		return getService().getPatcherFixPacksByPatcherFixComponentId(
+			patcherFixComponentId);
+	}
+
+	public static List<PatcherFixPack> getPatcherFixPacksByStatus(
+		long patcherProjectVersionId, int status) {
+
+		return getService().getPatcherFixPacksByStatus(
+			patcherProjectVersionId, status);
 	}
 
 	/**

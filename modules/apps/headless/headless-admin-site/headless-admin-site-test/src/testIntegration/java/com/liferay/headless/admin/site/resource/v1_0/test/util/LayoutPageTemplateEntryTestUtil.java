@@ -119,4 +119,31 @@ public class LayoutPageTemplateEntryTestUtil {
 			layoutPageTemplateEntry.getPlid());
 	}
 
+	public static LayoutPageTemplateEntry getWidgetPageLayoutPageTemplateEntry(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			LayoutPageTemplateCollectionLocalServiceUtil.
+				addLayoutPageTemplateCollection(
+					null, TestPropsValues.getUserId(),
+					serviceContext.getScopeGroupId(),
+					LayoutPageTemplateConstants.
+						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+					null, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					LayoutPageTemplateCollectionTypeConstants.BASIC,
+					serviceContext);
+
+		return LayoutPageTemplateEntryLocalServiceUtil.
+			addLayoutPageTemplateEntry(
+				null, TestPropsValues.getUserId(),
+				serviceContext.getScopeGroupId(),
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
+				null, RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE, 0,
+				WorkflowConstants.STATUS_APPROVED, serviceContext);
+	}
+
 }

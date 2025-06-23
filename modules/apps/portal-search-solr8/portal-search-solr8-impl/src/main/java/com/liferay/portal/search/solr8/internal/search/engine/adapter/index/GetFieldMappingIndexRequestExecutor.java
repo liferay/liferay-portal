@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.index.GetFieldMappingIndexRespon
 /**
  * @author Bryan Engler
  */
-public interface GetFieldMappingIndexRequestExecutor {
+public class GetFieldMappingIndexRequestExecutor {
 
 	public GetFieldMappingIndexResponse execute(
-		GetFieldMappingIndexRequest getFieldMappingIndexRequest);
+		GetFieldMappingIndexRequest getFieldMappingIndexRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

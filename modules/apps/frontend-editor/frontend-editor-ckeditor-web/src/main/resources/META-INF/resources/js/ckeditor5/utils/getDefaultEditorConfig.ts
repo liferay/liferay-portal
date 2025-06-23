@@ -6,6 +6,7 @@
 import {
 	Alignment,
 	BlockQuote,
+	BlockToolbar,
 	Bold,
 	EditorConfig,
 	Essentials,
@@ -49,6 +50,7 @@ const getDefaultEditorConfig = ({
 	preset: EEditorConfigPreset;
 }): EditorConfig => {
 	const basicPlugins = [
+		BlockToolbar,
 		Bold,
 		Essentials,
 		GeneralHtmlSupport,

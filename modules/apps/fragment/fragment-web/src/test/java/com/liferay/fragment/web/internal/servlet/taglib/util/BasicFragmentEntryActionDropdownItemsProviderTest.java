@@ -7,7 +7,6 @@ package com.liferay.fragment.web.internal.servlet.taglib.util;
 
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.portal.kernel.test.TestInfo;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.ClassRule;
@@ -85,7 +84,6 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 			"edit", "make-a-copy");
 	}
 
-	@FeatureFlag("LPD-34938")
 	@Test
 	public void testGetActionDropdownItemstForMarketplaceFragmentEntry()
 		throws Exception {

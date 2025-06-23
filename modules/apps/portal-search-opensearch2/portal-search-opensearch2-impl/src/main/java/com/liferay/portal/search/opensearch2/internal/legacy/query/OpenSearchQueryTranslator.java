@@ -56,19 +56,17 @@ import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
 import org.opensearch.client.opensearch._types.query_dsl.TextQueryType;
 import org.opensearch.client.opensearch._types.query_dsl.ZeroTermsQuery;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author André de Oliveira
  * @author Miguel Angelo Caldas Gallindo
  * @author Petteri Karttunen
  */
-@Component(
-	property = "search.engine.impl=OpenSearch", service = QueryTranslator.class
-)
 public class OpenSearchQueryTranslator
 	implements QueryTranslator<QueryVariant>, QueryVisitor<QueryVariant> {
+
+	public OpenSearchQueryTranslator(IndexNameBuilder indexNameBuilder) {
+		_indexNameBuilder = indexNameBuilder;
+	}
 
 	@Override
 	public QueryVariant translate(
@@ -675,7 +673,6 @@ public class OpenSearchQueryTranslator
 			Snapshot.cast(FilterTranslator.class),
 			"(search.engine.impl=OpenSearch)", true);
 
-	@Reference
-	private IndexNameBuilder _indexNameBuilder;
+	private final IndexNameBuilder _indexNameBuilder;
 
 }

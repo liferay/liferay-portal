@@ -218,6 +218,7 @@ public class BatchBuildTestrayCaseResult extends BuildTestrayCaseResult {
 
 		testrayAttachments.add(_getGradlePluginsAttachment());
 		testrayAttachments.add(_getJenkinsConsoleTestrayAttachment());
+		testrayAttachments.add(getTopLevelBuildDatabaseTestrayAttachment());
 		testrayAttachments.add(getTopLevelBuildReportTestrayAttachment());
 		testrayAttachments.add(getTopLevelJenkinsConsoleTestrayAttachment());
 		testrayAttachments.add(getTopLevelJenkinsReportTestrayAttachment());

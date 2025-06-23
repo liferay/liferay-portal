@@ -12,7 +12,7 @@
 <tbody>
 	<tr>
 		<td>TOGGLE_ROW</td>
-		<td>//*[@class="list-group-title"][contains(text(),'${title_row}')]//ancestor::li//label//span[contains(@class,'toggle-switch-label')][contains(text(),'${toggle_state}')]</td>
+		<td>//*[@class="list-group-title"][contains(.,'${title_row}')]//ancestor::li//label//span[contains(@class,'toggle-switch-label')][contains(text(),'${toggle_state}')]</td>
 		<td></td>
 	</tr>
 </tbody>

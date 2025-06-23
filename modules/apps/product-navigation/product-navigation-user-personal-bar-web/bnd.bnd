@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Product Navigation User Personal Bar Web
 Bundle-SymbolicName: com.liferay.product.navigation.user.personal.bar.web
-Bundle-Version: 6.0.39
+Bundle-Version: 6.0.40
 Web-ContextPath: /product-navigation-user-personal-bar-web

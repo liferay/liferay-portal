@@ -478,8 +478,35 @@ public abstract class BaseUserAccountResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		UnsafeFunction<UserAccount, UserAccount, Exception>
+			userAccountUnsafeFunction = userAccount -> {
+				if (parameters.containsKey(
+						"assetLibraryExternalReferenceCode")) {
+
+					deleteAssetLibraryUserAccount(
+						(Long)parameters.get("assetLibraryId"),
+						_parseLong((String)parameters.get("userId")));
+
+					return userAccount;
+				}
+
+				throw new UnsupportedOperationException(
+					"Unable to delete by external reference code or ID");
+			};
+
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				userAccounts, userAccountUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
+			contextBatchUnsafeConsumer.accept(
+				userAccounts, userAccountUnsafeFunction::apply);
+		}
+		else {
+			for (UserAccount userAccount : userAccounts) {
+				userAccountUnsafeFunction.apply(userAccount);
+			}
+		}
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
@@ -562,6 +589,14 @@ public abstract class BaseUserAccountResourceImpl
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	private Long _parseLong(String value) {
+		if (value != null) {
+			return Long.parseLong(value);
+		}
+
+		return null;
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {

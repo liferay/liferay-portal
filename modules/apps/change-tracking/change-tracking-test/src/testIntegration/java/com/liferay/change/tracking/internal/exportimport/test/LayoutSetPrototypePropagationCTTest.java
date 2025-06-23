@@ -54,124 +54,40 @@ public class LayoutSetPrototypePropagationCTTest {
 
 	@Test
 	public void testPropagation() throws Exception {
-		LayoutSetPrototype layoutSetPrototype =
-			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
+		_testPropagation(false);
+		_testPropagation(true);
+	}
 
-		Layout layoutSetPrototypeLayout =
-			_layoutLocalService.fetchDefaultLayout(
-				layoutSetPrototype.getGroupId(), true);
-
-		LayoutSet layoutSetPrototypeLayoutSet =
-			_layoutSetLocalService.getLayoutSet(
-				layoutSetPrototype.getGroupId(), false);
-
-		Group group = GroupTestUtil.addGroup();
-
-		_sites.updateLayoutSetPrototypesLinks(
-			group, layoutSetPrototype.getLayoutSetPrototypeId(), 0, true, true);
-
-		Thread.sleep(2000);
+	private void _assertLayoutPropagation(
+			long ctCollectionId, long groupId, boolean propagationComplete,
+			Layout layoutSetPrototypeLayout,
+			LayoutSet layoutSetPrototypeLayoutSet)
+		throws Exception {
 
 		Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-			group.getGroupId(), false,
-			layoutSetPrototypeLayout.getFriendlyURL());
+			groupId, false, layoutSetPrototypeLayout.getFriendlyURL());
+
+		Assert.assertEquals(ctCollectionId, layout.getCtCollectionId());
+
 		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-			group.getGroupId(), false);
+			groupId, false);
 
-		long faviconFileEntryId = RandomTestUtil.randomLong();
+		Assert.assertEquals(ctCollectionId, layoutSet.getCtCollectionId());
 
-		layoutSet.setFaviconFileEntryId(faviconFileEntryId);
-
-		layoutSet = _layoutSetLocalService.updateLayoutSet(layoutSet);
-
-		Assert.assertNotEquals(
-			layoutSet.getFaviconFileEntryId(),
-			layoutSetPrototypeLayoutSet.getFaviconFileEntryId());
-
-		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
-			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			0, RandomTestUtil.randomString(), null);
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					ctCollection.getCtCollectionId())) {
-
-			layoutSetPrototypeLayout.setPriority(RandomTestUtil.randomInt());
-
-			layoutSetPrototypeLayout = _layoutLocalService.updateLayout(
-				layoutSetPrototypeLayout);
-
-			layoutSetPrototype.setModifiedDate(new Date());
-
-			layoutSetPrototype =
-				_layoutSetPrototypeLocalService.updateLayoutSetPrototype(
-					layoutSetPrototype);
-
-			_propagateChanges(group);
-
-			layout = _layoutLocalService.getLayoutByFriendlyURL(
-				group.getGroupId(), false,
-				layoutSetPrototypeLayout.getFriendlyURL());
-			layoutSet = _layoutSetLocalService.getLayoutSet(
-				layoutSet.getLayoutSetId());
-
-			Assert.assertEquals(
-				ctCollection.getCtCollectionId(), layout.getCtCollectionId());
-			Assert.assertEquals(
-				ctCollection.getCtCollectionId(),
-				layoutSet.getCtCollectionId());
-			Assert.assertNotEquals(
-				faviconFileEntryId, layoutSet.getFaviconFileEntryId());
-			Assert.assertEquals(
-				layoutSetPrototypeLayout.getFaviconFileEntryId(),
-				layout.getFaviconFileEntryId());
+		if (propagationComplete) {
 			Assert.assertEquals(
 				layoutSetPrototypeLayout.getPriority(), layout.getPriority());
+			Assert.assertEquals(
+				layoutSetPrototypeLayoutSet.getFaviconFileEntryId(),
+				layoutSet.getFaviconFileEntryId());
 		}
-
-		_propagateChanges(group);
-
-		layout = _layoutLocalService.getLayoutByFriendlyURL(
-			group.getGroupId(), false,
-			layoutSetPrototypeLayout.getFriendlyURL());
-
-		Assert.assertEquals(
-			CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION,
-			layout.getCtCollectionId());
-		Assert.assertNotEquals(
-			layoutSetPrototypeLayout.getPriority(), layout.getPriority());
-
-		layoutSet = _layoutSetLocalService.getLayoutSet(
-			layoutSet.getLayoutSetId());
-
-		Assert.assertEquals(
-			CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION,
-			layoutSet.getCtCollectionId());
-		Assert.assertEquals(
-			faviconFileEntryId, layoutSet.getFaviconFileEntryId());
-
-		_ctProcessLocalService.addCTProcess(
-			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
-
-		_propagateChanges(group);
-
-		layout = _layoutLocalService.getLayoutByFriendlyURL(
-			group.getGroupId(), false,
-			layoutSetPrototypeLayout.getFriendlyURL());
-		layoutSetPrototypeLayout = _layoutLocalService.fetchDefaultLayout(
-			layoutSetPrototype.getGroupId(), true);
-
-		Assert.assertEquals(
-			layoutSetPrototypeLayout.getPriority(), layout.getPriority());
-
-		layoutSet = _layoutSetLocalService.getLayoutSet(
-			layoutSet.getLayoutSetId());
-		layoutSetPrototypeLayoutSet = _layoutSetLocalService.getLayoutSet(
-			layoutSetPrototype.getGroupId(), false);
-
-		Assert.assertEquals(
-			layoutSetPrototypeLayoutSet.getFaviconFileEntryId(),
-			layoutSet.getFaviconFileEntryId());
+		else {
+			Assert.assertNotEquals(
+				layoutSetPrototypeLayout.getPriority(), layout.getPriority());
+			Assert.assertNotEquals(
+				layoutSetPrototypeLayoutSet.getFaviconFileEntryId(),
+				layoutSet.getFaviconFileEntryId());
+		}
 	}
 
 	private void _propagateChanges(Group group) throws Exception {
@@ -203,6 +119,89 @@ public class LayoutSetPrototypePropagationCTTest {
 				Sites.MERGE_FAIL_COUNT));
 
 		Assert.assertEquals(0, mergeFailCount);
+	}
+
+	private void _testPropagation(boolean propagateInPublication)
+		throws Exception {
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
+
+		Layout layoutSetPrototypeLayout =
+			_layoutLocalService.fetchDefaultLayout(
+				layoutSetPrototype.getGroupId(), true);
+
+		LayoutSet layoutSetPrototypeLayoutSet =
+			_layoutSetLocalService.getLayoutSet(
+				layoutSetPrototype.getGroupId(), false);
+
+		Group group = GroupTestUtil.addGroup();
+
+		_sites.updateLayoutSetPrototypesLinks(
+			group, layoutSetPrototype.getLayoutSetPrototypeId(), 0, true, true);
+
+		Thread.sleep(2000);
+
+		LayoutSet groupLayoutSet = _layoutSetLocalService.getLayoutSet(
+			group.getGroupId(), false);
+
+		groupLayoutSet.setFaviconFileEntryId(RandomTestUtil.randomLong());
+
+		_layoutSetLocalService.updateLayoutSet(groupLayoutSet);
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			layoutSetPrototypeLayout.setPriority(RandomTestUtil.randomInt());
+
+			layoutSetPrototypeLayout = _layoutLocalService.updateLayout(
+				layoutSetPrototypeLayout);
+
+			layoutSetPrototype =
+				_layoutSetPrototypeLocalService.getLayoutSetPrototype(
+					layoutSetPrototype.getLayoutSetPrototypeId());
+
+			layoutSetPrototype.setModifiedDate(new Date());
+
+			_layoutSetPrototypeLocalService.updateLayoutSetPrototype(
+				layoutSetPrototype);
+
+			if (propagateInPublication) {
+				_propagateChanges(group);
+
+				_assertLayoutPropagation(
+					ctCollection.getCtCollectionId(), group.getGroupId(), true,
+					layoutSetPrototypeLayout, layoutSetPrototypeLayoutSet);
+			}
+			else {
+				_assertLayoutPropagation(
+					CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION,
+					group.getGroupId(), false, layoutSetPrototypeLayout,
+					layoutSetPrototypeLayoutSet);
+			}
+		}
+
+		_propagateChanges(group);
+
+		_assertLayoutPropagation(
+			CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION,
+			group.getGroupId(), false, layoutSetPrototypeLayout,
+			layoutSetPrototypeLayoutSet);
+
+		_ctProcessLocalService.addCTProcess(
+			TestPropsValues.getUserId(), ctCollection.getCtCollectionId());
+
+		_propagateChanges(group);
+
+		_assertLayoutPropagation(
+			CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION,
+			group.getGroupId(), true, layoutSetPrototypeLayout,
+			layoutSetPrototypeLayoutSet);
 	}
 
 	@Inject

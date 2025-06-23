@@ -169,16 +169,6 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	}
 
 	@Override
-	protected String
-			testGetChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeSkuByExternalReferenceCodeSkuExternalReferenceCode_getSkuExternalReferenceCode()
-		throws Exception {
-
-		CPInstance cpInstance = _cpInstances.get(_cpInstances.size() - 1);
-
-		return cpInstance.getExternalReferenceCode();
-	}
-
-	@Override
 	protected Sku
 			testGetChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeSkusPage_addSku(
 				String channelExternalReferenceCode,
@@ -214,6 +204,13 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	@Override
 	protected Long testGetChannelProductSku_getChannelId() throws Exception {
 		return _commerceChannel.getCommerceChannelId();
+	}
+
+	@Override
+	protected Long testGetChannelProductSku_getProductId(Sku sku)
+		throws Exception {
+
+		return sku.getProductId();
 	}
 
 	@Override

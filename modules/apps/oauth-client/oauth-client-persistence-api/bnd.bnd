@@ -1,6 +1,6 @@
 Bundle-Name: Liferay OAuth Client Persistence API
 Bundle-SymbolicName: com.liferay.oauth.client.persistence.api
-Bundle-Version: 4.0.1
+Bundle-Version: 4.0.2
 Export-Package:\
 	com.liferay.oauth.client.persistence.constants,\
 	com.liferay.oauth.client.persistence.exception,\

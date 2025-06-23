@@ -45,7 +45,7 @@ const test = mergeTests(
 	applicationsMenuPageTest,
 	collectionsPagesTest,
 	featureFlagsTest({
-		'LPD-34938': {enabled: true},
+		'LPD-11235': {enabled: true},
 		'LPS-169837': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
@@ -56,6 +56,16 @@ const test = mergeTests(
 	pageEditorPagesTest,
 	pageManagementSiteTest,
 	pageViewModePagesTest
+);
+
+const testWithCKEditor4 = mergeTests(
+	apiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
+	isolatedSiteTest,
+	loginTest(),
+	pageEditorPagesTest
 );
 
 const PANELS: SidebarTab[] = [
@@ -970,6 +980,75 @@ test.describe('Fragments Panel', () => {
 	);
 });
 
+// Remove when the feature flag LPD-11235 is removed
+
+testWithCKEditor4.describe('Page Contents Panel with CKEditor 4', () => {
+	testWithCKEditor4(
+		'Allows editing inline text from Page Content Panel with CKEditor 4',
+		async ({apiHelpers, page, pageEditorPage, site}) => {
+
+			// Create a page with a Heading fragment
+
+			const headingId = getRandomString();
+			const headingDefinition = getFragmentDefinition({
+				id: headingId,
+				key: 'BASIC_COMPONENT-heading',
+			});
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([headingDefinition]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			// Go to edit mode of page
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			// Go to Page Contents panel
+
+			await pageEditorPage.goToSidebarTab('Page Content');
+
+			// Hover the content and check that the fragment is hovered
+
+			const content = page.getByLabel('Edit Text Heading Example');
+
+			await content.hover();
+
+			const headingFragment = page.locator('.component-heading');
+
+			await expect(headingFragment).toHaveClass(
+				/page-editor__editable--content-hovered/
+			);
+
+			// Edit inline text
+
+			await content.click();
+
+			const editable = pageEditorPage.getEditable({
+				editableId: 'element-text',
+				fragmentId: headingId,
+			});
+
+			await editable.locator('[contenteditable="true"]').waitFor();
+
+			// Clear current content text and fill with new one
+
+			await page.keyboard.press('Control+KeyA');
+			await page.keyboard.press('Backspace');
+
+			await page.keyboard.type('New Content');
+			await page.locator('body').click();
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await expect(
+				page.locator('.page-editor__page-contents__page-content')
+			).toContainText('New Content');
+		}
+	);
+});
+
 test.describe('Page Contents Panel', () => {
 	const FRAGMENT_FIELDS = [
 		{
@@ -1037,7 +1116,7 @@ test.describe('Page Contents Panel', () => {
 			fragmentId: headingId,
 		});
 
-		await editable.locator('.cke_editable_inline').waitFor();
+		await editable.locator('[contenteditable="true"]').waitFor();
 
 		// Clear current content text and fill with new one
 
@@ -2510,6 +2589,51 @@ test.describe('Rules Panel', () => {
 			page,
 			selectors: ['.modal-body'],
 		});
+	});
+});
+
+test.describe('Comments Panel', () => {
+	test('Prevent fragment deletion by pressing the Backspace key while editing a comment', async ({
+		apiHelpers,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create content page with a Heading fragment and go to edit mode
+
+		const headingId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: headingId,
+					key: 'BASIC_COMPONENT-heading',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Add a comment to the heading fragment
+
+		await pageEditorPage.selectFragment(headingId);
+
+		await pageEditorPage.goToSidebarTab('Comments');
+
+		const editor = page.getByLabel('Add Comment');
+
+		await editor.click();
+
+		await page.keyboard.type('This is my commentt');
+
+		// Pres the Backspace key to remove
+
+		await page.keyboard.press('Backspace');
+
+		await expect(editor).toHaveText('This is my comment');
 	});
 });
 

@@ -11,8 +11,10 @@ import com.liferay.portal.search.engine.adapter.index.DeleteIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface DeleteIndexRequestExecutor {
+public class DeleteIndexRequestExecutor {
 
-	public DeleteIndexResponse execute(DeleteIndexRequest deleteIndexRequest);
+	public DeleteIndexResponse execute(DeleteIndexRequest deleteIndexRequest) {
+		throw new UnsupportedOperationException();
+	}
 
 }

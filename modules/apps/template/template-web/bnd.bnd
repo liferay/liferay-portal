@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Template Web
 Bundle-SymbolicName: com.liferay.template.web
-Bundle-Version: 1.0.101
+Bundle-Version: 1.0.102
 Web-ContextPath: /template-web

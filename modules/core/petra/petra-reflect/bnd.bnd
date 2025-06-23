@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Petra Reflect
 Bundle-SymbolicName: com.liferay.petra.reflect
-Bundle-Version: 7.2.0
+Bundle-Version: 7.2.1
 Export-Package: com.liferay.petra.reflect

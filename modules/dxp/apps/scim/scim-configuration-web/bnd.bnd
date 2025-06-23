@@ -1,4 +1,4 @@
 Bundle-Name: Liferay SCIM Configuration Web
 Bundle-SymbolicName: com.liferay.scim.configuration.web
-Bundle-Version: 1.0.19
+Bundle-Version: 1.0.20
 Web-ContextPath: /scim-configuration-web

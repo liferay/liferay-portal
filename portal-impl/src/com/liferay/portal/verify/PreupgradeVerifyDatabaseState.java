@@ -8,10 +8,12 @@ package com.liferay.portal.verify;
 import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DBInspector;
+import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Jorge Avalos
@@ -21,15 +23,22 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 	@Override
 	protected void doVerify() throws Exception {
 		if (StartupHelperUtil.isDBNew() ||
-			PortalUpgradeProcess.isInLatestSchemaVersion(connection)) {
+			PortalUpgradeProcess.isInLatestSchemaVersion(connection) ||
+			(PortalUpgradeProcess.getCurrentState(connection) !=
+				ReleaseConstants.STATE_GOOD)) {
 
 			return;
 		}
 
-		Set<String> serviceComponentModuleTableNames =
+		Set<String> serviceComponentPortalTableNames =
+			DBResourceUtil.getServiceComponentPortalTableNames(connection);
+
+		Set<String> serviceComponentTableNames =
 			DBResourceUtil.getServiceComponentModuleTableNames(connection);
 
-		if (serviceComponentModuleTableNames.isEmpty()) {
+		serviceComponentTableNames.addAll(serviceComponentPortalTableNames);
+
+		if (serviceComponentTableNames.isEmpty()) {
 			return;
 		}
 
@@ -38,14 +47,36 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 		Set<String> databaseTables = new HashSet<>(
 			dbInspector.getTableNames(null));
 
-		if (!databaseTables.containsAll(serviceComponentModuleTableNames)) {
+		if (!databaseTables.containsAll(serviceComponentTableNames)) {
 			Set<String> missingTables = new HashSet<>(
-				serviceComponentModuleTableNames);
+				serviceComponentTableNames);
 
 			missingTables.removeAll(databaseTables);
 
 			throw new VerifyException(
-				"Missing tables detected: " + missingTables);
+				"Missing tables detected: " + new TreeSet<>(missingTables));
+		}
+
+		if (serviceComponentPortalTableNames.isEmpty()) {
+			return;
+		}
+
+		Set<String> targetVersionNewTables = DBResourceUtil.getModuleTableNames(
+			connection);
+
+		targetVersionNewTables.addAll(
+			DBResourceUtil.getPortalTableNames(connection));
+
+		targetVersionNewTables.removeAll(serviceComponentTableNames);
+
+		Set<String> previousUpgradeStaleTables = new HashSet<>(databaseTables);
+
+		previousUpgradeStaleTables.retainAll(targetVersionNewTables);
+
+		if (!previousUpgradeStaleTables.isEmpty()) {
+			throw new VerifyException(
+				"Stale tables from a previous upgrade detected: " +
+					new TreeSet<>(previousUpgradeStaleTables));
 		}
 	}
 

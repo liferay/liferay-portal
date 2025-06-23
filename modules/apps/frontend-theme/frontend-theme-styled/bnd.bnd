@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend Theme Styled
 Bundle-SymbolicName: com.liferay.frontend.theme.styled
-Bundle-Version: 6.0.96
+Bundle-Version: 6.0.97
 Web-ContextPath: /frontend-theme-styled
 -donotcopy: (npm-debug\.log)

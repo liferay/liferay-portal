@@ -193,14 +193,14 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
-	protected Long testGetWarehouseChannelChannel_getWarehouseChannelId()
+	protected Channel testGetWarehouseChannelChannel_addChannel()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Channel testGetWarehouseChannelChannel_addChannel()
+	protected Long testGetWarehouseChannelChannel_getWarehouseChannelId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

@@ -190,16 +190,16 @@ public abstract class BaseOrderAccountGroupResourceTestCase {
 		assertValid(getOrderAccountGroup);
 	}
 
-	protected Long
-			testGetOrderRuleAccountGroupAccountGroup_getOrderRuleAccountGroupId()
+	protected OrderAccountGroup
+			testGetOrderRuleAccountGroupAccountGroup_addOrderAccountGroup()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderAccountGroup
-			testGetOrderRuleAccountGroupAccountGroup_addOrderAccountGroup()
+	protected Long
+			testGetOrderRuleAccountGroupAccountGroup_getOrderRuleAccountGroupId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

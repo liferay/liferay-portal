@@ -51,7 +51,7 @@ describe('MarketplaceTabItem', () => {
 	it('renders item details with correct name, catalog, and image', () => {
 		renderMarketPlaceTabItem();
 
-		expect(screen.getByTitle('x-details')).toBeInTheDocument();
+		expect(screen.getByTitle('Test Item-details')).toBeInTheDocument();
 
 		expect(screen.getByText('Test Item')).toBeInTheDocument();
 		expect(screen.getByText('Test Catalog')).toBeInTheDocument();

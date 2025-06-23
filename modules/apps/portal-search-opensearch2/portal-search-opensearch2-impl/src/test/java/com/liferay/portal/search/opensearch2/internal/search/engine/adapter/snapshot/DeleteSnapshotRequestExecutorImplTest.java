@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.snapshot;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.engine.adapter.snapshot.DeleteSnapshotRequest;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
@@ -34,16 +33,12 @@ public class DeleteSnapshotRequestExecutorImplTest
 		DeleteSnapshotRequest deleteSnapshotRequest = new DeleteSnapshotRequest(
 			"repositoryName", "snapshotName");
 
-		DeleteSnapshotRequestExecutorImpl deleteSnapshotRequestExecutorImpl =
-			new DeleteSnapshotRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			deleteSnapshotRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
+		DeleteSnapshotRequestExecutor deleteSnapshotRequestExecutor =
+			new DeleteSnapshotRequestExecutor(openSearchConnectionManager);
 
 		org.opensearch.client.opensearch.snapshot.DeleteSnapshotRequest
 			openSearchDeleteSnapshotRequest =
-				deleteSnapshotRequestExecutorImpl.createDeleteSnapshotRequest(
+				deleteSnapshotRequestExecutor.createDeleteSnapshotRequest(
 					deleteSnapshotRequest);
 
 		Assert.assertEquals(

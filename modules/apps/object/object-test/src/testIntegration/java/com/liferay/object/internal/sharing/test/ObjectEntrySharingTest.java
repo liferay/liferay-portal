@@ -117,7 +117,7 @@ public class ObjectEntrySharingTest extends BaseSharingTestCase<ObjectEntry> {
 		serviceContext.setScopeGroupId(group.getGroupId());
 
 		return _objectEntryLocalService.addObjectEntry(
-			user.getUserId(), group.getGroupId(),
+			group.getGroupId(), user.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);
@@ -149,7 +149,7 @@ public class ObjectEntrySharingTest extends BaseSharingTestCase<ObjectEntry> {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
 		return _objectEntryLocalService.addObjectEntry(
-			user.getUserId(), group.getGroupId(),
+			group.getGroupId(), user.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);

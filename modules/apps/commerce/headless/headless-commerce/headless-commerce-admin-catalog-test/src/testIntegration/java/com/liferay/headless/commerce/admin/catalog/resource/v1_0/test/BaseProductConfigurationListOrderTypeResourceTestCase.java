@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfigurationListOrderType;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
@@ -219,14 +220,81 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 
 	@Test
 	public void testDeleteProductConfigurationListOrderType() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductConfigurationListOrderType productConfigurationListOrderType =
+			testDeleteProductConfigurationListOrderType_addProductConfigurationListOrderType();
+
+		assertHttpResponseStatusCode(
+			204,
+			productConfigurationListOrderTypeResource.
+				deleteProductConfigurationListOrderTypeHttpResponse(
+					productConfigurationListOrderType.
+						getProductConfigurationListOrderTypeId()));
+	}
+
+	protected ProductConfigurationListOrderType
+			testDeleteProductConfigurationListOrderType_addProductConfigurationListOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteProductConfigurationListOrderType()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		// No namespace
+
+		ProductConfigurationListOrderType productConfigurationListOrderType1 =
+			testGraphQLDeleteProductConfigurationListOrderType_addProductConfigurationListOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteProductConfigurationListOrderType",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"productConfigurationListOrderTypeId",
+									productConfigurationListOrderType1.
+										getProductConfigurationListOrderTypeId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteProductConfigurationListOrderType"));
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		ProductConfigurationListOrderType productConfigurationListOrderType2 =
+			testGraphQLDeleteProductConfigurationListOrderType_addProductConfigurationListOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminCatalog_v1_0",
+						new GraphQLField(
+							"deleteProductConfigurationListOrderType",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"productConfigurationListOrderTypeId",
+										productConfigurationListOrderType2.
+											getProductConfigurationListOrderTypeId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminCatalog_v1_0",
+				"Object/deleteProductConfigurationListOrderType"));
+	}
+
+	protected ProductConfigurationListOrderType
+			testGraphQLDeleteProductConfigurationListOrderType_addProductConfigurationListOrderType()
+		throws Exception {
+
+		return testGraphQLProductConfigurationListOrderType_addProductConfigurationListOrderType();
 	}
 
 	@Test
@@ -237,7 +305,7 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 			testDeleteProductConfigurationListOrderTypeBatch_addProductConfigurationListOrderType();
 
 		testDeleteProductConfigurationListOrderTypeBatch_deleteProductConfigurationListOrderType(
-			"COMPLETED", null,
+			202, null,
 			productConfigurationListOrderType1.
 				getProductConfigurationListOrderTypeId());
 	}
@@ -246,14 +314,12 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 			testDeleteProductConfigurationListOrderTypeBatch_addProductConfigurationListOrderType()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteProductConfigurationListOrderType_addProductConfigurationListOrderType();
 	}
 
 	protected void
 			testDeleteProductConfigurationListOrderTypeBatch_deleteProductConfigurationListOrderType(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -267,10 +333,10 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 							"productConfigurationListOrderTypeId", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -341,6 +407,16 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 			page,
 			testGetProductConfigurationListByExternalReferenceCodeProductConfigurationListOrderTypesPage_getExpectedActions(
 				externalReferenceCode));
+
+		productConfigurationListOrderTypeResource.
+			deleteProductConfigurationListOrderType(
+				productConfigurationListOrderType1.
+					getProductConfigurationListOrderTypeId());
+
+		productConfigurationListOrderTypeResource.
+			deleteProductConfigurationListOrderType(
+				productConfigurationListOrderType2.
+					getProductConfigurationListOrderTypeId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -567,6 +643,16 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 			page,
 			testGetProductConfigurationListIdProductConfigurationListOrderTypesPage_getExpectedActions(
 				id));
+
+		productConfigurationListOrderTypeResource.
+			deleteProductConfigurationListOrderType(
+				productConfigurationListOrderType1.
+					getProductConfigurationListOrderTypeId());
+
+		productConfigurationListOrderTypeResource.
+			deleteProductConfigurationListOrderType(
+				productConfigurationListOrderType2.
+					getProductConfigurationListOrderTypeId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -1071,8 +1157,70 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ProductConfigurationListOrderType productConfigurationListOrderType1 =
+			testBatchEngineDeleteImportTask_addProductConfigurationListOrderType();
+
+		testBatchEngineDeleteImportTask_deleteProductConfigurationListOrderType(
+			200, null,
+			productConfigurationListOrderType1.
+				getProductConfigurationListOrderTypeId());
+	}
+
+	protected ProductConfigurationListOrderType
+			testBatchEngineDeleteImportTask_addProductConfigurationListOrderType()
+		throws Exception {
+
+		return testDeleteProductConfigurationListOrderType_addProductConfigurationListOrderType();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deleteProductConfigurationListOrderType(
+				int expectedStatusCode, String externalReferenceCode, Long id,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfigurationListOrderType",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"productConfigurationListOrderTypeId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected ProductConfigurationListOrderType
+			testGraphQLProductConfigurationListOrderType_addProductConfigurationListOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		ProductConfigurationListOrderType productConfigurationListOrderType,
@@ -1183,6 +1331,12 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (productConfigurationListOrderType.
+				getProductConfigurationListOrderTypeId() == null) {
+
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

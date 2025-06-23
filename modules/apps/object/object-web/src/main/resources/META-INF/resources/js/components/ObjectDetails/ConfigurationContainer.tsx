@@ -6,13 +6,12 @@
 import ClayForm from '@clayui/form';
 import {Toggle} from '@liferay/object-js-components-web';
 import {sub} from 'frontend-js-web';
-import React, {useRef} from 'react';
+import React from 'react';
 
 interface ConfigurationContainerProps {
 	hasUpdateObjectDefinitionPermission: boolean;
 	isLinkedObjectDefinition?: boolean;
 	isRootDescendantNode: boolean;
-	onScheduleToggleChange: (toggled: boolean) => void;
 	onSubmit?: (editedObjectDefinition?: Partial<ObjectDefinition>) => void;
 	setValues: (values: Partial<ObjectDefinition>) => void;
 	values: Partial<ObjectDefinition>;
@@ -22,7 +21,6 @@ export function ConfigurationContainer({
 	hasUpdateObjectDefinitionPermission,
 	isLinkedObjectDefinition,
 	isRootDescendantNode,
-	onScheduleToggleChange,
 	onSubmit,
 	setValues,
 	values,
@@ -33,8 +31,6 @@ export function ConfigurationContainer({
 		!hasUpdateObjectDefinitionPermission ||
 		isLinkedObjectDefinition ||
 		isReadOnly;
-
-	const scheduleToggleRef = useRef<boolean>(false);
 
 	return (
 		<div className="lfr-objects__object-definition-details-configuration">
@@ -192,14 +188,15 @@ export function ConfigurationContainer({
 						onBlur={(event) => {
 							event.stopPropagation();
 
-							if (scheduleToggleRef.current && onSubmit) {
+							if (onSubmit) {
 								onSubmit();
 							}
 						}}
-						onToggle={(toggled) => {
-							scheduleToggleRef.current = toggled;
-
-							onScheduleToggleChange(toggled);
+						onToggle={() => {
+							setValues({
+								enableObjectEntryDraft:
+									!values.enableObjectEntrySchedule,
+							});
 						}}
 						toggled={values.enableObjectEntrySchedule}
 					/>

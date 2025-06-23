@@ -64,14 +64,6 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	}
 
 	@Override
-	protected String
-			testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return _testSite.getExternalReferenceCode();
-	}
-
-	@Override
 	protected Site testDeleteAssetLibrarySite_addSite() throws Exception {
 		return siteResource.putAssetLibrarySite(
 			testDepotEntry.getGroupId(), _testSite.getId());
@@ -99,14 +91,6 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		Group group = testDepotEntry.getGroup();
 
 		return group.getExternalReferenceCode();
-	}
-
-	@Override
-	protected String
-			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return _testSite.getExternalReferenceCode();
 	}
 
 	@Override
@@ -146,8 +130,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			Long assetLibraryId, Site site)
 		throws Exception {
 
-		return siteResource.putAssetLibrarySite(
-			testDepotEntry.getGroupId(), site.getId());
+		return siteResource.putAssetLibrarySite(assetLibraryId, site.getId());
 	}
 
 	@Override
@@ -165,13 +148,6 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		Group group = testDepotEntry.getGroup();
 
 		return group.getExternalReferenceCode();
-	}
-
-	@Override
-	protected String
-		testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeSiteByExternalReferenceCodeSiteExternalReferenceCode_getSiteExternalReferenceCode() {
-
-		return _testSite.getExternalReferenceCode();
 	}
 
 	@Override

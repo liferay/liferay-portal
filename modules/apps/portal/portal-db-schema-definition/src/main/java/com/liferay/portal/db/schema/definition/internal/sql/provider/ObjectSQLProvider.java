@@ -20,6 +20,7 @@ import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.IndexMetadata;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
@@ -77,7 +78,8 @@ public class ObjectSQLProvider implements SQLProvider {
 		}
 	}
 
-	private void _appendRelationshipTablesSQL(ObjectDefinition objectDefinition)
+	private void _appendRelationshipTablesSQL(
+			DBInspector dbInspector, ObjectDefinition objectDefinition)
 		throws Exception {
 
 		List<ObjectRelationship> objectRelationships =
@@ -113,20 +115,27 @@ public class ObjectSQLProvider implements SQLProvider {
 						objectRelationship.getDBTableName());
 
 			_appendTableSQL(
+				dbInspector,
 				dynamicObjectRelationshipMappingTable.getCreateTableSQL(),
 				dynamicObjectRelationshipMappingTable.getTableName());
 		}
 	}
 
 	private void _appendSQL() throws Exception {
-		List<ObjectDefinition> objectDefinitions =
-			ObjectDefinitionLocalServiceUtil.getObjectDefinitions(
-				_companyId, WorkflowConstants.STATUS_APPROVED);
+		DataSource dataSource = InfrastructureUtil.getDataSource();
 
-		for (ObjectDefinition objectDefinition : objectDefinitions) {
-			_appendTablesSQL(objectDefinition);
+		try (Connection connection = dataSource.getConnection()) {
+			DBInspector dbInspector = new DBInspector(connection);
 
-			_appendRelationshipTablesSQL(objectDefinition);
+			List<ObjectDefinition> objectDefinitions =
+				ObjectDefinitionLocalServiceUtil.getObjectDefinitions(
+					_companyId, WorkflowConstants.STATUS_APPROVED);
+
+			for (ObjectDefinition objectDefinition : objectDefinitions) {
+				_appendTablesSQL(dbInspector, objectDefinition);
+
+				_appendRelationshipTablesSQL(dbInspector, objectDefinition);
+			}
 		}
 
 		if (_tablesSQLSB.index() > 0) {
@@ -136,8 +145,13 @@ public class ObjectSQLProvider implements SQLProvider {
 		_appendIndexesSQL();
 	}
 
-	private void _appendTableSQL(String sql, String tableName)
+	private void _appendTableSQL(
+			DBInspector dbInspector, String sql, String tableName)
 		throws Exception {
+
+		if (!dbInspector.hasTable(tableName)) {
+			return;
+		}
 
 		_tableNames.add(tableName);
 
@@ -145,7 +159,8 @@ public class ObjectSQLProvider implements SQLProvider {
 		_tablesSQLSB.append(StringPool.NEW_LINE);
 	}
 
-	private void _appendTablesSQL(ObjectDefinition objectDefinition)
+	private void _appendTablesSQL(
+			DBInspector dbInspector, ObjectDefinition objectDefinition)
 		throws Exception {
 
 		DynamicObjectDefinitionLocalizationTable
@@ -155,6 +170,7 @@ public class ObjectSQLProvider implements SQLProvider {
 
 		if (dynamicObjectDefinitionLocalizationTable != null) {
 			_appendTableSQL(
+				dbInspector,
 				dynamicObjectDefinitionLocalizationTable.getCreateTableSQL(),
 				dynamicObjectDefinitionLocalizationTable.getTableName());
 		}
@@ -165,7 +181,7 @@ public class ObjectSQLProvider implements SQLProvider {
 					objectDefinition, ObjectFieldLocalServiceUtil.getService());
 
 			_appendTableSQL(
-				dynamicObjectDefinitionTable.getCreateTableSQL(),
+				dbInspector, dynamicObjectDefinitionTable.getCreateTableSQL(),
 				dynamicObjectDefinitionTable.getTableName());
 		}
 
@@ -174,7 +190,7 @@ public class ObjectSQLProvider implements SQLProvider {
 				objectDefinition, ObjectFieldLocalServiceUtil.getService());
 
 		_appendTableSQL(
-			dynamicObjectDefinitionTable.getCreateTableSQL(),
+			dbInspector, dynamicObjectDefinitionTable.getCreateTableSQL(),
 			dynamicObjectDefinitionTable.getTableName());
 	}
 

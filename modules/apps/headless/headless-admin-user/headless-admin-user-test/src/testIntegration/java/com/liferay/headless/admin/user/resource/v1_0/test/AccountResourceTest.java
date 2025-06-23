@@ -14,6 +14,7 @@ import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.model.AccountRole;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
@@ -62,6 +63,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.LocalRepository;
 import com.liferay.portal.kernel.repository.RepositoryProviderUtil;
@@ -82,6 +84,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -348,6 +351,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			Collections.singletonList(accountEntry1),
 			organization.getOrganizationId());
 		_testGetAccountsPageWithCustomFields();
+		_testGetAccountsPageWithNestedFields();
 	}
 
 	@Override
@@ -1370,6 +1374,41 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 					actualAccount, stringArrayExpandoColumn2.getName())));
 	}
 
+	private void _testGetAccountsPageWithNestedFields() throws Exception {
+		Account postAccount = _postAccount(randomAccount());
+
+		User user = UserTestUtil.addUser();
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			postAccount.getId(), user.getUserId());
+
+		AccountResource accountResource = AccountResource.builder(
+		).authentication(
+			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "accountUserAccounts"
+		).build();
+
+		Page<Account> accountsPage = accountResource.getAccountsPage(
+			null, String.format("contains(name, '%s')", postAccount.getName()),
+			null, null);
+
+		Assert.assertEquals(1, accountsPage.getTotalCount());
+
+		List<Account> accounts = (List<Account>)accountsPage.getItems();
+
+		assertEquals(Collections.singletonList(postAccount), accounts);
+
+		Account account = accounts.get(0);
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				account.getAccountUserAccounts(),
+				userAccount -> userAccount.getId() == user.getUserId()));
+	}
+
 	private void _testGetAccountWithNestedFields() throws Exception {
 		Account randomAccount = randomAccount();
 
@@ -1379,6 +1418,11 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 				FileUtil.getBytes(getClass(), "/images/liferay.png")));
 
 		Account postAccount = _postAccount(randomAccount);
+
+		User user = UserTestUtil.addUser();
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			postAccount.getId(), user.getUserId());
 
 		AccountGroup accountGroup = _accountGroupLocalService.addAccountGroup(
 			StringPool.BLANK, TestPropsValues.getUserId(),
@@ -1419,8 +1463,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			LocaleUtil.getDefault()
 		).parameters(
 			"nestedFields",
-			"accountGroupBriefs,accountRoles,creator,keywords,logoBase64," +
-				"permissions,taxonomyCategoryBriefs"
+			"accountGroupBriefs,accountRoles,accountUserAccounts,creator," +
+				"keywords,logoBase64,permissions,taxonomyCategoryBriefs"
 		).build();
 
 		Account getAccount = accountResource.getAccount(postAccount.getId());
@@ -1445,6 +1489,10 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 				getAccount.getAccountRoles(),
 				innerAccountRole ->
 					innerAccountRole.getId() == accountRole.getRoleId()));
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getAccount.getAccountUserAccounts(),
+				userAccount -> userAccount.getId() == user.getUserId()));
 		Assert.assertTrue(
 			ArrayUtil.exists(
 				getAccount.getKeywords(),
@@ -2583,6 +2631,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Inject
 	private AccountEntryOrganizationRelLocalService
 		_accountEntryOrganizationRelLocalService;
+
+	@Inject
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
 	private AccountGroup _accountGroup;
 

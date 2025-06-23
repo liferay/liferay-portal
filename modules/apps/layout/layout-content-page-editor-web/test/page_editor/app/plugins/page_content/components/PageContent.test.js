@@ -165,7 +165,9 @@ describe('PageContent', () => {
 	it('shows the edit button if the content is inline text', () => {
 		renderPageContent({content: inlineText});
 
-		expect(screen.getByLabelText('edit-inline-text-x')).toBeInTheDocument();
+		expect(
+			screen.getByLabelText('edit-inline-text-Heading Example')
+		).toBeInTheDocument();
 	});
 
 	it('selects the corresponding element on the page when inline text item is clicked', () => {
@@ -187,12 +189,16 @@ describe('PageContent', () => {
 
 		renderPageContent({content: inlineText});
 
-		expect(screen.getByLabelText('edit-inline-text-x')).toBeDisabled();
+		expect(
+			screen.getByLabelText('edit-inline-text-Heading Example')
+		).toBeDisabled();
 	});
 
 	it('disables edit button when user has no update permission', () => {
 		renderPageContent({content: inlineText, hasUpdatePermissions: false});
 
-		expect(screen.getByLabelText('edit-inline-text-x')).toBeDisabled();
+		expect(
+			screen.getByLabelText('edit-inline-text-Heading Example')
+		).toBeDisabled();
 	});
 });

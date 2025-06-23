@@ -183,9 +183,9 @@ public abstract class BaseAssigneeResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
-	protected Assignee testGraphQLAssignee_addAssignee() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(Assignee assignee, List<Assignee> assignees) {

@@ -215,16 +215,17 @@ public abstract class BaseShippingAddressResourceTestCase {
 		assertValid(getShippingAddress);
 	}
 
+	protected ShippingAddress
+			testGetOrderByExternalReferenceCodeShippingAddress_addShippingAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetOrderByExternalReferenceCodeShippingAddress_getExternalReferenceCode(
 				ShippingAddress shippingAddress)
-		throws Exception {
-
-		return shippingAddress.getExternalReferenceCode();
-	}
-
-	protected ShippingAddress
-			testGetOrderByExternalReferenceCodeShippingAddress_addShippingAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -294,7 +295,8 @@ public abstract class BaseShippingAddressResourceTestCase {
 				ShippingAddress shippingAddress)
 		throws Exception {
 
-		return shippingAddress.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -365,14 +367,15 @@ public abstract class BaseShippingAddressResourceTestCase {
 		assertValid(getShippingAddress);
 	}
 
-	protected Long testGetOrderIdShippingAddress_getId(
-			ShippingAddress shippingAddress)
+	protected ShippingAddress testGetOrderIdShippingAddress_addShippingAddress()
 		throws Exception {
 
-		return shippingAddress.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
-	protected ShippingAddress testGetOrderIdShippingAddress_addShippingAddress()
+	protected Long testGetOrderIdShippingAddress_getId(
+			ShippingAddress shippingAddress)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -435,7 +438,8 @@ public abstract class BaseShippingAddressResourceTestCase {
 			ShippingAddress shippingAddress)
 		throws Exception {
 
-		return shippingAddress.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -501,15 +505,16 @@ public abstract class BaseShippingAddressResourceTestCase {
 		assertValid(getShippingAddress);
 	}
 
-	protected Long testGetOrderItemShippingAddress_getId(
-			ShippingAddress shippingAddress)
-		throws Exception {
-
-		return shippingAddress.getId();
-	}
-
 	protected ShippingAddress
 			testGetOrderItemShippingAddress_addShippingAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetOrderItemShippingAddress_getId(
+			ShippingAddress shippingAddress)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -573,7 +578,8 @@ public abstract class BaseShippingAddressResourceTestCase {
 			ShippingAddress shippingAddress)
 		throws Exception {
 
-		return shippingAddress.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test

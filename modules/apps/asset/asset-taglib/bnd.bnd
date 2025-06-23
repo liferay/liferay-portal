@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Taglib
 Bundle-SymbolicName: com.liferay.asset.taglib
-Bundle-Version: 12.0.1
+Bundle-Version: 12.0.2
 Export-Package: com.liferay.asset.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

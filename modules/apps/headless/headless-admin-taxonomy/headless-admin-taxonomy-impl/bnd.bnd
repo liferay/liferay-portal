@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Headless Admin Taxonomy Implementation
 Bundle-SymbolicName: com.liferay.headless.admin.taxonomy.impl
-Bundle-Version: 5.0.99
+Bundle-Version: 5.0.100
 -dsannotations-options: inherit

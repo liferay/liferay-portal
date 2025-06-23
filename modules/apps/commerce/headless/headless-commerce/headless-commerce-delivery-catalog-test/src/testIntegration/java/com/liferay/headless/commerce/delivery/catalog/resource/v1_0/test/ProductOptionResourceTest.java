@@ -131,13 +131,6 @@ public class ProductOptionResourceTest
 		return _cpDefinition.getCProductId();
 	}
 
-	@Override
-	protected ProductOption testGraphQLProductOption_addProductOption()
-		throws Exception {
-
-		return _addCPDefinitionOptionRel();
-	}
-
 	private ProductOption _addCPDefinitionOptionRel() throws Exception {
 		CPOption cpOption = _cpOptionLocalService.addCPOption(
 			RandomTestUtil.randomString(), _user.getUserId(),

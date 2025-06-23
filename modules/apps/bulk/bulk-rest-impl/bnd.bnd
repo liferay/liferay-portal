@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Bulk REST Implementation
 Bundle-SymbolicName: com.liferay.bulk.rest.impl
-Bundle-Version: 3.0.68
+Bundle-Version: 3.0.69
 Require-Capability:\
 	osgi.extender;\
 		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"

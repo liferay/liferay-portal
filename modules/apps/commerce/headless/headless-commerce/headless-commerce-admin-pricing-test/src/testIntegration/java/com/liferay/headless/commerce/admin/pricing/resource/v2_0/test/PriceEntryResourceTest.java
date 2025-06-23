@@ -75,6 +75,13 @@ public class PriceEntryResourceTest extends BasePriceEntryResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testDeletePriceEntry() throws Exception {
 		super.testDeletePriceEntry();
 	}
@@ -117,6 +124,13 @@ public class PriceEntryResourceTest extends BasePriceEntryResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testGraphQLGetPriceEntry() throws Exception {
+		super.testGraphQLGetPriceEntry();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testGraphQLGetPriceEntryByExternalReferenceCode()
 		throws Exception {
 
@@ -153,6 +167,13 @@ public class PriceEntryResourceTest extends BasePriceEntryResourceTestCase {
 
 		_testPostPriceListIdPriceEntryWithPriceOnApplicationOnBasePriceList();
 		_testPostPriceListIdPriceEntryWithPriceOnApplicationOnPriceList();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testVulcanCRUDItemDelegateGetItem() throws Exception {
+		super.testVulcanCRUDItemDelegateGetItem();
 	}
 
 	@Override

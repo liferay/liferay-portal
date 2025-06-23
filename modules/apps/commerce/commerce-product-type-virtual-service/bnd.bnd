@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Product Type Virtual Service
 Bundle-SymbolicName: com.liferay.commerce.product.type.virtual.service
-Bundle-Version: 4.0.58
+Bundle-Version: 4.0.59
 Liferay-Require-SchemaVersion: 3.0.1
 Liferay-Service: true
 -dsannotations-options: inherit

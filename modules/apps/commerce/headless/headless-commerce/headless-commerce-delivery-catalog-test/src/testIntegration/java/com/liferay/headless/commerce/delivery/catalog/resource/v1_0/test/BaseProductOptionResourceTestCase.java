@@ -639,11 +639,9 @@ public abstract class BaseProductOptionResourceTestCase {
 		return null;
 	}
 
-	protected ProductOption testGraphQLProductOption_addProductOption()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(

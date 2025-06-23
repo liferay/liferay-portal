@@ -180,20 +180,6 @@ public interface PatcherBuildModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the hotfix ID of this patcher build.
-	 *
-	 * @return the hotfix ID of this patcher build
-	 */
-	public long getHotfixId();
-
-	/**
-	 * Sets the hotfix ID of this patcher build.
-	 *
-	 * @param hotfixId the hotfix ID of this patcher build
-	 */
-	public void setHotfixId(long hotfixId);
-
-	/**
 	 * Returns the patcher account ID of this patcher build.
 	 *
 	 * @return the patcher account ID of this patcher build
@@ -328,6 +314,20 @@ public interface PatcherBuildModel
 	 * @param fileName the file name of this patcher build
 	 */
 	public void setFileName(String fileName);
+
+	/**
+	 * Returns the hotfix ID of this patcher build.
+	 *
+	 * @return the hotfix ID of this patcher build
+	 */
+	public long getHotfixId();
+
+	/**
+	 * Sets the hotfix ID of this patcher build.
+	 *
+	 * @param hotfixId the hotfix ID of this patcher build
+	 */
+	public void setHotfixId(long hotfixId);
 
 	/**
 	 * Returns the initial name of this patcher build.

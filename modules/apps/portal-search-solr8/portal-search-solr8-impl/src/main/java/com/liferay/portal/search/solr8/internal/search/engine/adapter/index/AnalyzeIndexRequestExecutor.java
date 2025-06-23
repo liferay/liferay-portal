@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.index.AnalyzeIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface AnalyzeIndexRequestExecutor {
+public class AnalyzeIndexRequestExecutor {
 
 	public AnalyzeIndexResponse execute(
-		AnalyzeIndexRequest analyzeIndexRequest);
+		AnalyzeIndexRequest analyzeIndexRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

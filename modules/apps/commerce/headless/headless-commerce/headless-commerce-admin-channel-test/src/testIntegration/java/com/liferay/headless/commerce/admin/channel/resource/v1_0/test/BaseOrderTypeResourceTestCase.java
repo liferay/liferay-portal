@@ -187,16 +187,16 @@ public abstract class BaseOrderTypeResourceTestCase {
 		assertValid(getOrderType);
 	}
 
-	protected Long
-			testGetPaymentMethodGroupRelOrderTypeOrderType_getPaymentMethodGroupRelOrderTypeId()
+	protected OrderType
+			testGetPaymentMethodGroupRelOrderTypeOrderType_addOrderType()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderType
-			testGetPaymentMethodGroupRelOrderTypeOrderType_addOrderType()
+	protected Long
+			testGetPaymentMethodGroupRelOrderTypeOrderType_getPaymentMethodGroupRelOrderTypeId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -334,16 +334,16 @@ public abstract class BaseOrderTypeResourceTestCase {
 		assertValid(getOrderType);
 	}
 
-	protected Long
-			testGetShippingFixedOptionOrderTypeOrderType_getShippingFixedOptionOrderTypeId()
+	protected OrderType
+			testGetShippingFixedOptionOrderTypeOrderType_addOrderType()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderType
-			testGetShippingFixedOptionOrderTypeOrderType_addOrderType()
+	protected Long
+			testGetShippingFixedOptionOrderTypeOrderType_getShippingFixedOptionOrderTypeId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

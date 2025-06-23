@@ -15,6 +15,26 @@
 		"cssVariableMapping": "box-shadow-lg",
 		"value": "var(--elevation-fluffy-1) rgba(0, 54, 156, 0.12);"
 	},
+	"btnBorderRadius": {
+		"cssVariableMapping": "btn-border-radius",
+		"value": "var(--border-radius-lg)"
+	},
+	"btnBorderWidth": {
+		"cssVariableMapping": "btn-border-width",
+		"value": "1px"
+	},
+	"btnLgBorderRadius": {
+		"cssVariableMapping": "btn-lg-border-radius",
+		"value": "var(--border-radius-lg)"
+	},
+	"btnLineHeight": {
+		"cssVariableMapping": "btn-line-height",
+		"value": "1.5rem"
+	},
+	"btnPaddingY": {
+		"cssVariableMapping": "btn-padding-y",
+		"value": "0.5rem"
+	},
 	"colorAccent1": {
 		"cssVariableMapping": "color-accent-1",
 		"value": "#1AA0E8"
@@ -447,6 +467,22 @@
 		"cssVariableMapping": "color-utility-lighten-color-40",
 		"value": "#FFFF66"
 	},
+	"containerMaxLg": {
+		"cssVariableMapping": "container-max-lg",
+		"value": "900px"
+	},
+	"containerMaxMd": {
+		"cssVariableMapping": "container-max-md",
+		"value": "700px"
+	},
+	"containerMaxSm": {
+		"cssVariableMapping": "container-max-sm",
+		"value": "500px"
+	},
+	"containerMaxXl": {
+		"cssVariableMapping": "container-max-xl",
+		"value": "1600px"
+	},
 	"containterMaxXL": {
 		"cssVariableMapping": "container-max-xl",
 		"value": "1600px"
@@ -458,5 +494,25 @@
 	"fontFamilySansSerif": {
 		"cssVariableMapping": "font-family-sans-serif",
 		"value": "\"Source Sans Pro\", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"
+	},
+	"formFeedbackItemBorderRadius": {
+		"cssVariableMapping": "form-feedback-item-border-radius",
+		"value": "var(--border-radius-lg)"
+	},
+	"formInputBorderColor": {
+		"cssVariableMapping": "form-input-border-color",
+		"value": "var(--color-neutral-4)"
+	},
+	"formInputBorderRadius": {
+		"cssVariableMapping": "form-input-border-radius",
+		"value": "var(--border-radius-lg)"
+	},
+	"formInputPlaceholderColor": {
+		"cssVariableMapping": "form-input-placeholder-color",
+		"value": "var(--color-neutral-7)"
+	},
+	"formInputPlaceholderColorFocus": {
+		"cssVariableMapping": "form-input-placeholder-color-focus",
+		"value": "var(--color-neutral-7)"
 	}
 }

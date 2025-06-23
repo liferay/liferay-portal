@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.shipment.client.dto.v1_0.Shipment;
 import com.liferay.headless.commerce.admin.shipment.client.http.HttpInvoker;
@@ -331,25 +332,23 @@ public abstract class BaseShipmentResourceTestCase {
 		Shipment shipment1 = testDeleteShipmentBatch_addShipment();
 
 		testDeleteShipmentBatch_deleteShipment(
-			"COMPLETED", null, shipment1.getId());
+			202, shipment1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404, shipmentResource.getShipmentHttpResponse(shipment1.getId()));
 
+		shipment1 = testDeleteShipmentBatch_addShipment();
+
+		testDeleteShipmentBatch_deleteShipment(202, null, shipment1.getId());
+
+		assertHttpResponseStatusCode(
+			404, shipmentResource.getShipmentHttpResponse(shipment1.getId()));
+
+		shipment1 = testDeleteShipmentBatch_addShipment();
 		Shipment shipment2 = testDeleteShipmentBatch_addShipment();
 
 		testDeleteShipmentBatch_deleteShipment(
-			"COMPLETED", shipment2.getExternalReferenceCode(), null);
-
-		assertHttpResponseStatusCode(
-			404, shipmentResource.getShipmentHttpResponse(shipment2.getId()));
-
-		shipment1 = testDeleteShipmentBatch_addShipment();
-		shipment2 = testDeleteShipmentBatch_addShipment();
-
-		testDeleteShipmentBatch_deleteShipment(
-			"COMPLETED", shipment2.getExternalReferenceCode(),
-			shipment1.getId());
+			202, shipment2.getExternalReferenceCode(), shipment1.getId());
 
 		assertHttpResponseStatusCode(
 			404, shipmentResource.getShipmentHttpResponse(shipment1.getId()));
@@ -357,8 +356,7 @@ public abstract class BaseShipmentResourceTestCase {
 			200, shipmentResource.getShipmentHttpResponse(shipment2.getId()));
 
 		testDeleteShipmentBatch_deleteShipment(
-			"COMPLETED", shipment2.getExternalReferenceCode(),
-			shipment1.getId());
+			202, shipment2.getExternalReferenceCode(), shipment1.getId());
 
 		assertHttpResponseStatusCode(
 			404, shipmentResource.getShipmentHttpResponse(shipment2.getId()));
@@ -369,7 +367,7 @@ public abstract class BaseShipmentResourceTestCase {
 	}
 
 	protected void testDeleteShipmentBatch_deleteShipment(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -382,10 +380,10 @@ public abstract class BaseShipmentResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1469,17 +1467,94 @@ public abstract class BaseShipmentResourceTestCase {
 			putShipment.getExternalReferenceCode());
 	}
 
+	protected Shipment testPutShipmentByExternalReferenceCode_addShipment()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Shipment testPutShipmentByExternalReferenceCode_createShipment()
 		throws Exception {
 
 		return randomShipment();
 	}
 
-	protected Shipment testPutShipmentByExternalReferenceCode_addShipment()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Shipment shipment1 = testBatchEngineDeleteImportTask_addShipment();
+
+		testBatchEngineDeleteImportTask_deleteShipment(
+			200, shipment1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404, shipmentResource.getShipmentHttpResponse(shipment1.getId()));
+
+		shipment1 = testBatchEngineDeleteImportTask_addShipment();
+
+		testBatchEngineDeleteImportTask_deleteShipment(
+			200, null, shipment1.getId());
+
+		assertHttpResponseStatusCode(
+			404, shipmentResource.getShipmentHttpResponse(shipment1.getId()));
+
+		shipment1 = testBatchEngineDeleteImportTask_addShipment();
+		Shipment shipment2 = testBatchEngineDeleteImportTask_addShipment();
+
+		testBatchEngineDeleteImportTask_deleteShipment(
+			200, shipment2.getExternalReferenceCode(), shipment1.getId());
+
+		assertHttpResponseStatusCode(
+			404, shipmentResource.getShipmentHttpResponse(shipment1.getId()));
+		assertHttpResponseStatusCode(
+			200, shipmentResource.getShipmentHttpResponse(shipment2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteShipment(
+			200, shipment2.getExternalReferenceCode(), shipment1.getId());
+
+		assertHttpResponseStatusCode(
+			404, shipmentResource.getShipmentHttpResponse(shipment2.getId()));
+	}
+
+	protected Shipment testBatchEngineDeleteImportTask_addShipment()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteShipment_addShipment();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteShipment(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.shipment.dto.v1_0.Shipment",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

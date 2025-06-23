@@ -41,6 +41,7 @@ export class UserGroupsPage {
 	readonly addUsersTable: DataTablePage;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly assignMembersMenuItem: Locator;
+	readonly creationMenuNewButton: Locator;
 	readonly customField: (fieldName: string) => Promise<Locator>;
 	readonly deleteButton: Locator;
 	readonly deleteUserGroupWithUsersErrorMessage: Locator;
@@ -61,6 +62,7 @@ export class UserGroupsPage {
 	readonly userGroupsTable: Locator;
 	readonly userGroupsTableCell: (value: string, exact?: boolean) => Locator;
 	readonly userGroupsTableCheckbox: (screenName: string) => Promise<Locator>;
+	readonly userGroupsTableLink: (name: string, exact?: boolean) => Locator;
 	readonly userGroupsTableRow: (
 		colPosition: number,
 		value: string,
@@ -91,6 +93,9 @@ export class UserGroupsPage {
 		this.assignMembersMenuItem = page.getByRole('menuitem', {
 			name: 'Assign Members',
 		});
+		this.creationMenuNewButton = page
+			.getByTestId('creationMenuNewButton')
+			.getByText('New');
 		this.customField = async (fieldName: string) => {
 			await page.getByText('Custom Fields').waitFor({timeout: 15 * 1000});
 
@@ -169,6 +174,13 @@ export class UserGroupsPage {
 				`Cannot locate user group row with screenName ${screenName}`
 			);
 		};
+		this.userGroupsTableLink = (name, exact = true) =>
+			this.page
+				.getByRole('link', {
+					exact,
+					name,
+				})
+				.first();
 		this.userGroupsTableRow = async (
 			colPosition: number,
 			value: string,

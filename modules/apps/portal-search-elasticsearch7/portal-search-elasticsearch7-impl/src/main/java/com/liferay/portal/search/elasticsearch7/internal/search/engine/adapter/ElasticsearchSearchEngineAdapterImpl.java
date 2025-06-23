@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.search.query.QueryTranslator;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.search.elasticsearch7.internal.legacy.query.ElasticsearchQueryTranslator;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.ccr.CCRRequest;
 import com.liferay.portal.search.engine.adapter.ccr.CCRRequestExecutor;
@@ -33,11 +34,13 @@ import com.liferay.portal.search.engine.adapter.search.SearchResponse;
 import com.liferay.portal.search.engine.adapter.snapshot.SnapshotRequest;
 import com.liferay.portal.search.engine.adapter.snapshot.SnapshotRequestExecutor;
 import com.liferay.portal.search.engine.adapter.snapshot.SnapshotResponse;
+import com.liferay.portal.search.index.IndexNameBuilder;
 
 import java.util.List;
 
 import org.elasticsearch.index.query.QueryBuilder;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -209,6 +212,11 @@ public class ElasticsearchSearchEngineAdapterImpl
 		}
 	}
 
+	@Activate
+	protected void activate() {
+		_queryTranslator = new ElasticsearchQueryTranslator(_indexNameBuilder);
+	}
+
 	protected void setThrowOriginalExceptions(boolean throwOriginalExceptions) {
 		_throwOriginalExceptions = throwOriginalExceptions;
 	}
@@ -257,10 +265,12 @@ public class ElasticsearchSearchEngineAdapterImpl
 	@Reference(target = "(search.engine.impl=Elasticsearch)")
 	private DocumentRequestExecutor _documentRequestExecutor;
 
+	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
 	@Reference(target = "(search.engine.impl=Elasticsearch)")
 	private IndexRequestExecutor _indexRequestExecutor;
 
-	@Reference(target = "(search.engine.impl=Elasticsearch)")
 	private QueryTranslator<QueryBuilder> _queryTranslator;
 
 	@Reference(target = "(search.engine.impl=Elasticsearch)")

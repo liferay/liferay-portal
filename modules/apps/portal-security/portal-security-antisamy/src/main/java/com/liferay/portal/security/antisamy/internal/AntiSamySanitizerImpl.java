@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.antisamy.internal;
 
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.petra.string.CharPool;
@@ -39,13 +40,7 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 	public AntiSamySanitizerImpl(
 		String[] blacklist, URL url, String[] whitelist) {
 
-		try (InputStream inputStream = url.openStream()) {
-			_policy = Policy.getInstance(inputStream);
-		}
-		catch (Exception exception) {
-			throw new IllegalStateException(
-				"Unable to initialize policy", exception);
-		}
+		_url = url;
 
 		if (blacklist != null) {
 			for (String blacklistItem : blacklist) {
@@ -120,7 +115,9 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 				cleanResults = antiSamy.scan(content, policy, AntiSamy.SAX);
 			}
 			else {
-				cleanResults = antiSamy.scan(content, _policy);
+				cleanResults = antiSamy.scan(
+					content,
+					_policyDCLSingleton.getSingleton(this::_getPolicy));
 			}
 
 			if (_log.isWarnEnabled()) {
@@ -135,6 +132,16 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 			_log.error("Unable to sanitize input", exception);
 
 			throw new SanitizerException(exception);
+		}
+	}
+
+	private Policy _getPolicy() {
+		try (InputStream inputStream = _url.openStream()) {
+			return Policy.getInstance(inputStream);
+		}
+		catch (Exception exception) {
+			throw new IllegalStateException(
+				"Unable to initialize policy", exception);
 		}
 	}
 
@@ -191,7 +198,9 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 
 	private final List<String> _blacklist = new ArrayList<>();
 	private final Map<String, Policy> _policies = new HashMap<>();
-	private final Policy _policy;
+	private final DCLSingleton<Policy> _policyDCLSingleton =
+		new DCLSingleton<>();
+	private final URL _url;
 	private final List<String> _whitelist = new ArrayList<>();
 
 }

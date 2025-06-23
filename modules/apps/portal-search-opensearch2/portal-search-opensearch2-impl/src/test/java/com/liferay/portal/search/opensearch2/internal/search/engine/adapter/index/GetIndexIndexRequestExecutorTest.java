@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.index;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.engine.adapter.index.GetIndexIndexRequest;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
@@ -37,15 +36,11 @@ public class GetIndexIndexRequestExecutorTest extends BaseOpenSearchTestCase {
 		GetIndexIndexRequest getIndexIndexRequest = new GetIndexIndexRequest(
 			TEST_INDEX_NAME);
 
-		GetIndexIndexRequestExecutorImpl getIndexIndexRequestExecutorImpl =
-			new GetIndexIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			getIndexIndexRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
+		GetIndexIndexRequestExecutor getIndexIndexRequestExecutor =
+			new GetIndexIndexRequestExecutor(openSearchConnectionManager);
 
 		GetIndexRequest getIndexRequest =
-			getIndexIndexRequestExecutorImpl.createGetIndexRequest(
+			getIndexIndexRequestExecutor.createGetIndexRequest(
 				getIndexIndexRequest);
 
 		List<String> indices = getIndexRequest.index();

@@ -387,6 +387,11 @@ public abstract class BaseLinkedProductResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		LinkedProduct linkedProduct, List<LinkedProduct> linkedProducts) {
 

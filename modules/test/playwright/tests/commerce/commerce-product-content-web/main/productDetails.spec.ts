@@ -1122,3 +1122,84 @@ test('COMMERCE-6364. As a buyer, I want the first selectable quantity of a produ
 		);
 	}
 });
+
+test(
+	'Price is updated on initial load for single select options in product details',
+	{tag: '@LPD-56974'},
+	async ({
+		apiHelpers,
+		applicationsMenuPage,
+		page,
+		productDetailsPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			name: 'View product details',
+			siteGroupId: site.id,
+		});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: 'View product details',
+			});
+		const option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+			'radio',
+			'color',
+			'Color',
+			1
+		);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: 'ProductBundle'},
+			productOptions: [
+				{
+					fieldType: 'radio',
+					key: 'color',
+					name: {
+						en_US: 'Color',
+					},
+					optionId: option.id,
+					priceType: 'static',
+					priority: 1,
+					productOptionValues: [
+						{
+							deltaPrice: 5.0,
+							key: 'black',
+							name: {
+								en_US: 'Black',
+							},
+							priority: 1,
+							quantity: 10,
+							skuId: product.skus[0].id,
+						},
+					],
+				},
+			],
+		});
+
+		await applicationsMenuPage.goToProducts();
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Details');
+
+		await page.goto(`/web/${site.name}/p/productbundle`);
+
+		await expect(
+			await productDetailsPage.priceField('$ 50.00')
+		).toBeVisible();
+	}
+);

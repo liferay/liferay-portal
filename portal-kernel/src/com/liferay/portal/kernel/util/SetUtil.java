@@ -242,8 +242,8 @@ public class SetUtil {
 			return Collections.emptySet();
 		}
 
-		Set<T> set1 = _toSet(collection1);
-		Set<T> set2 = _toSet(collection2);
+		Set<T> set1 = new HashSet<>(collection1);
+		Set<T> set2 = new HashSet<>(collection2);
 
 		if (set1.size() > set2.size()) {
 			set2.retainAll(set1);
@@ -292,15 +292,15 @@ public class SetUtil {
 		Collection<T> collection1, Collection<T> collection2) {
 
 		if (collection1.isEmpty()) {
-			return _toSet(collection2);
+			return new HashSet<>(collection2);
 		}
 
 		if (collection2.isEmpty()) {
-			return _toSet(collection1);
+			return new HashSet<>(collection1);
 		}
 
-		Set<T> set1 = _toSet(collection1);
-		Set<T> set2 = _toSet(collection2);
+		Set<T> set1 = new HashSet<>(collection1);
+		Set<T> set2 = new HashSet<>(collection2);
 
 		Set<T> intersectionSet = intersect(set1, set2);
 
@@ -320,14 +320,6 @@ public class SetUtil {
 
 	public static Set<Long> symmetricDifference(long[] array1, long[] array2) {
 		return symmetricDifference(fromArray(array1), fromArray(array2));
-	}
-
-	private static <T> Set<T> _toSet(Collection<T> collection) {
-		if (collection instanceof Set) {
-			return (Set<T>)collection;
-		}
-
-		return new HashSet<>(collection);
 	}
 
 }

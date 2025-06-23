@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {TInfoPanelComponent} from '..';
 import {SidePanel} from '@clayui/core';
 import {SidePanelProps} from '@clayui/core/lib/side-panel';
 import React, {useContext} from 'react';
 
 import FrontendDataSetContext from '../FrontendDataSetContext';
+import {IInfoPanelComponent} from '../utils/types';
 
 export function InfoPanel({
 	component: InfoPanelContent,
 	...props
 }: {
-	component: React.ComponentType<TInfoPanelComponent>;
+	component: React.ComponentType<IInfoPanelComponent>;
 } & Pick<
 	SidePanelProps,
 	'className' | 'containerRef' | 'id' | 'onOpenChange' | 'open' | 'position'

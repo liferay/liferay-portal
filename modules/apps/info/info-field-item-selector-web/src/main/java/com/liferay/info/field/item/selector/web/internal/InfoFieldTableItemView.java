@@ -9,7 +9,6 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.item.selector.TableItemView;
 import com.liferay.portal.kernel.dao.search.SearchEntry;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -30,12 +29,7 @@ public class InfoFieldTableItemView implements TableItemView {
 
 	@Override
 	public List<String> getHeaderNames() {
-		if (FeatureFlagManagerUtil.isEnabled("LPD-37927")) {
-			return ListUtil.fromArray(
-				"name", "type", "mandatory", "localizable");
-		}
-
-		return ListUtil.fromArray("name", "type", "mandatory");
+		return ListUtil.fromArray("name", "type", "mandatory", "localizable");
 	}
 
 	@Override
@@ -71,20 +65,16 @@ public class InfoFieldTableItemView implements TableItemView {
 
 		searchEntries.add(mandatoryTextSearchEntry);
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-37927")) {
-			TextSearchEntry localizableTextSearchEntry = new TextSearchEntry();
+		TextSearchEntry localizableTextSearchEntry = new TextSearchEntry();
 
-			if (_infoField.isLocalizable()) {
-				localizableTextSearchEntry.setName(
-					LanguageUtil.get(locale, "yes"));
-			}
-			else {
-				localizableTextSearchEntry.setName(
-					LanguageUtil.get(locale, "no"));
-			}
-
-			searchEntries.add(localizableTextSearchEntry);
+		if (_infoField.isLocalizable()) {
+			localizableTextSearchEntry.setName(LanguageUtil.get(locale, "yes"));
 		}
+		else {
+			localizableTextSearchEntry.setName(LanguageUtil.get(locale, "no"));
+		}
+
+		searchEntries.add(localizableTextSearchEntry);
 
 		return searchEntries;
 	}

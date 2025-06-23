@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Info Collection Provider Item Selector Web
 Bundle-SymbolicName: com.liferay.info.collection.provider.item.selector.web
-Bundle-Version: 1.0.44
+Bundle-Version: 1.0.45
 Web-ContextPath: /info-collection-provider-item-selector-web

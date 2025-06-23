@@ -187,15 +187,15 @@ public abstract class BaseTermResourceTestCase {
 		assertValid(getTerm);
 	}
 
-	protected Long
-			testGetPaymentMethodGroupRelTermTerm_getPaymentMethodGroupRelTermId()
+	protected Term testGetPaymentMethodGroupRelTermTerm_addTerm()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Term testGetPaymentMethodGroupRelTermTerm_addTerm()
+	protected Long
+			testGetPaymentMethodGroupRelTermTerm_getPaymentMethodGroupRelTermId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -325,15 +325,15 @@ public abstract class BaseTermResourceTestCase {
 		assertValid(getTerm);
 	}
 
-	protected Long
-			testGetShippingFixedOptionTermTerm_getShippingFixedOptionTermId()
+	protected Term testGetShippingFixedOptionTermTerm_addTerm()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Term testGetShippingFixedOptionTermTerm_addTerm()
+	protected Long
+			testGetShippingFixedOptionTermTerm_getShippingFixedOptionTermId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

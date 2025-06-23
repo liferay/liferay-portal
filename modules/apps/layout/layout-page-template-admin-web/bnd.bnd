@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Layout Page Template Admin Web
 Bundle-SymbolicName: com.liferay.layout.page.template.admin.web
-Bundle-Version: 2.0.138
+Bundle-Version: 2.0.139
 Web-ContextPath: /layout-page-template-admin-web
 -dsannotations-options: inherit

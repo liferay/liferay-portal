@@ -105,6 +105,7 @@ public class TopLevelBuildTestrayCaseResult extends BuildTestrayCaseResult {
 	public List<TestrayAttachment> getTestrayAttachments() {
 		List<TestrayAttachment> testrayAttachments = new ArrayList<>();
 
+		testrayAttachments.add(getTopLevelBuildDatabaseTestrayAttachment());
 		testrayAttachments.add(getTopLevelBuildReportTestrayAttachment());
 		testrayAttachments.add(getTopLevelJenkinsConsoleTestrayAttachment());
 		testrayAttachments.add(getTopLevelJenkinsReportTestrayAttachment());

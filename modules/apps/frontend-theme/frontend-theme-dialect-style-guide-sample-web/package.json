@@ -1,13 +1,13 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/card": "3.138.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/card": "3.139.1",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/label": "3.128.0",
 		"@clayui/layout": "3.128.0",
 		"@clayui/table": "3.111.0",
-		"@clayui/tabs": "3.137.0",
+		"@clayui/tabs": "3.139.0",
 		"classnames": "2.3.1",
 		"react": "18.2.0"
 	},
@@ -18,5 +18,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "2.0.76"
+	"version": "2.0.77"
 }

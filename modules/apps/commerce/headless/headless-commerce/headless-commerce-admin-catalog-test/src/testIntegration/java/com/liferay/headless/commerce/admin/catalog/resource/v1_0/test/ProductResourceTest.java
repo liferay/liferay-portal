@@ -145,6 +145,13 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testDeleteProduct() throws Exception {
 	}
 

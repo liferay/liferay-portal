@@ -230,6 +230,22 @@ public interface PatcherBuildRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherBuildRel> getPatcherBuildRels(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuildRel> getPatcherBuildRelsByChildPatcherBuildId(
+		long childPatcherBuildId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPatcherBuildRelsByChildPatcherBuildIdCount(
+		long childPatcherBuildId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuildRel> getPatcherBuildRelsByParentPatcherBuildId(
+		long parentPatcherBuildId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPatcherBuildRelsByParentPatcherBuildIdCount(
+		long parentPatcherBuildId);
+
 	/**
 	 * Returns the number of patcher build rels.
 	 *

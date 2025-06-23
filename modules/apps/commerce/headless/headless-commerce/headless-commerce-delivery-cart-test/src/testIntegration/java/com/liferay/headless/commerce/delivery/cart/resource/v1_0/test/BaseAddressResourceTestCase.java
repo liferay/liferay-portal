@@ -217,12 +217,12 @@ public abstract class BaseAddressResourceTestCase {
 		assertValid(getAddress);
 	}
 
-	protected Long testGetCartBillingAddres_getCartId() throws Exception {
+	protected Address testGetCartBillingAddres_addAddress() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Address testGetCartBillingAddres_addAddress() throws Exception {
+	protected Long testGetCartBillingAddres_getCartId() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -346,16 +346,17 @@ public abstract class BaseAddressResourceTestCase {
 		assertValid(getAddress);
 	}
 
+	protected Address
+			testGetCartByExternalReferenceCodeBillingAddress_addAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetCartByExternalReferenceCodeBillingAddress_getExternalReferenceCode(
 				Address address)
-		throws Exception {
-
-		return address.getExternalReferenceCode();
-	}
-
-	protected Address
-			testGetCartByExternalReferenceCodeBillingAddress_addAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -424,7 +425,8 @@ public abstract class BaseAddressResourceTestCase {
 				Address address)
 		throws Exception {
 
-		return address.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -498,16 +500,17 @@ public abstract class BaseAddressResourceTestCase {
 		assertValid(getAddress);
 	}
 
+	protected Address
+			testGetCartByExternalReferenceCodeShippingAddress_addAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetCartByExternalReferenceCodeShippingAddress_getExternalReferenceCode(
 				Address address)
-		throws Exception {
-
-		return address.getExternalReferenceCode();
-	}
-
-	protected Address
-			testGetCartByExternalReferenceCodeShippingAddress_addAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -576,7 +579,8 @@ public abstract class BaseAddressResourceTestCase {
 				Address address)
 		throws Exception {
 
-		return address.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -645,12 +649,12 @@ public abstract class BaseAddressResourceTestCase {
 		assertValid(getAddress);
 	}
 
-	protected Long testGetCartShippingAddres_getCartId() throws Exception {
+	protected Address testGetCartShippingAddres_addAddress() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Address testGetCartShippingAddres_addAddress() throws Exception {
+	protected Long testGetCartShippingAddres_getCartId() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}

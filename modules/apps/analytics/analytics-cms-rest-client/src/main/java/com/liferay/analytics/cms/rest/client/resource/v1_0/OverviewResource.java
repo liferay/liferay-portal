@@ -34,22 +34,22 @@ public interface OverviewResource {
 
 	public Overview getContentOverview(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getContentOverviewHttpResponse(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception;
 
 	public Overview getFileOverview(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getFileOverviewHttpResponse(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception;
 
 	public static class Builder {
@@ -162,7 +162,7 @@ public interface OverviewResource {
 
 		public Overview getContentOverview(
 				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Integer spaceId)
+				String rangeStart, Long spaceId)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
@@ -230,7 +230,7 @@ public interface OverviewResource {
 
 		public HttpInvoker.HttpResponse getContentOverviewHttpResponse(
 				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Integer spaceId)
+				String rangeStart, Long spaceId)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -289,7 +289,7 @@ public interface OverviewResource {
 
 		public Overview getFileOverview(
 				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Integer spaceId)
+				String rangeStart, Long spaceId)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse = getFileOverviewHttpResponse(
@@ -356,7 +356,7 @@ public interface OverviewResource {
 
 		public HttpInvoker.HttpResponse getFileOverviewHttpResponse(
 				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Integer spaceId)
+				String rangeStart, Long spaceId)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();

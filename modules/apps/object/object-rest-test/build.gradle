@@ -8,11 +8,13 @@ dependencies {
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation group: "org.yaml", name: "snakeyaml", version: "2.3"
 	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:asset:asset-entry-rel-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:headless:headless-admin-taxonomy:headless-admin-taxonomy-client")
 	testIntegrationImplementation project(":apps:headless:headless-admin-user:headless-admin-user-api")
+	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:headless:headless-delivery:headless-delivery-api")
 	testIntegrationImplementation project(":apps:headless:headless-object:headless-object-api")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")

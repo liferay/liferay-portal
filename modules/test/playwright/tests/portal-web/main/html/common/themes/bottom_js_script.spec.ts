@@ -108,3 +108,21 @@ test(
 		expect(jsSnippetIIFE).toEqual(true);
 	}
 );
+
+test(
+	'Check URL does not allow XSS injection',
+	{tag: '@LPD-57867'},
+	async ({page}) => {
+		let capturedLogMessage = '';
+
+		page.on('console', (msg) => {
+			if (msg.type() === 'log') {
+				capturedLogMessage = msg.text();
+			}
+		});
+
+		await page.goto(`/?snippet=console.log("${getRandomString()}")`);
+
+		expect(capturedLogMessage).toBe('');
+	}
+);

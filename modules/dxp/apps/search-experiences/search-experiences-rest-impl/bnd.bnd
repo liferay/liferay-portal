@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Search Experiences REST Implementation
 Bundle-SymbolicName: com.liferay.search.experiences.rest.impl
-Bundle-Version: 3.0.76
+Bundle-Version: 3.0.77
 Liferay-Enterprise-App: dxp.only=true;product.id=22b7e30f-34d4-4a63-9696-56987ad66e4e

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.client.http.HttpInvoker;
@@ -331,27 +332,25 @@ public abstract class BasePriceListResourceTestCase {
 		PriceList priceList1 = testDeletePriceListBatch_addPriceList();
 
 		testDeletePriceListBatch_deletePriceList(
-			"COMPLETED", null, priceList1.getId());
+			202, priceList1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			priceListResource.getPriceListHttpResponse(priceList1.getId()));
 
-		PriceList priceList2 = testDeletePriceListBatch_addPriceList();
+		priceList1 = testDeletePriceListBatch_addPriceList();
 
-		testDeletePriceListBatch_deletePriceList(
-			"COMPLETED", priceList2.getExternalReferenceCode(), null);
+		testDeletePriceListBatch_deletePriceList(202, null, priceList1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
-			priceListResource.getPriceListHttpResponse(priceList2.getId()));
+			priceListResource.getPriceListHttpResponse(priceList1.getId()));
 
 		priceList1 = testDeletePriceListBatch_addPriceList();
-		priceList2 = testDeletePriceListBatch_addPriceList();
+		PriceList priceList2 = testDeletePriceListBatch_addPriceList();
 
 		testDeletePriceListBatch_deletePriceList(
-			"COMPLETED", priceList2.getExternalReferenceCode(),
-			priceList1.getId());
+			202, priceList2.getExternalReferenceCode(), priceList1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -361,8 +360,7 @@ public abstract class BasePriceListResourceTestCase {
 			priceListResource.getPriceListHttpResponse(priceList2.getId()));
 
 		testDeletePriceListBatch_deletePriceList(
-			"COMPLETED", priceList2.getExternalReferenceCode(),
-			priceList1.getId());
+			202, priceList2.getExternalReferenceCode(), priceList1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -376,7 +374,7 @@ public abstract class BasePriceListResourceTestCase {
 	}
 
 	protected void testDeletePriceListBatch_deletePriceList(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -389,10 +387,10 @@ public abstract class BasePriceListResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1370,6 +1368,13 @@ public abstract class BasePriceListResourceTestCase {
 			putPriceList.getExternalReferenceCode());
 	}
 
+	protected PriceList testPutPriceListByExternalReferenceCode_addPriceList()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected PriceList
 			testPutPriceListByExternalReferenceCode_createPriceList()
 		throws Exception {
@@ -1377,11 +1382,86 @@ public abstract class BasePriceListResourceTestCase {
 		return randomPriceList();
 	}
 
-	protected PriceList testPutPriceListByExternalReferenceCode_addPriceList()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PriceList priceList1 = testBatchEngineDeleteImportTask_addPriceList();
+
+		testBatchEngineDeleteImportTask_deletePriceList(
+			200, priceList1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			priceListResource.getPriceListHttpResponse(priceList1.getId()));
+
+		priceList1 = testBatchEngineDeleteImportTask_addPriceList();
+
+		testBatchEngineDeleteImportTask_deletePriceList(
+			200, null, priceList1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			priceListResource.getPriceListHttpResponse(priceList1.getId()));
+
+		priceList1 = testBatchEngineDeleteImportTask_addPriceList();
+		PriceList priceList2 = testBatchEngineDeleteImportTask_addPriceList();
+
+		testBatchEngineDeleteImportTask_deletePriceList(
+			200, priceList2.getExternalReferenceCode(), priceList1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			priceListResource.getPriceListHttpResponse(priceList1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			priceListResource.getPriceListHttpResponse(priceList2.getId()));
+
+		testBatchEngineDeleteImportTask_deletePriceList(
+			200, priceList2.getExternalReferenceCode(), priceList1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			priceListResource.getPriceListHttpResponse(priceList2.getId()));
+	}
+
+	protected PriceList testBatchEngineDeleteImportTask_addPriceList()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeletePriceList_addPriceList();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deletePriceList(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceList",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

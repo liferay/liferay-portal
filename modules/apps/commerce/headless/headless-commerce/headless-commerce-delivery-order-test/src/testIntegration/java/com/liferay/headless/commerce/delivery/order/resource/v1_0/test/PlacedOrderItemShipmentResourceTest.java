@@ -215,14 +215,6 @@ public class PlacedOrderItemShipmentResourceTest
 		return _commerceOrderItem.getCommerceOrderItemId();
 	}
 
-	@Override
-	protected PlacedOrderItemShipment
-			testGraphQLPlacedOrderItemShipment_addPlacedOrderItemShipment()
-		throws Exception {
-
-		return _addCommerceShipmentItem(randomPlacedOrderItemShipment());
-	}
-
 	private PlacedOrderItemShipment _addCommerceShipmentItem(
 			PlacedOrderItemShipment placedOrderItemShipment)
 		throws Exception {

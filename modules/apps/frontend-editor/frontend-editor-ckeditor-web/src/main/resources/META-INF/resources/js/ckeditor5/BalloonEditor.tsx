@@ -6,12 +6,13 @@
 import {BalloonEditor as BaseBalloonEditor, EventInfo} from 'ckeditor5';
 import React from 'react';
 
-import BaseEditor, {TEditor} from './BaseEditor';
+import BaseEditor from './BaseEditor';
 import getDefaultEditorConfig from './utils/getDefaultEditorConfig';
 import {
 	EEditorConfigPreset,
 	EEditorVariant,
 	LiferayEditorConfig,
+	TEditor,
 } from './utils/types';
 
 const BalloonEditor = ({

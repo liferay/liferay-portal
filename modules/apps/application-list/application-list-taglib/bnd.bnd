@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Application List Taglib
 Bundle-SymbolicName: com.liferay.application.list.taglib
-Bundle-Version: 8.0.1
+Bundle-Version: 8.0.2
 Export-Package:\
 	com.liferay.application.list.taglib.display.context.logic,\
 	com.liferay.application.list.taglib.servlet.taglib

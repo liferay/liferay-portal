@@ -15,18 +15,19 @@ public class UpgradeJavaSetResultsSetTotalMethodCheck {
 		return searchContainer;
 	}
 
-	public SearchContainer<User> setTotal(int total) {
+	public SearchContainer<User> setResultsAndTotal(List<User> results, int total) {
+
 		SearchContainer<Entry> searchContainer = new SearchContainer();
 
+		searchContainer.setResults(results);
 		searchContainer.setTotal(total);
 
 		return searchContainer;
 	}
 
-	public SearchContainer<User> setResultsAndTotal(List<User> results, int total) {
+	public SearchContainer<User> setTotal(int total) {
 		SearchContainer<Entry> searchContainer = new SearchContainer();
 
-		searchContainer.setResults(results);
 		searchContainer.setTotal(total);
 
 		return searchContainer;

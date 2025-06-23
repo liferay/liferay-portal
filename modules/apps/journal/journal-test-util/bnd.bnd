@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Journal Test Utilities
 Bundle-SymbolicName: com.liferay.journal.test.util
-Bundle-Version: 13.3.2
+Bundle-Version: 13.3.3
 Export-Package:\
 	com.liferay.journal.test.util,\
 	com.liferay.journal.test.util.search

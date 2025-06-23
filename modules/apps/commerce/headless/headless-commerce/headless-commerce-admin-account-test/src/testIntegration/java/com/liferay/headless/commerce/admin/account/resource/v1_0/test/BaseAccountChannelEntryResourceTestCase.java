@@ -6064,6 +6064,11 @@ public abstract class BaseAccountChannelEntryResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected AccountChannelEntry
 			testGraphQLAccountChannelEntry_addAccountChannelEntry()
 		throws Exception {

@@ -111,6 +111,367 @@ public class PatcherBuildRelUtil {
 	}
 
 	/**
+	 * Returns all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @return the matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId) {
+
+		return getPersistence().findByChildPatcherBuildId(childPatcherBuildId);
+	}
+
+	/**
+	 * Returns a range of all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @return the range of matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId, int start, int end) {
+
+		return getPersistence().findByChildPatcherBuildId(
+			childPatcherBuildId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return getPersistence().findByChildPatcherBuildId(
+			childPatcherBuildId, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByChildPatcherBuildId(
+			childPatcherBuildId, start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel findByChildPatcherBuildId_First(
+			long childPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherBuildRelException {
+
+		return getPersistence().findByChildPatcherBuildId_First(
+			childPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel fetchByChildPatcherBuildId_First(
+		long childPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return getPersistence().fetchByChildPatcherBuildId_First(
+			childPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel findByChildPatcherBuildId_Last(
+			long childPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherBuildRelException {
+
+		return getPersistence().findByChildPatcherBuildId_Last(
+			childPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel fetchByChildPatcherBuildId_Last(
+		long childPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return getPersistence().fetchByChildPatcherBuildId_Last(
+			childPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the patcher build rels before and after the current patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param patcherBuildRelId the primary key of the current patcher build rel
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a patcher build rel with the primary key could not be found
+	 */
+	public static PatcherBuildRel[] findByChildPatcherBuildId_PrevAndNext(
+			long patcherBuildRelId, long childPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherBuildRelException {
+
+		return getPersistence().findByChildPatcherBuildId_PrevAndNext(
+			patcherBuildRelId, childPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Removes all the patcher build rels where childPatcherBuildId = &#63; from the database.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 */
+	public static void removeByChildPatcherBuildId(long childPatcherBuildId) {
+		getPersistence().removeByChildPatcherBuildId(childPatcherBuildId);
+	}
+
+	/**
+	 * Returns the number of patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @return the number of matching patcher build rels
+	 */
+	public static int countByChildPatcherBuildId(long childPatcherBuildId) {
+		return getPersistence().countByChildPatcherBuildId(childPatcherBuildId);
+	}
+
+	/**
+	 * Returns all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @return the matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId) {
+
+		return getPersistence().findByParentPatcherBuildId(
+			parentPatcherBuildId);
+	}
+
+	/**
+	 * Returns a range of all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @return the range of matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId, int start, int end) {
+
+		return getPersistence().findByParentPatcherBuildId(
+			parentPatcherBuildId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return getPersistence().findByParentPatcherBuildId(
+			parentPatcherBuildId, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher build rels
+	 */
+	public static List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByParentPatcherBuildId(
+			parentPatcherBuildId, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel findByParentPatcherBuildId_First(
+			long parentPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherBuildRelException {
+
+		return getPersistence().findByParentPatcherBuildId_First(
+			parentPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel fetchByParentPatcherBuildId_First(
+		long parentPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return getPersistence().fetchByParentPatcherBuildId_First(
+			parentPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel findByParentPatcherBuildId_Last(
+			long parentPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherBuildRelException {
+
+		return getPersistence().findByParentPatcherBuildId_Last(
+			parentPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	public static PatcherBuildRel fetchByParentPatcherBuildId_Last(
+		long parentPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return getPersistence().fetchByParentPatcherBuildId_Last(
+			parentPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Returns the patcher build rels before and after the current patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param patcherBuildRelId the primary key of the current patcher build rel
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a patcher build rel with the primary key could not be found
+	 */
+	public static PatcherBuildRel[] findByParentPatcherBuildId_PrevAndNext(
+			long patcherBuildRelId, long parentPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherBuildRelException {
+
+		return getPersistence().findByParentPatcherBuildId_PrevAndNext(
+			patcherBuildRelId, parentPatcherBuildId, orderByComparator);
+	}
+
+	/**
+	 * Removes all the patcher build rels where parentPatcherBuildId = &#63; from the database.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 */
+	public static void removeByParentPatcherBuildId(long parentPatcherBuildId) {
+		getPersistence().removeByParentPatcherBuildId(parentPatcherBuildId);
+	}
+
+	/**
+	 * Returns the number of patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @return the number of matching patcher build rels
+	 */
+	public static int countByParentPatcherBuildId(long parentPatcherBuildId) {
+		return getPersistence().countByParentPatcherBuildId(
+			parentPatcherBuildId);
+	}
+
+	/**
 	 * Caches the patcher build rel in the entity cache if it is enabled.
 	 *
 	 * @param patcherBuildRel the patcher build rel

@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend JS React Web
 Bundle-SymbolicName: com.liferay.frontend.js.react.web
-Bundle-Version: 5.0.59
+Bundle-Version: 5.0.60
 Liferay-JS-Config: /META-INF/resources/legacy/config.js
 Web-ContextPath: /frontend-js-react-web

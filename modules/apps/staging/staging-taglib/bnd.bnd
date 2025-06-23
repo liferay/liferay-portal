@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Staging Taglib
 Bundle-SymbolicName: com.liferay.staging.taglib
-Bundle-Version: 9.0.1
+Bundle-Version: 9.0.2
 Export-Package: com.liferay.staging.taglib.servlet.taglib
 Liferay-JS-Config: /META-INF/resources/js/config.js
 Provide-Capability:\

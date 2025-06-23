@@ -4,7 +4,7 @@ liferay-recaptcha-etc-spring-boot:
     customElementExternalReferenceCode: LXC:liferay-recaptcha-custom-element
     name: Liferay reCAPTCHA Etc Spring Boot
     oAuth2ApplicationExternalReferenceCode: liferay-recaptcha-etc-spring-boot-oauth-application-user-agent
-    resourcePath: /recaptcha/validation
+    resourcePath: /validation
     type: captcha
 liferay-recaptcha-etc-spring-boot-oauth-application-user-agent:
     .serviceAddress: localhost:58081

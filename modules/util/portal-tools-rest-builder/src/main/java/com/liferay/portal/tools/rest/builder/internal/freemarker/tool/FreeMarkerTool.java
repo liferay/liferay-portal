@@ -500,8 +500,20 @@ public class FreeMarkerTool {
 
 		parameters = StringUtil.replace(
 			parameters,
+			"@GraphQLName(\"assetLibraryExternalReferenceCode\") " +
+				"java.lang.String assetLibraryExternalReferenceCode",
+			"@GraphQLName(\"assetLibraryExternalReferenceCode\") @NotEmpty " +
+				"String assetLibraryExternalReferenceCode");
+		parameters = StringUtil.replace(
+			parameters,
 			"@GraphQLName(\"assetLibraryId\") java.lang.Long assetLibraryId",
 			"@GraphQLName(\"assetLibraryId\") @NotEmpty String assetLibraryId");
+		parameters = StringUtil.replace(
+			parameters,
+			"@GraphQLName(\"siteExternalReferenceCode\") java.lang.String " +
+				"siteExternalReferenceCode",
+			"@GraphQLName(\"siteExternalReferenceCode\") @NotEmpty String " +
+				"siteExternalReferenceCode");
 		parameters = StringUtil.replace(
 			parameters, "@GraphQLName(\"siteId\") java.lang.Long siteId",
 			"@GraphQLName(\"siteKey\") @NotEmpty String siteKey");
@@ -1082,6 +1094,23 @@ public class FreeMarkerTool {
 			configYAML, propertyName, schema, schemas);
 	}
 
+	public boolean isExternalReferenceCodeParameter(
+		JavaMethodParameter javaMethodParameter, String schemaName) {
+
+		if (StringUtil.equals(
+				javaMethodParameter.getParameterName(),
+				"externalReferenceCode") ||
+			StringUtil.equals(
+				javaMethodParameter.getParameterName(),
+				TextFormatter.format(schemaName, TextFormatter.I) +
+					"ExternalReferenceCode")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean isGeneratePermissions(
 		ConfigYAML configYAML, JavaMethodSignature javaMethodSignature,
 		List<JavaMethodSignature> javaMethodSignatures, Schema schema,
@@ -1174,19 +1203,74 @@ public class FreeMarkerTool {
 	public boolean isParameterNameSchemaRelated(
 		String parameterName, String path, String schemaName) {
 
-		String parameterNameSubpath = "/{" + parameterName + "}";
+		String schemaVarName = TextFormatter.format(
+			schemaName, TextFormatter.I);
 
-		if (StringUtil.endsWith(path, parameterNameSubpath)) {
+		if (StringUtil.equals(
+				parameterName, "assetLibraryExternalReferenceCode") ||
+			StringUtil.equals(parameterName, "assetLibraryId") ||
+			StringUtil.equals(parameterName, "siteExternalReferenceCode") ||
+			StringUtil.equals(parameterName, "siteId") ||
+			StringUtil.equals(
+				parameterName, schemaVarName + "externalReferenceCode") ||
+			StringUtil.equals(parameterName, schemaVarName + "Id")) {
+
 			return true;
 		}
 
-		String prefixPath = path.substring(
-			0, path.indexOf(parameterNameSubpath));
+		String parameterNameSubpath = "/{" + parameterName + "}";
 
-		if (prefixPath.contains(
-				TextFormatter.format(schemaName, TextFormatter.I)) ||
-			prefixPath.contains(
-				TextFormatter.format(schemaName, TextFormatter.K))) {
+		if (StringUtil.endsWith(path, parameterNameSubpath) &&
+			(StringUtil.equals(parameterName, "externalReferenceCode") ||
+			 StringUtil.equals(parameterName, "id"))) {
+
+			return true;
+		}
+
+		int parameterIndex = path.indexOf(parameterNameSubpath);
+
+		if (parameterIndex == -1) {
+			return false;
+		}
+
+		String[] pathSegments = path.substring(
+			0, parameterIndex
+		).split(
+			"/"
+		);
+
+		String parameterSchemaName = null;
+
+		for (int i = pathSegments.length - 1; i >= 0; i--) {
+			String segment = pathSegments[i];
+
+			if (StringUtil.startsWith(segment, "by-") ||
+				(StringUtil.startsWith(segment, "{") &&
+				 StringUtil.endsWith(segment, "}"))) {
+
+				continue;
+			}
+
+			parameterSchemaName = segment;
+
+			break;
+		}
+
+		if (parameterSchemaName == null) {
+			return false;
+		}
+
+		String formattedParameterSchemaName = TextFormatter.format(
+			parameterSchemaName, TextFormatter.K);
+		String formattedSchemaNamePlural = TextFormatter.format(
+			TextFormatter.formatPlural(schemaName), TextFormatter.K);
+		String formattedSchemaNameSingular = TextFormatter.format(
+			schemaName, TextFormatter.K);
+
+		if (StringUtil.equals(
+				formattedParameterSchemaName, formattedSchemaNamePlural) ||
+			StringUtil.equals(
+				formattedParameterSchemaName, formattedSchemaNameSingular)) {
 
 			return true;
 		}
@@ -1232,6 +1316,29 @@ public class FreeMarkerTool {
 			String string = returnTypeParts[returnTypeParts.length - 1];
 
 			return relatedSchemaNames.contains(string);
+		}
+
+		return false;
+	}
+
+	public boolean isSchemaPropertyRequired(
+		OpenAPIYAML openAPIYAML, String schemaName, String propertyName) {
+
+		Map<String, Schema> schemas = getSchemas(openAPIYAML);
+
+		Schema schema = schemas.get(schemaName);
+
+		if (schema == null) {
+			return false;
+		}
+
+		List<String> requiredPropertyNames =
+			schema.getRequiredPropertySchemaNames();
+
+		if ((requiredPropertyNames != null) &&
+			requiredPropertyNames.contains(propertyName)) {
+
+			return true;
 		}
 
 		return false;

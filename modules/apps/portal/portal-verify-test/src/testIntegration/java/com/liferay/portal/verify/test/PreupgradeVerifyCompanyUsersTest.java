@@ -9,12 +9,14 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
@@ -25,6 +27,7 @@ import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -47,6 +50,15 @@ public class PreupgradeVerifyCompanyUsersTest
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		_companyId = TestPropsValues.getCompanyId();
+
+		_originalCacheEnabled = ReflectionTestUtil.getAndSetFieldValue(
+			PortalInstancePool.class, "_cacheEnabled", false);
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			PortalInstancePool.class, "_cacheEnabled", _originalCacheEnabled);
 	}
 
 	@Test
@@ -108,6 +120,7 @@ public class PreupgradeVerifyCompanyUsersTest
 	}
 
 	private static long _companyId;
+	private static boolean _originalCacheEnabled;
 
 	@Inject
 	private RoleLocalService _roleLocalService;

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Reading Time Taglib
 Bundle-SymbolicName: com.liferay.reading.time.taglib
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2
 Export-Package: com.liferay.reading.time.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

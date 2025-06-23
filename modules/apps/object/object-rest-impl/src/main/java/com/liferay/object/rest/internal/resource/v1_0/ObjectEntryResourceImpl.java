@@ -28,6 +28,8 @@ import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.search.Sort;
@@ -128,6 +130,72 @@ public class ObjectEntryResourceImpl
 		}
 		else {
 			super.create(objectEntries, parameters);
+		}
+	}
+
+	@Override
+	public void delete(
+			Collection<ObjectEntry> objectEntries,
+			Map<String, Serializable> parameters)
+		throws Exception {
+
+		ObjectScopeProvider objectScopeProvider =
+			_objectScopeProviderRegistry.getObjectScopeProvider(
+				_objectDefinition.getScope());
+
+		if (objectScopeProvider.isGroupAware()) {
+			UnsafeFunction<ObjectEntry, ObjectEntry, Exception>
+				objectEntryUnsafeFunction = objectEntry -> {
+					if (objectEntry.getId() != null) {
+						try {
+							deleteObjectEntry(objectEntry.getId());
+
+							return objectEntry;
+						}
+						catch (Exception exception) {
+							if (_log.isDebugEnabled()) {
+								_log.debug(exception);
+							}
+
+							if (objectEntry.getExternalReferenceCode() !=
+									null) {
+
+								deleteScopeScopeKeyByExternalReferenceCode(
+									_getScopeKey(parameters),
+									objectEntry.getExternalReferenceCode());
+
+								return objectEntry;
+							}
+						}
+					}
+					else if (objectEntry.getExternalReferenceCode() != null) {
+						deleteScopeScopeKeyByExternalReferenceCode(
+							_getScopeKey(parameters),
+							objectEntry.getExternalReferenceCode());
+
+						return objectEntry;
+					}
+
+					throw new UnsupportedOperationException(
+						"Unable to delete by external reference code or ID");
+				};
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(
+					objectEntries, objectEntryUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					objectEntries, objectEntryUnsafeFunction::apply);
+			}
+			else {
+				for (ObjectEntry objectEntry : objectEntries) {
+					objectEntryUnsafeFunction.apply(objectEntry);
+				}
+			}
+		}
+		else {
+			super.delete(objectEntries, parameters);
 		}
 	}
 
@@ -540,6 +608,19 @@ public class ObjectEntryResourceImpl
 	}
 
 	@Override
+	public ObjectEntry postObjectEntryExpire(Long objectEntryId)
+		throws Exception {
+
+		DefaultObjectEntryManager defaultObjectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					_objectDefinition.getStorageType()));
+
+		return defaultObjectEntryManager.expireObjectEntry(
+			_getDTOConverterContext(objectEntryId), objectEntryId);
+	}
+
+	@Override
 	public ObjectEntry postScopeScopeKey(
 			String scopeKey, ObjectEntry objectEntry)
 		throws Exception {
@@ -899,6 +980,10 @@ public class ObjectEntryResourceImpl
 			return String.valueOf(parameters.get("scopeKey"));
 		}
 
+		if (parameters.containsKey("siteExternalReferenceCode")) {
+			return String.valueOf(parameters.get("siteExternalReferenceCode"));
+		}
+
 		if (parameters.containsKey("siteId")) {
 			return String.valueOf(parameters.get("siteId"));
 		}
@@ -949,6 +1034,9 @@ public class ObjectEntryResourceImpl
 
 		return new ValidationResponse();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectEntryResourceImpl.class);
 
 	private final DTOConverterRegistry _dtoConverterRegistry;
 	private final EntityModelProvider _entityModelProvider;

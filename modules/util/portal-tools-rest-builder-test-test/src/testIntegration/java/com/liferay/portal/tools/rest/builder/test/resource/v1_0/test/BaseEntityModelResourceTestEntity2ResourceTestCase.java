@@ -215,14 +215,6 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	protected EntityModelResourceTestEntity2
-			testGraphQLEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected void assertContains(
 		EntityModelResourceTestEntity2 entityModelResourceTestEntity2,
 		List<EntityModelResourceTestEntity2> entityModelResourceTestEntity2s) {

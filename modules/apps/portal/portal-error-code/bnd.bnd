@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Error Code
 Bundle-SymbolicName: com.liferay.portal.error.code
-Bundle-Version: 3.0.17
+Bundle-Version: 3.0.18
 Web-ContextPath: /portal-error-code

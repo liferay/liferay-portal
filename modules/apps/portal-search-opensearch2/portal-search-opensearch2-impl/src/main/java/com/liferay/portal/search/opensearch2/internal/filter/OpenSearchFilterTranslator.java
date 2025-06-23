@@ -31,7 +31,9 @@ import com.liferay.portal.search.filter.DateRangeFilter;
 import com.liferay.portal.search.filter.FilterVisitor;
 import com.liferay.portal.search.filter.RangeFilter;
 import com.liferay.portal.search.filter.TermsSetFilter;
+import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.opensearch2.internal.geolocation.GeoTranslator;
+import com.liferay.portal.search.opensearch2.internal.legacy.query.OpenSearchQueryTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.QueryUtil;
 import com.liferay.portal.search.opensearch2.internal.util.SetterUtil;
 
@@ -55,6 +57,7 @@ import org.opensearch.client.opensearch._types.query_dsl.RangeQuery;
 import org.opensearch.client.opensearch._types.query_dsl.TermQuery;
 import org.opensearch.client.opensearch._types.query_dsl.TermsSetQuery;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -310,6 +313,11 @@ public class OpenSearchFilterTranslator
 		return builder.build();
 	}
 
+	@Activate
+	protected void activate() {
+		_queryTranslator = new OpenSearchQueryTranslator(_indexNameBuilder);
+	}
+
 	protected QueryVariant translate(
 		BooleanClause<Filter> booleanClause,
 		FilterVisitor<QueryVariant> filterVisitor) {
@@ -322,6 +330,8 @@ public class OpenSearchFilterTranslator
 	private final GeoTranslator _geoTranslator = new GeoTranslator();
 
 	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
 	private QueryTranslator<QueryVariant> _queryTranslator;
 
 }

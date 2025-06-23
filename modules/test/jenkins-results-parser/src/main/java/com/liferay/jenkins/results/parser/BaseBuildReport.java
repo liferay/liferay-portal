@@ -69,12 +69,20 @@ public abstract class BaseBuildReport implements BuildReport {
 	public long getDuration() {
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
 
+		if (buildReportJSONObject == null) {
+			return 0L;
+		}
+
 		return buildReportJSONObject.getLong("duration");
 	}
 
 	@Override
 	public String getFailureMessage() {
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
+
+		if (buildReportJSONObject == null) {
+			return null;
+		}
 
 		return buildReportJSONObject.optString("failureMessage");
 	}
@@ -131,6 +139,10 @@ public abstract class BaseBuildReport implements BuildReport {
 	public String getResult() {
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
 
+		if (buildReportJSONObject == null) {
+			return null;
+		}
+
 		return buildReportJSONObject.getString("result");
 	}
 
@@ -149,7 +161,13 @@ public abstract class BaseBuildReport implements BuildReport {
 
 	@Override
 	public StopWatchRecordsGroup getStopWatchRecordsGroup() {
-		return new StopWatchRecordsGroup(getBuildReportJSONObject());
+		JSONObject buildReportJSONObject = getBuildReportJSONObject();
+
+		if (buildReportJSONObject == null) {
+			return null;
+		}
+
+		return new StopWatchRecordsGroup(buildReportJSONObject);
 	}
 
 	@Override
@@ -157,6 +175,10 @@ public abstract class BaseBuildReport implements BuildReport {
 		List<URL> testrayAttachmentURLs = new ArrayList<>();
 
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
+
+		if (buildReportJSONObject == null) {
+			return testrayAttachmentURLs;
+		}
 
 		JSONArray testrayAttachmentURLsJSONArray =
 			buildReportJSONObject.optJSONArray("testrayAttachmentURLs");

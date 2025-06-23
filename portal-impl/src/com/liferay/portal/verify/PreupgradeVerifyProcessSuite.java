@@ -23,12 +23,14 @@ public class PreupgradeVerifyProcessSuite extends PreupgradeVerifyProcess {
 	public void doVerify() throws Exception {
 		_verify(new PreupgradeVerifyCompanyUsers());
 		_verify(new PreupgradeVerifyDatabaseCharacterSet());
+		_verify(new PreupgradeVerifyDatabasePrivileges());
 		_verify(new PreupgradeVerifyDatabaseState());
 		_verify(new PreupgradeVerifyProperties());
 
 		if (ListUtil.isNotEmpty(_exceptionMessages)) {
 			throw new VerifyException(
-				StringUtil.merge(_exceptionMessages, StringPool.NEW_LINE));
+				StringUtil.merge(
+					_exceptionMessages, StringPool.COMMA_AND_SPACE));
 		}
 	}
 
@@ -42,9 +44,7 @@ public class PreupgradeVerifyProcessSuite extends PreupgradeVerifyProcess {
 			verify(verifyProcess);
 		}
 		catch (VerifyException verifyException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(verifyException);
-			}
+			_log.error(verifyException);
 
 			_exceptionMessages.add(verifyException.getMessage());
 		}

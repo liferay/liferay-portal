@@ -5,66 +5,44 @@
 
 import ClayForm from '@clayui/form';
 import ClayLayout from '@clayui/layout';
-import Link from '@clayui/link';
 import {sub} from 'frontend-js-web';
-import React, {PropsWithChildren, useId} from 'react';
-
-import {getImage} from '../util/getImage';
+import React, {PropsWithChildren} from 'react';
 
 export interface NewSpaceFormSectionProps {
 	description: string;
-	linkLabel: string;
-	linkUrl: string;
-	onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+	onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
 	step: 1 | 2;
 	title: string;
+	withForm?: boolean;
 }
 
 export function NewSpaceFormSection({
 	children,
 	description,
-	linkLabel,
-	linkUrl,
 	onSubmit,
 	step,
 	title,
+	withForm = true,
 }: PropsWithChildren<NewSpaceFormSectionProps>) {
-	const logoDescriptionId = useId();
-
-	return (
-		<ClayForm onSubmit={onSubmit}>
+	const pageContent = (
+		<>
 			<ClayLayout.Container className="mb-5 p-0">
-				<ClayLayout.ContentRow className="align-items-center mb-6">
-					<img
-						aria-labelledby={logoDescriptionId}
-						src={getImage('cms_logo.svg')}
-					></img>
-
-					<span
-						className="font-weight-bold ms-3 text-7"
-						id={logoDescriptionId}
-					>
-						{Liferay.Language.get('cms-product')}
-					</span>
-				</ClayLayout.ContentRow>
-
-				<p className="mb-2 text-secondary">
+				<p className="mb-2 mt-6 text-secondary">
 					{sub(Liferay.Language.get('step-x-of-x'), [step, 2])}
 				</p>
 
 				<h1 className="font-semibold mb-4 text-7">{title}</h1>
 
-				<p className="mb-2 text-5 text-secondary">{description}</p>
-
-				<Link
-					className="font-weight-bold text-4 text-underline"
-					href={linkUrl}
-				>
-					{linkLabel}
-				</Link>
+				<p className="text-5 text-secondary">{description}</p>
 			</ClayLayout.Container>
 
 			{children}
-		</ClayForm>
+		</>
+	);
+
+	return withForm ? (
+		<ClayForm onSubmit={onSubmit}>{pageContent}</ClayForm>
+	) : (
+		<ClayLayout.Container>{pageContent}</ClayLayout.Container>
 	);
 }

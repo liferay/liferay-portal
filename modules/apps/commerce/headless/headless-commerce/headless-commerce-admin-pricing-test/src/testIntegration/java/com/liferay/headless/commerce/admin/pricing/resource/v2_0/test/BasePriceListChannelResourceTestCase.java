@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListChannel;
 import com.liferay.headless.commerce.admin.pricing.client.http.HttpInvoker;
@@ -199,12 +200,75 @@ public abstract class BasePriceListChannelResourceTestCase {
 
 	@Test
 	public void testDeletePriceListChannel() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PriceListChannel priceListChannel =
+			testDeletePriceListChannel_addPriceListChannel();
+
+		assertHttpResponseStatusCode(
+			204,
+			priceListChannelResource.deletePriceListChannelHttpResponse(
+				priceListChannel.getPriceListChannelId()));
+	}
+
+	protected PriceListChannel testDeletePriceListChannel_addPriceListChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeletePriceListChannel() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		PriceListChannel priceListChannel1 =
+			testGraphQLDeletePriceListChannel_addPriceListChannel();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePriceListChannel",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"priceListChannelId",
+									priceListChannel1.getPriceListChannelId());
+							}
+						})),
+				"JSONObject/data", "Object/deletePriceListChannel"));
+
+		// Using the namespace headlessCommerceAdminPricing_v2_0
+
+		PriceListChannel priceListChannel2 =
+			testGraphQLDeletePriceListChannel_addPriceListChannel();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminPricing_v2_0",
+						new GraphQLField(
+							"deletePriceListChannel",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"priceListChannelId",
+										priceListChannel2.
+											getPriceListChannelId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminPricing_v2_0",
+				"Object/deletePriceListChannel"));
+	}
+
+	protected PriceListChannel
+			testGraphQLDeletePriceListChannel_addPriceListChannel()
+		throws Exception {
+
+		return testGraphQLPriceListChannel_addPriceListChannel();
 	}
 
 	@Test
@@ -213,19 +277,18 @@ public abstract class BasePriceListChannelResourceTestCase {
 			testDeletePriceListChannelBatch_addPriceListChannel();
 
 		testDeletePriceListChannelBatch_deletePriceListChannel(
-			"COMPLETED", null, priceListChannel1.getPriceListChannelId());
+			202, null, priceListChannel1.getPriceListChannelId());
 	}
 
 	protected PriceListChannel
 			testDeletePriceListChannelBatch_addPriceListChannel()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeletePriceListChannel_addPriceListChannel();
 	}
 
 	protected void testDeletePriceListChannelBatch_deletePriceListChannel(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -238,10 +301,10 @@ public abstract class BasePriceListChannelResourceTestCase {
 						"priceListChannelId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -307,6 +370,12 @@ public abstract class BasePriceListChannelResourceTestCase {
 			page,
 			testGetPriceListByExternalReferenceCodePriceListChannelsPage_getExpectedActions(
 				externalReferenceCode));
+
+		priceListChannelResource.deletePriceListChannel(
+			priceListChannel1.getPriceListChannelId());
+
+		priceListChannelResource.deletePriceListChannel(
+			priceListChannel2.getPriceListChannelId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -505,6 +574,12 @@ public abstract class BasePriceListChannelResourceTestCase {
 		assertValid(
 			page,
 			testGetPriceListIdPriceListChannelsPage_getExpectedActions(id));
+
+		priceListChannelResource.deletePriceListChannel(
+			priceListChannel1.getPriceListChannelId());
+
+		priceListChannelResource.deletePriceListChannel(
+			priceListChannel2.getPriceListChannelId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -937,8 +1012,66 @@ public abstract class BasePriceListChannelResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PriceListChannel priceListChannel1 =
+			testBatchEngineDeleteImportTask_addPriceListChannel();
+
+		testBatchEngineDeleteImportTask_deletePriceListChannel(
+			200, null, priceListChannel1.getPriceListChannelId());
+	}
+
+	protected PriceListChannel
+			testBatchEngineDeleteImportTask_addPriceListChannel()
+		throws Exception {
+
+		return testDeletePriceListChannel_addPriceListChannel();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deletePriceListChannel(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListChannel",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"priceListChannelId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected PriceListChannel testGraphQLPriceListChannel_addPriceListChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		PriceListChannel priceListChannel,
@@ -1019,6 +1152,10 @@ public abstract class BasePriceListChannelResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (priceListChannel.getPriceListChannelId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

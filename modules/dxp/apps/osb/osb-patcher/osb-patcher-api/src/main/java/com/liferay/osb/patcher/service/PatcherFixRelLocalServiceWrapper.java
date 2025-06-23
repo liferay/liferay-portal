@@ -29,6 +29,14 @@ public class PatcherFixRelLocalServiceWrapper
 		_patcherFixRelLocalService = patcherFixRelLocalService;
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFixRel addPatcherFixRel(
+		long childPatcherFixId, long parentPatcherFixId) {
+
+		return _patcherFixRelLocalService.addPatcherFixRel(
+			childPatcherFixId, parentPatcherFixId);
+	}
+
 	/**
 	 * Adds the patcher fix rel to the database. Also notifies the appropriate model listeners.
 	 *
@@ -104,6 +112,14 @@ public class PatcherFixRelLocalServiceWrapper
 		com.liferay.osb.patcher.model.PatcherFixRel patcherFixRel) {
 
 		return _patcherFixRelLocalService.deletePatcherFixRel(patcherFixRel);
+	}
+
+	@Override
+	public void deletePatcherFixRelsByChildPatcherFixId(
+		long childPatcherFixId) {
+
+		_patcherFixRelLocalService.deletePatcherFixRelsByChildPatcherFixId(
+			childPatcherFixId);
 	}
 
 	/**
@@ -282,6 +298,22 @@ public class PatcherFixRelLocalServiceWrapper
 		getPatcherFixRels(int start, int end) {
 
 		return _patcherFixRelLocalService.getPatcherFixRels(start, end);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFixRel>
+		getPatcherFixRelsByChildPatcherFixId(long childPatcherFixId) {
+
+		return _patcherFixRelLocalService.getPatcherFixRelsByChildPatcherFixId(
+			childPatcherFixId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFixRel>
+		getPatcherFixRelsByParentPatcherFixId(long parentPatcherFixId) {
+
+		return _patcherFixRelLocalService.getPatcherFixRelsByParentPatcherFixId(
+			parentPatcherFixId);
 	}
 
 	/**

@@ -269,9 +269,8 @@ public class SearchSolrQueryAssemblerImpl implements SearchSolrQueryAssembler {
 	@Reference
 	private GroupByRequestFactory _groupByRequestFactory;
 
-	@Reference
-	private GroupByTranslator _groupByTranslator;
-
+	private final GroupByTranslator _groupByTranslator =
+		new GroupByTranslator();
 	private final SolrSortFieldTranslator _sortFieldTranslator =
 		new SolrSortFieldTranslator();
 

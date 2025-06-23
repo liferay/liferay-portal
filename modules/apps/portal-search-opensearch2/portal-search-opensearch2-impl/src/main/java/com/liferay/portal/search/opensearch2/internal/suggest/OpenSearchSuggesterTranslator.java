@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.suggest;
 
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.query.QueryTranslator;
 import com.liferay.portal.kernel.search.suggest.CompletionSuggester;
@@ -17,6 +16,8 @@ import com.liferay.portal.kernel.search.suggest.TermSuggester;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.search.index.IndexNameBuilder;
+import com.liferay.portal.search.opensearch2.internal.legacy.query.OpenSearchQueryTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.ConversionUtil;
 import com.liferay.portal.search.opensearch2.internal.util.JsonpUtil;
 import com.liferay.portal.search.opensearch2.internal.util.SetterUtil;
@@ -35,7 +36,9 @@ import org.opensearch.client.opensearch.core.search.PhraseSuggestHighlight;
 import org.opensearch.client.opensearch.core.search.StringDistance;
 import org.opensearch.client.opensearch.core.search.SuggestSort;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -201,6 +204,11 @@ public class OpenSearchSuggesterTranslator
 		return fieldSuggesterBuilder.build();
 	}
 
+	@Activate
+	protected void activate() {
+		_queryTranslator = new OpenSearchQueryTranslator(_indexNameBuilder);
+	}
+
 	private DirectGenerator _translateCandidateGenerator(
 		PhraseSuggester.CandidateGenerator candidateGenerator) {
 
@@ -247,15 +255,12 @@ public class OpenSearchSuggesterTranslator
 
 		SetterUtil.setNotNullBoolean(builder::prune, collate.isPrune());
 
-		QueryTranslator<QueryVariant> queryTranslator =
-			_queryTranslatorSnapshot.get();
-
 		builder.query(
 			PhraseSuggestCollateQuery.of(
 				phraseSuggestCollateQuery -> phraseSuggestCollateQuery.source(
 					JsonpUtil.toString(
 						new Query(
-							queryTranslator.translate(
+							_queryTranslator.translate(
 								collate.getQuery(), null))))));
 
 		return builder.build();
@@ -301,10 +306,9 @@ public class OpenSearchSuggesterTranslator
 		return SuggestMode.Missing;
 	}
 
-	private static final Snapshot<QueryTranslator<QueryVariant>>
-		_queryTranslatorSnapshot = new Snapshot<>(
-			OpenSearchSuggesterTranslator.class,
-			Snapshot.cast(QueryTranslator.class),
-			"(search.engine.impl=OpenSearch)", true);
+	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
+	private QueryTranslator<QueryVariant> _queryTranslator;
 
 }

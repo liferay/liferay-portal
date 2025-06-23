@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.WishList;
 import com.liferay.headless.commerce.delivery.catalog.client.http.HttpInvoker;
@@ -315,8 +316,7 @@ public abstract class BaseWishListResourceTestCase {
 	public void testDeleteWishListBatch() throws Exception {
 		WishList wishList1 = testDeleteWishListBatch_addWishList();
 
-		testDeleteWishListBatch_deleteWishList(
-			"COMPLETED", null, wishList1.getId());
+		testDeleteWishListBatch_deleteWishList(202, null, wishList1.getId());
 
 		assertHttpResponseStatusCode(
 			404, wishListResource.getWishListHttpResponse(wishList1.getId()));
@@ -327,7 +327,7 @@ public abstract class BaseWishListResourceTestCase {
 	}
 
 	protected void testDeleteWishListBatch_deleteWishList(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -340,10 +340,10 @@ public abstract class BaseWishListResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1054,6 +1054,58 @@ public abstract class BaseWishListResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WishList wishList1 = testBatchEngineDeleteImportTask_addWishList();
+
+		testBatchEngineDeleteImportTask_deleteWishList(
+			200, null, wishList1.getId());
+
+		assertHttpResponseStatusCode(
+			404, wishListResource.getWishListHttpResponse(wishList1.getId()));
+	}
+
+	protected WishList testBatchEngineDeleteImportTask_addWishList()
+		throws Exception {
+
+		return testDeleteWishList_addWishList();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWishList(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.delivery.catalog.dto.v1_0.WishList",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected WishList testGraphQLWishList_addWishList() throws Exception {

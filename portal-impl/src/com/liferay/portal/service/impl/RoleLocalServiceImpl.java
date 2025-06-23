@@ -7,8 +7,8 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.admin.kernel.util.PortalMyAccountApplicationType;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManagerUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
@@ -27,11 +27,9 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateRoleException;
-import com.liferay.portal.kernel.exception.NoSuchRoleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredRoleException;
 import com.liferay.portal.kernel.exception.RoleNameException;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -176,7 +174,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		role.setType(type);
 		role.setSubtype(subtype);
 
-		if (LazyReferencingThreadLocal.isIncompleteModel()) {
+		if (IncompleteModelManagerUtil.isIncompleteModel()) {
 			role.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
 		}
 		else {
@@ -795,32 +793,15 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			String className, long classPK, String name, int type)
 		throws Exception {
 
-		Role role = fetchRoleByExternalReferenceCode(
-			externalReferenceCode, companyId);
-
-		if (role != null) {
-			return role;
-		}
-
-		if (!LazyReferencingThreadLocal.isEnabled()) {
-			throw new NoSuchRoleException(
-				StringBundler.concat(
-					"Unable to find role with external reference code ",
-					externalReferenceCode, " and company ", companyId));
-		}
-
-		if (fetchRole(companyId, name) != null) {
-			name = externalReferenceCode;
-		}
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setIncompleteModelWithSafeCloseable(
-					true)) {
-
-			return roleLocalService.addRole(
-				externalReferenceCode, userId, className, classPK, name, null,
-				null, type, StringPool.BLANK, new ServiceContext());
-		}
+		return IncompleteModelManagerUtil.getOrAddIncompleteModel(
+			Role.class, companyId, externalReferenceCode,
+			this::fetchRoleByExternalReferenceCode,
+			this::getRoleByExternalReferenceCode,
+			() -> roleLocalService.addRole(
+				externalReferenceCode, userId, className, classPK,
+				(fetchRole(companyId, name) != null) ? externalReferenceCode :
+					name,
+				null, null, type, StringPool.BLANK, new ServiceContext()));
 	}
 
 	/**

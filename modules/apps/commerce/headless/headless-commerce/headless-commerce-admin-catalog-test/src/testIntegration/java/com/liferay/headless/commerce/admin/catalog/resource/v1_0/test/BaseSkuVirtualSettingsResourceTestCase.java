@@ -203,16 +203,16 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 		assertValid(getSkuVirtualSettings);
 	}
 
-	protected String
-			testGetSkuByExternalReferenceCodeSkuVirtualSettings_getExternalReferenceCode()
+	protected SkuVirtualSettings
+			testGetSkuByExternalReferenceCodeSkuVirtualSettings_addSkuVirtualSettings()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected SkuVirtualSettings
-			testGetSkuByExternalReferenceCodeSkuVirtualSettings_addSkuVirtualSettings()
+	protected String
+			testGetSkuByExternalReferenceCodeSkuVirtualSettings_getExternalReferenceCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -352,15 +352,16 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 		assertValid(getSkuVirtualSettings);
 	}
 
-	protected Long testGetSkuIdSkuVirtualSettings_getId(
-			SkuVirtualSettings skuVirtualSettings)
-		throws Exception {
-
-		return skuVirtualSettings.getId();
-	}
-
 	protected SkuVirtualSettings
 			testGetSkuIdSkuVirtualSettings_addSkuVirtualSettings()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetSkuIdSkuVirtualSettings_getId(
+			SkuVirtualSettings skuVirtualSettings)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -423,7 +424,8 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 			SkuVirtualSettings skuVirtualSettings)
 		throws Exception {
 
-		return skuVirtualSettings.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test

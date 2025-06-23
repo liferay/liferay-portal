@@ -4,10 +4,11 @@
  */
 
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import skuOptionsAtom from '../../utilities/atoms/skuOptionsAtom';
 import DDMFormHandler from '../../utilities/forms/DDMFormHandler';
+import {getSkuOptionsErrors} from './utils';
 
 const CP_CONTENT_WEB_PORTLET_KEY =
 	'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet';
@@ -15,18 +16,16 @@ const CP_CONTENT_WEB_PORTLET_KEY =
 const ProductOptionUpload = ({
 	componentId,
 	cpDefinitionId,
+	forceRequired = false,
 	namespace,
 	productOption,
 }) => {
+	const [, setHasErrors] = useState(false);
 	const [skuOptionsAtomState, setSkuOptionsAtomState] =
 		useLiferayState(skuOptionsAtom);
 
 	const handleChange = useCallback(
-		({key, value}) => {
-			if (key !== productOption.key) {
-				return;
-			}
-
+		({value = '{}'}) => {
 			let currentSkuOptions = skuOptionsAtomState.skuOptions.slice();
 
 			const currentSkuOption = currentSkuOptions.find(
@@ -38,6 +37,7 @@ const ProductOptionUpload = ({
 					if (skuOption.skuOptionKey === productOption.key) {
 						return {
 							key: productOption.key,
+							required: productOption.required,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
 							value: [value],
@@ -52,6 +52,7 @@ const ProductOptionUpload = ({
 					...currentSkuOptions,
 					{
 						key: productOption.key,
+						required: productOption.required,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
 						value: [value],
@@ -59,16 +60,30 @@ const ProductOptionUpload = ({
 				];
 			}
 
+			if (
+				(forceRequired || productOption.required) &&
+				(!value || value === '{}')
+			) {
+				setHasErrors(true);
+			}
+
 			setSkuOptionsAtomState({
 				...skuOptionsAtomState,
+				errors: getSkuOptionsErrors(
+					(forceRequired || productOption.required) &&
+						(!value || value === '{}'),
+					false,
+					productOption,
+					skuOptionsAtomState
+				),
 				namespace,
 				skuOptions: currentSkuOptions,
 			});
 		},
 		[
+			forceRequired,
 			namespace,
-			productOption.key,
-			productOption.name,
+			productOption,
 			skuOptionsAtomState,
 			setSkuOptionsAtomState,
 		]
@@ -81,13 +96,15 @@ const ProductOptionUpload = ({
 					new DDMFormHandler({
 						DDMFormInstance,
 						cpDefinitionId,
+						forceRequired: forceRequired || productOption.required,
+						key: productOption.key,
 						namespace,
 						portletId: CP_CONTENT_WEB_PORTLET_KEY,
 					});
 				}
 			}
 		);
-	}, [cpDefinitionId, namespace]);
+	}, [cpDefinitionId, forceRequired, namespace, productOption]);
 
 	useEffect(() => {
 		const handler = (payload) => handleChange(payload);

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderType;
 import com.liferay.headless.commerce.admin.order.client.http.HttpInvoker;
@@ -319,27 +320,25 @@ public abstract class BaseOrderTypeResourceTestCase {
 		OrderType orderType1 = testDeleteOrderTypeBatch_addOrderType();
 
 		testDeleteOrderTypeBatch_deleteOrderType(
-			"COMPLETED", null, orderType1.getId());
+			202, orderType1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			orderTypeResource.getOrderTypeHttpResponse(orderType1.getId()));
 
-		OrderType orderType2 = testDeleteOrderTypeBatch_addOrderType();
+		orderType1 = testDeleteOrderTypeBatch_addOrderType();
 
-		testDeleteOrderTypeBatch_deleteOrderType(
-			"COMPLETED", orderType2.getExternalReferenceCode(), null);
+		testDeleteOrderTypeBatch_deleteOrderType(202, null, orderType1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
-			orderTypeResource.getOrderTypeHttpResponse(orderType2.getId()));
+			orderTypeResource.getOrderTypeHttpResponse(orderType1.getId()));
 
 		orderType1 = testDeleteOrderTypeBatch_addOrderType();
-		orderType2 = testDeleteOrderTypeBatch_addOrderType();
+		OrderType orderType2 = testDeleteOrderTypeBatch_addOrderType();
 
 		testDeleteOrderTypeBatch_deleteOrderType(
-			"COMPLETED", orderType2.getExternalReferenceCode(),
-			orderType1.getId());
+			202, orderType2.getExternalReferenceCode(), orderType1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -349,8 +348,7 @@ public abstract class BaseOrderTypeResourceTestCase {
 			orderTypeResource.getOrderTypeHttpResponse(orderType2.getId()));
 
 		testDeleteOrderTypeBatch_deleteOrderType(
-			"COMPLETED", orderType2.getExternalReferenceCode(),
-			orderType1.getId());
+			202, orderType2.getExternalReferenceCode(), orderType1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -364,7 +362,7 @@ public abstract class BaseOrderTypeResourceTestCase {
 	}
 
 	protected void testDeleteOrderTypeBatch_deleteOrderType(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -377,10 +375,10 @@ public abstract class BaseOrderTypeResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -427,14 +425,14 @@ public abstract class BaseOrderTypeResourceTestCase {
 		assertValid(getOrderType);
 	}
 
-	protected Long testGetOrderRuleOrderTypeOrderType_getOrderRuleOrderTypeId()
+	protected OrderType testGetOrderRuleOrderTypeOrderType_addOrderType()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderType testGetOrderRuleOrderTypeOrderType_addOrderType()
+	protected Long testGetOrderRuleOrderTypeOrderType_getOrderRuleOrderTypeId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1391,14 +1389,14 @@ public abstract class BaseOrderTypeResourceTestCase {
 		assertValid(getOrderType);
 	}
 
-	protected Long testGetTermOrderTypeOrderType_getTermOrderTypeId()
+	protected OrderType testGetTermOrderTypeOrderType_addOrderType()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderType testGetTermOrderTypeOrderType_addOrderType()
+	protected Long testGetTermOrderTypeOrderType_getTermOrderTypeId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1632,6 +1630,13 @@ public abstract class BaseOrderTypeResourceTestCase {
 			putOrderType.getExternalReferenceCode());
 	}
 
+	protected OrderType testPutOrderTypeByExternalReferenceCode_addOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected OrderType
 			testPutOrderTypeByExternalReferenceCode_createOrderType()
 		throws Exception {
@@ -1639,11 +1644,86 @@ public abstract class BaseOrderTypeResourceTestCase {
 		return randomOrderType();
 	}
 
-	protected OrderType testPutOrderTypeByExternalReferenceCode_addOrderType()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		OrderType orderType1 = testBatchEngineDeleteImportTask_addOrderType();
+
+		testBatchEngineDeleteImportTask_deleteOrderType(
+			200, orderType1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			orderTypeResource.getOrderTypeHttpResponse(orderType1.getId()));
+
+		orderType1 = testBatchEngineDeleteImportTask_addOrderType();
+
+		testBatchEngineDeleteImportTask_deleteOrderType(
+			200, null, orderType1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			orderTypeResource.getOrderTypeHttpResponse(orderType1.getId()));
+
+		orderType1 = testBatchEngineDeleteImportTask_addOrderType();
+		OrderType orderType2 = testBatchEngineDeleteImportTask_addOrderType();
+
+		testBatchEngineDeleteImportTask_deleteOrderType(
+			200, orderType2.getExternalReferenceCode(), orderType1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			orderTypeResource.getOrderTypeHttpResponse(orderType1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			orderTypeResource.getOrderTypeHttpResponse(orderType2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteOrderType(
+			200, orderType2.getExternalReferenceCode(), orderType1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			orderTypeResource.getOrderTypeHttpResponse(orderType2.getId()));
+	}
+
+	protected OrderType testBatchEngineDeleteImportTask_addOrderType()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteOrderType_addOrderType();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteOrderType(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.order.dto.v1_0.OrderType",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

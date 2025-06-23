@@ -20,6 +20,7 @@ import com.liferay.change.tracking.rest.client.pagination.Pagination;
 import com.liferay.change.tracking.rest.client.resource.v1_0.CTProcessResource;
 import com.liferay.change.tracking.rest.client.serdes.v1_0.CTProcessSerDes;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -322,8 +323,7 @@ public abstract class BaseCTProcessResourceTestCase {
 	public void testDeleteCTProcessBatch() throws Exception {
 		CTProcess ctProcess1 = testDeleteCTProcessBatch_addCTProcess();
 
-		testDeleteCTProcessBatch_deleteCTProcess(
-			"COMPLETED", null, ctProcess1.getId());
+		testDeleteCTProcessBatch_deleteCTProcess(202, null, ctProcess1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -337,7 +337,7 @@ public abstract class BaseCTProcessResourceTestCase {
 	}
 
 	protected void testDeleteCTProcessBatch_deleteCTProcess(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -350,10 +350,10 @@ public abstract class BaseCTProcessResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1006,6 +1006,59 @@ public abstract class BaseCTProcessResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		CTProcess ctProcess1 = testBatchEngineDeleteImportTask_addCTProcess();
+
+		testBatchEngineDeleteImportTask_deleteCTProcess(
+			200, null, ctProcess1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			ctProcessResource.getCTProcessHttpResponse(ctProcess1.getId()));
+	}
+
+	protected CTProcess testBatchEngineDeleteImportTask_addCTProcess()
+		throws Exception {
+
+		return testDeleteCTProcess_addCTProcess();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteCTProcess(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.change.tracking.rest.dto.v1_0.CTProcess", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

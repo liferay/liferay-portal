@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Journal Service
 Bundle-SymbolicName: com.liferay.journal.service
-Bundle-Version: 7.0.170
+Bundle-Version: 7.0.171
 Liferay-Require-SchemaVersion: 6.1.5
 Liferay-Service: true
 -dsannotations-options: inherit

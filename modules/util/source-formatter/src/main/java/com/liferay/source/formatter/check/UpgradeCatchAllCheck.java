@@ -623,6 +623,11 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 			newContent = _formatMethodSignature(newContent, methodJSONObject);
 		}
 
+		if (!content.equals(newContent)) {
+			newContent = _addReplacementDependencies(
+				fileName, jsonObject, newContent);
+		}
+
 		return newContent;
 	}
 

@@ -21,6 +21,7 @@ import com.liferay.headless.admin.user.client.pagination.Pagination;
 import com.liferay.headless.admin.user.client.resource.v1_0.OrganizationResource;
 import com.liferay.headless.admin.user.client.serdes.v1_0.OrganizationSerDes;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -230,25 +231,29 @@ public abstract class BaseOrganizationResourceTestCase {
 			404,
 			organizationResource.
 				getAccountByExternalReferenceCodeOrganizationHttpResponse(
-					organization.getExternalReferenceCode(),
+					testDeleteAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
+						organization),
 					organization.getId()));
 		assertHttpResponseStatusCode(
 			404,
 			organizationResource.
 				getAccountByExternalReferenceCodeOrganizationHttpResponse(
-					"-", "-"));
+					testDeleteAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
+						organization),
+					"-"));
+	}
+
+	protected Organization
+			testDeleteAccountByExternalReferenceCodeOrganization_addOrganization()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected String
 			testDeleteAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
 				Organization organization)
-		throws Exception {
-
-		return organization.getExternalReferenceCode();
-	}
-
-	protected Organization
-			testDeleteAccountByExternalReferenceCodeOrganization_addOrganization()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -278,14 +283,14 @@ public abstract class BaseOrganizationResourceTestCase {
 				testDeleteAccountOrganization_getAccountId(), "-"));
 	}
 
-	protected Long testDeleteAccountOrganization_getAccountId()
+	protected Organization testDeleteAccountOrganization_addOrganization()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Organization testDeleteAccountOrganization_addOrganization()
+	protected Long testDeleteAccountOrganization_getAccountId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -408,29 +413,29 @@ public abstract class BaseOrganizationResourceTestCase {
 			testDeleteOrganizationBatch_addOrganization();
 
 		testDeleteOrganizationBatch_deleteOrganization(
-			"COMPLETED", null, organization1.getId());
+			202, organization1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			organizationResource.getOrganizationHttpResponse(
 				organization1.getId()));
 
-		Organization organization2 =
-			testDeleteOrganizationBatch_addOrganization();
+		organization1 = testDeleteOrganizationBatch_addOrganization();
 
 		testDeleteOrganizationBatch_deleteOrganization(
-			"COMPLETED", organization2.getExternalReferenceCode(), null);
+			202, null, organization1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			organizationResource.getOrganizationHttpResponse(
-				organization2.getId()));
+				organization1.getId()));
 
 		organization1 = testDeleteOrganizationBatch_addOrganization();
-		organization2 = testDeleteOrganizationBatch_addOrganization();
+		Organization organization2 =
+			testDeleteOrganizationBatch_addOrganization();
 
 		testDeleteOrganizationBatch_deleteOrganization(
-			"COMPLETED", organization2.getExternalReferenceCode(),
+			202, organization2.getExternalReferenceCode(),
 			organization1.getId());
 
 		assertHttpResponseStatusCode(
@@ -443,7 +448,7 @@ public abstract class BaseOrganizationResourceTestCase {
 				organization2.getId()));
 
 		testDeleteOrganizationBatch_deleteOrganization(
-			"COMPLETED", organization2.getExternalReferenceCode(),
+			202, organization2.getExternalReferenceCode(),
 			organization1.getId());
 
 		assertHttpResponseStatusCode(
@@ -459,8 +464,7 @@ public abstract class BaseOrganizationResourceTestCase {
 	}
 
 	protected void testDeleteOrganizationBatch_deleteOrganization(
-			String expectedExecuteStatus, String externalReferenceCode,
-			String id)
+			int expectedStatusCode, String externalReferenceCode, String id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -473,10 +477,10 @@ public abstract class BaseOrganizationResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -529,16 +533,16 @@ public abstract class BaseOrganizationResourceTestCase {
 					testDeleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress_getEmailAddress()));
 	}
 
-	protected String
-			testDeleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress_getEmailAddress()
+	protected Organization
+			testDeleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress_addOrganization()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Organization
-			testDeleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress_addOrganization()
+	protected String
+			testDeleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress_getEmailAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -581,14 +585,14 @@ public abstract class BaseOrganizationResourceTestCase {
 				testDeleteUserAccountByEmailAddress_getEmailAddress()));
 	}
 
-	protected String testDeleteUserAccountByEmailAddress_getEmailAddress()
+	protected Organization testDeleteUserAccountByEmailAddress_addOrganization()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Organization testDeleteUserAccountByEmailAddress_addOrganization()
+	protected String testDeleteUserAccountByEmailAddress_getEmailAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -632,16 +636,17 @@ public abstract class BaseOrganizationResourceTestCase {
 		assertValid(getOrganization);
 	}
 
+	protected Organization
+			testGetAccountByExternalReferenceCodeOrganization_addOrganization()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
 				Organization organization)
-		throws Exception {
-
-		return organization.getExternalReferenceCode();
-	}
-
-	protected Organization
-			testGetAccountByExternalReferenceCodeOrganization_addOrganization()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -672,7 +677,6 @@ public abstract class BaseOrganizationResourceTestCase {
 											"\"" +
 												testGraphQLGetAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
 													organization) + "\"");
-
 										put(
 											"organizationId",
 											"\"" + organization.getId() + "\"");
@@ -701,7 +705,6 @@ public abstract class BaseOrganizationResourceTestCase {
 												"\"" +
 													testGraphQLGetAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
 														organization) + "\"");
-
 											put(
 												"organizationId",
 												"\"" + organization.getId() +
@@ -718,7 +721,8 @@ public abstract class BaseOrganizationResourceTestCase {
 				Organization organization)
 		throws Exception {
 
-		return organization.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1265,14 +1269,14 @@ public abstract class BaseOrganizationResourceTestCase {
 		assertValid(getOrganization);
 	}
 
-	protected Long testGetAccountOrganization_getAccountId() throws Exception {
+	protected Organization testGetAccountOrganization_addOrganization()
+		throws Exception {
+
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Organization testGetAccountOrganization_addOrganization()
-		throws Exception {
-
+	protected Long testGetAccountOrganization_getAccountId() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -1297,7 +1301,6 @@ public abstract class BaseOrganizationResourceTestCase {
 										put(
 											"accountId",
 											testGraphQLGetAccountOrganization_getAccountId());
-
 										put(
 											"organizationId",
 											"\"" + organization.getId() + "\"");
@@ -1323,7 +1326,6 @@ public abstract class BaseOrganizationResourceTestCase {
 											put(
 												"accountId",
 												testGraphQLGetAccountOrganization_getAccountId());
-
 											put(
 												"organizationId",
 												"\"" + organization.getId() +
@@ -3943,14 +3945,26 @@ public abstract class BaseOrganizationResourceTestCase {
 			204,
 			organizationResource.
 				postAccountByExternalReferenceCodeOrganizationHttpResponse(
-					organization.getExternalReferenceCode(),
+					testPostAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
+						organization),
 					organization.getId()));
 
 		assertHttpResponseStatusCode(
 			404,
 			organizationResource.
 				postAccountByExternalReferenceCodeOrganizationHttpResponse(
-					organization.getExternalReferenceCode(), "-"));
+					testPostAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
+						organization),
+					"-"));
+	}
+
+	protected String
+			testPostAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
+				Organization organization)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Organization
@@ -3970,12 +3984,18 @@ public abstract class BaseOrganizationResourceTestCase {
 		assertHttpResponseStatusCode(
 			204,
 			organizationResource.postAccountOrganizationHttpResponse(
-				null, organization.getId()));
+				testPostAccountOrganization_getAccountId(),
+				organization.getId()));
 
 		assertHttpResponseStatusCode(
 			404,
 			organizationResource.postAccountOrganizationHttpResponse(
-				null, "-"));
+				testPostAccountOrganization_getAccountId(), "-"));
+	}
+
+	protected Long testPostAccountOrganization_getAccountId() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Organization testPostAccountOrganization_addOrganization()
@@ -4086,18 +4106,109 @@ public abstract class BaseOrganizationResourceTestCase {
 	}
 
 	protected Organization
+			testPutOrganizationByExternalReferenceCode_addOrganization()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Organization
 			testPutOrganizationByExternalReferenceCode_createOrganization()
 		throws Exception {
 
 		return randomOrganization();
 	}
 
-	protected Organization
-			testPutOrganizationByExternalReferenceCode_addOrganization()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Organization organization1 =
+			testBatchEngineDeleteImportTask_addOrganization();
+
+		testBatchEngineDeleteImportTask_deleteOrganization(
+			200, organization1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			organizationResource.getOrganizationHttpResponse(
+				organization1.getId()));
+
+		organization1 = testBatchEngineDeleteImportTask_addOrganization();
+
+		testBatchEngineDeleteImportTask_deleteOrganization(
+			200, null, organization1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			organizationResource.getOrganizationHttpResponse(
+				organization1.getId()));
+
+		organization1 = testBatchEngineDeleteImportTask_addOrganization();
+		Organization organization2 =
+			testBatchEngineDeleteImportTask_addOrganization();
+
+		testBatchEngineDeleteImportTask_deleteOrganization(
+			200, organization2.getExternalReferenceCode(),
+			organization1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			organizationResource.getOrganizationHttpResponse(
+				organization1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			organizationResource.getOrganizationHttpResponse(
+				organization2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteOrganization(
+			200, organization2.getExternalReferenceCode(),
+			organization1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			organizationResource.getOrganizationHttpResponse(
+				organization2.getId()));
+	}
+
+	protected Organization testBatchEngineDeleteImportTask_addOrganization()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteOrganization_addOrganization();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteOrganization(
+			int expectedStatusCode, String externalReferenceCode, String id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.admin.user.dto.v1_0.Organization", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule
@@ -4510,6 +4621,10 @@ public abstract class BaseOrganizationResourceTestCase {
 		}
 
 		if (userAccount.getDateModified() == null) {
+			valid = false;
+		}
+
+		if (userAccount.getExternalReferenceCode() == null) {
 			valid = false;
 		}
 

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Address Content Web
 Bundle-SymbolicName: com.liferay.commerce.address.content.web
-Bundle-Version: 4.0.43
+Bundle-Version: 4.0.44
 Web-ContextPath: /commerce-address-content-web

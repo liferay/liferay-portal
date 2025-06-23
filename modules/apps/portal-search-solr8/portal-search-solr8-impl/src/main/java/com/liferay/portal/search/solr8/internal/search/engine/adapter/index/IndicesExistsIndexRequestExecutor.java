@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexResponse
 /**
  * @author Bryan Engler
  */
-public interface IndicesExistsIndexRequestExecutor {
+public class IndicesExistsIndexRequestExecutor {
 
 	public IndicesExistsIndexResponse execute(
-		IndicesExistsIndexRequest indicesExistsIndexRequest);
+		IndicesExistsIndexRequest indicesExistsIndexRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

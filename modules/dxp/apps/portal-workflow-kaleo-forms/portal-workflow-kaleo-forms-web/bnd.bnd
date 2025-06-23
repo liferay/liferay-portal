@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Portal Workflow Kaleo Forms Web
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.forms.web
-Bundle-Version: 5.0.104
+Bundle-Version: 5.0.105
 Web-ContextPath: /portal-workflow-kaleo-forms-web
 -dsannotations-options: inherit

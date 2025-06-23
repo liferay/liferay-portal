@@ -52,6 +52,10 @@ public interface ExportImportReportEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.exportimport.report.service.impl.ExportImportReportEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the export import report entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ExportImportReportEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public ExportImportReportEntry addErrorExportImportReportEntry(
+		long groupId, long companyId, String classExternalReferenceCode,
+		long classNameId, long exportImportConfigurationId, String error,
+		String errorStacktrace);
 
 	/**
 	 * Adds the export import report entry to the database. Also notifies the appropriate model listeners.
@@ -66,6 +70,10 @@ public interface ExportImportReportEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ExportImportReportEntry addExportImportReportEntry(
 		ExportImportReportEntry exportImportReportEntry);
+
+	public ExportImportReportEntry addIncompleteExportImportReportEntry(
+		long groupId, long companyId, String classExternalReferenceCode,
+		long classNameId, long exportImportConfigurationId);
 
 	/**
 	 * Creates a new export import report entry with the primary key. Does not add the export import report entry to the database.
@@ -213,6 +221,10 @@ public interface ExportImportReportEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ExportImportReportEntry> getExportImportReportEntries(
 		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ExportImportReportEntry> getExportImportReportEntries(
+		long companyId, long exportImportConfigurationId);
 
 	/**
 	 * Returns the number of export import report entries.

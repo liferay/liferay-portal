@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.index;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.engine.adapter.index.IndicesOptions;
 import com.liferay.portal.search.engine.adapter.index.OpenIndexRequest;
@@ -48,15 +47,11 @@ public class OpenIndexRequestExecutorTest extends BaseOpenSearchTestCase {
 		openIndexRequest.setTimeout(100);
 		openIndexRequest.setWaitForActiveShards(200);
 
-		OpenIndexRequestExecutorImpl openIndexRequestExecutorImpl =
-			new OpenIndexRequestExecutorImpl();
+		OpenIndexRequestExecutor openIndexRequestExecutor =
+			new OpenIndexRequestExecutor(openSearchConnectionManager);
 
-		ReflectionTestUtil.setFieldValue(
-			openIndexRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		OpenRequest openRequest =
-			openIndexRequestExecutorImpl.createOpenRequest(openIndexRequest);
+		OpenRequest openRequest = openIndexRequestExecutor.createOpenRequest(
+			openIndexRequest);
 
 		Assert.assertArrayEquals(
 			openIndexRequest.getIndexNames(),

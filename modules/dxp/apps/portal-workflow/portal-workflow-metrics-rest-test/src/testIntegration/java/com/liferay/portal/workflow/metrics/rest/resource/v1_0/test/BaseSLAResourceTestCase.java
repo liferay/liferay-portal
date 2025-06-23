@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -316,7 +317,7 @@ public abstract class BaseSLAResourceTestCase {
 	public void testDeleteSLABatch() throws Exception {
 		SLA sla1 = testDeleteSLABatch_addSLA();
 
-		testDeleteSLABatch_deleteSLA("COMPLETED", null, sla1.getId());
+		testDeleteSLABatch_deleteSLA(202, null, sla1.getId());
 
 		assertHttpResponseStatusCode(
 			404, slaResource.getSLAHttpResponse(sla1.getId()));
@@ -327,7 +328,7 @@ public abstract class BaseSLAResourceTestCase {
 	}
 
 	protected void testDeleteSLABatch_deleteSLA(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -340,10 +341,10 @@ public abstract class BaseSLAResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -826,6 +827,55 @@ public abstract class BaseSLAResourceTestCase {
 	protected SLA testPutSLA_addSLA() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		SLA sla1 = testBatchEngineDeleteImportTask_addSLA();
+
+		testBatchEngineDeleteImportTask_deleteSLA(200, null, sla1.getId());
+
+		assertHttpResponseStatusCode(
+			404, slaResource.getSLAHttpResponse(sla1.getId()));
+	}
+
+	protected SLA testBatchEngineDeleteImportTask_addSLA() throws Exception {
+		return testDeleteSLA_addSLA();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteSLA(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.portal.workflow.metrics.rest.dto.v1_0.SLA", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected SLA testGraphQLSLA_addSLA() throws Exception {

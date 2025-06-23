@@ -280,6 +280,11 @@ public abstract class BaseDataDefinitionFieldLinkResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		DataDefinitionFieldLink dataDefinitionFieldLink,
 		List<DataDefinitionFieldLink> dataDefinitionFieldLinks) {

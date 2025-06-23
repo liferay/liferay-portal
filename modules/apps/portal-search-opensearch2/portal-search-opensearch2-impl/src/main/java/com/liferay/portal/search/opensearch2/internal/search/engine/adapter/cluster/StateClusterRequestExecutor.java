@@ -5,15 +5,48 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.cluster;
 
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.search.engine.adapter.cluster.StateClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.StateClusterResponse;
+import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
+import com.liferay.portal.search.opensearch2.internal.util.JsonpUtil;
+
+import java.io.IOException;
+
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch.cluster.OpenSearchClusterClient;
 
 /**
  * @author Dylan Rebelak
  */
-public interface StateClusterRequestExecutor {
+public class StateClusterRequestExecutor {
+
+	public StateClusterRequestExecutor(
+		OpenSearchConnectionManager openSearchConnectionManager) {
+
+		_openSearchConnectionManager = openSearchConnectionManager;
+	}
 
 	public StateClusterResponse execute(
-		StateClusterRequest stateClusterRequest);
+		StateClusterRequest stateClusterRequest) {
+
+		OpenSearchClient openSearchClient =
+			_openSearchConnectionManager.getOpenSearchClient(
+				stateClusterRequest.getConnectionId(),
+				stateClusterRequest.isPreferLocalCluster());
+
+		OpenSearchClusterClient openSearchClusterClient =
+			openSearchClient.cluster();
+
+		try {
+			return new StateClusterResponse(
+				JsonpUtil.toString(openSearchClusterClient.state()));
+		}
+		catch (IOException ioException) {
+			throw new SystemException(ioException);
+		}
+	}
+
+	private final OpenSearchConnectionManager _openSearchConnectionManager;
 
 }

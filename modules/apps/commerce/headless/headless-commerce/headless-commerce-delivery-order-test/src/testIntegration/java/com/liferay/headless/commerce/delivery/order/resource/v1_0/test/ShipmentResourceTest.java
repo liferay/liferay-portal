@@ -205,11 +205,6 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 		return _commerceOrder.getCommerceOrderId();
 	}
 
-	@Override
-	protected Shipment testGraphQLShipment_addShipment() throws Exception {
-		return _addShipment();
-	}
-
 	private Shipment _addShipment() throws Exception {
 		_commerceShipment = _commerceShipmentLocalService.addCommerceShipment(
 			RandomTestUtil.randomString(), _commerceOrder.getGroupId(),

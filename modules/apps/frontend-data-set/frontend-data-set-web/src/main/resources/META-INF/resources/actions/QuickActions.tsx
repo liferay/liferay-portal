@@ -7,8 +7,8 @@ import ClayIcon from '@clayui/icon';
 import {LinkOrButton} from '@clayui/shared';
 import React from 'react';
 
-import {IQuickActions} from '../index';
 import formatActionURL from '../utils/actionItems/formatActionURL';
+import {IQuickActions} from '../utils/types';
 
 function QuickActions({actions, itemData, itemId, onClick}: IQuickActions) {
 	return (

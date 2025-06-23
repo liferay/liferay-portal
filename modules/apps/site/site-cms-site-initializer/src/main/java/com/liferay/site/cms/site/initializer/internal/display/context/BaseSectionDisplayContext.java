@@ -23,15 +23,20 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -61,6 +66,8 @@ public abstract class BaseSectionDisplayContext {
 		HttpServletRequest httpServletRequest, Language language,
 		ObjectDefinitionService objectDefinitionService,
 		ObjectDefinitionSettingLocalService objectDefinitionSettingLocalService,
+		ModelResourcePermission<ObjectEntryFolder>
+			objectEntryFolderModelResourcePermission,
 		Portal portal) {
 
 		this.depotEntryLocalService = depotEntryLocalService;
@@ -71,6 +78,8 @@ public abstract class BaseSectionDisplayContext {
 		_objectDefinitionService = objectDefinitionService;
 		_objectDefinitionSettingLocalService =
 			objectDefinitionSettingLocalService;
+		_objectEntryFolderModelResourcePermission =
+			objectEntryFolderModelResourcePermission;
 
 		Object object = httpServletRequest.getAttribute(
 			InfoDisplayWebKeys.INFO_ITEM);
@@ -135,28 +144,32 @@ public abstract class BaseSectionDisplayContext {
 						});
 				}
 
-				if (!Objects.equals(
-						getRootObjectEntryFolderExternalReferenceCode(),
-						ObjectEntryFolderConstants.
-							EXTERNAL_REFERENCE_CODE_CONTENTS)) {
+				if (_hasAddEntryPermission()) {
+					if (!Objects.equals(
+							getRootObjectEntryFolderExternalReferenceCode(),
+							ObjectEntryFolderConstants.
+								EXTERNAL_REFERENCE_CODE_CONTENTS)) {
 
-					addPrimaryDropdownItem(
-						dropdownItem -> {
-							dropdownItem.putData(
-								"action", "uploadMultipleFiles");
-							dropdownItem.putData(
-								"assetLibraries", _getDepotEntriesJSONArray());
-							dropdownItem.putData(
-								"parentObjectEntryFolderExternalReferenceCode",
-								_getParentObjectEntryFolderExternalReferenceCode());
-							dropdownItem.setIcon("upload-multiple");
-							dropdownItem.setLabel(
-								language.get(
-									httpServletRequest, "multiple-files"));
-						});
+						addPrimaryDropdownItem(
+							dropdownItem -> {
+								dropdownItem.putData(
+									"action", "uploadMultipleFiles");
+								dropdownItem.putData(
+									"assetLibraries",
+									_getDepotEntriesJSONArray());
+								dropdownItem.putData(
+									"parentObjectEntryFolderExternalReference" +
+										"Code",
+									_getParentObjectEntryFolderExternalReferenceCode());
+								dropdownItem.setIcon("upload-multiple");
+								dropdownItem.setLabel(
+									language.get(
+										httpServletRequest, "multiple-files"));
+							});
+					}
+
+					addStructureContentDropdownItems(this);
 				}
-
-				addStructureContentDropdownItems(this);
 			}
 		};
 	}
@@ -384,8 +397,37 @@ public abstract class BaseSectionDisplayContext {
 		return objectEntryFolder.getExternalReferenceCode();
 	}
 
+	private boolean _hasAddEntryPermission() {
+		if (objectEntryFolder == null) {
+			return true;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		try {
+			return _objectEntryFolderModelResourcePermission.contains(
+				themeDisplay.getPermissionChecker(),
+				objectEntryFolder.getObjectEntryFolderId(),
+				ActionKeys.ADD_ENTRY);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return false;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		BaseSectionDisplayContext.class);
+
 	private final ObjectDefinitionService _objectDefinitionService;
 	private final ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+	private final ModelResourcePermission<ObjectEntryFolder>
+		_objectEntryFolderModelResourcePermission;
 
 }

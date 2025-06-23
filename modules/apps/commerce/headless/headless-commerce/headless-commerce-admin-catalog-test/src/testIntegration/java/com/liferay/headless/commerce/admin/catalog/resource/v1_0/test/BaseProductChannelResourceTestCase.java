@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
@@ -332,7 +333,7 @@ public abstract class BaseProductChannelResourceTestCase {
 			testDeleteProductChannelBatch_addProductChannel();
 
 		testDeleteProductChannelBatch_deleteProductChannel(
-			"COMPLETED", null, productChannel1.getId());
+			202, null, productChannel1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -347,7 +348,7 @@ public abstract class BaseProductChannelResourceTestCase {
 	}
 
 	protected void testDeleteProductChannelBatch_deleteProductChannel(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -360,10 +361,10 @@ public abstract class BaseProductChannelResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1063,6 +1064,61 @@ public abstract class BaseProductChannelResourceTestCase {
 		throws Exception {
 
 		return null;
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ProductChannel productChannel1 =
+			testBatchEngineDeleteImportTask_addProductChannel();
+
+		testBatchEngineDeleteImportTask_deleteProductChannel(
+			200, null, productChannel1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productChannelResource.getProductChannelHttpResponse(
+				productChannel1.getId()));
+	}
+
+	protected ProductChannel testBatchEngineDeleteImportTask_addProductChannel()
+		throws Exception {
+
+		return testDeleteProductChannel_addProductChannel();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteProductChannel(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductChannel",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected ProductChannel testGraphQLProductChannel_addProductChannel()

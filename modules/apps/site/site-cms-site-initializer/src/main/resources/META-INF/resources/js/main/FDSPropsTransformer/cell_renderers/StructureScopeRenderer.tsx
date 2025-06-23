@@ -49,9 +49,9 @@ const StructureScopeRenderer = ({
 			setSpaceName('');
 		}
 		else {
-			const space = await SpaceService.getSpace(
-				externalReferenceCodes[0]
-			);
+			const space = await SpaceService.getSpace({
+				externalReferenceCode: externalReferenceCodes[0],
+			});
 
 			setSpaceLogoColor(space.settings?.logoColor as LogoColor);
 			setSpaceName(space.name);

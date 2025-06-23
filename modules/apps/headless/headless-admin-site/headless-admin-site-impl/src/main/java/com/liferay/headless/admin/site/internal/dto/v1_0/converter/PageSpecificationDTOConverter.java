@@ -17,6 +17,7 @@ import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.Settings;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
@@ -387,7 +388,24 @@ public class PageSpecificationDTOConverter
 	private PageSpecification _toWidgetPageSpecification(Layout layout) {
 		return new WidgetPageSpecification() {
 			{
-				setExternalReferenceCode(layout::getExternalReferenceCode);
+				setExternalReferenceCode(
+					() -> {
+						LayoutPageTemplateEntry layoutPageTemplateEntry =
+							_layoutPageTemplateEntryLocalService.
+								fetchLayoutPageTemplateEntryByPlid(
+									layout.getPlid());
+
+						if ((layoutPageTemplateEntry == null) ||
+							(layoutPageTemplateEntry.getType() !=
+								LayoutPageTemplateEntryTypeConstants.
+									WIDGET_PAGE)) {
+
+							return layout.getExternalReferenceCode();
+						}
+
+						return layoutPageTemplateEntry.
+							getExternalReferenceCode();
+					});
 				setSettings(() -> _setSettings(layout));
 				setSiteTemplatePageSpecificationExternalReferenceCode(
 					() -> {

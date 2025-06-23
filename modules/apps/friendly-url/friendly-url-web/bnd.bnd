@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Friendly URL Web
 Bundle-SymbolicName: com.liferay.friendly.url.web
-Bundle-Version: 1.0.39
+Bundle-Version: 1.0.40
 Web-ContextPath: /friendly-url-web

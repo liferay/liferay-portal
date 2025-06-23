@@ -7,12 +7,18 @@ import {Locator, Page} from '@playwright/test';
 
 export class NotificationsPage {
 	readonly page: Page;
-
 	readonly backButton: Locator;
+	readonly deleteButton: Locator;
+	readonly notificationNoLongerAppliesMessage: Locator;
 	readonly requestsTab: Locator;
+	readonly selectAllItemsCheckbox: Locator;
 	readonly sharingNotificationMessage: (
 		userName: string,
 		documentTitle: string
+	) => Locator;
+	readonly workflowReviewMessage: (
+		asset: string,
+		userName?: string
 	) => Locator;
 
 	constructor(page: Page) {
@@ -21,15 +27,30 @@ export class NotificationsPage {
 		this.backButton = this.page.getByRole('link', {
 			name: 'Return to Full Page',
 		});
+		this.deleteButton = page.getByRole('button', {name: 'Delete'});
+		this.notificationNoLongerAppliesMessage = this.page.getByText(
+			'Notification no longer applies.'
+		);
 		this.requestsTab = this.page.getByRole('link', {
 			name: 'Requests List (0)',
 		});
+		this.selectAllItemsCheckbox = page.getByLabel(
+			'Select All Items on the Page'
+		);
 		this.sharingNotificationMessage = (
 			userName: string,
 			documentTitle: string
 		) => {
 			return page.getByText(
 				`${userName} has shared ${documentTitle} with you for viewing.`
+			);
+		};
+		this.workflowReviewMessage = (
+			asset: string,
+			userName: string = 'Test Test'
+		) => {
+			return page.getByText(
+				`${userName} sent you a ${asset} for review in the workflow.`
 			);
 		};
 	}

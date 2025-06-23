@@ -253,6 +253,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewOrganizationPagination {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		for (var num : list "1,2,3,4,5") {
 			JSONOrganization.addOrganization(organizationName = "Organization Name ${num}");
 		}
@@ -280,6 +282,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewUsersPagination {
+		property custom.properties = "search.container.page.default.delta=4${line.separator}search.container.page.delta.values=4,8,20,40,60";
+
 		for (var num : list "1,2,3,4,5") {
 			JSONUser.addUser(
 				userEmailAddress = "userea${num}@liferay.com",

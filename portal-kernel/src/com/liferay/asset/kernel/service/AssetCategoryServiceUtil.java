@@ -76,6 +76,14 @@ public class AssetCategoryServiceUtil {
 		getService().deleteCategory(categoryId);
 	}
 
+	public static AssetCategory deleteCategoryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		return getService().deleteCategoryByExternalReferenceCode(
+			externalReferenceCode, groupId);
+	}
+
 	public static AssetCategory fetchCategory(long categoryId)
 		throws PortalException {
 

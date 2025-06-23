@@ -2,13 +2,201 @@
 	"pageElement": {
 		"id": "b40ac947-880f-4759-31ce-e14005ab0049",
 		"pageElements": [
+			{
+				"definition": {
+					"gutters": true,
+					"indexed": true,
+					"modulesPerRow": 2,
+					"numberOfColumns": 4,
+					"reverseOrder": false,
+					"rowViewports": [
+						{
+							"id": "landscapeMobile",
+							"rowViewportDefinition": {
+								"modulesPerRow": 1
+							}
+						},
+						{
+							"id": "portraitMobile",
+							"rowViewportDefinition": {
+							}
+						},
+						{
+							"id": "tablet",
+							"rowViewportDefinition": {
+							}
+						}
+					],
+					"verticalAlignment": "top"
+				},
+				"id": "a4b366e3-10f1-81db-dc9d-be6ba61e8556",
+				"pageElements": [
+					{
+						"definition": {
+							"columnViewports": [
+								{
+									"columnViewportDefinition": {
+										"size": 12
+									},
+									"id": "landscapeMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "portraitMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "tablet"
+								}
+							],
+							"size": 6
+						},
+						"id": "3f7d39a8-de9a-920a-7720-66915aab6be9",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSpaceContentsAbstractJSPSectionFragmentRenderer"
+									},
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
+									"fragmentStyle": {
+										"borderColor": "rgb(241, 242, 245)",
+										"borderRadius": "10px",
+										"borderWidth": "2px",
+										"marginBottom": "2",
+										"marginLeft": "3",
+										"paddingBottom": "3",
+										"paddingLeft": "3",
+										"paddingRight": "3",
+										"paddingTop": "3"
+									},
+									"indexed": true
+								},
+								"id": "b56a878b-6b3f-e87a-7364-b4943fba1684",
+								"type": "Fragment"
+							}
+						],
+						"type": "Column"
+					},
+					{
+						"definition": {
+							"columnViewports": [
+								{
+									"columnViewportDefinition": {
+										"size": 12
+									},
+									"id": "landscapeMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "portraitMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "tablet"
+								}
+							],
+							"size": 6
+						},
+						"id": "f4ac2e9d-2162-ed71-b4c9-3dac99f1dcb6",
+						"type": "Column"
+					},
+					{
+						"definition": {
+							"columnViewports": [
+								{
+									"columnViewportDefinition": {
+										"size": 12
+									},
+									"id": "landscapeMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "portraitMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "tablet"
+								}
+							],
+							"size": 6
+						},
+						"id": "0194ec48-c8e7-f054-9307-0a02230b4741",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSpaceFilesAbstractJSPSectionFragmentRenderer"
+									},
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
+									"fragmentStyle": {
+										"borderColor": "rgb(241, 242, 245)",
+										"borderRadius": "10px",
+										"borderWidth": "2px",
+										"marginLeft": "3",
+										"marginTop": "2",
+										"paddingBottom": "3",
+										"paddingLeft": "3",
+										"paddingRight": "3",
+										"paddingTop": "3"
+									},
+									"indexed": true
+								},
+								"id": "2c7d371c-2b8f-eb30-fddc-457b7e3c2048",
+								"type": "Fragment"
+							}
+						],
+						"type": "Column"
+					},
+					{
+						"definition": {
+							"columnViewports": [
+								{
+									"columnViewportDefinition": {
+										"size": 12
+									},
+									"id": "landscapeMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "portraitMobile"
+								},
+								{
+									"columnViewportDefinition": {
+									},
+									"id": "tablet"
+								}
+							],
+							"size": 6
+						},
+						"id": "b54054e0-2f44-35e4-e229-b131fe82cc47",
+						"type": "Column"
+					}
+				],
+				"type": "Row"
+			}
 		],
 		"type": "Root"
 	},
 	"settings": {
+		"colorSchemeName": "01",
 		"masterPage": {
-			"key": "cms-master"
-		}
+			"key": "cms-space-master"
+		},
+		"themeName": "CMS"
 	},
 	"version": 1.1
 }

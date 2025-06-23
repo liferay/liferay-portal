@@ -116,6 +116,20 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 		return _testrayUploadBaseDir;
 	}
 
+	protected String getTopLevelBuildDatabaseKey() {
+		return getTopLevelBuildURLPath() + "/build-database.json.gz";
+	}
+
+	protected String getTopLevelBuildDatabaseName() {
+		return "Build Database (Top Level)";
+	}
+
+	protected TestrayAttachment getTopLevelBuildDatabaseTestrayAttachment() {
+		return getTestrayAttachment(
+			getTopLevelBuildReport(), getTopLevelBuildDatabaseName(),
+			getTopLevelBuildDatabaseKey());
+	}
+
 	protected String getTopLevelBuildReportKey() {
 		return getTopLevelBuildURLPath() + "/build-report.json.gz";
 	}

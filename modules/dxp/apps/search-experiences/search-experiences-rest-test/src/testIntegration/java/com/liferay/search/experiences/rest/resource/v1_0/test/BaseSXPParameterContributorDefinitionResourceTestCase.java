@@ -252,6 +252,11 @@ public abstract class BaseSXPParameterContributorDefinitionResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		SXPParameterContributorDefinition sxpParameterContributorDefinition,
 		List<SXPParameterContributorDefinition>

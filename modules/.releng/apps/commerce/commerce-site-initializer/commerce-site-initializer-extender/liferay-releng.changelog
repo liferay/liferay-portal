@@ -17,3 +17,8 @@ fc3573c9ac8a0bce28f83b8c7ef6dc60e322bb14^..0d6f2bed2713b7a4e901560ee2be1ebf0af6d
 # Bundle Version 1.0.4
 #
 db2be156ebb02544fcecf85b8b8690dd013deace^..c6082f91077ebbf3caba7c0164d5689bad024a51=LPD-54821 LPD-55408 LPD-56284
+
+#
+# Bundle Version 1.0.5
+#
+c6082f91077ebbf3caba7c0164d5689bad024a51^..bd599405e01a33bf1ed55fd8e0a3d047cb857bbf=LPD-55683

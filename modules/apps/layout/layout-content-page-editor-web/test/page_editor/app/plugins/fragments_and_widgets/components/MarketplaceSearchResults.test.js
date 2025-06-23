@@ -17,7 +17,6 @@ import {StoreAPIContextProvider} from '../../../../../../src/main/resources/META
 import MarketplaceSearchResults from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/fragments_and_widgets/components/MarketplaceSearchResults';
 
 global.Liferay = {
-	FeatureFlags: {'LPD-34938': true},
 	Language: {get: (key) => key},
 	ThemeDisplay: {getPathThemeImages: jest.fn()},
 };
@@ -181,8 +180,9 @@ describe('MarketplaceSearchResults', () => {
 			expect(
 				screen.getByText('showing-results-from-marketplace')
 			).toBeInTheDocument();
-			expect(screen.getByText('showing-x-x')).toBeInTheDocument();
-			expect(screen.getAllByTitle(`x-details`).length).toBe(2);
+			expect(screen.getByText('showing-2-results')).toBeInTheDocument();
+			expect(screen.getByTitle(`Product 1-details`)).toBeInTheDocument();
+			expect(screen.getByTitle(`Product 2-details`)).toBeInTheDocument();
 
 			expectProduct(1);
 			expectProduct(2);

@@ -789,7 +789,7 @@ public class ObjectRelatedModelsProviderTest {
 			AccountEntry accountEntry2 = _addAccountEntry(user.getUserId());
 
 			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-				user.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+				0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null, Collections.emptyMap(),

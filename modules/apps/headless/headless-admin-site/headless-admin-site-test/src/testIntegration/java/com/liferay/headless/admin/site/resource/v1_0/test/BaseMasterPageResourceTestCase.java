@@ -198,11 +198,50 @@ public abstract class BaseMasterPageResourceTestCase {
 	public void testDeleteSiteSiteByExternalReferenceCodeMasterPage()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage masterPage =
+			testDeleteSiteSiteByExternalReferenceCodeMasterPage_addMasterPage();
+
+		assertHttpResponseStatusCode(
+			204,
+			masterPageResource.
+				deleteSiteSiteByExternalReferenceCodeMasterPageHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode(),
+					masterPage.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			masterPageResource.
+				getSiteSiteByExternalReferenceCodeMasterPageHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode(),
+					masterPage.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			masterPageResource.
+				getSiteSiteByExternalReferenceCodeMasterPageHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode(),
+					"-"));
+	}
+
+	protected MasterPage
+			testDeleteSiteSiteByExternalReferenceCodeMasterPage_addMasterPage()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testDeleteSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGetSiteMasterPagePermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MasterPage postMasterPage =
 			testGetSiteMasterPagePermissionsPage_addMasterPage();
 
@@ -225,21 +264,174 @@ public abstract class BaseMasterPageResourceTestCase {
 	public void testGetSiteSiteByExternalReferenceCodeMasterPage()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		MasterPage postMasterPage =
+			testGetSiteSiteByExternalReferenceCodeMasterPage_addMasterPage();
+
+		MasterPage getMasterPage =
+			masterPageResource.getSiteSiteByExternalReferenceCodeMasterPage(
+				testGetSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode());
+
+		assertEquals(postMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage
+			testGetSiteSiteByExternalReferenceCodeMasterPage_addMasterPage()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		MasterPage masterPage =
+			testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage_addMasterPage();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				masterPage,
+				MasterPageSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"siteByExternalReferenceCodeMasterPage",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"siteExternalReferenceCode",
+											"\"" +
+												testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode() +
+													"\"");
+										put(
+											"masterPageExternalReferenceCode",
+											"\"" +
+												masterPage.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/siteByExternalReferenceCodeMasterPage"))));
+
+		// Using the namespace headlessAdminSite_v1_0
+
+		Assert.assertTrue(
+			equals(
+				masterPage,
+				MasterPageSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"headlessAdminSite_v1_0",
+								new GraphQLField(
+									"siteByExternalReferenceCodeMasterPage",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"siteExternalReferenceCode",
+												"\"" +
+													testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode() +
+														"\"");
+											put(
+												"masterPageExternalReferenceCode",
+												"\"" +
+													masterPage.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data", "JSONObject/headlessAdminSite_v1_0",
+						"Object/siteByExternalReferenceCodeMasterPage"))));
+	}
+
+	protected String
+			testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLGetSiteSiteByExternalReferenceCodeMasterPageNotFound()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		String irrelevantMasterPageExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"siteByExternalReferenceCodeMasterPage",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteExternalReferenceCode",
+									"\"" +
+										irrelevantGroup.
+											getExternalReferenceCode() + "\"");
+								put(
+									"masterPageExternalReferenceCode",
+									irrelevantMasterPageExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace headlessAdminSite_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"headlessAdminSite_v1_0",
+						new GraphQLField(
+							"siteByExternalReferenceCodeMasterPage",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"siteExternalReferenceCode",
+										"\"" +
+											irrelevantGroup.
+												getExternalReferenceCode() +
+													"\"");
+									put(
+										"masterPageExternalReferenceCode",
+										irrelevantMasterPageExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected MasterPage
+			testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage_addMasterPage()
+		throws Exception {
+
+		return testGraphQLMasterPage_addMasterPage();
 	}
 
 	@Test
@@ -686,22 +878,50 @@ public abstract class BaseMasterPageResourceTestCase {
 			testGetSiteSiteByExternalReferenceCodeMasterPagesPage_getSiteExternalReferenceCode()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGroup.getExternalReferenceCode();
 	}
 
 	protected String
 			testGetSiteSiteByExternalReferenceCodeMasterPagesPage_getIrrelevantSiteExternalReferenceCode()
 		throws Exception {
 
-		return null;
+		return irrelevantGroup.getExternalReferenceCode();
 	}
 
 	@Test
 	public void testPatchSiteSiteByExternalReferenceCodeMasterPage()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		MasterPage postMasterPage =
+			testPatchSiteSiteByExternalReferenceCodeMasterPage_addMasterPage();
+
+		MasterPage randomPatchMasterPage = randomPatchMasterPage();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MasterPage patchMasterPage =
+			masterPageResource.patchSiteSiteByExternalReferenceCodeMasterPage(
+				null, postMasterPage.getExternalReferenceCode(),
+				randomPatchMasterPage);
+
+		MasterPage expectedPatchMasterPage = postMasterPage.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchMasterPage, expectedPatchMasterPage);
+
+		MasterPage getMasterPage =
+			masterPageResource.getSiteSiteByExternalReferenceCodeMasterPage(
+				null, patchMasterPage.getExternalReferenceCode());
+
+		assertEquals(expectedPatchMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage
+			testPatchSiteSiteByExternalReferenceCodeMasterPage_addMasterPage()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -740,7 +960,7 @@ public abstract class BaseMasterPageResourceTestCase {
 		assertHttpResponseStatusCode(
 			200,
 			masterPageResource.putSiteMasterPagePermissionsPageHttpResponse(
-				null, null,
+				testGroup.getExternalReferenceCode(), null,
 				new Permission[] {
 					new Permission() {
 						{
@@ -753,7 +973,7 @@ public abstract class BaseMasterPageResourceTestCase {
 		assertHttpResponseStatusCode(
 			404,
 			masterPageResource.putSiteMasterPagePermissionsPageHttpResponse(
-				null, null,
+				testGroup.getExternalReferenceCode(), null,
 				new Permission[] {
 					new Permission() {
 						{
@@ -775,7 +995,47 @@ public abstract class BaseMasterPageResourceTestCase {
 	public void testPutSiteSiteByExternalReferenceCodeMasterPage()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		MasterPage postMasterPage =
+			testPutSiteSiteByExternalReferenceCodeMasterPage_addMasterPage();
+
+		MasterPage randomMasterPage = randomMasterPage();
+
+		MasterPage putMasterPage =
+			masterPageResource.putSiteSiteByExternalReferenceCodeMasterPage(
+				testPutSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(), randomMasterPage);
+
+		assertEquals(randomMasterPage, putMasterPage);
+		assertValid(putMasterPage);
+
+		MasterPage getMasterPage =
+			masterPageResource.getSiteSiteByExternalReferenceCodeMasterPage(
+				testPutSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode(),
+				putMasterPage.getExternalReferenceCode());
+
+		assertEquals(randomMasterPage, getMasterPage);
+		assertValid(getMasterPage);
+	}
+
+	protected MasterPage
+			testPutSiteSiteByExternalReferenceCodeMasterPage_addMasterPage()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testPutSiteSiteByExternalReferenceCodeMasterPage_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	@Rule
@@ -786,6 +1046,13 @@ public abstract class BaseMasterPageResourceTestCase {
 		throws Exception {
 
 		Assert.assertTrue(true);
+	}
+
+	protected MasterPage testGraphQLMasterPage_addMasterPage()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected void assertContains(

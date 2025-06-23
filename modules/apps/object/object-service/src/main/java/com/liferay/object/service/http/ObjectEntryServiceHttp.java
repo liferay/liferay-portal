@@ -249,7 +249,6 @@ public class ObjectEntryServiceHttp {
 
 	public static com.liferay.object.model.ObjectEntry expireObjectEntry(
 			HttpPrincipal httpPrincipal, long userId, long objectEntryId,
-			int version,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -259,7 +258,7 @@ public class ObjectEntryServiceHttp {
 				_expireObjectEntryParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, userId, objectEntryId, version, serviceContext);
+				methodKey, userId, objectEntryId, serviceContext);
 
 			Object returnObj = null;
 
@@ -1027,7 +1026,7 @@ public class ObjectEntryServiceHttp {
 		new Class[] {String.class, long.class, long.class};
 	private static final Class<?>[] _expireObjectEntryParameterTypes5 =
 		new Class[] {
-			long.class, long.class, int.class,
+			long.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _fetchManyToOneObjectEntryParameterTypes6 =

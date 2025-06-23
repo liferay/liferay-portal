@@ -114,6 +114,329 @@ public class PatcherProductVersionUtil {
 	}
 
 	/**
+	 * Returns all the patcher product versions where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @return the matching patcher product versions
+	 */
+	public static List<PatcherProductVersion> findByFixDeliveryMethod(
+		int fixDeliveryMethod) {
+
+		return getPersistence().findByFixDeliveryMethod(fixDeliveryMethod);
+	}
+
+	/**
+	 * Returns a range of all the patcher product versions where fixDeliveryMethod = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherProductVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param start the lower bound of the range of patcher product versions
+	 * @param end the upper bound of the range of patcher product versions (not inclusive)
+	 * @return the range of matching patcher product versions
+	 */
+	public static List<PatcherProductVersion> findByFixDeliveryMethod(
+		int fixDeliveryMethod, int start, int end) {
+
+		return getPersistence().findByFixDeliveryMethod(
+			fixDeliveryMethod, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher product versions where fixDeliveryMethod = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherProductVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param start the lower bound of the range of patcher product versions
+	 * @param end the upper bound of the range of patcher product versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher product versions
+	 */
+	public static List<PatcherProductVersion> findByFixDeliveryMethod(
+		int fixDeliveryMethod, int start, int end,
+		OrderByComparator<PatcherProductVersion> orderByComparator) {
+
+		return getPersistence().findByFixDeliveryMethod(
+			fixDeliveryMethod, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher product versions where fixDeliveryMethod = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherProductVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param start the lower bound of the range of patcher product versions
+	 * @param end the upper bound of the range of patcher product versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher product versions
+	 */
+	public static List<PatcherProductVersion> findByFixDeliveryMethod(
+		int fixDeliveryMethod, int start, int end,
+		OrderByComparator<PatcherProductVersion> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByFixDeliveryMethod(
+			fixDeliveryMethod, start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first patcher product version in the ordered set where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher product version
+	 * @throws NoSuchPatcherProductVersionException if a matching patcher product version could not be found
+	 */
+	public static PatcherProductVersion findByFixDeliveryMethod_First(
+			int fixDeliveryMethod,
+			OrderByComparator<PatcherProductVersion> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherProductVersionException {
+
+		return getPersistence().findByFixDeliveryMethod_First(
+			fixDeliveryMethod, orderByComparator);
+	}
+
+	/**
+	 * Returns the first patcher product version in the ordered set where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher product version, or <code>null</code> if a matching patcher product version could not be found
+	 */
+	public static PatcherProductVersion fetchByFixDeliveryMethod_First(
+		int fixDeliveryMethod,
+		OrderByComparator<PatcherProductVersion> orderByComparator) {
+
+		return getPersistence().fetchByFixDeliveryMethod_First(
+			fixDeliveryMethod, orderByComparator);
+	}
+
+	/**
+	 * Returns the last patcher product version in the ordered set where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher product version
+	 * @throws NoSuchPatcherProductVersionException if a matching patcher product version could not be found
+	 */
+	public static PatcherProductVersion findByFixDeliveryMethod_Last(
+			int fixDeliveryMethod,
+			OrderByComparator<PatcherProductVersion> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherProductVersionException {
+
+		return getPersistence().findByFixDeliveryMethod_Last(
+			fixDeliveryMethod, orderByComparator);
+	}
+
+	/**
+	 * Returns the last patcher product version in the ordered set where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher product version, or <code>null</code> if a matching patcher product version could not be found
+	 */
+	public static PatcherProductVersion fetchByFixDeliveryMethod_Last(
+		int fixDeliveryMethod,
+		OrderByComparator<PatcherProductVersion> orderByComparator) {
+
+		return getPersistence().fetchByFixDeliveryMethod_Last(
+			fixDeliveryMethod, orderByComparator);
+	}
+
+	/**
+	 * Returns the patcher product versions before and after the current patcher product version in the ordered set where fixDeliveryMethod = &#63;.
+	 *
+	 * @param patcherProductVersionId the primary key of the current patcher product version
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher product version
+	 * @throws NoSuchPatcherProductVersionException if a patcher product version with the primary key could not be found
+	 */
+	public static PatcherProductVersion[] findByFixDeliveryMethod_PrevAndNext(
+			long patcherProductVersionId, int fixDeliveryMethod,
+			OrderByComparator<PatcherProductVersion> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherProductVersionException {
+
+		return getPersistence().findByFixDeliveryMethod_PrevAndNext(
+			patcherProductVersionId, fixDeliveryMethod, orderByComparator);
+	}
+
+	/**
+	 * Returns all the patcher product versions that the user has permission to view where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @return the matching patcher product versions that the user has permission to view
+	 */
+	public static List<PatcherProductVersion> filterFindByFixDeliveryMethod(
+		int fixDeliveryMethod) {
+
+		return getPersistence().filterFindByFixDeliveryMethod(
+			fixDeliveryMethod);
+	}
+
+	/**
+	 * Returns a range of all the patcher product versions that the user has permission to view where fixDeliveryMethod = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherProductVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param start the lower bound of the range of patcher product versions
+	 * @param end the upper bound of the range of patcher product versions (not inclusive)
+	 * @return the range of matching patcher product versions that the user has permission to view
+	 */
+	public static List<PatcherProductVersion> filterFindByFixDeliveryMethod(
+		int fixDeliveryMethod, int start, int end) {
+
+		return getPersistence().filterFindByFixDeliveryMethod(
+			fixDeliveryMethod, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher product versions that the user has permissions to view where fixDeliveryMethod = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherProductVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param start the lower bound of the range of patcher product versions
+	 * @param end the upper bound of the range of patcher product versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher product versions that the user has permission to view
+	 */
+	public static List<PatcherProductVersion> filterFindByFixDeliveryMethod(
+		int fixDeliveryMethod, int start, int end,
+		OrderByComparator<PatcherProductVersion> orderByComparator) {
+
+		return getPersistence().filterFindByFixDeliveryMethod(
+			fixDeliveryMethod, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns the patcher product versions before and after the current patcher product version in the ordered set of patcher product versions that the user has permission to view where fixDeliveryMethod = &#63;.
+	 *
+	 * @param patcherProductVersionId the primary key of the current patcher product version
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher product version
+	 * @throws NoSuchPatcherProductVersionException if a patcher product version with the primary key could not be found
+	 */
+	public static PatcherProductVersion[]
+			filterFindByFixDeliveryMethod_PrevAndNext(
+				long patcherProductVersionId, int fixDeliveryMethod,
+				OrderByComparator<PatcherProductVersion> orderByComparator)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherProductVersionException {
+
+		return getPersistence().filterFindByFixDeliveryMethod_PrevAndNext(
+			patcherProductVersionId, fixDeliveryMethod, orderByComparator);
+	}
+
+	/**
+	 * Removes all the patcher product versions where fixDeliveryMethod = &#63; from the database.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 */
+	public static void removeByFixDeliveryMethod(int fixDeliveryMethod) {
+		getPersistence().removeByFixDeliveryMethod(fixDeliveryMethod);
+	}
+
+	/**
+	 * Returns the number of patcher product versions where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @return the number of matching patcher product versions
+	 */
+	public static int countByFixDeliveryMethod(int fixDeliveryMethod) {
+		return getPersistence().countByFixDeliveryMethod(fixDeliveryMethod);
+	}
+
+	/**
+	 * Returns the number of patcher product versions that the user has permission to view where fixDeliveryMethod = &#63;.
+	 *
+	 * @param fixDeliveryMethod the fix delivery method
+	 * @return the number of matching patcher product versions that the user has permission to view
+	 */
+	public static int filterCountByFixDeliveryMethod(int fixDeliveryMethod) {
+		return getPersistence().filterCountByFixDeliveryMethod(
+			fixDeliveryMethod);
+	}
+
+	/**
+	 * Returns the patcher product version where name = &#63; or throws a <code>NoSuchPatcherProductVersionException</code> if it could not be found.
+	 *
+	 * @param name the name
+	 * @return the matching patcher product version
+	 * @throws NoSuchPatcherProductVersionException if a matching patcher product version could not be found
+	 */
+	public static PatcherProductVersion findByName(String name)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherProductVersionException {
+
+		return getPersistence().findByName(name);
+	}
+
+	/**
+	 * Returns the patcher product version where name = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param name the name
+	 * @return the matching patcher product version, or <code>null</code> if a matching patcher product version could not be found
+	 */
+	public static PatcherProductVersion fetchByName(String name) {
+		return getPersistence().fetchByName(name);
+	}
+
+	/**
+	 * Returns the patcher product version where name = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param name the name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching patcher product version, or <code>null</code> if a matching patcher product version could not be found
+	 */
+	public static PatcherProductVersion fetchByName(
+		String name, boolean useFinderCache) {
+
+		return getPersistence().fetchByName(name, useFinderCache);
+	}
+
+	/**
+	 * Removes the patcher product version where name = &#63; from the database.
+	 *
+	 * @param name the name
+	 * @return the patcher product version that was removed
+	 */
+	public static PatcherProductVersion removeByName(String name)
+		throws com.liferay.osb.patcher.exception.
+			NoSuchPatcherProductVersionException {
+
+		return getPersistence().removeByName(name);
+	}
+
+	/**
+	 * Returns the number of patcher product versions where name = &#63;.
+	 *
+	 * @param name the name
+	 * @return the number of matching patcher product versions
+	 */
+	public static int countByName(String name) {
+		return getPersistence().countByName(name);
+	}
+
+	/**
 	 * Caches the patcher product version in the entity cache if it is enabled.
 	 *
 	 * @param patcherProductVersion the patcher product version

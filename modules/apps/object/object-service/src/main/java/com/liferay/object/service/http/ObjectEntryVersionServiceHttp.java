@@ -83,6 +83,50 @@ public class ObjectEntryVersionServiceHttp {
 	}
 
 	public static com.liferay.object.model.ObjectEntryVersion
+			expireObjectEntryVersion(
+				HttpPrincipal httpPrincipal,
+				com.liferay.object.model.ObjectEntry objectEntry,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext,
+				long userId, int version)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				ObjectEntryVersionServiceUtil.class, "expireObjectEntryVersion",
+				_expireObjectEntryVersionParameterTypes1);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, objectEntry, serviceContext, userId, version);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.object.model.ObjectEntryVersion)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.object.model.ObjectEntryVersion
 			getObjectEntryVersion(
 				HttpPrincipal httpPrincipal, long objectEntryId, int version)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -90,7 +134,7 @@ public class ObjectEntryVersionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				ObjectEntryVersionServiceUtil.class, "getObjectEntryVersion",
-				_getObjectEntryVersionParameterTypes1);
+				_getObjectEntryVersionParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, objectEntryId, version);
@@ -132,7 +176,7 @@ public class ObjectEntryVersionServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				ObjectEntryVersionServiceUtil.class, "getObjectEntryVersions",
-				_getObjectEntryVersionsParameterTypes2);
+				_getObjectEntryVersionsParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, objectEntryId, start, end);
@@ -174,7 +218,7 @@ public class ObjectEntryVersionServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				ObjectEntryVersionServiceUtil.class,
 				"getObjectEntryVersionsCount",
-				_getObjectEntryVersionsCountParameterTypes3);
+				_getObjectEntryVersionsCountParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, objectEntryId);
@@ -212,11 +256,17 @@ public class ObjectEntryVersionServiceHttp {
 
 	private static final Class<?>[] _deleteObjectEntryVersionParameterTypes0 =
 		new Class[] {long.class, int.class};
-	private static final Class<?>[] _getObjectEntryVersionParameterTypes1 =
+	private static final Class<?>[] _expireObjectEntryVersionParameterTypes1 =
+		new Class[] {
+			com.liferay.object.model.ObjectEntry.class,
+			com.liferay.portal.kernel.service.ServiceContext.class, long.class,
+			int.class
+		};
+	private static final Class<?>[] _getObjectEntryVersionParameterTypes2 =
 		new Class[] {long.class, int.class};
-	private static final Class<?>[] _getObjectEntryVersionsParameterTypes2 =
+	private static final Class<?>[] _getObjectEntryVersionsParameterTypes3 =
 		new Class[] {long.class, int.class, int.class};
 	private static final Class<?>[]
-		_getObjectEntryVersionsCountParameterTypes3 = new Class[] {long.class};
+		_getObjectEntryVersionsCountParameterTypes4 = new Class[] {long.class};
 
 }

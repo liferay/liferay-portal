@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderRuleAccount;
 import com.liferay.headless.commerce.admin.order.client.http.HttpInvoker;
@@ -199,12 +200,74 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 
 	@Test
 	public void testDeleteOrderRuleAccount() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		OrderRuleAccount orderRuleAccount =
+			testDeleteOrderRuleAccount_addOrderRuleAccount();
+
+		assertHttpResponseStatusCode(
+			204,
+			orderRuleAccountResource.deleteOrderRuleAccountHttpResponse(
+				orderRuleAccount.getOrderRuleAccountId()));
+	}
+
+	protected OrderRuleAccount testDeleteOrderRuleAccount_addOrderRuleAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteOrderRuleAccount() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		OrderRuleAccount orderRuleAccount1 =
+			testGraphQLDeleteOrderRuleAccount_addOrderRuleAccount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteOrderRuleAccount",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"orderRuleAccountId",
+									orderRuleAccount1.getOrderRuleAccountId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteOrderRuleAccount"));
+
+		// Using the namespace headlessCommerceAdminOrder_v1_0
+
+		OrderRuleAccount orderRuleAccount2 =
+			testGraphQLDeleteOrderRuleAccount_addOrderRuleAccount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminOrder_v1_0",
+						new GraphQLField(
+							"deleteOrderRuleAccount",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"orderRuleAccountId",
+										orderRuleAccount2.
+											getOrderRuleAccountId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessCommerceAdminOrder_v1_0",
+				"Object/deleteOrderRuleAccount"));
+	}
+
+	protected OrderRuleAccount
+			testGraphQLDeleteOrderRuleAccount_addOrderRuleAccount()
+		throws Exception {
+
+		return testGraphQLOrderRuleAccount_addOrderRuleAccount();
 	}
 
 	@Test
@@ -213,19 +276,18 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 			testDeleteOrderRuleAccountBatch_addOrderRuleAccount();
 
 		testDeleteOrderRuleAccountBatch_deleteOrderRuleAccount(
-			"COMPLETED", null, orderRuleAccount1.getOrderRuleAccountId());
+			202, null, orderRuleAccount1.getOrderRuleAccountId());
 	}
 
 	protected OrderRuleAccount
 			testDeleteOrderRuleAccountBatch_addOrderRuleAccount()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteOrderRuleAccount_addOrderRuleAccount();
 	}
 
 	protected void testDeleteOrderRuleAccountBatch_deleteOrderRuleAccount(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -238,10 +300,10 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 						"orderRuleAccountId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -307,6 +369,12 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 			page,
 			testGetOrderRuleByExternalReferenceCodeOrderRuleAccountsPage_getExpectedActions(
 				externalReferenceCode));
+
+		orderRuleAccountResource.deleteOrderRuleAccount(
+			orderRuleAccount1.getOrderRuleAccountId());
+
+		orderRuleAccountResource.deleteOrderRuleAccount(
+			orderRuleAccount2.getOrderRuleAccountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -505,6 +573,12 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 		assertValid(
 			page,
 			testGetOrderRuleIdOrderRuleAccountsPage_getExpectedActions(id));
+
+		orderRuleAccountResource.deleteOrderRuleAccount(
+			orderRuleAccount1.getOrderRuleAccountId());
+
+		orderRuleAccountResource.deleteOrderRuleAccount(
+			orderRuleAccount2.getOrderRuleAccountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -937,8 +1011,66 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		OrderRuleAccount orderRuleAccount1 =
+			testBatchEngineDeleteImportTask_addOrderRuleAccount();
+
+		testBatchEngineDeleteImportTask_deleteOrderRuleAccount(
+			200, null, orderRuleAccount1.getOrderRuleAccountId());
+	}
+
+	protected OrderRuleAccount
+			testBatchEngineDeleteImportTask_addOrderRuleAccount()
+		throws Exception {
+
+		return testDeleteOrderRuleAccount_addOrderRuleAccount();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteOrderRuleAccount(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.order.dto.v1_0.OrderRuleAccount",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"orderRuleAccountId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected OrderRuleAccount testGraphQLOrderRuleAccount_addOrderRuleAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		OrderRuleAccount orderRuleAccount,
@@ -1019,6 +1151,10 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (orderRuleAccount.getOrderRuleAccountId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

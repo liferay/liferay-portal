@@ -13,7 +13,6 @@ import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValueTa
 import com.liferay.commerce.product.model.CPSpecificationOptionTable;
 import com.liferay.commerce.product.service.base.CPDefinitionSpecificationOptionValueLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
-import com.liferay.commerce.product.util.BatchEngineImportTaskThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
@@ -523,10 +522,6 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 
 	private void _reindexCPDefinition(long cpDefinitionId)
 		throws PortalException {
-
-		if (BatchEngineImportTaskThreadLocal.isEnabled()) {
-			return;
-		}
 
 		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			CPDefinition.class);

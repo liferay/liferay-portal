@@ -3,5 +3,5 @@
 		"es-module-shims": "1.4.1"
 	},
 	"name": "@liferay/frontend-js-importmaps-extender",
-	"version": "1.0.21"
+	"version": "1.0.22"
 }

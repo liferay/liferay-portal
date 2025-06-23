@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Shared Dependencies Apache Commons
 Bundle-SymbolicName: com.liferay.shared.dependencies.apache.commons
-Bundle-Version: 4.0.16
+Bundle-Version: 4.0.17
 Import-Package:\
 	!com.github.luben.zstd,\
 	\

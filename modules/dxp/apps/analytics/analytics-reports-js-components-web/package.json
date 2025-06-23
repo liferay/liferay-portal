@@ -2,15 +2,15 @@
 	"dependencies": {
 		"@clayui/alert": "3.129.1",
 		"@clayui/button": "3.136.0",
-		"@clayui/core": "3.138.0",
-		"@clayui/data-provider": "3.137.0",
-		"@clayui/drop-down": "3.138.0",
+		"@clayui/core": "3.139.1",
+		"@clayui/data-provider": "3.139.0",
+		"@clayui/drop-down": "3.139.1",
 		"@clayui/empty-state": "3.128.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/link": "3.128.0",
 		"@clayui/loading-indicator": "3.128.0",
-		"@clayui/popover": "3.137.0",
-		"@clayui/tooltip": "3.137.0",
+		"@clayui/popover": "3.139.0",
+		"@clayui/tooltip": "3.139.0",
 		"classnames": "2.3.1",
 		"d3": "5.9.3",
 		"frontend-js-web": "*",
@@ -34,5 +34,5 @@
 		"format": "node-scripts format",
 		"test": "USE_REACT_16=true node-scripts test"
 	},
-	"version": "1.0.12"
+	"version": "1.0.13"
 }

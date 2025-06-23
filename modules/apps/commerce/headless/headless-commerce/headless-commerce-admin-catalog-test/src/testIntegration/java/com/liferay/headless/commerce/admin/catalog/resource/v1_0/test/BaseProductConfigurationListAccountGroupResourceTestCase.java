@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfigurationListAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
@@ -225,14 +226,84 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 	public void testDeleteProductConfigurationListAccountGroup()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductConfigurationListAccountGroup
+			productConfigurationListAccountGroup =
+				testDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup();
+
+		assertHttpResponseStatusCode(
+			204,
+			productConfigurationListAccountGroupResource.
+				deleteProductConfigurationListAccountGroupHttpResponse(
+					productConfigurationListAccountGroup.
+						getProductConfigurationListAccountGroupId()));
+	}
+
+	protected ProductConfigurationListAccountGroup
+			testDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteProductConfigurationListAccountGroup()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		// No namespace
+
+		ProductConfigurationListAccountGroup
+			productConfigurationListAccountGroup1 =
+				testGraphQLDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteProductConfigurationListAccountGroup",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"productConfigurationListAccountGroupId",
+									productConfigurationListAccountGroup1.
+										getProductConfigurationListAccountGroupId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteProductConfigurationListAccountGroup"));
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		ProductConfigurationListAccountGroup
+			productConfigurationListAccountGroup2 =
+				testGraphQLDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminCatalog_v1_0",
+						new GraphQLField(
+							"deleteProductConfigurationListAccountGroup",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"productConfigurationListAccountGroupId",
+										productConfigurationListAccountGroup2.
+											getProductConfigurationListAccountGroupId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminCatalog_v1_0",
+				"Object/deleteProductConfigurationListAccountGroup"));
+	}
+
+	protected ProductConfigurationListAccountGroup
+			testGraphQLDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup()
+		throws Exception {
+
+		return testGraphQLProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup();
 	}
 
 	@Test
@@ -244,7 +315,7 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 				testDeleteProductConfigurationListAccountGroupBatch_addProductConfigurationListAccountGroup();
 
 		testDeleteProductConfigurationListAccountGroupBatch_deleteProductConfigurationListAccountGroup(
-			"COMPLETED", null,
+			202, null,
 			productConfigurationListAccountGroup1.
 				getProductConfigurationListAccountGroupId());
 	}
@@ -253,14 +324,12 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 			testDeleteProductConfigurationListAccountGroupBatch_addProductConfigurationListAccountGroup()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup();
 	}
 
 	protected void
 			testDeleteProductConfigurationListAccountGroupBatch_deleteProductConfigurationListAccountGroup(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -274,10 +343,10 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 							"productConfigurationListAccountGroupId", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -350,6 +419,16 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 			page,
 			testGetProductConfigurationListByExternalReferenceCodeProductConfigurationListAccountGroupsPage_getExpectedActions(
 				externalReferenceCode));
+
+		productConfigurationListAccountGroupResource.
+			deleteProductConfigurationListAccountGroup(
+				productConfigurationListAccountGroup1.
+					getProductConfigurationListAccountGroupId());
+
+		productConfigurationListAccountGroupResource.
+			deleteProductConfigurationListAccountGroup(
+				productConfigurationListAccountGroup2.
+					getProductConfigurationListAccountGroupId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -583,6 +662,16 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 			page,
 			testGetProductConfigurationListIdProductConfigurationListAccountGroupsPage_getExpectedActions(
 				id));
+
+		productConfigurationListAccountGroupResource.
+			deleteProductConfigurationListAccountGroup(
+				productConfigurationListAccountGroup1.
+					getProductConfigurationListAccountGroupId());
+
+		productConfigurationListAccountGroupResource.
+			deleteProductConfigurationListAccountGroup(
+				productConfigurationListAccountGroup2.
+					getProductConfigurationListAccountGroupId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -1103,8 +1192,71 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ProductConfigurationListAccountGroup
+			productConfigurationListAccountGroup1 =
+				testBatchEngineDeleteImportTask_addProductConfigurationListAccountGroup();
+
+		testBatchEngineDeleteImportTask_deleteProductConfigurationListAccountGroup(
+			200, null,
+			productConfigurationListAccountGroup1.
+				getProductConfigurationListAccountGroupId());
+	}
+
+	protected ProductConfigurationListAccountGroup
+			testBatchEngineDeleteImportTask_addProductConfigurationListAccountGroup()
+		throws Exception {
+
+		return testDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deleteProductConfigurationListAccountGroup(
+				int expectedStatusCode, String externalReferenceCode, Long id,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfigurationListAccountGroup",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"productConfigurationListAccountGroupId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected ProductConfigurationListAccountGroup
+			testGraphQLProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		ProductConfigurationListAccountGroup
@@ -1221,6 +1373,12 @@ public abstract class BaseProductConfigurationListAccountGroupResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (productConfigurationListAccountGroup.
+				getProductConfigurationListAccountGroupId() == null) {
+
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

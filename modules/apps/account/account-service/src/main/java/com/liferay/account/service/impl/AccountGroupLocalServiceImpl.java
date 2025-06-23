@@ -7,20 +7,17 @@ package com.liferay.account.service.impl;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.AccountGroupNameException;
-import com.liferay.account.exception.NoSuchGroupException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.base.AccountGroupLocalServiceBaseImpl;
 import com.liferay.account.service.persistence.AccountGroupRelPersistence;
+import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -93,7 +90,7 @@ public class AccountGroupLocalServiceImpl
 		accountGroup.setType(AccountConstants.ACCOUNT_GROUP_TYPE_STATIC);
 		accountGroup.setExpandoBridgeAttributes(serviceContext);
 
-		if (LazyReferencingThreadLocal.isIncompleteModel()) {
+		if (_incompleteModelManager.isIncompleteModel()) {
 			accountGroup.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
 		}
 		else {
@@ -276,32 +273,14 @@ public class AccountGroupLocalServiceImpl
 			String name)
 		throws Exception {
 
-		AccountGroup accountGroup = fetchAccountGroupByExternalReferenceCode(
-			externalReferenceCode, companyId);
-
-		if (accountGroup != null) {
-			return accountGroup;
-		}
-
-		if (!LazyReferencingThreadLocal.isEnabled()) {
-			throw new NoSuchGroupException(
-				StringBundler.concat(
-					"Unable to find account group with external reference code",
-					externalReferenceCode, " and company ", companyId));
-		}
-
-		if (Validator.isNull(name)) {
-			name = externalReferenceCode;
-		}
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setIncompleteModelWithSafeCloseable(
-					true)) {
-
-			return accountGroupLocalService.addAccountGroup(
-				externalReferenceCode, userId, StringPool.BLANK, name,
-				new ServiceContext());
-		}
+		return _incompleteModelManager.getOrAddIncompleteModel(
+			AccountGroup.class, companyId, externalReferenceCode,
+			this::fetchAccountGroupByExternalReferenceCode,
+			this::getAccountGroupByExternalReferenceCode,
+			() -> accountGroupLocalService.addAccountGroup(
+				externalReferenceCode, userId, StringPool.BLANK,
+				Validator.isNull(name) ? externalReferenceCode : name,
+				new ServiceContext()));
 	}
 
 	@Override
@@ -495,6 +474,9 @@ public class AccountGroupLocalServiceImpl
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private IncompleteModelManager _incompleteModelManager;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;

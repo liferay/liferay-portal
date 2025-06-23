@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Product Content Web
 Bundle-SymbolicName: com.liferay.commerce.product.content.web
-Bundle-Version: 4.0.136
+Bundle-Version: 4.0.137
 Web-ContextPath: /commerce-product-content-web
 -dsannotations-options: inherit

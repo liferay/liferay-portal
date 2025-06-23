@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Teams Item Selector Web
 Bundle-SymbolicName: com.liferay.site.teams.item.selector.web
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Web-ContextPath: /site-teams-item-selector-web

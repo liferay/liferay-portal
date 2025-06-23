@@ -171,6 +171,8 @@ public class DocumentLibraryCommerceOptionTypeImpl
 			).put(
 				"cpDefinitionId", cpDefinitionOptionRel.getCPDefinitionId()
 			).put(
+				"forceRequired", forceRequired
+			).put(
 				"namespace", portletDisplay.getNamespace()
 			).put(
 				"productOption",

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.delivery.client.dto.v1_0.Field;
 import com.liferay.headless.delivery.client.dto.v1_0.Rating;
@@ -136,16 +137,28 @@ public abstract class BaseStructuredContentResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null,
 			new ServiceContext() {
 				{
-					setCompanyId(testGroup.getCompanyId());
+					setCompanyId(testCompany.getCompanyId());
 					setUserId(TestPropsValues.getUserId());
 				}
 			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
 
 		_structuredContentResource.setContextCompany(testCompany);
 
@@ -283,20 +296,20 @@ public abstract class BaseStructuredContentResourceTestCase {
 					"-"));
 	}
 
-	protected Long
-			testDeleteAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected StructuredContent
 			testDeleteAssetLibraryStructuredContentByExternalReferenceCode_addStructuredContent()
 		throws Exception {
 
 		return structuredContentResource.postAssetLibraryStructuredContent(
 			testDepotEntry.getDepotEntryId(), randomStructuredContent());
+	}
+
+	protected Long
+			testDeleteAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -311,32 +324,20 @@ public abstract class BaseStructuredContentResourceTestCase {
 			204,
 			structuredContentResource.
 				deleteSiteStructuredContentByExternalReferenceCodeHttpResponse(
-					testDeleteSiteStructuredContentByExternalReferenceCode_getSiteId(
-						structuredContent),
+					structuredContent.getSiteId(),
 					structuredContent.getExternalReferenceCode()));
 
 		assertHttpResponseStatusCode(
 			404,
 			structuredContentResource.
 				getSiteStructuredContentByExternalReferenceCodeHttpResponse(
-					testDeleteSiteStructuredContentByExternalReferenceCode_getSiteId(
-						structuredContent),
+					structuredContent.getSiteId(),
 					structuredContent.getExternalReferenceCode()));
 		assertHttpResponseStatusCode(
 			404,
 			structuredContentResource.
 				getSiteStructuredContentByExternalReferenceCodeHttpResponse(
-					testDeleteSiteStructuredContentByExternalReferenceCode_getSiteId(
-						structuredContent),
-					"-"));
-	}
-
-	protected Long
-			testDeleteSiteStructuredContentByExternalReferenceCode_getSiteId(
-				StructuredContent structuredContent)
-		throws Exception {
-
-		return structuredContent.getSiteId();
+					structuredContent.getSiteId(), "-"));
 	}
 
 	protected StructuredContent
@@ -467,7 +468,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testDeleteStructuredContentBatch_addStructuredContent();
 
 		testDeleteStructuredContentBatch_deleteStructuredContent(
-			"COMPLETED", null, structuredContent1.getId());
+			202, null, structuredContent1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -483,7 +484,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 	}
 
 	protected void testDeleteStructuredContentBatch_deleteStructuredContent(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -496,10 +497,10 @@ public abstract class BaseStructuredContentResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -550,20 +551,20 @@ public abstract class BaseStructuredContentResourceTestCase {
 		assertValid(getStructuredContent);
 	}
 
-	protected Long
-			testGetAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected StructuredContent
 			testGetAssetLibraryStructuredContentByExternalReferenceCode_addStructuredContent()
 		throws Exception {
 
 		return structuredContentResource.postAssetLibraryStructuredContent(
 			testDepotEntry.getDepotEntryId(), randomStructuredContent());
+	}
+
+	protected Long
+			testGetAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -590,7 +591,6 @@ public abstract class BaseStructuredContentResourceTestCase {
 											"\"" +
 												testGraphQLGetAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId() +
 													"\"");
-
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -622,7 +622,6 @@ public abstract class BaseStructuredContentResourceTestCase {
 												"\"" +
 													testGraphQLGetAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId() +
 														"\"");
-
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -664,7 +663,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 								put(
 									"assetLibraryId",
 									"\"" +
-										testGraphQLGetAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId() +
+										irrelevantDepotEntry.getDepotEntryId() +
 											"\"");
 								put(
 									"externalReferenceCode",
@@ -690,8 +689,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 									put(
 										"assetLibraryId",
 										"\"" +
-											testGraphQLGetAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId() +
-												"\"");
+											irrelevantDepotEntry.
+												getDepotEntryId() + "\"");
 									put(
 										"externalReferenceCode",
 										irrelevantExternalReferenceCode);
@@ -713,6 +712,10 @@ public abstract class BaseStructuredContentResourceTestCase {
 	public void testGetAssetLibraryStructuredContentPermissionsPage()
 		throws Exception {
 
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		StructuredContent postStructuredContent =
+			testGetAssetLibraryStructuredContentPermissionsPage_addStructuredContent();
+
 		Page<Permission> page =
 			structuredContentResource.
 				getAssetLibraryStructuredContentPermissionsPage(
@@ -725,8 +728,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetAssetLibraryStructuredContentPermissionsPage_addStructuredContent()
 		throws Exception {
 
-		return testPostAssetLibraryStructuredContent_addStructuredContent(
-			randomStructuredContent());
+		return structuredContentResource.postAssetLibraryStructuredContent(
+			testDepotEntry.getDepotEntryId(), randomStructuredContent());
 	}
 
 	@Test
@@ -1197,7 +1200,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetAssetLibraryStructuredContentsPage_getIrrelevantAssetLibraryId()
 		throws Exception {
 
-		return null;
+		return irrelevantDepotEntry.getDepotEntryId();
 	}
 
 	@Test
@@ -1691,20 +1694,11 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent getStructuredContent =
 			structuredContentResource.
 				getSiteStructuredContentByExternalReferenceCode(
-					testGetSiteStructuredContentByExternalReferenceCode_getSiteId(
-						postStructuredContent),
+					postStructuredContent.getSiteId(),
 					postStructuredContent.getExternalReferenceCode());
 
 		assertEquals(postStructuredContent, getStructuredContent);
 		assertValid(getStructuredContent);
-	}
-
-	protected Long
-			testGetSiteStructuredContentByExternalReferenceCode_getSiteId(
-				StructuredContent structuredContent)
-		throws Exception {
-
-		return structuredContent.getSiteId();
 	}
 
 	protected StructuredContent
@@ -1737,9 +1731,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 										put(
 											"siteKey",
 											"\"" +
-												testGraphQLGetSiteStructuredContentByExternalReferenceCode_getSiteId(
-													structuredContent) + "\"");
-
+												structuredContent.getSiteId() +
+													"\"");
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -1769,10 +1762,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteStructuredContentByExternalReferenceCode_getSiteId(
-														structuredContent) +
-															"\"");
-
+													structuredContent.
+														getSiteId() + "\"");
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -1784,14 +1775,6 @@ public abstract class BaseStructuredContentResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/structuredContentByExternalReferenceCode"))));
-	}
-
-	protected Long
-			testGraphQLGetSiteStructuredContentByExternalReferenceCode_getSiteId(
-				StructuredContent structuredContent)
-		throws Exception {
-
-		return structuredContent.getSiteId();
 	}
 
 	@Test
@@ -1863,19 +1846,11 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 		StructuredContent getStructuredContent =
 			structuredContentResource.getSiteStructuredContentByKey(
-				testGetSiteStructuredContentByKey_getSiteId(
-					postStructuredContent),
+				postStructuredContent.getSiteId(),
 				postStructuredContent.getKey());
 
 		assertEquals(postStructuredContent, getStructuredContent);
 		assertValid(getStructuredContent);
-	}
-
-	protected Long testGetSiteStructuredContentByKey_getSiteId(
-			StructuredContent structuredContent)
-		throws Exception {
-
-		return structuredContent.getSiteId();
 	}
 
 	protected StructuredContent
@@ -1906,9 +1881,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 										put(
 											"siteKey",
 											"\"" +
-												testGraphQLGetSiteStructuredContentByKey_getSiteId(
-													structuredContent) + "\"");
-
+												structuredContent.getSiteId() +
+													"\"");
 										put(
 											"key",
 											"\"" + structuredContent.getKey() +
@@ -1935,10 +1909,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteStructuredContentByKey_getSiteId(
-														structuredContent) +
-															"\"");
-
+													structuredContent.
+														getSiteId() + "\"");
 											put(
 												"key",
 												"\"" +
@@ -1949,13 +1921,6 @@ public abstract class BaseStructuredContentResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/structuredContentByKey"))));
-	}
-
-	protected Long testGraphQLGetSiteStructuredContentByKey_getSiteId(
-			StructuredContent structuredContent)
-		throws Exception {
-
-		return structuredContent.getSiteId();
 	}
 
 	@Test
@@ -2022,19 +1987,11 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 		StructuredContent getStructuredContent =
 			structuredContentResource.getSiteStructuredContentByUuid(
-				testGetSiteStructuredContentByUuid_getSiteId(
-					postStructuredContent),
+				postStructuredContent.getSiteId(),
 				postStructuredContent.getUuid());
 
 		assertEquals(postStructuredContent, getStructuredContent);
 		assertValid(getStructuredContent);
-	}
-
-	protected Long testGetSiteStructuredContentByUuid_getSiteId(
-			StructuredContent structuredContent)
-		throws Exception {
-
-		return structuredContent.getSiteId();
 	}
 
 	protected StructuredContent
@@ -2065,9 +2022,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 										put(
 											"siteKey",
 											"\"" +
-												testGraphQLGetSiteStructuredContentByUuid_getSiteId(
-													structuredContent) + "\"");
-
+												structuredContent.getSiteId() +
+													"\"");
 										put(
 											"uuid",
 											"\"" + structuredContent.getUuid() +
@@ -2094,10 +2050,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteStructuredContentByUuid_getSiteId(
-														structuredContent) +
-															"\"");
-
+													structuredContent.
+														getSiteId() + "\"");
 											put(
 												"uuid",
 												"\"" +
@@ -2108,13 +2062,6 @@ public abstract class BaseStructuredContentResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/structuredContentByUuid"))));
-	}
-
-	protected Long testGraphQLGetSiteStructuredContentByUuid_getSiteId(
-			StructuredContent structuredContent)
-		throws Exception {
-
-		return structuredContent.getSiteId();
 	}
 
 	@Test
@@ -2176,6 +2123,10 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 	@Test
 	public void testGetSiteStructuredContentPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		StructuredContent postStructuredContent =
+			testGetSiteStructuredContentPermissionsPage_addStructuredContent();
+
 		Page<Permission> page =
 			structuredContentResource.getSiteStructuredContentPermissionsPage(
 				testGroup.getGroupId(), RoleConstants.GUEST);
@@ -2187,8 +2138,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetSiteStructuredContentPermissionsPage_addStructuredContent()
 		throws Exception {
 
-		return testPostSiteStructuredContent_addStructuredContent(
-			randomStructuredContent());
+		return structuredContentResource.postSiteStructuredContent(
+			testGroup.getGroupId(), randomStructuredContent());
 	}
 
 	@Test
@@ -3545,6 +3496,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 	@Test
 	public void testGetStructuredContentPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		StructuredContent postStructuredContent =
 			testGetStructuredContentPermissionsPage_addStructuredContent();
 
@@ -3559,8 +3511,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 			testGetStructuredContentPermissionsPage_addStructuredContent()
 		throws Exception {
 
-		return testPostSiteStructuredContent_addStructuredContent(
-			randomStructuredContent());
+		return structuredContentResource.postSiteStructuredContent(
+			testGroup.getGroupId(), randomStructuredContent());
 	}
 
 	@Test
@@ -3745,6 +3697,14 @@ public abstract class BaseStructuredContentResourceTestCase {
 			putStructuredContent.getExternalReferenceCode());
 	}
 
+	protected StructuredContent
+			testPutAssetLibraryStructuredContentByExternalReferenceCode_addStructuredContent()
+		throws Exception {
+
+		return structuredContentResource.postAssetLibraryStructuredContent(
+			testDepotEntry.getDepotEntryId(), randomStructuredContent());
+	}
+
 	protected Long
 			testPutAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId()
 		throws Exception {
@@ -3758,14 +3718,6 @@ public abstract class BaseStructuredContentResourceTestCase {
 		throws Exception {
 
 		return randomStructuredContent();
-	}
-
-	protected StructuredContent
-			testPutAssetLibraryStructuredContentByExternalReferenceCode_addStructuredContent()
-		throws Exception {
-
-		return structuredContentResource.postAssetLibraryStructuredContent(
-			testDepotEntry.getDepotEntryId(), randomStructuredContent());
 	}
 
 	@Test
@@ -3829,8 +3781,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent putStructuredContent =
 			structuredContentResource.
 				putSiteStructuredContentByExternalReferenceCode(
-					testPutSiteStructuredContentByExternalReferenceCode_getSiteId(
-						postStructuredContent),
+					postStructuredContent.getSiteId(),
 					postStructuredContent.getExternalReferenceCode(),
 					randomStructuredContent);
 
@@ -3840,8 +3791,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 		StructuredContent getStructuredContent =
 			structuredContentResource.
 				getSiteStructuredContentByExternalReferenceCode(
-					testPutSiteStructuredContentByExternalReferenceCode_getSiteId(
-						putStructuredContent),
+					putStructuredContent.getSiteId(),
 					putStructuredContent.getExternalReferenceCode());
 
 		assertEquals(randomStructuredContent, getStructuredContent);
@@ -3853,8 +3803,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 		putStructuredContent =
 			structuredContentResource.
 				putSiteStructuredContentByExternalReferenceCode(
-					testPutSiteStructuredContentByExternalReferenceCode_getSiteId(
-						newStructuredContent),
+					newStructuredContent.getSiteId(),
 					newStructuredContent.getExternalReferenceCode(),
 					newStructuredContent);
 
@@ -3864,8 +3813,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 		getStructuredContent =
 			structuredContentResource.
 				getSiteStructuredContentByExternalReferenceCode(
-					testPutSiteStructuredContentByExternalReferenceCode_getSiteId(
-						putStructuredContent),
+					putStructuredContent.getSiteId(),
 					putStructuredContent.getExternalReferenceCode());
 
 		assertEquals(newStructuredContent, getStructuredContent);
@@ -3875,12 +3823,12 @@ public abstract class BaseStructuredContentResourceTestCase {
 			putStructuredContent.getExternalReferenceCode());
 	}
 
-	protected Long
-			testPutSiteStructuredContentByExternalReferenceCode_getSiteId(
-				StructuredContent structuredContent)
+	protected StructuredContent
+			testPutSiteStructuredContentByExternalReferenceCode_addStructuredContent()
 		throws Exception {
 
-		return structuredContent.getSiteId();
+		return structuredContentResource.postSiteStructuredContent(
+			testGroup.getGroupId(), randomStructuredContent());
 	}
 
 	protected StructuredContent
@@ -3888,14 +3836,6 @@ public abstract class BaseStructuredContentResourceTestCase {
 		throws Exception {
 
 		return randomStructuredContent();
-	}
-
-	protected StructuredContent
-			testPutSiteStructuredContentByExternalReferenceCode_addStructuredContent()
-		throws Exception {
-
-		return structuredContentResource.postSiteStructuredContent(
-			testGroup.getGroupId(), randomStructuredContent());
 	}
 
 	@Test
@@ -4070,6 +4010,62 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 		return structuredContentResource.postSiteStructuredContent(
 			testGroup.getGroupId(), randomStructuredContent());
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		StructuredContent structuredContent1 =
+			testBatchEngineDeleteImportTask_addStructuredContent();
+
+		testBatchEngineDeleteImportTask_deleteStructuredContent(
+			200, null, structuredContent1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			structuredContentResource.getStructuredContentHttpResponse(
+				structuredContent1.getId()));
+	}
+
+	protected StructuredContent
+			testBatchEngineDeleteImportTask_addStructuredContent()
+		throws Exception {
+
+		return testDeleteStructuredContent_addStructuredContent();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteStructuredContent(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.delivery.dto.v1_0.StructuredContent",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule
@@ -4335,10 +4331,9 @@ public abstract class BaseStructuredContentResourceTestCase {
 			valid = false;
 		}
 
-		com.liferay.portal.kernel.model.Group group = testDepotEntry.getGroup();
-
 		if (!Objects.equals(
-				structuredContent.getAssetLibraryKey(), group.getGroupKey()) &&
+				structuredContent.getAssetLibraryKey(),
+				testDepotEntryGroup.getGroupKey()) &&
 			!Objects.equals(
 				structuredContent.getSiteId(), testGroup.getGroupId())) {
 
@@ -6071,7 +6066,10 @@ public abstract class BaseStructuredContentResourceTestCase {
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
 	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {

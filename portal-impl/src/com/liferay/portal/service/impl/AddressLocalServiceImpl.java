@@ -5,8 +5,7 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
+import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManagerUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -14,9 +13,7 @@ import com.liferay.portal.kernel.exception.AddressCityException;
 import com.liferay.portal.kernel.exception.AddressStreetException;
 import com.liferay.portal.kernel.exception.AddressSubtypeException;
 import com.liferay.portal.kernel.exception.AddressZipException;
-import com.liferay.portal.kernel.exception.NoSuchAddressException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.list.type.manager.ListTypeEntryManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -86,7 +83,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		User user = _userPersistence.findByPrimaryKey(userId);
 		long classNameId = _classNameLocalService.getClassNameId(className);
 
-		if (!LazyReferencingThreadLocal.isIncompleteModel()) {
+		if (!IncompleteModelManagerUtil.isIncompleteModel()) {
 			validate(
 				0, city, classNameId, classPK, user.getCompanyId(), countryId,
 				listTypeId, mailing, primary, regionId, street1, subtype, zip);
@@ -117,7 +114,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		address.setSubtype(subtype);
 		address.setZip(zip);
 
-		if (LazyReferencingThreadLocal.isIncompleteModel()) {
+		if (IncompleteModelManagerUtil.isIncompleteModel()) {
 			address.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
 		}
 		else {
@@ -270,30 +267,15 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 			String className, long classPK)
 		throws Exception {
 
-		Address address = fetchAddressByExternalReferenceCode(
-			externalReferenceCode, companyId);
-
-		if (address != null) {
-			return address;
-		}
-
-		if (!LazyReferencingThreadLocal.isEnabled()) {
-			throw new NoSuchAddressException(
-				StringBundler.concat(
-					"Unable to find address with external reference code ",
-					externalReferenceCode, " and company ", companyId));
-		}
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setIncompleteModelWithSafeCloseable(
-					true)) {
-
-			return addressLocalService.addAddress(
+		return IncompleteModelManagerUtil.getOrAddIncompleteModel(
+			Address.class, companyId, externalReferenceCode,
+			this::fetchAddressByExternalReferenceCode,
+			this::getAddressByExternalReferenceCode,
+			() -> addressLocalService.addAddress(
 				externalReferenceCode, userId, className, classPK, 0, 0, 0,
 				StringPool.BLANK, StringPool.BLANK, false, null, false,
 				StringPool.BLANK, null, null, null, null, null,
-				new ServiceContext());
-		}
+				new ServiceContext()));
 	}
 
 	@Override

@@ -14,9 +14,14 @@ import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.info.item.provider.InfoItemObjectVariationProvider;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -64,7 +69,8 @@ public class AnalyticsAttributesUtil {
 				"data-analytics-asset-title",
 				configJSONObject.getString("title"));
 			element.attr(
-				"data-analytics-asset-type", FileEntry.class.getName());
+				"data-analytics-asset-type",
+				_getAnalyticsAssetType(FileEntry.class.getName()));
 
 			return;
 		}
@@ -92,7 +98,8 @@ public class AnalyticsAttributesUtil {
 					"data-analytics-asset-title",
 					jsonObject.getString("title"));
 				element.attr(
-					"data-analytics-asset-type", FileEntry.class.getName());
+					"data-analytics-asset-type",
+					_getAnalyticsAssetType(FileEntry.class.getName()));
 			}
 
 			return;
@@ -107,6 +114,11 @@ public class AnalyticsAttributesUtil {
 
 		element.attr("data-analytics-asset-action", ACTION_IMPRESSION);
 		element.attr(
+			"data-analytics-asset-external-reference-code",
+			_getAnalyticsExternalReferenceCode(
+				infoDisplaysFieldValues, infoItemFieldMapped,
+				fragmentEntryProcessorContext.getLocale()));
+		element.attr(
 			"data-analytics-asset-field", infoItemFieldMapped.getFieldName());
 
 		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
@@ -115,6 +127,15 @@ public class AnalyticsAttributesUtil {
 		element.attr(
 			"data-analytics-asset-id",
 			String.valueOf(classPKInfoItemIdentifier.getClassPK()));
+
+		Object object = infoItemFieldMapped.getObject();
+
+		if (object instanceof ObjectEntry) {
+			element.attr(
+				"data-analytics-object-definition-name",
+				_getAnalyticsObjectDefinitionName(
+					infoItemServiceRegistry, (ObjectEntry)object));
+		}
 
 		element.attr(
 			"data-analytics-asset-subtype",
@@ -125,7 +146,70 @@ public class AnalyticsAttributesUtil {
 				infoDisplaysFieldValues, infoItemFieldMapped,
 				fragmentEntryProcessorContext.getLocale()));
 		element.attr(
-			"data-analytics-asset-type", infoItemFieldMapped.getClassName());
+			"data-analytics-asset-type",
+			_getAnalyticsAssetType(infoItemFieldMapped.getClassName()));
+	}
+
+	private static String _getAnalyticsAssetType(String className) {
+		if (className.startsWith(ObjectDefinition.class.getName())) {
+			return "object-entry";
+		}
+
+		return className;
+	}
+
+	private static String _getAnalyticsExternalReferenceCode(
+		Map<InfoItemReference, InfoItemFieldValues> infoDisplaysFieldValues,
+		InfoItemFieldMapped infoItemFieldMapped, Locale locale) {
+
+		InfoItemFieldValues infoItemFieldValues = infoDisplaysFieldValues.get(
+			infoItemFieldMapped.getInfoItemReference());
+
+		if (infoItemFieldValues == null) {
+			return StringPool.BLANK;
+		}
+
+		InfoFieldValue<?> infoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("externalReferenceCode");
+
+		if (infoFieldValue == null) {
+			return StringPool.BLANK;
+		}
+
+		return String.valueOf(infoFieldValue.getValue(locale));
+	}
+
+	private static String _getAnalyticsObjectDefinitionName(
+		InfoItemServiceRegistry infoItemServiceRegistry,
+		ObjectEntry objectEntry) {
+
+		try {
+			InfoItemObjectProvider<ObjectDefinition> infoItemObjectProvider =
+				infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemObjectProvider.class,
+					ObjectDefinition.class.getName());
+
+			if (infoItemObjectProvider == null) {
+				return StringPool.BLANK;
+			}
+
+			Object infoItem = infoItemObjectProvider.getInfoItem(
+				new ClassPKInfoItemIdentifier(
+					objectEntry.getObjectDefinitionId()));
+
+			if (infoItem == null) {
+				return StringPool.BLANK;
+			}
+
+			ObjectDefinition objectDefinition = (ObjectDefinition)infoItem;
+
+			return objectDefinition.getName();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private static String _getAnalyticsSubtype(
@@ -171,5 +255,8 @@ public class AnalyticsAttributesUtil {
 
 		return StringUtil.equals(tag.getName(), "img");
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AnalyticsAttributesUtil.class);
 
 }

@@ -9,20 +9,20 @@ import {EditableValue} from '../../types/editables/EditableValue';
 import {config} from '../config/index';
 
 export function getEditableLocalizedValue(
-	editableValue: EditableValue,
+	editableValue: EditableValue | undefined,
 	languageId: Liferay.Language.Locale | null = null,
-	defaultValue = ''
+	defaultValue: string = ''
 ) {
 	let content;
 
 	if (languageId && !isNullOrUndefined(editableValue?.[languageId])) {
-		content = editableValue[languageId];
+		content = editableValue?.[languageId];
 	}
 	else if (!isNullOrUndefined(editableValue?.[config.defaultLanguageId])) {
-		content = editableValue[config.defaultLanguageId];
+		content = editableValue?.[config.defaultLanguageId];
 	}
 	else if (!isNullOrUndefined(editableValue?.defaultValue)) {
-		content = editableValue.defaultValue;
+		content = editableValue?.defaultValue;
 	}
 	else if (typeof editableValue === typeof defaultValue) {
 		content = editableValue;

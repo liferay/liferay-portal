@@ -1,0 +1,17 @@
+@import 'atlas-variables';
+
+.space-members-input-with-select {
+	select.form-control {
+		background-color: white;
+		border-bottom-left-radius: 8px;
+		border-color: #9393a4;
+		border-top-left-radius: 8px;
+		color: #6b6c7e;
+		z-index: 10;
+	}
+
+	input.form-control {
+		border-bottom-right-radius: 8px;
+		border-top-right-radius: 8px;
+	}
+}

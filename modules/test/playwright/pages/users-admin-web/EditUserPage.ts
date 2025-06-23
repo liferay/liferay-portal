@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
+import {DataTablePage} from '../account-admin-web/DataTablePage';
 import {searchTableRowByValue} from './UsersAndOrganizationsPage';
 
 export class EditUserPage {
@@ -34,6 +35,7 @@ export class EditUserPage {
 	readonly membershipsAccountsTable: Locator;
 	readonly membershipsLink: Locator;
 	readonly membershipsNoAccountsMessage: Locator;
+	readonly membershipsNoUserGroupsMessage: Locator;
 	readonly membershipsUserGroupsTableRow: (
 		colPosition: number,
 		value: string,
@@ -93,6 +95,9 @@ export class EditUserPage {
 	) => Promise<{column: Locator; row: Locator}>;
 	readonly selectSitesTableRowButton: (siteName: string) => Promise<Locator>;
 	readonly selectTagsButton: Locator;
+	readonly selectUserGroupIFrame: FrameLocator;
+	readonly selectUserGroupTable: DataTablePage;
+	readonly selectUserGroupsButton: Locator;
 	readonly selectUserLanguage: Locator;
 	readonly tagCheckbox: (tagName: string) => Locator;
 	readonly tagInput: (name: string) => Locator;
@@ -182,6 +187,9 @@ export class EditUserPage {
 		);
 		this.membershipsNoAccountsMessage = page.getByText(
 			'This user does not belong to any accounts.'
+		);
+		this.membershipsNoUserGroupsMessage = page.getByText(
+			'This user does not belong to a user group.'
 		);
 		this.membershipsUserGroupsTableRow = async (
 			colPosition: number,
@@ -360,6 +368,16 @@ export class EditUserPage {
 		this.selectTagsButton = page
 			.getByLabel('Select Tags')
 			.and(page.getByRole('button'));
+		this.selectUserGroupIFrame = page.frameLocator(
+			'iframe[title="Select User Group"]'
+		);
+		this.selectUserGroupTable = new DataTablePage(
+			this.selectUserGroupIFrame,
+			this.selectUserGroupIFrame.locator(
+				'#_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_entriesSearchContainer'
+			)
+		);
+		this.selectUserGroupsButton = page.getByLabel('Select User Groups');
 		this.selectUserLanguage = page.getByLabel('Language');
 		this.tagCheckbox = (tagName) => this.tagsFrame.getByLabel(tagName);
 		this.tagInput = (name) => page.getByRole('row', {name});

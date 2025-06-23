@@ -22,7 +22,7 @@ public class TicketAttachment {
 
 	public TicketAttachment(JSONObject jsonObject) {
 		_accountKey = jsonObject.getString("accountKey");
-		_draftCommentBody = jsonObject.getString("draftCommentBody");
+		_draftCommentBody = jsonObject.optString("draftCommentBody");
 		_fileName = jsonObject.getString("fileName");
 		_fileSize = jsonObject.getString("fileSize");
 		_gcsBucketName = jsonObject.getString("gcsBucketName");

@@ -103,16 +103,28 @@ public abstract class BaseContentTemplateResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null,
 			new ServiceContext() {
 				{
-					setCompanyId(testGroup.getCompanyId());
+					setCompanyId(testCompany.getCompanyId());
 					setUserId(TestPropsValues.getUserId());
 				}
 			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
 
 		_contentTemplateResource.setContextCompany(testCompany);
 
@@ -654,7 +666,7 @@ public abstract class BaseContentTemplateResourceTestCase {
 			testGetAssetLibraryContentTemplatesPage_getIrrelevantAssetLibraryId()
 		throws Exception {
 
-		return null;
+		return irrelevantDepotEntry.getDepotEntryId();
 	}
 
 	@Test
@@ -664,18 +676,10 @@ public abstract class BaseContentTemplateResourceTestCase {
 
 		ContentTemplate getContentTemplate =
 			contentTemplateResource.getSiteContentTemplate(
-				testGetSiteContentTemplate_getSiteId(postContentTemplate),
-				postContentTemplate.getId());
+				postContentTemplate.getSiteId(), postContentTemplate.getId());
 
 		assertEquals(postContentTemplate, getContentTemplate);
 		assertValid(getContentTemplate);
-	}
-
-	protected Long testGetSiteContentTemplate_getSiteId(
-			ContentTemplate contentTemplate)
-		throws Exception {
-
-		return contentTemplate.getSiteId();
 	}
 
 	protected ContentTemplate testGetSiteContentTemplate_addContentTemplate()
@@ -704,10 +708,8 @@ public abstract class BaseContentTemplateResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteContentTemplate_getSiteId(
-													contentTemplate) + "\"");
-
+											"\"" + contentTemplate.getSiteId() +
+												"\"");
 										put(
 											"contentTemplateId",
 											"\"" + contentTemplate.getId() +
@@ -734,10 +736,8 @@ public abstract class BaseContentTemplateResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteContentTemplate_getSiteId(
-														contentTemplate) +
-															"\"");
-
+													contentTemplate.
+														getSiteId() + "\"");
 											put(
 												"contentTemplateId",
 												"\"" + contentTemplate.getId() +
@@ -747,13 +747,6 @@ public abstract class BaseContentTemplateResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/contentTemplate"))));
-	}
-
-	protected Long testGraphQLGetSiteContentTemplate_getSiteId(
-			ContentTemplate contentTemplate)
-		throws Exception {
-
-		return contentTemplate.getSiteId();
 	}
 
 	@Test
@@ -1331,6 +1324,11 @@ public abstract class BaseContentTemplateResourceTestCase {
 		return testGraphQLContentTemplate_addContentTemplate();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
@@ -1430,10 +1428,9 @@ public abstract class BaseContentTemplateResourceTestCase {
 			valid = false;
 		}
 
-		com.liferay.portal.kernel.model.Group group = testDepotEntry.getGroup();
-
 		if (!Objects.equals(
-				contentTemplate.getAssetLibraryKey(), group.getGroupKey()) &&
+				contentTemplate.getAssetLibraryKey(),
+				testDepotEntryGroup.getGroupKey()) &&
 			!Objects.equals(
 				contentTemplate.getSiteId(), testGroup.getGroupId())) {
 
@@ -2365,7 +2362,10 @@ public abstract class BaseContentTemplateResourceTestCase {
 	protected ContentTemplateResource contentTemplateResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
 	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {

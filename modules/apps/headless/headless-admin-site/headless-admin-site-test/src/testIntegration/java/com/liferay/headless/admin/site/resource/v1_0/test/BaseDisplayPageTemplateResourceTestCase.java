@@ -200,13 +200,52 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	public void testDeleteSiteSiteByExternalReferenceCodeDisplayPageTemplate()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DisplayPageTemplate displayPageTemplate =
+			testDeleteSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate();
+
+		assertHttpResponseStatusCode(
+			204,
+			displayPageTemplateResource.
+				deleteSiteSiteByExternalReferenceCodeDisplayPageTemplateHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode(),
+					displayPageTemplate.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			displayPageTemplateResource.
+				getSiteSiteByExternalReferenceCodeDisplayPageTemplateHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode(),
+					displayPageTemplate.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			displayPageTemplateResource.
+				getSiteSiteByExternalReferenceCodeDisplayPageTemplateHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode(),
+					"-"));
+	}
+
+	protected DisplayPageTemplate
+			testDeleteSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testDeleteSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGetSiteDisplayPageTemplatePermissionsPage()
 		throws Exception {
 
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DisplayPageTemplate postDisplayPageTemplate =
 			testGetSiteDisplayPageTemplatePermissionsPage_addDisplayPageTemplate();
 
@@ -232,21 +271,175 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	public void testGetSiteSiteByExternalReferenceCodeDisplayPageTemplate()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		DisplayPageTemplate postDisplayPageTemplate =
+			testGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate();
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.
+				getSiteSiteByExternalReferenceCodeDisplayPageTemplate(
+					testGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode(),
+					postDisplayPageTemplate.getExternalReferenceCode());
+
+		assertEquals(postDisplayPageTemplate, getDisplayPageTemplate);
+		assertValid(getDisplayPageTemplate);
+	}
+
+	protected DisplayPageTemplate
+			testGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLGetSiteSiteByExternalReferenceCodeDisplayPageTemplate()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		DisplayPageTemplate displayPageTemplate =
+			testGraphQLGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				displayPageTemplate,
+				DisplayPageTemplateSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"siteByExternalReferenceCodeDisplayPageTemplate",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"siteExternalReferenceCode",
+											"\"" +
+												testGraphQLGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode() +
+													"\"");
+										put(
+											"displayPageTemplateExternalReferenceCode",
+											"\"" +
+												displayPageTemplate.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/siteByExternalReferenceCodeDisplayPageTemplate"))));
+
+		// Using the namespace headlessAdminSite_v1_0
+
+		Assert.assertTrue(
+			equals(
+				displayPageTemplate,
+				DisplayPageTemplateSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"headlessAdminSite_v1_0",
+								new GraphQLField(
+									"siteByExternalReferenceCodeDisplayPageTemplate",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"siteExternalReferenceCode",
+												"\"" +
+													testGraphQLGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode() +
+														"\"");
+											put(
+												"displayPageTemplateExternalReferenceCode",
+												"\"" +
+													displayPageTemplate.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data", "JSONObject/headlessAdminSite_v1_0",
+						"Object/siteByExternalReferenceCodeDisplayPageTemplate"))));
+	}
+
+	protected String
+			testGraphQLGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLGetSiteSiteByExternalReferenceCodeDisplayPageTemplateNotFound()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		String irrelevantDisplayPageTemplateExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"siteByExternalReferenceCodeDisplayPageTemplate",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteExternalReferenceCode",
+									"\"" +
+										irrelevantGroup.
+											getExternalReferenceCode() + "\"");
+								put(
+									"displayPageTemplateExternalReferenceCode",
+									irrelevantDisplayPageTemplateExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace headlessAdminSite_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"headlessAdminSite_v1_0",
+						new GraphQLField(
+							"siteByExternalReferenceCodeDisplayPageTemplate",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"siteExternalReferenceCode",
+										"\"" +
+											irrelevantGroup.
+												getExternalReferenceCode() +
+													"\"");
+									put(
+										"displayPageTemplateExternalReferenceCode",
+										irrelevantDisplayPageTemplateExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected DisplayPageTemplate
+			testGraphQLGetSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		return testGraphQLDisplayPageTemplate_addDisplayPageTemplate();
 	}
 
 	@Test
@@ -356,15 +549,14 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			testGetSiteSiteByExternalReferenceCodeDisplayPageTemplateFolderDisplayPageTemplatesPage_getSiteExternalReferenceCode()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGroup.getExternalReferenceCode();
 	}
 
 	protected String
 			testGetSiteSiteByExternalReferenceCodeDisplayPageTemplateFolderDisplayPageTemplatesPage_getIrrelevantSiteExternalReferenceCode()
 		throws Exception {
 
-		return null;
+		return irrelevantGroup.getExternalReferenceCode();
 	}
 
 	protected String
@@ -860,22 +1052,54 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			testGetSiteSiteByExternalReferenceCodeDisplayPageTemplatesPage_getSiteExternalReferenceCode()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGroup.getExternalReferenceCode();
 	}
 
 	protected String
 			testGetSiteSiteByExternalReferenceCodeDisplayPageTemplatesPage_getIrrelevantSiteExternalReferenceCode()
 		throws Exception {
 
-		return null;
+		return irrelevantGroup.getExternalReferenceCode();
 	}
 
 	@Test
 	public void testPatchSiteSiteByExternalReferenceCodeDisplayPageTemplate()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		DisplayPageTemplate postDisplayPageTemplate =
+			testPatchSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate();
+
+		DisplayPageTemplate randomPatchDisplayPageTemplate =
+			randomPatchDisplayPageTemplate();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DisplayPageTemplate patchDisplayPageTemplate =
+			displayPageTemplateResource.
+				patchSiteSiteByExternalReferenceCodeDisplayPageTemplate(
+					null, postDisplayPageTemplate.getExternalReferenceCode(),
+					randomPatchDisplayPageTemplate);
+
+		DisplayPageTemplate expectedPatchDisplayPageTemplate =
+			postDisplayPageTemplate.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchDisplayPageTemplate, expectedPatchDisplayPageTemplate);
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.
+				getSiteSiteByExternalReferenceCodeDisplayPageTemplate(
+					null, patchDisplayPageTemplate.getExternalReferenceCode());
+
+		assertEquals(expectedPatchDisplayPageTemplate, getDisplayPageTemplate);
+		assertValid(getDisplayPageTemplate);
+	}
+
+	protected DisplayPageTemplate
+			testPatchSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -942,7 +1166,7 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			200,
 			displayPageTemplateResource.
 				putSiteDisplayPageTemplatePermissionsPageHttpResponse(
-					null, null,
+					testGroup.getExternalReferenceCode(), null,
 					new Permission[] {
 						new Permission() {
 							{
@@ -956,7 +1180,7 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			404,
 			displayPageTemplateResource.
 				putSiteDisplayPageTemplatePermissionsPageHttpResponse(
-					null, null,
+					testGroup.getExternalReferenceCode(), null,
 					new Permission[] {
 						new Permission() {
 							{
@@ -979,7 +1203,51 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	public void testPutSiteSiteByExternalReferenceCodeDisplayPageTemplate()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		DisplayPageTemplate postDisplayPageTemplate =
+			testPutSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate();
+
+		DisplayPageTemplate randomDisplayPageTemplate =
+			randomDisplayPageTemplate();
+
+		DisplayPageTemplate putDisplayPageTemplate =
+			displayPageTemplateResource.
+				putSiteSiteByExternalReferenceCodeDisplayPageTemplate(
+					testPutSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode(),
+					postDisplayPageTemplate.getExternalReferenceCode(),
+					randomDisplayPageTemplate);
+
+		assertEquals(randomDisplayPageTemplate, putDisplayPageTemplate);
+		assertValid(putDisplayPageTemplate);
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.
+				getSiteSiteByExternalReferenceCodeDisplayPageTemplate(
+					testPutSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode(),
+					putDisplayPageTemplate.getExternalReferenceCode());
+
+		assertEquals(randomDisplayPageTemplate, getDisplayPageTemplate);
+		assertValid(getDisplayPageTemplate);
+	}
+
+	protected DisplayPageTemplate
+			testPutSiteSiteByExternalReferenceCodeDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testPutSiteSiteByExternalReferenceCodeDisplayPageTemplate_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	@Rule
@@ -990,6 +1258,14 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 		throws Exception {
 
 		Assert.assertTrue(true);
+	}
+
+	protected DisplayPageTemplate
+			testGraphQLDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected void assertContains(

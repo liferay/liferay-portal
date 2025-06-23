@@ -1,12 +1,12 @@
 {
 	"dependencies": {
-		"@clayui/autocomplete": "3.138.0",
+		"@clayui/autocomplete": "3.139.1",
 		"@clayui/button": "3.136.0",
-		"@clayui/drop-down": "3.138.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/drop-down": "3.139.1",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/loading-indicator": "3.128.0",
-		"@clayui/shared": "3.137.0",
+		"@clayui/shared": "3.139.0",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/object-js-components-web": "*",
 		"data-engine-js-components-web": "*",
@@ -30,5 +30,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.68"
+	"version": "1.0.69"
 }

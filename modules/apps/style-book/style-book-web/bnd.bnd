@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Style Book Web
 Bundle-SymbolicName: com.liferay.style.book.web
-Bundle-Version: 2.0.125
+Bundle-Version: 2.0.126
 Web-ContextPath: /style-book-web

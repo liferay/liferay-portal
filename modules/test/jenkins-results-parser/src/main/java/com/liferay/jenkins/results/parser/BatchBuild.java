@@ -464,11 +464,11 @@ public class BatchBuild extends BaseParentBuild {
 	protected int getTestCountByStatus(String status) {
 		JSONObject testReportJSONObject = getTestReportJSONObject(false);
 
-		int failCount = testReportJSONObject.getInt("failCount");
+		int failCount = testReportJSONObject.optInt("failCount");
 
 		if (status.equals("SUCCESS")) {
-			int totalCount = testReportJSONObject.getInt("totalCount");
-			int skipCount = testReportJSONObject.getInt("skipCount");
+			int totalCount = testReportJSONObject.optInt("totalCount");
+			int skipCount = testReportJSONObject.optInt("skipCount");
 
 			return totalCount - skipCount - failCount;
 		}

@@ -20,11 +20,6 @@ jest.mock(
 	})
 );
 
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	sub: jest.fn((langKey, arg) => langKey.replace('x', arg)),
-}));
-
 const getLabel = (viewport) => `reset-to-${viewport}-value`;
 
 describe('getResetLabelByViewport', () => {

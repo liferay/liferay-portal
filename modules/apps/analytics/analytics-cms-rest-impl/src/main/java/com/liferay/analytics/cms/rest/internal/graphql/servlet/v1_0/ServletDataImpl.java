@@ -7,7 +7,9 @@ package com.liferay.analytics.cms.rest.internal.graphql.servlet.v1_0;
 
 import com.liferay.analytics.cms.rest.internal.graphql.mutation.v1_0.Mutation;
 import com.liferay.analytics.cms.rest.internal.graphql.query.v1_0.Query;
+import com.liferay.analytics.cms.rest.internal.resource.v1_0.InventoryAnalysisResourceImpl;
 import com.liferay.analytics.cms.rest.internal.resource.v1_0.OverviewResourceImpl;
+import com.liferay.analytics.cms.rest.resource.v1_0.InventoryAnalysisResource;
 import com.liferay.analytics.cms.rest.resource.v1_0.OverviewResource;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.vulcan.graphql.servlet.ServletData;
@@ -34,6 +36,8 @@ public class ServletDataImpl implements ServletData {
 
 	@Activate
 	public void activate(BundleContext bundleContext) {
+		Query.setInventoryAnalysisResourceComponentServiceObjects(
+			_inventoryAnalysisResourceComponentServiceObjects);
 		Query.setOverviewResourceComponentServiceObjects(
 			_overviewResourceComponentServiceObjects);
 	}
@@ -73,6 +77,11 @@ public class ServletDataImpl implements ServletData {
 			new HashMap<String, ObjectValuePair<Class<?>, String>>() {
 				{
 					put(
+						"query#inventoryAnalysis",
+						new ObjectValuePair<>(
+							InventoryAnalysisResourceImpl.class,
+							"getInventoryAnalysis"));
+					put(
 						"query#contentOverview",
 						new ObjectValuePair<>(
 							OverviewResourceImpl.class, "getContentOverview"));
@@ -82,6 +91,10 @@ public class ServletDataImpl implements ServletData {
 							OverviewResourceImpl.class, "getFileOverview"));
 				}
 			};
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<InventoryAnalysisResource>
+		_inventoryAnalysisResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<OverviewResource>

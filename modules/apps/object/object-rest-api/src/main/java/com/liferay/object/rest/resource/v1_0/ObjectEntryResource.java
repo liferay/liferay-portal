@@ -150,6 +150,9 @@ public interface ObjectEntryResource {
 			Long objectEntryId, Integer version)
 		throws Exception;
 
+	public ObjectEntry postObjectEntryExpire(Long objectEntryId)
+		throws Exception;
+
 	public ObjectEntry postScopeScopeKey(
 			String scopeKey, ObjectEntry objectEntry)
 		throws Exception;

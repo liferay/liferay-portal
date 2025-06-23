@@ -614,7 +614,7 @@ components:
 info:
     description:
         "Liferay Commerce Admin Channel API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.admin.channel.client', and version '4.0.44'."
+        artifact ID 'com.liferay.headless.commerce.admin.channel.client', and version '4.0.45'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

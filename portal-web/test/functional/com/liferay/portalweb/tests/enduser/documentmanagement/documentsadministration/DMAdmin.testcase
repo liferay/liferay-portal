@@ -58,6 +58,8 @@ definition {
 	@description = "This is a test for LPS-91199. It checks that all files selected on different pages can be deleted."
 	@priority = 4
 	test CanDeleteAllDocumentsOnDifferentPagesAtOnce {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		for (var entryCount : list "1,2,3,4,5") {
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -80,6 +82,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanMoveDocumentsWithMultiplePaginations {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 

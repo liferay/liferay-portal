@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend Theme Dialect Style Guide Sample Web
 Bundle-SymbolicName: com.liferay.frontend.theme.dialect.style.guide.sample.web
-Bundle-Version: 2.0.76
+Bundle-Version: 2.0.77
 Web-ContextPath: /frontend-theme-dialect-style-guide-sample-web

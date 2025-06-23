@@ -19,10 +19,7 @@ import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.d
 import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.document.UpdateDocumentRequestExecutor;
 import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.document.UpdateDocumentRequestExecutorImpl;
 import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index.CreateIndexRequestExecutor;
-import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index.CreateIndexRequestExecutorImpl;
 import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index.DeleteIndexRequestExecutor;
-import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index.DeleteIndexRequestExecutorImpl;
-import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index.IndicesOptionsTranslatorImpl;
 import com.liferay.portal.search.engine.adapter.document.GetDocumentRequest;
 import com.liferay.portal.search.engine.adapter.document.GetDocumentResponse;
 import com.liferay.portal.search.engine.adapter.document.IndexDocumentRequest;
@@ -102,20 +99,11 @@ public class RequestExecutorFixture {
 	}
 
 	public void setUp() {
-		_createIndexRequestExecutor = new CreateIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			_createIndexRequestExecutor, "_elasticsearchClientResolver",
+		_createIndexRequestExecutor = new CreateIndexRequestExecutor(
 			_elasticsearchClientResolver);
 
-		_deleteIndexRequestExecutor = new DeleteIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			_deleteIndexRequestExecutor, "_elasticsearchClientResolver",
+		_deleteIndexRequestExecutor = new DeleteIndexRequestExecutor(
 			_elasticsearchClientResolver);
-		ReflectionTestUtil.setFieldValue(
-			_deleteIndexRequestExecutor, "_indicesOptionsTranslator",
-			new IndicesOptionsTranslatorImpl());
 
 		_getDocumentRequestExecutor = new GetDocumentRequestExecutorImpl();
 

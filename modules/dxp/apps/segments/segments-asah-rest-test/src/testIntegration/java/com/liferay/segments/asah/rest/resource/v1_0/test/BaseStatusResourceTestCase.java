@@ -180,6 +180,11 @@ public abstract class BaseStatusResourceTestCase {
 	}
 
 	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
+	@Test
 	public void testPostExperimentStatus() throws Exception {
 		Assert.assertTrue(true);
 	}

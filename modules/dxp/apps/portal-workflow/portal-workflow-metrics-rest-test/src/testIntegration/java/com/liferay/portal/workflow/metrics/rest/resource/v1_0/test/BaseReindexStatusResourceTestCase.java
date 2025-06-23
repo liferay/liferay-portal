@@ -220,6 +220,11 @@ public abstract class BaseReindexStatusResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		ReindexStatus reindexStatus, List<ReindexStatus> reindexStatuses) {
 

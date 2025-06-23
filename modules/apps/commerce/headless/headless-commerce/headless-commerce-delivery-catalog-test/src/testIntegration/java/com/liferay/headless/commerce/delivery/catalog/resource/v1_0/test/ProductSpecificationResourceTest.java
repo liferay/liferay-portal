@@ -147,15 +147,6 @@ public class ProductSpecificationResourceTest
 		return _cpDefinition.getCProductId();
 	}
 
-	@Override
-	protected ProductSpecification
-			testGraphQLProductSpecification_addProductSpecification()
-		throws Exception {
-
-		return _addCPDefinitionSpecificationOptionValue(
-			_cpDefinition.getCProductId(), randomProductSpecification());
-	}
-
 	private ProductSpecification _addCPDefinitionSpecificationOptionValue(
 			Long localProductId, ProductSpecification productSpecification)
 		throws Exception {

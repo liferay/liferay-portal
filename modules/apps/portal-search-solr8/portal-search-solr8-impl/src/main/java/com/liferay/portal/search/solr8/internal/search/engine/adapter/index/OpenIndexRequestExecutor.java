@@ -11,8 +11,10 @@ import com.liferay.portal.search.engine.adapter.index.OpenIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface OpenIndexRequestExecutor {
+public class OpenIndexRequestExecutor {
 
-	public OpenIndexResponse execute(OpenIndexRequest openIndexRequest);
+	public OpenIndexResponse execute(OpenIndexRequest openIndexRequest) {
+		throw new UnsupportedOperationException();
+	}
 
 }

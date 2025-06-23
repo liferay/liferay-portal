@@ -11,13 +11,13 @@ import OrderStatus from '../../../../components/OrderStatus';
 import Page from '../../../../components/Page';
 import {useMarketplaceContext} from '../../../../context/MarketplaceContext';
 import SearchBuilder from '../../../../core/SearchBuilder';
-import {MarketplaceProduct} from '../../../../entity/MarketplaceProduct';
 import {
+	ProductSpecificationKey,
+	ProductTypeLabels,
 	ProductTypeVocabulary,
 	ProductWorkflowStatusCode,
 } from '../../../../enums/Product';
 import i18n from '../../../../i18n';
-import HeadlessCommerceAdminCatalog from '../../../../services/rest/HeadlessCommerceAdminCatalog';
 import {formatDate} from '../../../../utils/date';
 import {usePublisherDashboardOutletContext} from '../../PublisherDashboardOutlet';
 
@@ -50,6 +50,15 @@ const Apps = () => {
 			title={i18n.translate('apps')}
 		>
 			<ListView<Product>
+				defaultFilters={{
+					filter: new SearchBuilder()
+						.eq('catalogId', (catalogId || 0) as number, {
+							unquote: true,
+						})
+						.and()
+						.lambda('categoryNames', ProductTypeVocabulary.APP)
+						.build(),
+				}}
 				emptyStateProps={{
 					className:
 						'border px-4 py-6 d-flex align-items-center flex-column justify-content-center',
@@ -59,28 +68,14 @@ const Apps = () => {
 					type: 'BLANK',
 				}}
 				id={`publisher-apps/${catalogId}`}
-				resource={function getPublisherProducts({page, pageSize}) {
-					return HeadlessCommerceAdminCatalog.getProducts(
-						new URLSearchParams({
-							'accountId': '-1',
-							'filter': new SearchBuilder()
-								.eq('catalogId', (catalogId || 0) as number, {
-									unquote: true,
-								})
-								.and()
-								.lambda(
-									'categoryNames',
-									ProductTypeVocabulary.APP
-								)
-								.build(),
-							'nestedFields': 'productSpecifications,skus',
-							'page': page.toString(),
-							'pageSize': pageSize.toString(),
-							'skus.accountId': '-1',
-							'sort': 'createDate:desc',
-						})
-					);
-				}}
+				resource={`/o/headless-commerce-admin-catalog/v1.0/products?${new URLSearchParams(
+					{
+						'accountId': '-1',
+						'nestedFields': 'productSpecifications,sku',
+						'skus.accountId': '-1',
+						'sort': 'createDate:desc',
+					}
+				)}`}
 				tableProps={{
 					actions: isNewAppEnabled
 						? [
@@ -132,16 +127,43 @@ const Apps = () => {
 							size: 'sm',
 						},
 						{
-							id: '__marketplaceProduct',
+							id: 'productSpecifications',
 							name: i18n.translate('version'),
-							render: (marketplaceProduct: MarketplaceProduct) =>
-								marketplaceProduct.appVersion || '',
+							render: (productSpecification) => {
+								const version = productSpecification.find(
+									(specification) =>
+										specification.specificationKey ===
+										ProductSpecificationKey.APP_VERSION
+								)?.value?.en_US;
+
+								return (
+									<div className="text-capitalize">
+										{version ? version : '1.0.0'}
+									</div>
+								);
+							},
 						},
 						{
-							id: '__marketplaceProduct',
+							id: 'productSpecifications',
 							name: i18n.translate('app-type'),
-							render: (marketplaceProduct: MarketplaceProduct) =>
-								marketplaceProduct.appType,
+							render: (productSpecifications) => {
+								const productType = productSpecifications.find(
+									({specificationKey}) =>
+										specificationKey ===
+										ProductSpecificationKey.APP_TYPE
+								)?.value?.en_US;
+
+								const label =
+									ProductTypeLabels[
+										productType as keyof typeof ProductTypeLabels
+									];
+
+								return (
+									<div className="text-capitalize">
+										{label}
+									</div>
+								);
+							},
 						},
 						{
 							id: 'modifiedDate',

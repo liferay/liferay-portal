@@ -50,7 +50,6 @@ import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEntryService;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
-import com.liferay.commerce.product.util.BatchEngineImportTaskThreadLocal;
 import com.liferay.commerce.service.CPDAvailabilityEstimateService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.commerce.shop.by.diagram.constants.CSDiagramCPTypeConstants;
@@ -106,15 +105,12 @@ import com.liferay.headless.commerce.core.util.ExpandoUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.headless.common.spi.odata.entity.EntityFieldsUtil;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -177,30 +173,12 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Override
-	public void create(
-			Collection<Product> products, Map<String, Serializable> parameters)
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				BatchEngineImportTaskThreadLocal.setEnabledWithSafeCloseable(
-					true)) {
-
-			super.create(products, parameters);
-		}
-	}
-
-	@Override
 	public void delete(
 			Collection<Product> products, Map<String, Serializable> parameters)
 		throws Exception {
 
-		try (SafeCloseable safeCloseable =
-				BatchEngineImportTaskThreadLocal.setEnabledWithSafeCloseable(
-					true)) {
-
-			for (Product product : products) {
-				deleteProduct(product.getProductId());
-			}
+		for (Product product : products) {
+			deleteProduct(product.getProductId());
 		}
 	}
 
@@ -493,13 +471,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			Collection<Product> products, Map<String, Serializable> parameters)
 		throws Exception {
 
-		try (SafeCloseable safeCloseable =
-				BatchEngineImportTaskThreadLocal.setEnabledWithSafeCloseable(
-					true)) {
-
-			for (Product product : products) {
-				patchProduct(product.getProductId(), product);
-			}
+		for (Product product : products) {
+			patchProduct(product.getProductId(), product);
 		}
 	}
 
@@ -1018,14 +991,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	}
 
 	private Product _toProduct(Long cpDefinitionId) throws Exception {
-		if (BatchEngineImportTaskThreadLocal.isEnabled()) {
-			return new Product() {
-				{
-					setId(() -> cpDefinitionId);
-				}
-			};
-		}
-
 		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
 			cpDefinitionId);
 
@@ -1508,14 +1473,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			else {
 				throw new CPDefinitionProductTypeNameException();
 			}
-		}
-
-		if (BatchEngineImportTaskThreadLocal.isEnabled()) {
-			Indexer<CPDefinition> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(CPDefinition.class);
-
-			indexer.reindex(
-				CPDefinition.class.getName(), cpDefinition.getCPDefinitionId());
 		}
 
 		return cpDefinition;

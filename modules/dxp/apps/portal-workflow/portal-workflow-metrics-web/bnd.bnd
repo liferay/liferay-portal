@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Workflow Metrics Web
 Bundle-SymbolicName: com.liferay.portal.workflow.metrics.web
-Bundle-Version: 3.0.99
+Bundle-Version: 3.0.100
 Web-ContextPath: /portal-workflow-metrics-web

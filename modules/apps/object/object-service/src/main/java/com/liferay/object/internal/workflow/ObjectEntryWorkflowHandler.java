@@ -17,6 +17,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -124,14 +125,16 @@ public class ObjectEntryWorkflowHandler
 			long companyId, long groupId, long classPK)
 		throws PortalException {
 
-		WorkflowDefinitionLink workflowDefinitionLink =
-			_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
-				companyId, groupId, ObjectEntryFolder.class.getName(),
-				_getObjectEntryFolderId(classPK),
-				ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL, true);
+		if (FeatureFlagManagerUtil.isEnabled("LPD-42553")) {
+			WorkflowDefinitionLink workflowDefinitionLink =
+				_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
+					companyId, groupId, ObjectEntryFolder.class.getName(),
+					_getObjectEntryFolderId(classPK),
+					ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL, true);
 
-		if (workflowDefinitionLink != null) {
-			return workflowDefinitionLink;
+			if (workflowDefinitionLink != null) {
+				return workflowDefinitionLink;
+			}
 		}
 
 		return super.getWorkflowDefinitionLink(companyId, groupId, classPK);

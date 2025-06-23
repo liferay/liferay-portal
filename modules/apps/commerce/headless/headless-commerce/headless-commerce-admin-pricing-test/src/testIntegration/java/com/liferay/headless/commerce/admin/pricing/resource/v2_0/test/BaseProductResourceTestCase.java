@@ -189,14 +189,14 @@ public abstract class BaseProductResourceTestCase {
 		assertValid(getProduct);
 	}
 
-	protected Long testGetDiscountProductProduct_getDiscountProductId()
+	protected Product testGetDiscountProductProduct_addProduct()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Product testGetDiscountProductProduct_addProduct()
+	protected Long testGetDiscountProductProduct_getDiscountProductId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -323,14 +323,14 @@ public abstract class BaseProductResourceTestCase {
 		assertValid(getProduct);
 	}
 
-	protected Long testGetPriceEntryIdProduct_getPriceEntryId()
-		throws Exception {
-
+	protected Product testGetPriceEntryIdProduct_addProduct() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Product testGetPriceEntryIdProduct_addProduct() throws Exception {
+	protected Long testGetPriceEntryIdProduct_getPriceEntryId()
+		throws Exception {
+
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -449,15 +449,15 @@ public abstract class BaseProductResourceTestCase {
 		assertValid(getProduct);
 	}
 
-	protected Long
-			testGetPriceModifierProductProduct_getPriceModifierProductId()
+	protected Product testGetPriceModifierProductProduct_addProduct()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Product testGetPriceModifierProductProduct_addProduct()
+	protected Long
+			testGetPriceModifierProductProduct_getPriceModifierProductId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

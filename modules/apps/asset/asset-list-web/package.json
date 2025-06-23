@@ -1,13 +1,13 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/drop-down": "3.138.0",
+		"@clayui/drop-down": "3.139.1",
 		"@clayui/empty-state": "3.128.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/link": "3.128.0",
-		"@clayui/list": "3.138.0",
-		"@clayui/tooltip": "3.137.0",
+		"@clayui/list": "3.139.1",
+		"@clayui/tooltip": "3.139.0",
 		"asset-taglib": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
@@ -30,5 +30,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "3.0.131"
+	"version": "3.0.132"
 }

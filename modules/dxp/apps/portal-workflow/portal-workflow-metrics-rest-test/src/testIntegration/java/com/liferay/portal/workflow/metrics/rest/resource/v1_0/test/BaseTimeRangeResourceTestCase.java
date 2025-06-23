@@ -283,6 +283,11 @@ public abstract class BaseTimeRangeResourceTestCase {
 		return testGraphQLTimeRange_addTimeRange();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected TimeRange testGraphQLTimeRange_addTimeRange() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");

@@ -14,6 +14,12 @@ import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalService;
+import com.liferay.asset.kernel.exception.NoSuchCategoryException;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
@@ -71,8 +77,10 @@ import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.Link;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.rest.dto.v1_0.Scope;
 import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.rest.dto.v1_0.SystemProperties;
+import com.liferay.object.rest.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.object.rest.dto.v1_0.Version;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
@@ -104,7 +112,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -161,6 +168,8 @@ import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.security.script.management.test.rule.ScriptManagementConfigurationTestRule;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -2113,11 +2122,11 @@ public class DefaultObjectEntryManagerImplTest
 			HashMapBuilder.<String, Object>put(
 				_objectRelationshipERCObjectFieldName, externalReferenceCode
 			).build(),
-			externalReferenceCode, _objectDefinition1, new HashMap<>());
+			0, externalReferenceCode, _objectDefinition1, new HashMap<>());
 
 		String requiredObjectFieldName = "a" + RandomTestUtil.randomString();
 
-		ObjectDefinition objectDefinition = _createObjectDefinition(
+		ObjectDefinition parentObjectDefinition = _createObjectDefinition(
 			Arrays.asList(
 				new TextObjectFieldBuilder(
 				).indexed(
@@ -2135,7 +2144,7 @@ public class DefaultObjectEntryManagerImplTest
 
 		_objectRelationshipLocalService.addObjectRelationship(
 			null, adminUser.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
+			parentObjectDefinition.getObjectDefinitionId(),
 			_objectDefinition1.getObjectDefinitionId(), 0,
 			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -2152,10 +2161,150 @@ public class DefaultObjectEntryManagerImplTest
 					"externalReferenceCode", externalReferenceCode
 				).build()
 			).build(),
-			externalReferenceCode, objectDefinition,
+			0, externalReferenceCode, parentObjectDefinition,
 			HashMapBuilder.<String, Object>put(
 				requiredObjectFieldName, RandomTestUtil.randomString()
 			).build());
+
+		ObjectField objectField = new TextObjectFieldBuilder(
+		).indexed(
+			true
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).name(
+			"a" + RandomTestUtil.randomString()
+		).required(
+			false
+		).build();
+
+		parentObjectDefinition = _createObjectDefinition(
+			Collections.singletonList(objectField),
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		ObjectDefinition childObjectDefinition = _createObjectDefinition(
+			Collections.singletonList(objectField),
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, adminUser.getUserId(),
+				parentObjectDefinition.getObjectDefinitionId(),
+				childObjectDefinition.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				"a" + RandomTestUtil.randomString(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+
+		String objectRelationshipERCObjectFieldName =
+			ObjectFieldSettingUtil.getValue(
+				ObjectFieldSettingConstants.
+					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
+				objectFieldLocalService.getObjectField(
+					objectRelationship.getObjectFieldId2()));
+
+		externalReferenceCode = RandomTestUtil.randomString();
+		Group group = GroupTestUtil.addGroup();
+
+		_testAddObjectEntryWithMissingParentObjectEntryReference(
+			childObjectDefinition,
+			HashMapBuilder.<String, Object>put(
+				objectRelationshipERCObjectFieldName, externalReferenceCode
+			).build(),
+			group.getGroupId(), externalReferenceCode, parentObjectDefinition,
+			Collections.emptyMap());
+	}
+
+	@FeatureFlag("LPD-47858")
+	@Test
+	public void testAddObjectEntryWithMissingTaxonomyCategoryBriefReference()
+		throws Exception {
+
+		// Lazy referencing disabled
+
+		String taxonomyCategoryExternalReferenceCode1 =
+			RandomTestUtil.randomString();
+		String taxonomyCategoryExternalReferenceCode2 =
+			RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = new ObjectEntry() {
+			{
+				setTaxonomyCategoryBriefs(
+					new TaxonomyCategoryBrief[] {
+						new TaxonomyCategoryBrief() {
+							{
+								scope = _getScope(_group);
+								taxonomyCategoryExternalReferenceCode =
+									taxonomyCategoryExternalReferenceCode1;
+							}
+						},
+						new TaxonomyCategoryBrief() {
+							{
+								scope = _getScope(_group);
+								taxonomyCategoryExternalReferenceCode =
+									taxonomyCategoryExternalReferenceCode2;
+							}
+						}
+					});
+			}
+		};
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.rest.internal.util.ServiceContextUtil",
+				LoggerTestUtil.ERROR)) {
+
+			_defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, _objectDefinition1, objectEntry,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertTrue(
+				exception.getCause() instanceof NoSuchCategoryException);
+		}
+
+		// Lazy referencing enabled
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			objectEntry = _defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, _objectDefinition1, objectEntry,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+			AssetCategory assetCategory1 =
+				_assetCategoryLocalService.
+					fetchAssetCategoryByExternalReferenceCode(
+						taxonomyCategoryExternalReferenceCode1,
+						_group.getGroupId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_INCOMPLETE,
+				assetCategory1.getStatus());
+
+			AssetCategory assetCategory2 =
+				_assetCategoryLocalService.
+					fetchAssetCategoryByExternalReferenceCode(
+						taxonomyCategoryExternalReferenceCode2,
+						_group.getGroupId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_INCOMPLETE,
+				assetCategory2.getStatus());
+
+			AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+				_objectDefinition1.getClassName(), objectEntry.getId());
+
+			Assert.assertArrayEquals(
+				ArrayUtil.sortedUnique(
+					new long[] {
+						assetCategory1.getCategoryId(),
+						assetCategory2.getCategoryId()
+					}),
+				ArrayUtil.sortedUnique(
+					_assetEntryAssetCategoryRelLocalService.
+						getAssetCategoryPrimaryKeys(assetEntry.getEntryId())));
+		}
 	}
 
 	@Test
@@ -2262,6 +2411,9 @@ public class DefaultObjectEntryManagerImplTest
 	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddObjectEntryWithScheduleDates() throws Exception {
+
+		// User non-UTC timezone
+
 		ObjectDefinition objectDefinition = _createObjectDefinition(
 			Collections.singletonList(
 				new TextObjectFieldBuilder(
@@ -2272,27 +2424,82 @@ public class DefaultObjectEntryManagerImplTest
 					"textObjectFieldName"
 				).build()));
 
-		Date date = new Date(
-			System.currentTimeMillis() + TimeUnit.DAY.toMillis(1));
+		LocalDateTime localDateTime = LocalDateTime.now(
+		).plusDays(
+			1
+		).truncatedTo(
+			ChronoUnit.MINUTES
+		);
 
-		ObjectEntry objectEntry = _defaultObjectEntryManager.addObjectEntry(
+		Timestamp timestamp = Timestamp.valueOf(localDateTime);
+
+		User user = UserTestUtil.addOmniadminUser();
+
+		user.setTimeZoneId("America/Sao_Paulo");
+
+		user = _userLocalService.updateUser(user);
+
+		ZonedDateTime zonedDateTime = localDateTime.atZone(
+			ZoneId.of(user.getTimeZoneId()));
+
+		Timestamp zonedTimestamp = Timestamp.from(zonedDateTime.toInstant());
+
+		ObjectEntry objectEntry2 = _defaultObjectEntryManager.addObjectEntry(
+			new DefaultDTOConverterContext(
+				false, Collections.emptyMap(), dtoConverterRegistry, null,
+				LocaleUtil.getDefault(), null, user),
+			objectDefinition,
+			new ObjectEntry() {
+				{
+					setDisplayDate(zonedTimestamp);
+					setExpirationDate(zonedTimestamp);
+					setReviewDate(zonedTimestamp);
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		assertEquals(
+			objectEntry2,
+			new ObjectEntry() {
+				{
+					setDisplayDate(timestamp);
+					setExpirationDate(timestamp);
+					setReviewDate(timestamp);
+				}
+			});
+
+		Assert.assertNotEquals(
+			objectEntry2,
+			new ObjectEntry() {
+				{
+					setDisplayDate(zonedTimestamp);
+					setExpirationDate(zonedTimestamp);
+					setReviewDate(zonedTimestamp);
+				}
+			});
+
+		_userLocalService.deleteUser(user);
+
+		// User UTC Timezone
+
+		ObjectEntry objectEntry1 = _defaultObjectEntryManager.addObjectEntry(
 			_simpleDTOConverterContext, objectDefinition,
 			new ObjectEntry() {
 				{
-					setDisplayDate(date);
-					setExpirationDate(date);
+					setDisplayDate(timestamp);
+					setExpirationDate(timestamp);
 					setProperties(
 						HashMapBuilder.<String, Object>put(
 							"textObjectFieldName", RandomTestUtil.randomString()
 						).build());
-					setReviewDate(date);
+					setReviewDate(timestamp);
 				}
 			},
 			null);
 
-		Assert.assertEquals(date, objectEntry.getDisplayDate());
-		Assert.assertEquals(date, objectEntry.getExpirationDate());
-		Assert.assertEquals(date, objectEntry.getReviewDate());
+		Assert.assertEquals(timestamp, objectEntry1.getDisplayDate());
+		Assert.assertEquals(timestamp, objectEntry1.getExpirationDate());
+		Assert.assertEquals(timestamp, objectEntry1.getReviewDate());
 	}
 
 	@Test
@@ -3155,15 +3362,6 @@ public class DefaultObjectEntryManagerImplTest
 		objectEntry = _defaultObjectEntryManager.expireObjectEntryByVersion(
 			dtoConverterContext, objectEntryExternalReferenceCode,
 			_objectDefinition1, 2);
-
-		AssertUtils.assertEquals(
-			WorkflowConstants.STATUS_EXPIRED,
-			objectEntry.getStatus(
-			).getCode());
-
-		objectEntry = _defaultObjectEntryManager.getObjectEntry(
-			companyId, _simpleDTOConverterContext,
-			objectEntryExternalReferenceCode, _objectDefinition1, null);
 
 		AssertUtils.assertEquals(
 			WorkflowConstants.STATUS_EXPIRED,
@@ -4515,7 +4713,7 @@ public class DefaultObjectEntryManagerImplTest
 	@Test
 	public void testGetObjectEntryDocument() throws Exception {
 		_objectEntryLocalService.addObjectEntry(
-			adminUser.getUserId(), 0,
+			0, adminUser.getUserId(),
 			_objectDefinition1.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -5432,7 +5630,7 @@ public class DefaultObjectEntryManagerImplTest
 		AccountEntry accountEntry1 = _addAccountEntry();
 
 		_objectEntryLocalService.addObjectEntry(
-			adminUser.getUserId(), 0,
+			0, adminUser.getUserId(),
 			_objectDefinition3.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -5449,7 +5647,7 @@ public class DefaultObjectEntryManagerImplTest
 		AccountEntry accountEntry2 = _addAccountEntry();
 
 		_objectEntryLocalService.addObjectEntry(
-			adminUser.getUserId(), 0,
+			0, adminUser.getUserId(),
 			_objectDefinition3.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -6160,41 +6358,28 @@ public class DefaultObjectEntryManagerImplTest
 					"textObjectFieldName"
 				).build()));
 
+		Timestamp timestamp = Timestamp.valueOf(
+			LocalDateTime.now(
+			).plusDays(
+				1
+			).truncatedTo(
+				ChronoUnit.MINUTES
+			));
+
 		ObjectEntry objectEntry = _defaultObjectEntryManager.addObjectEntry(
 			_simpleDTOConverterContext, objectDefinition,
 			new ObjectEntry() {
 				{
-					setDisplayDate(new Date());
-					setExpirationDate(new Date());
+					setDisplayDate(timestamp);
+					setExpirationDate(timestamp);
 					setProperties(
 						HashMapBuilder.<String, Object>put(
 							"textObjectFieldName", RandomTestUtil.randomString()
 						).build());
-					setReviewDate(new Date());
+					setReviewDate(timestamp);
 				}
 			},
 			null);
-
-		Date date = new Date(
-			System.currentTimeMillis() + TimeUnit.DAY.toMillis(1));
-
-		objectEntry = _defaultObjectEntryManager.updateObjectEntry(
-			_simpleDTOConverterContext, objectDefinition, objectEntry.getId(),
-			new ObjectEntry() {
-				{
-					setDisplayDate(date);
-					setExpirationDate(date);
-					setProperties(
-						HashMapBuilder.<String, Object>put(
-							"textObjectFieldName", RandomTestUtil.randomString()
-						).build());
-					setReviewDate(date);
-				}
-			});
-
-		Assert.assertEquals(date, objectEntry.getDisplayDate());
-		Assert.assertEquals(date, objectEntry.getExpirationDate());
-		Assert.assertEquals(date, objectEntry.getReviewDate());
 
 		objectEntry = _defaultObjectEntryManager.updateObjectEntry(
 			_simpleDTOConverterContext, objectDefinition, objectEntry.getId(),
@@ -6591,14 +6776,24 @@ public class DefaultObjectEntryManagerImplTest
 			ObjectDefinition objectDefinition, Map<String, Object> values)
 		throws Exception {
 
-		return _defaultObjectEntryManager.addObjectEntry(
-			_simpleDTOConverterContext, objectDefinition,
+		return _addObjectEntry(
+			objectDefinition,
 			new ObjectEntry() {
 				{
 					properties = new HashMap<>(values);
 				}
 			},
 			ObjectDefinitionConstants.SCOPE_COMPANY);
+	}
+
+	private ObjectEntry _addObjectEntry(
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			String scopeKey)
+		throws Exception {
+
+		return _defaultObjectEntryManager.addObjectEntry(
+			_simpleDTOConverterContext, objectDefinition, objectEntry,
+			scopeKey);
 	}
 
 	private void _addObjectFieldSettingWithDefaultValue(
@@ -7173,6 +7368,22 @@ public class DefaultObjectEntryManagerImplTest
 			StringPool.BLANK, null, null, null);
 	}
 
+	private Scope _getScope(Group group) {
+		return new Scope() {
+			{
+				setExternalReferenceCode(group::getExternalReferenceCode);
+				setType(
+					() -> {
+						if (group.getType() == GroupConstants.TYPE_DEPOT) {
+							return Scope.Type.ASSET_LIBRARY;
+						}
+
+						return Scope.Type.SITE;
+					});
+			}
+		};
+	}
+
 	private Timestamp _getTimestamp(String dateString) throws Exception {
 		Date date = DateUtil.parseDate(
 			"yyyy-MM-dd", dateString, LocaleUtil.getSiteDefault());
@@ -7483,50 +7694,64 @@ public class DefaultObjectEntryManagerImplTest
 
 	private void _testAddObjectEntryWithMissingParentObjectEntryReference(
 			ObjectDefinition childObjectDefinition,
-			Map<String, Object> childValues, String parentExternalReferenceCode,
+			Map<String, Object> childValues, long groupId,
+			String parentExternalReferenceCode,
 			ObjectDefinition parentObjectDefinition,
 			Map<String, Object> parentValues)
 		throws Exception {
+
+		String scopeKey = String.valueOf(groupId);
 
 		AssertUtils.assertFailure(
 			NoSuchObjectEntryException.class,
 			String.format(
 				"No ObjectEntry exists with the key {externalReference" +
-					"Code=%s, groupId=0, companyId=%s}",
-				parentExternalReferenceCode,
+					"Code=%s, groupId=%s, companyId=%s}",
+				parentExternalReferenceCode, groupId,
 				parentObjectDefinition.getCompanyId()),
 			() -> _defaultObjectEntryManager.getObjectEntry(
-				TestPropsValues.getCompanyId(), _simpleDTOConverterContext,
-				parentExternalReferenceCode, parentObjectDefinition,
-				ObjectDefinitionConstants.SCOPE_COMPANY));
+				parentObjectDefinition.getCompanyId(),
+				_simpleDTOConverterContext, parentExternalReferenceCode,
+				parentObjectDefinition, scopeKey));
 
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
-			_addObjectEntry(childObjectDefinition, childValues);
+			_addObjectEntry(
+				childObjectDefinition,
+				new ObjectEntry() {
+					{
+						properties = new HashMap<>(childValues);
+						scopeId = groupId;
+					}
+				},
+				scopeKey);
 		}
 
 		ObjectEntry objectEntry = _defaultObjectEntryManager.getObjectEntry(
 			TestPropsValues.getCompanyId(), _simpleDTOConverterContext,
-			parentExternalReferenceCode, parentObjectDefinition,
-			ObjectDefinitionConstants.SCOPE_COMPANY);
+			parentExternalReferenceCode, parentObjectDefinition, scopeKey);
+
+		AssertUtils.assertEquals(groupId, objectEntry.getScopeId());
+
+		Status status = objectEntry.getStatus();
 
 		AssertUtils.assertEquals(
-			WorkflowConstants.STATUS_INCOMPLETE,
-			objectEntry.getStatus(
-			).getCode());
+			WorkflowConstants.STATUS_INCOMPLETE, status.getCode());
 
 		objectEntry = _defaultObjectEntryManager.updateObjectEntry(
-			TestPropsValues.getCompanyId(), _simpleDTOConverterContext,
+			parentObjectDefinition.getCompanyId(), _simpleDTOConverterContext,
 			parentExternalReferenceCode, parentObjectDefinition,
 			new ObjectEntry() {
 				{
 					properties = parentValues;
 				}
 			},
-			ObjectDefinitionConstants.SCOPE_COMPANY);
+			scopeKey);
 
-		Status status = objectEntry.getStatus();
+		AssertUtils.assertEquals(groupId, objectEntry.getScopeId());
+
+		status = objectEntry.getStatus();
 
 		AssertUtils.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, status.getCode());
@@ -7679,6 +7904,16 @@ public class DefaultObjectEntryManagerImplTest
 
 	@Inject
 	private AccountRoleLocalService _accountRoleLocalService;
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetEntryAssetCategoryRelLocalService
+		_assetEntryAssetCategoryRelLocalService;
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	private Role _buyerRole;
 

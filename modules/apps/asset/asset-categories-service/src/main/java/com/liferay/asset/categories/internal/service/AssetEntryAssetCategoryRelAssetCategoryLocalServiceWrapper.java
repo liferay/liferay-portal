@@ -5,6 +5,7 @@
 
 package com.liferay.asset.categories.internal.service;
 
+import com.liferay.asset.categories.internal.constants.AssetCategoriesDestinationNames;
 import com.liferay.asset.categories.internal.util.comparator.AssetEntryAssetCategoryRelAssetCategoryIdComparator;
 import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRel;
 import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalService;
@@ -16,10 +17,13 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
 import java.util.Collections;
@@ -47,10 +51,7 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 			deleteAssetEntryAssetCategoryRelByAssetCategoryId(
 				category.getCategoryId());
 
-		List<AssetEntry> assetEntries = _getAssetEntriesByAssetCategoryId(
-			category.getCategoryId());
-
-		_assetEntryLocalService.reindex(assetEntries);
+		_reindexAssetCategoryAssetEntries(category.getCategoryId());
 
 		return super.deleteCategory(category, skipRebuildTree);
 	}
@@ -111,10 +112,7 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 			categoryId);
 
 		if (!Objects.equals(category.getName(), name)) {
-			List<AssetEntry> assetEntries = _getAssetEntriesByAssetCategoryId(
-				category.getCategoryId());
-
-			_assetEntryLocalService.reindex(assetEntries);
+			_reindexAssetCategoryAssetEntries(category.getCategoryId());
 		}
 
 		return super.updateCategory(
@@ -168,6 +166,22 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 			});
 	}
 
+	private void _reindexAssetCategoryAssetEntries(long assetCategoryId) {
+		TransactionCommitCallbackUtil.registerCallback(
+			() -> {
+				Message message = new Message();
+
+				message.put("categoryId", assetCategoryId);
+
+				_messageBus.sendMessage(
+					AssetCategoriesDestinationNames.
+						ASSET_CATEGORY_ASSET_ENTRIES_REINDEX,
+					message);
+
+				return null;
+			});
+	}
+
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
@@ -180,5 +194,8 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private MessageBus _messageBus;
 
 }

@@ -34,6 +34,12 @@ public class BuildReportFactory {
 	}
 
 	public static DownstreamBuildReport newDownstreamBuildReport(
+		DownstreamBuild downstreamBuild) {
+
+		return new DefaultDownstreamBuildReport(downstreamBuild);
+	}
+
+	public static DownstreamBuildReport newDownstreamBuildReport(
 		String batchName, JSONObject buildReportJSONObject,
 		TopLevelBuildReport topLevelBuildReport) {
 

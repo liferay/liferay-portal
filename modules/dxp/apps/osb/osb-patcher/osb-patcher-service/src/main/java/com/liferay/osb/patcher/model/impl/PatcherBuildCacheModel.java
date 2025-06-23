@@ -84,8 +84,6 @@ public class PatcherBuildCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", hotfixId=");
-		sb.append(hotfixId);
 		sb.append(", patcherAccountId=");
 		sb.append(patcherAccountId);
 		sb.append(", patcherFixId=");
@@ -104,6 +102,8 @@ public class PatcherBuildCacheModel
 		sb.append(comments);
 		sb.append(", fileName=");
 		sb.append(fileName);
+		sb.append(", hotfixId=");
+		sb.append(hotfixId);
 		sb.append(", initialName=");
 		sb.append(initialName);
 		sb.append(", key=");
@@ -185,7 +185,6 @@ public class PatcherBuildCacheModel
 			patcherBuildImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		patcherBuildImpl.setHotfixId(hotfixId);
 		patcherBuildImpl.setPatcherAccountId(patcherAccountId);
 		patcherBuildImpl.setPatcherFixId(patcherFixId);
 		patcherBuildImpl.setPatcherProductVersionId(patcherProductVersionId);
@@ -214,6 +213,8 @@ public class PatcherBuildCacheModel
 		else {
 			patcherBuildImpl.setFileName(fileName);
 		}
+
+		patcherBuildImpl.setHotfixId(hotfixId);
 
 		if (initialName == null) {
 			patcherBuildImpl.setInitialName("");
@@ -323,8 +324,6 @@ public class PatcherBuildCacheModel
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
-		hotfixId = objectInput.readLong();
-
 		patcherAccountId = objectInput.readLong();
 
 		patcherFixId = objectInput.readLong();
@@ -339,6 +338,8 @@ public class PatcherBuildCacheModel
 		childBuild = objectInput.readBoolean();
 		comments = (String)objectInput.readObject();
 		fileName = objectInput.readUTF();
+
+		hotfixId = objectInput.readLong();
 		initialName = objectInput.readUTF();
 		key = objectInput.readUTF();
 
@@ -354,7 +355,7 @@ public class PatcherBuildCacheModel
 		lesaTicket = objectInput.readUTF();
 
 		lesaTicketVersion = objectInput.readDouble();
-		name = (String)objectInput.readObject();
+		name = objectInput.readUTF();
 
 		notified = objectInput.readBoolean();
 
@@ -397,8 +398,6 @@ public class PatcherBuildCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		objectOutput.writeLong(hotfixId);
-
 		objectOutput.writeLong(patcherAccountId);
 
 		objectOutput.writeLong(patcherFixId);
@@ -431,6 +430,8 @@ public class PatcherBuildCacheModel
 		else {
 			objectOutput.writeUTF(fileName);
 		}
+
+		objectOutput.writeLong(hotfixId);
 
 		if (initialName == null) {
 			objectOutput.writeUTF("");
@@ -466,10 +467,10 @@ public class PatcherBuildCacheModel
 		objectOutput.writeDouble(lesaTicketVersion);
 
 		if (name == null) {
-			objectOutput.writeObject("");
+			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeObject(name);
+			objectOutput.writeUTF(name);
 		}
 
 		objectOutput.writeBoolean(notified);
@@ -531,7 +532,6 @@ public class PatcherBuildCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public long hotfixId;
 	public long patcherAccountId;
 	public long patcherFixId;
 	public long patcherProductVersionId;
@@ -541,6 +541,7 @@ public class PatcherBuildCacheModel
 	public boolean childBuild;
 	public String comments;
 	public String fileName;
+	public long hotfixId;
 	public String initialName;
 	public String key;
 	public double keyVersion;

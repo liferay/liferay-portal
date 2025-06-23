@@ -129,11 +129,6 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 		return _commerceChannel.getCommerceChannelId();
 	}
 
-	@Override
-	protected Currency testGraphQLCurrency_addCurrency() throws Exception {
-		return _addCurrency(_commerceChannel, randomCurrency());
-	}
-
 	private Currency _addCurrency(
 			CommerceChannel commerceChannel, Currency currency)
 		throws Exception {

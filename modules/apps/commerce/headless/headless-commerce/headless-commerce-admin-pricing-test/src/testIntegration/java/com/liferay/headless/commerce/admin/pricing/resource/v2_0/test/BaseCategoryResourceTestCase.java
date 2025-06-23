@@ -191,14 +191,14 @@ public abstract class BaseCategoryResourceTestCase {
 		assertValid(getCategory);
 	}
 
-	protected Long testGetDiscountCategoryCategory_getDiscountCategoryId()
+	protected Category testGetDiscountCategoryCategory_addCategory()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Category testGetDiscountCategoryCategory_addCategory()
+	protected Long testGetDiscountCategoryCategory_getDiscountCategoryId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -330,15 +330,15 @@ public abstract class BaseCategoryResourceTestCase {
 		assertValid(getCategory);
 	}
 
-	protected Long
-			testGetPriceModifierCategoryCategory_getPriceModifierCategoryId()
+	protected Category testGetPriceModifierCategoryCategory_addCategory()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Category testGetPriceModifierCategoryCategory_addCategory()
+	protected Long
+			testGetPriceModifierCategoryCategory_getPriceModifierCategoryId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

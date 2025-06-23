@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Friendly URL Service
 Bundle-SymbolicName: com.liferay.friendly.url.service
-Bundle-Version: 4.0.99
+Bundle-Version: 4.0.100
 Liferay-Require-SchemaVersion: 3.4.1
 Liferay-Service: true
 -dsannotations-options: inherit

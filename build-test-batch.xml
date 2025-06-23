@@ -8058,6 +8058,34 @@ ${output.content}</echo>
 		</run-batch-test>
 	</target>
 
+	<target name="playwright-js-smoke-tomcat101-db2115">
+		<run-playwright-js-test database.type="db2" />
+	</target>
+
+	<target name="playwright-js-smoke-tomcat101-hypersonic20">
+		<run-playwright-js-test database.type="hypersonic" />
+	</target>
+
+	<target name="playwright-js-smoke-tomcat101-mariadb106">
+		<run-playwright-js-test database.type="mariadb" />
+	</target>
+
+	<target name="playwright-js-smoke-tomcat101-mysql84">
+		<run-playwright-js-test database.type="mysql" />
+	</target>
+
+	<target name="playwright-js-smoke-tomcat101-oracle193">
+		<run-playwright-js-test database.type="oracle" />
+	</target>
+
+	<target name="playwright-js-smoke-tomcat101-postgresql163">
+		<run-playwright-js-test database.type="postgresql" />
+	</target>
+
+	<target name="playwright-js-smoke-tomcat101-sqlserver2022">
+		<run-playwright-js-test database.type="sqlserver" />
+	</target>
+
 	<target name="playwright-js-tomcat101-mysql57">
 		<run-playwright-js-test database.type="mysql" />
 	</target>

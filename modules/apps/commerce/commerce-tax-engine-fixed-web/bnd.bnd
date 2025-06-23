@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Tax Engine Fixed Web
 Bundle-SymbolicName: com.liferay.commerce.tax.engine.fixed.web
-Bundle-Version: 4.0.49
+Bundle-Version: 4.0.50
 Web-ContextPath: /commerce-tax-engine-fixed-web
 -dsannotations-options: inherit

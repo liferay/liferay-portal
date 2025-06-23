@@ -49,7 +49,7 @@ public class ObjectEntryFolderServiceImpl
 			parentObjectEntryFolderId, ActionKeys.ADD_FOLDER);
 
 		return objectEntryFolderLocalService.addObjectEntryFolder(
-			externalReferenceCode, getUserId(), groupId,
+			externalReferenceCode, groupId, getUserId(),
 			parentObjectEntryFolderId, description, labelMap, name,
 			serviceContext);
 	}

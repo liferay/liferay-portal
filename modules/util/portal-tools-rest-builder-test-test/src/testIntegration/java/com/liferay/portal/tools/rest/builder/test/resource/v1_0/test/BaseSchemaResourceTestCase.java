@@ -211,6 +211,11 @@ public abstract class BaseSchemaResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(Schema schema, List<Schema> schemas) {
 		boolean contains = false;
 

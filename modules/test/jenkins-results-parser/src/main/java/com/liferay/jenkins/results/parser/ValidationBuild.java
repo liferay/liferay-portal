@@ -186,6 +186,10 @@ public class ValidationBuild extends BaseBuild {
 
 		JSONObject testReportJSONObject = getTestReportJSONObject(false);
 
+		if (testReportJSONObject.isEmpty()) {
+			return new ArrayList<>();
+		}
+
 		return getTestResults(
 			this, testReportJSONObject.getJSONArray("suites"), testStatus);
 	}

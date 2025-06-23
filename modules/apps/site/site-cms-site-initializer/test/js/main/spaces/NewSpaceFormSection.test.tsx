@@ -17,8 +17,6 @@ describe('NewSpaceFormSection', () => {
 	const props: PropsWithChildren<NewSpaceFormSectionProps> = {
 		children: 'Test Children',
 		description: 'Test Description',
-		linkLabel: 'Learn more',
-		linkUrl: 'https://www.liferay.com',
 		onSubmit: jest.fn(),
 		step: 1,
 		title: 'Test Title',
@@ -27,9 +25,6 @@ describe('NewSpaceFormSection', () => {
 	it('renders with title, description, step, links, and children', () => {
 		render(<NewSpaceFormSection {...props} />);
 
-		expect(
-			screen.getByRole('img', {name: 'cms-product'})
-		).toBeInTheDocument();
 		expect(
 			screen.getByRole('heading', {name: props.title})
 		).toBeInTheDocument();

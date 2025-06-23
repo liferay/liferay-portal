@@ -299,6 +299,11 @@ public abstract class BaseOrderTransitionResourceTestCase {
 			orderTransition);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		OrderTransition orderTransition,
 		List<OrderTransition> orderTransitions) {

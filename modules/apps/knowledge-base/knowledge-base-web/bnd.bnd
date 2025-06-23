@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Knowledge Base Web
 Bundle-SymbolicName: com.liferay.knowledge.base.web
-Bundle-Version: 5.0.144
+Bundle-Version: 5.0.145
 Web-ContextPath: /knowledge-base-web
 -dsannotations-options: inherit

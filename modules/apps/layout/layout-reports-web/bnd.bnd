@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Reports Web
 Bundle-SymbolicName: com.liferay.layout.reports.web
-Bundle-Version: 1.0.94
+Bundle-Version: 1.0.95
 Web-ContextPath: /layout-reports-web

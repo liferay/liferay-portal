@@ -373,13 +373,6 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 	}
 
 	@Override
-	protected Country testGraphQLGetCountriesPage_addCountry()
-		throws Exception {
-
-		return _addCountry(randomCountry());
-	}
-
-	@Override
 	protected Country testGraphQLGetCountry_addCountry() throws Exception {
 		return _addCountry(randomCountry());
 	}

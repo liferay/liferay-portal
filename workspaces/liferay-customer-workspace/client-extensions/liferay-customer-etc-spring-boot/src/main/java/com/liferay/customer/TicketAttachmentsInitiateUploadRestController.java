@@ -6,6 +6,10 @@
 package com.liferay.customer;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
+import com.liferay.customer.exception.FileServerUnavailableException;
+import com.liferay.customer.exception.ZendeskOrganizationNotFoundException;
+import com.liferay.customer.exception.ZendeskTicketClosedException;
+import com.liferay.customer.exception.ZendeskTicketNotFoundException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.customer.service.GoogleCloudStorageService;
 import com.liferay.customer.service.TicketAttachmentService;
@@ -30,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 /**
  * @author Amos Fong
@@ -42,9 +48,8 @@ public class TicketAttachmentsInitiateUploadRestController
 
 	@PostMapping
 	public ResponseEntity<String> post(
-			@AuthenticationPrincipal Jwt jwt, @RequestBody String json,
-			@RequestHeader(name = HttpHeaders.ORIGIN) String origin)
-		throws Exception {
+		@AuthenticationPrincipal Jwt jwt, @RequestBody String json,
+		@RequestHeader(name = HttpHeaders.ORIGIN) String origin) {
 
 		try {
 			JSONObject jsonObject = new JSONObject(json);
@@ -65,11 +70,8 @@ public class TicketAttachmentsInitiateUploadRestController
 
 			if (ticketAttachment != null) {
 				if (ticketAttachment.isApproved()) {
-					return new ResponseEntity(
-						"Ticket attachment " +
-							ticketAttachment.getTicketAttachmentId() +
-								" already exists",
-						HttpStatus.CONFLICT);
+					return new ResponseEntity<>(
+						"ATTACHMENT_ALREADY_EXISTS", HttpStatus.CONFLICT);
 				}
 			}
 			else {
@@ -105,28 +107,79 @@ public class TicketAttachmentsInitiateUploadRestController
 			return new ResponseEntity<>(
 				responseJSONObject.toString(), HttpStatus.OK);
 		}
+		catch (FileServerUnavailableException fileServerUnavailableException) {
+			_log.error(
+				fileServerUnavailableException, fileServerUnavailableException);
+
+			return new ResponseEntity<>(
+				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (HttpClientErrorException.Forbidden httpClientErrorException) {
+			_log.error(httpClientErrorException, httpClientErrorException);
+
+			return new ResponseEntity<>(
+				"FORBIDDEN_ACCESS", HttpStatus.FORBIDDEN);
+		}
+		catch (ZendeskOrganizationNotFoundException
+					zendeskOrganizationNotFoundException) {
+
+			_log.error(
+				zendeskOrganizationNotFoundException,
+				zendeskOrganizationNotFoundException);
+
+			return new ResponseEntity<>(
+				"ZENDESK_ORGANIZATION_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		catch (ZendeskTicketClosedException zendeskTicketClosedException) {
+			_log.error(
+				zendeskTicketClosedException, zendeskTicketClosedException);
+
+			return new ResponseEntity<>(
+				"TICKET_IS_CLOSED", HttpStatus.BAD_REQUEST);
+		}
+		catch (ZendeskTicketNotFoundException zendeskTicketNotFoundException) {
+			_log.error(
+				zendeskTicketNotFoundException, zendeskTicketNotFoundException);
+
+			return new ResponseEntity<>(
+				"INVALID_TICKET_NUMBER", HttpStatus.NOT_FOUND);
+		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
 
-			return new ResponseEntity(
-				exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(
+				"UNEXPECTED_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	private String _getAccountKey(long zendeskTicketId) throws Exception {
-		ZendeskTicket zendeskTicket = _zendeskService.getZendeskTicket(
-			zendeskTicketId);
+		try {
+			ZendeskTicket zendeskTicket = _zendeskService.getZendeskTicket(
+				zendeskTicketId);
 
-		if (zendeskTicket.isClosed()) {
-			throw new Exception(
-				"Zendesk ticket " + zendeskTicketId + " is closed");
+			if (zendeskTicket == null) {
+				throw new ZendeskTicketNotFoundException();
+			}
+
+			if (zendeskTicket.isClosed()) {
+				throw new ZendeskTicketClosedException();
+			}
+
+			ZendeskOrganization zendeskOrganization =
+				_zendeskService.getZendeskOrganization(
+					zendeskTicket.getZendeskOrganizationId());
+
+			if (zendeskOrganization == null) {
+				throw new ZendeskOrganizationNotFoundException();
+			}
+
+			return zendeskOrganization.getAccountKey();
 		}
+		catch (WebClientResponseException.NotFound webClientResponseException) {
+			_log.error(webClientResponseException, webClientResponseException);
 
-		ZendeskOrganization zendeskOrganization =
-			_zendeskService.getZendeskOrganization(
-				zendeskTicket.getZendeskOrganizationId());
-
-		return zendeskOrganization.getAccountKey();
+			throw new ZendeskTicketNotFoundException();
+		}
 	}
 
 	private static final Log _log = LogFactory.getLog(

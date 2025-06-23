@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.WishListItem;
 import com.liferay.headless.commerce.delivery.catalog.client.http.HttpInvoker;
@@ -244,19 +245,19 @@ public abstract class BaseWishListItemResourceTestCase {
 				testDeleteWishListItem_getCurrencyCode()));
 	}
 
+	protected WishListItem testDeleteWishListItem_addWishListItem()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long testDeleteWishListItem_getAccountId() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
 	protected String testDeleteWishListItem_getCurrencyCode() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected WishListItem testDeleteWishListItem_addWishListItem()
-		throws Exception {
-
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -347,13 +348,14 @@ public abstract class BaseWishListItemResourceTestCase {
 			testDeleteWishListItemBatch_addWishListItem();
 
 		testDeleteWishListItemBatch_deleteWishListItem(
-			"COMPLETED", null, wishListItem1.getId());
+			202, null, wishListItem1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			wishListItemResource.getWishListItemHttpResponse(
-				wishListItem1.getId(), testDeleteWishListItem_getAccountId(),
-				testDeleteWishListItem_getCurrencyCode()));
+				wishListItem1.getId(),
+				testDeleteWishListItemBatch_getAccountId(),
+				testDeleteWishListItemBatch_getCurrencyCode()));
 	}
 
 	protected WishListItem testDeleteWishListItemBatch_addWishListItem()
@@ -363,7 +365,7 @@ public abstract class BaseWishListItemResourceTestCase {
 	}
 
 	protected void testDeleteWishListItemBatch_deleteWishListItem(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -376,11 +378,23 @@ public abstract class BaseWishListItemResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	protected Long testDeleteWishListItemBatch_getAccountId() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String testDeleteWishListItemBatch_getCurrencyCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -889,6 +903,77 @@ public abstract class BaseWishListItemResourceTestCase {
 
 	protected WishListItem testPostWishlistWishListWishListItem_addWishListItem(
 			WishListItem wishListItem)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WishListItem wishListItem1 =
+			testBatchEngineDeleteImportTask_addWishListItem();
+
+		testBatchEngineDeleteImportTask_deleteWishListItem(
+			200, null, wishListItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			wishListItemResource.getWishListItemHttpResponse(
+				wishListItem1.getId(),
+				testBatchEngineDeleteImportTask_getAccountId(),
+				testBatchEngineDeleteImportTask_getCurrencyCode()));
+	}
+
+	protected WishListItem testBatchEngineDeleteImportTask_addWishListItem()
+		throws Exception {
+
+		return testDeleteWishListItem_addWishListItem();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWishListItem(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.delivery.catalog.dto.v1_0.WishListItem",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
+	protected Long testBatchEngineDeleteImportTask_getAccountId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String testBatchEngineDeleteImportTask_getCurrencyCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

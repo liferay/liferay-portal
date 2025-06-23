@@ -63,7 +63,7 @@ public class ObjectEntryFolderModelListenerTest {
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.addObjectEntryFolder(
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
-				_group.getCreatorUserId(), _group.getGroupId(),
+				_group.getGroupId(), _group.getCreatorUserId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				"",

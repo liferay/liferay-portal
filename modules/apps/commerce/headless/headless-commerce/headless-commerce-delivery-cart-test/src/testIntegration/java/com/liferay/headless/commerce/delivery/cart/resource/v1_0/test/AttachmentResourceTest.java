@@ -165,15 +165,6 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	}
 
 	@Override
-	protected Attachment testGraphQLAttachment_addAttachment()
-		throws Exception {
-
-		return attachmentResource.postCartAttachmentByBase64(
-			_commerceOrder.getCommerceOrderId(),
-			_toAttachmentBase64(randomAttachment()));
-	}
-
-	@Override
 	protected Attachment testPostCartAttachmentByBase64_addAttachment(
 			Attachment attachment)
 		throws Exception {

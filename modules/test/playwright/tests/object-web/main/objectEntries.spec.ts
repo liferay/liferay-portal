@@ -35,11 +35,15 @@ import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {mockedObjectFields} from './dependencies/objectMockedFields';
-import {getFDSDateFormat, getPageEditorDateFormat} from './utils/dateFormat';
+import {
+	getFDSDateFormat,
+	getObjectEntryUIDateTimeFormat,
+	getPageEditorDateFormat,
+} from './utils/dateFormat';
 import evaluateKeepCheckingAfterFound from './utils/keepCheckingAfterFound';
 import {createObjectFields, mockObjectFields} from './utils/mockObjectFields';
 
-export const test = mergeTests(
+const test = mergeTests(
 	accountSettingsPagesTest,
 	applicationsMenuPageTest,
 	collectionsPagesTest,
@@ -57,6 +61,13 @@ export const test = mergeTests(
 	pageEditorPagesTest,
 	workflowPagesTest,
 	usersAndOrganizationsPagesTest
+);
+
+const scheduleTest = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-17564': {enabled: true},
+	})
 );
 
 let displayPageId: string;
@@ -1998,6 +2009,127 @@ test.describe('Manage object entries through Workflow', () => {
 					'input[placeholder="__/__/____ __:__ _"][value="10/05/2025 09:00 AM"]'
 				)
 			).toHaveValue('10/05/2025 09:00 AM');
+		}
+	);
+});
+
+scheduleTest.describe('Manage object entries schedule properties', () => {
+	scheduleTest(
+		'can create, read, update, and delete a reviewDate of an object entry',
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.neverReview.uncheck();
+
+			await viewObjectEntriesPage.scheduleForCurrentDate('Review');
+
+			await page.keyboard.press('Escape');
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			const date = new Date();
+
+			const today = getObjectEntryUIDateTimeFormat(date);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
+				today
+			);
+
+			date.setDate(date.getDate() + 1);
+
+			const tomorrow = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.reviewDateInput.fill(tomorrow);
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
+				tomorrow
+			);
+
+			await viewObjectEntriesPage.neverReview.check();
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue('');
+		}
+	);
+
+	scheduleTest(
+		'cannot submit an empty displayDate',
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.choosePublicationOption('schedule');
+
+			await viewObjectEntriesPage.schedulePublicationButton.click();
+
+			await expect(
+				page.getByText('This field is required')
+			).toBeVisible();
+		}
+	);
+
+	scheduleTest(
+		'cannot submit an empty reviewDate when neverReview is not checked',
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.neverReview.uncheck();
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await expect(
+				page.getByText('This field is required')
+			).toBeVisible();
 		}
 	);
 });

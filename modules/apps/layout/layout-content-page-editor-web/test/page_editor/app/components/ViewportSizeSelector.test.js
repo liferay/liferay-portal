@@ -37,7 +37,7 @@ describe('ViewportSizeSelector', () => {
 
 		expect(screen.getByTitle('select-a-viewport')).toBeInTheDocument();
 		expect(
-			screen.getByLabelText('select-a-viewport.-current-viewport-x')
+			screen.getByLabelText('select-a-viewport.-current-viewport-Desktop')
 		).toBeInTheDocument();
 	});
 

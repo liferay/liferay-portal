@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IItemActionsDataFilter, IItemsActions} from '../..';
 import {getLocalizedValue} from '../getLocalizedValue';
+import {IItemActionsDataFilter, IItemsActions} from '../types';
 
 const hasPermission = (action: IItemsActions, itemData: any): boolean => {
 	if (!action?.data?.permissionKey) {

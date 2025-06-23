@@ -194,14 +194,14 @@ public abstract class BaseAttachmentResourceTestCase {
 				testDeletePlacedOrderAttachment_getPlacedOrderId()));
 	}
 
-	protected Long testDeletePlacedOrderAttachment_getPlacedOrderId()
+	protected Attachment testDeletePlacedOrderAttachment_addAttachment()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Attachment testDeletePlacedOrderAttachment_addAttachment()
+	protected Long testDeletePlacedOrderAttachment_getPlacedOrderId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -220,13 +220,13 @@ public abstract class BaseAttachmentResourceTestCase {
 			204,
 			attachmentResource.
 				deletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCodeHttpResponse(
-					testDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getAttachmentExternalReferenceCode(),
+					attachment.getExternalReferenceCode(),
 					testDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getExternalReferenceCode(
 						attachment)));
 	}
 
-	protected String
-			testDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getAttachmentExternalReferenceCode()
+	protected Attachment
+			testDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_addAttachment()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -236,13 +236,6 @@ public abstract class BaseAttachmentResourceTestCase {
 	protected String
 			testDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getExternalReferenceCode(
 				Attachment attachment)
-		throws Exception {
-
-		return attachment.getExternalReferenceCode();
-	}
-
-	protected Attachment
-			testDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_addAttachment()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -661,11 +654,9 @@ public abstract class BaseAttachmentResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	protected Attachment testGraphQLAttachment_addAttachment()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(

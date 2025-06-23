@@ -18,7 +18,9 @@ import com.liferay.portal.search.engine.adapter.snapshot.GetSnapshotsResponse;
 import com.liferay.portal.search.engine.adapter.snapshot.RestoreSnapshotRequest;
 import com.liferay.portal.search.engine.adapter.snapshot.RestoreSnapshotResponse;
 import com.liferay.portal.search.engine.adapter.snapshot.SnapshotRequestExecutor;
+import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -76,24 +78,34 @@ public class OpenSearchSnapshotRequestExecutor
 		return restoreSnapshotRequestExecutor.execute(restoreSnapshotRequest);
 	}
 
-	@Reference
+	@Activate
+	protected void activate() {
+		createSnapshotRepositoryRequestExecutor =
+			new CreateSnapshotRepositoryRequestExecutor(
+				_openSearchConnectionManager);
+		createSnapshotRequestExecutor = new CreateSnapshotRequestExecutor(
+			_openSearchConnectionManager);
+		deleteSnapshotRequestExecutor = new DeleteSnapshotRequestExecutor(
+			_openSearchConnectionManager);
+		getSnapshotRepositoriesRequestExecutor =
+			new GetSnapshotRepositoriesRequestExecutor(
+				_openSearchConnectionManager);
+		getSnapshotsRequestExecutor = new GetSnapshotsRequestExecutor(
+			_openSearchConnectionManager);
+		restoreSnapshotRequestExecutor = new RestoreSnapshotRequestExecutor(
+			_openSearchConnectionManager);
+	}
+
 	protected CreateSnapshotRepositoryRequestExecutor
 		createSnapshotRepositoryRequestExecutor;
-
-	@Reference
 	protected CreateSnapshotRequestExecutor createSnapshotRequestExecutor;
-
-	@Reference
 	protected DeleteSnapshotRequestExecutor deleteSnapshotRequestExecutor;
-
-	@Reference
 	protected GetSnapshotRepositoriesRequestExecutor
 		getSnapshotRepositoriesRequestExecutor;
-
-	@Reference
 	protected GetSnapshotsRequestExecutor getSnapshotsRequestExecutor;
+	protected RestoreSnapshotRequestExecutor restoreSnapshotRequestExecutor;
 
 	@Reference
-	protected RestoreSnapshotRequestExecutor restoreSnapshotRequestExecutor;
+	private OpenSearchConnectionManager _openSearchConnectionManager;
 
 }

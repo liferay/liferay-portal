@@ -218,6 +218,11 @@ public abstract class BaseCalendarResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(Calendar calendar, List<Calendar> calendars) {
 		boolean contains = false;
 

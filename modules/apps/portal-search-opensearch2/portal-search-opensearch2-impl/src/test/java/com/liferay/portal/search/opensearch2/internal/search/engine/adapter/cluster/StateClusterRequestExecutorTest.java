@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.cluster;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.engine.adapter.cluster.StateClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.StateClusterResponse;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
@@ -34,15 +33,11 @@ public class StateClusterRequestExecutorTest extends BaseOpenSearchTestCase {
 		StateClusterRequest stateClusterRequest = new StateClusterRequest(
 			new String[] {TEST_INDEX_NAME});
 
-		StateClusterRequestExecutorImpl stateClusterRequestExecutorImpl =
-			new StateClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			stateClusterRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
+		StateClusterRequestExecutor stateClusterRequestExecutor =
+			new StateClusterRequestExecutor(openSearchConnectionManager);
 
 		StateClusterResponse stateClusterResponse =
-			stateClusterRequestExecutorImpl.execute(stateClusterRequest);
+			stateClusterRequestExecutor.execute(stateClusterRequest);
 
 		String message = stateClusterResponse.getStateMessage();
 

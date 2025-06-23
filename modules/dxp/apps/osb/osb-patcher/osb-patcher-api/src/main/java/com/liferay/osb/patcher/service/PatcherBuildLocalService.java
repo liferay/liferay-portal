@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -291,6 +292,14 @@ public interface PatcherBuildLocalService
 	public PatcherBuild getPatcherBuild(long patcherBuildId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuilds(
+		boolean latestSupportTicketBuild, String supportTicket);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuilds(
+		Date modifiedDate, boolean notified, int[] statuses);
+
 	/**
 	 * Returns a range of all the patcher builds.
 	 *
@@ -305,6 +314,44 @@ public interface PatcherBuildLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherBuild> getPatcherBuilds(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuilds(
+		long patcherFixId, boolean childBuild);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuilds(
+		long patcherAccountId, long patcherProductVersionId, int start, int end,
+		OrderByComparator<PatcherBuild> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuilds(
+		long patcherProjectVersionId, String name, boolean latestKeyBuild,
+		String accountEntryCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuilds(
+		String key, boolean latestKeyBuild);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuilds(
+		String key, int start, int end,
+		OrderByComparator<PatcherBuild> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuildsByKey(
+		String key, double keyVersion, boolean older);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuildsByPatcherFixId(long patcherFixId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuildsByPatcherProjectVersionId(
+		long patcherProjectVersionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherBuild> getPatcherBuildsBySupportTicket(
+		String supportTicket, double supportTicketVersion, boolean older);
+
 	/**
 	 * Returns the number of patcher builds.
 	 *
@@ -312,6 +359,15 @@ public interface PatcherBuildLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPatcherBuildsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPatcherBuildsCount(
+		long patcherFixId, long patcherProductVersionId, boolean childBuild,
+		int type);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPatcherBuildsCountByPatcherProjectVersionId(
+		long patcherProjectVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherBuild> getPatcherFixPatcherBuilds(long patcherFixId);
@@ -353,6 +409,9 @@ public interface PatcherBuildLocalService
 	public boolean hasPatcherAccountPatcherBuilds(long patcherAccountId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public boolean hasPatcherFixes(long patcherFixId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasPatcherFixPatcherBuild(
 		long patcherFixId, long patcherBuildId);
 
@@ -364,6 +423,16 @@ public interface PatcherBuildLocalService
 
 	public void setPatcherFixPatcherBuilds(
 		long patcherFixId, long[] patcherBuildIds);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updateNotified(long patcherBuildId, boolean notified)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updatePatcherBuild(
+			long patcherBuildId, boolean latestKeyBuild,
+			boolean latestSupportTicketBuild)
+		throws PortalException;
 
 	/**
 	 * Updates the patcher build in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

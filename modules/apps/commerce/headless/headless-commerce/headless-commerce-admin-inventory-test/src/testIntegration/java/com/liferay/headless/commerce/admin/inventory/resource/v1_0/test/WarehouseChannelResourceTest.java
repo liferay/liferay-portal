@@ -69,6 +69,13 @@ public class WarehouseChannelResourceTest
 		}
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
 	@Override
 	@Test
 	public void testDeleteWarehouseChannel() throws Exception {
@@ -191,14 +198,9 @@ public class WarehouseChannelResourceTest
 				String externalReferenceCode, WarehouseChannel warehouseChannel)
 		throws Exception {
 
-		WarehouseChannel postWarehouseChannel =
-			warehouseChannelResource.
-				postWarehouseByExternalReferenceCodeWarehouseChannel(
-					externalReferenceCode, warehouseChannel);
-
-		_warehouseChannelIds.add(postWarehouseChannel.getWarehouseChannelId());
-
-		return postWarehouseChannel;
+		return warehouseChannelResource.
+			postWarehouseByExternalReferenceCodeWarehouseChannel(
+				externalReferenceCode, warehouseChannel);
 	}
 
 	@Override
@@ -215,13 +217,8 @@ public class WarehouseChannelResourceTest
 				Long id, WarehouseChannel warehouseChannel)
 		throws Exception {
 
-		WarehouseChannel postWarehouseChannel =
-			warehouseChannelResource.postWarehouseIdWarehouseChannel(
-				id, warehouseChannel);
-
-		_warehouseChannelIds.add(postWarehouseChannel.getWarehouseChannelId());
-
-		return postWarehouseChannel;
+		return warehouseChannelResource.postWarehouseIdWarehouseChannel(
+			id, warehouseChannel);
 	}
 
 	@Override

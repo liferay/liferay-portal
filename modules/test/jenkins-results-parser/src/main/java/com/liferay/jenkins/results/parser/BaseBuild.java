@@ -402,6 +402,48 @@ public abstract class BaseBuild implements Build {
 	}
 
 	@Override
+	public JSONObject getBuildReportJSONObject() {
+		JSONObject buildReportJSONObject = new JSONObject();
+
+		buildReportJSONObject.put(
+			"buildURL", getBuildURL()
+		).put(
+			"duration", getDuration()
+		);
+
+		if (isFailing()) {
+			buildReportJSONObject.put("failureMessage", getFailureMessage());
+		}
+
+		buildReportJSONObject.put(
+			"result", getResult()
+		).put(
+			"startTime", getStartTime()
+		);
+
+		StopWatchRecordsGroup stopWatchRecordsGroup =
+			getStopWatchRecordsGroup();
+
+		if (stopWatchRecordsGroup != null) {
+			buildReportJSONObject.put(
+				"stopWatchRecords", stopWatchRecordsGroup.getJSONArray());
+		}
+
+		buildReportJSONObject.put(
+			"testrayAttachmentURLs", getTestrayAttachmentURLs());
+
+		JSONArray testResultsJSONArray = new JSONArray();
+
+		for (TestResult testResult : getTestResults(null)) {
+			testResultsJSONArray.put(testResult.getTestReportJSONObject());
+		}
+
+		buildReportJSONObject.put("testResults", testResultsJSONArray);
+
+		return buildReportJSONObject;
+	}
+
+	@Override
 	public String getBuildURL() {
 		return _buildURL;
 	}
@@ -1284,9 +1326,8 @@ public abstract class BaseBuild implements Build {
 				JenkinsResultsParserUtil.getLocalURL(getBuildURL() + urlSuffix),
 				checkCache, 5000);
 		}
-		catch (IOException ioException) {
-			throw new RuntimeException(
-				"Unable to get test report JSON object", ioException);
+		catch (Exception exception) {
+			return new JSONObject();
 		}
 	}
 
@@ -2831,7 +2872,7 @@ public abstract class BaseBuild implements Build {
 	protected int getTestCountByStatus(String status) {
 		JSONObject testReportJSONObject = getTestReportJSONObject(false);
 
-		if (testReportJSONObject == null) {
+		if ((testReportJSONObject == null) || testReportJSONObject.isEmpty()) {
 			return 0;
 		}
 

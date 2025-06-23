@@ -52,6 +52,7 @@ import com.liferay.object.exception.NoSuchObjectDefinitionException;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectEntryDefaultLanguageIdException;
+import com.liferay.object.exception.ObjectEntryExpirationDateException;
 import com.liferay.object.exception.ObjectEntryFolderScopeException;
 import com.liferay.object.exception.ObjectEntryStatusException;
 import com.liferay.object.exception.ObjectEntryValidationException;
@@ -312,7 +313,7 @@ public class ObjectEntryLocalServiceImpl
 
 	@Override
 	public ObjectEntry addObjectEntry(
-			long userId, long groupId, long objectDefinitionId,
+			long groupId, long userId, long objectDefinitionId,
 			long objectEntryFolderId, String defaultLanguageId,
 			Map<String, Serializable> values, ServiceContext serviceContext)
 		throws PortalException {
@@ -469,12 +470,12 @@ public class ObjectEntryLocalServiceImpl
 
 	@Override
 	public ObjectEntry addObjectEntry(
-			String externalReferenceCode, long userId,
+			String externalReferenceCode, long groupId, long userId,
 			ObjectDefinition objectDefinition, long objectEntryFolderId)
 		throws PortalException {
 
 		return _addObjectEntry(
-			externalReferenceCode, userId,
+			externalReferenceCode, groupId, userId,
 			objectDefinition.getObjectDefinitionId(), objectEntryFolderId,
 			WorkflowConstants.STATUS_DRAFT);
 	}
@@ -536,7 +537,7 @@ public class ObjectEntryLocalServiceImpl
 
 	@Override
 	public ObjectEntry addOrUpdateObjectEntry(
-			String externalReferenceCode, long userId, long groupId,
+			String externalReferenceCode, long groupId, long userId,
 			long objectDefinitionId, long objectEntryFolderId,
 			Map<String, Serializable> values, ServiceContext serviceContext)
 		throws PortalException {
@@ -565,7 +566,7 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		objectEntry = objectEntryLocalService.addObjectEntry(
-			userId, groupId, objectDefinitionId, objectEntryFolderId, null,
+			groupId, userId, objectDefinitionId, objectEntryFolderId, null,
 			values, serviceContext);
 
 		if (Validator.isNotNull(externalReferenceCode)) {
@@ -602,6 +603,8 @@ public class ObjectEntryLocalServiceImpl
 			companyId,
 			key -> new Date(
 				date.getTime() - _getObjectEntryCheckInterval(companyId)));
+
+		_checkObjectEntriesByExpirationDate(companyId, date);
 
 		_checkObjectEntriesByReviewDate(companyId, date);
 
@@ -804,21 +807,24 @@ public class ObjectEntryLocalServiceImpl
 
 	@Override
 	public ObjectEntry expireObjectEntry(
-			long userId, long objectEntryId, int version,
-			ServiceContext serviceContext)
+			long userId, long objectEntryId, ServiceContext serviceContext)
 		throws PortalException {
 
 		ObjectEntry objectEntry = objectEntryPersistence.findByPrimaryKey(
 			objectEntryId);
 
-		if (objectEntry.getVersion() == version) {
-			return updateStatus(
-				userId, objectEntry, WorkflowConstants.STATUS_EXPIRED,
-				serviceContext);
-		}
+		objectEntry = updateStatus(
+			userId, objectEntry, WorkflowConstants.STATUS_EXPIRED,
+			serviceContext);
 
-		_objectEntryVersionLocalService.expireObjectEntryVersion(
-			userId, objectEntryId, version);
+		List<ObjectEntryVersion> objectEntryVersions =
+			_objectEntryVersionLocalService.getObjectEntryVersions(
+				objectEntry.getObjectEntryId());
+
+		for (ObjectEntryVersion objectEntryVersion : objectEntryVersions) {
+			_objectEntryVersionLocalService.expireObjectEntryVersion(
+				userId, objectEntryVersion);
+		}
 
 		return objectEntry;
 	}
@@ -1244,7 +1250,8 @@ public class ObjectEntryLocalServiceImpl
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public ObjectEntry getOrAddIncompleteObjectEntry(
-			String externalReferenceCode, long userId, long objectDefinitionId)
+			String externalReferenceCode, long groupId, long userId,
+			long objectDefinitionId)
 		throws PortalException {
 
 		ObjectEntry objectEntry = fetchObjectEntry(
@@ -1267,7 +1274,7 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		objectEntry = _addObjectEntry(
-			externalReferenceCode, userId, objectDefinitionId,
+			externalReferenceCode, groupId, userId, objectDefinitionId,
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			WorkflowConstants.STATUS_INCOMPLETE);
 
@@ -2355,20 +2362,21 @@ public class ObjectEntryLocalServiceImpl
 			}
 
 			_putLocalizedValues(
-				objectFieldColumn.getName(), (Serializable)localizedValues,
-				values);
+				objectFieldColumn.getName(), objectEntry.getDefaultLanguageId(),
+				localizedValues, values);
 		}
 	}
 
 	private ObjectEntry _addObjectEntry(
-			String externalReferenceCode, long userId, long objectDefinitionId,
-			long objectEntryFolderId, int status)
+			String externalReferenceCode, long groupId, long userId,
+			long objectDefinitionId, long objectEntryFolderId, int status)
 		throws PortalException {
 
 		ObjectEntry objectEntry = objectEntryPersistence.create(
 			counterLocalService.increment());
 
 		objectEntry.setExternalReferenceCode(externalReferenceCode);
+		objectEntry.setGroupId(groupId);
 
 		User user = _userLocalService.getUser(userId);
 
@@ -2491,6 +2499,38 @@ public class ObjectEntryLocalServiceImpl
 					setStrictAdd(true);
 				}
 			});
+	}
+
+	private void _checkObjectEntriesByExpirationDate(long companyId, Date date)
+		throws PortalException {
+
+		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				ObjectEntryTable.INSTANCE
+			).from(
+				ObjectEntryTable.INSTANCE
+			).where(
+				ObjectEntryTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					ObjectEntryTable.INSTANCE.expirationDate.gte(
+						_companyIdPreviousCheckDate.get(companyId))
+				).and(
+					ObjectEntryTable.INSTANCE.expirationDate.lte(date)
+				).and(
+					ObjectEntryTable.INSTANCE.status.notIn(
+						new Integer[] {
+							WorkflowConstants.STATUS_DRAFT,
+							WorkflowConstants.STATUS_PENDING
+						})
+				)
+			));
+
+		for (ObjectEntry objectEntry : objectEntries) {
+			expireObjectEntry(
+				objectEntry.getUserId(), objectEntry.getObjectEntryId(),
+				new ServiceContext());
+		}
 	}
 
 	private void _checkObjectEntriesByReviewDate(long companyId, Date date)
@@ -4540,8 +4580,8 @@ public class ObjectEntryLocalServiceImpl
 								column.getName(), StringPool.UNDERLINE)));
 
 					_putLocalizedValues(
-						column.getName(), (Serializable)localizedValues,
-						insertedValues);
+						column.getName(), objectField.getDefaultLanguageId(),
+						localizedValues, insertedValues);
 				}
 
 				preparedStatement.addBatch();
@@ -4824,13 +4864,15 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private void _putLocalizedValues(
-		String columnName, Serializable localizedValues,
+		String columnName, String defaultLanguageId,
+		Map<String, Serializable> localizedValues,
 		Map<String, Serializable> values) {
 
-		values.put(columnName + "i18n", localizedValues);
+		values.put(columnName + "i18n", (Serializable)localizedValues);
 		values.putIfAbsent(
 			StringUtil.removeLast(columnName, StringPool.UNDERLINE),
-			StringPool.BLANK);
+			GetterUtil.get(
+				localizedValues.get(defaultLanguageId), StringPool.BLANK));
 	}
 
 	private void _putObjectFilterParser(
@@ -5201,11 +5243,19 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private void _setExpirationDate(
-		long companyId, ObjectEntry objectEntry,
-		Map<String, Serializable> values) {
+			long companyId, ObjectEntry objectEntry,
+			Map<String, Serializable> values)
+		throws PortalException {
 
 		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-			objectEntry.setExpirationDate((Date)values.get("expirationDate"));
+			Date expirationDate = (Date)values.get("expirationDate");
+
+			if ((expirationDate != null) && expirationDate.before(new Date())) {
+				throw new ObjectEntryExpirationDateException(
+					"Expiration date must be a future date");
+			}
+
+			objectEntry.setExpirationDate(expirationDate);
 		}
 	}
 
@@ -6034,6 +6084,10 @@ public class ObjectEntryLocalServiceImpl
 			String listTypeEntryKey, ObjectField objectField,
 			List<ValidationError> validationErrors)
 		throws PortalException {
+
+		if (Validator.isNull(listTypeEntryKey)) {
+			return;
+		}
 
 		try {
 			_listTypeEntryLocalService.getOrAddIncompleteListTypeEntry(

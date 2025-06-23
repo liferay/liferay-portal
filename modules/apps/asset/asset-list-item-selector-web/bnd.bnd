@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset List Item Selector Web
 Bundle-SymbolicName: com.liferay.asset.list.item.selector.web
-Bundle-Version: 2.0.43
+Bundle-Version: 2.0.44
 Web-ContextPath: /asset-list-item-selector-web

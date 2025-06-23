@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Punch Out Implementation
 Bundle-SymbolicName: com.liferay.headless.commerce.punchout.impl
-Bundle-Version: 4.0.62
+Bundle-Version: 4.0.63
 Import-Package:\
 	com.liferay.account.model;version="[5.6.0,9999.0.0)",\
 	com.liferay.account.service;version="[11.2.0,9999.0.0)",\

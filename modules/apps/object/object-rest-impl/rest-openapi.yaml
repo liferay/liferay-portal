@@ -1632,6 +1632,26 @@ paths:
                                     $ref: "#/components/schemas/ObjectEntry"
                                 type: array
             tags: ["ObjectEntry"]
+    "{objectEntryId}/expire":
+        post:
+            operationId: postObjectEntryExpire
+            parameters:
+                -   in: path
+                    name: objectEntryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
     /scopes/{scopeKey}:
         get:
             operationId: getScopeScopeKeyPage

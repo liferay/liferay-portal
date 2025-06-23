@@ -21,6 +21,7 @@ import com.liferay.data.engine.rest.client.permission.Permission;
 import com.liferay.data.engine.rest.client.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.client.serdes.v2_0.DataDefinitionSerDes;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -344,7 +345,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testDeleteDataDefinitionBatch_addDataDefinition();
 
 		testDeleteDataDefinitionBatch_deleteDataDefinition(
-			"COMPLETED", null, dataDefinition1.getId());
+			202, null, dataDefinition1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -359,7 +360,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 	}
 
 	protected void testDeleteDataDefinitionBatch_deleteDataDefinition(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -372,10 +373,10 @@ public abstract class BaseDataDefinitionResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -391,34 +392,21 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			204,
 			dataDefinitionResource.
 				deleteSiteDataDefinitionByContentTypeByExternalReferenceCodeHttpResponse(
-					testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						dataDefinition),
-					dataDefinition.getContentType(),
+					dataDefinition.getSiteId(), dataDefinition.getContentType(),
 					dataDefinition.getExternalReferenceCode()));
 
 		assertHttpResponseStatusCode(
 			404,
 			dataDefinitionResource.
 				getSiteDataDefinitionByContentTypeByExternalReferenceCodeHttpResponse(
-					testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						dataDefinition),
-					dataDefinition.getContentType(),
+					dataDefinition.getSiteId(), dataDefinition.getContentType(),
 					dataDefinition.getExternalReferenceCode()));
 		assertHttpResponseStatusCode(
 			404,
 			dataDefinitionResource.
 				getSiteDataDefinitionByContentTypeByExternalReferenceCodeHttpResponse(
-					testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						dataDefinition),
-					dataDefinition.getContentType(), "-"));
-	}
-
-	protected Long
-			testDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-				DataDefinition dataDefinition)
-		throws Exception {
-
-		return dataDefinition.getSiteId();
+					dataDefinition.getSiteId(), dataDefinition.getContentType(),
+					"-"));
 	}
 
 	protected DataDefinition
@@ -1120,6 +1108,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 	@Test
 	public void testGetDataDefinitionPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataDefinition postDataDefinition =
 			testGetDataDefinitionPermissionsPage_addDataDefinition();
 
@@ -1148,21 +1137,12 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		DataDefinition getDataDefinition =
 			dataDefinitionResource.
 				getSiteDataDefinitionByContentTypeByDataDefinitionKey(
-					testGetSiteDataDefinitionByContentTypeByDataDefinitionKey_getSiteId(
-						postDataDefinition),
+					postDataDefinition.getSiteId(),
 					postDataDefinition.getContentType(),
 					postDataDefinition.getDataDefinitionKey());
 
 		assertEquals(postDataDefinition, getDataDefinition);
 		assertValid(getDataDefinition);
-	}
-
-	protected Long
-			testGetSiteDataDefinitionByContentTypeByDataDefinitionKey_getSiteId(
-				DataDefinition dataDefinition)
-		throws Exception {
-
-		return dataDefinition.getSiteId();
 	}
 
 	protected DataDefinition
@@ -1194,16 +1174,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey_getSiteId(
-													dataDefinition) + "\"");
-
+											"\"" + dataDefinition.getSiteId() +
+												"\"");
 										put(
 											"contentType",
 											"\"" +
 												dataDefinition.
 													getContentType() + "\"");
-
 										put(
 											"dataDefinitionKey",
 											"\"" +
@@ -1233,16 +1210,14 @@ public abstract class BaseDataDefinitionResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey_getSiteId(
-														dataDefinition) + "\"");
-
+													dataDefinition.getSiteId() +
+														"\"");
 											put(
 												"contentType",
 												"\"" +
 													dataDefinition.
 														getContentType() +
 															"\"");
-
 											put(
 												"dataDefinitionKey",
 												"\"" +
@@ -1254,14 +1229,6 @@ public abstract class BaseDataDefinitionResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/dataEngine_v2_0",
 						"Object/dataDefinitionByContentTypeByDataDefinitionKey"))));
-	}
-
-	protected Long
-			testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey_getSiteId(
-				DataDefinition dataDefinition)
-		throws Exception {
-
-		return dataDefinition.getSiteId();
 	}
 
 	@Test
@@ -1340,21 +1307,12 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		DataDefinition getDataDefinition =
 			dataDefinitionResource.
 				getSiteDataDefinitionByContentTypeByExternalReferenceCode(
-					testGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						postDataDefinition),
+					postDataDefinition.getSiteId(),
 					postDataDefinition.getContentType(),
 					postDataDefinition.getExternalReferenceCode());
 
 		assertEquals(postDataDefinition, getDataDefinition);
 		assertValid(getDataDefinition);
-	}
-
-	protected Long
-			testGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-				DataDefinition dataDefinition)
-		throws Exception {
-
-		return dataDefinition.getSiteId();
 	}
 
 	protected DataDefinition
@@ -1386,16 +1344,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-													dataDefinition) + "\"");
-
+											"\"" + dataDefinition.getSiteId() +
+												"\"");
 										put(
 											"contentType",
 											"\"" +
 												dataDefinition.
 													getContentType() + "\"");
-
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -1425,16 +1380,14 @@ public abstract class BaseDataDefinitionResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-														dataDefinition) + "\"");
-
+													dataDefinition.getSiteId() +
+														"\"");
 											put(
 												"contentType",
 												"\"" +
 													dataDefinition.
 														getContentType() +
 															"\"");
-
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -1446,14 +1399,6 @@ public abstract class BaseDataDefinitionResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/dataEngine_v2_0",
 						"Object/dataDefinitionByContentTypeByExternalReferenceCode"))));
-	}
-
-	protected Long
-			testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-				DataDefinition dataDefinition)
-		throws Exception {
-
-		return dataDefinition.getSiteId();
 	}
 
 	@Test
@@ -2094,8 +2039,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		DataDefinition putDataDefinition =
 			dataDefinitionResource.
 				putSiteDataDefinitionByContentTypeByExternalReferenceCode(
-					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						postDataDefinition),
+					postDataDefinition.getSiteId(),
 					postDataDefinition.getContentType(),
 					postDataDefinition.getExternalReferenceCode(),
 					randomDataDefinition);
@@ -2106,8 +2050,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		DataDefinition getDataDefinition =
 			dataDefinitionResource.
 				getSiteDataDefinitionByContentTypeByExternalReferenceCode(
-					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						putDataDefinition),
+					putDataDefinition.getSiteId(),
 					putDataDefinition.getContentType(),
 					putDataDefinition.getExternalReferenceCode());
 
@@ -2120,8 +2063,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		putDataDefinition =
 			dataDefinitionResource.
 				putSiteDataDefinitionByContentTypeByExternalReferenceCode(
-					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						newDataDefinition),
+					newDataDefinition.getSiteId(),
 					newDataDefinition.getContentType(),
 					newDataDefinition.getExternalReferenceCode(),
 					newDataDefinition);
@@ -2132,8 +2074,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		getDataDefinition =
 			dataDefinitionResource.
 				getSiteDataDefinitionByContentTypeByExternalReferenceCode(
-					testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-						putDataDefinition),
+					putDataDefinition.getSiteId(),
 					putDataDefinition.getContentType(),
 					putDataDefinition.getExternalReferenceCode());
 
@@ -2144,12 +2085,12 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			putDataDefinition.getExternalReferenceCode());
 	}
 
-	protected Long
-			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_getSiteId(
-				DataDefinition dataDefinition)
+	protected DataDefinition
+			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
 		throws Exception {
 
-		return dataDefinition.getSiteId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected DataDefinition
@@ -2159,12 +2100,59 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		return randomDataDefinition();
 	}
 
-	protected DataDefinition
-			testPutSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		DataDefinition dataDefinition1 =
+			testBatchEngineDeleteImportTask_addDataDefinition();
+
+		testBatchEngineDeleteImportTask_deleteDataDefinition(
+			200, null, dataDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			dataDefinitionResource.getDataDefinitionHttpResponse(
+				dataDefinition1.getId()));
+	}
+
+	protected DataDefinition testBatchEngineDeleteImportTask_addDataDefinition()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteDataDefinition_addDataDefinition();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteDataDefinition(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.data.engine.rest.dto.v2_0.DataDefinition", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected DataDefinition testGraphQLDataDefinition_addDataDefinition()

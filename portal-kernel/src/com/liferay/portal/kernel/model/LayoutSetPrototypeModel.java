@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.model;
 
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.exception.LocaleException;
+import com.liferay.portal.kernel.model.change.tracking.CTModel;
 
 import java.util.Date;
 import java.util.Locale;
@@ -27,8 +28,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface LayoutSetPrototypeModel
-	extends BaseModel<LayoutSetPrototype>, LocalizedModel, MVCCModel,
-			ShardedModel, StagedAuditedModel {
+	extends BaseModel<LayoutSetPrototype>, CTModel<LayoutSetPrototype>,
+			LocalizedModel, MVCCModel, ShardedModel, StagedAuditedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -41,6 +42,7 @@ public interface LayoutSetPrototypeModel
 	 *
 	 * @return the primary key of this layout set prototype
 	 */
+	@Override
 	public long getPrimaryKey();
 
 	/**
@@ -48,6 +50,7 @@ public interface LayoutSetPrototypeModel
 	 *
 	 * @param primaryKey the primary key of this layout set prototype
 	 */
+	@Override
 	public void setPrimaryKey(long primaryKey);
 
 	/**
@@ -65,6 +68,22 @@ public interface LayoutSetPrototypeModel
 	 */
 	@Override
 	public void setMvccVersion(long mvccVersion);
+
+	/**
+	 * Returns the ct collection ID of this layout set prototype.
+	 *
+	 * @return the ct collection ID of this layout set prototype
+	 */
+	@Override
+	public long getCtCollectionId();
+
+	/**
+	 * Sets the ct collection ID of this layout set prototype.
+	 *
+	 * @param ctCollectionId the ct collection ID of this layout set prototype
+	 */
+	@Override
+	public void setCtCollectionId(long ctCollectionId);
 
 	/**
 	 * Returns the uuid of this layout set prototype.

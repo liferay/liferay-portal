@@ -6,7 +6,6 @@
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchFixture;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexRequest;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -36,8 +35,6 @@ public class UpdateIndexSettingsIndexRequestExecutorTest {
 			UpdateIndexSettingsIndexRequestExecutorTest.class.getSimpleName());
 
 		_elasticsearchFixture.setUp();
-
-		_indicesOptionsTranslator = new IndicesOptionsTranslatorImpl();
 	}
 
 	@After
@@ -58,20 +55,14 @@ public class UpdateIndexSettingsIndexRequestExecutorTest {
 				"                \"type\": \"custom\"\n", "            }\n",
 				"        }\n", "    }\n", "}"));
 
-		UpdateIndexSettingsIndexRequestExecutorImpl
-			updateIndexSettingsIndexRequestExecutorImpl =
-				new UpdateIndexSettingsIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			updateIndexSettingsIndexRequestExecutorImpl,
-			"_elasticsearchClientResolver", _elasticsearchFixture);
-		ReflectionTestUtil.setFieldValue(
-			updateIndexSettingsIndexRequestExecutorImpl,
-			"_indicesOptionsTranslator", _indicesOptionsTranslator);
+		UpdateIndexSettingsIndexRequestExecutor
+			updateIndexSettingsIndexRequestExecutor =
+				new UpdateIndexSettingsIndexRequestExecutor(
+					_elasticsearchFixture);
 
 		UpdateSettingsRequest updateSettingsRequest =
-			updateIndexSettingsIndexRequestExecutorImpl.
-				createUpdateSettingsRequest(updateIndexSettingsIndexRequest);
+			updateIndexSettingsIndexRequestExecutor.createUpdateSettingsRequest(
+				updateIndexSettingsIndexRequest);
 
 		String[] indices = updateSettingsRequest.indices();
 
@@ -82,6 +73,5 @@ public class UpdateIndexSettingsIndexRequestExecutorTest {
 	private static final String _INDEX_NAME = "test_request_index";
 
 	private ElasticsearchFixture _elasticsearchFixture;
-	private IndicesOptionsTranslator _indicesOptionsTranslator;
 
 }

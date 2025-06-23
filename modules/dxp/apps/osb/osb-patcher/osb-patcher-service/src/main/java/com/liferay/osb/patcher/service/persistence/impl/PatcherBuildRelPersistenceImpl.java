@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
+import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
@@ -30,8 +31,11 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.InvocationHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -76,6 +80,1034 @@ public class PatcherBuildRelPersistenceImpl
 	private FinderPath _finderPathWithPaginationFindAll;
 	private FinderPath _finderPathWithoutPaginationFindAll;
 	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathWithPaginationFindByChildPatcherBuildId;
+	private FinderPath _finderPathWithoutPaginationFindByChildPatcherBuildId;
+	private FinderPath _finderPathCountByChildPatcherBuildId;
+
+	/**
+	 * Returns all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @return the matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId) {
+
+		return findByChildPatcherBuildId(
+			childPatcherBuildId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @return the range of matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId, int start, int end) {
+
+		return findByChildPatcherBuildId(childPatcherBuildId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return findByChildPatcherBuildId(
+			childPatcherBuildId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByChildPatcherBuildId(
+		long childPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath =
+					_finderPathWithoutPaginationFindByChildPatcherBuildId;
+				finderArgs = new Object[] {childPatcherBuildId};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByChildPatcherBuildId;
+			finderArgs = new Object[] {
+				childPatcherBuildId, start, end, orderByComparator
+			};
+		}
+
+		List<PatcherBuildRel> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherBuildRel>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherBuildRel patcherBuildRel : list) {
+					if (childPatcherBuildId !=
+							patcherBuildRel.getChildPatcherBuildId()) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					3 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(3);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERBUILDREL_WHERE);
+
+			sb.append(_FINDER_COLUMN_CHILDPATCHERBUILDID_CHILDPATCHERBUILDID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherBuildRelModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(childPatcherBuildId);
+
+				list = (List<PatcherBuildRel>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel findByChildPatcherBuildId_First(
+			long childPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws NoSuchPatcherBuildRelException {
+
+		PatcherBuildRel patcherBuildRel = fetchByChildPatcherBuildId_First(
+			childPatcherBuildId, orderByComparator);
+
+		if (patcherBuildRel != null) {
+			return patcherBuildRel;
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("childPatcherBuildId=");
+		sb.append(childPatcherBuildId);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherBuildRelException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel fetchByChildPatcherBuildId_First(
+		long childPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		List<PatcherBuildRel> list = findByChildPatcherBuildId(
+			childPatcherBuildId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel findByChildPatcherBuildId_Last(
+			long childPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws NoSuchPatcherBuildRelException {
+
+		PatcherBuildRel patcherBuildRel = fetchByChildPatcherBuildId_Last(
+			childPatcherBuildId, orderByComparator);
+
+		if (patcherBuildRel != null) {
+			return patcherBuildRel;
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("childPatcherBuildId=");
+		sb.append(childPatcherBuildId);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherBuildRelException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel fetchByChildPatcherBuildId_Last(
+		long childPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		int count = countByChildPatcherBuildId(childPatcherBuildId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherBuildRel> list = findByChildPatcherBuildId(
+			childPatcherBuildId, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher build rels before and after the current patcher build rel in the ordered set where childPatcherBuildId = &#63;.
+	 *
+	 * @param patcherBuildRelId the primary key of the current patcher build rel
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a patcher build rel with the primary key could not be found
+	 */
+	@Override
+	public PatcherBuildRel[] findByChildPatcherBuildId_PrevAndNext(
+			long patcherBuildRelId, long childPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws NoSuchPatcherBuildRelException {
+
+		PatcherBuildRel patcherBuildRel = findByPrimaryKey(patcherBuildRelId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherBuildRel[] array = new PatcherBuildRelImpl[3];
+
+			array[0] = getByChildPatcherBuildId_PrevAndNext(
+				session, patcherBuildRel, childPatcherBuildId,
+				orderByComparator, true);
+
+			array[1] = patcherBuildRel;
+
+			array[2] = getByChildPatcherBuildId_PrevAndNext(
+				session, patcherBuildRel, childPatcherBuildId,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherBuildRel getByChildPatcherBuildId_PrevAndNext(
+		Session session, PatcherBuildRel patcherBuildRel,
+		long childPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(3);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERBUILDREL_WHERE);
+
+		sb.append(_FINDER_COLUMN_CHILDPATCHERBUILDID_CHILDPATCHERBUILDID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherBuildRelModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(childPatcherBuildId);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						patcherBuildRel)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherBuildRel> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher build rels where childPatcherBuildId = &#63; from the database.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 */
+	@Override
+	public void removeByChildPatcherBuildId(long childPatcherBuildId) {
+		for (PatcherBuildRel patcherBuildRel :
+				findByChildPatcherBuildId(
+					childPatcherBuildId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(patcherBuildRel);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher build rels where childPatcherBuildId = &#63;.
+	 *
+	 * @param childPatcherBuildId the child patcher build ID
+	 * @return the number of matching patcher build rels
+	 */
+	@Override
+	public int countByChildPatcherBuildId(long childPatcherBuildId) {
+		FinderPath finderPath = _finderPathCountByChildPatcherBuildId;
+
+		Object[] finderArgs = new Object[] {childPatcherBuildId};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(2);
+
+			sb.append(_SQL_COUNT_PATCHERBUILDREL_WHERE);
+
+			sb.append(_FINDER_COLUMN_CHILDPATCHERBUILDID_CHILDPATCHERBUILDID_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(childPatcherBuildId);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String
+		_FINDER_COLUMN_CHILDPATCHERBUILDID_CHILDPATCHERBUILDID_2 =
+			"patcherBuildRel.childPatcherBuildId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByParentPatcherBuildId;
+	private FinderPath _finderPathWithoutPaginationFindByParentPatcherBuildId;
+	private FinderPath _finderPathCountByParentPatcherBuildId;
+
+	/**
+	 * Returns all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @return the matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId) {
+
+		return findByParentPatcherBuildId(
+			parentPatcherBuildId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @return the range of matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId, int start, int end) {
+
+		return findByParentPatcherBuildId(
+			parentPatcherBuildId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		return findByParentPatcherBuildId(
+			parentPatcherBuildId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherBuildRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param start the lower bound of the range of patcher build rels
+	 * @param end the upper bound of the range of patcher build rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher build rels
+	 */
+	@Override
+	public List<PatcherBuildRel> findByParentPatcherBuildId(
+		long parentPatcherBuildId, int start, int end,
+		OrderByComparator<PatcherBuildRel> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath =
+					_finderPathWithoutPaginationFindByParentPatcherBuildId;
+				finderArgs = new Object[] {parentPatcherBuildId};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByParentPatcherBuildId;
+			finderArgs = new Object[] {
+				parentPatcherBuildId, start, end, orderByComparator
+			};
+		}
+
+		List<PatcherBuildRel> list = null;
+
+		if (useFinderCache) {
+			list = (List<PatcherBuildRel>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PatcherBuildRel patcherBuildRel : list) {
+					if (parentPatcherBuildId !=
+							patcherBuildRel.getParentPatcherBuildId()) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					3 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(3);
+			}
+
+			sb.append(_SQL_SELECT_PATCHERBUILDREL_WHERE);
+
+			sb.append(
+				_FINDER_COLUMN_PARENTPATCHERBUILDID_PARENTPATCHERBUILDID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PatcherBuildRelModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(parentPatcherBuildId);
+
+				list = (List<PatcherBuildRel>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel findByParentPatcherBuildId_First(
+			long parentPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws NoSuchPatcherBuildRelException {
+
+		PatcherBuildRel patcherBuildRel = fetchByParentPatcherBuildId_First(
+			parentPatcherBuildId, orderByComparator);
+
+		if (patcherBuildRel != null) {
+			return patcherBuildRel;
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("parentPatcherBuildId=");
+		sb.append(parentPatcherBuildId);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherBuildRelException(sb.toString());
+	}
+
+	/**
+	 * Returns the first patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel fetchByParentPatcherBuildId_First(
+		long parentPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		List<PatcherBuildRel> list = findByParentPatcherBuildId(
+			parentPatcherBuildId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel findByParentPatcherBuildId_Last(
+			long parentPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws NoSuchPatcherBuildRelException {
+
+		PatcherBuildRel patcherBuildRel = fetchByParentPatcherBuildId_Last(
+			parentPatcherBuildId, orderByComparator);
+
+		if (patcherBuildRel != null) {
+			return patcherBuildRel;
+		}
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("parentPatcherBuildId=");
+		sb.append(parentPatcherBuildId);
+
+		sb.append("}");
+
+		throw new NoSuchPatcherBuildRelException(sb.toString());
+	}
+
+	/**
+	 * Returns the last patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher build rel, or <code>null</code> if a matching patcher build rel could not be found
+	 */
+	@Override
+	public PatcherBuildRel fetchByParentPatcherBuildId_Last(
+		long parentPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator) {
+
+		int count = countByParentPatcherBuildId(parentPatcherBuildId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<PatcherBuildRel> list = findByParentPatcherBuildId(
+			parentPatcherBuildId, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the patcher build rels before and after the current patcher build rel in the ordered set where parentPatcherBuildId = &#63;.
+	 *
+	 * @param patcherBuildRelId the primary key of the current patcher build rel
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher build rel
+	 * @throws NoSuchPatcherBuildRelException if a patcher build rel with the primary key could not be found
+	 */
+	@Override
+	public PatcherBuildRel[] findByParentPatcherBuildId_PrevAndNext(
+			long patcherBuildRelId, long parentPatcherBuildId,
+			OrderByComparator<PatcherBuildRel> orderByComparator)
+		throws NoSuchPatcherBuildRelException {
+
+		PatcherBuildRel patcherBuildRel = findByPrimaryKey(patcherBuildRelId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			PatcherBuildRel[] array = new PatcherBuildRelImpl[3];
+
+			array[0] = getByParentPatcherBuildId_PrevAndNext(
+				session, patcherBuildRel, parentPatcherBuildId,
+				orderByComparator, true);
+
+			array[1] = patcherBuildRel;
+
+			array[2] = getByParentPatcherBuildId_PrevAndNext(
+				session, patcherBuildRel, parentPatcherBuildId,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected PatcherBuildRel getByParentPatcherBuildId_PrevAndNext(
+		Session session, PatcherBuildRel patcherBuildRel,
+		long parentPatcherBuildId,
+		OrderByComparator<PatcherBuildRel> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(3);
+		}
+
+		sb.append(_SQL_SELECT_PATCHERBUILDREL_WHERE);
+
+		sb.append(_FINDER_COLUMN_PARENTPATCHERBUILDID_PARENTPATCHERBUILDID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(PatcherBuildRelModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(parentPatcherBuildId);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						patcherBuildRel)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<PatcherBuildRel> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the patcher build rels where parentPatcherBuildId = &#63; from the database.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 */
+	@Override
+	public void removeByParentPatcherBuildId(long parentPatcherBuildId) {
+		for (PatcherBuildRel patcherBuildRel :
+				findByParentPatcherBuildId(
+					parentPatcherBuildId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(patcherBuildRel);
+		}
+	}
+
+	/**
+	 * Returns the number of patcher build rels where parentPatcherBuildId = &#63;.
+	 *
+	 * @param parentPatcherBuildId the parent patcher build ID
+	 * @return the number of matching patcher build rels
+	 */
+	@Override
+	public int countByParentPatcherBuildId(long parentPatcherBuildId) {
+		FinderPath finderPath = _finderPathCountByParentPatcherBuildId;
+
+		Object[] finderArgs = new Object[] {parentPatcherBuildId};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(2);
+
+			sb.append(_SQL_COUNT_PATCHERBUILDREL_WHERE);
+
+			sb.append(
+				_FINDER_COLUMN_PARENTPATCHERBUILDID_PARENTPATCHERBUILDID_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(parentPatcherBuildId);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String
+		_FINDER_COLUMN_PARENTPATCHERBUILDID_PARENTPATCHERBUILDID_2 =
+			"patcherBuildRel.parentPatcherBuildId = ?";
 
 	public PatcherBuildRelPersistenceImpl() {
 		setModelClass(PatcherBuildRel.class);
@@ -276,6 +1308,26 @@ public class PatcherBuildRelPersistenceImpl
 	public PatcherBuildRel updateImpl(PatcherBuildRel patcherBuildRel) {
 		boolean isNew = patcherBuildRel.isNew();
 
+		if (!(patcherBuildRel instanceof PatcherBuildRelModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(patcherBuildRel.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(
+					patcherBuildRel);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in patcherBuildRel proxy " +
+						invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom PatcherBuildRel implementation " +
+					patcherBuildRel.getClass());
+		}
+
+		PatcherBuildRelModelImpl patcherBuildRelModelImpl =
+			(PatcherBuildRelModelImpl)patcherBuildRel;
+
 		Session session = null;
 
 		try {
@@ -297,7 +1349,7 @@ public class PatcherBuildRelPersistenceImpl
 		}
 
 		entityCache.putResult(
-			PatcherBuildRelImpl.class, patcherBuildRel, false, true);
+			PatcherBuildRelImpl.class, patcherBuildRelModelImpl, false, true);
 
 		if (isNew) {
 			patcherBuildRel.setNew(false);
@@ -579,6 +1631,43 @@ public class PatcherBuildRelPersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
 			new String[0], new String[0], false);
 
+		_finderPathWithPaginationFindByChildPatcherBuildId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByChildPatcherBuildId",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"childPatcherBuildId"}, true);
+
+		_finderPathWithoutPaginationFindByChildPatcherBuildId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByChildPatcherBuildId", new String[] {Long.class.getName()},
+			new String[] {"childPatcherBuildId"}, true);
+
+		_finderPathCountByChildPatcherBuildId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByChildPatcherBuildId", new String[] {Long.class.getName()},
+			new String[] {"childPatcherBuildId"}, false);
+
+		_finderPathWithPaginationFindByParentPatcherBuildId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
+			"findByParentPatcherBuildId",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"parentPatcherBuildId"}, true);
+
+		_finderPathWithoutPaginationFindByParentPatcherBuildId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"findByParentPatcherBuildId", new String[] {Long.class.getName()},
+			new String[] {"parentPatcherBuildId"}, true);
+
+		_finderPathCountByParentPatcherBuildId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByParentPatcherBuildId", new String[] {Long.class.getName()},
+			new String[] {"parentPatcherBuildId"}, false);
+
 		PatcherBuildRelUtil.setPersistence(this);
 	}
 
@@ -624,13 +1713,22 @@ public class PatcherBuildRelPersistenceImpl
 	private static final String _SQL_SELECT_PATCHERBUILDREL =
 		"SELECT patcherBuildRel FROM PatcherBuildRel patcherBuildRel";
 
+	private static final String _SQL_SELECT_PATCHERBUILDREL_WHERE =
+		"SELECT patcherBuildRel FROM PatcherBuildRel patcherBuildRel WHERE ";
+
 	private static final String _SQL_COUNT_PATCHERBUILDREL =
 		"SELECT COUNT(patcherBuildRel) FROM PatcherBuildRel patcherBuildRel";
+
+	private static final String _SQL_COUNT_PATCHERBUILDREL_WHERE =
+		"SELECT COUNT(patcherBuildRel) FROM PatcherBuildRel patcherBuildRel WHERE ";
 
 	private static final String _ORDER_BY_ENTITY_ALIAS = "patcherBuildRel.";
 
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
 		"No PatcherBuildRel exists with the primary key ";
+
+	private static final String _NO_SUCH_ENTITY_WITH_KEY =
+		"No PatcherBuildRel exists with the key {";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PatcherBuildRelPersistenceImpl.class);

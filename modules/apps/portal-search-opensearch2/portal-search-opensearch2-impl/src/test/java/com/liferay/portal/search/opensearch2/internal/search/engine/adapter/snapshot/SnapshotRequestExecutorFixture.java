@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.snapshot;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.engine.adapter.snapshot.SnapshotRequestExecutor;
 import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
 
@@ -22,22 +21,21 @@ public class SnapshotRequestExecutorFixture {
 		_snapshotRequestExecutor = new OpenSearchSnapshotRequestExecutor() {
 			{
 				createSnapshotRepositoryRequestExecutor =
-					_createCreateSnapshotRepositoryRequestExecutor(
+					new CreateSnapshotRepositoryRequestExecutor(
 						_openSearchConnectionManager);
 				createSnapshotRequestExecutor =
-					_createCreateSnapshotRequestExecutor(
+					new CreateSnapshotRequestExecutor(
 						_openSearchConnectionManager);
 				deleteSnapshotRequestExecutor =
-					_createDeleteSnapshotRequestExecutor(
+					new DeleteSnapshotRequestExecutor(
 						_openSearchConnectionManager);
 				getSnapshotRepositoriesRequestExecutor =
-					_createGetSnapshotRepositoriesRequestExecutor(
+					new GetSnapshotRepositoriesRequestExecutor(
 						_openSearchConnectionManager);
-				getSnapshotsRequestExecutor =
-					_createGetSnapshotsRequestExecutor(
-						_openSearchConnectionManager);
+				getSnapshotsRequestExecutor = new GetSnapshotsRequestExecutor(
+					_openSearchConnectionManager);
 				restoreSnapshotRequestExecutor =
-					_createRestoreSnapshotRequestExecutor(
+					new RestoreSnapshotRequestExecutor(
 						_openSearchConnectionManager);
 			}
 		};
@@ -47,89 +45,6 @@ public class SnapshotRequestExecutorFixture {
 		OpenSearchConnectionManager openSearchConnectionManager) {
 
 		_openSearchConnectionManager = openSearchConnectionManager;
-	}
-
-	private CreateSnapshotRepositoryRequestExecutor
-		_createCreateSnapshotRepositoryRequestExecutor(
-			OpenSearchConnectionManager openSearchConnectionManager) {
-
-		CreateSnapshotRepositoryRequestExecutor
-			createSnapshotRepositoryRequestExecutor =
-				new CreateSnapshotRepositoryRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			createSnapshotRepositoryRequestExecutor,
-			"_openSearchConnectionManager", openSearchConnectionManager);
-
-		return createSnapshotRepositoryRequestExecutor;
-	}
-
-	private CreateSnapshotRequestExecutor _createCreateSnapshotRequestExecutor(
-		OpenSearchConnectionManager openSearchConnectionManager) {
-
-		CreateSnapshotRequestExecutor createSnapshotRequestExecutor =
-			new CreateSnapshotRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			createSnapshotRequestExecutor, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		return createSnapshotRequestExecutor;
-	}
-
-	private DeleteSnapshotRequestExecutor _createDeleteSnapshotRequestExecutor(
-		OpenSearchConnectionManager openSearchConnectionManager) {
-
-		DeleteSnapshotRequestExecutor deleteSnapshotRequestExecutor =
-			new DeleteSnapshotRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			deleteSnapshotRequestExecutor, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		return deleteSnapshotRequestExecutor;
-	}
-
-	private GetSnapshotRepositoriesRequestExecutor
-		_createGetSnapshotRepositoriesRequestExecutor(
-			OpenSearchConnectionManager openSearchConnectionManager) {
-
-		GetSnapshotRepositoriesRequestExecutor
-			getSnapshotRepositoriesRequestExecutor =
-				new GetSnapshotRepositoriesRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			getSnapshotRepositoriesRequestExecutor,
-			"_openSearchConnectionManager", openSearchConnectionManager);
-
-		return getSnapshotRepositoriesRequestExecutor;
-	}
-
-	private GetSnapshotsRequestExecutor _createGetSnapshotsRequestExecutor(
-		OpenSearchConnectionManager openSearchConnectionManager) {
-
-		GetSnapshotsRequestExecutor getSnapshotsRequestExecutor =
-			new GetSnapshotsRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			getSnapshotsRequestExecutor, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		return getSnapshotsRequestExecutor;
-	}
-
-	private RestoreSnapshotRequestExecutor
-		_createRestoreSnapshotRequestExecutor(
-			OpenSearchConnectionManager openSearchConnectionManager) {
-
-		RestoreSnapshotRequestExecutor restoreSnapshotRequestExecutor =
-			new RestoreSnapshotRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			restoreSnapshotRequestExecutor, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		return restoreSnapshotRequestExecutor;
 	}
 
 	private OpenSearchConnectionManager _openSearchConnectionManager;

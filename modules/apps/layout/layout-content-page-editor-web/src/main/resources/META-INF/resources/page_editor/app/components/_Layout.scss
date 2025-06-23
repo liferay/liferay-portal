@@ -351,6 +351,25 @@ html#{$cadmin-selector} {
 		border: none;
 	}
 
+	.page-editor__editable {
+		.lfr-ck {
+			outline: $cadmin-primary-d2 auto 1px;
+
+			.ck.ck-editor__editable_inline {
+				border: 0;
+				padding: 0;
+
+				& > *:last-child {
+					margin-bottom: 0;
+				}
+
+				& *:first-child {
+					margin-top: 0;
+				}
+			}
+		}
+	}
+
 	img.page-editor__editable {
 		box-sizing: border-box;
 		outline-offset: -$editablesBorderWidth;
@@ -400,5 +419,21 @@ html#{$cadmin-selector} {
 		// stylelint-disable-next-line property-no-unknown
 		container-type: size;
 		padding: 0;
+	}
+}
+
+.ck-body-wrapper .ck.ck-block-toolbar-button {
+	background-color: $white;
+	border: 1px solid var(--ck-color-base-border);
+	border-radius: 0.25rem;
+	transform: translateX(-0.25rem);
+	z-index: 990;
+
+	&:not(:hover) .ck-icon_inherit-color {
+		color: $gray-600;
+	}
+
+	&:hover {
+		background-color: $gray-100;
 	}
 }

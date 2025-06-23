@@ -64,19 +64,20 @@ public class PatcherBuildModelImpl
 		{"mvccVersion", Types.BIGINT}, {"patcherBuildId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"hotfixId", Types.BIGINT},
-		{"patcherAccountId", Types.BIGINT}, {"patcherFixId", Types.BIGINT},
+		{"modifiedDate", Types.TIMESTAMP}, {"patcherAccountId", Types.BIGINT},
+		{"patcherFixId", Types.BIGINT},
 		{"patcherProductVersionId", Types.BIGINT},
 		{"patcherProjectVersionId", Types.BIGINT},
 		{"ticketEntryId", Types.BIGINT}, {"accountEntryCode", Types.VARCHAR},
 		{"childBuild", Types.BOOLEAN}, {"comments", Types.CLOB},
-		{"fileName", Types.VARCHAR}, {"initialName", Types.VARCHAR},
-		{"key_", Types.VARCHAR}, {"keyVersion", Types.DOUBLE},
-		{"latestBuild", Types.BOOLEAN}, {"latestKeyBuild", Types.BOOLEAN},
+		{"fileName", Types.VARCHAR}, {"hotfixId", Types.BIGINT},
+		{"initialName", Types.VARCHAR}, {"key_", Types.VARCHAR},
+		{"keyVersion", Types.DOUBLE}, {"latestBuild", Types.BOOLEAN},
+		{"latestKeyBuild", Types.BOOLEAN},
 		{"latestLESATicketBuild", Types.BOOLEAN},
 		{"latestSupportTicketBuild", Types.BOOLEAN},
 		{"lesaTicket", Types.VARCHAR}, {"lesaTicketVersion", Types.DOUBLE},
-		{"name", Types.CLOB}, {"notified", Types.BOOLEAN},
+		{"name", Types.VARCHAR}, {"notified", Types.BOOLEAN},
 		{"productVersion", Types.INTEGER}, {"qaComments", Types.CLOB},
 		{"qaStatus", Types.INTEGER}, {"requestKey", Types.VARCHAR},
 		{"sourceName", Types.VARCHAR}, {"supportTicket", Types.VARCHAR},
@@ -96,7 +97,6 @@ public class PatcherBuildModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("hotfixId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("patcherAccountId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("patcherFixId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("patcherProductVersionId", Types.BIGINT);
@@ -106,6 +106,7 @@ public class PatcherBuildModelImpl
 		TABLE_COLUMNS_MAP.put("childBuild", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("comments", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("fileName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("hotfixId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("initialName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("key_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("keyVersion", Types.DOUBLE);
@@ -115,7 +116,7 @@ public class PatcherBuildModelImpl
 		TABLE_COLUMNS_MAP.put("latestSupportTicketBuild", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("lesaTicket", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("lesaTicketVersion", Types.DOUBLE);
-		TABLE_COLUMNS_MAP.put("name", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("notified", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("productVersion", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("qaComments", Types.CLOB);
@@ -132,7 +133,7 @@ public class PatcherBuildModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OSBPatcher_PatcherBuild (mvccVersion LONG default 0 not null,patcherBuildId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,hotfixId LONG,patcherAccountId LONG,patcherFixId LONG,patcherProductVersionId LONG,patcherProjectVersionId LONG,ticketEntryId LONG,accountEntryCode VARCHAR(75) null,childBuild BOOLEAN,comments TEXT null,fileName VARCHAR(500) null,initialName VARCHAR(75) null,key_ VARCHAR(75) null,keyVersion DOUBLE,latestBuild BOOLEAN,latestKeyBuild BOOLEAN,latestLESATicketBuild BOOLEAN,latestSupportTicketBuild BOOLEAN,lesaTicket VARCHAR(75) null,lesaTicketVersion DOUBLE,name TEXT null,notified BOOLEAN,productVersion INTEGER,qaComments TEXT null,qaStatus INTEGER,requestKey VARCHAR(75) null,sourceName VARCHAR(500) null,supportTicket VARCHAR(75) null,supportTicketVersion DOUBLE,type_ INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+		"create table OSBPatcher_PatcherBuild (mvccVersion LONG default 0 not null,patcherBuildId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,patcherAccountId LONG,patcherFixId LONG,patcherProductVersionId LONG,patcherProjectVersionId LONG,ticketEntryId LONG,accountEntryCode VARCHAR(75) null,childBuild BOOLEAN,comments TEXT null,fileName VARCHAR(500) null,hotfixId LONG,initialName VARCHAR(75) null,key_ VARCHAR(75) null,keyVersion DOUBLE,latestBuild BOOLEAN,latestKeyBuild BOOLEAN,latestLESATicketBuild BOOLEAN,latestSupportTicketBuild BOOLEAN,lesaTicket VARCHAR(75) null,lesaTicketVersion DOUBLE,name STRING null,notified BOOLEAN,productVersion INTEGER,qaComments TEXT null,qaStatus INTEGER,requestKey VARCHAR(75) null,sourceName VARCHAR(500) null,supportTicket VARCHAR(75) null,supportTicketVersion DOUBLE,type_ INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBPatcher_PatcherBuild";
@@ -142,6 +143,9 @@ public class PatcherBuildModelImpl
 
 	public static final String ORDER_BY_SQL =
 		" ORDER BY OSBPatcher_PatcherBuild.patcherBuildId ASC";
+
+	public static final String ORDER_BY_SQL_INLINE_DISTINCT =
+		" ORDER BY patcherBuild.patcherBuildId ASC";
 
 	public static final String DATA_SOURCE = "liferayDataSource";
 
@@ -153,20 +157,110 @@ public class PatcherBuildModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KEY_COLUMN_BITMASK = 1L;
+	public static final long ACCOUNTENTRYCODE_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KEYVERSION_COLUMN_BITMASK = 2L;
+	public static final long CHILDBUILD_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long KEY_COLUMN_BITMASK = 4L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long KEYVERSION_COLUMN_BITMASK = 8L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long LATESTKEYBUILD_COLUMN_BITMASK = 16L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long LATESTSUPPORTTICKETBUILD_COLUMN_BITMASK = 32L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long MODIFIEDDATE_COLUMN_BITMASK = 64L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NAME_COLUMN_BITMASK = 128L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long NOTIFIED_COLUMN_BITMASK = 256L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERACCOUNTID_COLUMN_BITMASK = 512L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERFIXID_COLUMN_BITMASK = 1024L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERPRODUCTVERSIONID_COLUMN_BITMASK = 2048L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PATCHERPROJECTVERSIONID_COLUMN_BITMASK = 4096L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long STATUS_COLUMN_BITMASK = 8192L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long SUPPORTTICKET_COLUMN_BITMASK = 16384L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long SUPPORTTICKETVERSION_COLUMN_BITMASK = 32768L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long TYPE_COLUMN_BITMASK = 65536L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PATCHERBUILDID_COLUMN_BITMASK = 4L;
+	public static final long PATCHERBUILDID_COLUMN_BITMASK = 131072L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -315,7 +409,6 @@ public class PatcherBuildModelImpl
 				"createDate", PatcherBuild::getCreateDate);
 			attributeGetterFunctions.put(
 				"modifiedDate", PatcherBuild::getModifiedDate);
-			attributeGetterFunctions.put("hotfixId", PatcherBuild::getHotfixId);
 			attributeGetterFunctions.put(
 				"patcherAccountId", PatcherBuild::getPatcherAccountId);
 			attributeGetterFunctions.put(
@@ -334,6 +427,7 @@ public class PatcherBuildModelImpl
 				"childBuild", PatcherBuild::getChildBuild);
 			attributeGetterFunctions.put("comments", PatcherBuild::getComments);
 			attributeGetterFunctions.put("fileName", PatcherBuild::getFileName);
+			attributeGetterFunctions.put("hotfixId", PatcherBuild::getHotfixId);
 			attributeGetterFunctions.put(
 				"initialName", PatcherBuild::getInitialName);
 			attributeGetterFunctions.put("key", PatcherBuild::getKey);
@@ -416,9 +510,6 @@ public class PatcherBuildModelImpl
 				"modifiedDate",
 				(BiConsumer<PatcherBuild, Date>)PatcherBuild::setModifiedDate);
 			attributeSetterBiConsumers.put(
-				"hotfixId",
-				(BiConsumer<PatcherBuild, Long>)PatcherBuild::setHotfixId);
-			attributeSetterBiConsumers.put(
 				"patcherAccountId",
 				(BiConsumer<PatcherBuild, Long>)
 					PatcherBuild::setPatcherAccountId);
@@ -449,6 +540,9 @@ public class PatcherBuildModelImpl
 			attributeSetterBiConsumers.put(
 				"fileName",
 				(BiConsumer<PatcherBuild, String>)PatcherBuild::setFileName);
+			attributeSetterBiConsumers.put(
+				"hotfixId",
+				(BiConsumer<PatcherBuild, Long>)PatcherBuild::setHotfixId);
 			attributeSetterBiConsumers.put(
 				"initialName",
 				(BiConsumer<PatcherBuild, String>)PatcherBuild::setInitialName);
@@ -659,18 +753,13 @@ public class PatcherBuildModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
-	@Override
-	public long getHotfixId() {
-		return _hotfixId;
-	}
-
-	@Override
-	public void setHotfixId(long hotfixId) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_hotfixId = hotfixId;
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public Date getOriginalModifiedDate() {
+		return getColumnOriginalValue("modifiedDate");
 	}
 
 	@Override
@@ -687,6 +776,16 @@ public class PatcherBuildModelImpl
 		_patcherAccountId = patcherAccountId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherAccountId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherAccountId"));
+	}
+
 	@Override
 	public long getPatcherFixId() {
 		return _patcherFixId;
@@ -699,6 +798,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_patcherFixId = patcherFixId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherFixId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherFixId"));
 	}
 
 	@Override
@@ -715,6 +824,16 @@ public class PatcherBuildModelImpl
 		_patcherProductVersionId = patcherProductVersionId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherProductVersionId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherProductVersionId"));
+	}
+
 	@Override
 	public long getPatcherProjectVersionId() {
 		return _patcherProjectVersionId;
@@ -727,6 +846,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_patcherProjectVersionId = patcherProjectVersionId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalPatcherProjectVersionId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("patcherProjectVersionId"));
 	}
 
 	@Override
@@ -762,6 +891,15 @@ public class PatcherBuildModelImpl
 		_accountEntryCode = accountEntryCode;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalAccountEntryCode() {
+		return getColumnOriginalValue("accountEntryCode");
+	}
+
 	@Override
 	public boolean getChildBuild() {
 		return _childBuild;
@@ -779,6 +917,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_childBuild = childBuild;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalChildBuild() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("childBuild"));
 	}
 
 	@Override
@@ -817,6 +965,20 @@ public class PatcherBuildModelImpl
 		}
 
 		_fileName = fileName;
+	}
+
+	@Override
+	public long getHotfixId() {
+		return _hotfixId;
+	}
+
+	@Override
+	public void setHotfixId(long hotfixId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_hotfixId = hotfixId;
 	}
 
 	@Override
@@ -928,6 +1090,16 @@ public class PatcherBuildModelImpl
 		_latestKeyBuild = latestKeyBuild;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalLatestKeyBuild() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("latestKeyBuild"));
+	}
+
 	@Override
 	public boolean getLatestLESATicketBuild() {
 		return _latestLESATicketBuild;
@@ -964,6 +1136,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_latestSupportTicketBuild = latestSupportTicketBuild;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalLatestSupportTicketBuild() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("latestSupportTicketBuild"));
 	}
 
 	@Override
@@ -1018,6 +1200,15 @@ public class PatcherBuildModelImpl
 		_name = name;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalName() {
+		return getColumnOriginalValue("name");
+	}
+
 	@Override
 	public boolean getNotified() {
 		return _notified;
@@ -1035,6 +1226,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_notified = notified;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalNotified() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("notified"));
 	}
 
 	@Override
@@ -1141,6 +1342,15 @@ public class PatcherBuildModelImpl
 		_supportTicket = supportTicket;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalSupportTicket() {
+		return getColumnOriginalValue("supportTicket");
+	}
+
 	@Override
 	public double getSupportTicketVersion() {
 		return _supportTicketVersion;
@@ -1153,6 +1363,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_supportTicketVersion = supportTicketVersion;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public double getOriginalSupportTicketVersion() {
+		return GetterUtil.getDouble(
+			this.<Double>getColumnOriginalValue("supportTicketVersion"));
 	}
 
 	@Override
@@ -1169,6 +1389,16 @@ public class PatcherBuildModelImpl
 		_type = type;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalType() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("type_"));
+	}
+
 	@Override
 	public int getStatus() {
 		return _status;
@@ -1181,6 +1411,16 @@ public class PatcherBuildModelImpl
 		}
 
 		_status = status;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalStatus() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("status"));
 	}
 
 	@Override
@@ -1389,7 +1629,6 @@ public class PatcherBuildModelImpl
 		patcherBuildImpl.setUserName(getUserName());
 		patcherBuildImpl.setCreateDate(getCreateDate());
 		patcherBuildImpl.setModifiedDate(getModifiedDate());
-		patcherBuildImpl.setHotfixId(getHotfixId());
 		patcherBuildImpl.setPatcherAccountId(getPatcherAccountId());
 		patcherBuildImpl.setPatcherFixId(getPatcherFixId());
 		patcherBuildImpl.setPatcherProductVersionId(
@@ -1401,6 +1640,7 @@ public class PatcherBuildModelImpl
 		patcherBuildImpl.setChildBuild(isChildBuild());
 		patcherBuildImpl.setComments(getComments());
 		patcherBuildImpl.setFileName(getFileName());
+		patcherBuildImpl.setHotfixId(getHotfixId());
 		patcherBuildImpl.setInitialName(getInitialName());
 		patcherBuildImpl.setKey(getKey());
 		patcherBuildImpl.setKeyVersion(getKeyVersion());
@@ -1448,8 +1688,6 @@ public class PatcherBuildModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		patcherBuildImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
-		patcherBuildImpl.setHotfixId(
-			this.<Long>getColumnOriginalValue("hotfixId"));
 		patcherBuildImpl.setPatcherAccountId(
 			this.<Long>getColumnOriginalValue("patcherAccountId"));
 		patcherBuildImpl.setPatcherFixId(
@@ -1468,6 +1706,8 @@ public class PatcherBuildModelImpl
 			this.<String>getColumnOriginalValue("comments"));
 		patcherBuildImpl.setFileName(
 			this.<String>getColumnOriginalValue("fileName"));
+		patcherBuildImpl.setHotfixId(
+			this.<Long>getColumnOriginalValue("hotfixId"));
 		patcherBuildImpl.setInitialName(
 			this.<String>getColumnOriginalValue("initialName"));
 		patcherBuildImpl.setKey(this.<String>getColumnOriginalValue("key_"));
@@ -1623,8 +1863,6 @@ public class PatcherBuildModelImpl
 			patcherBuildCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
-		patcherBuildCacheModel.hotfixId = getHotfixId();
-
 		patcherBuildCacheModel.patcherAccountId = getPatcherAccountId();
 
 		patcherBuildCacheModel.patcherFixId = getPatcherFixId();
@@ -1662,6 +1900,8 @@ public class PatcherBuildModelImpl
 		if ((fileName != null) && (fileName.length() == 0)) {
 			patcherBuildCacheModel.fileName = null;
 		}
+
+		patcherBuildCacheModel.hotfixId = getHotfixId();
 
 		patcherBuildCacheModel.initialName = getInitialName();
 
@@ -1841,7 +2081,6 @@ public class PatcherBuildModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private long _hotfixId;
 	private long _patcherAccountId;
 	private long _patcherFixId;
 	private long _patcherProductVersionId;
@@ -1851,6 +2090,7 @@ public class PatcherBuildModelImpl
 	private boolean _childBuild;
 	private String _comments;
 	private String _fileName;
+	private long _hotfixId;
 	private String _initialName;
 	private String _key;
 	private double _keyVersion;
@@ -1912,7 +2152,6 @@ public class PatcherBuildModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
-		_columnOriginalValues.put("hotfixId", _hotfixId);
 		_columnOriginalValues.put("patcherAccountId", _patcherAccountId);
 		_columnOriginalValues.put("patcherFixId", _patcherFixId);
 		_columnOriginalValues.put(
@@ -1924,6 +2163,7 @@ public class PatcherBuildModelImpl
 		_columnOriginalValues.put("childBuild", _childBuild);
 		_columnOriginalValues.put("comments", _comments);
 		_columnOriginalValues.put("fileName", _fileName);
+		_columnOriginalValues.put("hotfixId", _hotfixId);
 		_columnOriginalValues.put("initialName", _initialName);
 		_columnOriginalValues.put("key_", _key);
 		_columnOriginalValues.put("keyVersion", _keyVersion);
@@ -1988,25 +2228,25 @@ public class PatcherBuildModelImpl
 
 		columnBitmasks.put("modifiedDate", 64L);
 
-		columnBitmasks.put("hotfixId", 128L);
+		columnBitmasks.put("patcherAccountId", 128L);
 
-		columnBitmasks.put("patcherAccountId", 256L);
+		columnBitmasks.put("patcherFixId", 256L);
 
-		columnBitmasks.put("patcherFixId", 512L);
+		columnBitmasks.put("patcherProductVersionId", 512L);
 
-		columnBitmasks.put("patcherProductVersionId", 1024L);
+		columnBitmasks.put("patcherProjectVersionId", 1024L);
 
-		columnBitmasks.put("patcherProjectVersionId", 2048L);
+		columnBitmasks.put("ticketEntryId", 2048L);
 
-		columnBitmasks.put("ticketEntryId", 4096L);
+		columnBitmasks.put("accountEntryCode", 4096L);
 
-		columnBitmasks.put("accountEntryCode", 8192L);
+		columnBitmasks.put("childBuild", 8192L);
 
-		columnBitmasks.put("childBuild", 16384L);
+		columnBitmasks.put("comments", 16384L);
 
-		columnBitmasks.put("comments", 32768L);
+		columnBitmasks.put("fileName", 32768L);
 
-		columnBitmasks.put("fileName", 65536L);
+		columnBitmasks.put("hotfixId", 65536L);
 
 		columnBitmasks.put("initialName", 131072L);
 

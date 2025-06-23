@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceModifierProductGroup;
 import com.liferay.headless.commerce.admin.pricing.client.http.HttpInvoker;
@@ -211,12 +212,79 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 
 	@Test
 	public void testDeletePriceModifierProductGroup() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PriceModifierProductGroup priceModifierProductGroup =
+			testDeletePriceModifierProductGroup_addPriceModifierProductGroup();
+
+		assertHttpResponseStatusCode(
+			204,
+			priceModifierProductGroupResource.
+				deletePriceModifierProductGroupHttpResponse(
+					priceModifierProductGroup.
+						getPriceModifierProductGroupId()));
+	}
+
+	protected PriceModifierProductGroup
+			testDeletePriceModifierProductGroup_addPriceModifierProductGroup()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeletePriceModifierProductGroup() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		PriceModifierProductGroup priceModifierProductGroup1 =
+			testGraphQLDeletePriceModifierProductGroup_addPriceModifierProductGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePriceModifierProductGroup",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"priceModifierProductGroupId",
+									priceModifierProductGroup1.
+										getPriceModifierProductGroupId());
+							}
+						})),
+				"JSONObject/data", "Object/deletePriceModifierProductGroup"));
+
+		// Using the namespace headlessCommerceAdminPricing_v2_0
+
+		PriceModifierProductGroup priceModifierProductGroup2 =
+			testGraphQLDeletePriceModifierProductGroup_addPriceModifierProductGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminPricing_v2_0",
+						new GraphQLField(
+							"deletePriceModifierProductGroup",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"priceModifierProductGroupId",
+										priceModifierProductGroup2.
+											getPriceModifierProductGroupId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminPricing_v2_0",
+				"Object/deletePriceModifierProductGroup"));
+	}
+
+	protected PriceModifierProductGroup
+			testGraphQLDeletePriceModifierProductGroup_addPriceModifierProductGroup()
+		throws Exception {
+
+		return testGraphQLPriceModifierProductGroup_addPriceModifierProductGroup();
 	}
 
 	@Test
@@ -225,7 +293,7 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 			testDeletePriceModifierProductGroupBatch_addPriceModifierProductGroup();
 
 		testDeletePriceModifierProductGroupBatch_deletePriceModifierProductGroup(
-			"COMPLETED", null,
+			202, null,
 			priceModifierProductGroup1.getPriceModifierProductGroupId());
 	}
 
@@ -233,14 +301,12 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 			testDeletePriceModifierProductGroupBatch_addPriceModifierProductGroup()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeletePriceModifierProductGroup_addPriceModifierProductGroup();
 	}
 
 	protected void
 			testDeletePriceModifierProductGroupBatch_deletePriceModifierProductGroup(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -254,10 +320,10 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 							"priceModifierProductGroupId", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -325,6 +391,12 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 			page,
 			testGetPriceModifierByExternalReferenceCodePriceModifierProductGroupsPage_getExpectedActions(
 				externalReferenceCode));
+
+		priceModifierProductGroupResource.deletePriceModifierProductGroup(
+			priceModifierProductGroup1.getPriceModifierProductGroupId());
+
+		priceModifierProductGroupResource.deletePriceModifierProductGroup(
+			priceModifierProductGroup2.getPriceModifierProductGroupId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -541,6 +613,12 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 			page,
 			testGetPriceModifierIdPriceModifierProductGroupsPage_getExpectedActions(
 				id));
+
+		priceModifierProductGroupResource.deletePriceModifierProductGroup(
+			priceModifierProductGroup1.getPriceModifierProductGroupId());
+
+		priceModifierProductGroupResource.deletePriceModifierProductGroup(
+			priceModifierProductGroup2.getPriceModifierProductGroupId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -1019,8 +1097,69 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PriceModifierProductGroup priceModifierProductGroup1 =
+			testBatchEngineDeleteImportTask_addPriceModifierProductGroup();
+
+		testBatchEngineDeleteImportTask_deletePriceModifierProductGroup(
+			200, null,
+			priceModifierProductGroup1.getPriceModifierProductGroupId());
+	}
+
+	protected PriceModifierProductGroup
+			testBatchEngineDeleteImportTask_addPriceModifierProductGroup()
+		throws Exception {
+
+		return testDeletePriceModifierProductGroup_addPriceModifierProductGroup();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deletePriceModifierProductGroup(
+				int expectedStatusCode, String externalReferenceCode, Long id,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProductGroup",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"priceModifierProductGroupId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected PriceModifierProductGroup
+			testGraphQLPriceModifierProductGroup_addPriceModifierProductGroup()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		PriceModifierProductGroup priceModifierProductGroup,
@@ -1117,6 +1256,12 @@ public abstract class BasePriceModifierProductGroupResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (priceModifierProductGroup.getPriceModifierProductGroupId() ==
+				null) {
+
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

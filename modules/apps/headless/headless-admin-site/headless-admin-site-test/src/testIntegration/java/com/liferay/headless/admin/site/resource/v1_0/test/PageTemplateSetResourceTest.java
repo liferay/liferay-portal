@@ -190,6 +190,15 @@ public class PageTemplateSetResourceTest
 			testGetSiteSiteByExternalReferenceCodePageTemplateSetsPageWithPagination();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSiteSiteByExternalReferenceCodePageTemplateSet()
+		throws Exception {
+
+		super.testGraphQLGetSiteSiteByExternalReferenceCodePageTemplateSet();
+	}
+
 	@Override
 	@Test
 	public void testPatchSiteSiteByExternalReferenceCodePageTemplateSet()
@@ -351,14 +360,6 @@ public class PageTemplateSetResourceTest
 			putSiteSiteByExternalReferenceCodePageTemplateSet(
 				siteExternalReferenceCode,
 				pageTemplateSet.getExternalReferenceCode(), pageTemplateSet);
-	}
-
-	@Override
-	protected String
-			testGetSiteSiteByExternalReferenceCodePageTemplateSetsPage_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return testGroup.getExternalReferenceCode();
 	}
 
 	@Override

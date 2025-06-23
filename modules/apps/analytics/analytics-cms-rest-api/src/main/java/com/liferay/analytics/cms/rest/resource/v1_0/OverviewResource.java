@@ -43,12 +43,12 @@ public interface OverviewResource {
 
 	public Overview getContentOverview(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception;
 
 	public Overview getFileOverview(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

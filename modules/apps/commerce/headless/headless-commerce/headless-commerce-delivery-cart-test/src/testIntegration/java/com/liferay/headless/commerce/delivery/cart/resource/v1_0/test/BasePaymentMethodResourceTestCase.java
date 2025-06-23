@@ -349,6 +349,11 @@ public abstract class BasePaymentMethodResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		PaymentMethod paymentMethod, List<PaymentMethod> paymentMethods) {
 

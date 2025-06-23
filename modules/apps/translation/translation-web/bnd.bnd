@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Translation Web
 Bundle-SymbolicName: com.liferay.translation.web
-Bundle-Version: 2.0.118
+Bundle-Version: 2.0.119
 Web-ContextPath: /translation-web
 -includeresource: @com.liferay.util.java-*.jar!/com/liferay/util/JS.class

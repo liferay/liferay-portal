@@ -48,9 +48,10 @@ function getFormPayload(form: AnalyticsType.HTMLElement) {
 		});
 	}
 
-	if (form.dataset.analyticsAssetErc) {
+	if (form.dataset.analyticsAssetExternalReferenceCode) {
 		Object.assign(payload, {
-			erc: form.dataset.analyticsAssetErc.trim(),
+			externalReferenceCode:
+				form.dataset.analyticsAssetExternalReferenceCode.trim(),
 		});
 	}
 

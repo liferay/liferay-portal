@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -160,6 +162,24 @@ public class PatcherAccountPersistenceTest {
 		Assert.assertEquals(
 			existingPatcherAccount.getAccountEntryCode(),
 			newPatcherAccount.getAccountEntryCode());
+	}
+
+	@Test
+	public void testCountByAccountEntryCode() throws Exception {
+		_persistence.countByAccountEntryCode("");
+
+		_persistence.countByAccountEntryCode("null");
+
+		_persistence.countByAccountEntryCode((String)null);
+	}
+
+	@Test
+	public void testCountByC_LikeA() throws Exception {
+		_persistence.countByC_LikeA(RandomTestUtil.nextLong(), "");
+
+		_persistence.countByC_LikeA(0L, "null");
+
+		_persistence.countByC_LikeA(0L, (String)null);
 	}
 
 	@Test
@@ -405,6 +425,64 @@ public class PatcherAccountPersistenceTest {
 		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
 
 		Assert.assertEquals(0, result.size());
+	}
+
+	@Test
+	public void testResetOriginalValues() throws Exception {
+		PatcherAccount newPatcherAccount = addPatcherAccount();
+
+		_persistence.clearCache();
+
+		_assertOriginalValues(
+			_persistence.findByPrimaryKey(newPatcherAccount.getPrimaryKey()));
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(true);
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(false);
+	}
+
+	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
+		throws Exception {
+
+		PatcherAccount newPatcherAccount = addPatcherAccount();
+
+		if (clearSession) {
+			Session session = _persistence.openSession();
+
+			session.flush();
+
+			session.clear();
+		}
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			PatcherAccount.class, _dynamicQueryClassLoader);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"patcherAccountId", newPatcherAccount.getPatcherAccountId()));
+
+		List<PatcherAccount> result = _persistence.findWithDynamicQuery(
+			dynamicQuery);
+
+		_assertOriginalValues(result.get(0));
+	}
+
+	private void _assertOriginalValues(PatcherAccount patcherAccount) {
+		Assert.assertEquals(
+			patcherAccount.getAccountEntryCode(),
+			ReflectionTestUtil.invoke(
+				patcherAccount, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "accountEntryCode"));
 	}
 
 	protected PatcherAccount addPatcherAccount() throws Exception {

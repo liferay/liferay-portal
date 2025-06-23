@@ -55,6 +55,7 @@ import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -753,7 +754,7 @@ public class EditableFragmentEntryProcessorTest {
 			objectDefinition.getClassName());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -851,6 +852,77 @@ public class EditableFragmentEntryProcessorTest {
 		Assert.assertEquals(
 			JournalArticle.class.getName(),
 			element.attr("data-analytics-asset-type"));
+	}
+
+	@FeatureFlag("LPD-39437")
+	@Test
+	public void testFragmentEntryProcessorEditableAssertAnalyticsAttributesWithMappedObjectEntry()
+		throws Exception {
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			"fragment_entry_editable_text.html");
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						"Text", "String", true, true, null,
+						RandomTestUtil.randomString(), "title", false)));
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "title", "titleValue");
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
+				fragmentEntry.getFragmentEntryId(),
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
+				TestPropsValues.getPlid(), fragmentEntry.getCss(),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(),
+				StringPool.BLANK,
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"editable_text",
+						JSONUtil.put(
+							"classNameId",
+							_portal.getClassNameId(
+								objectDefinition.getClassName())
+						).put(
+							"classPK", objectEntry.getPrimaryKey()
+						).put(
+							"defaultValue", "test"
+						).put(
+							"fieldId", "title"
+						))
+				).toString(),
+				StringPool.BLANK, 0, null, fragmentEntry.getType(),
+				ServiceContextTestUtil.getServiceContext());
+
+		Element element = _getElement(
+			"data-lfr-editable-id", "editable_text", fragmentEntryLink,
+			LocaleUtil.US, FragmentEntryLinkConstants.VIEW);
+
+		Assert.assertEquals(
+			AnalyticsAttributesUtil.ACTION_IMPRESSION,
+			element.attr("data-analytics-asset-action"));
+		Assert.assertEquals(
+			objectEntry.getExternalReferenceCode(),
+			element.attr("data-analytics-asset-external-reference-code"));
+		Assert.assertEquals(
+			"title", element.attr("data-analytics-asset-field"));
+		Assert.assertEquals(
+			String.valueOf(objectEntry.getPrimaryKey()),
+			element.attr("data-analytics-asset-id"));
+		Assert.assertEquals(
+			"object-entry", element.attr("data-analytics-asset-type"));
+		Assert.assertEquals(
+			"titleValue", element.attr("data-analytics-asset-title"));
+		Assert.assertEquals(
+			objectDefinition.getName(),
+			element.attr("data-analytics-object-definition-name"));
 	}
 
 	@FeatureFlag("LPD-39437")

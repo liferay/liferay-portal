@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.inventory.client.dto.v1_0.ReplenishmentItem;
 import com.liferay.headless.commerce.admin.inventory.client.http.HttpInvoker;
@@ -344,31 +345,31 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 			testDeleteReplenishmentItemBatch_addReplenishmentItem();
 
 		testDeleteReplenishmentItemBatch_deleteReplenishmentItem(
-			"COMPLETED", null, replenishmentItem1.getId());
+			202, replenishmentItem1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			replenishmentItemResource.getReplenishmentItemHttpResponse(
 				replenishmentItem1.getId()));
 
-		ReplenishmentItem replenishmentItem2 =
+		replenishmentItem1 =
 			testDeleteReplenishmentItemBatch_addReplenishmentItem();
 
 		testDeleteReplenishmentItemBatch_deleteReplenishmentItem(
-			"COMPLETED", replenishmentItem2.getExternalReferenceCode(), null);
+			202, null, replenishmentItem1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			replenishmentItemResource.getReplenishmentItemHttpResponse(
-				replenishmentItem2.getId()));
+				replenishmentItem1.getId()));
 
 		replenishmentItem1 =
 			testDeleteReplenishmentItemBatch_addReplenishmentItem();
-		replenishmentItem2 =
+		ReplenishmentItem replenishmentItem2 =
 			testDeleteReplenishmentItemBatch_addReplenishmentItem();
 
 		testDeleteReplenishmentItemBatch_deleteReplenishmentItem(
-			"COMPLETED", replenishmentItem2.getExternalReferenceCode(),
+			202, replenishmentItem2.getExternalReferenceCode(),
 			replenishmentItem1.getId());
 
 		assertHttpResponseStatusCode(
@@ -381,7 +382,7 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 				replenishmentItem2.getId()));
 
 		testDeleteReplenishmentItemBatch_deleteReplenishmentItem(
-			"COMPLETED", replenishmentItem2.getExternalReferenceCode(),
+			202, replenishmentItem2.getExternalReferenceCode(),
 			replenishmentItem1.getId());
 
 		assertHttpResponseStatusCode(
@@ -398,7 +399,7 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 	}
 
 	protected void testDeleteReplenishmentItemBatch_deleteReplenishmentItem(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -411,10 +412,10 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1507,18 +1508,112 @@ public abstract class BaseReplenishmentItemResourceTestCase {
 	}
 
 	protected ReplenishmentItem
+			testPutReplenishmentItemByExternalReferenceCode_addReplenishmentItem()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected ReplenishmentItem
 			testPutReplenishmentItemByExternalReferenceCode_createReplenishmentItem()
 		throws Exception {
 
 		return randomReplenishmentItem();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ReplenishmentItem replenishmentItem1 =
+			testBatchEngineDeleteImportTask_addReplenishmentItem();
+
+		testBatchEngineDeleteImportTask_deleteReplenishmentItem(
+			200, replenishmentItem1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			replenishmentItemResource.getReplenishmentItemHttpResponse(
+				replenishmentItem1.getId()));
+
+		replenishmentItem1 =
+			testBatchEngineDeleteImportTask_addReplenishmentItem();
+
+		testBatchEngineDeleteImportTask_deleteReplenishmentItem(
+			200, null, replenishmentItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			replenishmentItemResource.getReplenishmentItemHttpResponse(
+				replenishmentItem1.getId()));
+
+		replenishmentItem1 =
+			testBatchEngineDeleteImportTask_addReplenishmentItem();
+		ReplenishmentItem replenishmentItem2 =
+			testBatchEngineDeleteImportTask_addReplenishmentItem();
+
+		testBatchEngineDeleteImportTask_deleteReplenishmentItem(
+			200, replenishmentItem2.getExternalReferenceCode(),
+			replenishmentItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			replenishmentItemResource.getReplenishmentItemHttpResponse(
+				replenishmentItem1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			replenishmentItemResource.getReplenishmentItemHttpResponse(
+				replenishmentItem2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteReplenishmentItem(
+			200, replenishmentItem2.getExternalReferenceCode(),
+			replenishmentItem1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			replenishmentItemResource.getReplenishmentItemHttpResponse(
+				replenishmentItem2.getId()));
+	}
+
 	protected ReplenishmentItem
-			testPutReplenishmentItemByExternalReferenceCode_addReplenishmentItem()
+			testBatchEngineDeleteImportTask_addReplenishmentItem()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteReplenishmentItem_addReplenishmentItem();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteReplenishmentItem(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.inventory.dto.v1_0.ReplenishmentItem",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected ReplenishmentItem

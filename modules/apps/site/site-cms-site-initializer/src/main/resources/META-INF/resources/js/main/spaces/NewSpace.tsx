@@ -7,28 +7,38 @@ import ClayButton from '@clayui/button';
 import Form, {ClayInput} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import {useFormik} from 'formik';
+import {openToast} from 'frontend-js-components-web';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import SpaceService from '../../services/SpaceService';
-import SpaceColorDropdown from '../components/SpaceLogoColorDropdown';
 import SpaceSticker, {LogoColor} from '../components/SpaceSticker';
 import {FieldText} from '../components/forms';
-import {required, validate} from '../components/forms/validations';
+import {
+	invalidCharacters,
+	maxLength,
+	nonNumeric,
+	notNull,
+	required,
+	validate,
+} from '../components/forms/validations';
 import {getImage} from '../util/getImage';
 import {NewSpaceFormSection} from './NewSpaceFormSection';
+import SpaceColorDropdown from './SpaceLogoColorDropdown';
 
 export interface NewSpaceProps {
-	baseRedirectUrl: string;
+	baseAddSpaceMembersURL: string;
 }
 
-const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
+const NewSpace = ({baseAddSpaceMembersURL}: NewSpaceProps) => {
 	const {
 		errors,
 		handleChange,
 		handleSubmit,
 		isSubmitting,
 		setFieldValue,
+		setSubmitting,
+		submitForm,
 		touched,
 		values,
 	} = useFormik({
@@ -46,18 +56,38 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 				settings: {logoColor},
 			}).then((response) => {
 				if (response.data) {
-					navigate(baseRedirectUrl + response.data.id);
+					navigate(
+						baseAddSpaceMembersURL +
+							'?assetLibraryId=' +
+							response.data.id
+					);
+				}
+
+				if (response.error) {
+					setSubmitting(false);
+					openToast({
+						message: Liferay.Language.get('unable-to-create-space'),
+						type: 'danger',
+					});
 				}
 			});
 		},
 		validate: (values) =>
 			validate(
 				{
-					name: [required],
+					name: [
+						required,
+						nonNumeric,
+						notNull,
+						invalidCharacters(['*']),
+						maxLength(150),
+					],
 				},
 				values
 			),
 	});
+
+	const shouldDisableContinueBtn = isSubmitting || !values.name;
 
 	return (
 		<ClayLayout.Row className="p-4">
@@ -66,8 +96,6 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 					description={Liferay.Language.get(
 						'spaces-are-essential-for-organizing-defining-and-managing-your-content-and-files'
 					)}
-					linkLabel={Liferay.Language.get('learn-more-about-spaces')}
-					linkUrl="/"
 					onSubmit={handleSubmit}
 					step={1}
 					title={Liferay.Language.get('create-a-space')}
@@ -121,21 +149,14 @@ const NewSpace = ({baseRedirectUrl}: NewSpaceProps) => {
 					</Form.Group>
 
 					<ClayButton.Group className="mb-0 w-100" spaced vertical>
-						<ClayButton className="mt-4">
-							{Liferay.Language.get('add-members')}
-						</ClayButton>
-
 						<ClayButton
-							borderless
-							className="mt-2"
-							disabled={isSubmitting}
-							displayType="secondary"
-							outline
-							type="submit"
+							className="mt-4"
+							disabled={shouldDisableContinueBtn}
+							onClick={() => {
+								submitForm();
+							}}
 						>
-							{Liferay.Language.get(
-								'create-a-space-without-members'
-							)}
+							{Liferay.Language.get('continue')}
 						</ClayButton>
 					</ClayButton.Group>
 				</NewSpaceFormSection>

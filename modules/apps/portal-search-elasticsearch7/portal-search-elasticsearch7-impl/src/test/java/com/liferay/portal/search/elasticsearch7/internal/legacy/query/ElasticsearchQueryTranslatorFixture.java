@@ -18,45 +18,28 @@ import org.elasticsearch.index.query.QueryBuilder;
 public class ElasticsearchQueryTranslatorFixture {
 
 	public ElasticsearchQueryTranslatorFixture() {
-		_elasticsearchQueryTranslator = new ElasticsearchQueryTranslator() {
-			{
-				ElasticsearchFilterTranslatorFixture
-					elasticsearchFilterTranslatorFixture =
-						new ElasticsearchFilterTranslatorFixture(this);
+		ElasticsearchFilterTranslatorFixture
+			elasticsearchFilterTranslatorFixture =
+				new ElasticsearchFilterTranslatorFixture(
+					_elasticsearchQueryTranslator);
 
-				booleanQueryTranslator = new BooleanQueryTranslatorImpl();
+		ReflectionTestUtil.setFieldValue(
+			_elasticsearchQueryTranslator, "_filterTranslatorSnapshot",
+			new Snapshot<FilterTranslator<QueryBuilder>>(null, null) {
 
-				ReflectionTestUtil.setFieldValue(
-					booleanQueryTranslator, "_filterTranslatorSnapshot",
-					new Snapshot<FilterTranslator<QueryBuilder>>(null, null) {
+				public FilterTranslator<QueryBuilder> get() {
+					return elasticsearchFilterTranslatorFixture.
+						getElasticsearchFilterTranslator();
+				}
 
-						public FilterTranslator<QueryBuilder> get() {
-							return elasticsearchFilterTranslatorFixture.
-								getElasticsearchFilterTranslator();
-						}
-
-					});
-
-				disMaxQueryTranslator = new DisMaxQueryTranslatorImpl();
-				fuzzyQueryTranslator = new FuzzyQueryTranslatorImpl();
-				matchAllQueryTranslator = new MatchAllQueryTranslatorImpl();
-				matchQueryTranslator = new MatchQueryTranslatorImpl();
-				moreLikeThisQueryTranslator =
-					new MoreLikeThisQueryTranslatorImpl();
-				multiMatchQueryTranslator = new MultiMatchQueryTranslatorImpl();
-				nestedQueryTranslator = new NestedQueryTranslatorImpl();
-				stringQueryTranslator = new StringQueryTranslatorImpl();
-				termQueryTranslator = new TermQueryTranslatorImpl();
-				termRangeQueryTranslator = new TermRangeQueryTranslatorImpl();
-				wildcardQueryTranslator = new WildcardQueryTranslatorImpl();
-			}
-		};
+			});
 	}
 
 	public ElasticsearchQueryTranslator getElasticsearchQueryTranslator() {
 		return _elasticsearchQueryTranslator;
 	}
 
-	private final ElasticsearchQueryTranslator _elasticsearchQueryTranslator;
+	private final ElasticsearchQueryTranslator _elasticsearchQueryTranslator =
+		new ElasticsearchQueryTranslator(null);
 
 }

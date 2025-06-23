@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Analytics Reports JS Components Web
 Bundle-SymbolicName: com.liferay.analytics.reports.js.components.web
-Bundle-Version: 1.0.12
+Bundle-Version: 1.0.13
 Web-ContextPath: /analytics-reports-js-components-web

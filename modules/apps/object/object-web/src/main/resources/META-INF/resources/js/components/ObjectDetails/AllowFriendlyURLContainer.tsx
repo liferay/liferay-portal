@@ -14,12 +14,14 @@ import {hasLegacySeparator} from './SeparatorContainer';
 import './AllowFriendlyURLContainer.scss';
 
 interface AllowFriendlyURLContainerProps {
+	disabled?: boolean;
 	onSubmit?: (editedObjectDefinition?: Partial<ObjectDefinition>) => void;
 	setValues: (values: Partial<ObjectDefinition>) => void;
 	values: Partial<ObjectDefinition>;
 }
 
 export function AllowFriendlyURLContainer({
+	disabled,
 	onSubmit,
 	setValues,
 	values,
@@ -30,7 +32,10 @@ export function AllowFriendlyURLContainer({
 				<ClayCheckbox
 					checked={!!values.enableFriendlyURLCustomization}
 					className="lfr-objects__seo-container-checkbox"
-					disabled={hasLegacySeparator(values.friendlyURLSeparator)}
+					disabled={
+						disabled ||
+						hasLegacySeparator(values.friendlyURLSeparator)
+					}
 					label={Liferay.Language.get(
 						"allow-overriding-an-entry's-friendly-url"
 					)}

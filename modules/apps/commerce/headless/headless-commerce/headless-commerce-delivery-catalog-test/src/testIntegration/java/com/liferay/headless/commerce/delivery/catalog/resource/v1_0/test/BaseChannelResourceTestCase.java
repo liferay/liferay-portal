@@ -562,6 +562,11 @@ public abstract class BaseChannelResourceTestCase {
 		return testGraphQLChannel_addChannel();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 

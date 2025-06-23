@@ -21,6 +21,19 @@ import org.junit.Test;
 public class SetUtilTest {
 
 	@Test
+	public void testAsymmetricDifference() {
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("a", "b", "c")),
+			SetUtil.asymmetricDifference(
+				Arrays.asList("a", "b", "c"), Arrays.asList("x", "y", "z")));
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("d")),
+			SetUtil.asymmetricDifference(
+				Arrays.asList("a", "b", "c", "d"),
+				Arrays.asList("a", "b", "c")));
+	}
+
+	@Test
 	public void testConstructor() {
 		new SetUtil();
 	}
@@ -40,14 +53,22 @@ public class SetUtilTest {
 		Set<String> set1 = new HashSet<>(Arrays.asList("a", "b", "c"));
 		Set<String> set2 = new HashSet<>(Arrays.asList("c", "d"));
 
-		Assert.assertSame(set2, SetUtil.intersect(set1, set2));
-		Assert.assertEquals(set2, new HashSet<String>(Arrays.asList("c")));
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("a", "b", "c")), set1);
+		Assert.assertEquals(new HashSet<String>(Arrays.asList("c", "d")), set2);
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("c")),
+			SetUtil.intersect(set1, set2));
 
 		Set<String> set3 = new HashSet<>(Arrays.asList("c", "d", "e"));
 
-		Assert.assertSame(set1, SetUtil.intersect(set1, set3));
-
-		Assert.assertEquals(set1, new HashSet<String>(Arrays.asList("c")));
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("a", "b", "c")), set1);
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("c", "d", "e")), set3);
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("c")),
+			SetUtil.intersect(set1, set3));
 	}
 
 	@Test
@@ -55,15 +76,15 @@ public class SetUtilTest {
 		List<String> list1 = Arrays.asList("a", "b", "c");
 		List<String> list2 = Arrays.asList("c", "d");
 
-		Set<String> set = SetUtil.intersect(list1, list2);
-
-		Assert.assertEquals(set, new HashSet<String>(Arrays.asList("c")));
+		Assert.assertEquals(
+			SetUtil.intersect(list1, list2),
+			new HashSet<String>(Arrays.asList("c")));
 
 		List<String> list3 = Arrays.asList("c", "d", "e");
 
-		set = SetUtil.intersect(list1, list3);
-
-		Assert.assertEquals(set, new HashSet<String>(Arrays.asList("c")));
+		Assert.assertEquals(
+			SetUtil.intersect(list1, list3),
+			new HashSet<String>(Arrays.asList("c")));
 	}
 
 	@Test
@@ -96,6 +117,19 @@ public class SetUtilTest {
 				break;
 			}
 		}
+	}
+
+	@Test
+	public void testSymmetricDifference() {
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("a", "b", "c", "x", "y", "z")),
+			SetUtil.symmetricDifference(
+				Arrays.asList("a", "b", "c"), Arrays.asList("x", "y", "z")));
+		Assert.assertEquals(
+			new HashSet<String>(Arrays.asList("d")),
+			SetUtil.symmetricDifference(
+				Arrays.asList("a", "b", "c", "d"),
+				Arrays.asList("a", "b", "c")));
 	}
 
 }

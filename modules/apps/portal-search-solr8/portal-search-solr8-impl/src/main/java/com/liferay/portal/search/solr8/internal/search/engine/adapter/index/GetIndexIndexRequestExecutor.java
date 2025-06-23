@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.index.GetIndexIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface GetIndexIndexRequestExecutor {
+public class GetIndexIndexRequestExecutor {
 
 	public GetIndexIndexResponse execute(
-		GetIndexIndexRequest getIndexIndexRequest);
+		GetIndexIndexRequest getIndexIndexRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

@@ -5,6 +5,7 @@
 
 package com.liferay.object.internal.field.business.type;
 
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
@@ -90,7 +91,8 @@ public class RelationshipObjectFieldBusinessType
 
 	@Override
 	public Object getValue(
-			ObjectField objectField, long userId, Map<String, Object> values)
+			Long groupId, ObjectField objectField, long userId,
+			Map<String, Object> values)
 		throws PortalException {
 
 		String relationshipName = StringUtil.split(
@@ -219,18 +221,40 @@ public class RelationshipObjectFieldBusinessType
 				return 0;
 			}
 
-			ObjectDefinition objectDefinition = _getObjectDefinition(
-				objectField);
+			ObjectRelationship objectRelationship =
+				_objectRelationshipLocalService.
+					fetchObjectRelationshipByObjectFieldId2(
+						objectField.getObjectFieldId());
 
-			if (objectDefinition.isUnmodifiableSystemObject()) {
+			ObjectDefinition objectDefinition1 =
+				_objectDefinitionLocalService.getObjectDefinition(
+					objectRelationship.getObjectDefinitionId1());
+
+			if (objectDefinition1.isUnmodifiableSystemObject()) {
 				return _getPrimaryKeyObj(
-					externalReferenceCode, objectDefinition, 0L);
+					externalReferenceCode, objectDefinition1, 0L);
+			}
+
+			long objectDefinition1GroupId = 0;
+
+			ObjectDefinition objectDefinition2 =
+				_objectDefinitionLocalService.getObjectDefinition(
+					objectRelationship.getObjectDefinitionId2());
+
+			if (Objects.equals(
+					objectDefinition1.getScope(),
+					ObjectDefinitionConstants.SCOPE_SITE) &&
+				Objects.equals(
+					objectDefinition2.getScope(),
+					ObjectDefinitionConstants.SCOPE_SITE)) {
+
+				objectDefinition1GroupId = GetterUtil.getLong(groupId);
 			}
 
 			ObjectEntry objectEntry =
 				_objectEntryLocalService.getOrAddIncompleteObjectEntry(
-					externalReferenceCode, userId,
-					objectDefinition.getObjectDefinitionId());
+					externalReferenceCode, objectDefinition1GroupId, userId,
+					objectDefinition1.getObjectDefinitionId());
 
 			return objectEntry.getObjectEntryId();
 		}

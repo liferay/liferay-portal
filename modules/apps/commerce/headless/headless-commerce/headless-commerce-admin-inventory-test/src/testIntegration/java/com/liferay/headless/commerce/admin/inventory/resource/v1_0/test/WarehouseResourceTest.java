@@ -142,6 +142,13 @@ public class WarehouseResourceTest extends BaseWarehouseResourceTestCase {
 	}
 
 	@Override
+	protected Warehouse testBatchEngineDeleteImportTask_addWarehouse()
+		throws Exception {
+
+		return _addWarehouse(randomWarehouse());
+	}
+
+	@Override
 	protected Warehouse
 			testDeleteWarehouseByExternalReferenceCode_addWarehouse()
 		throws Exception {

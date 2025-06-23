@@ -26,7 +26,6 @@ export {default as Actions} from './components/ObjectAction/Actions';
 export {default as AddObjectAction} from './components/ObjectAction/AddObjectAction';
 export {default as EditObjectAction} from './components/ObjectAction/EditObjectAction';
 export {default as EditObjectDetails} from './components/ObjectDetails/EditObjectDetails';
-export {default as ModalDisableScheduleConfiguration} from './components/ObjectDetails/ModalDisableScheduleConfiguration';
 export {default as EditObjectField} from './components/ObjectField/EditObjectField';
 export {default as Fields} from './components/ObjectField/Fields';
 export {default as ObjectManagementToolbar} from './components/ObjectManagementToolbar';

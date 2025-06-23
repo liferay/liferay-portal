@@ -112,7 +112,19 @@ public class CacheFieldEntryPersistenceImplTest {
 				_cacheFieldEntry.getPrimaryKey());
 
 		Assert.assertNotNull(existingCacheFieldEntry);
-		Assert.assertNotNull(
+
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				existingCacheFieldEntry, "_nickname"));
+
+		Assert.assertEquals(
+			"Nickname_test.name", existingCacheFieldEntry.getNickname());
+
+		existingCacheFieldEntry = _cacheFieldEntryPersistence.fetchByPrimaryKey(
+			_cacheFieldEntry.getPrimaryKey());
+
+		Assert.assertEquals(
+			"Nickname_test.name",
 			ReflectionTestUtil.getFieldValue(
 				existingCacheFieldEntry, "_nickname"));
 	}

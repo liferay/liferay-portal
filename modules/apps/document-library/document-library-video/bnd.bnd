@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Document Library Video
 Bundle-SymbolicName: com.liferay.document.library.video
-Bundle-Version: 1.0.89
+Bundle-Version: 1.0.90
 Web-ContextPath: /document-library-video

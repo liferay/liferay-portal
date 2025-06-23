@@ -1774,8 +1774,16 @@ public class StringUtil {
 			return null;
 		}
 
-		if (collection.isEmpty()) {
+		int size = collection.size();
+
+		if (size == 0) {
 			return StringPool.BLANK;
+		}
+
+		if (size == 1) {
+			Iterator<?> iterator = collection.iterator();
+
+			return String.valueOf(iterator.next());
 		}
 
 		StringBundler sb = new StringBundler(2 * collection.size());

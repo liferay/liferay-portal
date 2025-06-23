@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -336,7 +337,7 @@ public abstract class BaseSXPElementResourceTestCase {
 		SXPElement sxpElement1 = testDeleteSXPElementBatch_addSXPElement();
 
 		testDeleteSXPElementBatch_deleteSXPElement(
-			"COMPLETED", null, sxpElement1.getId());
+			202, null, sxpElement1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -350,7 +351,7 @@ public abstract class BaseSXPElementResourceTestCase {
 	}
 
 	protected void testDeleteSXPElementBatch_deleteSXPElement(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -363,10 +364,10 @@ public abstract class BaseSXPElementResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1304,18 +1305,72 @@ public abstract class BaseSXPElementResourceTestCase {
 	}
 
 	protected SXPElement
+			testPutSXPElementByExternalReferenceCode_addSXPElement()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected SXPElement
 			testPutSXPElementByExternalReferenceCode_createSXPElement()
 		throws Exception {
 
 		return randomSXPElement();
 	}
 
-	protected SXPElement
-			testPutSXPElementByExternalReferenceCode_addSXPElement()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		SXPElement sxpElement1 =
+			testBatchEngineDeleteImportTask_addSXPElement();
+
+		testBatchEngineDeleteImportTask_deleteSXPElement(
+			200, null, sxpElement1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			sxpElementResource.getSXPElementHttpResponse(sxpElement1.getId()));
+	}
+
+	protected SXPElement testBatchEngineDeleteImportTask_addSXPElement()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteSXPElement_addSXPElement();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteSXPElement(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.search.experiences.rest.dto.v1_0.SXPElement", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

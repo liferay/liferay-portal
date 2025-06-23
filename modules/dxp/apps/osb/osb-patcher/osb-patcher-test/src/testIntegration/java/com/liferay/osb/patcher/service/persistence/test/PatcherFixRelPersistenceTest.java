@@ -143,6 +143,20 @@ public class PatcherFixRelPersistenceTest {
 	}
 
 	@Test
+	public void testCountByChildPatcherFixId() throws Exception {
+		_persistence.countByChildPatcherFixId(RandomTestUtil.nextLong());
+
+		_persistence.countByChildPatcherFixId(0L);
+	}
+
+	@Test
+	public void testCountByParentPatcherFixId() throws Exception {
+		_persistence.countByParentPatcherFixId(RandomTestUtil.nextLong());
+
+		_persistence.countByParentPatcherFixId(0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		PatcherFixRel newPatcherFixRel = addPatcherFixRel();
 

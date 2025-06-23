@@ -21,7 +21,6 @@ import com.liferay.commerce.product.model.CPAttachmentFileEntryTable;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.base.CPAttachmentFileEntryLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
-import com.liferay.commerce.product.util.BatchEngineImportTaskThreadLocal;
 import com.liferay.commerce.product.util.CPJSONUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -1025,10 +1024,6 @@ public class CPAttachmentFileEntryLocalServiceImpl
 
 	private void _reindex(long classNameId, long classPK)
 		throws PortalException {
-
-		if (BatchEngineImportTaskThreadLocal.isEnabled()) {
-			return;
-		}
 
 		ClassName className = _classNameLocalService.getClassName(classNameId);
 

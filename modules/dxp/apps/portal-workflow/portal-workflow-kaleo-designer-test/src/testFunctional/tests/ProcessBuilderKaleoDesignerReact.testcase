@@ -3757,57 +3757,6 @@ definition {
 			propertyValue = "Recurrence: 1 hour");
 	}
 
-	@description = "Verify that the Revision History tab display the definition current version"
-	@priority = 3
-	test CanViewCurrentVersionAtRevisionHistoryTab {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow Definition");
-
-		ProcessBuilderKaleoDesignerReact.addConnector(
-			connectorIn = "end",
-			connectorLabel = "Start-End Connector",
-			connectorOut = "start",
-			key_direction = "bottom");
-
-		PortletEntry.publish();
-
-		Alert.viewSuccessMessageText(successMessage = "Workflow published successfully.");
-
-		ProcessBuilderKaleoDesignerReact.selectConnector(connectorLabel = "START-END CONNECTOR");
-
-		ProcessBuilderKaleoDesignerReact.deleteNodeOrConnection(title = "Delete Transition");
-
-		ProcessBuilderKaleoDesignerReact.dragSidebarNodeAndMove(
-			nodeLabel = "Task",
-			nodePosition = "-200,-250");
-
-		ProcessBuilderKaleoDesignerReact.addConnector(
-			connectorIn = "task",
-			connectorLabel = "Start-Task Connector",
-			connectorOut = "start",
-			key_direction = "bottom");
-
-		ProcessBuilderKaleoDesignerReact.addConnector(
-			connectorIn = "end",
-			connectorLabel = "Task-End Connector",
-			connectorOut = "task",
-			key_direction = "bottom");
-
-		Button.click(button = "Update");
-
-		Alert.viewSuccessMessageText(successMessage = "Workflow updated successfully.");
-
-		ProcessBuilderKaleoDesignerReact.gotoInfoWorkflowDefinition();
-
-		Navigator.gotoNavTab(navTab = "Revision History");
-
-		ProcessBuilderKaleoDesignerReact.viewCurrentVersionAtRevisionHistoryTab(number = 2);
-	}
-
 	@description = "Verify that the user can see the Assignments on Single Approver"
 	@priority = 3
 	test CanViewDefaultSingleApproverAssignments {
@@ -3972,63 +3921,6 @@ definition {
 		task ("Then assert that the Created date, Last Modified and Total Modifications fields are displayed") {
 			ProcessBuilderKaleoDesignerReact.viewDetailsFieldsPresent();
 		}
-	}
-
-	@description = "Verify that the Revision History tab displays a list of the previous definition versions in descending order (3,2,1)"
-	@priority = 4
-	test CanViewPreviousVersionsListInOrderAtRevisionHistoryTab {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow Definition");
-
-		ProcessBuilderKaleoDesignerReact.addConnector(
-			connectorIn = "end",
-			connectorLabel = "Start-End Connector",
-			connectorOut = "start",
-			key_direction = "bottom");
-
-		PortletEntry.publish();
-
-		Alert.viewSuccessMessageText(successMessage = "Workflow published successfully.");
-
-		ProcessBuilderKaleoDesignerReact.selectConnector(connectorLabel = "START-END CONNECTOR");
-
-		ProcessBuilderKaleoDesignerReact.deleteNodeOrConnection(title = "Delete Transition");
-
-		ProcessBuilderKaleoDesignerReact.dragSidebarNodeAndMove(
-			nodeLabel = "Task",
-			nodePosition = "-200,-250");
-
-		ProcessBuilderKaleoDesignerReact.addConnector(
-			connectorIn = "task",
-			connectorLabel = "Start-Task Connector",
-			connectorOut = "start",
-			key_direction = "bottom");
-
-		ProcessBuilderKaleoDesignerReact.addConnector(
-			connectorIn = "end",
-			connectorLabel = "Task-End Connector",
-			connectorOut = "task",
-			key_direction = "bottom");
-
-		Button.click(button = "Update");
-
-		Alert.viewSuccessMessageText(successMessage = "Workflow updated successfully.");
-
-		ProcessBuilderKaleoDesignerReact.gotoInfoWorkflowDefinition();
-
-		Navigator.gotoNavTab(navTab = "Revision History");
-
-		ProcessBuilderKaleoDesignerReact.restorePreviousVersion(number = 1);
-
-		ProcessBuilderKaleoDesignerReact.viewCurrentVersionAtRevisionHistoryTab(number = 3);
-
-		ProcessBuilderKaleoDesignerReact.viewRevisionHistoryVersion(number = 2);
-
-		ProcessBuilderKaleoDesignerReact.viewRevisionHistoryVersion(number = 1);
 	}
 
 	@description = "Verify that the user can see a tooltip with 'Enter the comma separated resource actions (e.g. ADD, DELETE, UPDATE).' at Resource Actions "

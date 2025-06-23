@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.cluster;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.engine.adapter.cluster.StatsClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.StatsClusterResponse;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
@@ -34,18 +33,11 @@ public class StatsClusterRequestExecutorTest extends BaseOpenSearchTestCase {
 		StatsClusterRequest statsClusterRequest = new StatsClusterRequest(
 			new String[0]);
 
-		StatsClusterRequestExecutorImpl statsClusterRequestExecutorImpl =
-			new StatsClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutorImpl, "_clusterHealthStatusTranslator",
-			new ClusterHealthStatusTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
+		StatsClusterRequestExecutor statsClusterRequestExecutor =
+			new StatsClusterRequestExecutor(openSearchConnectionManager);
 
 		StatsClusterResponse statsClusterResponse =
-			statsClusterRequestExecutorImpl.execute(statsClusterRequest);
+			statsClusterRequestExecutor.execute(statsClusterRequest);
 
 		Assert.assertNotNull(statsClusterResponse);
 

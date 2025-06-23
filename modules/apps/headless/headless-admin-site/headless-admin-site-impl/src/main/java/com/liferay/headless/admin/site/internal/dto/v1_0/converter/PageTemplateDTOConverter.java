@@ -9,6 +9,7 @@ import com.liferay.headless.admin.site.dto.v1_0.ContentPageTemplate;
 import com.liferay.headless.admin.site.dto.v1_0.PageTemplate;
 import com.liferay.headless.admin.site.dto.v1_0.PageTemplateSet;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageTemplate;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -70,9 +71,19 @@ public class PageTemplateDTOConverter
 				setExternalReferenceCode(
 					layoutPageTemplateEntry::getExternalReferenceCode);
 				setKey(layoutPageTemplateEntry::getLayoutPageTemplateEntryKey);
+				setKeywordItemExternalReferences(
+					() -> AssetUtil.getKeywordItemExternalReferences(
+						Layout.class.getName(),
+						layoutPageTemplateEntry.getPlid(),
+						layoutPageTemplateEntry.getGroupId()));
 				setName(layoutPageTemplateEntry::getName);
 				setPageTemplateSet(
 					() -> _getPageTemplateSet(layoutPageTemplateEntry));
+				setTaxonomyCategoryItemExternalReferences(
+					() -> AssetUtil.getTaxonomyCategoryItemExternalReferences(
+						Layout.class.getName(),
+						layoutPageTemplateEntry.getPlid(),
+						layoutPageTemplateEntry.getGroupId()));
 				setType(() -> Type.CONTENT_PAGE_TEMPLATE);
 				setUuid(layoutPageTemplateEntry::getUuid);
 			}
@@ -129,12 +140,22 @@ public class PageTemplateDTOConverter
 					() -> LocalizedMapUtil.getI18nMap(
 						true, layout.getFriendlyURLMap()));
 				setKey(layoutPageTemplateEntry::getLayoutPageTemplateEntryKey);
+				setKeywordItemExternalReferences(
+					() -> AssetUtil.getKeywordItemExternalReferences(
+						Layout.class.getName(),
+						layoutPageTemplateEntry.getPlid(),
+						layoutPageTemplateEntry.getGroupId()));
 				setName(layoutPageTemplateEntry::getName);
 				setName_i18n(
 					() -> LocalizedMapUtil.getI18nMap(
 						true, layoutPrototype.getNameMap()));
 				setPageTemplateSet(
 					() -> _getPageTemplateSet(layoutPageTemplateEntry));
+				setTaxonomyCategoryItemExternalReferences(
+					() -> AssetUtil.getTaxonomyCategoryItemExternalReferences(
+						Layout.class.getName(),
+						layoutPageTemplateEntry.getPlid(),
+						layoutPageTemplateEntry.getGroupId()));
 				setType(() -> Type.WIDGET_PAGE_TEMPLATE);
 				setUuid(layoutPageTemplateEntry::getUuid);
 			}

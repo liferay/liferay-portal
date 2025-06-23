@@ -57,6 +57,13 @@ public class OrderRuleAccountGroupResourceTest
 	@Ignore
 	@Override
 	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testDeleteOrderRuleAccountGroup() throws Exception {
 		super.testDeleteOrderRuleAccountGroup();
 	}

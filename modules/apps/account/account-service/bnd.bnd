@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Account Service
 Bundle-SymbolicName: com.liferay.account.service
-Bundle-Version: 2.0.140
+Bundle-Version: 2.0.141
 Liferay-Require-SchemaVersion: 2.12.0
 Liferay-Service: true
 -dsannotations-options: inherit

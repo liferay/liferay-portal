@@ -7,6 +7,7 @@ package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.ServiceComponent;
@@ -23,6 +24,9 @@ import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -96,9 +100,62 @@ public class PreupgradeVerifyDatabaseStateTest
 		}
 	}
 
+	@Test
+	public void testVerifyPreupgradePartiallyUpgradedTable()
+		throws SQLException {
+
+		ServiceComponent serviceComponent = _getServiceComponent();
+
+		String originalData = serviceComponent.getData();
+
+		try {
+			serviceComponent.setData(RandomTestUtil.randomString());
+
+			serviceComponent =
+				_serviceComponentLocalService.updateServiceComponent(
+					serviceComponent);
+
+			testVerify();
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			DBInspector dbInspector = new DBInspector(
+				DataAccess.getConnection());
+
+			Set<String> tableNames = DBResourceUtil.parseCreateTableSQL(
+				dbInspector, originalData);
+
+			Assert.assertEquals(
+				exception.getMessage(),
+				"Stale tables from a previous upgrade detected: " +
+					new TreeSet<>(tableNames));
+		}
+		finally {
+			serviceComponent.setData(originalData);
+
+			_serviceComponentLocalService.updateServiceComponent(
+				serviceComponent);
+		}
+	}
+
 	@Override
 	protected VerifyProcess getVerifyProcess() {
 		return new PreupgradeVerifyDatabaseState();
+	}
+
+	private ServiceComponent _getServiceComponent() {
+		for (ServiceComponent serviceComponent :
+				_serviceComponentLocalService.getLatestServiceComponents()) {
+
+			String buildNamespace = serviceComponent.getBuildNamespace();
+
+			if (buildNamespace.startsWith("com.liferay")) {
+				return serviceComponent;
+			}
+		}
+
+		return null;
 	}
 
 	private static final Version _TEST_SCHEMA_VERSION = new Version(0, 0, 0);

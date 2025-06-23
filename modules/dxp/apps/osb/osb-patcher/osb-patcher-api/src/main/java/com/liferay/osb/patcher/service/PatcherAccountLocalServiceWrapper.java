@@ -307,6 +307,14 @@ public class PatcherAccountLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.patcher.model.PatcherAccount fetchPatcherAccount(
+		String accountEntryCode) {
+
+		return _patcherAccountLocalService.fetchPatcherAccount(
+			accountEntryCode);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -345,6 +353,14 @@ public class PatcherAccountLocalServiceWrapper
 		return _patcherAccountLocalService.getPatcherAccount(patcherAccountId);
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherAccount getPatcherAccount(
+			String accountEntryCode)
+		throws Exception {
+
+		return _patcherAccountLocalService.getPatcherAccount(accountEntryCode);
+	}
+
 	/**
 	 * Returns a range of all the patcher accounts.
 	 *
@@ -361,6 +377,18 @@ public class PatcherAccountLocalServiceWrapper
 		getPatcherAccounts(int start, int end) {
 
 		return _patcherAccountLocalService.getPatcherAccounts(start, end);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherAccount>
+		getPatcherAccounts(
+			long companyId, String keyword, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.osb.patcher.model.PatcherAccount>
+					orderByComparator) {
+
+		return _patcherAccountLocalService.getPatcherAccounts(
+			companyId, keyword, start, end, orderByComparator);
 	}
 
 	/**

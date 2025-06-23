@@ -184,15 +184,6 @@ jest.mock(
 	})
 );
 
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	sub: jest.fn((key, args) => {
-		args = Array.isArray(args) ? args : [args];
-
-		return args.reduce((key, arg) => key.replace('x', arg), key);
-	}),
-}));
-
 describe('FragmentStylesPanel', () => {
 	afterEach(() => {
 		updateItemConfig.mockClear();

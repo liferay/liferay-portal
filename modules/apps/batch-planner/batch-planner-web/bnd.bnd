@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Batch Planner Web
 Bundle-SymbolicName: com.liferay.batch.planner.web
-Bundle-Version: 1.0.109
+Bundle-Version: 1.0.110
 Web-ContextPath: /batch-planner-web

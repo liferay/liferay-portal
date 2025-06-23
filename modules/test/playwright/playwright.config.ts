@@ -112,6 +112,7 @@ import {config as portalWorkflowKaleoFormsWebConfig} from './tests/portal-workfl
 import {config as portalWorkflowMetricsWebConfig} from './tests/portal-workflow-metrics-web/main/config';
 import {config as portalWorkflowTaskWebConfig} from './tests/portal-workflow-task-web/main/config';
 import {config as portletConfigurationCssWebConfig} from './tests/portlet-configuration-css-web/main/config';
+import {config as productNavigationControlMenuWeb} from './tests/product-navigation-control-menu-web/main/config';
 import {config as productNavigationProductMenuWeb} from './tests/product-navigation-product-menu-web/main/config';
 import {config as productNavigationUserPersonalBarWebConfig} from './tests/product-navigation-user-personal-bar-web/main/config';
 import {config as questionsWebConfig} from './tests/questions-web/main/config';
@@ -269,6 +270,7 @@ export default defineConfig({
 		portalWorkflowMetricsWebConfig,
 		portalWorkflowTaskWebConfig,
 		portletConfigurationCssWebConfig,
+		productNavigationControlMenuWeb,
 		productNavigationProductMenuWeb,
 		productNavigationUserPersonalBarWebConfig,
 		questionsWebConfig,

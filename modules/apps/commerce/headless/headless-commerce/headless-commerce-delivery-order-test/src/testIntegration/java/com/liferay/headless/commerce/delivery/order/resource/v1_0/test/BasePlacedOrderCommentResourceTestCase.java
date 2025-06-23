@@ -1084,6 +1084,11 @@ public abstract class BasePlacedOrderCommentResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected PlacedOrderComment
 			testGraphQLPlacedOrderComment_addPlacedOrderComment()
 		throws Exception {

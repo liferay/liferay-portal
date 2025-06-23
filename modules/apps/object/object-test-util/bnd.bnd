@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Object Test Utilities
 Bundle-SymbolicName: com.liferay.object.test.util
-Bundle-Version: 5.3.1
+Bundle-Version: 5.3.2
 Export-Package: com.liferay.object.test.util

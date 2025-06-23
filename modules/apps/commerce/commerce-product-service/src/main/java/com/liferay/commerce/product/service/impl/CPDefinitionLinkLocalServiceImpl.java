@@ -17,7 +17,6 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.base.CPDefinitionLinkLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
 import com.liferay.commerce.product.service.persistence.CProductPersistence;
-import com.liferay.commerce.product.util.BatchEngineImportTaskThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -354,9 +353,7 @@ public class CPDefinitionLinkLocalServiceImpl
 
 		cpDefinitionLink = cpDefinitionLinkPersistence.update(cpDefinitionLink);
 
-		if (!BatchEngineImportTaskThreadLocal.isEnabled()) {
-			_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
-		}
+		_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
 
 		CProduct cProduct = _cProductPersistence.findByPrimaryKey(
 			cpDefinitionLink.getCProductId());
@@ -425,9 +422,7 @@ public class CPDefinitionLinkLocalServiceImpl
 			_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 		}
 
-		if (!BatchEngineImportTaskThreadLocal.isEnabled()) {
-			_reindexCPDefinition(cpDefinitionId);
-		}
+		_reindexCPDefinition(cpDefinitionId);
 	}
 
 	@Override
@@ -476,9 +471,7 @@ public class CPDefinitionLinkLocalServiceImpl
 
 		_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 
-		if (!BatchEngineImportTaskThreadLocal.isEnabled()) {
-			_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
-		}
+		_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
 
 		return cpDefinitionLink;
 	}
@@ -565,9 +558,7 @@ public class CPDefinitionLinkLocalServiceImpl
 
 		_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 
-		if (!BatchEngineImportTaskThreadLocal.isEnabled()) {
-			_reindexCPDefinition(cpDefinitionId);
-		}
+		_reindexCPDefinition(cpDefinitionId);
 
 		if (serviceContext != null) {
 			_updateAsset(cpDefinitionLink, serviceContext);
@@ -664,9 +655,7 @@ public class CPDefinitionLinkLocalServiceImpl
 			_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 		}
 
-		if (!BatchEngineImportTaskThreadLocal.isEnabled()) {
-			_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
-		}
+		_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
 
 		return cpDefinitionLink;
 	}

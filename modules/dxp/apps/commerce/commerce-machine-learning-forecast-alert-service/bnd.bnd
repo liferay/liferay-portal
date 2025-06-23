@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Machine Learning Forecast Alert Service
 Bundle-SymbolicName: com.liferay.commerce.machine.learning.forecast.alert.service
-Bundle-Version: 5.0.42
+Bundle-Version: 5.0.43
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit

@@ -390,6 +390,19 @@ public class PatcherBuildLocalServiceUtil {
 		return getService().getPatcherBuild(patcherBuildId);
 	}
 
+	public static List<PatcherBuild> getPatcherBuilds(
+		boolean latestSupportTicketBuild, String supportTicket) {
+
+		return getService().getPatcherBuilds(
+			latestSupportTicketBuild, supportTicket);
+	}
+
+	public static List<PatcherBuild> getPatcherBuilds(
+		java.util.Date modifiedDate, boolean notified, int[] statuses) {
+
+		return getService().getPatcherBuilds(modifiedDate, notified, statuses);
+	}
+
 	/**
 	 * Returns a range of all the patcher builds.
 	 *
@@ -405,6 +418,69 @@ public class PatcherBuildLocalServiceUtil {
 		return getService().getPatcherBuilds(start, end);
 	}
 
+	public static List<PatcherBuild> getPatcherBuilds(
+		long patcherFixId, boolean childBuild) {
+
+		return getService().getPatcherBuilds(patcherFixId, childBuild);
+	}
+
+	public static List<PatcherBuild> getPatcherBuilds(
+		long patcherAccountId, long patcherProductVersionId, int start, int end,
+		OrderByComparator<PatcherBuild> orderByComparator) {
+
+		return getService().getPatcherBuilds(
+			patcherAccountId, patcherProductVersionId, start, end,
+			orderByComparator);
+	}
+
+	public static List<PatcherBuild> getPatcherBuilds(
+		long patcherProjectVersionId, String name, boolean latestKeyBuild,
+		String accountEntryCode) {
+
+		return getService().getPatcherBuilds(
+			patcherProjectVersionId, name, latestKeyBuild, accountEntryCode);
+	}
+
+	public static List<PatcherBuild> getPatcherBuilds(
+		String key, boolean latestKeyBuild) {
+
+		return getService().getPatcherBuilds(key, latestKeyBuild);
+	}
+
+	public static List<PatcherBuild> getPatcherBuilds(
+		String key, int start, int end,
+		OrderByComparator<PatcherBuild> orderByComparator) {
+
+		return getService().getPatcherBuilds(
+			key, start, end, orderByComparator);
+	}
+
+	public static List<PatcherBuild> getPatcherBuildsByKey(
+		String key, double keyVersion, boolean older) {
+
+		return getService().getPatcherBuildsByKey(key, keyVersion, older);
+	}
+
+	public static List<PatcherBuild> getPatcherBuildsByPatcherFixId(
+		long patcherFixId) {
+
+		return getService().getPatcherBuildsByPatcherFixId(patcherFixId);
+	}
+
+	public static List<PatcherBuild> getPatcherBuildsByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return getService().getPatcherBuildsByPatcherProjectVersionId(
+			patcherProjectVersionId);
+	}
+
+	public static List<PatcherBuild> getPatcherBuildsBySupportTicket(
+		String supportTicket, double supportTicketVersion, boolean older) {
+
+		return getService().getPatcherBuildsBySupportTicket(
+			supportTicket, supportTicketVersion, older);
+	}
+
 	/**
 	 * Returns the number of patcher builds.
 	 *
@@ -412,6 +488,21 @@ public class PatcherBuildLocalServiceUtil {
 	 */
 	public static int getPatcherBuildsCount() {
 		return getService().getPatcherBuildsCount();
+	}
+
+	public static int getPatcherBuildsCount(
+		long patcherFixId, long patcherProductVersionId, boolean childBuild,
+		int type) {
+
+		return getService().getPatcherBuildsCount(
+			patcherFixId, patcherProductVersionId, childBuild, type);
+	}
+
+	public static int getPatcherBuildsCountByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return getService().getPatcherBuildsCountByPatcherProjectVersionId(
+			patcherProjectVersionId);
 	}
 
 	public static List<PatcherBuild> getPatcherFixPatcherBuilds(
@@ -471,6 +562,10 @@ public class PatcherBuildLocalServiceUtil {
 		return getService().hasPatcherAccountPatcherBuilds(patcherAccountId);
 	}
 
+	public static boolean hasPatcherFixes(long patcherFixId) {
+		return getService().hasPatcherFixes(patcherFixId);
+	}
+
 	public static boolean hasPatcherFixPatcherBuild(
 		long patcherFixId, long patcherBuildId) {
 
@@ -493,6 +588,22 @@ public class PatcherBuildLocalServiceUtil {
 		long patcherFixId, long[] patcherBuildIds) {
 
 		getService().setPatcherFixPatcherBuilds(patcherFixId, patcherBuildIds);
+	}
+
+	public static PatcherBuild updateNotified(
+			long patcherBuildId, boolean notified)
+		throws PortalException {
+
+		return getService().updateNotified(patcherBuildId, notified);
+	}
+
+	public static PatcherBuild updatePatcherBuild(
+			long patcherBuildId, boolean latestKeyBuild,
+			boolean latestSupportTicketBuild)
+		throws PortalException {
+
+		return getService().updatePatcherBuild(
+			patcherBuildId, latestKeyBuild, latestSupportTicketBuild);
 	}
 
 	/**

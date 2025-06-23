@@ -63,6 +63,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Alicia García
  */
+@FeatureFlag("LPD-42553")
 @RunWith(Arquillian.class)
 public class ObjectEntryWorkflowHandlerTest {
 
@@ -268,7 +269,7 @@ public class ObjectEntryWorkflowHandlerTest {
 		throws PortalException {
 
 		return _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), objectEntryFolderId,
 			null,
 			HashMapBuilder.<String, Serializable>put(
@@ -279,8 +280,8 @@ public class ObjectEntryWorkflowHandlerTest {
 
 	private ObjectEntryFolder _addObjectEntryFolder() throws Exception {
 		return _objectEntryFolderLocalService.addObjectEntryFolder(
-			StringUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(),
+			StringUtil.randomString(), _group.getGroupId(),
+			TestPropsValues.getUserId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			RandomTestUtil.randomString(),
 			HashMapBuilder.put(

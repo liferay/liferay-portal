@@ -191,14 +191,14 @@ public abstract class BaseTicketResourceTestCase {
 		assertValid(getTicket);
 	}
 
-	protected Long testGetUserAccountEmailVerificationTicket_getUserAccountId()
+	protected Ticket testGetUserAccountEmailVerificationTicket_addTicket()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Ticket testGetUserAccountEmailVerificationTicket_addTicket()
+	protected Long testGetUserAccountEmailVerificationTicket_getUserAccountId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -328,14 +328,14 @@ public abstract class BaseTicketResourceTestCase {
 		assertValid(getTicket);
 	}
 
-	protected Long testGetUserAccountPasswordResetTicket_getUserAccountId()
+	protected Ticket testGetUserAccountPasswordResetTicket_addTicket()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Ticket testGetUserAccountPasswordResetTicket_addTicket()
+	protected Long testGetUserAccountPasswordResetTicket_getUserAccountId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

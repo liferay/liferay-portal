@@ -5,12 +5,14 @@
 
 package com.liferay.object.service;
 
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryVersion;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -44,6 +46,11 @@ public interface ObjectEntryVersionService extends BaseService {
 	 */
 	public ObjectEntryVersion deleteObjectEntryVersion(
 			long objectEntryId, int version)
+		throws PortalException;
+
+	public ObjectEntryVersion expireObjectEntryVersion(
+			ObjectEntry objectEntry, ServiceContext serviceContext, long userId,
+			int version)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

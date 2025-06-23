@@ -46,44 +46,6 @@ body {
 			color: #6b6c7e;
 			font-weight: 600;
 		}
-
-		.user-personal-bar {
-			.fieldset {
-				position: relative;
-			}
-
-			.user-avatar-link .panel-notifications-count {
-				right: calc(100% - 1rem);
-				top: -0.6rem;
-			}
-		}
-	}
-
-	.user-avatar-link {
-		display: block;
-		position: relative;
-
-		.panel-notifications-count {
-			display: block;
-			margin: 0;
-			max-width: none;
-			position: absolute;
-			right: calc(100% - 0.7rem);
-			top: -0.4rem;
-		}
-
-		.text-default {
-			align-items: center;
-			display: flex;
-
-			.user-full-name {
-				margin-left: 0.5rem;
-
-				@include media-breakpoint-down(xs) {
-					display: none;
-				}
-			}
-		}
 	}
 }
 

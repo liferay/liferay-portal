@@ -4,22 +4,27 @@
  */
 
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
-import {
+import React, {
 	ComponentProps,
 	ReactNode,
 	useCallback,
 	useContext,
 	useMemo,
 } from 'react';
-import useSWR, {KeyedMutator} from 'swr';
+import {useSearchParams} from 'react-router-dom';
+import {KeyedMutator} from 'swr';
 
+import CreateFilters from '../../core/CreateFilters';
+import {useFetch} from '../../hooks/useFetch';
 import i18n from '../../i18n';
-import fetcher from '../../services/fetcher';
+import {
+	FilterSchema as FilterSchemaType,
+	filterSchema as filterSchemas,
+} from '../../schema/filters';
 import {PAGINATION, SortDirection} from '../../utils/constants';
 import EmptyState from '../EmptyState';
 import Loading from '../Loading';
-import {
-	ListViewManagementToolbar,
+import ManagementToolbar, {
 	ManagementToolbarProps,
 } from './components/ManagementToolbar';
 import Table, {TableProps} from './components/Table';
@@ -29,12 +34,9 @@ import ListViewContextProvider, {
 	ListViewContext,
 	ListViewContextProviderProps,
 	ListViewTypes,
+	Sort,
 } from './hooks/ListViewContext';
-
-type ResourceProps = Pick<
-	ListViewContextState,
-	'filters' | 'keywords' | 'page' | 'pageSize' | 'sort'
->;
+import useUpdateUrlParams from './hooks/useUpdateUrlParams';
 
 type ChildrenOptions = {
 	dispatch: React.Dispatch<AppActions>;
@@ -42,15 +44,13 @@ type ChildrenOptions = {
 	mutate: KeyedMutator<APIResponse<any>>;
 };
 
-type Resource<T> =
-	| ((listViewContext: ResourceProps) => Promise<APIResponse<T>>)
-	| string;
-
 export type ListViewProps<T extends Record<string, any>> = {
 	children?: (
 		response: APIResponse<T>,
 		options: ChildrenOptions
 	) => ReactNode;
+
+	defaultFilters?: {filter: string};
 
 	emptyStateProps?: ComponentProps<typeof EmptyState>;
 
@@ -64,22 +64,27 @@ export type ListViewProps<T extends Record<string, any>> = {
 
 	initialContext?: ListViewContextProviderProps;
 
-	managementToolbarProps?: ManagementToolbarProps & {visible?: boolean};
+	managementToolbarProps?: {
+		visible?: boolean;
+	} & Omit<
+		ManagementToolbarProps,
+		| 'actions'
+		| 'onSelectAllRows'
+		| 'rowSelectable'
+		| 'tableProps'
+		| 'totalItems'
+	>;
 
 	/**
 	 * The options for the pagination.
 	 *
-	 * @default {displayType: 'auto'}
+	 * @default {displayType: true}
 	 */
 	paginationOptions?: {
-		displayType: 'always' | 'auto' | 'never';
+		displayType: boolean;
 	};
 
-	/**
-	 * The resource of the list view.
-	 * It can be an async function or a string.
-	 */
-	resource: Resource<T>;
+	resource: string;
 
 	tableProps: Omit<
 		TableProps<T>,
@@ -89,56 +94,48 @@ export type ListViewProps<T extends Record<string, any>> = {
 
 const ListView = <T extends Record<string, any>>({
 	children,
+	defaultFilters,
 	emptyStateProps,
-	managementToolbarProps,
-	paginationOptions = {displayType: 'auto'},
+	managementToolbarProps: {
+		visible: managementToolbarVisible = false,
+		...managementToolbarProps
+	} = {},
+	paginationOptions = {displayType: true},
 	resource,
 	tableProps,
 }: ListViewProps<T>) => {
 	const [listViewContext, dispatch] = useContext(ListViewContext);
 
-	const {filters, id, keywords, page, pageSize, sort} = listViewContext;
+	const updateUrlParams = useUpdateUrlParams();
+	const [searchParams] = useSearchParams();
 
-	const params = useMemo(() => {
-		const isResourceString = typeof resource === 'string';
+	const {filters, keywords, sort} = listViewContext;
+	const filterSchemaName = managementToolbarProps?.filterSchema ?? '';
 
-		if (isResourceString) {
-			return {
-				resource: () => fetcher(resource),
-				resourceKey: resource,
-			};
-		}
-		const [filterKey] = Object.keys(filters.filter);
+	const filterSchema = (filterSchemas as any)[
+		filterSchemaName
+	] as FilterSchemaType;
 
-		return {
-			resource: () =>
-				resource({
-					filters,
-					keywords,
-					page,
-					pageSize,
-					sort,
-				}),
+	const currentPage = searchParams.get('page');
+	const currentPageSize = searchParams.get('pageSize');
 
-			resourceKey: `listView:${id}?${new URLSearchParams({
-				filter: filters.filter[filterKey],
-				keywords,
-				page: page.toString(),
-				pageSize: pageSize.toString(),
-				sortDir: sort.direction,
-				sortKey: sort.key,
-			}).toString()}`,
-		};
-	}, [id, filters, keywords, page, pageSize, sort, resource]);
+	const filterVariables = useMemo(
+		() => ({
+			appliedFilter: filters.filter,
+			defaultFilter: defaultFilters?.filter,
+			filterSchema,
+		}),
+		[filters, defaultFilters?.filter, filterSchema]
+	);
 
-	const {
-		data: response,
-		error,
-		isLoading: loading,
-		mutate,
-	} = useSWR<APIResponse<T>>(params.resourceKey, params.resource);
+	const filter = useMemo(() => {
+		const baseFilter = CreateFilters.createFilter(filterVariables) || '';
 
-	const {items = [], totalCount = 0} = response || {};
+		return {filter: baseFilter};
+	}, [filterVariables]);
+
+	const buildSort = (sort: Sort) =>
+		sort.key ? `${sort.key}:${sort.direction.toLowerCase()}` : '';
 
 	const onSort = useCallback(
 		(key: string, direction: SortDirection) => {
@@ -150,54 +147,81 @@ const ListView = <T extends Record<string, any>>({
 		[dispatch]
 	);
 
-	const Pagination = useMemo(() => {
-		const paginationDisplayType = paginationOptions?.displayType;
+	const getURLSearchParams = useCallback(
+		() => ({
+			...filter,
+			page: currentPage ? Number(currentPage) : listViewContext.page,
+			pageSize: currentPageSize
+				? Number(currentPageSize)
+				: listViewContext.pageSize,
+			search: keywords,
+			sort: buildSort(sort),
+		}),
+		[
+			currentPage,
+			currentPageSize,
+			filter,
+			listViewContext.page,
+			listViewContext.pageSize,
+			keywords,
+			sort,
+		]
+	);
 
-		if (
-			(paginationDisplayType === 'auto' && totalCount < 5) ||
-			paginationDisplayType === 'never'
-		) {
-			return null;
-		}
+	const {
+		data: response,
+		error,
+		isValidating,
+		loading,
+		mutate,
+	} = useFetch(resource, {
+		params: getURLSearchParams(),
+	});
 
-		return (
-			<ClayPaginationBarWithBasicItems
-				activeDelta={pageSize}
-				activePage={page}
-				deltas={PAGINATION.delta.map((label) => ({label}))}
-				ellipsisBuffer={PAGINATION.ellipsisBuffer}
-				labels={{
-					paginationResults: i18n.translate('showing-x-to-x-of-x'),
-					perPageItems: i18n.translate('x-items'),
-					selectPerPageItems: i18n.translate('x-items'),
-				}}
-				onDeltaChange={(delta) =>
-					dispatch({
-						payload: delta,
-						type: ListViewTypes.SET_PAGE_SIZE,
-					})
-				}
-				onPageChange={(page) =>
-					dispatch({
-						payload: page,
-						type: ListViewTypes.SET_PAGE,
-					})
-				}
-				totalItems={totalCount}
-			/>
-		);
-	}, [dispatch, page, pageSize, paginationOptions?.displayType, totalCount]);
+	const {
+		actions = {},
+		items = [],
+		page = 1,
+		pageSize,
+		totalCount = 0,
+	} = response || {};
 
-	if (loading) {
+	if (loading || (isValidating && searchParams.get('filter'))) {
 		return <Loading />;
 	}
 
+	const Pagination = (
+		<ClayPaginationBarWithBasicItems
+			activeDelta={pageSize}
+			activePage={page}
+			deltas={PAGINATION.delta.map((label) => ({label}))}
+			ellipsisBuffer={PAGINATION.ellipsisBuffer}
+			labels={{
+				paginationResults: i18n.translate('showing-x-to-x-of-x'),
+				perPageItems: i18n.translate('x-items'),
+				selectPerPageItems: i18n.translate('x-items'),
+			}}
+			onDeltaChange={(delta) => {
+				updateUrlParams({pageSize: delta});
+
+				dispatch({payload: delta, type: ListViewTypes.SET_PAGE_SIZE});
+			}}
+			onPageChange={(page) => {
+				updateUrlParams({page});
+
+				dispatch({payload: page, type: ListViewTypes.SET_PAGE});
+			}}
+			totalItems={totalCount || 0}
+		/>
+	);
+
 	return (
 		<>
-			{managementToolbarProps?.visible && (
-				<ListViewManagementToolbar
+			{managementToolbarVisible && (
+				<ManagementToolbar
 					{...managementToolbarProps}
-					results={items.length}
+					actions={actions}
+					totalItems={totalCount}
 				/>
 			)}
 
@@ -218,7 +242,7 @@ const ListView = <T extends Record<string, any>>({
 						sort={sort}
 					/>
 
-					{Pagination}
+					{paginationOptions.displayType && Pagination}
 
 					{children &&
 						children(response!, {

@@ -8,5 +8,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "4.0.78"
+	"version": "4.0.79"
 }

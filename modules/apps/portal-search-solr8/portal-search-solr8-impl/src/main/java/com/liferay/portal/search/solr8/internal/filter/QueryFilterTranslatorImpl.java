@@ -6,12 +6,12 @@
 package com.liferay.portal.search.solr8.internal.filter;
 
 import com.liferay.portal.kernel.search.filter.QueryFilter;
-import com.liferay.portal.search.solr8.internal.query.LuceneQueryConverter;
+import com.liferay.portal.kernel.search.query.QueryVisitor;
+import com.liferay.portal.search.solr8.internal.query.BaseQueryVisitor;
 
 import org.apache.lucene.search.Query;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -21,10 +21,12 @@ public class QueryFilterTranslatorImpl implements QueryFilterTranslator {
 
 	@Override
 	public Query translate(QueryFilter queryFilter) {
-		return _luceneQueryConverter.convert(queryFilter.getQuery());
+		com.liferay.portal.kernel.search.Query query = queryFilter.getQuery();
+
+		return query.accept(_queryVisitor);
 	}
 
-	@Reference
-	private LuceneQueryConverter _luceneQueryConverter;
+	private final QueryVisitor<Query> _queryVisitor = new BaseQueryVisitor() {
+	};
 
 }

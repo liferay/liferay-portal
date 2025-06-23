@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.snapshot.GetSnapshotsResponse;
 /**
  * @author Bryan Engler
  */
-public interface GetSnapshotsRequestExecutor {
+public class GetSnapshotsRequestExecutor {
 
 	public GetSnapshotsResponse execute(
-		GetSnapshotsRequest getSnapshotsRequest);
+		GetSnapshotsRequest getSnapshotsRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

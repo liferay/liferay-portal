@@ -119,6 +119,7 @@ import com.liferay.object.web.internal.object.entries.portlet.action.DeleteAttac
 import com.liferay.object.web.internal.object.entries.portlet.action.EditObjectEntryMVCActionCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.EditObjectEntryMVCRenderCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.EditObjectEntryRelatedModelMVCActionCommand;
+import com.liferay.object.web.internal.object.entries.portlet.action.ExpireObjectEntryMVCActionCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.UploadAttachmentMVCActionCommand;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -574,6 +575,15 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				).put(
 					"mvc.command.name",
 					"/object_entries/edit_object_entry_related_model"
+				).build()),
+			_bundleContext.registerService(
+				MVCActionCommand.class,
+				new ExpireObjectEntryMVCActionCommand(
+					_objectEntryLocalService, _objectEntryService),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"jakarta.portlet.name", objectDefinition.getPortletId()
+				).put(
+					"mvc.command.name", "/object_entries/expire_object_entry"
 				).build()),
 			_bundleContext.registerService(
 				MVCActionCommand.class,

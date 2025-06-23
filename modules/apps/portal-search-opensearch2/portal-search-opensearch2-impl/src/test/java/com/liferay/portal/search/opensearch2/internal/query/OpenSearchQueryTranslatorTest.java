@@ -55,7 +55,7 @@ public class OpenSearchQueryTranslatorTest {
 		OpenSearchFilterTranslatorFixture openSearchFilterTranslatorFixture =
 			new OpenSearchFilterTranslatorFixture(
 				new com.liferay.portal.search.opensearch2.internal.legacy.query.
-					OpenSearchQueryTranslator());
+					OpenSearchQueryTranslator(null));
 
 		_openSearchFilterTranslator =
 			openSearchFilterTranslatorFixture.getOpenSearchFilterTranslator();

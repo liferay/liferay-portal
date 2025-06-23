@@ -211,6 +211,47 @@ public class SkuOption implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _quantitySupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Boolean getRequired() {
+		if (_requiredSupplier != null) {
+			required = _requiredSupplier.get();
+
+			_requiredSupplier = null;
+		}
+
+		return required;
+	}
+
+	public void setRequired(Boolean required) {
+		this.required = required;
+
+		_requiredSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRequired(
+		UnsafeSupplier<Boolean, Exception> requiredUnsafeSupplier) {
+
+		_requiredSupplier = () -> {
+			try {
+				return requiredUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean required;
+
+	@JsonIgnore
+	private Supplier<Boolean> _requiredSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
 	public Long getSkuId() {
 		if (_skuIdSupplier != null) {
@@ -623,6 +664,18 @@ public class SkuOption implements Serializable {
 			sb.append(_escape(quantity));
 
 			sb.append("\"");
+		}
+
+		Boolean required = getRequired();
+
+		if (required != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"required\": ");
+
+			sb.append(required);
 		}
 
 		Long skuId = getSkuId();

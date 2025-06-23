@@ -159,12 +159,12 @@ public class PortalHotfixRelease {
 	}
 
 	protected PortalHotfixRelease(
-		URL portalHotfixReleaseURL, PortalFixpackRelease portalFixpackRelease,
+		PortalFixpackRelease portalFixpackRelease, URL portalHotfixReleaseURL,
 		PortalRelease portalRelease) {
 
+		_portalFixpackRelease = portalFixpackRelease;
 		_portalHotfixReleaseURL = _getURL(
 			String.valueOf(portalHotfixReleaseURL));
-		_portalFixpackRelease = portalFixpackRelease;
 		_portalRelease = portalRelease;
 	}
 

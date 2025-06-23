@@ -2636,6 +2636,41 @@
 				]
 			}
 		},
+		"/{object9Id}/expire": {
+			"post": {
+				"operationId": "postObject9Expire",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "object9Id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"default": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Object9"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/Object9"
+								}
+							}
+						},
+						"description": "default response"
+					}
+				},
+				"tags": [
+					"Object9"
+				]
+			}
+		},
 		"/{object9Id}/permissions": {
 			"get": {
 				"operationId": "getObject9PermissionsPage",

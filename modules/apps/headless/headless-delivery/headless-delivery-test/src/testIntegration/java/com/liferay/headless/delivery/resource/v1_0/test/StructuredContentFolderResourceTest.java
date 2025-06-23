@@ -164,15 +164,13 @@ public class StructuredContentFolderResourceTest
 			204,
 			structuredContentFolderResource.
 				deleteSiteStructuredContentFolderByExternalReferenceCodeHttpResponse(
-					testDeleteSiteStructuredContentFolderByExternalReferenceCode_getSiteId(
-						postStructuredContentFolder),
+					postStructuredContentFolder.getSiteId(),
 					journalFolder.getUuid()));
 		assertHttpResponseStatusCode(
 			404,
 			structuredContentFolderResource.
 				getSiteStructuredContentFolderByExternalReferenceCodeHttpResponse(
-					testDeleteSiteStructuredContentFolderByExternalReferenceCode_getSiteId(
-						postStructuredContentFolder),
+					postStructuredContentFolder.getSiteId(),
 					journalFolder.getUuid()));
 	}
 
@@ -298,8 +296,7 @@ public class StructuredContentFolderResourceTest
 		StructuredContentFolder getStructuredContentFolder =
 			structuredContentFolderResource.
 				getSiteStructuredContentFolderByExternalReferenceCode(
-					testGetSiteStructuredContentFolderByExternalReferenceCode_getSiteId(
-						postStructuredContentFolder),
+					postStructuredContentFolder.getSiteId(),
 					journalFolder.getUuid());
 
 		assertEquals(postStructuredContentFolder, getStructuredContentFolder);

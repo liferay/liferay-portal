@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -91,11 +92,23 @@ public class PatcherBuildRelModelImpl
 	public static final String TX_MANAGER = "liferayTransactionManager";
 
 	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long CHILDPATCHERBUILDID_COLUMN_BITMASK = 1L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long PARENTPATCHERBUILDID_COLUMN_BITMASK = 2L;
+
+	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PATCHERBUILDRELID_COLUMN_BITMASK = 1L;
+	public static final long PATCHERBUILDRELID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -318,6 +331,16 @@ public class PatcherBuildRelModelImpl
 		_childPatcherBuildId = childPatcherBuildId;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalChildPatcherBuildId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("childPatcherBuildId"));
+	}
+
 	@Override
 	public long getParentPatcherBuildId() {
 		return _parentPatcherBuildId;
@@ -330,6 +353,16 @@ public class PatcherBuildRelModelImpl
 		}
 
 		_parentPatcherBuildId = parentPatcherBuildId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalParentPatcherBuildId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("parentPatcherBuildId"));
 	}
 
 	public long getColumnBitmask() {

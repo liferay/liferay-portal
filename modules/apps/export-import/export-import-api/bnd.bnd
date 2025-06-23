@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Export Import API
 Bundle-SymbolicName: com.liferay.exportimport.api
-Bundle-Version: 10.0.1
+Bundle-Version: 10.1.1
 Export-Package:\
 	com.liferay.exportimport.configuration,\
 	com.liferay.exportimport.constants,\

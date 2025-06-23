@@ -9,11 +9,13 @@ export default async function dragAndDropElement({
 	dragTarget,
 	dropTarget,
 	force = false,
+	onDragging,
 	page,
 }: {
 	dragTarget: Locator;
 	dropTarget: Locator;
 	force?: boolean;
+	onDragging?: () => Promise<void>;
 	page: Page;
 }) {
 	await dragTarget.hover({force});
@@ -33,6 +35,8 @@ export default async function dragAndDropElement({
 			y: boundingClientRect.height / 2,
 		},
 	});
+
+	await onDragging?.();
 
 	await page.mouse.up();
 }

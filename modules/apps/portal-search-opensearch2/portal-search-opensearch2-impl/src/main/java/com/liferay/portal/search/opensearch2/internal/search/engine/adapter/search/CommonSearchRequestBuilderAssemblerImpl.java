@@ -14,7 +14,9 @@ import com.liferay.portal.search.aggregation.pipeline.PipelineAggregationTransla
 import com.liferay.portal.search.engine.adapter.search.BaseSearchRequest;
 import com.liferay.portal.search.filter.ComplexQueryBuilderFactory;
 import com.liferay.portal.search.filter.ComplexQueryPart;
+import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.opensearch2.internal.facet.FacetTranslator;
+import com.liferay.portal.search.opensearch2.internal.legacy.query.OpenSearchQueryTranslator;
 import com.liferay.portal.search.opensearch2.internal.stats.StatsTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.SetterUtil;
 import com.liferay.portal.search.pit.PointInTime;
@@ -42,6 +44,7 @@ import org.opensearch.client.opensearch.core.search.RescoreQuery;
 import org.opensearch.client.opensearch.core.search.ScoreMode;
 import org.opensearch.client.opensearch.core.search.TrackHits;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -73,6 +76,12 @@ public class CommonSearchRequestBuilderAssemblerImpl
 		_setStatsRequests(baseSearchRequest, searchRequestBuilder);
 		_setTimeout(baseSearchRequest, searchRequestBuilder);
 		_setTrackTotalHits(baseSearchRequest, searchRequestBuilder);
+	}
+
+	@Activate
+	protected void activate() {
+		_legacyQueryTranslator = new OpenSearchQueryTranslator(
+			_indexNameBuilder);
 	}
 
 	protected void setQuery(
@@ -607,7 +616,9 @@ public class CommonSearchRequestBuilderAssemblerImpl
 	@Reference(target = "(search.engine.impl=OpenSearch)")
 	private FilterTranslator<QueryVariant> _filterTranslator;
 
-	@Reference(target = "(search.engine.impl=OpenSearch)")
+	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
 	private com.liferay.portal.kernel.search.query.QueryTranslator<QueryVariant>
 		_legacyQueryTranslator;
 

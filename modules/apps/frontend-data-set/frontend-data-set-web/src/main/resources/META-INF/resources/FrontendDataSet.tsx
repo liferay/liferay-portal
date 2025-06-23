@@ -6,6 +6,7 @@
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {useIsMounted, useThunk} from '@liferay/frontend-js-react-web';
+import classNames from 'classnames';
 import {IHTMLElementBuilder, openToast} from 'frontend-js-components-web';
 import {fetch, loadClientExtensions, loadModule} from 'frontend-js-web';
 import React, {
@@ -20,15 +21,6 @@ import './styles/main.scss';
 
 import ClayEmptyState from '@clayui/empty-state';
 
-import {
-	IField,
-	IFrontendDataSetProps,
-	IModalConfig,
-	IRequestOptions,
-	ISuccessNotification,
-	TSort,
-	TViews,
-} from './';
 import FrontendDataSetContext, {
 	IDataSetData,
 	TRenderer,
@@ -60,6 +52,15 @@ import {loadData} from './utils/loadData';
 // @ts-ignore
 
 import {logError} from './utils/logError';
+import {
+	IField,
+	IFrontendDataSetProps,
+	IModalConfig,
+	IRequestOptions,
+	ISuccessNotification,
+	TSort,
+	TViews,
+} from './utils/types';
 import ViewsContext from './views/ViewsContext';
 
 // @ts-ignore
@@ -1070,6 +1071,10 @@ const FrontendDataSet = ({
 		}
 	};
 
+	const selectable = Boolean(
+		selectedItemsKey && (bulkActions?.length || selectionType === 'single')
+	);
+
 	return (
 		<FrontendDataSetContext.Provider
 			value={{
@@ -1111,10 +1116,7 @@ const FrontendDataSet = ({
 				portletId,
 				searchParam,
 				selectItems,
-				selectable: Boolean(
-					selectedItemsKey &&
-						(bulkActions?.length || selectionType === 'single')
-				),
+				selectable,
 				selectedItems,
 				selectedItemsKey,
 				selectedItemsValue,
@@ -1149,7 +1151,12 @@ const FrontendDataSet = ({
 					)}
 
 					<div
-						className={`data-set-wrapper visualization-mode-${activeView.contentRenderer}`}
+						className={classNames(
+							`data-set-wrapper visualization-mode-${activeView.contentRenderer}`,
+							{
+								selectable,
+							}
+						)}
 						data-testid={`visualization-mode-${activeView.name}`}
 						ref={wrapperRef}
 					>

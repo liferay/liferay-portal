@@ -17,6 +17,7 @@ import com.liferay.batch.engine.action.ImportTaskPreAction;
 import com.liferay.batch.engine.action.ItemReaderPostAction;
 import com.liferay.batch.engine.configuration.BatchEngineTaskCompanyConfiguration;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
+import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskExceptionHandler;
 import com.liferay.batch.engine.internal.item.BatchEngineTaskItemDelegateExecutor;
 import com.liferay.batch.engine.internal.item.BatchEngineTaskItemDelegateExecutorFactory;
 import com.liferay.batch.engine.internal.reader.BatchEngineImportTaskItemReader;
@@ -189,6 +190,9 @@ public class BatchEngineImportTaskExecutorImpl
 		_batchEngineTaskItemDelegateExecutorFactory =
 			new BatchEngineTaskItemDelegateExecutorFactory(
 				_batchEngineTaskItemDelegateRegistry, null, null, null);
+		_batchEngineImportTaskExceptionHandlers =
+			ServiceTrackerListFactory.open(
+				bundleContext, BatchEngineImportTaskExceptionHandler.class);
 		_importTaskPostActions = ServiceTrackerListFactory.open(
 			bundleContext, ImportTaskPostAction.class);
 		_importTaskPreActions = ServiceTrackerListFactory.open(
@@ -199,6 +203,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 	@Deactivate
 	protected void deactivate() {
+		_batchEngineImportTaskExceptionHandlers.close();
 		_importTaskPostActions.close();
 		_importTaskPreActions.close();
 		_itemReaderPostActions.close();
@@ -231,13 +236,16 @@ public class BatchEngineImportTaskExecutorImpl
 					IMPORT_STRATEGY_ON_ERROR_CONTINUE) {
 
 			return new OnErrorContinueBatchEngineImportStrategy(
-				batchEngineImportTask, _importTaskPostActions.toList(),
+				batchEngineImportTask,
+				_batchEngineImportTaskExceptionHandlers.toList(),
+				_importTaskPostActions.toList(),
 				_importTaskPreActions.toList());
 		}
 
 		return new OnErrorFailBatchEngineImportStrategy(
-			batchEngineImportTask, _importTaskPostActions.toList(),
-			_importTaskPreActions.toList());
+			batchEngineImportTask,
+			_batchEngineImportTaskExceptionHandlers.toList(),
+			_importTaskPostActions.toList(), _importTaskPreActions.toList());
 	}
 
 	private BatchEngineImportTaskItemReader _getBatchEngineImportTaskItemReader(
@@ -449,6 +457,9 @@ public class BatchEngineImportTaskExecutorImpl
 	@Reference
 	private BatchEngineImportTaskErrorLocalService
 		_batchEngineImportTaskErrorLocalService;
+
+	private ServiceTrackerList<BatchEngineImportTaskExceptionHandler>
+		_batchEngineImportTaskExceptionHandlers;
 
 	@Reference
 	private BatchEngineImportTaskLocalService

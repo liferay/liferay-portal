@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.snapshot.DeleteSnapshotResponse;
 /**
  * @author Bryan Engler
  */
-public interface DeleteSnapshotRequestExecutor {
+public class DeleteSnapshotRequestExecutor {
 
 	public DeleteSnapshotResponse execute(
-		DeleteSnapshotRequest deleteSnapshotRequest);
+		DeleteSnapshotRequest deleteSnapshotRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

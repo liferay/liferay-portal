@@ -34,6 +34,7 @@ interface IFilterDropdown extends React.HTMLAttributes<HTMLElement> {
 	onSelectItem: (item: Item) => void;
 	onTrigger?: () => void;
 	selectedItem: Item;
+	showLabelInSmallViewport?: boolean;
 	title?: string;
 }
 
@@ -52,9 +53,18 @@ const FilterDropdown: React.FC<IFilterDropdown> = ({
 	onSelectItem,
 	onTrigger,
 	selectedItem,
+	showLabelInSmallViewport = false,
 	title,
 }) => {
 	const [value, setValue] = useState('');
+
+	const triggerLabelClass = classNames(
+		'filter-dropdown__trigger-label',
+		'ml-2',
+		{
+			'd-md-inline d-none': !showLabelInSmallViewport,
+		}
+	);
 
 	return (
 		<ClayDropdown
@@ -81,7 +91,7 @@ const FilterDropdown: React.FC<IFilterDropdown> = ({
 				>
 					{icon && <ClayIcon symbol={icon} />}
 
-					<span className="filter-dropdown__trigger-label ml-2">
+					<span className={triggerLabelClass}>
 						{selectedItem.label}
 
 						<ClayIcon className="ml-2" symbol="caret-bottom" />

@@ -59,7 +59,6 @@ exports[`Field LocalizableText adds a new translation for an untranslated item 1
           </button>
           <div>
             <div
-              aria-hidden="true"
               class="dropdown-menu"
               role="presentation"
               style="left: -999px; top: -995px;"
@@ -1516,7 +1515,6 @@ exports[`Field LocalizableText fills with the default language value when the se
           </button>
           <div>
             <div
-              aria-hidden="true"
               class="dropdown-menu"
               role="presentation"
               style="left: -999px; top: -995px;"
@@ -2245,7 +2243,6 @@ exports[`Field LocalizableText fills with the selected language value when the s
           </button>
           <div>
             <div
-              aria-hidden="true"
               class="dropdown-menu"
               role="presentation"
               style="left: -999px; top: -995px;"
@@ -5898,7 +5895,6 @@ exports[`Field LocalizableText removes the translation of an item already transl
           </button>
           <div>
             <div
-              aria-hidden="true"
               class="dropdown-menu"
               role="presentation"
               style="left: -999px; top: -995px;"

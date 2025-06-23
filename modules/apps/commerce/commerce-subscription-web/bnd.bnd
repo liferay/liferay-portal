@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Subscription Web
 Bundle-SymbolicName: com.liferay.commerce.subscription.web
-Bundle-Version: 4.0.61
+Bundle-Version: 4.0.62
 Web-ContextPath: /commerce-subscription-web
 -dsannotations-options: inherit

@@ -7,7 +7,15 @@ export type LocalizedValue = {
 	[key in Liferay.Language.Locale]?: string;
 };
 
+export type EditableConfig = Record<string, unknown>;
+
 export type EditableValue = {
-	config?: Record<string, unknown>;
+	config?: EditableConfig;
 	defaultValue?: string;
 } & LocalizedValue;
+
+export type LinkEditableValue = {
+	href?: LocalizedValue;
+	rel?: string;
+	target?: string;
+};

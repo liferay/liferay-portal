@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.PaymentMethodGroupRelOrderType;
 import com.liferay.headless.commerce.admin.channel.client.http.HttpInvoker;
@@ -210,14 +211,81 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 
 	@Test
 	public void testDeletePaymentMethodGroupRelOrderType() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PaymentMethodGroupRelOrderType paymentMethodGroupRelOrderType =
+			testDeletePaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType();
+
+		assertHttpResponseStatusCode(
+			204,
+			paymentMethodGroupRelOrderTypeResource.
+				deletePaymentMethodGroupRelOrderTypeHttpResponse(
+					paymentMethodGroupRelOrderType.
+						getPaymentMethodGroupRelOrderTypeId()));
+	}
+
+	protected PaymentMethodGroupRelOrderType
+			testDeletePaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeletePaymentMethodGroupRelOrderType()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		// No namespace
+
+		PaymentMethodGroupRelOrderType paymentMethodGroupRelOrderType1 =
+			testGraphQLDeletePaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePaymentMethodGroupRelOrderType",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"paymentMethodGroupRelOrderTypeId",
+									paymentMethodGroupRelOrderType1.
+										getPaymentMethodGroupRelOrderTypeId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deletePaymentMethodGroupRelOrderType"));
+
+		// Using the namespace headlessCommerceAdminChannel_v1_0
+
+		PaymentMethodGroupRelOrderType paymentMethodGroupRelOrderType2 =
+			testGraphQLDeletePaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminChannel_v1_0",
+						new GraphQLField(
+							"deletePaymentMethodGroupRelOrderType",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"paymentMethodGroupRelOrderTypeId",
+										paymentMethodGroupRelOrderType2.
+											getPaymentMethodGroupRelOrderTypeId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminChannel_v1_0",
+				"Object/deletePaymentMethodGroupRelOrderType"));
+	}
+
+	protected PaymentMethodGroupRelOrderType
+			testGraphQLDeletePaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType()
+		throws Exception {
+
+		return testGraphQLPaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType();
 	}
 
 	@Test
@@ -228,7 +296,7 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 			testDeletePaymentMethodGroupRelOrderTypeBatch_addPaymentMethodGroupRelOrderType();
 
 		testDeletePaymentMethodGroupRelOrderTypeBatch_deletePaymentMethodGroupRelOrderType(
-			"COMPLETED", null,
+			202, null,
 			paymentMethodGroupRelOrderType1.
 				getPaymentMethodGroupRelOrderTypeId());
 	}
@@ -237,14 +305,12 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 			testDeletePaymentMethodGroupRelOrderTypeBatch_addPaymentMethodGroupRelOrderType()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeletePaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType();
 	}
 
 	protected void
 			testDeletePaymentMethodGroupRelOrderTypeBatch_deletePaymentMethodGroupRelOrderType(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -258,10 +324,10 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 							"paymentMethodGroupRelOrderTypeId", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -330,6 +396,16 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 			page,
 			testGetPaymentMethodGroupRelIdPaymentMethodGroupRelOrderTypesPage_getExpectedActions(
 				id));
+
+		paymentMethodGroupRelOrderTypeResource.
+			deletePaymentMethodGroupRelOrderType(
+				paymentMethodGroupRelOrderType1.
+					getPaymentMethodGroupRelOrderTypeId());
+
+		paymentMethodGroupRelOrderTypeResource.
+			deletePaymentMethodGroupRelOrderType(
+				paymentMethodGroupRelOrderType2.
+					getPaymentMethodGroupRelOrderTypeId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -799,8 +875,70 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PaymentMethodGroupRelOrderType paymentMethodGroupRelOrderType1 =
+			testBatchEngineDeleteImportTask_addPaymentMethodGroupRelOrderType();
+
+		testBatchEngineDeleteImportTask_deletePaymentMethodGroupRelOrderType(
+			200, null,
+			paymentMethodGroupRelOrderType1.
+				getPaymentMethodGroupRelOrderTypeId());
+	}
+
+	protected PaymentMethodGroupRelOrderType
+			testBatchEngineDeleteImportTask_addPaymentMethodGroupRelOrderType()
+		throws Exception {
+
+		return testDeletePaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deletePaymentMethodGroupRelOrderType(
+				int expectedStatusCode, String externalReferenceCode, Long id,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.channel.dto.v1_0.PaymentMethodGroupRelOrderType",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"paymentMethodGroupRelOrderTypeId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected PaymentMethodGroupRelOrderType
+			testGraphQLPaymentMethodGroupRelOrderType_addPaymentMethodGroupRelOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		PaymentMethodGroupRelOrderType paymentMethodGroupRelOrderType,
@@ -903,6 +1041,12 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (paymentMethodGroupRelOrderType.
+				getPaymentMethodGroupRelOrderTypeId() == null) {
+
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

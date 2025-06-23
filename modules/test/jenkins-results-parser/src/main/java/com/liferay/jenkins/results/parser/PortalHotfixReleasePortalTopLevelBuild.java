@@ -148,8 +148,9 @@ public class PortalHotfixReleasePortalTopLevelBuild
 
 		try {
 			_portalHotfixRelease = PortalReleaseFactory.newPortalHotfixRelease(
+				getPortalFixpackRelease(),
 				new URL(getParameterValue("TEST_BUILD_HOTFIX_ZIP_URL")),
-				getPortalFixpackRelease(), getPortalRelease());
+				getPortalRelease());
 		}
 		catch (MalformedURLException malformedURLException) {
 			return null;

@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.suggest;
 
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.query.QueryTranslator;
 import com.liferay.portal.kernel.search.suggest.CompletionSuggester;
@@ -15,6 +14,8 @@ import com.liferay.portal.kernel.search.suggest.SuggesterTranslator;
 import com.liferay.portal.kernel.search.suggest.SuggesterVisitor;
 import com.liferay.portal.kernel.search.suggest.TermSuggester;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.search.elasticsearch7.internal.legacy.query.ElasticsearchQueryTranslator;
+import com.liferay.portal.search.index.IndexNameBuilder;
 
 import java.util.Set;
 
@@ -27,7 +28,9 @@ import org.elasticsearch.search.suggest.phrase.DirectCandidateGeneratorBuilder;
 import org.elasticsearch.search.suggest.phrase.PhraseSuggestionBuilder;
 import org.elasticsearch.search.suggest.term.TermSuggestionBuilder;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -203,15 +206,17 @@ public class ElasticsearchSuggesterTranslator
 		return termSuggesterBuilder;
 	}
 
+	@Activate
+	protected void activate() {
+		_queryTranslator = new ElasticsearchQueryTranslator(_indexNameBuilder);
+	}
+
 	private void _translate(
 		PhraseSuggester.Collate collate,
 		PhraseSuggestionBuilder phraseSuggestionBuilder) {
 
-		QueryTranslator<QueryBuilder> queryTranslator =
-			_queryTranslatorSnapshot.get();
-
-		if ((collate != null) && (queryTranslator != null)) {
-			QueryBuilder queryBuilder = queryTranslator.translate(
+		if (collate != null) {
+			QueryBuilder queryBuilder = _queryTranslator.translate(
 				collate.getQuery(), null);
 
 			phraseSuggestionBuilder.collateParams(collate.getParams());
@@ -384,10 +389,9 @@ public class ElasticsearchSuggesterTranslator
 		return SortBy.SCORE;
 	}
 
-	private static final Snapshot<QueryTranslator<QueryBuilder>>
-		_queryTranslatorSnapshot = new Snapshot<>(
-			ElasticsearchSuggesterTranslator.class,
-			Snapshot.cast(QueryTranslator.class),
-			"(search.engine.impl=Elasticsearch)", true);
+	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
+	private QueryTranslator<QueryBuilder> _queryTranslator;
 
 }

@@ -20,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.defaultpermissions.util.PortalDefaultPermissionsUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTTransactionException;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -4291,6 +4292,9 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			return false;
 		}
 
+		arguments = ArrayUtil.append(
+			arguments, CTCollectionThreadLocal.getCTCollectionId());
+
 		Group group = layout.getGroup();
 
 		if (MergeLayoutPrototypesThreadLocal.isMergeComplete(
@@ -4338,6 +4342,9 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	private boolean _mergeLayouts(
 		Group group, LayoutSet layoutSet, Object... arguments) {
+
+		arguments = ArrayUtil.append(
+			arguments, CTCollectionThreadLocal.getCTCollectionId());
 
 		if ((MergeLayoutPrototypesThreadLocal.isMergeComplete(
 				"getLayouts", arguments) &&

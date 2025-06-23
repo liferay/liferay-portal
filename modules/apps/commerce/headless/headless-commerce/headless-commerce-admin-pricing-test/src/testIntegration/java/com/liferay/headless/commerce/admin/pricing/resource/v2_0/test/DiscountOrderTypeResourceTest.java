@@ -74,6 +74,11 @@ public class DiscountOrderTypeResourceTest
 
 	@Override
 	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+	}
+
+	@Override
+	@Test
 	public void testDeleteDiscountOrderType() throws Exception {
 	}
 

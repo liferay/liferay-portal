@@ -230,6 +230,11 @@ public abstract class BaseFieldMappingInfoResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		FieldMappingInfo fieldMappingInfo,
 		List<FieldMappingInfo> fieldMappingInfos) {

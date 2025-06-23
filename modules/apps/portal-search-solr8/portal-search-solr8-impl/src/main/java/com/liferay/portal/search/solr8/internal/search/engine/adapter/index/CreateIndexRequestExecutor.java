@@ -11,8 +11,10 @@ import com.liferay.portal.search.engine.adapter.index.CreateIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface CreateIndexRequestExecutor {
+public class CreateIndexRequestExecutor {
 
-	public CreateIndexResponse execute(CreateIndexRequest createIndexRequest);
+	public CreateIndexResponse execute(CreateIndexRequest createIndexRequest) {
+		throw new UnsupportedOperationException();
+	}
 
 }

@@ -5,7 +5,7 @@
 
 import '@testing-library/jest-dom/extend-expect';
 import {useMarketplaceConfiguration} from '@liferay/marketplace-js-components-web';
-import {act, fireEvent, render, screen} from '@testing-library/react';
+import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import {DndProvider} from 'react-dnd';
@@ -33,11 +33,6 @@ jest.mock(
 		return jest.fn(() => null);
 	}
 );
-
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	sub: jest.fn((key, arg) => key.replace('x', arg)),
-}));
 
 jest.mock('@liferay/marketplace-js-components-web', () => {
 	const mockGetProducts = {
@@ -170,7 +165,10 @@ const NORMALIZED_TABS = [
 	},
 ];
 
-const renderComponent = (widgets = DEFAULT_WIDGETS) => {
+const renderComponent = ({
+	widgets = DEFAULT_WIDGETS,
+	viewMarketplace = false,
+} = {}) => {
 	return render(
 		<DndProvider backend={HTML5Backend}>
 			<StoreAPIContextProvider
@@ -212,6 +210,9 @@ const renderComponent = (widgets = DEFAULT_WIDGETS) => {
 							name: 'Collection 1',
 						},
 					],
+					permissions: {
+						VIEW_MARKETPLACE: viewMarketplace,
+					},
 					widgets,
 				})}
 			>
@@ -413,7 +414,7 @@ describe('FragmentsSidebar', () => {
 			},
 		];
 
-		renderComponent(widgets);
+		renderComponent({widgets});
 
 		expect(TabsPanel).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -491,7 +492,7 @@ describe('FragmentsSidebar', () => {
 			},
 		];
 
-		renderComponent(widgets);
+		renderComponent({widgets});
 
 		expect(TabsPanel).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -564,6 +565,18 @@ describe('FragmentsSidebar', () => {
 			expect(
 				screen.getByText('switch-to-list[noun]-view')
 			).toBeInTheDocument();
+		});
+
+		it('shows the marketplace button when permission VIEW_MARKETPLACE is true', async () => {
+			renderComponent({viewMarketplace: true});
+
+			await waitFor(() => {
+				expect(
+					screen.getByRole('button', {
+						name: Liferay.Language.get('open-marketplace-explorer'),
+					})
+				).toBeInTheDocument();
+			});
 		});
 	});
 });

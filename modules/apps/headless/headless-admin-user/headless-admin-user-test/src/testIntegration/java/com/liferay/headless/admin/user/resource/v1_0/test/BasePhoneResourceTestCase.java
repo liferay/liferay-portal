@@ -19,6 +19,7 @@ import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.resource.v1_0.PhoneResource;
 import com.liferay.headless.admin.user.client.serdes.v1_0.PhoneSerDes;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -316,24 +317,24 @@ public abstract class BasePhoneResourceTestCase {
 	public void testDeletePhoneBatch() throws Exception {
 		Phone phone1 = testDeletePhoneBatch_addPhone();
 
-		testDeletePhoneBatch_deletePhone("COMPLETED", null, phone1.getId());
+		testDeletePhoneBatch_deletePhone(
+			202, phone1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404, phoneResource.getPhoneHttpResponse(phone1.getId()));
 
+		phone1 = testDeletePhoneBatch_addPhone();
+
+		testDeletePhoneBatch_deletePhone(202, null, phone1.getId());
+
+		assertHttpResponseStatusCode(
+			404, phoneResource.getPhoneHttpResponse(phone1.getId()));
+
+		phone1 = testDeletePhoneBatch_addPhone();
 		Phone phone2 = testDeletePhoneBatch_addPhone();
 
 		testDeletePhoneBatch_deletePhone(
-			"COMPLETED", phone2.getExternalReferenceCode(), null);
-
-		assertHttpResponseStatusCode(
-			404, phoneResource.getPhoneHttpResponse(phone2.getId()));
-
-		phone1 = testDeletePhoneBatch_addPhone();
-		phone2 = testDeletePhoneBatch_addPhone();
-
-		testDeletePhoneBatch_deletePhone(
-			"COMPLETED", phone2.getExternalReferenceCode(), phone1.getId());
+			202, phone2.getExternalReferenceCode(), phone1.getId());
 
 		assertHttpResponseStatusCode(
 			404, phoneResource.getPhoneHttpResponse(phone1.getId()));
@@ -341,7 +342,7 @@ public abstract class BasePhoneResourceTestCase {
 			200, phoneResource.getPhoneHttpResponse(phone2.getId()));
 
 		testDeletePhoneBatch_deletePhone(
-			"COMPLETED", phone2.getExternalReferenceCode(), phone1.getId());
+			202, phone2.getExternalReferenceCode(), phone1.getId());
 
 		assertHttpResponseStatusCode(
 			404, phoneResource.getPhoneHttpResponse(phone2.getId()));
@@ -352,7 +353,7 @@ public abstract class BasePhoneResourceTestCase {
 	}
 
 	protected void testDeletePhoneBatch_deletePhone(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -365,10 +366,10 @@ public abstract class BasePhoneResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1369,6 +1370,82 @@ public abstract class BasePhoneResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Phone phone1 = testBatchEngineDeleteImportTask_addPhone();
+
+		testBatchEngineDeleteImportTask_deletePhone(
+			200, phone1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404, phoneResource.getPhoneHttpResponse(phone1.getId()));
+
+		phone1 = testBatchEngineDeleteImportTask_addPhone();
+
+		testBatchEngineDeleteImportTask_deletePhone(200, null, phone1.getId());
+
+		assertHttpResponseStatusCode(
+			404, phoneResource.getPhoneHttpResponse(phone1.getId()));
+
+		phone1 = testBatchEngineDeleteImportTask_addPhone();
+		Phone phone2 = testBatchEngineDeleteImportTask_addPhone();
+
+		testBatchEngineDeleteImportTask_deletePhone(
+			200, phone2.getExternalReferenceCode(), phone1.getId());
+
+		assertHttpResponseStatusCode(
+			404, phoneResource.getPhoneHttpResponse(phone1.getId()));
+		assertHttpResponseStatusCode(
+			200, phoneResource.getPhoneHttpResponse(phone2.getId()));
+
+		testBatchEngineDeleteImportTask_deletePhone(
+			200, phone2.getExternalReferenceCode(), phone1.getId());
+
+		assertHttpResponseStatusCode(
+			404, phoneResource.getPhoneHttpResponse(phone2.getId()));
+	}
+
+	protected Phone testBatchEngineDeleteImportTask_addPhone()
+		throws Exception {
+
+		return testDeletePhone_addPhone();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deletePhone(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.admin.user.dto.v1_0.Phone", null, null,
+				null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected Phone testGraphQLPhone_addPhone() throws Exception {

@@ -267,6 +267,10 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 
 		boolean valid = true;
 
+		if (taxonomyVocabulary.getTaxonomyVocabularyId() == null) {
+			valid = false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 

@@ -494,6 +494,11 @@ public abstract class BaseSegmentResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected Segment testGraphQLSegment_addSegment() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");

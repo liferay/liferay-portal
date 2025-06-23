@@ -66,7 +66,7 @@ public class ObjectEntryFolderLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectEntryFolder addObjectEntryFolder(
-			String externalReferenceCode, long userId, long groupId,
+			String externalReferenceCode, long groupId, long userId,
 			long parentObjectEntryFolderId, String description,
 			Map<Locale, String> labelMap, String name,
 			ServiceContext serviceContext)
@@ -232,11 +232,14 @@ public class ObjectEntryFolderLocalServiceImpl
 			objectEntryFolder.getGroupId(), objectEntryFolder.getCompanyId(),
 			objectEntryFolder.getTreePath() + "%");
 
-		_workflowDefinitionLinkLocalService.deleteWorkflowDefinitionLink(
-			objectEntryFolder.getCompanyId(), objectEntryFolder.getGroupId(),
-			ObjectEntryFolder.class.getName(),
-			objectEntryFolder.getObjectEntryFolderId(),
-			ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL);
+		if (FeatureFlagManagerUtil.isEnabled("LPD-42553")) {
+			_workflowDefinitionLinkLocalService.deleteWorkflowDefinitionLink(
+				objectEntryFolder.getCompanyId(),
+				objectEntryFolder.getGroupId(),
+				ObjectEntryFolder.class.getName(),
+				objectEntryFolder.getObjectEntryFolderId(),
+				ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL);
+		}
 
 		return objectEntryFolder;
 	}
@@ -361,7 +364,8 @@ public class ObjectEntryFolderLocalServiceImpl
 			long objectEntryFolderId, ServiceContext serviceContext)
 		throws PortalException {
 
-		if (!GetterUtil.getBoolean(
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-42553") ||
+			!GetterUtil.getBoolean(
 				serviceContext.getAttribute("updateWorkflowDefinitionLinks"),
 				true)) {
 

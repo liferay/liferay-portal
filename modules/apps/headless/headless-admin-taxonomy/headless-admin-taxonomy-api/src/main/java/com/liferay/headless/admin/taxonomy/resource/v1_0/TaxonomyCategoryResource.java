@@ -46,6 +46,14 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TaxonomyCategoryResource {
 
+	public void deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+			Long assetLibraryId, String externalReferenceCode)
+		throws Exception;
+
+	public void deleteSiteTaxonomyCategoryByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
+		throws Exception;
+
 	public void deleteTaxonomyCategory(String taxonomyCategoryId)
 		throws Exception;
 
@@ -55,6 +63,31 @@ public interface TaxonomyCategoryResource {
 
 	public void deleteTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
 			Long taxonomyVocabularyId, String externalReferenceCode)
+		throws Exception;
+
+	public Page<TaxonomyCategory> getAssetLibraryTaxonomyCategoriesPage(
+			Long assetLibraryId, String search,
+			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	public TaxonomyCategory
+			getAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode)
+		throws Exception;
+
+	public Page<TaxonomyCategory> getSiteTaxonomyCategoriesPage(
+			Long siteId, String search,
+			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	public TaxonomyCategory getSiteTaxonomyCategoryByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
 		throws Exception;
 
 	public Page<TaxonomyCategory> getTaxonomyCategoriesRankedPage(
@@ -94,6 +127,36 @@ public interface TaxonomyCategoryResource {
 			String taxonomyCategoryId, TaxonomyCategory taxonomyCategory)
 		throws Exception;
 
+	public Response postAssetLibraryTaxonomyCategoriesPageExportBatch(
+			Long assetLibraryId, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
+		throws Exception;
+
+	public TaxonomyCategory postAssetLibraryTaxonomyCategory(
+			Long assetLibraryId, TaxonomyCategory taxonomyCategory)
+		throws Exception;
+
+	public Response postAssetLibraryTaxonomyCategoryBatch(
+			Long assetLibraryId, String callbackURL, Object object)
+		throws Exception;
+
+	public Response postSiteTaxonomyCategoriesPageExportBatch(
+			Long siteId, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
+		throws Exception;
+
+	public TaxonomyCategory postSiteTaxonomyCategory(
+			Long siteId, TaxonomyCategory taxonomyCategory)
+		throws Exception;
+
+	public Response postSiteTaxonomyCategoryBatch(
+			Long siteId, String callbackURL, Object object)
+		throws Exception;
+
 	public TaxonomyCategory postTaxonomyCategoryTaxonomyCategory(
 			String parentTaxonomyCategoryId, TaxonomyCategory taxonomyCategory)
 		throws Exception;
@@ -111,6 +174,17 @@ public interface TaxonomyCategoryResource {
 
 	public Response postTaxonomyVocabularyTaxonomyCategoryBatch(
 			Long taxonomyVocabularyId, String callbackURL, Object object)
+		throws Exception;
+
+	public TaxonomyCategory
+			putAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode,
+				TaxonomyCategory taxonomyCategory)
+		throws Exception;
+
+	public TaxonomyCategory putSiteTaxonomyCategoryByExternalReferenceCode(
+			Long siteId, String externalReferenceCode,
+			TaxonomyCategory taxonomyCategory)
 		throws Exception;
 
 	public TaxonomyCategory putTaxonomyCategory(

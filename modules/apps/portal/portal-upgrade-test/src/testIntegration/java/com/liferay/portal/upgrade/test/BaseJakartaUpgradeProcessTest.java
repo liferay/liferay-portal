@@ -6,6 +6,7 @@
 package com.liferay.portal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.model.ObjectActionTable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.BaseJakartaUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.test.log.LogCapture;
@@ -71,6 +73,15 @@ public class BaseJakartaUpgradeProcessTest extends BaseJakartaUpgradeProcess {
 	public void tearDown() throws Exception {
 		_companyLocalService.forEachCompany(
 			company -> _db.runSQL("drop table " + _TABLE_NAME));
+	}
+
+	@Test
+	public void testUpgradeMissingTableAndColumn() throws Exception {
+		_testUpgradeMissingTableAndColumn(
+			RandomTestUtil.randomString(), false,
+			ObjectActionTable.INSTANCE.getTableName());
+		_testUpgradeMissingTableAndColumn(
+			RandomTestUtil.randomString(), true, RandomTestUtil.randomString());
 	}
 
 	@Test
@@ -240,6 +251,51 @@ public class BaseJakartaUpgradeProcessTest extends BaseJakartaUpgradeProcess {
 					_getLogEntryString(_COLUMN_NAME_4, companyId, false),
 					String.valueOf(logEntries.get(i++)));
 			}
+		}
+	}
+
+	private void _testUpgradeMissingTableAndColumn(
+			String columnName, boolean missingTable, String tableName)
+		throws Exception {
+
+		try (Connection connection = DataAccess.getConnection();
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BaseJakartaUpgradeProcess.class.getName(),
+				LoggerTestUtil.INFO)) {
+
+			UpgradeProcess upgradeProcess = new BaseJakartaUpgradeProcess() {
+
+				@Override
+				protected String[][] getTableAndColumnNames() {
+					return new String[][] {{tableName, columnName}};
+				}
+
+			};
+
+			upgradeProcess.upgrade();
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			DBInspector dbInspector = new DBInspector(connection);
+
+			String expectedMessage =
+				"Table " + dbInspector.normalizeName(tableName) +
+					" does not exist";
+
+			if (!missingTable) {
+				expectedMessage = StringBundler.concat(
+					"Table ", dbInspector.normalizeName(tableName),
+					" does not have column ",
+					dbInspector.normalizeName(columnName));
+			}
+
+			LogEntry logEntry = logEntries.get(0);
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(message.contains(expectedMessage));
 		}
 	}
 

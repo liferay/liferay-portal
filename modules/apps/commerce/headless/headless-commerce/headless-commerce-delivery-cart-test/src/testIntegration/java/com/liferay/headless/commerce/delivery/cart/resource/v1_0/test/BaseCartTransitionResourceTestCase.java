@@ -284,6 +284,11 @@ public abstract class BaseCartTransitionResourceTestCase {
 			testGetCartCartTransitionsPage_getCartId(), cartTransition);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		CartTransition cartTransition, List<CartTransition> cartTransitions) {
 

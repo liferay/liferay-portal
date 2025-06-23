@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Reports Engine Console Web
 Bundle-SymbolicName: com.liferay.portal.reports.engine.console.web
-Bundle-Version: 5.0.67
+Bundle-Version: 5.0.68
 Liferay-Releng-Module-Group-Title: Reports Engine Console
 Web-ContextPath: /portal-reports-engine-console-web
 -dsannotations-options: inherit

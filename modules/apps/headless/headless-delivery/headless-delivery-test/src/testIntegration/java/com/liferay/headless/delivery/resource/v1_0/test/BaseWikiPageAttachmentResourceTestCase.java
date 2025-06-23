@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.delivery.client.dto.v1_0.Field;
 import com.liferay.headless.delivery.client.dto.v1_0.WikiPageAttachment;
@@ -261,6 +262,14 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 					"-"));
 	}
 
+	protected WikiPageAttachment
+			testDeleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_addWikiPageAttachment()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long
 			testDeleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_getSiteId()
 		throws Exception {
@@ -271,14 +280,6 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 
 	protected String
 			testDeleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_getWikiPageExternalReferenceCode()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected WikiPageAttachment
-			testDeleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_addWikiPageAttachment()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -405,7 +406,7 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 			testDeleteWikiPageAttachmentBatch_addWikiPageAttachment();
 
 		testDeleteWikiPageAttachmentBatch_deleteWikiPageAttachment(
-			"COMPLETED", null, wikiPageAttachment1.getId());
+			202, null, wikiPageAttachment1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -421,7 +422,7 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 	}
 
 	protected void testDeleteWikiPageAttachmentBatch_deleteWikiPageAttachment(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -435,10 +436,10 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -460,6 +461,14 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		assertValid(getWikiPageAttachment);
 	}
 
+	protected WikiPageAttachment
+			testGetSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_addWikiPageAttachment()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long
 			testGetSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_getSiteId()
 		throws Exception {
@@ -470,14 +479,6 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 
 	protected String
 			testGetSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_getWikiPageExternalReferenceCode()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected WikiPageAttachment
-			testGetSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_addWikiPageAttachment()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -514,7 +515,6 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 											"\"" +
 												testGraphQLGetSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_getWikiPageExternalReferenceCode() +
 													"\"");
-
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -552,7 +552,6 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 												"\"" +
 													testGraphQLGetSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_getWikiPageExternalReferenceCode() +
 														"\"");
-
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -1097,6 +1096,62 @@ public abstract class BaseWikiPageAttachmentResourceTestCase {
 		return wikiPageAttachmentResource.postWikiPageWikiPageAttachment(
 			testGetWikiPageWikiPageAttachmentsPage_getWikiPageId(),
 			wikiPageAttachment, multipartFiles);
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WikiPageAttachment wikiPageAttachment1 =
+			testBatchEngineDeleteImportTask_addWikiPageAttachment();
+
+		testBatchEngineDeleteImportTask_deleteWikiPageAttachment(
+			200, null, wikiPageAttachment1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			wikiPageAttachmentResource.getWikiPageAttachmentHttpResponse(
+				wikiPageAttachment1.getId()));
+	}
+
+	protected WikiPageAttachment
+			testBatchEngineDeleteImportTask_addWikiPageAttachment()
+		throws Exception {
+
+		return testDeleteWikiPageAttachment_addWikiPageAttachment();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWikiPageAttachment(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.delivery.dto.v1_0.WikiPageAttachment",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected WikiPageAttachment

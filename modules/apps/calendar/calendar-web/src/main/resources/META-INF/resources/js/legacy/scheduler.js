@@ -914,6 +914,83 @@ AUI.add(
 			NAME: 'scheduler-month-view',
 
 			prototype: {
+				_getEvtSplitInfo(event, celDate, rowStartDate, rowEndDate) {
+					const eventEndDate = event.getClearEndDate();
+					const eventStartDate = event.getClearStartDate();
+
+					if (
+						DateMath.compare(
+							event.get('endDate'),
+							DateMath.toMidnight(eventEndDate)
+						)
+					) {
+						eventEndDate.setDate(eventEndDate.getDate() - 1);
+						eventEndDate.setSeconds(eventEndDate.getSeconds() - 1);
+					}
+
+					const maxColspan = DateMath.countDays(rowEndDate, celDate);
+
+					const info = {
+						colspan:
+							Math.min(
+								DateMath.countDays(eventEndDate, celDate),
+								maxColspan
+							) + 1,
+						left: DateMath.before(eventStartDate, rowStartDate),
+						right: DateMath.after(eventEndDate, rowEndDate),
+					};
+
+					return info;
+				},
+
+				_getRenderableEvent(events, rowStartDate, rowEndDate, celDate) {
+					const instance = this;
+					const key = instance._getEvtRenderedStackKey(celDate);
+					let i;
+
+					if (!instance.evtRenderedStack[key]) {
+						instance.evtRenderedStack[key] = [];
+					}
+
+					for (i = 0; i < events.length; i++) {
+						const event = events[i];
+
+						const eventEndDate = event.get('endDate');
+						const eventStartDate = event.get('startDate');
+
+						const weekEndDate = DateMath.toLastHour(rowEndDate);
+						const weekStartDate = DateMath.toMidnight(rowStartDate);
+
+						if (
+							DateMath.before(eventStartDate, weekEndDate) &&
+							DateMath.after(eventEndDate, weekStartDate)
+						) {
+							const isEventDateContinuation =
+								DateMath.after(celDate, eventStartDate) &&
+								!DateMath.isDayOverlap(celDate, rowStartDate);
+							const isEventStartDateDay = !DateMath.isDayOverlap(
+								eventStartDate,
+								celDate
+							);
+
+							const isRendered =
+								A.Array.indexOf(
+									instance.evtRenderedStack[key],
+									event
+								) > -1;
+
+							if (
+								!isRendered &&
+								(isEventStartDateDay || isEventDateContinuation)
+							) {
+								return event;
+							}
+						}
+					}
+
+					return null;
+				},
+
 				_syncCellDimensions() {
 					const instance = this;
 

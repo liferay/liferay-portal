@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Export Import Web
 Bundle-SymbolicName: com.liferay.exportimport.web
-Bundle-Version: 5.0.104
+Bundle-Version: 5.0.105
 Liferay-JS-Config: /META-INF/resources/js/legacy/config.js
 Web-ContextPath: /exportimport-web
 -dsannotations-options: inherit

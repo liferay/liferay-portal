@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.delivery.client.dto.v1_0.Field;
 import com.liferay.headless.delivery.client.dto.v1_0.MessageBoardMessage;
@@ -260,8 +261,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testDeleteMessageBoardMessage_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -356,7 +357,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testDeleteMessageBoardMessageBatch_addMessageBoardMessage();
 
 		testDeleteMessageBoardMessageBatch_deleteMessageBoardMessage(
-			"COMPLETED", null, messageBoardMessage1.getId());
+			202, null, messageBoardMessage1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -372,7 +373,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 	}
 
 	protected void testDeleteMessageBoardMessageBatch_deleteMessageBoardMessage(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -386,10 +387,10 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -420,8 +421,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testDeleteMessageBoardMessageMyRating_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -436,32 +437,20 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			204,
 			messageBoardMessageResource.
 				deleteSiteMessageBoardMessageByExternalReferenceCodeHttpResponse(
-					testDeleteSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						messageBoardMessage),
+					messageBoardMessage.getSiteId(),
 					messageBoardMessage.getExternalReferenceCode()));
 
 		assertHttpResponseStatusCode(
 			404,
 			messageBoardMessageResource.
 				getSiteMessageBoardMessageByExternalReferenceCodeHttpResponse(
-					testDeleteSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						messageBoardMessage),
+					messageBoardMessage.getSiteId(),
 					messageBoardMessage.getExternalReferenceCode()));
 		assertHttpResponseStatusCode(
 			404,
 			messageBoardMessageResource.
 				getSiteMessageBoardMessageByExternalReferenceCodeHttpResponse(
-					testDeleteSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						messageBoardMessage),
-					"-"));
-	}
-
-	protected Long
-			testDeleteSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-				MessageBoardMessage messageBoardMessage)
-		throws Exception {
-
-		return messageBoardMessage.getSiteId();
+					messageBoardMessage.getSiteId(), "-"));
 	}
 
 	protected MessageBoardMessage
@@ -682,8 +671,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testGetMessageBoardMessage_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -1285,6 +1274,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 
 	@Test
 	public void testGetMessageBoardMessagePermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MessageBoardMessage postMessageBoardMessage =
 			testGetMessageBoardMessagePermissionsPage_addMessageBoardMessage();
 
@@ -1818,20 +1808,11 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage getMessageBoardMessage =
 			messageBoardMessageResource.
 				getSiteMessageBoardMessageByExternalReferenceCode(
-					testGetSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						postMessageBoardMessage),
+					postMessageBoardMessage.getSiteId(),
 					postMessageBoardMessage.getExternalReferenceCode());
 
 		assertEquals(postMessageBoardMessage, getMessageBoardMessage);
 		assertValid(getMessageBoardMessage);
-	}
-
-	protected Long
-			testGetSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-				MessageBoardMessage messageBoardMessage)
-		throws Exception {
-
-		return messageBoardMessage.getSiteId();
 	}
 
 	protected MessageBoardMessage
@@ -1864,10 +1845,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 										put(
 											"siteKey",
 											"\"" +
-												testGraphQLGetSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-													messageBoardMessage) +
-														"\"");
-
+												messageBoardMessage.
+													getSiteId() + "\"");
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -1897,10 +1876,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-														messageBoardMessage) +
-															"\"");
-
+													messageBoardMessage.
+														getSiteId() + "\"");
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -1912,14 +1889,6 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/messageBoardMessageByExternalReferenceCode"))));
-	}
-
-	protected Long
-			testGraphQLGetSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-				MessageBoardMessage messageBoardMessage)
-		throws Exception {
-
-		return messageBoardMessage.getSiteId();
 	}
 
 	@Test
@@ -1994,19 +1963,11 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage getMessageBoardMessage =
 			messageBoardMessageResource.
 				getSiteMessageBoardMessageByFriendlyUrlPath(
-					testGetSiteMessageBoardMessageByFriendlyUrlPath_getSiteId(
-						postMessageBoardMessage),
+					postMessageBoardMessage.getSiteId(),
 					postMessageBoardMessage.getFriendlyUrlPath());
 
 		assertEquals(postMessageBoardMessage, getMessageBoardMessage);
 		assertValid(getMessageBoardMessage);
-	}
-
-	protected Long testGetSiteMessageBoardMessageByFriendlyUrlPath_getSiteId(
-			MessageBoardMessage messageBoardMessage)
-		throws Exception {
-
-		return messageBoardMessage.getSiteId();
 	}
 
 	protected MessageBoardMessage
@@ -2039,10 +2000,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 										put(
 											"siteKey",
 											"\"" +
-												testGraphQLGetSiteMessageBoardMessageByFriendlyUrlPath_getSiteId(
-													messageBoardMessage) +
-														"\"");
-
+												messageBoardMessage.
+													getSiteId() + "\"");
 										put(
 											"friendlyUrlPath",
 											"\"" +
@@ -2072,10 +2031,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteMessageBoardMessageByFriendlyUrlPath_getSiteId(
-														messageBoardMessage) +
-															"\"");
-
+													messageBoardMessage.
+														getSiteId() + "\"");
 											put(
 												"friendlyUrlPath",
 												"\"" +
@@ -2087,14 +2044,6 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/messageBoardMessageByFriendlyUrlPath"))));
-	}
-
-	protected Long
-			testGraphQLGetSiteMessageBoardMessageByFriendlyUrlPath_getSiteId(
-				MessageBoardMessage messageBoardMessage)
-		throws Exception {
-
-		return messageBoardMessage.getSiteId();
 	}
 
 	@Test
@@ -2162,6 +2111,10 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 	@Test
 	public void testGetSiteMessageBoardMessagePermissionsPage()
 		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MessageBoardMessage postMessageBoardMessage =
+			testGetSiteMessageBoardMessagePermissionsPage_addMessageBoardMessage();
 
 		Page<Permission> page =
 			messageBoardMessageResource.
@@ -2989,8 +2942,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPatchMessageBoardMessage_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -3072,8 +3025,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPutMessageBoardMessage_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -3098,8 +3051,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPutMessageBoardMessageMarkAsAnswer_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -3145,8 +3098,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPutMessageBoardMessagePermissionsPage_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -3171,8 +3124,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPutMessageBoardMessageSubscribe_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -3197,8 +3150,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPutMessageBoardMessageUnmarkAsAnswer_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -3223,8 +3176,8 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			testPutMessageBoardMessageUnsubscribe_addMessageBoardMessage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostMessageBoardMessageMessageBoardMessage_addMessageBoardMessage(
+			randomMessageBoardMessage());
 	}
 
 	@Test
@@ -3240,8 +3193,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage putMessageBoardMessage =
 			messageBoardMessageResource.
 				putSiteMessageBoardMessageByExternalReferenceCode(
-					testPutSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						postMessageBoardMessage),
+					postMessageBoardMessage.getSiteId(),
 					postMessageBoardMessage.getExternalReferenceCode(),
 					randomMessageBoardMessage);
 
@@ -3251,8 +3203,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		MessageBoardMessage getMessageBoardMessage =
 			messageBoardMessageResource.
 				getSiteMessageBoardMessageByExternalReferenceCode(
-					testPutSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						putMessageBoardMessage),
+					putMessageBoardMessage.getSiteId(),
 					putMessageBoardMessage.getExternalReferenceCode());
 
 		assertEquals(randomMessageBoardMessage, getMessageBoardMessage);
@@ -3264,8 +3215,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		putMessageBoardMessage =
 			messageBoardMessageResource.
 				putSiteMessageBoardMessageByExternalReferenceCode(
-					testPutSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						newMessageBoardMessage),
+					newMessageBoardMessage.getSiteId(),
 					newMessageBoardMessage.getExternalReferenceCode(),
 					newMessageBoardMessage);
 
@@ -3275,8 +3225,7 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		getMessageBoardMessage =
 			messageBoardMessageResource.
 				getSiteMessageBoardMessageByExternalReferenceCode(
-					testPutSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-						putMessageBoardMessage),
+					putMessageBoardMessage.getSiteId(),
 					putMessageBoardMessage.getExternalReferenceCode());
 
 		assertEquals(newMessageBoardMessage, getMessageBoardMessage);
@@ -3286,12 +3235,12 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 			putMessageBoardMessage.getExternalReferenceCode());
 	}
 
-	protected Long
-			testPutSiteMessageBoardMessageByExternalReferenceCode_getSiteId(
-				MessageBoardMessage messageBoardMessage)
+	protected MessageBoardMessage
+			testPutSiteMessageBoardMessageByExternalReferenceCode_addMessageBoardMessage()
 		throws Exception {
 
-		return messageBoardMessage.getSiteId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected MessageBoardMessage
@@ -3299,14 +3248,6 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 		throws Exception {
 
 		return randomMessageBoardMessage();
-	}
-
-	protected MessageBoardMessage
-			testPutSiteMessageBoardMessageByExternalReferenceCode_addMessageBoardMessage()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
 	}
 
 	@Test
@@ -3356,6 +3297,62 @@ public abstract class BaseMessageBoardMessageResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		MessageBoardMessage messageBoardMessage1 =
+			testBatchEngineDeleteImportTask_addMessageBoardMessage();
+
+		testBatchEngineDeleteImportTask_deleteMessageBoardMessage(
+			200, null, messageBoardMessage1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			messageBoardMessageResource.getMessageBoardMessageHttpResponse(
+				messageBoardMessage1.getId()));
+	}
+
+	protected MessageBoardMessage
+			testBatchEngineDeleteImportTask_addMessageBoardMessage()
+		throws Exception {
+
+		return testDeleteMessageBoardMessage_addMessageBoardMessage();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteMessageBoardMessage(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.delivery.dto.v1_0.MessageBoardMessage",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

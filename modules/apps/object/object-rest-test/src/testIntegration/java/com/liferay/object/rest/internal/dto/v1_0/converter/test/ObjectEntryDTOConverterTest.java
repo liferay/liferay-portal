@@ -70,7 +70,7 @@ public class ObjectEntryDTOConverterTest {
 
 		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,

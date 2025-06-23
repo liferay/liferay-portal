@@ -1,8 +1,26 @@
-.list-sheet .sheet-header {
-	border-bottom: 1px solid $gray-200;
-}
+.visualization-mode-list {
+	&.selectable .list-group-item {
+		cursor: pointer;
 
-.no-header.list-sheet.sheet {
-	border: initial;
-	padding: initial;
+		&:hover {
+			background-color: $light;
+		}
+
+		&.active {
+			background-color: $primary-l3;
+
+			&:hover {
+				background-color: #d6e4ff;
+			}
+		}
+	}
+
+	.list-sheet .sheet-header {
+		border-bottom: 1px solid $gray-200;
+	}
+
+	.no-header.list-sheet.sheet {
+		border: initial;
+		padding: initial;
+	}
 }

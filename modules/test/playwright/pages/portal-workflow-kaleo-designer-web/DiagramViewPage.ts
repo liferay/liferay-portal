@@ -44,6 +44,10 @@ export class DiagramViewPage {
 		await this.sourceViewButton.click();
 	}
 
+	async clickTransition(name: string) {
+		await this.page.getByText(name).click({force: true});
+	}
+
 	async deleteNode(nodeLabel: string) {
 		await this.clickNode(nodeLabel);
 

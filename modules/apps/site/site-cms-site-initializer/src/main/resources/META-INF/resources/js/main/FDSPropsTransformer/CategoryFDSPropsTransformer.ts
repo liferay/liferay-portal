@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {openModal} from 'frontend-js-components-web';
+
+import MoveCategoryModalContent from '../categorization/categories/components/MoveCategoryModalContent';
 import {openGenericFDSDeleteConfirmationModal} from '../util/GenericOpenModalUtil';
 
 export default function CategoryFDSPropsTransformer({
@@ -19,7 +22,7 @@ export default function CategoryFDSPropsTransformer({
 		}: {
 			action: {data: {id: string}};
 			itemData: TaxonomyCategory;
-			loadData: any;
+			loadData: () => {};
 		}) {
 			if (action.data.id === 'delete') {
 				let confirmationText = Liferay.Language.get(
@@ -39,6 +42,21 @@ export default function CategoryFDSPropsTransformer({
 					itemData.name,
 					loadData
 				);
+			}
+			if (action.data.id === 'move') {
+				openModal({
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						MoveCategoryModalContent({
+							closeModal,
+							itemData,
+							loadData,
+						}),
+					size: 'md',
+				});
 			}
 		},
 	};

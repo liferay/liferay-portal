@@ -210,16 +210,16 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 		assertValid(getProductVirtualSettings);
 	}
 
-	protected String
-			testGetProductByExternalReferenceCodeProductVirtualSettings_getExternalReferenceCode()
+	protected ProductVirtualSettings
+			testGetProductByExternalReferenceCodeProductVirtualSettings_addProductVirtualSettings()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected ProductVirtualSettings
-			testGetProductByExternalReferenceCodeProductVirtualSettings_addProductVirtualSettings()
+	protected String
+			testGetProductByExternalReferenceCodeProductVirtualSettings_getExternalReferenceCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -360,15 +360,16 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 		assertValid(getProductVirtualSettings);
 	}
 
-	protected Long testGetProductIdProductVirtualSettings_getId(
-			ProductVirtualSettings productVirtualSettings)
-		throws Exception {
-
-		return productVirtualSettings.getId();
-	}
-
 	protected ProductVirtualSettings
 			testGetProductIdProductVirtualSettings_addProductVirtualSettings()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetProductIdProductVirtualSettings_getId(
+			ProductVirtualSettings productVirtualSettings)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -434,7 +435,8 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 			ProductVirtualSettings productVirtualSettings)
 		throws Exception {
 
-		return productVirtualSettings.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test

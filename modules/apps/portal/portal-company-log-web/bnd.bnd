@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Company Log Web
 Bundle-SymbolicName: com.liferay.portal.company.log.web
-Bundle-Version: 1.0.32
+Bundle-Version: 1.0.33
 Web-ContextPath: /portal-company-log-web

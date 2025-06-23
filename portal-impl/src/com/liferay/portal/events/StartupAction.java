@@ -122,6 +122,8 @@ public class StartupAction extends SimpleAction {
 		StartupHelperUtil.initResourceActions();
 
 		if (StartupHelperUtil.isDBNew()) {
+			DBUpgrader.updatePortalServiceComponent();
+
 			DLFileEntryTypeLocalServiceUtil.getBasicDocumentDLFileEntryType();
 		}
 	}

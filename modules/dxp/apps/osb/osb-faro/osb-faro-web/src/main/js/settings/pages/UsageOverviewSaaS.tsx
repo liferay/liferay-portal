@@ -40,7 +40,7 @@ export const UsageOverviewSaaS: React.FC<IUsageOverviewSaaS> = ({groupId}) => {
 	const cardTitles = [
 		Liferay.Language.get('number-of-sites'),
 		Liferay.Language.get('authenticated-logins-malus'),
-		Liferay.Language.get('anonymous-page-views-avp')
+		Liferay.Language.get('anonymous-page-views-apv')
 	];
 
 	const resources: Array<Resource> = [
@@ -64,7 +64,7 @@ export const UsageOverviewSaaS: React.FC<IUsageOverviewSaaS> = ({groupId}) => {
 			key='UsageOverview'
 			pageActions={pageActions}
 			pageDescription={Liferay.Language.get(
-				'saas-plan-usage-is-determined-by-malus-and-avps'
+				'saas-plan-usage-is-determined-by-malus-and-apvs'
 			)}
 			pageTitle={Liferay.Language.get('subscription-&-usage')}
 		>

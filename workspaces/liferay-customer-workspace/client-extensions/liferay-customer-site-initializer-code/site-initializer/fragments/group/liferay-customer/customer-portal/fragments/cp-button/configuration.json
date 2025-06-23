@@ -4,6 +4,15 @@
 			"fields": [
 				{
 					"dataType": "string",
+					"defaultValue": "",
+					"description": "url",
+					"label": "url",
+					"localizable": true,
+					"name": "url",
+					"type": "url"
+				},
+				{
+					"dataType": "string",
 					"defaultValue": "primary",
 					"label": "Style",
 					"name": "style",

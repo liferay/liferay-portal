@@ -126,6 +126,12 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 		}
 
 		_build.setStatus("completed");
+
+		if (_build instanceof DownstreamBuild) {
+			DownstreamBuild downstreamBuild = (DownstreamBuild)_build;
+
+			downstreamBuild.generateBuildReport();
+		}
 	}
 
 	protected void runRunning() {

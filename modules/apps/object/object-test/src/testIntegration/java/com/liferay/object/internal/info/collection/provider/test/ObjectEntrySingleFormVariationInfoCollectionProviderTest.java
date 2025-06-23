@@ -228,7 +228,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProviderTest {
 			for (int i = 0; i < RandomTestUtil.randomInt(1, 10); i++) {
 				expectedObjectEntries.add(
 					_objectEntryLocalService.addObjectEntry(
-						TestPropsValues.getUserId(), 0,
+						0, TestPropsValues.getUserId(),
 						objectDefinition.getObjectDefinitionId(),
 						ObjectEntryFolderConstants.
 							PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,

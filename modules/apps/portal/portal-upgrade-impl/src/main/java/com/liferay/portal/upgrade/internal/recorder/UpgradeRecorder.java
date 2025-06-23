@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.tools.DBUpgrader;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.verify.PreupgradeVerifyProcessSuite;
 import com.liferay.portal.verify.VerifyException;
 
 import java.sql.Connection;
@@ -43,6 +44,11 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 @Component(service = UpgradeRecorder.class)
 public class UpgradeRecorder {
+
+	public static boolean isPreupgradeVerifyFailure() {
+		return _errorMessages.containsKey(
+			PreupgradeVerifyProcessSuite.class.getName());
+	}
 
 	public Map<String, Map<String, Integer>> getDataCleanUpMessages() {
 		return _dataCleanUpMessages;
@@ -163,7 +169,7 @@ public class UpgradeRecorder {
 			if (_type.equals("no upgrade") && _result.equals("success")) {
 				_log.info("No pending upgrades to run");
 			}
-			else {
+			else if (!isPreupgradeVerifyFailure()) {
 				_log.info(
 					StringBundler.concat(
 						StringUtil.upperCaseFirstLetter(_type),
@@ -195,6 +201,10 @@ public class UpgradeRecorder {
 
 	private String _calculateResult() {
 		if (_verifyProcessError) {
+			if (isPreupgradeVerifyFailure()) {
+				return "preupgrade verification failure";
+			}
+
 			return "failure";
 		}
 

@@ -1,0 +1,13 @@
+assemble:
+    -   from: build/static
+        into: static
+liferay-hcaptcha-custom-element:
+    friendlyURLMapping: liferay-hcaptcha-custom-element
+    htmlElementName: liferay-hcaptcha-custom-element
+    instanceable: false
+    name: Liferay hCAPTCHA Custom Element
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        -   index.*.js
+    useESM: true

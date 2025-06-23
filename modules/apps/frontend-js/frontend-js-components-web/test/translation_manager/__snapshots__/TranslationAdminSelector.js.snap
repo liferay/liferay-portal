@@ -587,7 +587,6 @@ exports[`TranslationAdminSelector renders an open dropdown with the list of acti
 
 exports[`TranslationAdminSelector renders an open dropdown with updated active locales when added from the Manage Translations Modal 1`] = `
 <div
-  aria-hidden="true"
   class="dropdown-menu dropdown-menu-indicator-start"
   id="clay-dropdown-menu-3"
   role="presentation"
@@ -635,9 +634,7 @@ exports[`TranslationAdminSelector renders an open dropdown with updated active l
                   href="#en-us"
                 />
               </svg>
-              <span
-                aria-hidden="true"
-              >
+              <span>
                 en-US
               </span>
             </div>
@@ -654,7 +651,6 @@ exports[`TranslationAdminSelector renders an open dropdown with updated active l
               class="autofit-section"
             >
               <span
-                aria-hidden="true"
                 class="label label-info"
               >
                 <span
@@ -694,9 +690,7 @@ exports[`TranslationAdminSelector renders an open dropdown with updated active l
                   href="#ar-sa"
                 />
               </svg>
-              <span
-                aria-hidden="true"
-              >
+              <span>
                 ar-SA
               </span>
             </div>
@@ -713,7 +707,6 @@ exports[`TranslationAdminSelector renders an open dropdown with updated active l
               class="autofit-section"
             >
               <span
-                aria-hidden="true"
                 class="label label-warning"
               >
                 <span
@@ -753,9 +746,7 @@ exports[`TranslationAdminSelector renders an open dropdown with updated active l
                   href="#nl-nl"
                 />
               </svg>
-              <span
-                aria-hidden="true"
-              >
+              <span>
                 nl-NL
               </span>
             </div>
@@ -772,7 +763,6 @@ exports[`TranslationAdminSelector renders an open dropdown with updated active l
               class="autofit-section"
             >
               <span
-                aria-hidden="true"
                 class="label label-warning"
               >
                 <span

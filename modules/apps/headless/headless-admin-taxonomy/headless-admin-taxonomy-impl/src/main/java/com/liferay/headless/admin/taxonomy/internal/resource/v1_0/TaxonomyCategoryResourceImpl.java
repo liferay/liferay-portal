@@ -14,6 +14,7 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.ParentTaxonomyCategory;
+import com.liferay.headless.admin.taxonomy.dto.v1_0.ParentTaxonomyVocabulary;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategory;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategoryProperty;
 import com.liferay.headless.admin.taxonomy.internal.odata.entity.v1_0.CategoryEntityModel;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Type;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
@@ -40,6 +42,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -79,6 +82,32 @@ import org.osgi.service.component.annotations.ServiceScope;
 )
 public class TaxonomyCategoryResourceImpl
 	extends BaseTaxonomyCategoryResourceImpl {
+
+	@Override
+	public void deleteAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+			Long assetLibraryId, String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		_assetCategoryService.deleteCategoryByExternalReferenceCode(
+			externalReferenceCode, assetLibraryId);
+	}
+
+	@Override
+	public void deleteSiteTaxonomyCategoryByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		_assetCategoryService.deleteCategoryByExternalReferenceCode(
+			externalReferenceCode, siteId);
+	}
 
 	@Override
 	public void deleteTaxonomyCategory(String taxonomyCategoryId)
@@ -148,7 +177,11 @@ public class TaxonomyCategoryResourceImpl
 
 		Map<String, Map<String, String>> actions = null;
 
-		if (!Objects.equals(parentTaxonomyCategoryId, "0")) {
+		if (!Objects.equals(
+				parentTaxonomyCategoryId,
+				String.valueOf(
+					AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID))) {
+
 			AssetCategory assetCategory = _getAssetCategory(
 				parentTaxonomyCategoryId);
 
@@ -210,12 +243,13 @@ public class TaxonomyCategoryResourceImpl
 		}
 
 		long assetVocabularyId = _getAssetVocabularyId(
-			assetCategory, taxonomyCategory);
+			assetCategory, assetCategory.getGroupId(), taxonomyCategory);
 
 		assetCategory = _assetCategoryService.updateCategory(
 			assetCategory.getCategoryId(),
 			_getParentAssetCategoryId(
-				assetCategory, assetVocabularyId, taxonomyCategory),
+				assetCategory, assetVocabularyId, assetCategory.getGroupId(),
+				taxonomyCategory),
 			LocalizedMapUtil.patchLocalizedMap(
 				assetCategory.getTitleMap(),
 				contextAcceptLanguage.getPreferredLocale(),
@@ -243,14 +277,156 @@ public class TaxonomyCategoryResourceImpl
 			String parentTaxonomyCategoryId, TaxonomyCategory taxonomyCategory)
 		throws Exception {
 
-		AssetCategory assetCategory = _getAssetCategory(
+		AssetCategory parentAssetCategory = _getAssetCategory(
 			parentTaxonomyCategoryId);
 
 		return _addTaxonomyCategory(
 			taxonomyCategory.getExternalReferenceCode(),
-			assetCategory.getGroupId(), assetCategory.getDefaultLanguageId(),
-			taxonomyCategory, assetCategory.getCategoryId(),
-			assetCategory.getVocabularyId());
+			parentAssetCategory.getGroupId(),
+			parentAssetCategory.getDefaultLanguageId(),
+			parentAssetCategory.getCategoryId(), taxonomyCategory,
+			parentAssetCategory.getVocabularyId());
+	}
+
+	@Override
+	protected Page<TaxonomyCategory> doGetAssetLibraryTaxonomyCategoriesPage(
+			Long assetLibraryId, String search, Aggregation aggregation,
+			Filter filter, Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return SearchUtil.search(
+			HashMapBuilder.<String, Map<String, String>>put(
+				"create",
+				addAction(
+					ActionKeys.ADD_CATEGORY, "postAssetLibraryTaxonomyCategory",
+					AssetCategoriesPermission.RESOURCE_NAME, assetLibraryId)
+			).put(
+				"createBatch",
+				addAction(
+					ActionKeys.ADD_CATEGORY,
+					"postAssetLibraryTaxonomyCategoryBatch",
+					AssetCategoriesPermission.RESOURCE_NAME, assetLibraryId)
+			).put(
+				"deleteBatch",
+				addAction(
+					ActionKeys.DELETE, "deleteTaxonomyCategoryBatch",
+					AssetCategoriesPermission.RESOURCE_NAME, null)
+			).put(
+				"get",
+				addAction(
+					ActionKeys.VIEW, "getAssetLibraryTaxonomyCategoriesPage",
+					AssetCategoriesPermission.RESOURCE_NAME, assetLibraryId)
+			).build(),
+			booleanQuery -> {
+				BooleanFilter booleanFilter =
+					booleanQuery.getPreBooleanFilter();
+
+				booleanFilter.add(
+					new TermFilter(
+						Field.GROUP_ID, String.valueOf(assetLibraryId)),
+					BooleanClauseOccur.MUST);
+			},
+			filter, AssetCategory.class.getName(), search, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> {
+				searchContext.addVulcanAggregation(aggregation);
+				searchContext.setCompanyId(contextCompany.getCompanyId());
+
+				if (Validator.isNotNull(search)) {
+					searchContext.setKeywords(search);
+				}
+
+				searchContext.setGroupIds(new long[] {assetLibraryId});
+			},
+			sorts,
+			document -> _toTaxonomyCategory(
+				_assetCategoryService.getCategory(
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
+	}
+
+	@Override
+	protected TaxonomyCategory
+			doGetAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _toTaxonomyCategory(
+			_assetCategoryService.getAssetCategoryByExternalReferenceCode(
+				assetLibraryId, externalReferenceCode));
+	}
+
+	@Override
+	protected Page<TaxonomyCategory> doGetSiteTaxonomyCategoriesPage(
+			Long siteId, String search, Aggregation aggregation, Filter filter,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return SearchUtil.search(
+			HashMapBuilder.<String, Map<String, String>>put(
+				"create",
+				addAction(
+					ActionKeys.ADD_CATEGORY, "postSiteTaxonomyCategory",
+					AssetCategoriesPermission.RESOURCE_NAME, siteId)
+			).put(
+				"createBatch",
+				addAction(
+					ActionKeys.ADD_CATEGORY, "postSiteTaxonomyCategoryBatch",
+					AssetCategoriesPermission.RESOURCE_NAME, siteId)
+			).put(
+				"deleteBatch",
+				addAction(
+					ActionKeys.DELETE, "deleteTaxonomyCategoryBatch",
+					AssetCategoriesPermission.RESOURCE_NAME, null)
+			).put(
+				"get",
+				addAction(
+					ActionKeys.VIEW, "getSiteTaxonomyCategoriesPage",
+					AssetCategoriesPermission.RESOURCE_NAME, siteId)
+			).build(),
+			booleanQuery -> {
+				BooleanFilter booleanFilter =
+					booleanQuery.getPreBooleanFilter();
+
+				booleanFilter.add(
+					new TermFilter(Field.GROUP_ID, String.valueOf(siteId)),
+					BooleanClauseOccur.MUST);
+			},
+			filter, AssetCategory.class.getName(), search, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> {
+				searchContext.addVulcanAggregation(aggregation);
+				searchContext.setCompanyId(contextCompany.getCompanyId());
+
+				if (Validator.isNotNull(search)) {
+					searchContext.setKeywords(search);
+				}
+
+				searchContext.setGroupIds(new long[] {siteId});
+			},
+			sorts,
+			document -> _toTaxonomyCategory(
+				_assetCategoryService.getCategory(
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
+	}
+
+	@Override
+	protected TaxonomyCategory doGetSiteTaxonomyCategoryByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _toTaxonomyCategory(
+			_assetCategoryService.getAssetCategoryByExternalReferenceCode(
+				siteId, externalReferenceCode));
 	}
 
 	@Override
@@ -344,6 +520,30 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Override
+	protected TaxonomyCategory doPostAssetLibraryTaxonomyCategory(
+			Long assetLibraryId, TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _postTaxonomyCategory(assetLibraryId, taxonomyCategory);
+	}
+
+	@Override
+	protected TaxonomyCategory doPostSiteTaxonomyCategory(
+			Long siteId, TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _postTaxonomyCategory(siteId, taxonomyCategory);
+	}
+
+	@Override
 	protected TaxonomyCategory doPostTaxonomyVocabularyTaxonomyCategory(
 			Long taxonomyVocabularyId, TaxonomyCategory taxonomyCategory)
 		throws Exception {
@@ -354,8 +554,38 @@ public class TaxonomyCategoryResourceImpl
 		return _addTaxonomyCategory(
 			taxonomyCategory.getExternalReferenceCode(),
 			assetVocabulary.getGroupId(),
-			assetVocabulary.getDefaultLanguageId(), taxonomyCategory, 0,
+			assetVocabulary.getDefaultLanguageId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, taxonomyCategory,
 			assetVocabulary.getVocabularyId());
+	}
+
+	@Override
+	protected TaxonomyCategory
+			doPutAssetLibraryTaxonomyCategoryByExternalReferenceCode(
+				Long assetLibraryId, String externalReferenceCode,
+				TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _putTaxonomyCategory(
+			assetLibraryId, externalReferenceCode, taxonomyCategory);
+	}
+
+	@Override
+	protected TaxonomyCategory doPutSiteTaxonomyCategoryByExternalReferenceCode(
+			Long siteId, String externalReferenceCode,
+			TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _putTaxonomyCategory(
+			siteId, externalReferenceCode, taxonomyCategory);
 	}
 
 	@Override
@@ -390,7 +620,8 @@ public class TaxonomyCategoryResourceImpl
 
 		return _addTaxonomyCategory(
 			externalReferenceCode, assetVocabulary.getGroupId(),
-			assetVocabulary.getDefaultLanguageId(), taxonomyCategory, 0,
+			assetVocabulary.getDefaultLanguageId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, taxonomyCategory,
 			assetVocabulary.getVocabularyId());
 	}
 
@@ -413,7 +644,7 @@ public class TaxonomyCategoryResourceImpl
 
 	private TaxonomyCategory _addTaxonomyCategory(
 			String externalReferenceCode, long groupId, String languageId,
-			TaxonomyCategory taxonomyCategory, long taxonomyCategoryId,
+			long parentTaxonomyCategoryId, TaxonomyCategory taxonomyCategory,
 			long taxonomyVocabularyId)
 		throws Exception {
 
@@ -431,8 +662,8 @@ public class TaxonomyCategoryResourceImpl
 
 		return _toTaxonomyCategory(
 			_assetCategoryService.addCategory(
-				externalReferenceCode, groupId, taxonomyCategoryId, titleMap,
-				descriptionMap, taxonomyVocabularyId,
+				externalReferenceCode, groupId, parentTaxonomyCategoryId,
+				titleMap, descriptionMap, taxonomyVocabularyId,
 				_toStringArray(
 					taxonomyCategory.getTaxonomyCategoryProperties()),
 				ServiceContextBuilder.create(
@@ -449,17 +680,44 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	private long _getAssetVocabularyId(
-			AssetCategory assetCategory, TaxonomyCategory taxonomyCategory)
+			AssetCategory assetCategory, long groupId,
+			TaxonomyCategory taxonomyCategory)
 		throws Exception {
 
-		if ((taxonomyCategory.getTaxonomyVocabularyId() != null) &&
-			(taxonomyCategory.getTaxonomyVocabularyId() !=
-				assetCategory.getVocabularyId())) {
+		if (taxonomyCategory.getTaxonomyVocabularyId() != null) {
+			if (taxonomyCategory.getTaxonomyVocabularyId() !=
+					assetCategory.getVocabularyId()) {
 
-			_assetVocabularyService.getVocabulary(
-				taxonomyCategory.getTaxonomyVocabularyId());
+				_assetVocabularyService.getVocabulary(
+					taxonomyCategory.getTaxonomyVocabularyId());
+			}
 
 			return taxonomyCategory.getTaxonomyVocabularyId();
+		}
+		else if (taxonomyCategory.getParentTaxonomyVocabulary() != null) {
+			ParentTaxonomyVocabulary parentTaxonomyVocabulary =
+				taxonomyCategory.getParentTaxonomyVocabulary();
+
+			String taxonomyVocabularyExternalReferenceCode =
+				parentTaxonomyVocabulary.getExternalReferenceCode();
+
+			if (Validator.isNotNull(taxonomyVocabularyExternalReferenceCode)) {
+				if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+					AssetVocabulary assetVocabulary =
+						_assetVocabularyService.
+							getAssetVocabularyByExternalReferenceCode(
+								groupId,
+								taxonomyVocabularyExternalReferenceCode);
+
+					return assetVocabulary.getVocabularyId();
+				}
+
+				AssetVocabulary assetVocabulary =
+					_assetVocabularyService.getOrAddIncompleteVocabulary(
+						taxonomyVocabularyExternalReferenceCode, groupId);
+
+				return assetVocabulary.getVocabularyId();
+			}
 		}
 
 		return assetCategory.getVocabularyId();
@@ -488,15 +746,23 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	private long _getParentAssetCategoryId(
-			AssetCategory assetCategory, long assetVocabularyId,
+			AssetCategory assetCategory, long assetVocabularyId, long groupId,
 			TaxonomyCategory taxonomyCategory)
 		throws Exception {
 
 		ParentTaxonomyCategory parentTaxonomyCategory =
 			taxonomyCategory.getParentTaxonomyCategory();
 
-		if ((parentTaxonomyCategory != null) &&
-			(parentTaxonomyCategory.getId() > 0)) {
+		if (parentTaxonomyCategory == null) {
+			return assetCategory.getParentCategoryId();
+		}
+
+		if (parentTaxonomyCategory.getId() != null) {
+			if (parentTaxonomyCategory.getId() <=
+					AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) {
+
+				return parentTaxonomyCategory.getId();
+			}
 
 			AssetCategory existingAssetCategory =
 				_assetCategoryLocalService.getAssetCategory(
@@ -507,16 +773,65 @@ public class TaxonomyCategoryResourceImpl
 					StringBundler.concat(
 						"Taxonomy category ", assetCategory.getCategoryId(),
 						" and its parent taxonomy category must belong to the ",
-						" same taxonomy vocabulary"));
+						"same taxonomy vocabulary"));
 			}
 
 			return parentTaxonomyCategory.getId();
 		}
-		else if (parentTaxonomyCategory == null) {
-			return assetCategory.getParentCategoryId();
+
+		String parentTaxonomyCategoryExternalReferenceCode =
+			parentTaxonomyCategory.getExternalReferenceCode();
+
+		if (Validator.isBlank(parentTaxonomyCategoryExternalReferenceCode)) {
+			return AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID;
 		}
 
-		return AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID;
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			AssetCategory parentAssetCategory =
+				_assetCategoryService.getAssetCategoryByExternalReferenceCode(
+					groupId, parentTaxonomyCategoryExternalReferenceCode);
+
+			return parentAssetCategory.getCategoryId();
+		}
+
+		AssetCategory parentAssetCategory =
+			_assetCategoryService.getOrAddIncompleteCategory(
+				parentTaxonomyCategoryExternalReferenceCode, groupId);
+
+		return parentAssetCategory.getCategoryId();
+	}
+
+	private long _getParentTaxonomyCategoryId(
+			long groupId, TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		String parentTaxonomyCategoryExternalReferenceCode = null;
+
+		ParentTaxonomyCategory parentTaxonomyCategory =
+			taxonomyCategory.getParentTaxonomyCategory();
+
+		if (parentTaxonomyCategory != null) {
+			parentTaxonomyCategoryExternalReferenceCode =
+				parentTaxonomyCategory.getExternalReferenceCode();
+		}
+
+		if (Validator.isBlank(parentTaxonomyCategoryExternalReferenceCode)) {
+			return AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID;
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			AssetCategory parentAssetCategory =
+				_assetCategoryService.getAssetCategoryByExternalReferenceCode(
+					groupId, parentTaxonomyCategoryExternalReferenceCode);
+
+			return parentAssetCategory.getCategoryId();
+		}
+
+		AssetCategory parentAssetCategory =
+			_assetCategoryService.getOrAddIncompleteCategory(
+				parentTaxonomyCategoryExternalReferenceCode, groupId);
+
+		return parentAssetCategory.getCategoryId();
 	}
 
 	private ProjectionList _getProjectionList() {
@@ -546,6 +861,52 @@ public class TaxonomyCategoryResourceImpl
 		projectionList.add(ProjectionFactoryUtil.property("vocabularyId"));
 
 		return projectionList;
+	}
+
+	private Long _getTaxonomyVocabularyId(
+			long groupId, TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		Long taxonomyVocabularyId = taxonomyCategory.getTaxonomyVocabularyId();
+		String taxonomyVocabularyExternalReferenceCode = StringPool.BLANK;
+
+		if (taxonomyVocabularyId == null) {
+			ParentTaxonomyVocabulary parentTaxonomyVocabulary =
+				taxonomyCategory.getParentTaxonomyVocabulary();
+
+			if (parentTaxonomyVocabulary != null) {
+				taxonomyVocabularyExternalReferenceCode =
+					parentTaxonomyVocabulary.getExternalReferenceCode();
+			}
+
+			if (Validator.isNotNull(taxonomyVocabularyExternalReferenceCode)) {
+				if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+					AssetVocabulary assetVocabulary =
+						_assetVocabularyService.
+							getAssetVocabularyByExternalReferenceCode(
+								groupId,
+								taxonomyVocabularyExternalReferenceCode);
+
+					taxonomyVocabularyId = assetVocabulary.getVocabularyId();
+				}
+				else {
+					AssetVocabulary assetVocabulary =
+						_assetVocabularyService.getOrAddIncompleteVocabulary(
+							taxonomyVocabularyExternalReferenceCode, groupId);
+
+					taxonomyVocabularyId = assetVocabulary.getVocabularyId();
+				}
+			}
+		}
+
+		if ((taxonomyVocabularyId == null) &&
+			Validator.isBlank(taxonomyVocabularyExternalReferenceCode)) {
+
+			throw new BadRequestException(
+				"No Taxonomy Vocabulary reference code provided");
+		}
+
+		return taxonomyVocabularyId;
 	}
 
 	private long _getTotalCount(Long siteId) {
@@ -604,6 +965,62 @@ public class TaxonomyCategoryResourceImpl
 		return strings;
 	}
 
+	private TaxonomyCategory _postTaxonomyCategory(
+			long groupId, TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		return _addTaxonomyCategory(
+			taxonomyCategory.getExternalReferenceCode(), groupId,
+			contextAcceptLanguage.getPreferredLanguageId(),
+			_getParentTaxonomyCategoryId(groupId, taxonomyCategory),
+			taxonomyCategory,
+			_getTaxonomyVocabularyId(groupId, taxonomyCategory));
+	}
+
+	private TaxonomyCategory _putTaxonomyCategory(
+			long groupId, String externalReferenceCode,
+			TaxonomyCategory taxonomyCategory)
+		throws Exception {
+
+		AssetCategory persistedAssetCategory =
+			_assetCategoryService.fetchCategoryByExternalReferenceCode(
+				externalReferenceCode, groupId);
+
+		if (persistedAssetCategory == null) {
+			return _postTaxonomyCategory(groupId, taxonomyCategory);
+		}
+
+		long assetVocabularyId = _getAssetVocabularyId(
+			persistedAssetCategory, groupId, taxonomyCategory);
+
+		return _toTaxonomyCategory(
+			_assetCategoryService.updateCategory(
+				persistedAssetCategory.getCategoryId(),
+				_getParentAssetCategoryId(
+					persistedAssetCategory, assetVocabularyId, groupId,
+					taxonomyCategory),
+				LocalizedMapUtil.patchLocalizedMap(
+					persistedAssetCategory.getTitleMap(),
+					contextAcceptLanguage.getPreferredLocale(),
+					taxonomyCategory.getName(),
+					taxonomyCategory.getName_i18n()),
+				LocalizedMapUtil.patchLocalizedMap(
+					persistedAssetCategory.getDescriptionMap(),
+					contextAcceptLanguage.getPreferredLocale(),
+					taxonomyCategory.getDescription(),
+					taxonomyCategory.getDescription_i18n()),
+				assetVocabularyId,
+				_merge(
+					_assetCategoryPropertyLocalService.getCategoryProperties(
+						persistedAssetCategory.getCategoryId()),
+					taxonomyCategory.getTaxonomyCategoryProperties()),
+				ServiceContextBuilder.create(
+					persistedAssetCategory.getGroupId(),
+					contextHttpServletRequest,
+					taxonomyCategory.getViewableByAsString()
+				).build()));
+	}
+
 	private AssetCategory _toAssetCategory(Object[] assetCategory) {
 		return new AssetCategoryImpl() {
 			{
@@ -653,12 +1070,6 @@ public class TaxonomyCategoryResourceImpl
 			AssetCategory assetCategory, TaxonomyCategory taxonomyCategory)
 		throws Exception {
 
-		long assetVocabularyId = _getAssetVocabularyId(
-			assetCategory, taxonomyCategory);
-
-		long parentAssetCategoryId = _getParentAssetCategoryId(
-			assetCategory, assetVocabularyId, taxonomyCategory);
-
 		Map<Locale, String> titleMap = LocalizedMapUtil.getLocalizedMap(
 			contextAcceptLanguage.getPreferredLocale(),
 			taxonomyCategory.getName(), taxonomyCategory.getName_i18n(),
@@ -678,9 +1089,15 @@ public class TaxonomyCategoryResourceImpl
 		assetCategory.setTitleMap(titleMap);
 		assetCategory.setDescriptionMap(descriptionMap);
 
+		long assetVocabularyId = _getAssetVocabularyId(
+			assetCategory, assetCategory.getGroupId(), taxonomyCategory);
+
 		return _assetCategoryService.updateCategory(
-			assetCategory.getCategoryId(), parentAssetCategoryId, titleMap,
-			descriptionMap, assetVocabularyId,
+			assetCategory.getCategoryId(),
+			_getParentAssetCategoryId(
+				assetCategory, assetVocabularyId, assetCategory.getGroupId(),
+				taxonomyCategory),
+			titleMap, descriptionMap, assetVocabularyId,
 			_toStringArray(taxonomyCategory.getTaxonomyCategoryProperties()),
 			ServiceContextBuilder.create(
 				assetCategory.getGroupId(), contextHttpServletRequest,

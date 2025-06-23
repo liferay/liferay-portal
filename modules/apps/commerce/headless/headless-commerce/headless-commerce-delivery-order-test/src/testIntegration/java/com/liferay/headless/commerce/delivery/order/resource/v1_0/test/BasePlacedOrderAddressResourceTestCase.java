@@ -225,16 +225,17 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 		assertValid(getPlacedOrderAddress);
 	}
 
+	protected PlacedOrderAddress
+			testGetPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress_addPlacedOrderAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress_getExternalReferenceCode(
 				PlacedOrderAddress placedOrderAddress)
-		throws Exception {
-
-		return placedOrderAddress.getExternalReferenceCode();
-	}
-
-	protected PlacedOrderAddress
-			testGetPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress_addPlacedOrderAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -304,7 +305,8 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 				PlacedOrderAddress placedOrderAddress)
 		throws Exception {
 
-		return placedOrderAddress.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -379,16 +381,17 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 		assertValid(getPlacedOrderAddress);
 	}
 
+	protected PlacedOrderAddress
+			testGetPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress_addPlacedOrderAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress_getExternalReferenceCode(
 				PlacedOrderAddress placedOrderAddress)
-		throws Exception {
-
-		return placedOrderAddress.getExternalReferenceCode();
-	}
-
-	protected PlacedOrderAddress
-			testGetPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress_addPlacedOrderAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -458,7 +461,8 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 				PlacedOrderAddress placedOrderAddress)
 		throws Exception {
 
-		return placedOrderAddress.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -529,16 +533,16 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 		assertValid(getPlacedOrderAddress);
 	}
 
-	protected Long
-			testGetPlacedOrderPlacedOrderBillingAddress_getPlacedOrderId()
+	protected PlacedOrderAddress
+			testGetPlacedOrderPlacedOrderBillingAddress_addPlacedOrderAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected PlacedOrderAddress
-			testGetPlacedOrderPlacedOrderBillingAddress_addPlacedOrderAddress()
+	protected Long
+			testGetPlacedOrderPlacedOrderBillingAddress_getPlacedOrderId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -673,16 +677,16 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 		assertValid(getPlacedOrderAddress);
 	}
 
-	protected Long
-			testGetPlacedOrderPlacedOrderShippingAddress_getPlacedOrderId()
+	protected PlacedOrderAddress
+			testGetPlacedOrderPlacedOrderShippingAddress_addPlacedOrderAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected PlacedOrderAddress
-			testGetPlacedOrderPlacedOrderShippingAddress_addPlacedOrderAddress()
+	protected Long
+			testGetPlacedOrderPlacedOrderShippingAddress_getPlacedOrderId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

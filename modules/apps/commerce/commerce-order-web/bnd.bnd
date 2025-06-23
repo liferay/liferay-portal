@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Order Web
 Bundle-SymbolicName: com.liferay.commerce.order.web
-Bundle-Version: 5.0.125
+Bundle-Version: 5.0.126
 Web-ContextPath: /commerce-order-web
 -dsannotations-options: inherit

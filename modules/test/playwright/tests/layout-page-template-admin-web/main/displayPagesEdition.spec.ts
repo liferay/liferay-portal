@@ -1476,7 +1476,9 @@ test.describe('Object Display page', () => {
 
 			await page.getByRole('option', {name: 'bollywood'}).click();
 
-			await page.getByLabel('Release Date').fill('2020-03-02T05:15');
+			await page
+				.getByRole('textbox', {name: 'Release Date'})
+				.fill('2020-03-02T05:15');
 
 			await page.getByRole('button', {name: 'Submit'}).click();
 
@@ -1496,11 +1498,13 @@ test.describe('Object Display page', () => {
 				page.getByLabel('thriller', {exact: true})
 			).toBeChecked();
 
-			await expect(page.getByLabel('Origin')).toHaveValue('bollywood');
+			await expect(
+				page.getByRole('combobox', {name: 'Origin'})
+			).toHaveValue('bollywood');
 
-			await expect(page.getByLabel('Release Date')).toHaveValue(
-				'2020-03-02T05:15'
-			);
+			await expect(
+				page.getByRole('textbox', {name: 'Release Date'})
+			).toHaveValue('2020-03-02T05:15');
 		}
 	);
 });

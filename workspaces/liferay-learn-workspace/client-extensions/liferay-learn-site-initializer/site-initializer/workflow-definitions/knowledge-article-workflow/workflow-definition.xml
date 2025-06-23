@@ -1,0 +1,327 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>Knowledge Article Workflow</name>
+	<description></description>
+	<version>1</version>
+	<state>
+		<name>Submitted</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						579.7944609014278,
+						-229.12529378890443
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>Submitted</name>
+				<status>5</status>
+				<priority>1</priority>
+				<execution-type>onEntry</execution-type>
+			</action>
+			<notification>
+				<name>Submitted</name>
+				<template>
+					<![CDATA[Your ${entryType} submission has been sent for review in the knowledge article workflow.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<user />
+				</recipients>
+				<execution-type>onEntry</execution-type>
+			</notification>
+		</actions>
+		<initial>true</initial>
+		<labels>
+			<label language-id="en_US">
+				Submitted
+			</label>
+		</labels>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Submit
+					</label>
+				</labels>
+				<name>submit-knowledge-article</name>
+				<target>In Review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<state>
+		<name>Rejected</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						170.25170525557942,
+						83.79684379640777
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>Rejected</name>
+				<status>4</status>
+				<priority>1</priority>
+				<execution-type>onEntry</execution-type>
+			</action>
+			<notification>
+				<name>Rejected</name>
+				<template>
+					<![CDATA[Your ${entryType} submission has been rejected.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<user />
+				</recipients>
+				<execution-type>onEntry</execution-type>
+			</notification>
+		</actions>
+		<labels>
+			<label language-id="en_US">
+				Rejected
+			</label>
+		</labels>
+	</state>
+	<state>
+		<name>Approved</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						1042.0762297943677,
+						-45.24477020303904
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>Knowledge Base</name>
+				<status>0</status>
+				<priority>1</priority>
+				<execution-type>onEntry</execution-type>
+			</action>
+			<notification>
+				<name>Approved</name>
+				<template>
+					<![CDATA[Your ${entryType} was approved to be added to Liferay Learn knowledge base.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<user />
+				</recipients>
+				<execution-type>onEntry</execution-type>
+			</notification>
+		</actions>
+		<labels>
+			<label language-id="en_US">
+				Approved
+			</label>
+		</labels>
+	</state>
+	<state>
+		<name>In Documentation</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						1047.3649817298442,
+						222.19473349929555
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>Official Documentation</name>
+				<status>7</status>
+				<priority>1</priority>
+				<execution-type>onEntry</execution-type>
+			</action>
+			<notification>
+				<name>In Documentation</name>
+				<template>
+					<![CDATA[Your ${entryType} was approved to be added to Liferay Learn official documentation.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<user />
+				</recipients>
+				<execution-type>onEntry</execution-type>
+			</notification>
+		</actions>
+		<labels>
+			<label language-id="en_US">
+				In Documentation
+			</label>
+		</labels>
+	</state>
+	<task>
+		<name>In Review</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						603.1720777032414,
+						79.4692433348482
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>In Review</name>
+				<status>1</status>
+				<priority>1</priority>
+				<execution-type>onAssignment</execution-type>
+			</action>
+			<notification>
+				<name>In Review</name>
+				<template>
+					<![CDATA[${userName} sent a ${entryType} for review in the knowledge article workflow.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<roles>
+						<role>
+							<role-type>regular</role-type>
+							<name>Knowledge Article Approver</name>
+							<auto-create>false</auto-create>
+						</role>
+					</roles>
+				</recipients>
+				<execution-type>onAssignment</execution-type>
+			</notification>
+		</actions>
+		<assignments>
+			<roles>
+				<role>
+					<role-type>regular</role-type>
+					<name>Knowledge Article Approver</name>
+					<auto-create>false</auto-create>
+				</role>
+			</roles>
+		</assignments>
+		<labels>
+			<label language-id="en_US">
+				In Review
+			</label>
+		</labels>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Needs Revision
+					</label>
+				</labels>
+				<name>needs-revision-knowledge-article</name>
+				<target>Needs Revision</target>
+				<default>false</default>
+			</transition>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Reject
+					</label>
+				</labels>
+				<name>reject-knowledge-article</name>
+				<target>Rejected</target>
+				<default>false</default>
+			</transition>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Publish as Knowledge Base
+					</label>
+				</labels>
+				<name>knowledge-base-knowledge-article</name>
+				<target>Approved</target>
+				<default>true</default>
+			</transition>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Escalate to Documentation
+					</label>
+				</labels>
+				<name>official-documentation-knowledge-article</name>
+				<target>In Documentation</target>
+				<default>false</default>
+			</transition>
+		</transitions>
+	</task>
+	<task>
+		<name>Needs Revision</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						610.9570213012983,
+						356.12786193604273
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>Needs Revision</name>
+				<status>6</status>
+				<priority>1</priority>
+				<execution-type>onAssignment</execution-type>
+			</action>
+			<notification>
+				<name>Needs Revision</name>
+				<template>
+					<![CDATA[The ${entryType} you submitted needs revision.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<user />
+				</recipients>
+				<execution-type>onAssignment</execution-type>
+			</notification>
+		</actions>
+		<assignments>
+			<user />
+		</assignments>
+		<labels>
+			<label language-id="en_US">
+				Needs Revision
+			</label>
+		</labels>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Resubmit
+					</label>
+				</labels>
+				<name>resubmit-knowledge-article</name>
+				<target>In Review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</task>
+</workflow-definition>

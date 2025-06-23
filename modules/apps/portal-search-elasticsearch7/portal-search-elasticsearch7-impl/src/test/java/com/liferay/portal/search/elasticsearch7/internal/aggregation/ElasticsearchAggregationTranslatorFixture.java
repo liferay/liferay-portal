@@ -26,7 +26,7 @@ import com.liferay.portal.search.elasticsearch7.internal.aggregation.metrics.Top
 import com.liferay.portal.search.elasticsearch7.internal.aggregation.metrics.TopHitsAggregationTranslatorImpl;
 import com.liferay.portal.search.elasticsearch7.internal.aggregation.metrics.WeightedAvgAggregationTranslatorImpl;
 import com.liferay.portal.search.elasticsearch7.internal.aggregation.pipeline.ElasticsearchPipelineAggregationTranslatorFixture;
-import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslatorFixture;
+import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslator;
 import com.liferay.portal.search.elasticsearch7.internal.sort.ElasticsearchSortFieldTranslatorFixture;
 
 import org.elasticsearch.search.aggregations.PipelineAggregationBuilder;
@@ -41,9 +41,8 @@ public class ElasticsearchAggregationTranslatorFixture {
 			pipelineAggregationTranslatorFixture =
 				new ElasticsearchPipelineAggregationTranslatorFixture();
 
-		ElasticsearchQueryTranslatorFixture
-			elasticsearchQueryTranslatorFixture =
-				new ElasticsearchQueryTranslatorFixture();
+		ElasticsearchQueryTranslator elasticsearchQueryTranslator =
+			new ElasticsearchQueryTranslator();
 
 		PipelineAggregationTranslator<PipelineAggregationBuilder>
 			pipelineAggregationTranslator =
@@ -88,12 +87,10 @@ public class ElasticsearchAggregationTranslatorFixture {
 
 		_injectGeoAggregationTranslators(elasticsearchAggregationTranslator);
 		_injectQueryAggregationTranslators(
-			elasticsearchAggregationTranslator,
-			elasticsearchQueryTranslatorFixture);
+			elasticsearchAggregationTranslator, elasticsearchQueryTranslator);
 		_injectScriptAggregationTranslators(elasticsearchAggregationTranslator);
 		_injectTopHitsAggregationTranslators(
-			elasticsearchAggregationTranslator,
-			elasticsearchQueryTranslatorFixture);
+			elasticsearchAggregationTranslator, elasticsearchQueryTranslator);
 
 		_elasticsearchAggregationTranslator =
 			elasticsearchAggregationTranslator;
@@ -116,16 +113,14 @@ public class ElasticsearchAggregationTranslatorFixture {
 
 	private void _injectQueryAggregationTranslators(
 		ElasticsearchAggregationTranslator elasticsearchAggregationTranslator,
-		ElasticsearchQueryTranslatorFixture
-			elasticsearchQueryTranslatorFixture) {
+		ElasticsearchQueryTranslator elasticsearchQueryTranslator) {
 
 		FilterAggregationTranslator filterAggregationTranslator =
 			new FilterAggregationTranslatorImpl();
 
 		ReflectionTestUtil.setFieldValue(
 			filterAggregationTranslator, "_queryTranslator",
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator());
+			elasticsearchQueryTranslator);
 
 		ReflectionTestUtil.setFieldValue(
 			elasticsearchAggregationTranslator, "_filterAggregationTranslator",
@@ -136,8 +131,7 @@ public class ElasticsearchAggregationTranslatorFixture {
 
 		ReflectionTestUtil.setFieldValue(
 			filtersAggregationTranslator, "_queryTranslator",
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator());
+			elasticsearchQueryTranslator);
 
 		ReflectionTestUtil.setFieldValue(
 			elasticsearchAggregationTranslator, "_filtersAggregationTranslator",
@@ -149,8 +143,7 @@ public class ElasticsearchAggregationTranslatorFixture {
 
 		ReflectionTestUtil.setFieldValue(
 			significantTermsAggregationTranslator, "_queryTranslator",
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator());
+			elasticsearchQueryTranslator);
 
 		ReflectionTestUtil.setFieldValue(
 			elasticsearchAggregationTranslator,
@@ -163,8 +156,7 @@ public class ElasticsearchAggregationTranslatorFixture {
 
 		ReflectionTestUtil.setFieldValue(
 			significantTextAggregationTranslator, "_queryTranslator",
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator());
+			elasticsearchQueryTranslator);
 
 		ReflectionTestUtil.setFieldValue(
 			elasticsearchAggregationTranslator,
@@ -187,22 +179,19 @@ public class ElasticsearchAggregationTranslatorFixture {
 
 	private void _injectTopHitsAggregationTranslators(
 		ElasticsearchAggregationTranslator elasticsearchAggregationTranslator,
-		ElasticsearchQueryTranslatorFixture
-			elasticsearchQueryTranslatorFixture) {
+		ElasticsearchQueryTranslator elasticsearchQueryTranslator) {
 
 		ElasticsearchSortFieldTranslatorFixture
 			elasticsearchSortFieldTranslatorFixture =
 				new ElasticsearchSortFieldTranslatorFixture(
-					elasticsearchQueryTranslatorFixture.
-						getElasticsearchQueryTranslator());
+					elasticsearchQueryTranslator);
 
 		TopHitsAggregationTranslator topHitsAggregationTranslator =
 			new TopHitsAggregationTranslatorImpl();
 
 		ReflectionTestUtil.setFieldValue(
 			topHitsAggregationTranslator, "_queryTranslator",
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator());
+			elasticsearchQueryTranslator);
 		ReflectionTestUtil.setFieldValue(
 			topHitsAggregationTranslator, "_sortFieldTranslator",
 			elasticsearchSortFieldTranslatorFixture.

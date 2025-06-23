@@ -193,14 +193,14 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
-	protected Long testGetDiscountChannelChannel_getDiscountChannelId()
+	protected Channel testGetDiscountChannelChannel_addChannel()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Channel testGetDiscountChannelChannel_addChannel()
+	protected Long testGetDiscountChannelChannel_getDiscountChannelId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -327,14 +327,14 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
-	protected Long testGetPriceListChannelChannel_getPriceListChannelId()
+	protected Channel testGetPriceListChannelChannel_addChannel()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Channel testGetPriceListChannelChannel_addChannel()
+	protected Long testGetPriceListChannelChannel_getPriceListChannelId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

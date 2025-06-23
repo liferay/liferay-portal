@@ -195,16 +195,16 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 					listTypeDefinition.getId()));
 	}
 
-	protected Long
-			testDeleteSpecificationListTypeDefinition_getSpecificationId()
+	protected ListTypeDefinition
+			testDeleteSpecificationListTypeDefinition_addListTypeDefinition()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected ListTypeDefinition
-			testDeleteSpecificationListTypeDefinition_addListTypeDefinition()
+	protected Long
+			testDeleteSpecificationListTypeDefinition_getSpecificationId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -334,12 +334,22 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 			204,
 			listTypeDefinitionResource.
 				postSpecificationListTypeDefinitionHttpResponse(
-					null, listTypeDefinition.getId()));
+					testPostSpecificationListTypeDefinition_getSpecificationId(),
+					listTypeDefinition.getId()));
 
 		assertHttpResponseStatusCode(
 			404,
 			listTypeDefinitionResource.
-				postSpecificationListTypeDefinitionHttpResponse(null, 0L));
+				postSpecificationListTypeDefinitionHttpResponse(
+					testPostSpecificationListTypeDefinition_getSpecificationId(),
+					0L));
+	}
+
+	protected Long testPostSpecificationListTypeDefinition_getSpecificationId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected ListTypeDefinition
@@ -350,12 +360,9 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	protected ListTypeDefinition
-			testGraphQLListTypeDefinition_addListTypeDefinition()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(

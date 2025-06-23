@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow Kaleo Service
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.service
-Bundle-Version: 6.0.94
+Bundle-Version: 6.0.95
 Import-Package:\
 	!javax.servlet.*,\
 	\

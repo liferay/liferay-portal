@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.PaymentMethodGroupRelTerm;
 import com.liferay.headless.commerce.admin.channel.client.http.HttpInvoker;
@@ -206,12 +207,79 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 
 	@Test
 	public void testDeletePaymentMethodGroupRelTerm() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PaymentMethodGroupRelTerm paymentMethodGroupRelTerm =
+			testDeletePaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm();
+
+		assertHttpResponseStatusCode(
+			204,
+			paymentMethodGroupRelTermResource.
+				deletePaymentMethodGroupRelTermHttpResponse(
+					paymentMethodGroupRelTerm.
+						getPaymentMethodGroupRelTermId()));
+	}
+
+	protected PaymentMethodGroupRelTerm
+			testDeletePaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeletePaymentMethodGroupRelTerm() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		PaymentMethodGroupRelTerm paymentMethodGroupRelTerm1 =
+			testGraphQLDeletePaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePaymentMethodGroupRelTerm",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"paymentMethodGroupRelTermId",
+									paymentMethodGroupRelTerm1.
+										getPaymentMethodGroupRelTermId());
+							}
+						})),
+				"JSONObject/data", "Object/deletePaymentMethodGroupRelTerm"));
+
+		// Using the namespace headlessCommerceAdminChannel_v1_0
+
+		PaymentMethodGroupRelTerm paymentMethodGroupRelTerm2 =
+			testGraphQLDeletePaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminChannel_v1_0",
+						new GraphQLField(
+							"deletePaymentMethodGroupRelTerm",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"paymentMethodGroupRelTermId",
+										paymentMethodGroupRelTerm2.
+											getPaymentMethodGroupRelTermId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminChannel_v1_0",
+				"Object/deletePaymentMethodGroupRelTerm"));
+	}
+
+	protected PaymentMethodGroupRelTerm
+			testGraphQLDeletePaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm()
+		throws Exception {
+
+		return testGraphQLPaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm();
 	}
 
 	@Test
@@ -220,7 +288,7 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 			testDeletePaymentMethodGroupRelTermBatch_addPaymentMethodGroupRelTerm();
 
 		testDeletePaymentMethodGroupRelTermBatch_deletePaymentMethodGroupRelTerm(
-			"COMPLETED", null,
+			202, null,
 			paymentMethodGroupRelTerm1.getPaymentMethodGroupRelTermId());
 	}
 
@@ -228,14 +296,12 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 			testDeletePaymentMethodGroupRelTermBatch_addPaymentMethodGroupRelTerm()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeletePaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm();
 	}
 
 	protected void
 			testDeletePaymentMethodGroupRelTermBatch_deletePaymentMethodGroupRelTerm(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -249,10 +315,10 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 							"paymentMethodGroupRelTermId", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -319,6 +385,12 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 			page,
 			testGetPaymentMethodGroupRelIdPaymentMethodGroupRelTermsPage_getExpectedActions(
 				id));
+
+		paymentMethodGroupRelTermResource.deletePaymentMethodGroupRelTerm(
+			paymentMethodGroupRelTerm1.getPaymentMethodGroupRelTermId());
+
+		paymentMethodGroupRelTermResource.deletePaymentMethodGroupRelTerm(
+			paymentMethodGroupRelTerm2.getPaymentMethodGroupRelTermId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -778,8 +850,69 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PaymentMethodGroupRelTerm paymentMethodGroupRelTerm1 =
+			testBatchEngineDeleteImportTask_addPaymentMethodGroupRelTerm();
+
+		testBatchEngineDeleteImportTask_deletePaymentMethodGroupRelTerm(
+			200, null,
+			paymentMethodGroupRelTerm1.getPaymentMethodGroupRelTermId());
+	}
+
+	protected PaymentMethodGroupRelTerm
+			testBatchEngineDeleteImportTask_addPaymentMethodGroupRelTerm()
+		throws Exception {
+
+		return testDeletePaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deletePaymentMethodGroupRelTerm(
+				int expectedStatusCode, String externalReferenceCode, Long id,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.channel.dto.v1_0.PaymentMethodGroupRelTerm",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"paymentMethodGroupRelTermId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected PaymentMethodGroupRelTerm
+			testGraphQLPaymentMethodGroupRelTerm_addPaymentMethodGroupRelTerm()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		PaymentMethodGroupRelTerm paymentMethodGroupRelTerm,
@@ -876,6 +1009,12 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (paymentMethodGroupRelTerm.getPaymentMethodGroupRelTermId() ==
+				null) {
+
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Initializer Teaser Showcase
 Bundle-SymbolicName: com.liferay.site.initializer.teaser.showcase
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.10
 Liferay-Site-Initializer-Feature-Flag: LPD-45276
 Liferay-Site-Initializer-Name: Teaser Showcase
 Provide-Capability: liferay.site.initializer

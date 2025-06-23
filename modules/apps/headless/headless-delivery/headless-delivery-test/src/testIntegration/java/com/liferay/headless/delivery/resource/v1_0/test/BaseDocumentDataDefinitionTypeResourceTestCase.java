@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.delivery.client.dto.v1_0.DocumentDataDefinitionType;
 import com.liferay.headless.delivery.client.dto.v1_0.Field;
@@ -132,16 +133,28 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null,
 			new ServiceContext() {
 				{
-					setCompanyId(testGroup.getCompanyId());
+					setCompanyId(testCompany.getCompanyId());
 					setUserId(TestPropsValues.getUserId());
 				}
 			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
 
 		_documentDataDefinitionTypeResource.setContextCompany(testCompany);
 
@@ -379,7 +392,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 			testDeleteDocumentDataDefinitionTypeBatch_addDocumentDataDefinitionType();
 
 		testDeleteDocumentDataDefinitionTypeBatch_deleteDocumentDataDefinitionType(
-			"COMPLETED", null, documentDataDefinitionType1.getId());
+			202, null, documentDataDefinitionType1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -397,8 +410,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 
 	protected void
 			testDeleteDocumentDataDefinitionTypeBatch_deleteDocumentDataDefinitionType(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -412,10 +424,10 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -933,7 +945,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 			testGetAssetLibraryDocumentDataDefinitionTypesPage_getIrrelevantAssetLibraryId()
 		throws Exception {
 
-		return null;
+		return irrelevantDepotEntry.getDepotEntryId();
 	}
 
 	@Test
@@ -1917,6 +1929,64 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 				randomDocumentDataDefinitionType, documentDataDefinitionType));
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		DocumentDataDefinitionType documentDataDefinitionType1 =
+			testBatchEngineDeleteImportTask_addDocumentDataDefinitionType();
+
+		testBatchEngineDeleteImportTask_deleteDocumentDataDefinitionType(
+			200, null, documentDataDefinitionType1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			documentDataDefinitionTypeResource.
+				getDocumentDataDefinitionTypeHttpResponse(
+					documentDataDefinitionType1.getId()));
+	}
+
+	protected DocumentDataDefinitionType
+			testBatchEngineDeleteImportTask_addDocumentDataDefinitionType()
+		throws Exception {
+
+		return testDeleteDocumentDataDefinitionType_addDocumentDataDefinitionType();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deleteDocumentDataDefinitionType(
+				int expectedStatusCode, String externalReferenceCode, Long id,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.delivery.dto.v1_0.DocumentDataDefinitionType",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
@@ -2139,11 +2209,9 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 			valid = false;
 		}
 
-		com.liferay.portal.kernel.model.Group group = testDepotEntry.getGroup();
-
 		if (!Objects.equals(
 				documentDataDefinitionType.getAssetLibraryKey(),
-				group.getGroupKey()) &&
+				testDepotEntryGroup.getGroupKey()) &&
 			!Objects.equals(
 				documentDataDefinitionType.getSiteId(),
 				testGroup.getGroupId())) {
@@ -3095,7 +3163,10 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
 	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {

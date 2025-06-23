@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Headless Builder Web
 Bundle-SymbolicName: com.liferay.headless.builder.web
-Bundle-Version: 1.0.39
+Bundle-Version: 1.0.40
 Web-ContextPath: /headless-builder-web
 -dsannotations-options: inherit

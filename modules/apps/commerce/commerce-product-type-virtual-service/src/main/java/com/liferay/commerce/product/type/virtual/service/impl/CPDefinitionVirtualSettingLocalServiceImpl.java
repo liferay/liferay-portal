@@ -15,6 +15,7 @@ import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSe
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingTermsOfUseArticleResourcePKException;
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingTermsOfUseContentException;
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingTermsOfUseException;
+import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEntryLocalService;
 import com.liferay.commerce.product.type.virtual.service.base.CPDefinitionVirtualSettingLocalServiceBaseImpl;
@@ -210,6 +211,30 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 
 			cpDefinitionVirtualSettingLocalService.
 				addCPDefinitionVirtualSetting(newCPDefinitionVirtualSetting);
+
+			for (CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry :
+					_cpdVirtualSettingFileEntryLocalService.
+						getCPDVirtualSettingFileEntries(
+							cpDefinitionVirtualSetting.
+								getCPDefinitionVirtualSettingId())) {
+
+				CPDVirtualSettingFileEntry newCPDVirtualSettingFileEntry =
+					(CPDVirtualSettingFileEntry)
+						cpdVirtualSettingFileEntry.clone();
+
+				newCPDVirtualSettingFileEntry.setUuid(
+					PortalUUIDUtil.generate());
+				newCPDVirtualSettingFileEntry.
+					setCPDefinitionVirtualSettingFileEntryId(
+						counterLocalService.increment());
+				newCPDVirtualSettingFileEntry.setCPDefinitionVirtualSettingId(
+					newCPDefinitionVirtualSetting.
+						getCPDefinitionVirtualSettingId());
+
+				_cpdVirtualSettingFileEntryLocalService.
+					addCPDVirtualSettingFileEntry(
+						newCPDVirtualSettingFileEntry);
+			}
 		}
 	}
 

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Dynamic Data Mapping Item Selector Web
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.item.selector.web
-Bundle-Version: 1.0.15
+Bundle-Version: 1.0.16
 Web-ContextPath: /dynamic-data-mapping-item-selector-web

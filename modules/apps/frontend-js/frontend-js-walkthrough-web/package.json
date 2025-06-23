@@ -1,10 +1,10 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/core": "3.138.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/core": "3.139.1",
+		"@clayui/form": "3.139.0",
 		"@clayui/layout": "3.128.0",
-		"@clayui/popover": "3.137.0",
+		"@clayui/popover": "3.139.0",
 		"@liferay/frontend-js-react-web": "*",
 		"dom-align": "1.12.2",
 		"frontend-js-web": "*",
@@ -24,5 +24,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.47"
+	"version": "1.0.48"
 }

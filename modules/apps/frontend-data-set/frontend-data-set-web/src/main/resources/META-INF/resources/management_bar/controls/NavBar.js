@@ -33,7 +33,7 @@ function NavBar({creationMenu, handleCheckboxClick, items, showSearch}) {
 	return (
 		<ManagementToolbar.Container
 			className="justify-content-space-between"
-			data-qa-id="management-toolbar"
+			data-qa-id="managementToolbar"
 		>
 			<ManagementToolbar.ItemList>
 				{!!items.length &&

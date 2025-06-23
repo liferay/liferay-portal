@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
+import com.liferay.portal.kernel.portlet.url.builder.ActionURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -138,6 +139,17 @@ public class ViewObjectEntriesDisplayContext {
 				"view", "view",
 				LanguageUtil.get(_objectRequestHelper.getRequest(), "view"),
 				"get", null, null),
+			new FDSActionDropdownItem(
+				ActionURLBuilder.createActionURL(
+					_objectRequestHelper.getLiferayPortletResponse()
+				).setActionName(
+					"/object_entries/expire_object_entry"
+				).setParameter(
+					"objectEntryId", "{id}"
+				).buildString(),
+				"time", "expire",
+				LanguageUtil.get(_objectRequestHelper.getRequest(), "expire"),
+				"get", "expire", null),
 			new FDSActionDropdownItem(
 				null, "trash", "deleteObjectEntry",
 				LanguageUtil.get(_objectRequestHelper.getRequest(), "delete"),

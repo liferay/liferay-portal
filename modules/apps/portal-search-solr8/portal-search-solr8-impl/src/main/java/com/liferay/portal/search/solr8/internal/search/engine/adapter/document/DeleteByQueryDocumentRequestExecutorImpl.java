@@ -11,6 +11,7 @@ import com.liferay.portal.search.engine.adapter.document.DeleteByQueryDocumentRe
 import com.liferay.portal.search.engine.adapter.document.DeleteByQueryDocumentResponse;
 import com.liferay.portal.search.solr8.configuration.SolrConfiguration;
 import com.liferay.portal.search.solr8.internal.connection.SolrClientManager;
+import com.liferay.portal.search.solr8.internal.query.SolrQueryTranslator;
 
 import java.util.Map;
 
@@ -76,9 +77,8 @@ public class DeleteByQueryDocumentRequestExecutorImpl
 	}
 
 	private volatile String _defaultCollection;
-
-	@Reference(target = "(search.engine.impl=Solr)")
-	private QueryTranslator<String> _queryTranslator;
+	private final QueryTranslator<String> _queryTranslator =
+		new SolrQueryTranslator();
 
 	@Reference
 	private SolrClientManager _solrClientManager;

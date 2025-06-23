@@ -52,6 +52,9 @@ public interface PatcherFixComponentLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherFixComponentLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the patcher fix component local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PatcherFixComponentLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFixComponent addPatcherFixComponent(long userId, String name)
+		throws PortalException;
 
 	/**
 	 * Adds the patcher fix component to the database. Also notifies the appropriate model listeners.
@@ -197,6 +200,9 @@ public interface PatcherFixComponentLocalService
 		long patcherFixComponentId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherFixComponent fetchPatcherFixComponent(String name);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -220,6 +226,9 @@ public interface PatcherFixComponentLocalService
 	public PatcherFixComponent getPatcherFixComponent(
 			long patcherFixComponentId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFixComponent> getPatcherFixComponents();
 
 	/**
 	 * Returns a range of all the patcher fix components.
@@ -250,6 +259,11 @@ public interface PatcherFixComponentLocalService
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFixComponent updatePatcherFixComponent(
+			long patcherFixComponentId, String name)
 		throws PortalException;
 
 	/**

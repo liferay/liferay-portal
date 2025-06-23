@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.Term;
 import com.liferay.headless.commerce.admin.order.client.http.HttpInvoker;
@@ -322,24 +323,24 @@ public abstract class BaseTermResourceTestCase {
 	public void testDeleteTermBatch() throws Exception {
 		Term term1 = testDeleteTermBatch_addTerm();
 
-		testDeleteTermBatch_deleteTerm("COMPLETED", null, term1.getId());
+		testDeleteTermBatch_deleteTerm(
+			202, term1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404, termResource.getTermHttpResponse(term1.getId()));
 
+		term1 = testDeleteTermBatch_addTerm();
+
+		testDeleteTermBatch_deleteTerm(202, null, term1.getId());
+
+		assertHttpResponseStatusCode(
+			404, termResource.getTermHttpResponse(term1.getId()));
+
+		term1 = testDeleteTermBatch_addTerm();
 		Term term2 = testDeleteTermBatch_addTerm();
 
 		testDeleteTermBatch_deleteTerm(
-			"COMPLETED", term2.getExternalReferenceCode(), null);
-
-		assertHttpResponseStatusCode(
-			404, termResource.getTermHttpResponse(term2.getId()));
-
-		term1 = testDeleteTermBatch_addTerm();
-		term2 = testDeleteTermBatch_addTerm();
-
-		testDeleteTermBatch_deleteTerm(
-			"COMPLETED", term2.getExternalReferenceCode(), term1.getId());
+			202, term2.getExternalReferenceCode(), term1.getId());
 
 		assertHttpResponseStatusCode(
 			404, termResource.getTermHttpResponse(term1.getId()));
@@ -347,7 +348,7 @@ public abstract class BaseTermResourceTestCase {
 			200, termResource.getTermHttpResponse(term2.getId()));
 
 		testDeleteTermBatch_deleteTerm(
-			"COMPLETED", term2.getExternalReferenceCode(), term1.getId());
+			202, term2.getExternalReferenceCode(), term1.getId());
 
 		assertHttpResponseStatusCode(
 			404, termResource.getTermHttpResponse(term2.getId()));
@@ -358,7 +359,7 @@ public abstract class BaseTermResourceTestCase {
 	}
 
 	protected void testDeleteTermBatch_deleteTerm(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -371,10 +372,10 @@ public abstract class BaseTermResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1298,17 +1299,91 @@ public abstract class BaseTermResourceTestCase {
 			putTerm.getExternalReferenceCode());
 	}
 
+	protected Term testPutTermByExternalReferenceCode_addTerm()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Term testPutTermByExternalReferenceCode_createTerm()
 		throws Exception {
 
 		return randomTerm();
 	}
 
-	protected Term testPutTermByExternalReferenceCode_addTerm()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Term term1 = testBatchEngineDeleteImportTask_addTerm();
+
+		testBatchEngineDeleteImportTask_deleteTerm(
+			200, term1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404, termResource.getTermHttpResponse(term1.getId()));
+
+		term1 = testBatchEngineDeleteImportTask_addTerm();
+
+		testBatchEngineDeleteImportTask_deleteTerm(200, null, term1.getId());
+
+		assertHttpResponseStatusCode(
+			404, termResource.getTermHttpResponse(term1.getId()));
+
+		term1 = testBatchEngineDeleteImportTask_addTerm();
+		Term term2 = testBatchEngineDeleteImportTask_addTerm();
+
+		testBatchEngineDeleteImportTask_deleteTerm(
+			200, term2.getExternalReferenceCode(), term1.getId());
+
+		assertHttpResponseStatusCode(
+			404, termResource.getTermHttpResponse(term1.getId()));
+		assertHttpResponseStatusCode(
+			200, termResource.getTermHttpResponse(term2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteTerm(
+			200, term2.getExternalReferenceCode(), term1.getId());
+
+		assertHttpResponseStatusCode(
+			404, termResource.getTermHttpResponse(term2.getId()));
+	}
+
+	protected Term testBatchEngineDeleteImportTask_addTerm() throws Exception {
+		return testDeleteTerm_addTerm();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteTerm(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.order.dto.v1_0.Term", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

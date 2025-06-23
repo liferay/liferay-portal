@@ -56,13 +56,7 @@ public class PortalReleaseFactory {
 	}
 
 	public static PortalHotfixRelease newPortalHotfixRelease(
-		URL portalHotfixReleaseURL) {
-
-		return newPortalHotfixRelease(portalHotfixReleaseURL, null, null);
-	}
-
-	public static PortalHotfixRelease newPortalHotfixRelease(
-		URL portalHotfixReleaseURL, PortalFixpackRelease portalFixpackRelease,
+		PortalFixpackRelease portalFixpackRelease, URL portalHotfixReleaseURL,
 		PortalRelease portalRelease) {
 
 		String key = String.valueOf(portalHotfixReleaseURL);
@@ -85,7 +79,7 @@ public class PortalReleaseFactory {
 		}
 
 		portalHotfixRelease = new PortalHotfixRelease(
-			portalHotfixReleaseURL, portalFixpackRelease, portalRelease);
+			portalFixpackRelease, portalHotfixReleaseURL, portalRelease);
 
 		_portalHotfixReleases.put(key, portalHotfixRelease);
 
@@ -94,23 +88,29 @@ public class PortalReleaseFactory {
 		return portalHotfixRelease;
 	}
 
+	public static PortalHotfixRelease newPortalHotfixRelease(
+		URL portalHotfixReleaseURL) {
+
+		return newPortalHotfixRelease(null, portalHotfixReleaseURL, null);
+	}
+
 	public static PortalRelease newPortalRelease(String portalVersion) {
 		return _newPortalRelease(
-			PortalRelease.getPortalVersion(portalVersion),
 			"Invalid Portal Version: " + portalVersion,
-			() -> new PortalRelease(portalVersion));
+			() -> new PortalRelease(portalVersion),
+			PortalRelease.getPortalVersion(portalVersion));
 	}
 
 	public static PortalRelease newPortalRelease(URL bundleURL) {
 		return _newPortalRelease(
-			PortalRelease.getPortalVersion(bundleURL),
 			"Invalid Bundle URL: " + bundleURL,
-			() -> new PortalRelease(bundleURL));
+			() -> new PortalRelease(bundleURL),
+			PortalRelease.getPortalVersion(bundleURL));
 	}
 
 	private static PortalRelease _newPortalRelease(
-		String portalVersion, String errorMessage,
-		Supplier<PortalRelease> portalReleaseSupplier) {
+		String errorMessage, Supplier<PortalRelease> portalReleaseSupplier,
+		String portalVersion) {
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(portalVersion)) {
 			throw new RuntimeException(errorMessage);

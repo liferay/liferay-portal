@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Import Maps Extender API
 Bundle-SymbolicName: com.liferay.frontend.js.importmaps.extender.api
-Bundle-Version: 2.1.0
+Bundle-Version: 2.1.1
 Export-Package: com.liferay.frontend.js.importmaps.extender

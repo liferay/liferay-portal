@@ -205,6 +205,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		_updateCPDefinitionIgnoreSKUCombinations(
 			cpDefinitionId, serviceContext);
 
+		// Commerce product definition
+
+		_reindexCPDefinition(cpDefinitionId);
+
 		return cpDefinitionOptionRel;
 	}
 
@@ -303,6 +307,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		_updateCPDefinitionIgnoreSKUCombinations(
 			cpDefinitionId, serviceContext);
 
+		// Commerce product definition
+
+		_reindexCPDefinition(cpDefinitionId);
+
 		return cpDefinitionOptionRel;
 	}
 
@@ -374,6 +382,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		_updateCPDefinitionIgnoreSKUCombinations(
 			cpDefinitionOptionRel.getCPDefinitionId(), new ServiceContext());
+
+		// Commerce product definition
+
+		_reindexCPDefinition(cpDefinitionOptionRel.getCPDefinitionId());
 
 		return cpDefinitionOptionRel;
 	}
@@ -922,6 +934,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		_updateCPDefinitionIgnoreSKUCombinations(
 			cpDefinitionOptionRel.getCPDefinitionId(), serviceContext);
 
+		// Commerce product definition
+
+		_reindexCPDefinition(cpDefinitionOptionRel.getCPDefinitionId());
+
 		return cpDefinitionOptionRel;
 	}
 
@@ -1021,6 +1037,15 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		}
 
 		return false;
+	}
+
+	private void _reindexCPDefinition(long cpDefinitionId)
+		throws PortalException {
+
+		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			CPDefinition.class);
+
+		indexer.reindex(CPDefinition.class.getName(), cpDefinitionId);
 	}
 
 	private int _searchCPDefinitionOptionRelsCount(SearchContext searchContext)

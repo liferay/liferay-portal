@@ -11,15 +11,19 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
+import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
+import {nextPage} from '../../../utils/pagination';
 import performLogin, {
 	performLoginViaApi,
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
@@ -32,8 +36,10 @@ export const test = mergeTests(
 	isolatedSiteTest,
 	loginTest(),
 	messageBoardsPagesTest,
+	pageEditorPagesTest,
 	productMenuPageTest,
-	usersAndOrganizationsPagesTest
+	usersAndOrganizationsPagesTest,
+	workflowPagesTest
 );
 
 test(
@@ -356,5 +362,213 @@ test(
 		await expect(
 			page.getByText(name + ' ' + userAccount.familyName)
 		).toHaveCount(3);
+	}
+);
+
+test(
+	'Can add new users',
+	{tag: '@LPD-57819'},
+	async ({apiHelpers, usersAndOrganizationsPage}) => {
+		const userNames: string[] = [];
+
+		for (let i = 0; i < 3; i++) {
+			const userName = `user${getRandomInt()}`;
+
+			await usersAndOrganizationsPage.createUser(apiHelpers, userName);
+
+			userNames.push(userName);
+		}
+
+		await usersAndOrganizationsPage.goto();
+
+		for (const userName of userNames) {
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(userName)
+			).toBeVisible();
+		}
+	}
+);
+
+test(
+	'Can filter users by unassociated users',
+	{tag: '@LPD-57819'},
+	async ({apiHelpers, usersAndOrganizationsPage}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount();
+		const organization =
+			await apiHelpers.headlessAdminUser.postOrganization();
+		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user3 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			[user1.emailAddress]
+		);
+		await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+			organization.id,
+			user2.emailAddress
+		);
+
+		await usersAndOrganizationsPage.goto();
+
+		await usersAndOrganizationsPage.filterUsers('Unassociated Users');
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+		).toBeVisible();
+		await expect(
+			usersAndOrganizationsPage.usersTableCell('test')
+		).toBeVisible();
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+		).not.toBeVisible();
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+		).not.toBeVisible();
+	}
+);
+
+test(
+	'Can assign user group to user',
+	{tag: '@LPD-57819'},
+	async ({apiHelpers, editUserPage, page, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+		const userGroup = await apiHelpers.headlessAdminUser.postUserGroup();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.membershipsLink.click();
+
+		await expect(editUserPage.membershipsNoUserGroupsMessage).toBeVisible();
+
+		await editUserPage.selectUserGroupsButton.click();
+		await editUserPage.selectUserGroupTable.changeView('table');
+		await editUserPage.selectUserGroupTable.cell(userGroup.name).click();
+
+		await expect(
+			(
+				await editUserPage.membershipsUserGroupsTableRow(
+					0,
+					userGroup.name,
+					true
+				)
+			).row
+		).toBeVisible();
+
+		await editUserPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await usersAndOrganizationsPage.goto();
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(userGroup.name)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can receive new user notification when single approver workflow is applied to user',
+	{tag: ['@LPD-57819', '@LPS-200153']},
+	async ({apiHelpers, configurationTabPage, notificationsPage, page}) => {
+		await configurationTabPage.goTo();
+
+		await nextPage(page);
+
+		await configurationTabPage.assignWorkflowToAssetType(
+			'Single Approver',
+			'User'
+		);
+
+		try {
+			await apiHelpers.headlessAdminUser.postUserAccount();
+
+			await expect(async () => {
+				await notificationsPage.goto();
+
+				await expect(
+					notificationsPage.workflowReviewMessage('User')
+				).toBeVisible();
+
+				await notificationsPage.selectAllItemsCheckbox.check();
+				await notificationsPage.deleteButton.click();
+
+				await waitForAlert(
+					page,
+					'Notifications were deleted successfully.'
+				);
+			}).toPass();
+		}
+		finally {
+			await configurationTabPage.goTo();
+
+			await nextPage(page);
+
+			await configurationTabPage.unassignWorkflowFromAssetType('User');
+		}
+	}
+);
+
+test(
+	'Assert relevance sort option displays when searching',
+	{tag: ['@LPD-57819', '@LPS-130750']},
+	async ({apiHelpers, page, usersAndOrganizationsPage}) => {
+		await apiHelpers.headlessAdminUser.postUserAccount();
+		await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await usersAndOrganizationsPage.tableOrderMenu.click();
+
+		await expect(
+			usersAndOrganizationsPage.tableOrderMenuItem('Relevance')
+		).not.toBeVisible();
+
+		await usersAndOrganizationsPage.usersSearchBar.fill('User');
+		await usersAndOrganizationsPage.usersSearchBarButton.click();
+
+		await expect(page.getByText('Search Results')).toBeVisible();
+
+		await usersAndOrganizationsPage.tableOrderMenu.click();
+
+		await expect(
+			usersAndOrganizationsPage.tableOrderMenuItem('Relevance')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can add a new user after publishing a content page',
+	{tag: ['@LPD-57819', '@LPS-95340']},
+	async ({apiHelpers, pageEditorPage, site, usersAndOrganizationsPage}) => {
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
+
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user.alternateName)
+		).toBeVisible();
 	}
 );

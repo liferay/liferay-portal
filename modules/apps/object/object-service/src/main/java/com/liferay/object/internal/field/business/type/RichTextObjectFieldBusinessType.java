@@ -69,11 +69,12 @@ public class RichTextObjectFieldBusinessType
 
 	@Override
 	public Object getValue(
-			ObjectField objectField, long userId, Map<String, Object> values)
+			Long groupId, ObjectField objectField, long userId,
+			Map<String, Object> values)
 		throws PortalException {
 
 		Object value = ObjectFieldBusinessType.super.getValue(
-			objectField, userId, values);
+			groupId, objectField, userId, values);
 
 		if (Validator.isNull(value)) {
 			return value;

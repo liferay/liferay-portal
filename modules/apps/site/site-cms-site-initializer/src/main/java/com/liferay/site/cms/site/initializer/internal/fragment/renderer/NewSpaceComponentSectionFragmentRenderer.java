@@ -47,8 +47,8 @@ public class NewSpaceComponentSectionFragmentRenderer
 		throws Exception {
 
 		return HashMapBuilder.<String, Object>put(
-			"baseRedirectUrl",
-			ActionUtil.getBaseSpaceURL(
+			"baseAddSpaceMembersURL",
+			ActionUtil.getBaseAddSpaceMembersURL(
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY))
 		).build();

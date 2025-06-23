@@ -17,4 +17,8 @@ export {useActiveItemIds} from './contexts/ControlsContext';
 
 // @ts-ignore
 
+export {default as getAlloyEditorProcessor} from './processors/getAlloyEditorProcessor';
+
+// @ts-ignore
+
 export {default as addFragment} from './thunks/addFragment';

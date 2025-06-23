@@ -347,11 +347,15 @@ public class ListTypeEntryLocalServiceTest {
 			ListTypeDefinition listTypeDefinition)
 		throws Exception {
 
+		String key = RandomTestUtil.randomString();
+
 		ListTypeEntry listTypeEntry =
 			_listTypeEntryLocalService.getOrAddIncompleteListTypeEntry(
 				TestPropsValues.getUserId(),
-				listTypeDefinition.getListTypeDefinitionId(),
-				RandomTestUtil.randomString());
+				listTypeDefinition.getListTypeDefinitionId(), key);
+
+		Assert.assertEquals(key, listTypeEntry.getKey());
+		Assert.assertEquals(key, listTypeEntry.getName(LocaleUtil.US));
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_INCOMPLETE, listTypeEntry.getStatus());

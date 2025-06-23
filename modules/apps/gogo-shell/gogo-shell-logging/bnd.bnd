@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Gogo Shell Logging
 Bundle-SymbolicName: com.liferay.gogo.shell.logging
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.4
 Export-Package: com.liferay.gogo.shell.logging

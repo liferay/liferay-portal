@@ -185,14 +185,14 @@ public abstract class BaseOrderTypeResourceTestCase {
 		assertValid(getOrderType);
 	}
 
-	protected Long testGetWarehouseOrderTypeOrderType_getWarehouseOrderTypeId()
+	protected OrderType testGetWarehouseOrderTypeOrderType_addOrderType()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OrderType testGetWarehouseOrderTypeOrderType_addOrderType()
+	protected Long testGetWarehouseOrderTypeOrderType_getWarehouseOrderTypeId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

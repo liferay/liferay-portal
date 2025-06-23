@@ -205,6 +205,11 @@ public abstract class BaseSortResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(Sort sort, List<Sort> sorts) {
 		boolean contains = false;
 

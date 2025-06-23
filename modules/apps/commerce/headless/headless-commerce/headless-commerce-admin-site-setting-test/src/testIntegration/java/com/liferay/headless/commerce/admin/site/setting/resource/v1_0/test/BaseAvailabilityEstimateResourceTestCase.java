@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.site.setting.client.dto.v1_0.AvailabilityEstimate;
 import com.liferay.headless.commerce.admin.site.setting.client.http.HttpInvoker;
@@ -330,7 +331,7 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 			testDeleteAvailabilityEstimateBatch_addAvailabilityEstimate();
 
 		testDeleteAvailabilityEstimateBatch_deleteAvailabilityEstimate(
-			"COMPLETED", null, availabilityEstimate1.getId());
+			202, null, availabilityEstimate1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -347,8 +348,7 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 	protected void
 			testDeleteAvailabilityEstimateBatch_deleteAvailabilityEstimate(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -362,10 +362,10 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -923,6 +923,62 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 	@Test
 	public void testPutAvailabilityEstimate() throws Exception {
 		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		AvailabilityEstimate availabilityEstimate1 =
+			testBatchEngineDeleteImportTask_addAvailabilityEstimate();
+
+		testBatchEngineDeleteImportTask_deleteAvailabilityEstimate(
+			200, null, availabilityEstimate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate1.getId()));
+	}
+
+	protected AvailabilityEstimate
+			testBatchEngineDeleteImportTask_addAvailabilityEstimate()
+		throws Exception {
+
+		return testDeleteAvailabilityEstimate_addAvailabilityEstimate();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteAvailabilityEstimate(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.site.setting.dto.v1_0.AvailabilityEstimate",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected AvailabilityEstimate

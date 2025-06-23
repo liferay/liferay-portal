@@ -73,6 +73,50 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/test/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities/{ercAssetLibraryTestEntityExternalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "assetLibraryExternalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "ercAssetLibraryTestEntityExternalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "ERCAssetLibraryTestEntity"
+			)
+		}
+	)
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
+		"/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities/{ercAssetLibraryTestEntityExternalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void deleteAssetLibraryERCAssetLibraryTestEntity(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("assetLibraryExternalReferenceCode")
+			String assetLibraryExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam(
+				"ercAssetLibraryTestEntityExternalReferenceCode"
+			)
+			String ercAssetLibraryTestEntityExternalReferenceCode)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/test/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -137,18 +181,17 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public ERCAssetLibraryTestEntity
-			getAssetLibraryERCAssetLibraryTestEntityErcAssetLibraryTestEntityExternalReferenceCode(
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.PathParam("assetLibraryExternalReferenceCode")
-				String assetLibraryExternalReferenceCode,
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.PathParam(
-					"ercAssetLibraryTestEntityExternalReferenceCode"
-				)
-				String ercAssetLibraryTestEntityExternalReferenceCode)
+	public ERCAssetLibraryTestEntity getAssetLibraryERCAssetLibraryTestEntity(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("assetLibraryExternalReferenceCode")
+			String assetLibraryExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam(
+				"ercAssetLibraryTestEntityExternalReferenceCode"
+			)
+			String ercAssetLibraryTestEntityExternalReferenceCode)
 		throws Exception {
 
 		return new ERCAssetLibraryTestEntity();
@@ -357,19 +400,18 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
-	public ERCAssetLibraryTestEntity
-			putAssetLibraryERCAssetLibraryTestEntityErcAssetLibraryTestEntityExternalReferenceCode(
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.PathParam("assetLibraryExternalReferenceCode")
-				String assetLibraryExternalReferenceCode,
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.PathParam(
-					"ercAssetLibraryTestEntityExternalReferenceCode"
-				)
-				String ercAssetLibraryTestEntityExternalReferenceCode,
-				ERCAssetLibraryTestEntity ercAssetLibraryTestEntity)
+	public ERCAssetLibraryTestEntity putAssetLibraryERCAssetLibraryTestEntity(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("assetLibraryExternalReferenceCode")
+			String assetLibraryExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam(
+				"ercAssetLibraryTestEntityExternalReferenceCode"
+			)
+			String ercAssetLibraryTestEntityExternalReferenceCode,
+			ERCAssetLibraryTestEntity ercAssetLibraryTestEntity)
 		throws Exception {
 
 		return new ERCAssetLibraryTestEntity();
@@ -436,8 +478,44 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		UnsafeFunction
+			<ERCAssetLibraryTestEntity, ERCAssetLibraryTestEntity, Exception>
+				ercAssetLibraryTestEntityUnsafeFunction =
+					ercAssetLibraryTestEntity -> {
+						if (parameters.containsKey(
+								"assetLibraryExternalReferenceCode")) {
+
+							deleteAssetLibraryERCAssetLibraryTestEntity(
+								(String)parameters.get(
+									"assetLibraryExternalReferenceCode"),
+								ercAssetLibraryTestEntity.
+									getExternalReferenceCode());
+
+							return ercAssetLibraryTestEntity;
+						}
+
+						throw new UnsupportedOperationException(
+							"Unable to delete by external reference code or ID");
+					};
+
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				ercAssetLibraryTestEntities,
+				ercAssetLibraryTestEntityUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
+			contextBatchUnsafeConsumer.accept(
+				ercAssetLibraryTestEntities,
+				ercAssetLibraryTestEntityUnsafeFunction::apply);
+		}
+		else {
+			for (ERCAssetLibraryTestEntity ercAssetLibraryTestEntity :
+					ercAssetLibraryTestEntities) {
+
+				ercAssetLibraryTestEntityUnsafeFunction.apply(
+					ercAssetLibraryTestEntity);
+			}
+		}
 	}
 
 	public Set<String> getAvailableCreateStrategies() {

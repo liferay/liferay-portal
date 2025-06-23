@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListDiscount;
 import com.liferay.headless.commerce.admin.pricing.client.http.HttpInvoker;
@@ -199,12 +200,77 @@ public abstract class BasePriceListDiscountResourceTestCase {
 
 	@Test
 	public void testDeletePriceListDiscount() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PriceListDiscount priceListDiscount =
+			testDeletePriceListDiscount_addPriceListDiscount();
+
+		assertHttpResponseStatusCode(
+			204,
+			priceListDiscountResource.deletePriceListDiscountHttpResponse(
+				priceListDiscount.getPriceListDiscountId()));
+	}
+
+	protected PriceListDiscount
+			testDeletePriceListDiscount_addPriceListDiscount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeletePriceListDiscount() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		PriceListDiscount priceListDiscount1 =
+			testGraphQLDeletePriceListDiscount_addPriceListDiscount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePriceListDiscount",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"priceListDiscountId",
+									priceListDiscount1.
+										getPriceListDiscountId());
+							}
+						})),
+				"JSONObject/data", "Object/deletePriceListDiscount"));
+
+		// Using the namespace headlessCommerceAdminPricing_v2_0
+
+		PriceListDiscount priceListDiscount2 =
+			testGraphQLDeletePriceListDiscount_addPriceListDiscount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminPricing_v2_0",
+						new GraphQLField(
+							"deletePriceListDiscount",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"priceListDiscountId",
+										priceListDiscount2.
+											getPriceListDiscountId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminPricing_v2_0",
+				"Object/deletePriceListDiscount"));
+	}
+
+	protected PriceListDiscount
+			testGraphQLDeletePriceListDiscount_addPriceListDiscount()
+		throws Exception {
+
+		return testGraphQLPriceListDiscount_addPriceListDiscount();
 	}
 
 	@Test
@@ -213,19 +279,18 @@ public abstract class BasePriceListDiscountResourceTestCase {
 			testDeletePriceListDiscountBatch_addPriceListDiscount();
 
 		testDeletePriceListDiscountBatch_deletePriceListDiscount(
-			"COMPLETED", null, priceListDiscount1.getPriceListDiscountId());
+			202, null, priceListDiscount1.getPriceListDiscountId());
 	}
 
 	protected PriceListDiscount
 			testDeletePriceListDiscountBatch_addPriceListDiscount()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeletePriceListDiscount_addPriceListDiscount();
 	}
 
 	protected void testDeletePriceListDiscountBatch_deletePriceListDiscount(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -238,10 +303,10 @@ public abstract class BasePriceListDiscountResourceTestCase {
 						"priceListDiscountId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -307,6 +372,12 @@ public abstract class BasePriceListDiscountResourceTestCase {
 			page,
 			testGetPriceListByExternalReferenceCodePriceListDiscountsPage_getExpectedActions(
 				externalReferenceCode));
+
+		priceListDiscountResource.deletePriceListDiscount(
+			priceListDiscount1.getPriceListDiscountId());
+
+		priceListDiscountResource.deletePriceListDiscount(
+			priceListDiscount2.getPriceListDiscountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -506,6 +577,12 @@ public abstract class BasePriceListDiscountResourceTestCase {
 		assertValid(
 			page,
 			testGetPriceListIdPriceListDiscountsPage_getExpectedActions(id));
+
+		priceListDiscountResource.deletePriceListDiscount(
+			priceListDiscount1.getPriceListDiscountId());
+
+		priceListDiscountResource.deletePriceListDiscount(
+			priceListDiscount2.getPriceListDiscountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -682,6 +759,65 @@ public abstract class BasePriceListDiscountResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PriceListDiscount priceListDiscount1 =
+			testBatchEngineDeleteImportTask_addPriceListDiscount();
+
+		testBatchEngineDeleteImportTask_deletePriceListDiscount(
+			200, null, priceListDiscount1.getPriceListDiscountId());
+	}
+
+	protected PriceListDiscount
+			testBatchEngineDeleteImportTask_addPriceListDiscount()
+		throws Exception {
+
+		return testDeletePriceListDiscount_addPriceListDiscount();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deletePriceListDiscount(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListDiscount",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"priceListDiscountId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
+	protected PriceListDiscount
+			testGraphQLPriceListDiscount_addPriceListDiscount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected void assertContains(
 		PriceListDiscount priceListDiscount,
 		List<PriceListDiscount> priceListDiscounts) {
@@ -761,6 +897,10 @@ public abstract class BasePriceListDiscountResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (priceListDiscount.getPriceListDiscountId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

@@ -23,10 +23,12 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -453,6 +455,58 @@ public class PortalImplCanonicalURLTest {
 			"liferay.com", "localhost:8080", _defaultGroup,
 			_defaultGrouplayout1, null, null, "/en", StringPool.BLANK, false,
 			true);
+	}
+
+	@Test
+	@TestInfo("LPD-58324")
+	public void testGetCanonicalURLWithQueryParameters() throws Exception {
+		ThemeDisplay themeDisplay = _createThemeDisplay(
+			"localhost", _group, 8080, false);
+
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, LayoutConstants.TYPE_CONTENT, false, "/test",
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		String canonicalURL = _portal.getCanonicalURL(
+			String.format(
+				"http://liferay.com/web/%s/test/?/-/thisshoulnotappear",
+				_group.getGroupKey()),
+			themeDisplay, layout, false, false);
+
+		String expectedSuffix = String.format(
+			"/web/%s/test", StringUtil.toLowerCase(_group.getGroupKey()));
+
+		Assert.assertTrue(canonicalURL.endsWith(expectedSuffix));
+	}
+
+	@Test
+	public void testGetCanonicalURLWithURLSeparatorInFriendlyURL()
+		throws Exception {
+
+		ThemeDisplay themeDisplay = _createThemeDisplay(
+			"localhost", _group, 8080, false);
+
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, LayoutConstants.TYPE_CONTENT, false, "/abc/w/def",
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		String canonicalURL = _portal.getCanonicalURL(
+			String.format(
+				"http://liferay.com/web/%s/abc/w/def", _group.getGroupKey()),
+			themeDisplay, layout, false, false);
+
+		String expectedSuffix = String.format(
+			"/web/%s/abc/w/def", StringUtil.toLowerCase(_group.getGroupKey()));
+
+		Assert.assertTrue(canonicalURL.endsWith(expectedSuffix));
 	}
 
 	@Test

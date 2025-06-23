@@ -14,6 +14,7 @@ import com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.ExternalLink;
 import com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.ProductPurchase;
 import com.liferay.osb.koroneiki.phloem.rest.client.pagination.Pagination;
 import com.liferay.osb.koroneiki.phloem.rest.client.resource.v1_0.AccountResource;
+import com.liferay.osb.koroneiki.phloem.rest.client.resource.v1_0.ContactResource;
 import com.liferay.osb.koroneiki.phloem.rest.client.resource.v1_0.ProductPurchaseResource;
 import com.liferay.osb.koroneiki.phloem.rest.client.resource.v1_0.ProductPurchaseViewResource;
 import com.liferay.osb.koroneiki.phloem.rest.client.resource.v1_0.ProductResource;
@@ -44,8 +45,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class KoroneikiService {
 
-	public AccountResource getKoroneikiAccountResource() throws Exception {
-		return AccountResource.builder(
+	public ContactResource getContactResource() throws Exception {
+		return ContactResource.builder(
 		).header(
 			"API_TOKEN", _koroneikiAuthToken
 		).endpoint(
@@ -163,18 +164,15 @@ public class KoroneikiService {
 			StringPool.SPACE, StringPool.BLANK
 		).toUpperCase();
 
-		AccountResource koroneikiAccountResource =
-			getKoroneikiAccountResource();
+		AccountResource accountResource = _getAccountService();
 
 		com.liferay.osb.koroneiki.phloem.rest.client.pagination.Page
 			<com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.Account>
-				koroneikiAccountResourceAccountsPage =
-					koroneikiAccountResource.getAccountsPage(
-						"", "code eq '" + code + "'", Pagination.of(1, 5), "");
+				page = accountResource.getAccountsPage(
+					"", "code eq '" + code + "'", Pagination.of(1, 5), "");
 
 		com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.Account
-			koroneikiAccount =
-				koroneikiAccountResourceAccountsPage.fetchFirstItem();
+			koroneikiAccount = page.fetchFirstItem();
 
 		if (koroneikiAccount != null) {
 			return koroneikiAccount;
@@ -238,8 +236,17 @@ public class KoroneikiService {
 				Status.ACTIVE);
 		koroneikiAccount.setWebsite(customFieldsMap.get("Homepage URL"));
 
-		return koroneikiAccountResource.postAccount(
+		return accountResource.postAccount(
 			jwt.getClaim("username"), jwt.getClaim("sub"), koroneikiAccount);
+	}
+
+	private AccountResource _getAccountService() throws Exception {
+		return AccountResource.builder(
+		).header(
+			"API_TOKEN", _koroneikiAuthToken
+		).endpoint(
+			new URL(_koroneikiAuthURL)
+		).build();
 	}
 
 	private static final Log _log = LogFactory.getLog(KoroneikiService.class);

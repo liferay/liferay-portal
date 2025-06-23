@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/modal": "3.137.0",
+		"@clayui/modal": "3.139.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"
@@ -13,5 +13,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "5.0.104"
+	"version": "5.0.105"
 }

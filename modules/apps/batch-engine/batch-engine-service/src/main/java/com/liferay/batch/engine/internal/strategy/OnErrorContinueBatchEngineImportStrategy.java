@@ -5,8 +5,10 @@
 
 package com.liferay.batch.engine.internal.strategy;
 
+import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.action.ImportTaskPostAction;
 import com.liferay.batch.engine.action.ImportTaskPreAction;
+import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskExceptionHandler;
 import com.liferay.batch.engine.internal.util.ItemIndexThreadLocal;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.petra.function.UnsafeFunction;
@@ -23,16 +25,20 @@ public class OnErrorContinueBatchEngineImportStrategy
 
 	public OnErrorContinueBatchEngineImportStrategy(
 		BatchEngineImportTask batchEngineImportTask,
+		List<BatchEngineImportTaskExceptionHandler>
+			batchEngineImportTaskExceptionHandlers,
 		List<ImportTaskPostAction> importTaskPostActions,
 		List<ImportTaskPreAction> importTaskPreActions) {
 
 		super(
-			batchEngineImportTask, importTaskPostActions, importTaskPreActions);
+			batchEngineImportTask, batchEngineImportTaskExceptionHandlers,
+			importTaskPostActions, importTaskPreActions);
 	}
 
 	@Override
 	public <T> T importItem(
-		T item, UnsafeFunction<T, T, Exception> unsafeFunction) {
+		BatchEngineTaskItemDelegate<T> batchEngineTaskItemDelegate, T item,
+		UnsafeFunction<T, T, Exception> unsafeFunction) {
 
 		T persistedItem = null;
 
@@ -43,10 +49,8 @@ public class OnErrorContinueBatchEngineImportStrategy
 			_log.error(exception);
 
 			addBatchEngineImportTaskError(
-				batchEngineImportTask.getCompanyId(),
-				batchEngineImportTask.getUserId(),
-				batchEngineImportTask.getBatchEngineImportTaskId(),
-				item.toString(), ItemIndexThreadLocal.get(), exception);
+				batchEngineImportTask, batchEngineTaskItemDelegate, item,
+				ItemIndexThreadLocal.get(), exception);
 		}
 		finally {
 			ItemIndexThreadLocal.remove();

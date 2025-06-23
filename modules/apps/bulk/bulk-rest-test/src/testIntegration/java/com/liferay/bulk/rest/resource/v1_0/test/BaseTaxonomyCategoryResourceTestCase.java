@@ -256,6 +256,10 @@ public abstract class BaseTaxonomyCategoryResourceTestCase {
 
 		boolean valid = true;
 
+		if (taxonomyCategory.getTaxonomyCategoryId() == null) {
+			valid = false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 

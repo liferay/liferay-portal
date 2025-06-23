@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Flags Taglib
 Bundle-SymbolicName: com.liferay.flags.taglib
-Bundle-Version: 7.0.1
+Bundle-Version: 7.0.2
 Export-Package:\
 	com.liferay.flags.taglib.servlet.taglib.react,\
 	com.liferay.flags.taglib.servlet.taglib.util

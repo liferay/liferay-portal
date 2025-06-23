@@ -11,8 +11,10 @@ import com.liferay.portal.search.engine.adapter.index.CloseIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface CloseIndexRequestExecutor {
+public class CloseIndexRequestExecutor {
 
-	public CloseIndexResponse execute(CloseIndexRequest closeIndexRequest);
+	public CloseIndexResponse execute(CloseIndexRequest closeIndexRequest) {
+		throw new UnsupportedOperationException();
+	}
 
 }

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.DiscountOrderType;
 import com.liferay.headless.commerce.admin.pricing.client.http.HttpInvoker;
@@ -200,12 +201,77 @@ public abstract class BaseDiscountOrderTypeResourceTestCase {
 
 	@Test
 	public void testDeleteDiscountOrderType() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DiscountOrderType discountOrderType =
+			testDeleteDiscountOrderType_addDiscountOrderType();
+
+		assertHttpResponseStatusCode(
+			204,
+			discountOrderTypeResource.deleteDiscountOrderTypeHttpResponse(
+				discountOrderType.getDiscountOrderTypeId()));
+	}
+
+	protected DiscountOrderType
+			testDeleteDiscountOrderType_addDiscountOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteDiscountOrderType() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		DiscountOrderType discountOrderType1 =
+			testGraphQLDeleteDiscountOrderType_addDiscountOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteDiscountOrderType",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"discountOrderTypeId",
+									discountOrderType1.
+										getDiscountOrderTypeId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteDiscountOrderType"));
+
+		// Using the namespace headlessCommerceAdminPricing_v2_0
+
+		DiscountOrderType discountOrderType2 =
+			testGraphQLDeleteDiscountOrderType_addDiscountOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminPricing_v2_0",
+						new GraphQLField(
+							"deleteDiscountOrderType",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"discountOrderTypeId",
+										discountOrderType2.
+											getDiscountOrderTypeId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminPricing_v2_0",
+				"Object/deleteDiscountOrderType"));
+	}
+
+	protected DiscountOrderType
+			testGraphQLDeleteDiscountOrderType_addDiscountOrderType()
+		throws Exception {
+
+		return testGraphQLDiscountOrderType_addDiscountOrderType();
 	}
 
 	@Test
@@ -214,19 +280,18 @@ public abstract class BaseDiscountOrderTypeResourceTestCase {
 			testDeleteDiscountOrderTypeBatch_addDiscountOrderType();
 
 		testDeleteDiscountOrderTypeBatch_deleteDiscountOrderType(
-			"COMPLETED", null, discountOrderType1.getDiscountOrderTypeId());
+			202, null, discountOrderType1.getDiscountOrderTypeId());
 	}
 
 	protected DiscountOrderType
 			testDeleteDiscountOrderTypeBatch_addDiscountOrderType()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteDiscountOrderType_addDiscountOrderType();
 	}
 
 	protected void testDeleteDiscountOrderTypeBatch_deleteDiscountOrderType(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -239,10 +304,10 @@ public abstract class BaseDiscountOrderTypeResourceTestCase {
 						"discountOrderTypeId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -308,6 +373,12 @@ public abstract class BaseDiscountOrderTypeResourceTestCase {
 			page,
 			testGetDiscountByExternalReferenceCodeDiscountOrderTypesPage_getExpectedActions(
 				externalReferenceCode));
+
+		discountOrderTypeResource.deleteDiscountOrderType(
+			discountOrderType1.getDiscountOrderTypeId());
+
+		discountOrderTypeResource.deleteDiscountOrderType(
+			discountOrderType2.getDiscountOrderTypeId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -508,6 +579,12 @@ public abstract class BaseDiscountOrderTypeResourceTestCase {
 		assertValid(
 			page,
 			testGetDiscountIdDiscountOrderTypesPage_getExpectedActions(id));
+
+		discountOrderTypeResource.deleteDiscountOrderType(
+			discountOrderType1.getDiscountOrderTypeId());
+
+		discountOrderTypeResource.deleteDiscountOrderType(
+			discountOrderType2.getDiscountOrderTypeId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -944,8 +1021,67 @@ public abstract class BaseDiscountOrderTypeResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		DiscountOrderType discountOrderType1 =
+			testBatchEngineDeleteImportTask_addDiscountOrderType();
+
+		testBatchEngineDeleteImportTask_deleteDiscountOrderType(
+			200, null, discountOrderType1.getDiscountOrderTypeId());
+	}
+
+	protected DiscountOrderType
+			testBatchEngineDeleteImportTask_addDiscountOrderType()
+		throws Exception {
+
+		return testDeleteDiscountOrderType_addDiscountOrderType();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteDiscountOrderType(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountOrderType",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"discountOrderTypeId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected DiscountOrderType
+			testGraphQLDiscountOrderType_addDiscountOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		DiscountOrderType discountOrderType,
@@ -1026,6 +1162,10 @@ public abstract class BaseDiscountOrderTypeResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (discountOrderType.getDiscountOrderTypeId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.form.client.dto.v1_0.FormDocument;
 import com.liferay.headless.form.client.http.HttpInvoker;
@@ -332,7 +333,7 @@ public abstract class BaseFormDocumentResourceTestCase {
 			testDeleteFormDocumentBatch_addFormDocument();
 
 		testDeleteFormDocumentBatch_deleteFormDocument(
-			"COMPLETED", null, formDocument1.getId());
+			202, null, formDocument1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -347,7 +348,7 @@ public abstract class BaseFormDocumentResourceTestCase {
 	}
 
 	protected void testDeleteFormDocumentBatch_deleteFormDocument(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -360,10 +361,10 @@ public abstract class BaseFormDocumentResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -669,6 +670,61 @@ public abstract class BaseFormDocumentResourceTestCase {
 		throws Exception {
 
 		return testGraphQLFormDocument_addFormDocument();
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		FormDocument formDocument1 =
+			testBatchEngineDeleteImportTask_addFormDocument();
+
+		testBatchEngineDeleteImportTask_deleteFormDocument(
+			200, null, formDocument1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			formDocumentResource.getFormDocumentHttpResponse(
+				formDocument1.getId()));
+	}
+
+	protected FormDocument testBatchEngineDeleteImportTask_addFormDocument()
+		throws Exception {
+
+		return testDeleteFormDocument_addFormDocument();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteFormDocument(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.form.dto.v1_0.FormDocument", null, null,
+				null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected FormDocument testGraphQLFormDocument_addFormDocument()

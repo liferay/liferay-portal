@@ -174,13 +174,15 @@ describe('LengthField', () => {
 		await userEvent.type(input, '100');
 		fireEvent.blur(input);
 
-		expect(screen.queryByTitle('reset-to-x-value')).toBeInTheDocument();
+		expect(
+			screen.queryByTitle('reset-to-initial-value')
+		).toBeInTheDocument();
 	});
 
 	it('clears the value when the restore button is clicked', async () => {
 		renderLengthField({field: {label: 'opacity', name: 'opacity'}});
 
-		await userEvent.click(screen.getByTitle('reset-to-x-value'));
+		await userEvent.click(screen.getByTitle('reset-to-initial-value'));
 
 		expect(screen.getByLabelText('opacity').textContent).toBe('');
 	});

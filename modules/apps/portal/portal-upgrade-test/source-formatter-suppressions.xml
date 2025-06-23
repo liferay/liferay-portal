@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 
 <suppressions>
+	<checkstyle>
+		<suppress checks="PersistenceCallCheck" files="src/testIntegration/java/com/liferay/portal/upgrade/v7_4_x/test/UpgradeJakartaTest\.java" />
+	</checkstyle>
 	<source-check>
 		<suppress checks="JavaUpgradeVersionCheck" files="src/testIntegration/java/com/liferay/portal/upgrade/test/ReleasePublisherTest\.java" />
 	</source-check>

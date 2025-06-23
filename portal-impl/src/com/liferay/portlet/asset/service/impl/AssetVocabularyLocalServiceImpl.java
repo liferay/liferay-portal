@@ -7,20 +7,18 @@ package com.liferay.portlet.asset.service.impl;
 
 import com.liferay.asset.kernel.exception.DuplicateVocabularyException;
 import com.liferay.asset.kernel.exception.DuplicateVocabularyExternalReferenceCodeException;
-import com.liferay.asset.kernel.exception.NoSuchVocabularyException;
 import com.liferay.asset.kernel.exception.VocabularyNameException;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
-import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManagerUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -208,7 +206,7 @@ public class AssetVocabularyLocalServiceImpl
 		vocabulary.setSettings(settings);
 		vocabulary.setVisibilityType(visibilityType);
 
-		if (LazyReferencingThreadLocal.isIncompleteModel()) {
+		if (IncompleteModelManagerUtil.isIncompleteModel()) {
 			vocabulary.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
 		}
 		else {
@@ -406,33 +404,17 @@ public class AssetVocabularyLocalServiceImpl
 			String externalReferenceCode, long userId, long groupId)
 		throws PortalException {
 
-		AssetVocabulary assetVocabulary =
-			fetchAssetVocabularyByExternalReferenceCode(
-				externalReferenceCode, groupId);
-
-		if (assetVocabulary != null) {
-			return assetVocabulary;
-		}
-
-		if (!LazyReferencingThreadLocal.isEnabled()) {
-			throw new NoSuchVocabularyException(
-				StringBundler.concat(
-					"Unable to find asset vocabulary with external reference ",
-					"code ", externalReferenceCode, " and group ", groupId));
-		}
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setIncompleteModelWithSafeCloseable(
-					true)) {
-
-			return assetVocabularyLocalService.addVocabulary(
+		return IncompleteModelManagerUtil.getOrAddIncompleteModel(
+			AssetVocabulary.class, externalReferenceCode,
+			this::fetchAssetVocabularyByExternalReferenceCode,
+			this::getAssetVocabularyByExternalReferenceCode, groupId,
+			() -> assetVocabularyLocalService.addVocabulary(
 				externalReferenceCode, userId, groupId, externalReferenceCode,
 				externalReferenceCode,
 				Collections.singletonMap(
 					LocaleUtil.getSiteDefault(), externalReferenceCode),
 				null, null, AssetVocabularyConstants.VISIBILITY_TYPE_INCOMPLETE,
-				new ServiceContext());
-		}
+				new ServiceContext()));
 	}
 
 	@Override

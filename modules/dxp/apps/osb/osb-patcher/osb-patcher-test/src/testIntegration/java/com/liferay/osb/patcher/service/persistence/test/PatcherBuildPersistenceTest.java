@@ -128,8 +128,6 @@ public class PatcherBuildPersistenceTest {
 
 		newPatcherBuild.setModifiedDate(RandomTestUtil.nextDate());
 
-		newPatcherBuild.setHotfixId(RandomTestUtil.nextLong());
-
 		newPatcherBuild.setPatcherAccountId(RandomTestUtil.nextLong());
 
 		newPatcherBuild.setPatcherFixId(RandomTestUtil.nextLong());
@@ -147,6 +145,8 @@ public class PatcherBuildPersistenceTest {
 		newPatcherBuild.setComments(RandomTestUtil.randomString());
 
 		newPatcherBuild.setFileName(RandomTestUtil.randomString());
+
+		newPatcherBuild.setHotfixId(RandomTestUtil.nextLong());
 
 		newPatcherBuild.setInitialName(RandomTestUtil.randomString());
 
@@ -221,8 +221,6 @@ public class PatcherBuildPersistenceTest {
 			Time.getShortTimestamp(existingPatcherBuild.getModifiedDate()),
 			Time.getShortTimestamp(newPatcherBuild.getModifiedDate()));
 		Assert.assertEquals(
-			existingPatcherBuild.getHotfixId(), newPatcherBuild.getHotfixId());
-		Assert.assertEquals(
 			existingPatcherBuild.getPatcherAccountId(),
 			newPatcherBuild.getPatcherAccountId());
 		Assert.assertEquals(
@@ -247,6 +245,8 @@ public class PatcherBuildPersistenceTest {
 			existingPatcherBuild.getComments(), newPatcherBuild.getComments());
 		Assert.assertEquals(
 			existingPatcherBuild.getFileName(), newPatcherBuild.getFileName());
+		Assert.assertEquals(
+			existingPatcherBuild.getHotfixId(), newPatcherBuild.getHotfixId());
 		Assert.assertEquals(
 			existingPatcherBuild.getInitialName(),
 			newPatcherBuild.getInitialName());
@@ -313,12 +313,144 @@ public class PatcherBuildPersistenceTest {
 	}
 
 	@Test
+	public void testCountByPatcherFixId() throws Exception {
+		_persistence.countByPatcherFixId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherFixId(0L);
+	}
+
+	@Test
+	public void testCountByPatcherProjectVersionId() throws Exception {
+		_persistence.countByPatcherProjectVersionId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherProjectVersionId(0L);
+	}
+
+	@Test
+	public void testCountByKey() throws Exception {
+		_persistence.countByKey("");
+
+		_persistence.countByKey("null");
+
+		_persistence.countByKey((String)null);
+	}
+
+	@Test
+	public void testCountByP_P() throws Exception {
+		_persistence.countByP_P(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+
+		_persistence.countByP_P(0L, 0L);
+	}
+
+	@Test
+	public void testCountByP_C() throws Exception {
+		_persistence.countByP_C(
+			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
+
+		_persistence.countByP_C(0L, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
 	public void testCountByK_KV() throws Exception {
 		_persistence.countByK_KV("", RandomTestUtil.nextDouble());
 
 		_persistence.countByK_KV("null", 0D);
 
 		_persistence.countByK_KV((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByK_GtKV() throws Exception {
+		_persistence.countByK_GtKV("", RandomTestUtil.nextDouble());
+
+		_persistence.countByK_GtKV("null", 0D);
+
+		_persistence.countByK_GtKV((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByK_LtKV() throws Exception {
+		_persistence.countByK_LtKV("", RandomTestUtil.nextDouble());
+
+		_persistence.countByK_LtKV("null", 0D);
+
+		_persistence.countByK_LtKV((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByK_L() throws Exception {
+		_persistence.countByK_L("", RandomTestUtil.randomBoolean());
+
+		_persistence.countByK_L("null", RandomTestUtil.randomBoolean());
+
+		_persistence.countByK_L((String)null, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByL_S() throws Exception {
+		_persistence.countByL_S(RandomTestUtil.randomBoolean(), "");
+
+		_persistence.countByL_S(RandomTestUtil.randomBoolean(), "null");
+
+		_persistence.countByL_S(RandomTestUtil.randomBoolean(), (String)null);
+	}
+
+	@Test
+	public void testCountByS_GtS() throws Exception {
+		_persistence.countByS_GtS("", RandomTestUtil.nextDouble());
+
+		_persistence.countByS_GtS("null", 0D);
+
+		_persistence.countByS_GtS((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByS_LtS() throws Exception {
+		_persistence.countByS_LtS("", RandomTestUtil.nextDouble());
+
+		_persistence.countByS_LtS("null", 0D);
+
+		_persistence.countByS_LtS((String)null, 0D);
+	}
+
+	@Test
+	public void testCountByLtM_N_S() throws Exception {
+		_persistence.countByLtM_N_S(
+			RandomTestUtil.nextDate(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.nextInt());
+
+		_persistence.countByLtM_N_S(
+			RandomTestUtil.nextDate(), RandomTestUtil.randomBoolean(), 0);
+	}
+
+	@Test
+	public void testCountByLtM_N_SArrayable() throws Exception {
+		_persistence.countByLtM_N_S(
+			RandomTestUtil.nextDate(), RandomTestUtil.randomBoolean(),
+			new int[] {RandomTestUtil.nextInt(), 0});
+	}
+
+	@Test
+	public void testCountByP_NotP_C_NotT() throws Exception {
+		_persistence.countByP_NotP_C_NotT(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.nextInt());
+
+		_persistence.countByP_NotP_C_NotT(
+			0L, 0L, RandomTestUtil.randomBoolean(), 0);
+	}
+
+	@Test
+	public void testCountByP_N_L_A() throws Exception {
+		_persistence.countByP_N_L_A(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.randomBoolean(), "");
+
+		_persistence.countByP_N_L_A(
+			0L, "null", RandomTestUtil.randomBoolean(), "null");
+
+		_persistence.countByP_N_L_A(
+			0L, (String)null, RandomTestUtil.randomBoolean(), (String)null);
 	}
 
 	@Test
@@ -348,18 +480,19 @@ public class PatcherBuildPersistenceTest {
 		return OrderByComparatorFactoryUtil.create(
 			"OSBPatcher_PatcherBuild", "mvccVersion", true, "patcherBuildId",
 			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "hotfixId", true,
-			"patcherAccountId", true, "patcherFixId", true,
-			"patcherProductVersionId", true, "patcherProjectVersionId", true,
-			"ticketEntryId", true, "accountEntryCode", true, "childBuild", true,
-			"fileName", true, "initialName", true, "key", true, "keyVersion",
+			"createDate", true, "modifiedDate", true, "patcherAccountId", true,
+			"patcherFixId", true, "patcherProductVersionId", true,
+			"patcherProjectVersionId", true, "ticketEntryId", true,
+			"accountEntryCode", true, "childBuild", true, "fileName", true,
+			"hotfixId", true, "initialName", true, "key", true, "keyVersion",
 			true, "latestBuild", true, "latestKeyBuild", true,
 			"latestLESATicketBuild", true, "latestSupportTicketBuild", true,
-			"lesaTicket", true, "lesaTicketVersion", true, "notified", true,
-			"productVersion", true, "qaStatus", true, "requestKey", true,
-			"sourceName", true, "supportTicket", true, "supportTicketVersion",
-			true, "type", true, "status", true, "statusByUserId", true,
-			"statusByUserName", true, "statusDate", true);
+			"lesaTicket", true, "lesaTicketVersion", true, "name", true,
+			"notified", true, "productVersion", true, "qaStatus", true,
+			"requestKey", true, "sourceName", true, "supportTicket", true,
+			"supportTicketVersion", true, "type", true, "status", true,
+			"statusByUserId", true, "statusByUserName", true, "statusDate",
+			true);
 	}
 
 	@Test
@@ -655,8 +788,6 @@ public class PatcherBuildPersistenceTest {
 
 		patcherBuild.setModifiedDate(RandomTestUtil.nextDate());
 
-		patcherBuild.setHotfixId(RandomTestUtil.nextLong());
-
 		patcherBuild.setPatcherAccountId(RandomTestUtil.nextLong());
 
 		patcherBuild.setPatcherFixId(RandomTestUtil.nextLong());
@@ -674,6 +805,8 @@ public class PatcherBuildPersistenceTest {
 		patcherBuild.setComments(RandomTestUtil.randomString());
 
 		patcherBuild.setFileName(RandomTestUtil.randomString());
+
+		patcherBuild.setHotfixId(RandomTestUtil.nextLong());
 
 		patcherBuild.setInitialName(RandomTestUtil.randomString());
 

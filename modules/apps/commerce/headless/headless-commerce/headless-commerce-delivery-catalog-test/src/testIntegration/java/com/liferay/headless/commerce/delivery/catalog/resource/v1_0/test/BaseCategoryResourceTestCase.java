@@ -365,9 +365,9 @@ public abstract class BaseCategoryResourceTestCase {
 		return null;
 	}
 
-	protected Category testGraphQLCategory_addCategory() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(

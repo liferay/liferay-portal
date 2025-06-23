@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dispatch Service
 Bundle-SymbolicName: com.liferay.dispatch.service
-Bundle-Version: 3.0.75
+Bundle-Version: 3.0.76
 Liferay-Require-SchemaVersion: 4.3.0
 Liferay-Service: true
 -dsannotations-options: inherit

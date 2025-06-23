@@ -300,7 +300,7 @@ public class CollaboratorResourceTest {
 
 	private ObjectEntry _addObjectEntry() throws Exception {
 		return _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"title", RandomTestUtil.randomString()

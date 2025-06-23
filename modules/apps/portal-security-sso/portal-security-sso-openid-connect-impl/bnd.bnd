@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security SSO OpenID Connect Implementation
 Bundle-SymbolicName: com.liferay.portal.security.sso.openid.connect.impl
-Bundle-Version: 7.0.44
+Bundle-Version: 7.0.45
 Import-Package:\
 	!net.shibboleth.utilities.*,\
 	\

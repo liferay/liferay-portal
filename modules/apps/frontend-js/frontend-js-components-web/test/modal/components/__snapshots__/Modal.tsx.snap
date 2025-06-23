@@ -42,8 +42,7 @@ exports[`Modal renders markup based on given configuration 1`] = `
               <span
                 class="sr-only"
               >
-                - 
-                loading
+                - loading
               </span>
             </h1>
             <button

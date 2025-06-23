@@ -19,9 +19,10 @@ const createObjectEntryElement = (action: AnalyticsTypes.ElementAction) => {
 	const objectEntryElement = document.createElement('div');
 
 	objectEntryElement.dataset.analyticsAssetAction = action;
-	objectEntryElement.dataset.analyticsAssetErc =
+	objectEntryElement.dataset.analyticsAssetExternalReferenceCode =
 		'a66d047e-3203-401a-890c-b881a9c54648';
-	objectEntryElement.dataset.analyticsObjectType = 'my-custom-object-type';
+	objectEntryElement.dataset.analyticsObjectDefinitionName =
+		'my-custom-object-definition-name';
 	objectEntryElement.dataset.analyticsAssetType =
 		AnalyticsTypes.ElementType.ObjectEntry;
 	objectEntryElement.innerText =
@@ -38,9 +39,10 @@ const createObjectEntryLinkElement = () => {
 	objectEntryElement.href = '#';
 	objectEntryElement.dataset.analyticsAssetAction =
 		AnalyticsTypes.ElementAction.Download;
-	objectEntryElement.dataset.analyticsAssetErc =
+	objectEntryElement.dataset.analyticsAssetExternalReferenceCode =
 		'a66d047e-3203-401a-890c-b881a9c54648';
-	objectEntryElement.dataset.analyticsObjectType = 'my-custom-object-type';
+	objectEntryElement.dataset.analyticsObjectDefinitionName =
+		'my-custom-object-definition-name';
 	objectEntryElement.dataset.analyticsAssetType =
 		AnalyticsTypes.ElementType.ObjectEntry;
 	objectEntryElement.innerText =
@@ -86,8 +88,10 @@ describe('ObjectEntry Plugin', () => {
 					applicationId: AnalyticsTypes.ApplicationId.ObjectEntry,
 					eventId: AnalyticsTypes.EventId.ObjectEntryDownloaded,
 					properties: expect.objectContaining({
-						erc: 'a66d047e-3203-401a-890c-b881a9c54648',
-						objectType: 'my-custom-object-type',
+						externalReferenceCode:
+							'a66d047e-3203-401a-890c-b881a9c54648',
+						objectDefinitionName:
+							'my-custom-object-definition-name',
 					}),
 				}),
 			]);
@@ -135,8 +139,10 @@ describe('ObjectEntry Plugin', () => {
 					applicationId,
 					eventId: AnalyticsTypes.EventId.ObjectEntryViewed,
 					properties: expect.objectContaining({
-						erc: 'a66d047e-3203-401a-890c-b881a9c54648',
-						objectType: 'my-custom-object-type',
+						externalReferenceCode:
+							'a66d047e-3203-401a-890c-b881a9c54648',
+						objectDefinitionName:
+							'my-custom-object-definition-name',
 					}),
 				})
 			);
@@ -203,9 +209,11 @@ describe('ObjectEntry Plugin', () => {
 
 			setDataset(objectEntryElement, {
 				analyticsAssetAction: action,
-				analyticsAssetErc: 'a66d047e-3203-401a-890c-b881a9c54648',
+				analyticsAssetExternalReferenceCode:
+					'a66d047e-3203-401a-890c-b881a9c54648',
 				analyticsAssetType: AnalyticsTypes.ElementType.ObjectEntry,
-				analyticsObjectType: 'my-custom-object-type',
+				analyticsObjectDefinitionName:
+					'my-custom-object-definition-name',
 			});
 
 			objectEntryElement.innerText = `Lorem ipsum dolor, sit amet consectetur adipisicing elit.`;
@@ -299,8 +307,10 @@ describe('ObjectEntry Plugin', () => {
 							applicationId,
 							eventId: props.eventId,
 							properties: expect.objectContaining({
-								erc: 'a66d047e-3203-401a-890c-b881a9c54648',
-								objectType: 'my-custom-object-type',
+								externalReferenceCode:
+									'a66d047e-3203-401a-890c-b881a9c54648',
+								objectDefinitionName:
+									'my-custom-object-definition-name',
 							}),
 						})
 					);

@@ -11,8 +11,10 @@ import com.liferay.portal.search.engine.adapter.index.FlushIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface FlushIndexRequestExecutor {
+public class FlushIndexRequestExecutor {
 
-	public FlushIndexResponse execute(FlushIndexRequest flushIndexRequest);
+	public FlushIndexResponse execute(FlushIndexRequest flushIndexRequest) {
+		throw new UnsupportedOperationException();
+	}
 
 }

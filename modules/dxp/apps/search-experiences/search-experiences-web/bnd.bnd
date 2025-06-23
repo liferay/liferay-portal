@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Search Experiences Web
 Bundle-SymbolicName: com.liferay.search.experiences.web
-Bundle-Version: 3.0.84
+Bundle-Version: 3.0.85
 Liferay-Enterprise-App: dxp.only=true;product.id=22b7e30f-34d4-4a63-9696-56987ad66e4e
 Web-ContextPath: /search-experiences-web
 -dsannotations-options: inherit

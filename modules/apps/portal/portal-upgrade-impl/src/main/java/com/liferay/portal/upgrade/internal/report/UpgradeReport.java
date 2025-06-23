@@ -225,6 +225,10 @@ public class UpgradeReport {
 				ReleaseManager releaseManager = _releaseManagerSnapshot.get();
 
 				if (releaseManager == null) {
+					if (upgradeRecorder.isPreupgradeVerifyFailure()) {
+						return "No changes have been made to the system";
+					}
+
 					return "Upgrade failed to complete";
 				}
 

@@ -1,8 +1,8 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.136.0",
-		"@clayui/card": "3.138.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/card": "3.139.1",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/layout": "3.128.0",
 		"@clayui/link": "3.128.0",
@@ -20,5 +20,5 @@
 		"format": "node-scripts format",
 		"test": "USE_REACT_16=true node-scripts test"
 	},
-	"version": "1.0.37"
+	"version": "1.0.38"
 }

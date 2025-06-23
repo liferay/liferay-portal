@@ -208,13 +208,13 @@ public abstract class BaseInstanceResourceTestCase {
 				testDeleteProcessInstance_getProcessId(instance), 0L));
 	}
 
-	protected Long testDeleteProcessInstance_getProcessId(Instance instance)
+	protected Instance testDeleteProcessInstance_addInstance()
 		throws Exception {
 
-		return instance.getProcessId();
+		return testPostProcessInstance_addInstance(randomInstance());
 	}
 
-	protected Instance testDeleteProcessInstance_addInstance()
+	protected Long testDeleteProcessInstance_getProcessId(Instance instance)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -233,13 +233,13 @@ public abstract class BaseInstanceResourceTestCase {
 		assertValid(getInstance);
 	}
 
+	protected Instance testGetProcessInstance_addInstance() throws Exception {
+		return testPostProcessInstance_addInstance(randomInstance());
+	}
+
 	protected Long testGetProcessInstance_getProcessId(Instance instance)
 		throws Exception {
 
-		return instance.getProcessId();
-	}
-
-	protected Instance testGetProcessInstance_addInstance() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -264,7 +264,6 @@ public abstract class BaseInstanceResourceTestCase {
 											"processId",
 											testGraphQLGetProcessInstance_getProcessId(
 												instance));
-
 										put("instanceId", instance.getId());
 									}
 								},
@@ -289,7 +288,6 @@ public abstract class BaseInstanceResourceTestCase {
 												"processId",
 												testGraphQLGetProcessInstance_getProcessId(
 													instance));
-
 											put("instanceId", instance.getId());
 										}
 									},
@@ -302,7 +300,8 @@ public abstract class BaseInstanceResourceTestCase {
 	protected Long testGraphQLGetProcessInstance_getProcessId(Instance instance)
 		throws Exception {
 
-		return instance.getProcessId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -661,17 +660,24 @@ public abstract class BaseInstanceResourceTestCase {
 		assertHttpResponseStatusCode(
 			204,
 			instanceResource.patchProcessInstanceHttpResponse(
-				instance.getProcessId(), instance.getId(), instance));
+				testPatchProcessInstance_getProcessId(instance),
+				instance.getId(), instance));
 
 		assertHttpResponseStatusCode(
 			404,
 			instanceResource.patchProcessInstanceHttpResponse(
-				instance.getProcessId(), 0L, instance));
+				testPatchProcessInstance_getProcessId(instance), 0L, instance));
+	}
+
+	protected Long testPatchProcessInstance_getProcessId(Instance instance)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Instance testPatchProcessInstance_addInstance() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostProcessInstance_addInstance(randomInstance());
 	}
 
 	@Test
@@ -682,19 +688,28 @@ public abstract class BaseInstanceResourceTestCase {
 		assertHttpResponseStatusCode(
 			204,
 			instanceResource.patchProcessInstanceCompleteHttpResponse(
-				instance.getProcessId(), instance.getId(), instance));
+				testPatchProcessInstanceComplete_getProcessId(instance),
+				instance.getId(), instance));
 
 		assertHttpResponseStatusCode(
 			404,
 			instanceResource.patchProcessInstanceCompleteHttpResponse(
-				instance.getProcessId(), 0L, instance));
+				testPatchProcessInstanceComplete_getProcessId(instance), 0L,
+				instance));
+	}
+
+	protected Long testPatchProcessInstanceComplete_getProcessId(
+			Instance instance)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Instance testPatchProcessInstanceComplete_addInstance()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostProcessInstance_addInstance(randomInstance());
 	}
 
 	@Test
@@ -713,6 +728,11 @@ public abstract class BaseInstanceResourceTestCase {
 
 		return instanceResource.postProcessInstance(
 			testGetProcessInstancesPage_getProcessId(), instance);
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected Instance testGraphQLInstance_addInstance() throws Exception {

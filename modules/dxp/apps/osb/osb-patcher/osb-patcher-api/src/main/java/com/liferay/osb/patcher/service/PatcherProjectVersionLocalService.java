@@ -52,6 +52,13 @@ public interface PatcherProjectVersionLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherProjectVersionLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the patcher project version local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PatcherProjectVersionLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherProjectVersion addPatcherProjectVersion(
+			long userId, long patcherProductVersionId,
+			long rootPatcherProjectVersionId, boolean combinedBranch,
+			String committish, String fixedIssues, boolean hide, String name,
+			String repositoryName)
+		throws PortalException;
 
 	/**
 	 * Adds the patcher project version to the database. Also notifies the appropriate model listeners.
@@ -197,6 +204,13 @@ public interface PatcherProjectVersionLocalService
 		long patcherProjectVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherProjectVersion fetchPatcherProjectVersionByCommittish(
+		String committish);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherProjectVersion fetchPatcherProjectVersionByName(String name);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -221,6 +235,13 @@ public interface PatcherProjectVersionLocalService
 			long patcherProjectVersionId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherProjectVersion getPatcherProjectVersionByName(String name)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherProjectVersion> getPatcherProjectVersions();
+
 	/**
 	 * Returns a range of all the patcher project versions.
 	 *
@@ -236,6 +257,15 @@ public interface PatcherProjectVersionLocalService
 	public List<PatcherProjectVersion> getPatcherProjectVersions(
 		int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherProjectVersion> getPatcherProjectVersions(
+		long patcherProductVersionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherProjectVersion> getPatcherProjectVersions(
+		long patcherProductVersionId, String repositoryName, int start, int end,
+		OrderByComparator<PatcherProjectVersion> orderByComparator);
+
 	/**
 	 * Returns the number of patcher project versions.
 	 *
@@ -250,6 +280,20 @@ public interface PatcherProjectVersionLocalService
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherProjectVersion> getRootPatcherProjectVersions();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherProjectVersion> getRootPatcherProjectVersions(
+		long patcherProductVersionId);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherProjectVersion updatePatcherProjectVersion(
+			long patcherProjectVersionId, long patcherProductVersionId,
+			boolean combinedBranch, String committish, String fixedIssues,
+			boolean hide, String name, String repositoryName)
 		throws PortalException;
 
 	/**

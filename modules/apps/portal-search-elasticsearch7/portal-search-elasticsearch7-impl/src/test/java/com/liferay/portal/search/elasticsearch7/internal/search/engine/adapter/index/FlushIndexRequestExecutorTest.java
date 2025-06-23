@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.index;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchFixture;
 import com.liferay.portal.search.engine.adapter.index.FlushIndexRequest;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -48,19 +47,11 @@ public class FlushIndexRequestExecutorTest {
 		flushIndexRequest.setForce(true);
 		flushIndexRequest.setWaitIfOngoing(true);
 
-		FlushIndexRequestExecutorImpl flushIndexRequestExecutorImpl =
-			new FlushIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			flushIndexRequestExecutorImpl, "_elasticsearchClientResolver",
-			_elasticsearchFixture);
-		ReflectionTestUtil.setFieldValue(
-			flushIndexRequestExecutorImpl,
-			"_indexRequestShardFailureTranslator",
-			new IndexRequestShardFailureTranslatorImpl());
+		FlushIndexRequestExecutor flushIndexRequestExecutor =
+			new FlushIndexRequestExecutor(_elasticsearchFixture);
 
 		FlushRequest flushRequest =
-			flushIndexRequestExecutorImpl.createFlushRequest(flushIndexRequest);
+			flushIndexRequestExecutor.createFlushRequest(flushIndexRequest);
 
 		Assert.assertArrayEquals(
 			new String[] {_INDEX_NAME}, flushRequest.indices());

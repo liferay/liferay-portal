@@ -13,7 +13,6 @@ import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.base.CPConfigurationEntryLocalServiceBaseImpl;
-import com.liferay.commerce.product.util.BatchEngineImportTaskThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -451,10 +450,6 @@ public class CPConfigurationEntryLocalServiceImpl
 
 	private void _reindexCPDefinition(long cpDefinitionId)
 		throws PortalException {
-
-		if (BatchEngineImportTaskThreadLocal.isEnabled()) {
-			return;
-		}
 
 		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			CPDefinition.class);

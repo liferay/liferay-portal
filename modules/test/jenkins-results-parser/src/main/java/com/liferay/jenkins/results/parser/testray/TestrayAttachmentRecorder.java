@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser.testray;
 import com.liferay.jenkins.results.parser.AxisBuild;
 import com.liferay.jenkins.results.parser.Build;
 import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.BuildDatabaseUtil;
 import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.DownstreamBuild;
 import com.liferay.jenkins.results.parser.GitRepositoryFactory;
@@ -52,6 +53,7 @@ public class TestrayAttachmentRecorder {
 			_recordJenkinsConsole();
 
 			if (_build instanceof TopLevelBuild) {
+				_recordBuildDatabase();
 				_recordJobSummary();
 				_recordJenkinsReport();
 			}
@@ -369,6 +371,32 @@ public class TestrayAttachmentRecorder {
 
 	private File _getRecordedFilesBuildDir() {
 		return new File(getRecordedFilesBaseDir(), getRelativeBuildDirPath());
+	}
+
+	private void _recordBuildDatabase() {
+		if (!(_build instanceof TopLevelBuild)) {
+			return;
+		}
+
+		TopLevelBuild topLevelBuild = (TopLevelBuild)_build;
+
+		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase(
+			topLevelBuild);
+
+		File buildDatabaseFile = buildDatabase.getBuildDatabaseFile();
+
+		if (!buildDatabaseFile.exists()) {
+			return;
+		}
+
+		try {
+			JenkinsResultsParserUtil.copy(
+				buildDatabaseFile,
+				new File(_getRecordedFilesBuildDir(), "build-database.json"));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
 	}
 
 	private void _recordDockerLogs() {

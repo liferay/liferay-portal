@@ -52,8 +52,10 @@ public class ClassLoaderAggregateProperties extends CompositeConfiguration {
 		_classLoader = classLoader;
 		_componentName = componentName;
 
+		_prefix = componentName.concat(":");
+
 		_prefixedSystemConfiguration = new SubsetConfiguration(
-			_systemConfiguration, _getPrefix(), null);
+			_systemConfiguration, _prefix, null);
 
 		setThrowExceptionOnMissing(false);
 
@@ -83,12 +85,12 @@ public class ClassLoaderAggregateProperties extends CompositeConfiguration {
 		Object value = null;
 
 		if (value == null) {
-			value = System.getProperty(_getPrefix().concat(key));
+			value = System.getProperty(_prefix.concat(key));
 		}
 
 		if (value == null) {
 			value = _globalCompositeConfiguration.getProperty(
-				_getPrefix().concat(key));
+				_prefix.concat(key));
 		}
 
 		if (value == null) {
@@ -376,10 +378,6 @@ public class ClassLoaderAggregateProperties extends CompositeConfiguration {
 		}
 	}
 
-	private String _getPrefix() {
-		return _componentName.concat(":");
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		ClassLoaderAggregateProperties.class);
 
@@ -436,6 +434,7 @@ public class ClassLoaderAggregateProperties extends CompositeConfiguration {
 	private final CompositeConfiguration _globalCompositeConfiguration =
 		new CompositeConfiguration();
 	private final List<String> _loadedSources = new ArrayList<>();
+	private final String _prefix;
 	private final Configuration _prefixedSystemConfiguration;
 	private final SystemConfiguration _systemConfiguration =
 		new SystemConfiguration();

@@ -123,7 +123,7 @@ public class CommerceReturnPermissionObjectValidationRuleEngineImplTest
 		}
 
 		_objectEntry = _objectEntryLocalService.addObjectEntry(
-			commerceReturnObjectDefinition.getUserId(), 0,
+			0, commerceReturnObjectDefinition.getUserId(),
 			commerceReturnObjectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,

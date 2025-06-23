@@ -50,14 +50,17 @@ public class PullRequestFactory {
 
 		if (build != null) {
 			buildDatabase = build.getBuildDatabase();
+		}
+		else {
+			buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+		}
 
-			if (buildDatabase.hasPullRequest(gitHubURL)) {
-				pullRequest = buildDatabase.getPullRequest(gitHubURL);
+		if (buildDatabase.hasPullRequest(gitHubURL)) {
+			pullRequest = buildDatabase.getPullRequest(gitHubURL);
 
-				_pullRequests.put(gitHubURL, pullRequest);
+			_pullRequests.put(gitHubURL, pullRequest);
 
-				return pullRequest;
-			}
+			return pullRequest;
 		}
 
 		pullRequest = new PullRequest(gitHubURL);

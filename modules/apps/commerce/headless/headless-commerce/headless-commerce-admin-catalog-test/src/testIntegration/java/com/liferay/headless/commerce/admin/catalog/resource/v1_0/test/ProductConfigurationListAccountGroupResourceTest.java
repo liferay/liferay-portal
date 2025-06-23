@@ -195,6 +195,25 @@ public class ProductConfigurationListAccountGroupResourceTest
 
 	@Override
 	protected ProductConfigurationListAccountGroup
+			testBatchEngineDeleteImportTask_addProductConfigurationListAccountGroup()
+		throws Exception {
+
+		return testDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup();
+	}
+
+	@Override
+	protected ProductConfigurationListAccountGroup
+			testDeleteProductConfigurationListAccountGroup_addProductConfigurationListAccountGroup()
+		throws Exception {
+
+		return productConfigurationListAccountGroupResource.
+			postProductConfigurationListIdProductConfigurationListAccountGroup(
+				_cpConfigurationList.getCPConfigurationListId(),
+				randomProductConfigurationListAccountGroup());
+	}
+
+	@Override
+	protected ProductConfigurationListAccountGroup
 			testDeleteProductConfigurationListAccountGroupBatch_addProductConfigurationListAccountGroup()
 		throws Exception {
 

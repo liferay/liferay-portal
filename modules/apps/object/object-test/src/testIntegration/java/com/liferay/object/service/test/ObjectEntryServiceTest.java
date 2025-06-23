@@ -265,7 +265,7 @@ public class ObjectEntryServiceTest {
 
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.addObjectEntryFolder(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				null, _group.getGroupId(), TestPropsValues.getUserId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				RandomTestUtil.randomString(),
@@ -797,7 +797,7 @@ public class ObjectEntryServiceTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -1045,7 +1045,7 @@ public class ObjectEntryServiceTest {
 
 	private ObjectEntry _addObjectEntry(User user) throws Exception {
 		return _objectEntryLocalService.addObjectEntry(
-			user.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), user.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,

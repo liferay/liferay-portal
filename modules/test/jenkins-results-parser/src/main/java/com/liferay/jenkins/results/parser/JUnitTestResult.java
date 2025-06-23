@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.test.clazz.TestClass;
+
 import java.io.IOException;
 
 import java.net.MalformedURLException;
@@ -13,6 +15,8 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -230,10 +234,40 @@ public class JUnitTestResult extends BaseTestResult {
 		return sb.toString();
 	}
 
+	@Override
+	protected String getTestTaskName() {
+		TestClassResult testClassResult = getTestClassResult();
+
+		if (testClassResult == null) {
+			return null;
+		}
+
+		TestClass testClass = testClassResult.getTestClass();
+
+		if (testClass == null) {
+			return null;
+		}
+
+		Matcher matcher = _testClassFilePathPattern.matcher(
+			String.valueOf(testClass.getTestClassFile()));
+
+		if (!matcher.find()) {
+			return null;
+		}
+
+		String relativePath = matcher.group("relativePath");
+
+		return JenkinsResultsParserUtil.combine(
+			relativePath.replaceAll("\\/", ":"), ":", matcher.group("type"));
+	}
+
 	private static final int _LINES_ERROR_STACK_DISPLAY_SIZE_MAX = 1500;
 
 	private static final String _URL_BASE_LOGS_DEFAULT =
 		"https://storage.cloud.google.com/testray-results";
+
+	private static final Pattern _testClassFilePathPattern = Pattern.compile(
+		".+/modules(?<relativePath>/.+)/src/(?<type>test|testIntegration)/.*");
 
 	private final String _className;
 	private final long _duration;

@@ -5,7 +5,11 @@
 
 package com.liferay.customer;
 
+import com.google.cloud.storage.StorageException;
+
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
+import com.liferay.customer.exception.FileServerUnavailableException;
+import com.liferay.customer.exception.TicketAttachmentNotFoundException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.customer.service.GoogleCloudStorageService;
 import com.liferay.customer.service.TicketAttachmentService;
@@ -33,33 +37,53 @@ public class TicketAttachmentsDownloadRestController
 
 	@GetMapping
 	public ResponseEntity<String> get(
-			@AuthenticationPrincipal Jwt jwt,
-			@PathVariable("ticketAttachmentId") long ticketAttachmentId)
-		throws Exception {
+		@AuthenticationPrincipal Jwt jwt,
+		@PathVariable("ticketAttachmentId") long ticketAttachmentId) {
 
 		try {
 			TicketAttachment ticketAttachment =
 				_ticketAttachmentService.fetchTicketAttachment(
 					"Bearer " + jwt.getTokenValue(), ticketAttachmentId);
 
-			if (ticketAttachment == null) {
+			String downloadURL = _googleCloudStorageService.getDownloadURL(
+				ticketAttachment.getGCSBucketName(),
+				ticketAttachment.getGCSObjectName());
+
+			return new ResponseEntity<>(downloadURL, HttpStatus.OK);
+		}
+		catch (StorageException storageException) {
+			_log.error(storageException, storageException);
+
+			if (storageException.getCode() == 404) {
 				return new ResponseEntity<>(
-					"Ticket attachment " + ticketAttachmentId +
-						" does not exist",
-					HttpStatus.NOT_FOUND);
+					"FILE_NOT_FOUND_IN_STORAGE", HttpStatus.NOT_FOUND);
 			}
 
 			return new ResponseEntity<>(
-				_googleCloudStorageService.getDownloadURL(
-					ticketAttachment.getGCSBucketName(),
-					ticketAttachment.getGCSObjectName()),
-				HttpStatus.OK);
+				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (FileServerUnavailableException fileServerUnavailableException) {
+			_log.error(
+				fileServerUnavailableException, fileServerUnavailableException);
+
+			return new ResponseEntity<>(
+				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (TicketAttachmentNotFoundException
+					ticketAttachmentNotFoundException) {
+
+			_log.error(
+				ticketAttachmentNotFoundException,
+				ticketAttachmentNotFoundException);
+
+			return new ResponseEntity<>(
+				"ATTACHMENT_NOT_FOUND", HttpStatus.NOT_FOUND);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
 
-			return new ResponseEntity(
-				exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(
+				"UNEXPECTED_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

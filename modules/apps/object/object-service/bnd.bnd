@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Object Service
 Bundle-SymbolicName: com.liferay.object.service
-Bundle-Version: 1.0.217
+Bundle-Version: 1.0.218
 Liferay-Client-Extension-Batch: com/liferay/object/internal/batch
 Liferay-Require-SchemaVersion: 10.19.0
 Liferay-Service: true

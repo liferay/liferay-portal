@@ -270,6 +270,15 @@ public class DataRecordCollectionResourceTest
 
 	@Override
 	protected Long
+			testGetDataDefinitionDataRecordCollection_getDataDefinitionId(
+				DataRecordCollection dataRecordCollection)
+		throws Exception {
+
+		return dataRecordCollection.getDataDefinitionId();
+	}
+
+	@Override
+	protected Long
 			testGetDataDefinitionDataRecordCollectionsPage_getDataDefinitionId()
 		throws Exception {
 

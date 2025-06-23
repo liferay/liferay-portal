@@ -153,57 +153,61 @@ public class ElasticsearchIndexRequestExecutor implements IndexRequestExecutor {
 
 	@Activate
 	protected void activate() {
+		_analyzeIndexRequestExecutor = new AnalyzeIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_closeIndexRequestExecutor = new CloseIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_createIndexRequestExecutor = new CreateIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_deleteIndexRequestExecutor = new DeleteIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_flushIndexRequestExecutor = new FlushIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_getFieldMappingIndexRequestExecutor =
+			new GetFieldMappingIndexRequestExecutor(
+				_elasticsearchClientResolver, _jsonFactory);
+		_getIndexIndexRequestExecutor = new GetIndexIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_getMappingIndexRequestExecutor = new GetMappingIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_indicesExistsIndexRequestExecutor =
+			new IndicesExistsIndexRequestExecutor(_elasticsearchClientResolver);
+		_openIndexRequestExecutor = new OpenIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_putMappingIndexRequestExecutor = new PutMappingIndexRequestExecutor(
+			_elasticsearchClientResolver);
+		_refreshIndexRequestExecutor = new RefreshIndexRequestExecutor(
+			_elasticsearchClientResolver);
 		_statsIndexRequestExecutor = new StatsIndexRequestExecutor(
 			_elasticsearchClientResolver, _jsonFactory);
+		_updateIndexSettingsIndexRequestExecutor =
+			new UpdateIndexSettingsIndexRequestExecutor(
+				_elasticsearchClientResolver);
 	}
 
-	@Reference
 	private AnalyzeIndexRequestExecutor _analyzeIndexRequestExecutor;
-
-	@Reference
 	private CloseIndexRequestExecutor _closeIndexRequestExecutor;
-
-	@Reference
 	private CreateIndexRequestExecutor _createIndexRequestExecutor;
-
-	@Reference
 	private DeleteIndexRequestExecutor _deleteIndexRequestExecutor;
 
 	@Reference
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
 
-	@Reference
 	private FlushIndexRequestExecutor _flushIndexRequestExecutor;
-
-	@Reference
 	private GetFieldMappingIndexRequestExecutor
 		_getFieldMappingIndexRequestExecutor;
-
-	@Reference
 	private GetIndexIndexRequestExecutor _getIndexIndexRequestExecutor;
-
-	@Reference
 	private GetMappingIndexRequestExecutor _getMappingIndexRequestExecutor;
-
-	@Reference
 	private IndicesExistsIndexRequestExecutor
 		_indicesExistsIndexRequestExecutor;
 
 	@Reference
 	private JSONFactory _jsonFactory;
 
-	@Reference
 	private OpenIndexRequestExecutor _openIndexRequestExecutor;
-
-	@Reference
 	private PutMappingIndexRequestExecutor _putMappingIndexRequestExecutor;
-
-	@Reference
 	private RefreshIndexRequestExecutor _refreshIndexRequestExecutor;
-
 	private StatsIndexRequestExecutor _statsIndexRequestExecutor;
-
-	@Reference
 	private UpdateIndexSettingsIndexRequestExecutor
 		_updateIndexSettingsIndexRequestExecutor;
 

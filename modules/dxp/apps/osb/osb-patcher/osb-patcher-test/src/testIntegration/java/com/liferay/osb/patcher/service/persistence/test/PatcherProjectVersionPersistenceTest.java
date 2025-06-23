@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -208,6 +210,56 @@ public class PatcherProjectVersionPersistenceTest {
 		Assert.assertEquals(
 			existingPatcherProjectVersion.getRepositoryName(),
 			newPatcherProjectVersion.getRepositoryName());
+	}
+
+	@Test
+	public void testCountByPatcherProductVersionId() throws Exception {
+		_persistence.countByPatcherProductVersionId(RandomTestUtil.nextLong());
+
+		_persistence.countByPatcherProductVersionId(0L);
+	}
+
+	@Test
+	public void testCountByRootPatcherProjectVersionId() throws Exception {
+		_persistence.countByRootPatcherProjectVersionId(
+			RandomTestUtil.nextLong());
+
+		_persistence.countByRootPatcherProjectVersionId(0L);
+	}
+
+	@Test
+	public void testCountByCommittish() throws Exception {
+		_persistence.countByCommittish("");
+
+		_persistence.countByCommittish("null");
+
+		_persistence.countByCommittish((String)null);
+	}
+
+	@Test
+	public void testCountByName() throws Exception {
+		_persistence.countByName("");
+
+		_persistence.countByName("null");
+
+		_persistence.countByName((String)null);
+	}
+
+	@Test
+	public void testCountByP_R() throws Exception {
+		_persistence.countByP_R(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+
+		_persistence.countByP_R(0L, 0L);
+	}
+
+	@Test
+	public void testCountByP_RN() throws Exception {
+		_persistence.countByP_RN(RandomTestUtil.nextLong(), "");
+
+		_persistence.countByP_RN(0L, "null");
+
+		_persistence.countByP_RN(0L, (String)null);
 	}
 
 	@Test
@@ -480,6 +532,76 @@ public class PatcherProjectVersionPersistenceTest {
 		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
 
 		Assert.assertEquals(0, result.size());
+	}
+
+	@Test
+	public void testResetOriginalValues() throws Exception {
+		PatcherProjectVersion newPatcherProjectVersion =
+			addPatcherProjectVersion();
+
+		_persistence.clearCache();
+
+		_assertOriginalValues(
+			_persistence.findByPrimaryKey(
+				newPatcherProjectVersion.getPrimaryKey()));
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(true);
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(false);
+	}
+
+	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
+		throws Exception {
+
+		PatcherProjectVersion newPatcherProjectVersion =
+			addPatcherProjectVersion();
+
+		if (clearSession) {
+			Session session = _persistence.openSession();
+
+			session.flush();
+
+			session.clear();
+		}
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			PatcherProjectVersion.class, _dynamicQueryClassLoader);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"patcherProjectVersionId",
+				newPatcherProjectVersion.getPatcherProjectVersionId()));
+
+		List<PatcherProjectVersion> result = _persistence.findWithDynamicQuery(
+			dynamicQuery);
+
+		_assertOriginalValues(result.get(0));
+	}
+
+	private void _assertOriginalValues(
+		PatcherProjectVersion patcherProjectVersion) {
+
+		Assert.assertEquals(
+			patcherProjectVersion.getCommittish(),
+			ReflectionTestUtil.invoke(
+				patcherProjectVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "committish"));
+
+		Assert.assertEquals(
+			patcherProjectVersion.getName(),
+			ReflectionTestUtil.invoke(
+				patcherProjectVersion, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "name"));
 	}
 
 	protected PatcherProjectVersion addPatcherProjectVersion()

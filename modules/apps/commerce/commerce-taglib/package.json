@@ -9,5 +9,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "9.0.0"
+	"version": "9.0.1"
 }

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Search Experiences Service
 Bundle-SymbolicName: com.liferay.search.experiences.service
-Bundle-Version: 3.0.82
+Bundle-Version: 3.0.83
 Liferay-Enterprise-App: dxp.only=true;product.id=22b7e30f-34d4-4a63-9696-56987ad66e4e
 Liferay-Require-SchemaVersion: 3.1.4
 Liferay-Service: true

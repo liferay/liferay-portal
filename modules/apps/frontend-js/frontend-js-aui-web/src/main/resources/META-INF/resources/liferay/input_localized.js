@@ -941,6 +941,8 @@ AUI.add(
 
 					const inputLanguageValue = instance.getValue(languageId);
 
+					instance._flags = A.one('.palette-container');
+
 					instance._animate(inputPlaceholder, shouldFocus);
 					instance._clearFormValidator(inputPlaceholder);
 

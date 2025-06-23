@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
@@ -347,32 +348,31 @@ public abstract class BaseProductSpecificationResourceTestCase {
 			testDeleteProductSpecificationBatch_addProductSpecification();
 
 		testDeleteProductSpecificationBatch_deleteProductSpecification(
-			"COMPLETED", null, productSpecification1.getId());
+			202, productSpecification1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			productSpecificationResource.getProductSpecificationHttpResponse(
 				productSpecification1.getId()));
 
-		ProductSpecification productSpecification2 =
+		productSpecification1 =
 			testDeleteProductSpecificationBatch_addProductSpecification();
 
 		testDeleteProductSpecificationBatch_deleteProductSpecification(
-			"COMPLETED", productSpecification2.getExternalReferenceCode(),
-			null);
+			202, null, productSpecification1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			productSpecificationResource.getProductSpecificationHttpResponse(
-				productSpecification2.getId()));
+				productSpecification1.getId()));
 
 		productSpecification1 =
 			testDeleteProductSpecificationBatch_addProductSpecification();
-		productSpecification2 =
+		ProductSpecification productSpecification2 =
 			testDeleteProductSpecificationBatch_addProductSpecification();
 
 		testDeleteProductSpecificationBatch_deleteProductSpecification(
-			"COMPLETED", productSpecification2.getExternalReferenceCode(),
+			202, productSpecification2.getExternalReferenceCode(),
 			productSpecification1.getId());
 
 		assertHttpResponseStatusCode(
@@ -385,7 +385,7 @@ public abstract class BaseProductSpecificationResourceTestCase {
 				productSpecification2.getId()));
 
 		testDeleteProductSpecificationBatch_deleteProductSpecification(
-			"COMPLETED", productSpecification2.getExternalReferenceCode(),
+			202, productSpecification2.getExternalReferenceCode(),
 			productSpecification1.getId());
 
 		assertHttpResponseStatusCode(
@@ -403,8 +403,7 @@ public abstract class BaseProductSpecificationResourceTestCase {
 
 	protected void
 			testDeleteProductSpecificationBatch_deleteProductSpecification(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -418,10 +417,10 @@ public abstract class BaseProductSpecificationResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1457,6 +1456,100 @@ public abstract class BaseProductSpecificationResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ProductSpecification productSpecification1 =
+			testBatchEngineDeleteImportTask_addProductSpecification();
+
+		testBatchEngineDeleteImportTask_deleteProductSpecification(
+			200, productSpecification1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			productSpecificationResource.getProductSpecificationHttpResponse(
+				productSpecification1.getId()));
+
+		productSpecification1 =
+			testBatchEngineDeleteImportTask_addProductSpecification();
+
+		testBatchEngineDeleteImportTask_deleteProductSpecification(
+			200, null, productSpecification1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productSpecificationResource.getProductSpecificationHttpResponse(
+				productSpecification1.getId()));
+
+		productSpecification1 =
+			testBatchEngineDeleteImportTask_addProductSpecification();
+		ProductSpecification productSpecification2 =
+			testBatchEngineDeleteImportTask_addProductSpecification();
+
+		testBatchEngineDeleteImportTask_deleteProductSpecification(
+			200, productSpecification2.getExternalReferenceCode(),
+			productSpecification1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productSpecificationResource.getProductSpecificationHttpResponse(
+				productSpecification1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			productSpecificationResource.getProductSpecificationHttpResponse(
+				productSpecification2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteProductSpecification(
+			200, productSpecification2.getExternalReferenceCode(),
+			productSpecification1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productSpecificationResource.getProductSpecificationHttpResponse(
+				productSpecification2.getId()));
+	}
+
+	protected ProductSpecification
+			testBatchEngineDeleteImportTask_addProductSpecification()
+		throws Exception {
+
+		return testDeleteProductSpecification_addProductSpecification();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteProductSpecification(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSpecification",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected ProductSpecification

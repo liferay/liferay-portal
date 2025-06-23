@@ -195,17 +195,10 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 		DSEnvelope postDSEnvelope = testGetSiteDSEnvelope_addDSEnvelope();
 
 		DSEnvelope getDSEnvelope = dsEnvelopeResource.getSiteDSEnvelope(
-			testGetSiteDSEnvelope_getSiteId(postDSEnvelope),
-			postDSEnvelope.getId());
+			postDSEnvelope.getSiteId(), postDSEnvelope.getId());
 
 		assertEquals(postDSEnvelope, getDSEnvelope);
 		assertValid(getDSEnvelope);
-	}
-
-	protected Long testGetSiteDSEnvelope_getSiteId(DSEnvelope dsEnvelope)
-		throws Exception {
-
-		return dsEnvelope.getSiteId();
 	}
 
 	protected DSEnvelope testGetSiteDSEnvelope_addDSEnvelope()
@@ -233,10 +226,8 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteDSEnvelope_getSiteId(
-													dsEnvelope) + "\"");
-
+											"\"" + dsEnvelope.getSiteId() +
+												"\"");
 										put(
 											"dsEnvelopeId",
 											"\"" + dsEnvelope.getId() + "\"");
@@ -261,10 +252,8 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 										{
 											put(
 												"siteKey",
-												"\"" +
-													testGraphQLGetSiteDSEnvelope_getSiteId(
-														dsEnvelope) + "\"");
-
+												"\"" + dsEnvelope.getSiteId() +
+													"\"");
 											put(
 												"dsEnvelopeId",
 												"\"" + dsEnvelope.getId() +
@@ -274,12 +263,6 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/digitalSignature_v1_0",
 						"Object/dSEnvelope"))));
-	}
-
-	protected Long testGraphQLGetSiteDSEnvelope_getSiteId(DSEnvelope dsEnvelope)
-		throws Exception {
-
-		return dsEnvelope.getSiteId();
 	}
 
 	@Test
@@ -529,6 +512,11 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 			randomDSEnvelope);
 
 		Assert.assertTrue(equals(randomDSEnvelope, dsEnvelope));
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void appendGraphQLFieldValue(StringBuilder sb, Object value)

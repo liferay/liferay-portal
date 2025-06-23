@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.index.GetMappingIndexResponse;
 /**
  * @author Bryan Engler
  */
-public interface GetMappingIndexRequestExecutor {
+public class GetMappingIndexRequestExecutor {
 
 	public GetMappingIndexResponse execute(
-		GetMappingIndexRequest getMappingIndexRequest);
+		GetMappingIndexRequest getMappingIndexRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

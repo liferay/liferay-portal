@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Channel;
 import com.liferay.headless.commerce.admin.channel.client.http.HttpInvoker;
@@ -327,24 +328,23 @@ public abstract class BaseChannelResourceTestCase {
 		Channel channel1 = testDeleteChannelBatch_addChannel();
 
 		testDeleteChannelBatch_deleteChannel(
-			"COMPLETED", null, channel1.getId());
+			202, channel1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404, channelResource.getChannelHttpResponse(channel1.getId()));
 
+		channel1 = testDeleteChannelBatch_addChannel();
+
+		testDeleteChannelBatch_deleteChannel(202, null, channel1.getId());
+
+		assertHttpResponseStatusCode(
+			404, channelResource.getChannelHttpResponse(channel1.getId()));
+
+		channel1 = testDeleteChannelBatch_addChannel();
 		Channel channel2 = testDeleteChannelBatch_addChannel();
 
 		testDeleteChannelBatch_deleteChannel(
-			"COMPLETED", channel2.getExternalReferenceCode(), null);
-
-		assertHttpResponseStatusCode(
-			404, channelResource.getChannelHttpResponse(channel2.getId()));
-
-		channel1 = testDeleteChannelBatch_addChannel();
-		channel2 = testDeleteChannelBatch_addChannel();
-
-		testDeleteChannelBatch_deleteChannel(
-			"COMPLETED", channel2.getExternalReferenceCode(), channel1.getId());
+			202, channel2.getExternalReferenceCode(), channel1.getId());
 
 		assertHttpResponseStatusCode(
 			404, channelResource.getChannelHttpResponse(channel1.getId()));
@@ -352,7 +352,7 @@ public abstract class BaseChannelResourceTestCase {
 			200, channelResource.getChannelHttpResponse(channel2.getId()));
 
 		testDeleteChannelBatch_deleteChannel(
-			"COMPLETED", channel2.getExternalReferenceCode(), channel1.getId());
+			202, channel2.getExternalReferenceCode(), channel1.getId());
 
 		assertHttpResponseStatusCode(
 			404, channelResource.getChannelHttpResponse(channel2.getId()));
@@ -363,7 +363,7 @@ public abstract class BaseChannelResourceTestCase {
 	}
 
 	protected void testDeleteChannelBatch_deleteChannel(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -376,10 +376,10 @@ public abstract class BaseChannelResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -420,15 +420,15 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
-	protected Long
-			testGetAccountAddressChannelChannel_getAccountAddressChannelId()
+	protected Channel testGetAccountAddressChannelChannel_addChannel()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Channel testGetAccountAddressChannelChannel_addChannel()
+	protected Long
+			testGetAccountAddressChannelChannel_getAccountAddressChannelId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1482,17 +1482,94 @@ public abstract class BaseChannelResourceTestCase {
 			putChannel.getExternalReferenceCode());
 	}
 
+	protected Channel testPutChannelByExternalReferenceCode_addChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Channel testPutChannelByExternalReferenceCode_createChannel()
 		throws Exception {
 
 		return randomChannel();
 	}
 
-	protected Channel testPutChannelByExternalReferenceCode_addChannel()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Channel channel1 = testBatchEngineDeleteImportTask_addChannel();
+
+		testBatchEngineDeleteImportTask_deleteChannel(
+			200, channel1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404, channelResource.getChannelHttpResponse(channel1.getId()));
+
+		channel1 = testBatchEngineDeleteImportTask_addChannel();
+
+		testBatchEngineDeleteImportTask_deleteChannel(
+			200, null, channel1.getId());
+
+		assertHttpResponseStatusCode(
+			404, channelResource.getChannelHttpResponse(channel1.getId()));
+
+		channel1 = testBatchEngineDeleteImportTask_addChannel();
+		Channel channel2 = testBatchEngineDeleteImportTask_addChannel();
+
+		testBatchEngineDeleteImportTask_deleteChannel(
+			200, channel2.getExternalReferenceCode(), channel1.getId());
+
+		assertHttpResponseStatusCode(
+			404, channelResource.getChannelHttpResponse(channel1.getId()));
+		assertHttpResponseStatusCode(
+			200, channelResource.getChannelHttpResponse(channel2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteChannel(
+			200, channel2.getExternalReferenceCode(), channel1.getId());
+
+		assertHttpResponseStatusCode(
+			404, channelResource.getChannelHttpResponse(channel2.getId()));
+	}
+
+	protected Channel testBatchEngineDeleteImportTask_addChannel()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteChannel_addChannel();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteChannel(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

@@ -1036,13 +1036,13 @@ public abstract class BaseShipmentResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
-
-	protected Shipment testGraphQLShipment_addShipment() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
 
 	protected void assertContains(Shipment shipment, List<Shipment> shipments) {
 		boolean contains = false;

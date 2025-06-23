@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Segments Service
 Bundle-SymbolicName: com.liferay.segments.service
-Bundle-Version: 3.0.117
+Bundle-Version: 3.0.118
 Liferay-Require-SchemaVersion: 3.2.0
 Liferay-Service: true
 -dsannotations-options: inherit

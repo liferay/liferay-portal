@@ -26,11 +26,6 @@ jest.mock(
 	})
 );
 
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	fetch: () => Promise.resolve({json: () => ({totalNumberOfItems: 4})}),
-}));
-
 const CONFIGURATION_DEFINITION = {
 	fieldSets: [
 		{
@@ -78,6 +73,12 @@ const renderComponent = () => {
 };
 
 describe('CollectionConfiguration', () => {
+	const mock = jest.requireMock('frontend-js-web');
+
+	mock.fetch.mockImplementation(() =>
+		Promise.resolve({json: () => ({totalNumberOfItems: 4})})
+	);
+
 	it('renders', () => {
 		renderComponent();
 
@@ -103,7 +104,7 @@ describe('CollectionConfiguration', () => {
 		});
 
 		expect(
-			screen.getByText('there-are-x-results-for-x')
+			screen.getByText('there-are-4-results-for-This is a test')
 		).toBeInTheDocument();
 	});
 
@@ -121,7 +122,7 @@ describe('CollectionConfiguration', () => {
 		await userEvent.click(screen.getByText('clear'));
 
 		expect(
-			screen.queryByText('there-are-x-results-for-x')
+			screen.queryByText('there-are-4-results-for-This is a test')
 		).not.toBeInTheDocument();
 	});
 });

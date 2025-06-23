@@ -7,13 +7,43 @@ package com.liferay.portal.search.solr8.internal.search.engine.adapter.index;
 
 import com.liferay.portal.search.engine.adapter.index.RefreshIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.RefreshIndexResponse;
+import com.liferay.portal.search.solr8.internal.connection.SolrClientManager;
+
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.common.SolrException;
 
 /**
  * @author Bryan Engler
  */
-public interface RefreshIndexRequestExecutor {
+public class RefreshIndexRequestExecutor {
+
+	public RefreshIndexRequestExecutor(SolrClientManager solrClientManager) {
+		_solrClientManager = solrClientManager;
+	}
 
 	public RefreshIndexResponse execute(
-		RefreshIndexRequest refreshIndexRequest);
+		RefreshIndexRequest refreshIndexRequest) {
+
+		String[] indexNames = refreshIndexRequest.getIndexNames();
+
+		SolrClient solrClient = _solrClientManager.getSolrClient();
+
+		try {
+			solrClient.commit(indexNames[0]);
+
+			return new RefreshIndexResponse();
+		}
+		catch (Exception exception) {
+			if (exception instanceof SolrException) {
+				SolrException solrException = (SolrException)exception;
+
+				throw solrException;
+			}
+
+			throw new RuntimeException(exception);
+		}
+	}
+
+	private final SolrClientManager _solrClientManager;
 
 }

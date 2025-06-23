@@ -4560,8 +4560,9 @@ public class DataFactory {
 		_globalGroupId = _counter.get();
 
 		return newGroupModel(
-			getClassNameId(Company.class), _companyId, _globalGroupId,
-			GroupConstants.GLOBAL, false);
+			getClassNameId(Company.class), _companyId, GroupConstants.GLOBAL,
+			_globalGroupId, String.valueOf(_companyId), GroupConstants.GLOBAL,
+			false, 0, StringPool.BLANK, _sampleUserId);
 	}
 
 	public List<LayoutModel> newGroupLayoutModels(long groupId) {

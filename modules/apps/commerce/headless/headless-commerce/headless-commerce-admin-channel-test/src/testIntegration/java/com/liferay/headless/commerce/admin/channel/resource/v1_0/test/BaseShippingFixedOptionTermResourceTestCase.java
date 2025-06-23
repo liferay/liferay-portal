@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.ShippingFixedOptionTerm;
 import com.liferay.headless.commerce.admin.channel.client.http.HttpInvoker;
@@ -204,12 +205,78 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 
 	@Test
 	public void testDeleteShippingFixedOptionTerm() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ShippingFixedOptionTerm shippingFixedOptionTerm =
+			testDeleteShippingFixedOptionTerm_addShippingFixedOptionTerm();
+
+		assertHttpResponseStatusCode(
+			204,
+			shippingFixedOptionTermResource.
+				deleteShippingFixedOptionTermHttpResponse(
+					shippingFixedOptionTerm.getShippingFixedOptionTermId()));
+	}
+
+	protected ShippingFixedOptionTerm
+			testDeleteShippingFixedOptionTerm_addShippingFixedOptionTerm()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteShippingFixedOptionTerm() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		ShippingFixedOptionTerm shippingFixedOptionTerm1 =
+			testGraphQLDeleteShippingFixedOptionTerm_addShippingFixedOptionTerm();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteShippingFixedOptionTerm",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"shippingFixedOptionTermId",
+									shippingFixedOptionTerm1.
+										getShippingFixedOptionTermId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteShippingFixedOptionTerm"));
+
+		// Using the namespace headlessCommerceAdminChannel_v1_0
+
+		ShippingFixedOptionTerm shippingFixedOptionTerm2 =
+			testGraphQLDeleteShippingFixedOptionTerm_addShippingFixedOptionTerm();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminChannel_v1_0",
+						new GraphQLField(
+							"deleteShippingFixedOptionTerm",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"shippingFixedOptionTermId",
+										shippingFixedOptionTerm2.
+											getShippingFixedOptionTermId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminChannel_v1_0",
+				"Object/deleteShippingFixedOptionTerm"));
+	}
+
+	protected ShippingFixedOptionTerm
+			testGraphQLDeleteShippingFixedOptionTerm_addShippingFixedOptionTerm()
+		throws Exception {
+
+		return testGraphQLShippingFixedOptionTerm_addShippingFixedOptionTerm();
 	}
 
 	@Test
@@ -218,22 +285,19 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 			testDeleteShippingFixedOptionTermBatch_addShippingFixedOptionTerm();
 
 		testDeleteShippingFixedOptionTermBatch_deleteShippingFixedOptionTerm(
-			"COMPLETED", null,
-			shippingFixedOptionTerm1.getShippingFixedOptionTermId());
+			202, null, shippingFixedOptionTerm1.getShippingFixedOptionTermId());
 	}
 
 	protected ShippingFixedOptionTerm
 			testDeleteShippingFixedOptionTermBatch_addShippingFixedOptionTerm()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteShippingFixedOptionTerm_addShippingFixedOptionTerm();
 	}
 
 	protected void
 			testDeleteShippingFixedOptionTermBatch_deleteShippingFixedOptionTerm(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -247,10 +311,10 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 							"shippingFixedOptionTermId", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -317,6 +381,12 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 			page,
 			testGetShippingFixedOptionIdShippingFixedOptionTermsPage_getExpectedActions(
 				id));
+
+		shippingFixedOptionTermResource.deleteShippingFixedOptionTerm(
+			shippingFixedOptionTerm1.getShippingFixedOptionTermId());
+
+		shippingFixedOptionTermResource.deleteShippingFixedOptionTerm(
+			shippingFixedOptionTerm2.getShippingFixedOptionTermId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -768,8 +838,68 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ShippingFixedOptionTerm shippingFixedOptionTerm1 =
+			testBatchEngineDeleteImportTask_addShippingFixedOptionTerm();
+
+		testBatchEngineDeleteImportTask_deleteShippingFixedOptionTerm(
+			200, null, shippingFixedOptionTerm1.getShippingFixedOptionTermId());
+	}
+
+	protected ShippingFixedOptionTerm
+			testBatchEngineDeleteImportTask_addShippingFixedOptionTerm()
+		throws Exception {
+
+		return testDeleteShippingFixedOptionTerm_addShippingFixedOptionTerm();
+	}
+
+	protected void
+			testBatchEngineDeleteImportTask_deleteShippingFixedOptionTerm(
+				int expectedStatusCode, String externalReferenceCode, Long id,
+				String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.channel.dto.v1_0.ShippingFixedOptionTerm",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"shippingFixedOptionTermId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected ShippingFixedOptionTerm
+			testGraphQLShippingFixedOptionTerm_addShippingFixedOptionTerm()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		ShippingFixedOptionTerm shippingFixedOptionTerm,
@@ -861,6 +991,10 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (shippingFixedOptionTerm.getShippingFixedOptionTermId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

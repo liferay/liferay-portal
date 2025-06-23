@@ -5,6 +5,7 @@
 
 package com.liferay.headless.asset.library.internal.resource.v1_0;
 
+import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.dto.v1_0.UserGroup;
 import com.liferay.headless.asset.library.resource.v1_0.UserGroupResource;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
@@ -27,6 +28,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
@@ -40,7 +43,8 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/user-group.properties",
-	scope = ServiceScope.PROTOTYPE, service = UserGroupResource.class
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = UserGroupResource.class
 )
 public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 
@@ -128,10 +132,11 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 		return _toUserGroup(_userGroupService.getUserGroup(userGroupId));
 	}
 
+	@NestedField(parentClass = AssetLibrary.class, value = "userGroups")
 	@Override
 	public Page<UserGroup> getAssetLibraryUserGroupsPage(
-			Long assetLibraryId, String keywords, String search,
-			Pagination pagination, Sort[] sorts)
+			@NestedFieldId("siteId") Long assetLibraryId, String keywords,
+			String search, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		return _getUserGroupPage(

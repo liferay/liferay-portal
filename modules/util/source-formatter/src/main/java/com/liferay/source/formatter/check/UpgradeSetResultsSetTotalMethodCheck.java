@@ -8,6 +8,7 @@ package com.liferay.source.formatter.check;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.source.formatter.check.util.JavaSourceUtil;
+import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.parser.JavaClass;
 import com.liferay.source.formatter.parser.JavaClassParser;
 import com.liferay.source.formatter.parser.JavaMethod;
@@ -41,6 +42,44 @@ public class UpgradeSetResultsSetTotalMethodCheck extends BaseUpgradeCheck {
 	@Override
 	protected String[] getValidExtensions() {
 		return new String[] {"java", "jsp", "jspf"};
+	}
+
+	private String _addTryCatch(
+		String methodCall, String newContent, String stringBuilder) {
+
+		newContent = StringUtil.replace(newContent, methodCall, stringBuilder);
+
+		Matcher matcher = _setResultsAndTotalPattern.matcher(newContent);
+
+		String newMethodCall = null;
+		StringBuilder sb = new StringBuilder();
+
+		if (matcher.find()) {
+			newMethodCall = matcher.group();
+
+			String tabs = SourceUtil.getIndent(newMethodCall);
+
+			String newLineAndTab = StringPool.NEW_LINE + StringPool.TAB;
+
+			sb.append(tabs);
+			sb.append("try {");
+			sb.append(newLineAndTab);
+			sb.append(newMethodCall);
+			sb.append(StringPool.NEW_LINE);
+			sb.append(tabs);
+			sb.append("}");
+			sb.append(StringPool.NEW_LINE);
+			sb.append(tabs);
+			sb.append("catch (Exception exception) {");
+			sb.append(newLineAndTab);
+			sb.append(tabs);
+			sb.append("throw new PortalException(exception);");
+			sb.append(StringPool.NEW_LINE);
+			sb.append(tabs);
+			sb.append(StringPool.CLOSE_CURLY_BRACE);
+		}
+
+		return StringUtil.replace(newContent, newMethodCall, sb.toString());
 	}
 
 	private String _formatContent(
@@ -169,9 +208,15 @@ public class UpgradeSetResultsSetTotalMethodCheck extends BaseUpgradeCheck {
 		sb.append(StringUtil.merge(parameters, StringPool.COMMA_AND_SPACE));
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
+		if ((setResultsMethodCall != null) && (setTotalMethodCall != null)) {
+			return _addTryCatch(lastMethodCall, newContent, sb.toString());
+		}
+
 		return StringUtil.replace(newContent, lastMethodCall, sb.toString());
 	}
 
+	private static final Pattern _setResultsAndTotalPattern = Pattern.compile(
+		"\\t*\\w+\\.setResultsAndTotal\\(\\(\\)[^)]+\\);");
 	private static final Pattern _setResultsPattern = Pattern.compile(
 		"\\t*\\w+\\.setResults\\(");
 	private static final Pattern _setTotalPattern = Pattern.compile(

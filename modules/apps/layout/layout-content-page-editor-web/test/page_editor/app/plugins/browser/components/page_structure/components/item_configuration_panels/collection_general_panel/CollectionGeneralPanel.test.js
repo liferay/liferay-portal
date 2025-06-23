@@ -67,11 +67,6 @@ jest.mock(
 	() => jest.fn()
 );
 
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	sub: jest.fn((langKey, arg) => langKey.replace('x-', `${arg}-`)),
-}));
-
 const DEFAULT_ITEM_CONFIG = {
 	collection: {
 		classNameId: '22101',

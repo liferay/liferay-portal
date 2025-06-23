@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.plugin.Screenshot;
 import com.liferay.portal.kernel.plugin.Version;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HtmlParserUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
@@ -533,9 +532,9 @@ public class PluginPackageUtil {
 			types.add(Plugin.TYPE_LAYOUT_TEMPLATE);
 		}
 
-		pluginPackage.setName(_readText(name));
+		pluginPackage.setName(GetterUtil.getString(name));
 		pluginPackage.setRecommendedDeploymentContext(
-			_readText(
+			GetterUtil.getString(
 				pluginPackageElement.elementText(
 					"recommended-deployment-context")));
 		pluginPackage.setRequiredDeploymentContexts(
@@ -545,7 +544,7 @@ public class PluginPackageUtil {
 		pluginPackage.setModifiedDate(
 			_readDate(pluginPackageElement.elementText("modified-date")));
 		pluginPackage.setAuthor(
-			_readText(pluginPackageElement.elementText("author")));
+			GetterUtil.getString(pluginPackageElement.elementText("author")));
 		pluginPackage.setTypes(types);
 		pluginPackage.setLicenses(
 			_readLicenseList(
@@ -554,7 +553,8 @@ public class PluginPackageUtil {
 		pluginPackage.setTags(
 			_readList(pluginPackageElement.element("tags"), "tag"));
 		pluginPackage.setShortDescription(
-			_readText(pluginPackageElement.elementText("short-description")));
+			GetterUtil.getString(
+				pluginPackageElement.elementText("short-description")));
 		pluginPackage.setLongDescription(
 			_readHtml(pluginPackageElement.elementText("long-description")));
 		pluginPackage.setChangeLog(
@@ -562,7 +562,7 @@ public class PluginPackageUtil {
 		pluginPackage.setScreenshots(
 			_readScreenshots(pluginPackageElement.element("screenshots")));
 		pluginPackage.setPageURL(
-			_readText(pluginPackageElement.elementText("page-url")));
+			GetterUtil.getString(pluginPackageElement.elementText("page-url")));
 		pluginPackage.setDeploymentSettings(
 			_readProperties(
 				pluginPackageElement.element("deployment-settings"),
@@ -608,10 +608,6 @@ public class PluginPackageUtil {
 		}
 
 		return screenshots;
-	}
-
-	private static String _readText(String text) {
-		return HtmlParserUtil.extractText(GetterUtil.getString(text));
 	}
 
 	private static final String _TYPE_CLIENT_EXTENSION = "client-extension";

@@ -260,6 +260,45 @@ public class StringBundler implements Serializable {
 		_array = newArray;
 	}
 
+	private static String _concat(String[] array, int arrayIndex) {
+		if (_coderMethodHandle == null) {
+			return null;
+		}
+
+		try {
+			byte coder = (byte)_coderMethodHandle.invokeExact(array[0]);
+
+			int length = 0;
+
+			for (int i = 0; i < arrayIndex; i++) {
+				if (coder != (byte)_coderMethodHandle.invokeExact(array[i])) {
+					return null;
+				}
+
+				length += array[i].length();
+			}
+
+			length <<= coder;
+
+			byte[] bytes = new byte[length];
+
+			int index = 0;
+
+			for (int i = 0; i < arrayIndex; i++) {
+				byte[] value = (byte[])_valueMethodHandle.invokeExact(array[i]);
+
+				System.arraycopy(value, 0, bytes, index, value.length);
+
+				index += value.length;
+			}
+
+			return (String)_constructorMethodHandle.invokeExact(bytes, coder);
+		}
+		catch (Throwable throwable) {
+			return null;
+		}
+	}
+
 	private static String _toString(String[] array, int arrayIndex) {
 		if (arrayIndex == 0) {
 			return StringPool.BLANK;
@@ -273,7 +312,7 @@ public class StringBundler implements Serializable {
 			return array[0].concat(array[1]);
 		}
 
-		String result = _toStringStringConcatenator(array, arrayIndex);
+		String result = _concat(array, arrayIndex);
 
 		if (result == null) {
 			return _toStringSB(array, arrayIndex);
@@ -298,184 +337,42 @@ public class StringBundler implements Serializable {
 		return sb.toString();
 	}
 
-	private static String _toStringStringConcatenator(
-		String[] array, int arrayIndex) {
-
-		if (StringConcatenator._stringConcatenator == null) {
-			return null;
-		}
-
-		return StringConcatenator._stringConcatenator.concat(array, arrayIndex);
-	}
-
 	private static final int _DEFAULT_ARRAY_CAPACITY = 10;
 
+	private static final MethodHandle _coderMethodHandle;
+	private static final MethodHandle _constructorMethodHandle;
+	private static final MethodHandle _valueMethodHandle;
 	private static final long serialVersionUID = 1L;
+
+	static {
+		MethodHandle coderMethodHandle = null;
+		MethodHandle constructorMethodHandle = null;
+		MethodHandle valueMethodHandle = null;
+
+		try {
+			Field field = MethodHandles.Lookup.class.getDeclaredField(
+				"IMPL_LOOKUP");
+
+			field.setAccessible(true);
+
+			MethodHandles.Lookup lookup = (MethodHandles.Lookup)field.get(null);
+
+			coderMethodHandle = lookup.findGetter(
+				String.class, "coder", byte.class);
+			constructorMethodHandle = lookup.unreflectConstructor(
+				String.class.getDeclaredConstructor(byte[].class, byte.class));
+			valueMethodHandle = lookup.findGetter(
+				String.class, "value", byte[].class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+		}
+
+		_coderMethodHandle = coderMethodHandle;
+		_constructorMethodHandle = constructorMethodHandle;
+		_valueMethodHandle = valueMethodHandle;
+	}
 
 	private String[] _array;
 	private int _arrayIndex;
-
-	private static class ByteArrayStringConcatenator
-		extends StringConcatenator {
-
-		@Override
-		public String concat(String[] array, int arrayIndex) {
-			try {
-				byte coder = (byte)_coderMethodHandle.invokeExact(array[0]);
-
-				int length = 0;
-
-				for (int i = 0; i < arrayIndex; i++) {
-					if (coder != (byte)_coderMethodHandle.invokeExact(
-							array[i])) {
-
-						return null;
-					}
-
-					length += array[i].length();
-				}
-
-				length <<= coder;
-
-				byte[] bytes = new byte[length];
-
-				int index = 0;
-
-				for (int i = 0; i < arrayIndex; i++) {
-					byte[] value = (byte[])_valueMethodHandle.invokeExact(
-						array[i]);
-
-					System.arraycopy(value, 0, bytes, index, value.length);
-
-					index += value.length;
-				}
-
-				return (String)_constructorMethodHandle.invokeExact(
-					bytes, coder);
-			}
-			catch (Throwable throwable) {
-				return null;
-			}
-		}
-
-		private static final MethodHandle _coderMethodHandle;
-		private static final MethodHandle _constructorMethodHandle;
-		private static final MethodHandle _valueMethodHandle;
-
-		static {
-			try {
-				Field field = MethodHandles.Lookup.class.getDeclaredField(
-					"IMPL_LOOKUP");
-
-				field.setAccessible(true);
-
-				MethodHandles.Lookup lookup = (MethodHandles.Lookup)field.get(
-					null);
-
-				_coderMethodHandle = lookup.findGetter(
-					String.class, "coder", byte.class);
-				_constructorMethodHandle = lookup.unreflectConstructor(
-					String.class.getDeclaredConstructor(
-						byte[].class, byte.class));
-				_valueMethodHandle = lookup.findGetter(
-					String.class, "value", byte[].class);
-			}
-			catch (ReflectiveOperationException reflectiveOperationException) {
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-	}
-
-	private static class CharArrayStringConcatenator
-		extends StringConcatenator {
-
-		@Override
-		public String concat(String[] array, int arrayIndex) {
-			try {
-				int length = 0;
-
-				for (int i = 0; i < arrayIndex; i++) {
-					length += array[i].length();
-				}
-
-				char[] chars = new char[length];
-
-				int index = 0;
-
-				for (int i = 0; i < arrayIndex; i++) {
-					char[] value = (char[])_valueMethodHandle.invokeExact(
-						array[i]);
-
-					System.arraycopy(value, 0, chars, index, value.length);
-
-					index += value.length;
-				}
-
-				return (String)_constructorMethodHandle.invokeExact(
-					chars, true);
-			}
-			catch (Throwable throwable) {
-				return null;
-			}
-		}
-
-		private static final MethodHandle _constructorMethodHandle;
-		private static final MethodHandle _valueMethodHandle;
-
-		static {
-			try {
-				Field field = MethodHandles.Lookup.class.getDeclaredField(
-					"IMPL_LOOKUP");
-
-				field.setAccessible(true);
-
-				MethodHandles.Lookup lookup = (MethodHandles.Lookup)field.get(
-					null);
-
-				_constructorMethodHandle = lookup.unreflectConstructor(
-					String.class.getDeclaredConstructor(
-						char[].class, boolean.class));
-
-				_valueMethodHandle = lookup.findGetter(
-					String.class, "value", char[].class);
-			}
-			catch (ReflectiveOperationException reflectiveOperationException) {
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-	}
-
-	private abstract static class StringConcatenator {
-
-		public abstract String concat(String[] array, int arrayIndex);
-
-		private static final StringConcatenator _stringConcatenator;
-
-		static {
-			StringConcatenator stringConcatenator = null;
-
-			try {
-				Field field = String.class.getDeclaredField("value");
-
-				Class<?> valueType = field.getType();
-
-				if (valueType == char[].class) {
-					stringConcatenator = new CharArrayStringConcatenator();
-				}
-				else if (valueType == byte[].class) {
-					stringConcatenator = new ByteArrayStringConcatenator();
-				}
-			}
-			catch (ReflectiveOperationException reflectiveOperationException) {
-			}
-
-			_stringConcatenator = stringConcatenator;
-		}
-
-	}
 
 }

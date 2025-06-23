@@ -89,7 +89,7 @@ public class EditObjectEntryRelatedModelMVCActionCommandTest {
 			ObjectDefinitionTestUtil.publishObjectDefinition();
 
 		ObjectEntry objectEntry1 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition1.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(),
@@ -111,7 +111,7 @@ public class EditObjectEntryRelatedModelMVCActionCommandTest {
 			String.valueOf(objectRelationship.getObjectRelationshipId()));
 
 		ObjectEntry objectEntry2 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition2.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(),

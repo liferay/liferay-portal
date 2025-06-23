@@ -220,6 +220,11 @@ public abstract class BaseSearchIndexResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		SearchIndex searchIndex, List<SearchIndex> searchIndexes) {
 

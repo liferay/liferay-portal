@@ -20,77 +20,24 @@ public class ClusterRequestExecutorFixture {
 	}
 
 	public void setUp() {
-		ClusterHealthStatusTranslator clusterHealthStatusTranslator =
-			new ClusterHealthStatusTranslatorImpl();
-
 		_clusterRequestExecutor = new ElasticsearchClusterRequestExecutor();
 
 		ReflectionTestUtil.setFieldValue(
 			_clusterRequestExecutor, "_healthClusterRequestExecutor",
-			_createHealthClusterRequestExecutor(
-				clusterHealthStatusTranslator, _elasticsearchClientResolver));
+			new HealthClusterRequestExecutor(_elasticsearchClientResolver));
 		ReflectionTestUtil.setFieldValue(
 			_clusterRequestExecutor, "_stateClusterRequestExecutor",
-			_createStateClusterRequestExecutor(_elasticsearchClientResolver));
+			new StateClusterRequestExecutor(_elasticsearchClientResolver));
 		ReflectionTestUtil.setFieldValue(
 			_clusterRequestExecutor, "_statsClusterRequestExecutor",
-			_createStatsClusterRequestExecutor(
-				clusterHealthStatusTranslator, _elasticsearchClientResolver));
+			new StatsClusterRequestExecutor(
+				_elasticsearchClientResolver, new JSONFactoryImpl()));
 	}
 
 	protected void setElasticsearchClientResolver(
 		ElasticsearchClientResolver elasticsearchClientResolver) {
 
 		_elasticsearchClientResolver = elasticsearchClientResolver;
-	}
-
-	private HealthClusterRequestExecutor _createHealthClusterRequestExecutor(
-		ClusterHealthStatusTranslator clusterHealthStatusTranslator,
-		ElasticsearchClientResolver elasticsearchClientResolver) {
-
-		HealthClusterRequestExecutor healthClusterRequestExecutor =
-			new HealthClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			healthClusterRequestExecutor, "_clusterHealthStatusTranslator",
-			clusterHealthStatusTranslator);
-		ReflectionTestUtil.setFieldValue(
-			healthClusterRequestExecutor, "_elasticsearchClientResolver",
-			elasticsearchClientResolver);
-
-		return healthClusterRequestExecutor;
-	}
-
-	private StateClusterRequestExecutor _createStateClusterRequestExecutor(
-		ElasticsearchClientResolver elasticsearchClientResolver) {
-
-		StateClusterRequestExecutor stateClusterRequestExecutor =
-			new StateClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			stateClusterRequestExecutor, "_elasticsearchClientResolver",
-			elasticsearchClientResolver);
-
-		return stateClusterRequestExecutor;
-	}
-
-	private StatsClusterRequestExecutor _createStatsClusterRequestExecutor(
-		ClusterHealthStatusTranslator clusterHealthStatusTranslator,
-		ElasticsearchClientResolver elasticsearchClientResolver) {
-
-		StatsClusterRequestExecutor statsClusterRequestExecutor =
-			new StatsClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutor, "_clusterHealthStatusTranslator",
-			clusterHealthStatusTranslator);
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutor, "_elasticsearchClientResolver",
-			elasticsearchClientResolver);
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutor, "_jsonFactory", new JSONFactoryImpl());
-
-		return statsClusterRequestExecutor;
 	}
 
 	private ClusterRequestExecutor _clusterRequestExecutor;

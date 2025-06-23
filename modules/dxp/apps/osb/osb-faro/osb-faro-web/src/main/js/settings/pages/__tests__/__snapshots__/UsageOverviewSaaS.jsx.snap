@@ -177,7 +177,7 @@ exports[`UsageOverviewSaaS should render 1`] = `
                     class="card-title"
                   >
                     <h3>
-                      Anonymous Page Views (AVP)
+                      Anonymous Page Views (APV)
                     </h3>
                   </div>
                 </div>

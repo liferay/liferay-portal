@@ -1,5 +1,23 @@
 components:
     schemas:
+        InventoryAnalysis:
+            properties:
+                inventoryAnalysisItems:
+                    items:
+                        $ref: "#/components/schemas/InventoryAnalysisItem"
+                    type: array
+                totalCount:
+                    format: int64
+                    type: integer
+        InventoryAnalysisItem:
+            properties:
+                count:
+                    format: int64
+                    type: integer
+                key:
+                    type: string
+                title:
+                    type: string
         Overview:
             properties:
                 categoriesCount:
@@ -55,6 +73,7 @@ paths:
                 -   in: query
                     name: spaceId
                     schema:
+                        format: int64
                         type: integer
             responses:
                 200:
@@ -89,6 +108,7 @@ paths:
                 -   in: query
                     name: spaceId
                     schema:
+                        format: int64
                         type: integer
             responses:
                 200:
@@ -100,3 +120,70 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Overview"
             tags: ["Overview"]
+    "/inventory-analysis":
+        get:
+            operationId: getInventoryAnalysis
+            parameters:
+                -   in: query
+                    name: categoryId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: groupBy
+                    schema:
+                        type: string
+                -   in: query
+                    name: languageId
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    name: spaceId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: structureId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: tagId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: vocabularyId
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/InventoryAnalysis"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/InventoryAnalysis"
+            tags: ["InventoryAnalysis"]

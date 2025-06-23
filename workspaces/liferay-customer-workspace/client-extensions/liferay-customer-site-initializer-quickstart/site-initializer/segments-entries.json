@@ -10,13 +10,13 @@
 				},
 				"user": {
 					"conjunction": "and",
-					"filterString": "(roleIds eq 'Partner' or roleIds eq 'Customer' or roleIds eq 'Liferay Staff')",
+					"filterString": "(roleIds eq '[$ROLE_ID:Customer$]' or roleIds eq '[$ROLE_ID:Partner$]' or roleIds eq '[$ROLE_ID:Liferay Staff$]')",
 					"typeValue": "model"
 				}
 			},
 			"filterStrings": {
 				"context": "(signedIn eq true)",
-				"model": "(roleIds eq 'Partner' or roleIds eq 'Customer' or roleIds eq 'Liferay Staff')"
+				"model": "(roleIds eq '[$ROLE_ID:Customer$]' or roleIds eq '[$ROLE_ID:Partner$]' or roleIds eq '[$ROLE_ID:Liferay Staff$]')"
 			}
 		},
 		"name_i18n": {
@@ -36,13 +36,13 @@
 				},
 				"user": {
 					"conjunction": "and",
-					"filterString": "(roleIds eq 'User')",
+					"filterString": "(roleIds eq '[$ROLE_ID:User$]')",
 					"typeValue": "model"
 				}
 			},
 			"filterStrings": {
 				"context": "(signedIn eq true)",
-				"model": "(roleIds eq 'User')"
+				"model": "(roleIds eq '[$ROLE_ID:User$]')"
 			}
 		},
 		"name_i18n": {

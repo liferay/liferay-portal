@@ -189,30 +189,6 @@ export function RightSidebarObjectDefinitionDetails({
 		}
 	};
 
-	const handleScheduleToggleChange = async (toggled: boolean) => {
-		if (toggled) {
-			setValues({
-				...values,
-				enableObjectEntrySchedule: true,
-			});
-		}
-		else {
-			Liferay.fire('openModalDisableScheduleConfiguration', {
-				handleDisable: async () => {
-					setValues({
-						...values,
-						enableObjectEntrySchedule: false,
-					});
-
-					await onSubmit({
-						...values,
-						enableObjectEntrySchedule: false,
-					});
-				},
-			});
-		}
-	};
-
 	const objectDefinitionNodeDetailsTitle = sub(
 		Liferay.Language.get('x-details'),
 		stringUtils.getLocalizableLabel({
@@ -325,7 +301,6 @@ export function RightSidebarObjectDefinitionDetails({
 							?.linkedObjectDefinition ?? false
 					}
 					isRootDescendantNode={isRootDescendantNode}
-					onScheduleToggleChange={handleScheduleToggleChange}
 					onSubmit={onSubmit}
 					setValues={setValues}
 					values={values as ObjectDefinition}
@@ -342,6 +317,13 @@ export function RightSidebarObjectDefinitionDetails({
 				<div className="lfr-objects__model-builder-right-sidebar-object-definition-node-content">
 					<SeoContainer
 						errors={backEndErrors}
+						hasUpdateObjectDefinitionPermission={
+							!!values.actions?.update
+						}
+						isLinkedObjectDefinition={
+							selectedObjectDefinitionNode?.data
+								?.linkedObjectDefinition ?? false
+						}
 						onSubmit={onSubmit}
 						setErrors={setBackEndErrors}
 						setValues={setValues}

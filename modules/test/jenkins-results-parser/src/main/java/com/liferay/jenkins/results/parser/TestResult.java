@@ -9,6 +9,8 @@ import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 
 import org.dom4j.Element;
 
+import org.json.JSONObject;
+
 /**
  * @author Kenji Heigel
  */
@@ -41,6 +43,8 @@ public interface TestResult {
 	public TestHistory getTestHistory();
 
 	public String getTestName();
+
+	public JSONObject getTestReportJSONObject();
 
 	public String getTestReportURL();
 

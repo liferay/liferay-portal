@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Admin Web
 Bundle-SymbolicName: com.liferay.layout.admin.web
-Bundle-Version: 5.0.192
+Bundle-Version: 5.0.193
 Liferay-JS-Config: /META-INF/resources/js/config.js
 Web-ContextPath: /layout-admin-web
 -dsannotations-options: inherit

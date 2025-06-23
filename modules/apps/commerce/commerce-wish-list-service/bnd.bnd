@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Wish List Service
 Bundle-SymbolicName: com.liferay.commerce.wish.list.service
-Bundle-Version: 4.0.62
+Bundle-Version: 4.0.63
 Liferay-Require-SchemaVersion: 1.2.1
 Liferay-Service: true
 -dsannotations-options: inherit

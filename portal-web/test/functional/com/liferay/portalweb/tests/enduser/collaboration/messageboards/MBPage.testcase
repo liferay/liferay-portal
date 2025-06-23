@@ -554,6 +554,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanViewPagersForCategoriesAndThreads {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
 		property portal.acceptance = "quarantine";
 
 		for (var categoryName : list "MB Category1 Name,MB Category2 Name,MB Category3 Name,MB Category4 Name,MB Category5 Name,MB Category6 Name") {

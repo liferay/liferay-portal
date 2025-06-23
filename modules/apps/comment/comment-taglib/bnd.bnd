@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Comment Taglib
 Bundle-SymbolicName: com.liferay.comment.taglib
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2
 Export-Package: com.liferay.comment.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

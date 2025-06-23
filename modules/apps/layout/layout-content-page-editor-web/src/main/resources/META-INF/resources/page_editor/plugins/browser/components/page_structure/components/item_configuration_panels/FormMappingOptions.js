@@ -78,18 +78,16 @@ export default function FormMappingOptions({
 					onSave: (fields) => {
 						saveMapping(fields);
 
-						if (Liferay.FeatureFlags['LPD-37927']) {
-							if (
-								fields.some((field) => field.localizable) &&
-								!hasLocalizationSelect(
-									fragmentEntryLinksRef.current
-								)
-							) {
-								openAddLocalizationSelect({
-									dispatch,
-									formId: item.itemId,
-								});
-							}
+						if (
+							fields.some((field) => field.localizable) &&
+							!hasLocalizationSelect(
+								fragmentEntryLinksRef.current
+							)
+						) {
+							openAddLocalizationSelect({
+								dispatch,
+								formId: item.itemId,
+							});
 						}
 					},
 					segmentsExperienceId,

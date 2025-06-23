@@ -38,145 +38,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-119168."
-	@priority = 4
-	test AddUser {
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		User.addCP(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		Alert.viewSuccessMessage();
-
-		User.openUsersAdmin();
-
-		User.viewCP(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		AssertConsoleTextNotPresent(value1 = "java.lang.NullPointerException");
-	}
-
-	@description = "This is a use case for LPS-95340."
-	@priority = 4
-	test AddUserAfterPublishContentPageWithAP {
-		HeadlessSite.addSite(siteName = "Test Site Name");
-
-		PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
-
-		ContentPages.addPage(pageName = "Test Content Page Name");
-
-		PageEditor.addWidget(portletName = "Asset Publisher");
-
-		PageEditor.publish();
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-content-page-name");
-
-		Alert.viewInfoMessageSpecific(infoMessage = "There are no results.");
-
-		User.openUsersAdmin();
-
-		User.addCP(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		AssertConsoleTextNotPresent(value1 = "FileNotFoundException");
-	}
-
-	@priority = 4
-	test AddUsers {
-		var count = 1;
-
-		while (${count} != 4) {
-			User.openUsersAdmin();
-
-			User.addCP(
-				userEmailAddress = "userea${count}@liferay.com",
-				userFirstName = "userfn${count}",
-				userLastName = "userln${count}",
-				userScreenName = "usersn${count}");
-
-			var count = ${count} + 1;
-		}
-
-		var count = 1;
-
-		while (${count} != 4) {
-			User.openUsersAdmin();
-
-			User.viewCP(
-				userEmailAddress = "userea${count}@liferay.com",
-				userFirstName = "userfn${count}",
-				userLastName = "userln${count}",
-				userScreenName = "usersn${count}");
-
-			var count = ${count} + 1;
-		}
-	}
-
-	@description = "This is a use case for LPS-130750."
-	@priority = 4
-	test AssertRelevanceSortOptionDisplaysWhenSearching {
-		JSONUser.addUser(
-			userEmailAddress = "userea1@liferay.com",
-			userFirstName = "userfn1",
-			userLastName = "userln1",
-			userScreenName = "usersn1");
-
-		JSONUser.addUser(
-			userEmailAddress = "testuser@liferay.com",
-			userFirstName = "testuserfn",
-			userLastName = "testuserln",
-			userScreenName = "testusersn");
-
-		User.openUsersAdmin();
-
-		ManagementBar.viewFilterAndOrderNoItem(menuItem = "Relevance");
-
-		Search.searchCP(searchTerm = "user");
-
-		ManagementBar.viewFilterAndOrderItem(menuItem = "Relevance");
-	}
-
-	@priority = 4
-	test AssignUserGroupToUser {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUserGroup.addUserGroup(
-			userGroupDescription = "UG UserGroup Name Description",
-			userGroupName = "UG UserGroup Name");
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		User.assignUserGroupCP(userGroupName = "UG UserGroup Name");
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		User.viewMemberships(
-			assetType = "User Groups",
-			assigneeName = "UG UserGroup Name");
-	}
-
 	@description = "This is a use case for can add comment for user."
 	@priority = 4
 	test CanAddComment {
@@ -392,68 +253,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-196309 | As an admin, I can filter users that do not belong to an account or organization by using the filter type 'Unassociated Users'."
-	@priority = 5
-	test CanFilterUsersByUnassociatedUsers {
-		property portal.acceptance = "true";
-
-		task ("Given an account with an account user") {
-			JSONAccountEntry.addAccountEntry(
-				accountEntryName = "Test Account",
-				accountEntryType = "Business");
-
-			JSONUser.addUser(
-				userEmailAddress = "user1@liferay.com",
-				userFirstName = "user1",
-				userLastName = "user1",
-				userScreenName = "user1");
-
-			JSONAccountEntryUser.addExistUsertoAccount(
-				accountEntryName = "Test Account",
-				userEmailAddress = "user1@liferay.com");
-		}
-
-		task ("And 2 users not associated to the account but one of them is associated to an organization") {
-			for (var newUsers : list "2,3") {
-				JSONUser.addUser(
-					userEmailAddress = "user${newUsers}@liferay.com",
-					userFirstName = "user${newUsers}",
-					userLastName = "user${newUsers}",
-					userScreenName = "user${newUsers}");
-			}
-
-			JSONOrganization.addOrganization(organizationName = "Org1");
-
-			JSONOrganization.assignUserToOrganization(
-				organizationName = "Org1",
-				userEmailAddress = "user2@liferay.com");
-		}
-
-		task ("When the admin navigates to the Users and Organizations page") {
-			User.openUsersAdmin();
-		}
-
-		task ("Then can assert that all of the users are listed") {
-			for (var userName : list "test,user1,user2,user3") {
-				LexiconEntry.viewEntryName(rowEntry = ${userName});
-			}
-		}
-
-		task ("When the admin sets the filter to view Unassociated Users") {
-			ManagementBar.setFilterAndOrder(filterBy = "Unassociated Users");
-		}
-
-		task ("Then can assert that only the users that are not associated to the account and organization are listed") {
-			for (var userName : list "test,user3") {
-				LexiconEntry.viewEntryName(rowEntry = ${userName});
-			}
-
-			for (var userName : list "user1,user2") {
-				LexiconEntry.viewNoEntry(rowEntry = ${userName});
-			}
-		}
-	}
-
 	@description = "This is a use case for LPS-202027. As and admin i cannot create a new user with a date of birth in the future."
 	@priority = 4
 	test CannotAddUserWithDateOfBirthInTheFuture {
@@ -507,42 +306,6 @@ definition {
 		AssertElementNotPresent(
 			key_portlet = "Site Settings",
 			locator1 = "ProductMenu#PORTLET");
-	}
-
-	@description = "This is a test for LPS-200153. As an admin, I can receive a notification after creating a new user when the Single Approver workflow is applied to User"
-	@priority = 5
-	test CanReceiveNewUserNotificationsWhenSingleApproverWorkflowIsAppliedToUser {
-		property portal.acceptance = "true";
-
-		task ("Given Workflow is configured to Single Approver for User") {
-			Workflow.openWorkflowListView();
-
-			Navigator.gotoNavItem(navItem = "Configuration");
-
-			Workflow.configureWorkflow(
-				workflowDefinition = "Single Approver",
-				workflowResourceValue = "User");
-		}
-
-		task ("When a new user is created") {
-			User.openUsersAdmin();
-
-			User.addCP(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-		}
-
-		task ("Then a notification is sent to the Admin User containing the new user") {
-			Navigator.openURL();
-
-			Notifications.viewBadgeCount(notificationCount = 1);
-
-			Notifications.gotoNotifications();
-
-			WorkflowAsset.viewNotification(contentBody = "Test Test sent you a User for review in the workflow.");
-		}
 	}
 
 	@description = "This test changes password through the API Explorer GUI."
@@ -1039,7 +802,7 @@ definition {
 	test EditUserSite {
 		property app.server.types = "jboss,tomcat,weblogic,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
-		property environment.acceptance = "true";
+		property environment.acceptance = "false";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 

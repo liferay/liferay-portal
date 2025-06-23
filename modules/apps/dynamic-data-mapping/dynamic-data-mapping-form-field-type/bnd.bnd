@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Dynamic Data Mapping Form Field Type
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.form.field.type
-Bundle-Version: 6.0.193
+Bundle-Version: 6.0.194
 Web-ContextPath: /dynamic-data-mapping-form-field-type

@@ -12,11 +12,6 @@ import togglePermissions from '../../../../src/main/resources/META-INF/resources
 import EditModeSelector from '../../../../src/main/resources/META-INF/resources/page_editor/app/components/EditModeSelector';
 import StoreMother from '../../../../src/main/resources/META-INF/resources/page_editor/test_utils/StoreMother';
 
-jest.mock('frontend-js-web', () => ({
-	...jest.requireActual('frontend-js-web'),
-	sub: jest.fn((langKey, args) => langKey.replace('x', args)),
-}));
-
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/page_editor/app/actions/togglePermission',
 	() => jest.fn()

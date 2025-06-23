@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Layout JS Components Web
 Bundle-SymbolicName: com.liferay.layout.js.components.web
-Bundle-Version: 1.0.39
+Bundle-Version: 1.0.40
 Liferay-JS-Config: /META-INF/resources/js/legacy/config.js
 Web-ContextPath: /layout-js-components-web

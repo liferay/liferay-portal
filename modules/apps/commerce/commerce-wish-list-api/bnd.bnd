@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Wish List API
 Bundle-SymbolicName: com.liferay.commerce.wish.list.api
-Bundle-Version: 14.0.0
+Bundle-Version: 14.0.1
 Export-Package:\
 	com.liferay.commerce.wish.list.constants,\
 	com.liferay.commerce.wish.list.exception,\

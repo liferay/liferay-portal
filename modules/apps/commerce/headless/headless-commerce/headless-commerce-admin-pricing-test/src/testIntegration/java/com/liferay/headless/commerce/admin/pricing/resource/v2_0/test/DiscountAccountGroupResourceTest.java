@@ -275,6 +275,14 @@ public class DiscountAccountGroupResourceTest
 
 	@Override
 	protected DiscountAccountGroup
+			testBatchEngineDeleteImportTask_addDiscountAccountGroup()
+		throws Exception {
+
+		return _addDiscountAccountGroup(randomDiscountAccountGroup());
+	}
+
+	@Override
+	protected DiscountAccountGroup
 			testDeleteDiscountAccountGroupBatch_addDiscountAccountGroup()
 		throws Exception {
 

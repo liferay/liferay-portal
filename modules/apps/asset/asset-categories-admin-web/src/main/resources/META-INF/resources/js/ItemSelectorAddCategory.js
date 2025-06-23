@@ -122,17 +122,21 @@ export default function ({currentURL, namespace, redirect}) {
 		}
 	);
 
+	function disposeHandler() {
+		initialModalFooterButtons.forEach((item) => {
+			item.classList.remove('hide');
+		});
+
+		hideAddCategoryButtons();
+
+		modalTitle.textContent = initialModalTitle;
+
+		delegateHandler.dispose();
+	}
+
+	window.onbeforeunload = disposeHandler;
+
 	return {
-		dispose: () => {
-			initialModalFooterButtons.forEach((item) => {
-				item.classList.remove('hide');
-			});
-
-			hideAddCategoryButtons();
-
-			modalTitle.textContent = initialModalTitle;
-
-			delegateHandler.dispose();
-		},
+		dispose: disposeHandler,
 	};
 }

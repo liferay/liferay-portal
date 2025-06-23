@@ -21,7 +21,10 @@
 	},
 	"settings": {
 		"colorSchemeName": "01",
-		"themeName": "Classic"
+		"masterPage": {
+			"key": "cms-basic-master"
+		},
+		"themeName": "CMS"
 	},
 	"version": 1.1
 }

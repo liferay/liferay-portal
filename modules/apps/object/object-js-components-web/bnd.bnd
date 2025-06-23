@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Object JS Components Web
 Bundle-SymbolicName: com.liferay.object.js.components.web
-Bundle-Version: 1.0.93
+Bundle-Version: 1.0.94
 Web-ContextPath: /object-js-components-web

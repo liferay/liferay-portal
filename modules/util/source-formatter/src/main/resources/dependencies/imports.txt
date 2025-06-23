@@ -244,6 +244,7 @@ com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationRegistry=com.liferay.
 com.liferay.info.display.url.provider.InfoEditURLProviderTracker=com.liferay.info.display.url.provider.InfoEditURLProviderRegistry
 com.liferay.info.item.InfoItemServiceTracker=com.liferay.info.item.InfoItemServiceRegistry
 com.liferay.info.item.renderer.InfoItemRendererTracker=com.liferay.info.item.renderer.InfoItemRendererRegistry
+com.liferay.info.list.provider.InfoListProvider=com.liferay.info.collection.provider.InfoCollectionProvider
 com.liferay.journal.JournalConstants=com.liferay.journal.constants.JournalConstants
 com.liferay.journal.model.JournalArticleConstants=com.liferay.journal.constants.JournalArticleConstants
 com.liferay.journal.model.JournalFeedConstants=com.liferay.journal.constants.JournalFeedConstants

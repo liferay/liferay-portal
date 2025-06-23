@@ -36,6 +36,14 @@ public class PatcherProductVersionLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherProductVersionLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static PatcherProductVersion addPatcherProductVersion(
+			long userId, int fixDeliveryMethod, String moduleFolderName,
+			String name)
+		throws PortalException {
+
+		return getService().addPatcherProductVersion(
+			userId, fixDeliveryMethod, moduleFolderName, name);
+	}
 
 	/**
 	 * Adds the patcher product version to the database. Also notifies the appropriate model listeners.
@@ -212,6 +220,12 @@ public class PatcherProductVersionLocalServiceUtil {
 		return getService().fetchPatcherProductVersion(patcherProductVersionId);
 	}
 
+	public static PatcherProductVersion fetchPatcherProductVersion(
+		String name) {
+
+		return getService().fetchPatcherProductVersion(name);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -248,6 +262,16 @@ public class PatcherProductVersionLocalServiceUtil {
 		return getService().getPatcherProductVersion(patcherProductVersionId);
 	}
 
+	public static List<PatcherProductVersion> getPatcherProductVersions() {
+		return getService().getPatcherProductVersions();
+	}
+
+	public static List<PatcherProductVersion> getPatcherProductVersions(
+		int fixDeliveryMethod) {
+
+		return getService().getPatcherProductVersions(fixDeliveryMethod);
+	}
+
 	/**
 	 * Returns a range of all the patcher product versions.
 	 *
@@ -281,6 +305,15 @@ public class PatcherProductVersionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static PatcherProductVersion updatePatcherProductVersion(
+			long patcherProductVersionId, int fixDeliveryMethod,
+			String moduleFolderName, String name)
+		throws PortalException {
+
+		return getService().updatePatcherProductVersion(
+			patcherProductVersionId, fixDeliveryMethod, moduleFolderName, name);
 	}
 
 	/**

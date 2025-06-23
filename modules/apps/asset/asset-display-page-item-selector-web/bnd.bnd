@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Asset Display Page Item Selector Web
 Bundle-SymbolicName: com.liferay.asset.display.page.item.selector.web
-Bundle-Version: 4.0.36
+Bundle-Version: 4.0.37
 Web-ContextPath: /asset-display-page-item-selector-web
 -dsannotations-options: inherit

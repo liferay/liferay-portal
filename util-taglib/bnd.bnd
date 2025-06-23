@@ -1,6 +1,6 @@
 Bundle-Name: ${manifest.bundle.name}
 Bundle-SymbolicName: ${manifest.bundle.symbolic.name}
-Bundle-Version: 28.0.1
+Bundle-Version: 28.0.2
 Export-Package: com.liferay.taglib.*
 Import-Package:\
 	!com.liferay.portal.freemarker,\

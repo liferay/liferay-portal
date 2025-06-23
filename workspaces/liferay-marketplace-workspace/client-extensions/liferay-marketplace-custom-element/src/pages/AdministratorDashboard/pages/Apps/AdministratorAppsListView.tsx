@@ -7,66 +7,69 @@ import Label from '@clayui/label';
 import {ComponentProps} from 'react';
 
 import ListView, {ListViewProps} from '../../../../components/ListView';
+import {ManagementToolbarProps} from '../../../../components/ListView/components/ManagementToolbar';
 import SearchBuilder from '../../../../core/SearchBuilder';
 import {
+	ProductSpecificationKey,
+	ProductTypeLabels,
 	ProductTypeVocabulary,
 	ProductWorkflowDisplayType,
 } from '../../../../enums/Product';
 import i18n from '../../../../i18n';
-import HeadlessCommerceAdminCatalog from '../../../../services/rest/HeadlessCommerceAdminCatalog';
 import {formatDate} from '../../../../utils/date';
 
 type AdministratorAppsListViewProps = {
 	filter?: string;
+	isSortable?: boolean;
 	listViewProps?: Partial<ListViewProps<Product>>;
-	sorteable?: boolean;
+	managementToolbarProps?: {
+		visible?: boolean;
+	} & Omit<
+		ManagementToolbarProps,
+		| 'actions'
+		| 'onSelectAllRows'
+		| 'rowSelectable'
+		| 'tableProps'
+		| 'totalItems'
+	>;
 };
 
 const AdministratorAppsListView: React.FC<AdministratorAppsListViewProps> = ({
-	filter,
+	isSortable = false,
 	listViewProps,
-	sorteable = false,
+	managementToolbarProps,
 }) => (
 	<ListView<Product>
-		id="administrator-apps"
-		resource={function getProducts({
-			filters,
-			keywords,
-			page,
-			pageSize,
-			sort,
-		}) {
-			const searchBuilder = new SearchBuilder().lambda(
+		defaultFilters={{
+			filter: `${SearchBuilder.lambda(
 				'categoryNames',
 				ProductTypeVocabulary.APP
-			);
-
-			if (filters.filter) {
-				for (const [key, value] of Object.entries(filters.filter)) {
-					searchBuilder.and().lambdaContains(key, String(value));
-				}
-			}
-
-			if (keywords) {
-				searchBuilder.and().contains('name', keywords);
-			}
-
-			return HeadlessCommerceAdminCatalog.getProducts(
-				new URLSearchParams({
-					'filter': filter
-						? `${filter} and ${searchBuilder.build()}`
-						: `${searchBuilder.build()}`,
-					'nestedFields': 'catalog,productSpecifications',
-					'page': page.toString(),
-					'pageSize': pageSize.toString(),
-					'productSpecifications.pageSize': '-1',
-					'sort': sort.key
-						? `${sort.key}:${sort.direction}`
-						: 'createDate:desc',
-				})
-			);
+			)}`,
 		}}
+		id="administrator-apps"
+		managementToolbarProps={{
+			filterSchema: 'administratorApps',
+			...managementToolbarProps,
+		}}
+		resource={`/o/headless-commerce-admin-catalog/v1.0/products?${new URLSearchParams(
+			{
+				'nestedFields': 'catalog,productSpecifications',
+				'productSpecifications.pageSize': '-1',
+				'sort': 'createDate:desc',
+			}
+		)}`}
 		tableProps={{
+			actions: [
+				{
+					name: i18n.translate('view-details'),
+					onClick: (product: Product) => {
+						window.open(
+							`/group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet&p_p_lifecycle=0&p_p_state=maximized&_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_mvcRenderCommandName=%2Fcp_definitions%2Fedit_cp_definition&_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_cpDefinitionId=${product.id}`,
+							'_blank'
+						);
+					},
+				},
+			],
 			columns: [
 				{
 					clickable: true,
@@ -85,16 +88,25 @@ const AdministratorAppsListView: React.FC<AdministratorAppsListViewProps> = ({
 							</span>
 						</div>
 					),
-					sortable: sorteable,
+					sortable: isSortable,
 				},
 				{
-					id: '__marketplaceProduct',
+					id: 'productSpecifications',
 					name: i18n.translate('app-type'),
-					render: (marketplaceProduct) => (
-						<div className="text-capitalize">
-							{marketplaceProduct.appType}
-						</div>
-					),
+					render: (productSpecifications) => {
+						const productType = productSpecifications.find(
+							({specificationKey}) =>
+								specificationKey ===
+								ProductSpecificationKey.APP_TYPE
+						)?.value?.en_US;
+
+						const label =
+							ProductTypeLabels[
+								productType as keyof typeof ProductTypeLabels
+							];
+
+						return <div className="text-capitalize">{label}</div>;
+					},
 				},
 				{
 					id: 'catalog',
@@ -105,7 +117,7 @@ const AdministratorAppsListView: React.FC<AdministratorAppsListViewProps> = ({
 					id: 'modifiedDate',
 					name: i18n.translate('last-update'),
 					render: (modifiedDate) => formatDate(modifiedDate),
-					sortable: sorteable,
+					sortable: isSortable,
 				},
 				{
 					id: 'createDate',

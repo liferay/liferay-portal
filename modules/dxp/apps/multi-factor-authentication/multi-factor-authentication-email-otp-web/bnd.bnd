@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Multi-Factor Authentication Email OTP Web
 Bundle-SymbolicName: com.liferay.multi.factor.authentication.email.otp.web
-Bundle-Version: 2.0.36
+Bundle-Version: 2.0.37
 Web-ContextPath: /multi-factor-authentication-email-otp-web

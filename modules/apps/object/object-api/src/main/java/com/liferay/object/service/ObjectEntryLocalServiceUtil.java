@@ -38,14 +38,14 @@ public class ObjectEntryLocalServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static ObjectEntry addObjectEntry(
-			long userId, long groupId, long objectDefinitionId,
+			long groupId, long userId, long objectDefinitionId,
 			long objectEntryFolderId, String defaultLanguageId,
 			Map<String, Serializable> values,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addObjectEntry(
-			userId, groupId, objectDefinitionId, objectEntryFolderId,
+			groupId, userId, objectDefinitionId, objectEntryFolderId,
 			defaultLanguageId, values, serviceContext);
 	}
 
@@ -64,13 +64,13 @@ public class ObjectEntryLocalServiceUtil {
 	}
 
 	public static ObjectEntry addObjectEntry(
-			String externalReferenceCode, long userId,
+			String externalReferenceCode, long groupId, long userId,
 			com.liferay.object.model.ObjectDefinition objectDefinition,
 			long objectEntryFolderId)
 		throws PortalException {
 
 		return getService().addObjectEntry(
-			externalReferenceCode, userId, objectDefinition,
+			externalReferenceCode, groupId, userId, objectDefinition,
 			objectEntryFolderId);
 	}
 
@@ -86,14 +86,14 @@ public class ObjectEntryLocalServiceUtil {
 	}
 
 	public static ObjectEntry addOrUpdateObjectEntry(
-			String externalReferenceCode, long userId, long groupId,
+			String externalReferenceCode, long groupId, long userId,
 			long objectDefinitionId, long objectEntryFolderId,
 			Map<String, Serializable> values,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addOrUpdateObjectEntry(
-			externalReferenceCode, userId, groupId, objectDefinitionId,
+			externalReferenceCode, groupId, userId, objectDefinitionId,
 			objectEntryFolderId, values, serviceContext);
 	}
 
@@ -278,12 +278,12 @@ public class ObjectEntryLocalServiceUtil {
 	}
 
 	public static ObjectEntry expireObjectEntry(
-			long userId, long objectEntryId, int version,
+			long userId, long objectEntryId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().expireObjectEntry(
-			userId, objectEntryId, version, serviceContext);
+			userId, objectEntryId, serviceContext);
 	}
 
 	public static ObjectEntry fetchManyToOneObjectEntry(
@@ -564,11 +564,12 @@ public class ObjectEntryLocalServiceUtil {
 	}
 
 	public static ObjectEntry getOrAddIncompleteObjectEntry(
-			String externalReferenceCode, long userId, long objectDefinitionId)
+			String externalReferenceCode, long groupId, long userId,
+			long objectDefinitionId)
 		throws PortalException {
 
 		return getService().getOrAddIncompleteObjectEntry(
-			externalReferenceCode, userId, objectDefinitionId);
+			externalReferenceCode, groupId, userId, objectDefinitionId);
 	}
 
 	/**

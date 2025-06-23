@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Journal Taglib
 Bundle-SymbolicName: com.liferay.journal.taglib
-Bundle-Version: 7.0.1
+Bundle-Version: 7.0.2
 Export-Package: com.liferay.journal.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

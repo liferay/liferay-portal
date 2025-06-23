@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.cluster;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchFixture;
 import com.liferay.portal.search.engine.adapter.cluster.StateClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.StateClusterResponse;
@@ -44,15 +43,11 @@ public class StateClusterRequestExecutorTest {
 		StateClusterRequest stateClusterRequest = new StateClusterRequest(
 			new String[] {_INDEX_NAME});
 
-		StateClusterRequestExecutorImpl stateClusterRequestExecutorImpl =
-			new StateClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			stateClusterRequestExecutorImpl, "_elasticsearchClientResolver",
-			_elasticsearchFixture);
+		StateClusterRequestExecutor stateClusterRequestExecutor =
+			new StateClusterRequestExecutor(_elasticsearchFixture);
 
 		StateClusterResponse stateClusterResponse =
-			stateClusterRequestExecutorImpl.execute(stateClusterRequest);
+			stateClusterRequestExecutor.execute(stateClusterRequest);
 
 		String message = stateClusterResponse.getStateMessage();
 

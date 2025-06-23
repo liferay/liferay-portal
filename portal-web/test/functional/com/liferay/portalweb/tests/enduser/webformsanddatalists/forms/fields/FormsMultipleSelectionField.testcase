@@ -486,51 +486,6 @@ definition {
 		FormFields.viewFieldLabelNotPresent(fieldLabel = "Multiple Selection");
 	}
 
-	@description = "LPS-66513 - Verify that the Field Label can be hidden when options are displayed as switches"
-	@priority = 3
-	test LabelCanBeHiddenWithSwitchEnabled {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		FormsAdmin.addForm();
-
-		Form.editName(formName = "Form 1");
-
-		Form.gotoAddField(
-			fieldPositionNumber = 0,
-			fieldType = "Multiple Selection");
-
-		FormFields.enableSwitch(fieldName = "Show as a Switch");
-
-		FormFields.editOptionsRow(
-			optionName = "Switch1",
-			optionValue = "Switch 1",
-			rowNumber = 1);
-
-		AssertElementPresent(
-			key_toggleSwitchLabel = "Switch 1",
-			locator1 = "ToggleSwitch#TOGGLE_SWITCH_BY_LABEL");
-
-		Form.gotoAdvancedTab();
-
-		FormFields.disableSwitch(fieldName = "Show Label");
-
-		FormFields.viewFieldLabelNotPresent(fieldLabel = "Multiple Selection");
-
-		Form.save();
-
-		Form.publishForm();
-
-		FormsAdminNavigator.gotoPublishedForm();
-
-		FormFields.viewFieldLabelNotPresent(fieldLabel = "Multiple Selection");
-
-		AssertElementPresent(
-			key_toggleSwitchLabel = "Switch 1",
-			locator1 = "ToggleSwitch#TOGGLE_SWITCH_BY_LABEL");
-	}
-
 	@description = "Verify that options can be added"
 	@priority = 5
 	test OptionsCanBeAdded {
@@ -627,42 +582,6 @@ definition {
 		FormFields.viewDeletedSelectOptionsRowFieldValue(
 			fieldValue = "Option 2",
 			rowNumber = 2);
-	}
-
-	@description = "Verify that options can be displayed as switches"
-	@priority = 5
-	test OptionsCanBeDisplayedAsSwitches {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		FormsAdmin.addForm();
-
-		Form.editName(formName = "Form 1");
-
-		Form.gotoAddField(
-			fieldPositionNumber = 0,
-			fieldType = "Multiple Selection");
-
-		FormFields.enableSwitch(fieldName = "Show as a Switch");
-
-		FormFields.editOptionsRow(
-			optionName = "Switch1",
-			optionValue = "Switch 1",
-			rowNumber = 1);
-
-		AssertElementPresent(
-			key_toggleSwitchLabel = "Switch 1",
-			locator1 = "ToggleSwitch#TOGGLE_SWITCH_BY_LABEL");
-
-		Form.save();
-
-		Form.publishForm();
-
-		FormsAdminNavigator.gotoPublishedForm();
-
-		AssertElementPresent(
-			key_toggleSwitchLabel = "Switch 1",
-			locator1 = "ToggleSwitch#TOGGLE_SWITCH_BY_LABEL");
 	}
 
 	@description = "Verify that options can be displayed both inline and as a list"

@@ -123,7 +123,7 @@ public class CommerceReturnItemObjectEntryValuesContributorTest {
 				TestPropsValues.getCompanyId(), "CommerceReturn");
 
 		_objectEntry = _objectEntryLocalService.addObjectEntry(
-			_user.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, _user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
@@ -169,7 +169,7 @@ public class CommerceReturnItemObjectEntryValuesContributorTest {
 				TestPropsValues.getCompanyId(), "CommerceReturnItem");
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			_user.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, _user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(

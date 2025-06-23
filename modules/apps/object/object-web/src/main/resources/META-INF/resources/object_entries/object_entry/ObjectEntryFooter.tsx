@@ -34,10 +34,10 @@ export default function ObjectEntryFooter({
 					>
 						<ClayDropDown.ItemList>
 							<ClayDropDown.Item
-								onClick={(event) => {
-									event.preventDefault();
-
+								onClick={() => {
 									callWindowGlobalFunction(submitRef);
+
+									Liferay.fire('submitObjectEntry');
 								}}
 								symbolLeft="arrow-right-full"
 							>
@@ -45,7 +45,9 @@ export default function ObjectEntryFooter({
 							</ClayDropDown.Item>
 
 							<ClayDropDown.Item
-								onClick={() => {}}
+								onClick={() =>
+									Liferay.fire('openModalSchedulePublication')
+								}
 								symbolLeft="date-time"
 							>
 								{Liferay.Language.get('schedule-publication')}

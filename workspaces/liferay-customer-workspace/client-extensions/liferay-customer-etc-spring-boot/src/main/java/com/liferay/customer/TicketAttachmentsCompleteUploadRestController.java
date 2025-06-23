@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -51,9 +52,8 @@ public class TicketAttachmentsCompleteUploadRestController
 
 	@PostMapping
 	public ResponseEntity<String> post(
-			@AuthenticationPrincipal Jwt jwt, @RequestBody String json,
-			@PathVariable("ticketAttachmentId") long ticketAttachmentId)
-		throws Exception {
+		@AuthenticationPrincipal Jwt jwt, @RequestBody String json,
+		@PathVariable("ticketAttachmentId") long ticketAttachmentId) {
 
 		try {
 			TicketAttachment ticketAttachment =
@@ -70,6 +70,8 @@ public class TicketAttachmentsCompleteUploadRestController
 					jwt.getClaimAsString("username"),
 					ticketAttachment.getZendeskTicketId(),
 					zendeskTicketCommentBody);
+
+				return new ResponseEntity<>(HttpStatus.OK);
 			}
 			catch (Exception exception) {
 				_log.error(exception, exception);
@@ -78,16 +80,23 @@ public class TicketAttachmentsCompleteUploadRestController
 					"Bearer " + jwt.getTokenValue(), ticketAttachmentId,
 					zendeskTicketCommentBody);
 
-				return new ResponseEntity<>(HttpStatus.ACCEPTED);
+				return new ResponseEntity<>(
+					"COMMENT_POST_FAILED_RETRYING", HttpStatus.ACCEPTED);
 			}
+		}
+		catch (HttpServerErrorException.ServiceUnavailable
+					httpServerErrorException) {
 
-			return new ResponseEntity<>(HttpStatus.OK);
+			_log.error(httpServerErrorException, httpServerErrorException);
+
+			return new ResponseEntity<>(
+				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
 
-			return new ResponseEntity(
-				exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(
+				"UNEXPECTED_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

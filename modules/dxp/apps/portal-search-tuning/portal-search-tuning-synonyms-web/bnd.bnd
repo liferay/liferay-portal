@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Portal Search Tuning Synonyms Web
 Bundle-SymbolicName: com.liferay.portal.search.tuning.synonyms.web
-Bundle-Version: 3.0.81
+Bundle-Version: 3.0.82
 Web-ContextPath: /portal-search-tuning-synonyms-web
 -includeresource: package.json

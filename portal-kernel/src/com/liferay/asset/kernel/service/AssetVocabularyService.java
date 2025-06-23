@@ -85,6 +85,10 @@ public interface AssetVocabularyService extends BaseService {
 
 	public void deleteVocabulary(long vocabularyId) throws PortalException;
 
+	public AssetVocabulary deleteVocabularyByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public AssetVocabulary fetchVocabulary(long vocabularyId)
 		throws PortalException;

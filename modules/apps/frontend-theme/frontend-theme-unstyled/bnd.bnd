@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend Theme Unstyled
 Bundle-SymbolicName: com.liferay.frontend.theme.unstyled
-Bundle-Version: 6.0.78
+Bundle-Version: 6.0.79
 Web-ContextPath: /frontend-theme-unstyled
 -donotcopy: (npm-debug\.log)

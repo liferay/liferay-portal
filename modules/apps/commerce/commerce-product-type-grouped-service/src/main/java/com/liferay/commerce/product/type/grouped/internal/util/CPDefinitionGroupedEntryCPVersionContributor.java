@@ -14,7 +14,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Ethan Bustad
  */
-@Component(service = CPVersionContributor.class)
+@Component(
+	property = "commerce.product.content.contributor.name=CPDefinitionGroupedEntryCPVersionContributor",
+	service = CPVersionContributor.class
+)
 public class CPDefinitionGroupedEntryCPVersionContributor
 	implements CPVersionContributor {
 

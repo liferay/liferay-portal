@@ -5,3 +5,76 @@
 	font-weight: 400;
 	src: url(./fonts/SourceSansPro-Regular.ttf) format('truetype');
 }
+
+a {
+	border-radius: var(--border-radius-lg);
+
+	> .card-flat {
+		&:active, &:focus, &:hover {
+			outline: 2px solid var(--color-action-primary-hover);
+			outline-offset: 2px;
+		}
+
+		&:active {
+			outline-color: var(--color-action-primary-active);
+		}
+
+		&:focus {
+			outline-color: var(--color-action-primary-focus);
+		}
+	}
+}
+
+.btn-ghost {
+	background-color: rgba(255, 255, 255, .12);
+	border: none;
+	transition: none;
+
+	&:active, &:focus, &:hover {
+		background-color: rgba(255, 255, 255, .2);
+		outline: 1px solid white;
+		outline-offset: 1px;
+	}
+}
+
+.btn-style-primary {
+	background-color: var(--color-brand-primary);
+	border: none;
+	box-shadow: 0px 2px 10px -2px rgba(0, 0, 0, .1),
+		0px -8px 8px -4px rgba(0, 0, 0, .3) inset,
+		0px -2px 4px 1px rgba(0, 0, 0, .1) inset,
+		0px 12px 12px -4px rgba(255, 255, 255, .3) inset,
+		0px 4px 4px 1px rgba(255, 255, 255, .1) inset;
+	
+	&:active {
+		box-shadow: 0px 2px 10px -2px rgba(0, 0, 0, .1),
+			0px -8px 6px -4px rgba(0, 0, 0, .2) inset,
+			0px -2px 4px 1px rgba(0, 0, 0, .1) inset,
+			0px 12px 19px -4.5px rgba(0, 0, 0, .2) inset,
+			0px 4px 2px 1px rgba(0, 0, 0, .1) inset;
+	}
+
+	&:hover {
+		box-shadow: 0px 2px 10px -2px rgba(0, 0, 0, .1),
+			0px -8px 5px -4px rgba(0, 0, 0, .3) inset,
+			0px -2px 2px 1px rgba(0, 0, 0, .1) inset,
+			0px 12px 8px -4px rgba(255, 255, 255, .3) inset,
+			0px 2px 2px 1px rgba(255, 255, 255, .1) inset;
+	}
+}
+
+.card, .card-horizontal {
+	margin: 0;
+}
+
+.search-bar-simple {
+	.input-group-inset-item-before {
+		border-bottom-left-radius: var(--border-radius-pill);
+		border-top-left-radius: var(--border-radius-pill);
+	}
+
+	.input-group-item .input-group-inset-before.form-control {
+		border-bottom-right-radius: var(--border-radius-pill);
+		border-top-right-radius: var(--border-radius-pill);
+	}
+}

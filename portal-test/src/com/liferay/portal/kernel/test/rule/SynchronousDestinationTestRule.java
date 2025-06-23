@@ -191,6 +191,7 @@ public class SynchronousDestinationTestRule
 			replaceDestination(DestinationNames.SUBSCRIPTION_SENDER);
 			replaceDestination("liferay/adaptive_media_processor");
 			replaceDestination("liferay/asset_auto_tagger");
+			replaceDestination("liferay/asset_category_asset_entries_reindex");
 			replaceDestination("liferay/ddm_structure_reindex");
 			replaceDestination("liferay/report_request");
 			replaceDestination("liferay/reports_admin");

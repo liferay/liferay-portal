@@ -5,5 +5,6 @@ liferay-marketplace-etc-cron-oauth-application-headless-server:
     .serviceScheme: http
     name: Liferay Marketplace Etc Cron OAuth Application Headless Server
     scopes:
+        -   Liferay.Headless.Admin.User.everything
         -   Liferay.Headless.Commerce.Admin.Order.everything
     type: oAuthApplicationHeadlessServer

@@ -1,0 +1,72 @@
+{
+	"pageElement": {
+		"id": "3568e064-5321-f28c-9cbc-f32eb9308fdd",
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "page-bar",
+						"siteKey": "CMS"
+					},
+					"fragmentConfig": {
+						"alt": "Site Logo"
+					},
+					"fragmentFields": [
+						{
+							"id": "sidebarImage",
+							"value": {
+								"fragmentImage": {
+									"url": {
+										"value_i18n": {
+										}
+									}
+								},
+								"fragmentLink": {
+								}
+							}
+						},
+						{
+							"id": "sidebarTitle",
+							"value": {
+								"fragmentLink": {
+								}
+							}
+						}
+					],
+					"indexed": true,
+					"widgetInstances": [
+						{
+							"widgetConfig": {
+							},
+							"widgetName": "com_liferay_product_navigation_applications_menu_web_internal_portlet_ProductNavigationApplicationsMenuPortlet"
+						}
+					]
+				},
+				"id": "c481b0bb-2c2f-9239-5271-bccbe3958524",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragmentSettings": {
+						"unallowedFragments": [
+						]
+					}
+				},
+				"id": "5ab57683-47fc-ca20-2766-db3c395e5b25",
+				"type": "DropZone"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"themeName": "CMS",
+		"themeSettings": {
+			"lfr-theme:regular:show-footer": "false",
+			"lfr-theme:regular:show-header": "false",
+			"lfr-theme:regular:show-header-search": "false",
+			"lfr-theme:regular:wrap-widget-page-content": "false"
+		}
+	},
+	"version": 1.1
+}

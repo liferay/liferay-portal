@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -88,12 +89,12 @@ public class SiteParamConverterProviderTest {
 				_CLASS_NAME_WEB_APPLICATION_EXCEPTION_MAPPER,
 				LoggerTestUtil.ERROR)) {
 
-			URLConnectionUtil.read(
-				"http://localhost:8080/o/test-vulcan/0/name");
+			URLConnectionUtil.read(_TEST_BASE_URL + "0/name");
 		}
 	}
 
 	@Test
+	@TestInfo("LPD-53838")
 	public void testValidGroup() throws Exception {
 		long defaultCompanyId = _portal.getDefaultCompanyId();
 
@@ -103,11 +104,20 @@ public class SiteParamConverterProviderTest {
 			defaultCompanyId, user.getUserId(),
 			GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
-		String groupName = URLConnectionUtil.read(
-			"http://localhost:8080/o/test-vulcan/" + group.getGroupId() +
-				"/name");
+		String expectedGroupName = group.getName(LocaleUtil.getDefault());
 
-		Assert.assertEquals(group.getName(LocaleUtil.getDefault()), groupName);
+		Assert.assertEquals(
+			expectedGroupName,
+			URLConnectionUtil.read(
+				_TEST_BASE_URL + group.getExternalReferenceCode() + "/name"));
+		Assert.assertEquals(
+			expectedGroupName,
+			URLConnectionUtil.read(
+				_TEST_BASE_URL + group.getGroupId() + "/name"));
+		Assert.assertEquals(
+			expectedGroupName,
+			URLConnectionUtil.read(
+				_TEST_BASE_URL + group.getGroupKey() + "/name"));
 	}
 
 	public static class TestApplication extends Application {
@@ -132,6 +142,9 @@ public class SiteParamConverterProviderTest {
 	private static final String _CLASS_NAME_WEB_APPLICATION_EXCEPTION_MAPPER =
 		"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
 			"WebApplicationExceptionMapper";
+
+	private static final String _TEST_BASE_URL =
+		"http://localhost:8080/o/test-vulcan/";
 
 	@Inject
 	private Portal _portal;

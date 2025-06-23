@@ -15,7 +15,11 @@ import org.osgi.service.component.annotations.Component;
  * @author Mikel Lorza
  */
 @Component(
-	property = "frontend.data.set.name=" + CMSSiteInitializerFDSNames.FILES_SECTION,
+	property = {
+		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.FILES_SECTION,
+		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.SPACE_FILES_ABSTRACT_SECTION,
+		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.SPACE_FILES_SECTION
+	},
 	service = FDSView.class
 )
 public class FilesSectionCardsFDSView extends BaseSectionCardsFDSView {

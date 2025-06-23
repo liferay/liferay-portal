@@ -1,16 +1,15 @@
 @import 'variables';
 
 @import 'data_renderers/tooltip_summary';
-
 @import 'modal';
 @import 'side_panel';
-@import 'views/list';
 
 .fds {
 	@import 'data_renderers/comment';
 	@import 'data_renderers/quantity_selector';
-
 	@import 'data_set';
 	@import 'management_bar';
-	@import 'table';
+	@import 'views/cards';
+	@import 'views/list';
+	@import 'views/table';
 }

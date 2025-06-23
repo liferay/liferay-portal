@@ -82,7 +82,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -141,7 +140,7 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 		_objectDefinition = _addObjectDefinition();
 
 		_objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -210,7 +209,7 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 			"_c_customObjectDefinitionId");
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -371,11 +370,7 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 		}
 	}
 
-	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-32050"), @FeatureFlag(value = "LPD-37927")
-		}
-	)
+	@FeatureFlag("LPD-32050")
 	@Test
 	public void testToInputTemplateNodeLocalizedInputValue() throws Exception {
 		ObjectDefinition objectDefinition =
@@ -476,7 +471,7 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 		Timestamp esTimestamp = new Timestamp(esDate.getTime());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,

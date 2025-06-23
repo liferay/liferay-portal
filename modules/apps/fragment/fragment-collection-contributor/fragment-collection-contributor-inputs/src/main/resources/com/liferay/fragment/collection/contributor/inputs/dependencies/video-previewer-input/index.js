@@ -93,43 +93,38 @@ function main() {
 
 				inputElement.addEventListener('keyup', onKeyup);
 
-				if (Liferay.FeatureFlags['LPD-37927']) {
-					const defaultLanguageId =
-						themeDisplay.getDefaultLanguageId();
+				const defaultLanguageId = themeDisplay.getDefaultLanguageId();
 
-					if (input.localizable) {
-						const {onChange} = registerLocalizedInput({
-							defaultLanguageId,
-							initialValues: input.valueI18n,
-							inputElement,
-							inputName: input.name,
-							localizationInputsContainer:
-								inputElement.parentNode,
-							namespace: fragmentNamespace,
-							onLocaleChange: ({value}) => {
-								updateVideoPreview(value);
-							},
-						});
+				if (input.localizable) {
+					const {onChange} = registerLocalizedInput({
+						defaultLanguageId,
+						initialValues: input.valueI18n,
+						inputElement,
+						inputName: input.name,
+						localizationInputsContainer: inputElement.parentNode,
+						namespace: fragmentNamespace,
+						onLocaleChange: ({value}) => {
+							updateVideoPreview(value);
+						},
+					});
 
-						inputElement.addEventListener('change', (event) => {
-							onChange(event.target.value);
-						});
-					}
-					else {
-						registerUnlocalizedInput({
-							defaultLanguageId,
-							inputElement,
-							readOnlyInputLabel: document.getElementById(
-								`${fragmentNamespace}-video-previewer-readonly`
-							),
-							unlocalizedFieldsState:
-								input.attributes.unlocalizedFieldsState,
-							unlocalizedMessageContainer:
-								document.getElementById(
-									`${fragmentNamespace}-unlocalized-info`
-								),
-						});
-					}
+					inputElement.addEventListener('change', (event) => {
+						onChange(event.target.value);
+					});
+				}
+				else {
+					registerUnlocalizedInput({
+						defaultLanguageId,
+						inputElement,
+						readOnlyInputLabel: document.getElementById(
+							`${fragmentNamespace}-video-previewer-readonly`
+						),
+						unlocalizedFieldsState:
+							input.attributes.unlocalizedFieldsState,
+						unlocalizedMessageContainer: document.getElementById(
+							`${fragmentNamespace}-unlocalized-info`
+						),
+					});
 				}
 			}
 		);

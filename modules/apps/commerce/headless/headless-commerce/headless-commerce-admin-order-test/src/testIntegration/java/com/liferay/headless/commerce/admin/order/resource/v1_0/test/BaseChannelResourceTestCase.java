@@ -196,15 +196,16 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
+	protected Channel testGetOrderByExternalReferenceCodeChannel_addChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetOrderByExternalReferenceCodeChannel_getExternalReferenceCode(
 				Channel channel)
-		throws Exception {
-
-		return channel.getExternalReferenceCode();
-	}
-
-	protected Channel testGetOrderByExternalReferenceCodeChannel_addChannel()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -273,7 +274,8 @@ public abstract class BaseChannelResourceTestCase {
 				Channel channel)
 		throws Exception {
 
-		return channel.getExternalReferenceCode();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -342,13 +344,14 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
+	protected Channel testGetOrderIdChannel_addChannel() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long testGetOrderIdChannel_getId(Channel channel)
 		throws Exception {
 
-		return channel.getId();
-	}
-
-	protected Channel testGetOrderIdChannel_addChannel() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -407,7 +410,8 @@ public abstract class BaseChannelResourceTestCase {
 	protected Long testGraphQLGetOrderIdChannel_getId(Channel channel)
 		throws Exception {
 
-		return channel.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -468,14 +472,14 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
-	protected Long testGetOrderRuleChannelChannel_getOrderRuleChannelId()
+	protected Channel testGetOrderRuleChannelChannel_addChannel()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Channel testGetOrderRuleChannelChannel_addChannel()
+	protected Long testGetOrderRuleChannelChannel_getOrderRuleChannelId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -602,14 +606,14 @@ public abstract class BaseChannelResourceTestCase {
 		assertValid(getChannel);
 	}
 
-	protected Long testGetOrderTypeChannelChannel_getOrderTypeChannelId()
+	protected Channel testGetOrderTypeChannelChannel_addChannel()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Channel testGetOrderTypeChannelChannel_addChannel()
+	protected Long testGetOrderTypeChannelChannel_getOrderTypeChannelId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

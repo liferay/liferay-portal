@@ -39,6 +39,10 @@ public abstract class BaseTopLevelBuildReport
 	public void addTestrayAttachmentURL(URL testrayAttachmentURL) {
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
 
+		if (buildReportJSONObject == null) {
+			return;
+		}
+
 		JSONArray jsonArray = buildReportJSONObject.optJSONArray(
 			"testrayAttachmentURLs");
 
@@ -57,7 +61,9 @@ public abstract class BaseTopLevelBuildReport
 
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
 
-		if (!buildReportJSONObject.has("buildParameters")) {
+		if ((buildReportJSONObject == null) ||
+			!buildReportJSONObject.has("buildParameters")) {
+
 			return buildParameters;
 		}
 
@@ -145,7 +151,9 @@ public abstract class BaseTopLevelBuildReport
 	public ControllerBuildReport getControllerBuildReport() {
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
 
-		if (!buildReportJSONObject.has("controller")) {
+		if ((buildReportJSONObject == null) ||
+			!buildReportJSONObject.has("controller")) {
+
 			return null;
 		}
 
@@ -184,6 +192,10 @@ public abstract class BaseTopLevelBuildReport
 		_downstreamBuildReports = new ArrayList<>();
 
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
+
+		if (buildReportJSONObject == null) {
+			return _downstreamBuildReports;
+		}
 
 		JSONArray batchesJSONArray = buildReportJSONObject.optJSONArray(
 			"batches");
@@ -263,6 +275,10 @@ public abstract class BaseTopLevelBuildReport
 	public String getTestSuiteName() {
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
 
+		if (buildReportJSONObject == null) {
+			return null;
+		}
+
 		return buildReportJSONObject.optString("testSuiteName");
 	}
 
@@ -322,6 +338,10 @@ public abstract class BaseTopLevelBuildReport
 	@Override
 	public long getTotalDuration() {
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
+
+		if (buildReportJSONObject == null) {
+			return 0L;
+		}
 
 		return buildReportJSONObject.optLong("totalDuration");
 	}

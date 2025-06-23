@@ -1401,6 +1401,11 @@ public abstract class BasePlacedOrderItemResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected PlacedOrderItem testGraphQLPlacedOrderItem_addPlacedOrderItem()
 		throws Exception {
 

@@ -1,7 +1,7 @@
 {
 	"dependencies": {
-		"@clayui/autocomplete": "3.138.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/autocomplete": "3.139.1",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"commerce-frontend-js": "*",
 		"frontend-js-components-web": "*",
@@ -15,5 +15,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "4.0.88"
+	"version": "4.0.89"
 }

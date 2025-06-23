@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Site Initializer
 Bundle-SymbolicName: com.liferay.commerce.site.initializer
-Bundle-Version: 1.0.27
+Bundle-Version: 1.0.28
 Liferay-Site-Initializer-Feature-Flag: LPD-20379
 Liferay-Site-Initializer-Name: Commerce Classic
 Provide-Capability: liferay.site.initializer

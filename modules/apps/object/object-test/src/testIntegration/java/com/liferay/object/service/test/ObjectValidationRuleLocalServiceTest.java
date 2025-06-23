@@ -377,7 +377,7 @@ public class ObjectValidationRuleLocalServiceTest {
 			_objectDefinition.getObjectDefinitionId());
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -484,7 +484,7 @@ public class ObjectValidationRuleLocalServiceTest {
 			Assert.assertEquals(0, _argumentsList.size());
 
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -743,7 +743,7 @@ public class ObjectValidationRuleLocalServiceTest {
 
 		try {
 			_objectEntryLocalService.addObjectEntry(
-				user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
+				0, user.getUserId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,

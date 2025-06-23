@@ -199,8 +199,8 @@ public class ViewCategoriesDisplayContext {
 				_language.get(_httpServletRequest, "view-usages"), "get", null,
 				null),
 			new FDSActionDropdownItem(
-				"TODO: Move URL", null, "move",
-				_language.get(_httpServletRequest, "move"), null, "update",
+				null, "move-folder", "move",
+				_language.get(_httpServletRequest, "move"), "get", "update",
 				null),
 			new FDSActionDropdownItem(
 				_getEditPermissionsURL(), "password-policies", "permissions",

@@ -178,6 +178,12 @@ public class ActionUtil {
 		}
 	}
 
+	public static String getBaseAddSpaceMembersURL(ThemeDisplay themeDisplay) {
+		return StringBundler.concat(
+			themeDisplay.getPathFriendlyURLPublic(),
+			GroupConstants.CMS_FRIENDLY_URL, "/add-space-members");
+	}
+
 	public static String getBaseSpaceURL(ThemeDisplay themeDisplay) {
 		return StringBundler.concat(
 			themeDisplay.getPathFriendlyURLPublic(),

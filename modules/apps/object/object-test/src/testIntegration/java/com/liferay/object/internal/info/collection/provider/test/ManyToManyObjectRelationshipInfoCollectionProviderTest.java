@@ -108,7 +108,7 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 
 		ObjectEntry objectDefinition1ObjectEntry1 =
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), _group.getGroupId(),
+				_group.getGroupId(), TestPropsValues.getUserId(),
 				_objectDefinition1.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -121,7 +121,7 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 
 		ObjectEntry objectDefinition1ObjectEntry2 =
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), _group.getGroupId(),
+				_group.getGroupId(), TestPropsValues.getUserId(),
 				_objectDefinition1.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -134,7 +134,7 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 
 		ObjectEntry objectDefinition2ObjectEntry =
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), _group.getGroupId(),
+				_group.getGroupId(), TestPropsValues.getUserId(),
 				_objectDefinition2.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,

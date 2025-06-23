@@ -52,6 +52,11 @@ public interface PatcherProductVersionLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherProductVersionLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the patcher product version local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PatcherProductVersionLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherProductVersion addPatcherProductVersion(
+			long userId, int fixDeliveryMethod, String moduleFolderName,
+			String name)
+		throws PortalException;
 
 	/**
 	 * Adds the patcher product version to the database. Also notifies the appropriate model listeners.
@@ -197,6 +202,9 @@ public interface PatcherProductVersionLocalService
 		long patcherProductVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherProductVersion fetchPatcherProductVersion(String name);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -220,6 +228,13 @@ public interface PatcherProductVersionLocalService
 	public PatcherProductVersion getPatcherProductVersion(
 			long patcherProductVersionId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherProductVersion> getPatcherProductVersions();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherProductVersion> getPatcherProductVersions(
+		int fixDeliveryMethod);
 
 	/**
 	 * Returns a range of all the patcher product versions.
@@ -250,6 +265,12 @@ public interface PatcherProductVersionLocalService
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherProductVersion updatePatcherProductVersion(
+			long patcherProductVersionId, int fixDeliveryMethod,
+			String moduleFolderName, String name)
 		throws PortalException;
 
 	/**

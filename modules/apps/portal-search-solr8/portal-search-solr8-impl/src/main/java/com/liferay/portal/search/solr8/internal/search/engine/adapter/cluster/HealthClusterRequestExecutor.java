@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.cluster.HealthClusterResponse;
 /**
  * @author Bryan Engler
  */
-public interface HealthClusterRequestExecutor {
+public class HealthClusterRequestExecutor {
 
 	public HealthClusterResponse execute(
-		HealthClusterRequest healthClusterRequest);
+		HealthClusterRequest healthClusterRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

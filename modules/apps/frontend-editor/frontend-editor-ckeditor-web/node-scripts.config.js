@@ -15,6 +15,7 @@ module.exports = {
 			'Alignment',
 			'BalloonEditor',
 			'BlockQuote',
+			'BlockToolbar',
 			'Bold',
 			'ButtonView',
 			'ClassicEditor',

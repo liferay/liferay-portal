@@ -63,6 +63,20 @@ public class TaxonomyCategorySerDes {
 			sb.append(_toJSON(taxonomyCategory.getActions()));
 		}
 
+		if (taxonomyCategory.getAssetLibraryKey() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"assetLibraryKey\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(taxonomyCategory.getAssetLibraryKey()));
+
+			sb.append("\"");
+		}
+
 		if (taxonomyCategory.getAvailableLanguages() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -366,6 +380,15 @@ public class TaxonomyCategorySerDes {
 			map.put("actions", String.valueOf(taxonomyCategory.getActions()));
 		}
 
+		if (taxonomyCategory.getAssetLibraryKey() == null) {
+			map.put("assetLibraryKey", null);
+		}
+		else {
+			map.put(
+				"assetLibraryKey",
+				String.valueOf(taxonomyCategory.getAssetLibraryKey()));
+		}
+
 		if (taxonomyCategory.getAvailableLanguages() == null) {
 			map.put("availableLanguages", null);
 		}
@@ -563,6 +586,9 @@ public class TaxonomyCategorySerDes {
 			if (Objects.equals(jsonParserFieldName, "actions")) {
 				return true;
 			}
+			else if (Objects.equals(jsonParserFieldName, "assetLibraryKey")) {
+				return false;
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "availableLanguages")) {
 
@@ -654,6 +680,12 @@ public class TaxonomyCategorySerDes {
 				if (jsonParserFieldValue != null) {
 					taxonomyCategory.setActions(
 						(Map<String, Map<String, String>>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "assetLibraryKey")) {
+				if (jsonParserFieldValue != null) {
+					taxonomyCategory.setAssetLibraryKey(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(

@@ -52,6 +52,12 @@
 
 	<macrodef name="apply-portal-ext-properties">
 		<sequential>
+			<condition property="add.passwords.encryption.algorithm">
+				<not>
+					<contains string="${custom.properties}" substring="passwords.encryption.algorithm=" />
+				</not>
+			</condition>
+
 			<if>
 				<contains string="${app.server.portal.dir}" substring="liferay-portal.war" />
 				<then>
@@ -82,6 +88,15 @@
 					<echo append="true" file="${tstamp.value}/WEB-INF/classes/portal-ext.properties">
 
 module.framework.properties.osgi.console=11312</echo>
+
+					<if>
+						<isset property="add.passwords.encryption.algorithm" />
+						<then>
+							<echo append="true" file="${tstamp.value}/WEB-INF/classes/portal-ext.properties">
+
+passwords.encryption.algorithm=NONE</echo>
+						</then>
+					</if>
 
 					<print-file file.name="${tstamp.value}/WEB-INF/classes/portal-ext.properties" />
 
@@ -118,6 +133,15 @@ module.framework.properties.osgi.console=11312</echo>
 					<echo append="true" file="${app.server.classes.portal.dir}/portal-ext.properties">
 
 module.framework.properties.osgi.console=11312</echo>
+
+					<if>
+						<isset property="add.passwords.encryption.algorithm" />
+						<then>
+							<echo append="true" file="${app.server.classes.portal.dir}/portal-ext.properties">
+
+passwords.encryption.algorithm=NONE</echo>
+						</then>
+					</if>
 
 					<print-file file.name="${app.server.classes.portal.dir}/portal-ext.properties" />
 				</else>

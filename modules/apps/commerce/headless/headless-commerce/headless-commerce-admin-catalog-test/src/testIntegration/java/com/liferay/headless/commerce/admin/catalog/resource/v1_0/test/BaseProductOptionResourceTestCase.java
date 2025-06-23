@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
@@ -339,7 +340,7 @@ public abstract class BaseProductOptionResourceTestCase {
 			testDeleteProductOptionBatch_addProductOption();
 
 		testDeleteProductOptionBatch_deleteProductOption(
-			"COMPLETED", null, productOption1.getId());
+			202, null, productOption1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -354,7 +355,7 @@ public abstract class BaseProductOptionResourceTestCase {
 	}
 
 	protected void testDeleteProductOptionBatch_deleteProductOption(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -367,10 +368,10 @@ public abstract class BaseProductOptionResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1396,6 +1397,61 @@ public abstract class BaseProductOptionResourceTestCase {
 	@Test
 	public void testPostProductIdProductOptionsPage() throws Exception {
 		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ProductOption productOption1 =
+			testBatchEngineDeleteImportTask_addProductOption();
+
+		testBatchEngineDeleteImportTask_deleteProductOption(
+			200, null, productOption1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption1.getId()));
+	}
+
+	protected ProductOption testBatchEngineDeleteImportTask_addProductOption()
+		throws Exception {
+
+		return testDeleteProductOption_addProductOption();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteProductOption(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOption",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected ProductOption testGraphQLProductOption_addProductOption()

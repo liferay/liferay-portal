@@ -1,0 +1,10 @@
+assemble:
+    -   from: assets
+        hashify: global.js
+        into: static
+liferay-streamhub-global-js:
+    name: Liferay Stream Hub Global JS
+    scope: company
+    scriptLocation: head
+    type: globalJS
+    url: global.*.js

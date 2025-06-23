@@ -1233,10 +1233,10 @@
 		<exception>ObjectDefinitionVersion</exception>
 		<exception>ObjectEntryCount</exception>
 		<exception>ObjectEntryDefaultLanguageId</exception>
+		<exception>ObjectEntryExpirationDate</exception>
 		<exception>ObjectEntryFolderName</exception>
 		<exception>ObjectEntryFolderParentObjectEntryFolderId</exception>
 		<exception>ObjectEntryFolderScope</exception>
-		<exception>ObjectEntryReviewDate</exception>
 		<exception>ObjectEntryValues</exception>
 		<exception>ObjectFieldBusinessType</exception>
 		<exception>ObjectFieldDBType</exception>

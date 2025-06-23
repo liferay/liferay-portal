@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.delivery.client.dto.v1_0.DocumentShortcut;
 import com.liferay.headless.delivery.client.dto.v1_0.Field;
@@ -130,16 +131,28 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null,
 			new ServiceContext() {
 				{
-					setCompanyId(testGroup.getCompanyId());
+					setCompanyId(testCompany.getCompanyId());
 					setUserId(TestPropsValues.getUserId());
 				}
 			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
 
 		_documentShortcutResource.setContextCompany(testCompany);
 
@@ -356,7 +369,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			testDeleteDocumentShortcutBatch_addDocumentShortcut();
 
 		testDeleteDocumentShortcutBatch_deleteDocumentShortcut(
-			"COMPLETED", null, documentShortcut1.getId());
+			202, null, documentShortcut1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -372,7 +385,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 	}
 
 	protected void testDeleteDocumentShortcutBatch_deleteDocumentShortcut(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -385,10 +398,10 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -404,32 +417,20 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			204,
 			documentShortcutResource.
 				deleteSiteDocumentShortcutByExternalReferenceCodeHttpResponse(
-					testDeleteSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						documentShortcut),
+					documentShortcut.getSiteId(),
 					documentShortcut.getExternalReferenceCode()));
 
 		assertHttpResponseStatusCode(
 			404,
 			documentShortcutResource.
 				getSiteDocumentShortcutByExternalReferenceCodeHttpResponse(
-					testDeleteSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						documentShortcut),
+					documentShortcut.getSiteId(),
 					documentShortcut.getExternalReferenceCode()));
 		assertHttpResponseStatusCode(
 			404,
 			documentShortcutResource.
 				getSiteDocumentShortcutByExternalReferenceCodeHttpResponse(
-					testDeleteSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						documentShortcut),
-					"-"));
-	}
-
-	protected Long
-			testDeleteSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-				DocumentShortcut documentShortcut)
-		throws Exception {
-
-		return documentShortcut.getSiteId();
+					documentShortcut.getSiteId(), "-"));
 	}
 
 	protected DocumentShortcut
@@ -642,7 +643,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			testGetAssetLibraryDocumentShortcutsPage_getIrrelevantAssetLibraryId()
 		throws Exception {
 
-		return null;
+		return irrelevantDepotEntry.getDepotEntryId();
 	}
 
 	@Test
@@ -968,19 +969,11 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		DocumentShortcut getDocumentShortcut =
 			documentShortcutResource.
 				getSiteDocumentShortcutByExternalReferenceCode(
-					testGetSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						postDocumentShortcut),
+					postDocumentShortcut.getSiteId(),
 					postDocumentShortcut.getExternalReferenceCode());
 
 		assertEquals(postDocumentShortcut, getDocumentShortcut);
 		assertValid(getDocumentShortcut);
-	}
-
-	protected Long testGetSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-			DocumentShortcut documentShortcut)
-		throws Exception {
-
-		return documentShortcut.getSiteId();
 	}
 
 	protected DocumentShortcut
@@ -1013,9 +1006,8 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 										put(
 											"siteKey",
 											"\"" +
-												testGraphQLGetSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-													documentShortcut) + "\"");
-
+												documentShortcut.getSiteId() +
+													"\"");
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -1045,10 +1037,8 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-														documentShortcut) +
-															"\"");
-
+													documentShortcut.
+														getSiteId() + "\"");
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -1060,14 +1050,6 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/documentShortcutByExternalReferenceCode"))));
-	}
-
-	protected Long
-			testGraphQLGetSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-				DocumentShortcut documentShortcut)
-		throws Exception {
-
-		return documentShortcut.getSiteId();
 	}
 
 	@Test
@@ -1533,8 +1515,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		DocumentShortcut putDocumentShortcut =
 			documentShortcutResource.
 				putSiteDocumentShortcutByExternalReferenceCode(
-					testPutSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						postDocumentShortcut),
+					postDocumentShortcut.getSiteId(),
 					postDocumentShortcut.getExternalReferenceCode(),
 					randomDocumentShortcut);
 
@@ -1544,8 +1525,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		DocumentShortcut getDocumentShortcut =
 			documentShortcutResource.
 				getSiteDocumentShortcutByExternalReferenceCode(
-					testPutSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						putDocumentShortcut),
+					putDocumentShortcut.getSiteId(),
 					putDocumentShortcut.getExternalReferenceCode());
 
 		assertEquals(randomDocumentShortcut, getDocumentShortcut);
@@ -1557,8 +1537,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		putDocumentShortcut =
 			documentShortcutResource.
 				putSiteDocumentShortcutByExternalReferenceCode(
-					testPutSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						newDocumentShortcut),
+					newDocumentShortcut.getSiteId(),
 					newDocumentShortcut.getExternalReferenceCode(),
 					newDocumentShortcut);
 
@@ -1568,8 +1547,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		getDocumentShortcut =
 			documentShortcutResource.
 				getSiteDocumentShortcutByExternalReferenceCode(
-					testPutSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-						putDocumentShortcut),
+					putDocumentShortcut.getSiteId(),
 					putDocumentShortcut.getExternalReferenceCode());
 
 		assertEquals(newDocumentShortcut, getDocumentShortcut);
@@ -1579,11 +1557,12 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			putDocumentShortcut.getExternalReferenceCode());
 	}
 
-	protected Long testPutSiteDocumentShortcutByExternalReferenceCode_getSiteId(
-			DocumentShortcut documentShortcut)
+	protected DocumentShortcut
+			testPutSiteDocumentShortcutByExternalReferenceCode_addDocumentShortcut()
 		throws Exception {
 
-		return documentShortcut.getSiteId();
+		return documentShortcutResource.postSiteDocumentShortcut(
+			testGroup.getGroupId(), randomDocumentShortcut());
 	}
 
 	protected DocumentShortcut
@@ -1593,12 +1572,60 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		return randomDocumentShortcut();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		DocumentShortcut documentShortcut1 =
+			testBatchEngineDeleteImportTask_addDocumentShortcut();
+
+		testBatchEngineDeleteImportTask_deleteDocumentShortcut(
+			200, null, documentShortcut1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			documentShortcutResource.getDocumentShortcutHttpResponse(
+				documentShortcut1.getId()));
+	}
+
 	protected DocumentShortcut
-			testPutSiteDocumentShortcutByExternalReferenceCode_addDocumentShortcut()
+			testBatchEngineDeleteImportTask_addDocumentShortcut()
 		throws Exception {
 
-		return documentShortcutResource.postSiteDocumentShortcut(
-			testGroup.getGroupId(), randomDocumentShortcut());
+		return testDeleteDocumentShortcut_addDocumentShortcut();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteDocumentShortcut(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.delivery.dto.v1_0.DocumentShortcut", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected void appendGraphQLFieldValue(StringBuilder sb, Object value)
@@ -1799,10 +1826,9 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			valid = false;
 		}
 
-		com.liferay.portal.kernel.model.Group group = testDepotEntry.getGroup();
-
 		if (!Objects.equals(
-				documentShortcut.getAssetLibraryKey(), group.getGroupKey()) &&
+				documentShortcut.getAssetLibraryKey(),
+				testDepotEntryGroup.getGroupKey()) &&
 			!Objects.equals(
 				documentShortcut.getSiteId(), testGroup.getGroupId())) {
 
@@ -2529,7 +2555,10 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
 	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {

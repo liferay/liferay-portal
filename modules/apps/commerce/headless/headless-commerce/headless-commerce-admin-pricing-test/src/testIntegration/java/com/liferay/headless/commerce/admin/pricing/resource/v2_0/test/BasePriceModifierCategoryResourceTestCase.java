@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceModifierCategory;
 import com.liferay.headless.commerce.admin.pricing.client.http.HttpInvoker;
@@ -206,12 +207,78 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 
 	@Test
 	public void testDeletePriceModifierCategory() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PriceModifierCategory priceModifierCategory =
+			testDeletePriceModifierCategory_addPriceModifierCategory();
+
+		assertHttpResponseStatusCode(
+			204,
+			priceModifierCategoryResource.
+				deletePriceModifierCategoryHttpResponse(
+					priceModifierCategory.getPriceModifierCategoryId()));
+	}
+
+	protected PriceModifierCategory
+			testDeletePriceModifierCategory_addPriceModifierCategory()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeletePriceModifierCategory() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		PriceModifierCategory priceModifierCategory1 =
+			testGraphQLDeletePriceModifierCategory_addPriceModifierCategory();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePriceModifierCategory",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"priceModifierCategoryId",
+									priceModifierCategory1.
+										getPriceModifierCategoryId());
+							}
+						})),
+				"JSONObject/data", "Object/deletePriceModifierCategory"));
+
+		// Using the namespace headlessCommerceAdminPricing_v2_0
+
+		PriceModifierCategory priceModifierCategory2 =
+			testGraphQLDeletePriceModifierCategory_addPriceModifierCategory();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminPricing_v2_0",
+						new GraphQLField(
+							"deletePriceModifierCategory",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"priceModifierCategoryId",
+										priceModifierCategory2.
+											getPriceModifierCategoryId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminPricing_v2_0",
+				"Object/deletePriceModifierCategory"));
+	}
+
+	protected PriceModifierCategory
+			testGraphQLDeletePriceModifierCategory_addPriceModifierCategory()
+		throws Exception {
+
+		return testGraphQLPriceModifierCategory_addPriceModifierCategory();
 	}
 
 	@Test
@@ -220,22 +287,19 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 			testDeletePriceModifierCategoryBatch_addPriceModifierCategory();
 
 		testDeletePriceModifierCategoryBatch_deletePriceModifierCategory(
-			"COMPLETED", null,
-			priceModifierCategory1.getPriceModifierCategoryId());
+			202, null, priceModifierCategory1.getPriceModifierCategoryId());
 	}
 
 	protected PriceModifierCategory
 			testDeletePriceModifierCategoryBatch_addPriceModifierCategory()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeletePriceModifierCategory_addPriceModifierCategory();
 	}
 
 	protected void
 			testDeletePriceModifierCategoryBatch_deletePriceModifierCategory(
-				String expectedExecuteStatus, String externalReferenceCode,
-				Long id)
+				int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -249,10 +313,10 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 							"priceModifierCategoryId", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -320,6 +384,12 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 			page,
 			testGetPriceModifierByExternalReferenceCodePriceModifierCategoriesPage_getExpectedActions(
 				externalReferenceCode));
+
+		priceModifierCategoryResource.deletePriceModifierCategory(
+			priceModifierCategory1.getPriceModifierCategoryId());
+
+		priceModifierCategoryResource.deletePriceModifierCategory(
+			priceModifierCategory2.getPriceModifierCategoryId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -536,6 +606,12 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 			page,
 			testGetPriceModifierIdPriceModifierCategoriesPage_getExpectedActions(
 				id));
+
+		priceModifierCategoryResource.deletePriceModifierCategory(
+			priceModifierCategory1.getPriceModifierCategoryId());
+
+		priceModifierCategoryResource.deletePriceModifierCategory(
+			priceModifierCategory2.getPriceModifierCategoryId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -1002,8 +1078,67 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PriceModifierCategory priceModifierCategory1 =
+			testBatchEngineDeleteImportTask_addPriceModifierCategory();
+
+		testBatchEngineDeleteImportTask_deletePriceModifierCategory(
+			200, null, priceModifierCategory1.getPriceModifierCategoryId());
+	}
+
+	protected PriceModifierCategory
+			testBatchEngineDeleteImportTask_addPriceModifierCategory()
+		throws Exception {
+
+		return testDeletePriceModifierCategory_addPriceModifierCategory();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deletePriceModifierCategory(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierCategory",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"priceModifierCategoryId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected PriceModifierCategory
+			testGraphQLPriceModifierCategory_addPriceModifierCategory()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		PriceModifierCategory priceModifierCategory,
@@ -1093,6 +1228,10 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (priceModifierCategory.getPriceModifierCategoryId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

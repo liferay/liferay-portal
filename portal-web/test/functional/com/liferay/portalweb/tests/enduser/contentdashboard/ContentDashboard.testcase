@@ -5829,6 +5829,7 @@ definition {
 	@description = "LPS-132254 When a user selects the value of the number of rows (4, 8, 40, 60) displayed in the list, the Content Dashboard will display the number of rows selected"
 	@priority = 5
 	test PaginationDisplaySelectedNumberOfRows {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
 		property portal.acceptance = "true";
 
 		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
@@ -5856,6 +5857,8 @@ definition {
 	@description = "LPS-132254 When a user use the <, > buttons, the page displayed moves forward/backward"
 	@priority = 3
 	test PaginationMoveAcrossPagesWithButtons {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
 
 		task ("Create 6 WC using JSON") {
@@ -5887,6 +5890,8 @@ definition {
 	@description = "LPS-132254 When a user clicks on a page number, that page is displayed in the Content Dashboard"
 	@priority = 3
 	test PaginationMoveAcrossPagesWithNumber {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		var groupId = JSONGroupSetter.setGroupId(groupName = "Test Site Name");
 
 		task ("Create 6 WC using JSON") {

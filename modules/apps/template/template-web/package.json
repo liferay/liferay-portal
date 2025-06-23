@@ -3,12 +3,12 @@
 		"@clayui/alert": "3.129.1",
 		"@clayui/button": "3.136.0",
 		"@clayui/empty-state": "3.128.0",
-		"@clayui/form": "3.137.0",
+		"@clayui/form": "3.139.0",
 		"@clayui/icon": "3.128.0",
 		"@clayui/loading-indicator": "3.128.0",
-		"@clayui/modal": "3.137.0",
-		"@clayui/panel": "3.137.0",
-		"@clayui/popover": "3.137.0",
+		"@clayui/modal": "3.139.0",
+		"@clayui/panel": "3.139.0",
+		"@clayui/popover": "3.139.0",
 		"@liferay/frontend-js-codemirror-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
@@ -26,5 +26,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.101"
+	"version": "1.0.102"
 }

@@ -23,6 +23,7 @@ import com.liferay.headless.admin.taxonomy.client.permission.Permission;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.KeywordResource;
 import com.liferay.headless.admin.taxonomy.client.serdes.v1_0.KeywordSerDes;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -134,16 +135,28 @@ public abstract class BaseKeywordResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null,
 			new ServiceContext() {
 				{
-					setCompanyId(testGroup.getCompanyId());
+					setCompanyId(testCompany.getCompanyId());
 					setUserId(TestPropsValues.getUserId());
 				}
 			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
 
 		_keywordResource.setContextCompany(testCompany);
 
@@ -273,20 +286,20 @@ public abstract class BaseKeywordResourceTestCase {
 					"-"));
 	}
 
-	protected Long
-			testDeleteAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected Keyword
 			testDeleteAssetLibraryKeywordByExternalReferenceCode_addKeyword()
 		throws Exception {
 
 		return keywordResource.postAssetLibraryKeyword(
 			testDepotEntry.getDepotEntryId(), randomKeyword());
+	}
+
+	protected Long
+			testDeleteAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -385,8 +398,7 @@ public abstract class BaseKeywordResourceTestCase {
 	public void testDeleteKeywordBatch() throws Exception {
 		Keyword keyword1 = testDeleteKeywordBatch_addKeyword();
 
-		testDeleteKeywordBatch_deleteKeyword(
-			"COMPLETED", null, keyword1.getId());
+		testDeleteKeywordBatch_deleteKeyword(202, null, keyword1.getId());
 
 		assertHttpResponseStatusCode(
 			404, keywordResource.getKeywordHttpResponse(keyword1.getId()));
@@ -397,7 +409,7 @@ public abstract class BaseKeywordResourceTestCase {
 	}
 
 	protected void testDeleteKeywordBatch_deleteKeyword(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -410,10 +422,10 @@ public abstract class BaseKeywordResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -429,27 +441,16 @@ public abstract class BaseKeywordResourceTestCase {
 			204,
 			keywordResource.
 				deleteSiteKeywordByExternalReferenceCodeHttpResponse(
-					testDeleteSiteKeywordByExternalReferenceCode_getSiteId(
-						keyword),
-					keyword.getExternalReferenceCode()));
+					keyword.getSiteId(), keyword.getExternalReferenceCode()));
 
 		assertHttpResponseStatusCode(
 			404,
 			keywordResource.getSiteKeywordByExternalReferenceCodeHttpResponse(
-				testDeleteSiteKeywordByExternalReferenceCode_getSiteId(keyword),
-				keyword.getExternalReferenceCode()));
+				keyword.getSiteId(), keyword.getExternalReferenceCode()));
 		assertHttpResponseStatusCode(
 			404,
 			keywordResource.getSiteKeywordByExternalReferenceCodeHttpResponse(
-				testDeleteSiteKeywordByExternalReferenceCode_getSiteId(keyword),
-				"-"));
-	}
-
-	protected Long testDeleteSiteKeywordByExternalReferenceCode_getSiteId(
-			Keyword keyword)
-		throws Exception {
-
-		return keyword.getSiteId();
+				keyword.getSiteId(), "-"));
 	}
 
 	protected Keyword testDeleteSiteKeywordByExternalReferenceCode_addKeyword()
@@ -475,20 +476,20 @@ public abstract class BaseKeywordResourceTestCase {
 		assertValid(getKeyword);
 	}
 
-	protected Long
-			testGetAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected Keyword
 			testGetAssetLibraryKeywordByExternalReferenceCode_addKeyword()
 		throws Exception {
 
 		return keywordResource.postAssetLibraryKeyword(
 			testDepotEntry.getDepotEntryId(), randomKeyword());
+	}
+
+	protected Long
+			testGetAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -515,7 +516,6 @@ public abstract class BaseKeywordResourceTestCase {
 											"\"" +
 												testGraphQLGetAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId() +
 													"\"");
-
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -547,7 +547,6 @@ public abstract class BaseKeywordResourceTestCase {
 												"\"" +
 													testGraphQLGetAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId() +
 														"\"");
-
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -590,7 +589,7 @@ public abstract class BaseKeywordResourceTestCase {
 								put(
 									"assetLibraryId",
 									"\"" +
-										testGraphQLGetAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId() +
+										irrelevantDepotEntry.getDepotEntryId() +
 											"\"");
 								put(
 									"externalReferenceCode",
@@ -616,8 +615,8 @@ public abstract class BaseKeywordResourceTestCase {
 									put(
 										"assetLibraryId",
 										"\"" +
-											testGraphQLGetAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId() +
-												"\"");
+											irrelevantDepotEntry.
+												getDepotEntryId() + "\"");
 									put(
 										"externalReferenceCode",
 										irrelevantExternalReferenceCode);
@@ -637,6 +636,10 @@ public abstract class BaseKeywordResourceTestCase {
 
 	@Test
 	public void testGetAssetLibraryKeywordPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Keyword postKeyword =
+			testGetAssetLibraryKeywordPermissionsPage_addKeyword();
+
 		Page<Permission> page =
 			keywordResource.getAssetLibraryKeywordPermissionsPage(
 				testDepotEntry.getDepotEntryId(), RoleConstants.GUEST);
@@ -647,7 +650,8 @@ public abstract class BaseKeywordResourceTestCase {
 	protected Keyword testGetAssetLibraryKeywordPermissionsPage_addKeyword()
 		throws Exception {
 
-		return testPostAssetLibraryKeyword_addKeyword(randomKeyword());
+		return keywordResource.postAssetLibraryKeyword(
+			testDepotEntry.getDepotEntryId(), randomKeyword());
 	}
 
 	@Test
@@ -1059,7 +1063,7 @@ public abstract class BaseKeywordResourceTestCase {
 	protected Long testGetAssetLibraryKeywordsPage_getIrrelevantAssetLibraryId()
 		throws Exception {
 
-		return null;
+		return irrelevantDepotEntry.getDepotEntryId();
 	}
 
 	@Test
@@ -1857,19 +1861,11 @@ public abstract class BaseKeywordResourceTestCase {
 
 		Keyword getKeyword =
 			keywordResource.getSiteKeywordByExternalReferenceCode(
-				testGetSiteKeywordByExternalReferenceCode_getSiteId(
-					postKeyword),
+				postKeyword.getSiteId(),
 				postKeyword.getExternalReferenceCode());
 
 		assertEquals(postKeyword, getKeyword);
 		assertValid(getKeyword);
-	}
-
-	protected Long testGetSiteKeywordByExternalReferenceCode_getSiteId(
-			Keyword keyword)
-		throws Exception {
-
-		return keyword.getSiteId();
 	}
 
 	protected Keyword testGetSiteKeywordByExternalReferenceCode_addKeyword()
@@ -1900,10 +1896,7 @@ public abstract class BaseKeywordResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteKeywordByExternalReferenceCode_getSiteId(
-													keyword) + "\"");
-
+											"\"" + keyword.getSiteId() + "\"");
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -1932,10 +1925,8 @@ public abstract class BaseKeywordResourceTestCase {
 										{
 											put(
 												"siteKey",
-												"\"" +
-													testGraphQLGetSiteKeywordByExternalReferenceCode_getSiteId(
-														keyword) + "\"");
-
+												"\"" + keyword.getSiteId() +
+													"\"");
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -1948,13 +1939,6 @@ public abstract class BaseKeywordResourceTestCase {
 						"JSONObject/data",
 						"JSONObject/headlessAdminTaxonomy_v1_0",
 						"Object/keywordByExternalReferenceCode"))));
-	}
-
-	protected Long testGraphQLGetSiteKeywordByExternalReferenceCode_getSiteId(
-			Keyword keyword)
-		throws Exception {
-
-		return keyword.getSiteId();
 	}
 
 	@Test
@@ -2021,6 +2005,9 @@ public abstract class BaseKeywordResourceTestCase {
 
 	@Test
 	public void testGetSiteKeywordPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Keyword postKeyword = testGetSiteKeywordPermissionsPage_addKeyword();
+
 		Page<Permission> page = keywordResource.getSiteKeywordPermissionsPage(
 			testGroup.getGroupId(), RoleConstants.GUEST);
 
@@ -2030,7 +2017,8 @@ public abstract class BaseKeywordResourceTestCase {
 	protected Keyword testGetSiteKeywordPermissionsPage_addKeyword()
 		throws Exception {
 
-		return testPostSiteKeyword_addKeyword(randomKeyword());
+		return keywordResource.postSiteKeyword(
+			testGroup.getGroupId(), randomKeyword());
 	}
 
 	@Test
@@ -2523,6 +2511,14 @@ public abstract class BaseKeywordResourceTestCase {
 			putKeyword.getExternalReferenceCode());
 	}
 
+	protected Keyword
+			testPutAssetLibraryKeywordByExternalReferenceCode_addKeyword()
+		throws Exception {
+
+		return keywordResource.postAssetLibraryKeyword(
+			testDepotEntry.getDepotEntryId(), randomKeyword());
+	}
+
 	protected Long
 			testPutAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId()
 		throws Exception {
@@ -2536,14 +2532,6 @@ public abstract class BaseKeywordResourceTestCase {
 		throws Exception {
 
 		return randomKeyword();
-	}
-
-	protected Keyword
-			testPutAssetLibraryKeywordByExternalReferenceCode_addKeyword()
-		throws Exception {
-
-		return keywordResource.postAssetLibraryKeyword(
-			testDepotEntry.getDepotEntryId(), randomKeyword());
 	}
 
 	@Test
@@ -2619,10 +2607,19 @@ public abstract class BaseKeywordResourceTestCase {
 		Keyword keyword = testPutKeywordMerge_addKeyword();
 
 		assertHttpResponseStatusCode(
-			204, keywordResource.putKeywordMergeHttpResponse(null, null));
+			204,
+			keywordResource.putKeywordMergeHttpResponse(
+				testPutKeywordMerge_getToKeywordId(), null));
 
 		assertHttpResponseStatusCode(
-			404, keywordResource.putKeywordMergeHttpResponse(null, null));
+			404,
+			keywordResource.putKeywordMergeHttpResponse(
+				testPutKeywordMerge_getToKeywordId(), null));
+	}
+
+	protected Long testPutKeywordMerge_getToKeywordId() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Keyword testPutKeywordMerge_addKeyword() throws Exception {
@@ -2675,17 +2672,15 @@ public abstract class BaseKeywordResourceTestCase {
 
 		Keyword putKeyword =
 			keywordResource.putSiteKeywordByExternalReferenceCode(
-				testPutSiteKeywordByExternalReferenceCode_getSiteId(
-					postKeyword),
-				postKeyword.getExternalReferenceCode(), randomKeyword);
+				postKeyword.getSiteId(), postKeyword.getExternalReferenceCode(),
+				randomKeyword);
 
 		assertEquals(randomKeyword, putKeyword);
 		assertValid(putKeyword);
 
 		Keyword getKeyword =
 			keywordResource.getSiteKeywordByExternalReferenceCode(
-				testPutSiteKeywordByExternalReferenceCode_getSiteId(putKeyword),
-				putKeyword.getExternalReferenceCode());
+				putKeyword.getSiteId(), putKeyword.getExternalReferenceCode());
 
 		assertEquals(randomKeyword, getKeyword);
 		assertValid(getKeyword);
@@ -2694,15 +2689,14 @@ public abstract class BaseKeywordResourceTestCase {
 			testPutSiteKeywordByExternalReferenceCode_createKeyword();
 
 		putKeyword = keywordResource.putSiteKeywordByExternalReferenceCode(
-			testPutSiteKeywordByExternalReferenceCode_getSiteId(newKeyword),
-			newKeyword.getExternalReferenceCode(), newKeyword);
+			newKeyword.getSiteId(), newKeyword.getExternalReferenceCode(),
+			newKeyword);
 
 		assertEquals(newKeyword, putKeyword);
 		assertValid(putKeyword);
 
 		getKeyword = keywordResource.getSiteKeywordByExternalReferenceCode(
-			testPutSiteKeywordByExternalReferenceCode_getSiteId(putKeyword),
-			putKeyword.getExternalReferenceCode());
+			putKeyword.getSiteId(), putKeyword.getExternalReferenceCode());
 
 		assertEquals(newKeyword, getKeyword);
 
@@ -2711,24 +2705,17 @@ public abstract class BaseKeywordResourceTestCase {
 			putKeyword.getExternalReferenceCode());
 	}
 
-	protected Long testPutSiteKeywordByExternalReferenceCode_getSiteId(
-			Keyword keyword)
+	protected Keyword testPutSiteKeywordByExternalReferenceCode_addKeyword()
 		throws Exception {
 
-		return keyword.getSiteId();
+		return keywordResource.postSiteKeyword(
+			testGroup.getGroupId(), randomKeyword());
 	}
 
 	protected Keyword testPutSiteKeywordByExternalReferenceCode_createKeyword()
 		throws Exception {
 
 		return randomKeyword();
-	}
-
-	protected Keyword testPutSiteKeywordByExternalReferenceCode_addKeyword()
-		throws Exception {
-
-		return keywordResource.postSiteKeyword(
-			testGroup.getGroupId(), randomKeyword());
 	}
 
 	@Test
@@ -2772,6 +2759,58 @@ public abstract class BaseKeywordResourceTestCase {
 
 		return keywordResource.postSiteKeyword(
 			testGroup.getGroupId(), randomKeyword());
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Keyword keyword1 = testBatchEngineDeleteImportTask_addKeyword();
+
+		testBatchEngineDeleteImportTask_deleteKeyword(
+			200, null, keyword1.getId());
+
+		assertHttpResponseStatusCode(
+			404, keywordResource.getKeywordHttpResponse(keyword1.getId()));
+	}
+
+	protected Keyword testBatchEngineDeleteImportTask_addKeyword()
+		throws Exception {
+
+		return testDeleteKeyword_addKeyword();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteKeyword(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.admin.taxonomy.dto.v1_0.Keyword", null,
+				null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule
@@ -2954,10 +2993,9 @@ public abstract class BaseKeywordResourceTestCase {
 			valid = false;
 		}
 
-		com.liferay.portal.kernel.model.Group group = testDepotEntry.getGroup();
-
 		if (!Objects.equals(
-				keyword.getAssetLibraryKey(), group.getGroupKey()) &&
+				keyword.getAssetLibraryKey(),
+				testDepotEntryGroup.getGroupKey()) &&
 			!Objects.equals(keyword.getSiteId(), testGroup.getGroupId())) {
 
 			valid = false;
@@ -3721,8 +3759,8 @@ public abstract class BaseKeywordResourceTestCase {
 				id = RandomTestUtil.randomLong();
 				keywordUsageCount = RandomTestUtil.randomInt();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				siteExternalReferenceCode = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				siteExternalReferenceCode =
+					testGroup.getExternalReferenceCode();
 				siteId = testGroup.getGroupId();
 				subscribed = RandomTestUtil.randomBoolean();
 			}
@@ -3731,6 +3769,9 @@ public abstract class BaseKeywordResourceTestCase {
 
 	protected Keyword randomIrrelevantKeyword() throws Exception {
 		Keyword randomIrrelevantKeyword = randomKeyword();
+
+		randomIrrelevantKeyword.setSiteExternalReferenceCode(
+			irrelevantGroup.getExternalReferenceCode());
 
 		randomIrrelevantKeyword.setSiteId(irrelevantGroup.getGroupId());
 
@@ -3767,7 +3808,10 @@ public abstract class BaseKeywordResourceTestCase {
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
 	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {

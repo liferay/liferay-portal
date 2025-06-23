@@ -207,13 +207,13 @@ public abstract class BaseTaskResourceTestCase {
 				testDeleteProcessTask_getProcessId(task), 0L));
 	}
 
+	protected Task testDeleteProcessTask_addTask() throws Exception {
+		return testPostProcessTask_addTask(randomTask());
+	}
+
 	protected Long testDeleteProcessTask_getProcessId(Task task)
 		throws Exception {
 
-		return task.getProcessId();
-	}
-
-	protected Task testDeleteProcessTask_addTask() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -229,11 +229,11 @@ public abstract class BaseTaskResourceTestCase {
 		assertValid(getTask);
 	}
 
-	protected Long testGetProcessTask_getProcessId(Task task) throws Exception {
-		return task.getProcessId();
+	protected Task testGetProcessTask_addTask() throws Exception {
+		return testPostProcessTask_addTask(randomTask());
 	}
 
-	protected Task testGetProcessTask_addTask() throws Exception {
+	protected Long testGetProcessTask_getProcessId(Task task) throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -258,7 +258,6 @@ public abstract class BaseTaskResourceTestCase {
 											"processId",
 											testGraphQLGetProcessTask_getProcessId(
 												task));
-
 										put("taskId", task.getId());
 									}
 								},
@@ -283,7 +282,6 @@ public abstract class BaseTaskResourceTestCase {
 												"processId",
 												testGraphQLGetProcessTask_getProcessId(
 													task));
-
 											put("taskId", task.getId());
 										}
 									},
@@ -296,7 +294,8 @@ public abstract class BaseTaskResourceTestCase {
 	protected Long testGraphQLGetProcessTask_getProcessId(Task task)
 		throws Exception {
 
-		return task.getProcessId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -429,17 +428,23 @@ public abstract class BaseTaskResourceTestCase {
 		assertHttpResponseStatusCode(
 			204,
 			taskResource.patchProcessTaskHttpResponse(
-				task.getProcessId(), task.getId(), task));
+				testPatchProcessTask_getProcessId(task), task.getId(), task));
 
 		assertHttpResponseStatusCode(
 			404,
 			taskResource.patchProcessTaskHttpResponse(
-				task.getProcessId(), 0L, task));
+				testPatchProcessTask_getProcessId(task), 0L, task));
+	}
+
+	protected Long testPatchProcessTask_getProcessId(Task task)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Task testPatchProcessTask_addTask() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostProcessTask_addTask(randomTask());
 	}
 
 	@Test
@@ -450,17 +455,24 @@ public abstract class BaseTaskResourceTestCase {
 		assertHttpResponseStatusCode(
 			204,
 			taskResource.patchProcessTaskCompleteHttpResponse(
-				task.getProcessId(), task.getId(), task));
+				testPatchProcessTaskComplete_getProcessId(task), task.getId(),
+				task));
 
 		assertHttpResponseStatusCode(
 			404,
 			taskResource.patchProcessTaskCompleteHttpResponse(
-				task.getProcessId(), 0L, task));
+				testPatchProcessTaskComplete_getProcessId(task), 0L, task));
+	}
+
+	protected Long testPatchProcessTaskComplete_getProcessId(Task task)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Task testPatchProcessTaskComplete_addTask() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostProcessTask_addTask(randomTask());
 	}
 
 	@Test
@@ -481,6 +493,11 @@ public abstract class BaseTaskResourceTestCase {
 	@Test
 	public void testPostTasksPage() throws Exception {
 		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected Task testGraphQLTask_addTask() throws Exception {

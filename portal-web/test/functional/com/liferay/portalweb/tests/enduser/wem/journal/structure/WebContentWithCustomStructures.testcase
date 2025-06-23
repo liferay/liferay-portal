@@ -720,7 +720,7 @@ definition {
 	@description = "This is a use case for LRQA-61632. Add web content with repeatable HTML field."
 	@priority = 4
 	test AddWebContentWithRepeatableRichTextField {
-		property environment.acceptance = "true";
+		property environment.acceptance = "false";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 

@@ -2087,6 +2087,11 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected WorkflowTask testGraphQLWorkflowTask_addWorkflowTask()
 		throws Exception {
 

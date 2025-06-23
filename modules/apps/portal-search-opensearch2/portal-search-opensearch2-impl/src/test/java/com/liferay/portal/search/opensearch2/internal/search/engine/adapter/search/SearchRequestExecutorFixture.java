@@ -36,13 +36,11 @@ import com.liferay.portal.search.opensearch2.internal.facet.FacetTranslatorImpl;
 import com.liferay.portal.search.opensearch2.internal.facet.NestedFacetProcessor;
 import com.liferay.portal.search.opensearch2.internal.facet.RangeFacetProcessor;
 import com.liferay.portal.search.opensearch2.internal.filter.OpenSearchFilterTranslatorFixture;
-import com.liferay.portal.search.opensearch2.internal.groupby.GroupByTranslatorImpl;
 import com.liferay.portal.search.opensearch2.internal.highlight.HighlightTranslator;
 import com.liferay.portal.search.opensearch2.internal.legacy.hits.HitDocumentTranslatorImpl;
 import com.liferay.portal.search.opensearch2.internal.query.OpenSearchQueryTranslator;
 import com.liferay.portal.search.opensearch2.internal.query.OpenSearchQueryTranslatorFixture;
 import com.liferay.portal.search.opensearch2.internal.search.response.SearchResponseTranslator;
-import com.liferay.portal.search.opensearch2.internal.search.response.SearchResponseTranslatorImpl;
 import com.liferay.portal.search.opensearch2.internal.sort.OpenSearchSortFieldTranslator;
 import com.liferay.portal.search.opensearch2.internal.sort.OpenSearchSortFieldTranslatorFixture;
 import com.liferay.portal.search.opensearch2.internal.stats.StatsTranslator;
@@ -396,9 +394,6 @@ public class SearchRequestExecutorFixture {
 			searchSearchRequestAssembler, "_groupByRequestFactory",
 			new GroupByRequestFactoryImpl());
 		ReflectionTestUtil.setFieldValue(
-			searchSearchRequestAssembler, "_groupByTranslator",
-			new GroupByTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
 			searchSearchRequestAssembler, "_highlightTranslator",
 			new HighlightTranslator());
 		ReflectionTestUtil.setFieldValue(
@@ -450,24 +445,6 @@ public class SearchRequestExecutorFixture {
 		ReflectionTestUtil.setFieldValue(
 			commonSearchResponseAssembler, "_statsTranslator", statsTranslator);
 
-		SearchResponseTranslator searchResponseTranslator =
-			new SearchResponseTranslatorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_groupByResponseFactory",
-			new GroupByResponseFactoryImpl());
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_hitDocumentTranslator",
-			new HitDocumentTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_statsRequestBuilderFactory",
-			statsRequestBuilderFactory);
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_statsResultsTranslator",
-			new StatsResultsTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			searchResponseTranslator, "_statsTranslator", statsTranslator);
-
 		ReflectionTestUtil.setFieldValue(
 			searchSearchResponseAssembler, "_aggregationResults",
 			new AggregationResultsImpl());
@@ -491,7 +468,10 @@ public class SearchRequestExecutorFixture {
 			new SearchHitsBuilderFactoryImpl());
 		ReflectionTestUtil.setFieldValue(
 			searchSearchResponseAssembler, "_searchResponseTranslator",
-			searchResponseTranslator);
+			new SearchResponseTranslator(
+				new GroupByResponseFactoryImpl(),
+				new HitDocumentTranslatorImpl(), statsRequestBuilderFactory,
+				new StatsResultsTranslatorImpl(), statsTranslator));
 
 		return searchSearchResponseAssembler;
 	}

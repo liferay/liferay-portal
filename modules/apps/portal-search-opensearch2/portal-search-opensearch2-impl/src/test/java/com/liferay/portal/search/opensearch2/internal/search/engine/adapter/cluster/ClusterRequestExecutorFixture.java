@@ -19,75 +19,23 @@ public class ClusterRequestExecutorFixture {
 	}
 
 	public void setUp() {
-		ClusterHealthStatusTranslator clusterHealthStatusTranslator =
-			new ClusterHealthStatusTranslatorImpl();
-
 		_clusterRequestExecutor = new OpenSearchClusterRequestExecutor();
 
 		ReflectionTestUtil.setFieldValue(
 			_clusterRequestExecutor, "_healthClusterRequestExecutor",
-			_createHealthClusterRequestExecutor(
-				clusterHealthStatusTranslator, _openSearchConnectionManager));
+			new HealthClusterRequestExecutor(_openSearchConnectionManager));
 		ReflectionTestUtil.setFieldValue(
 			_clusterRequestExecutor, "_stateClusterRequestExecutor",
-			_createStateClusterRequestExecutor(_openSearchConnectionManager));
+			new StateClusterRequestExecutor(_openSearchConnectionManager));
 		ReflectionTestUtil.setFieldValue(
 			_clusterRequestExecutor, "_statsClusterRequestExecutor",
-			_createStatsClusterRequestExecutor(
-				clusterHealthStatusTranslator, _openSearchConnectionManager));
+			new StatsClusterRequestExecutor(_openSearchConnectionManager));
 	}
 
 	protected void setOpenSearchConnectionManager(
 		OpenSearchConnectionManager openSearchConnectionManager) {
 
 		_openSearchConnectionManager = openSearchConnectionManager;
-	}
-
-	private HealthClusterRequestExecutor _createHealthClusterRequestExecutor(
-		ClusterHealthStatusTranslator clusterHealthStatusTranslator,
-		OpenSearchConnectionManager openSearchConnectionManager) {
-
-		HealthClusterRequestExecutor healthClusterRequestExecutor =
-			new HealthClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			healthClusterRequestExecutor, "_clusterHealthStatusTranslator",
-			clusterHealthStatusTranslator);
-		ReflectionTestUtil.setFieldValue(
-			healthClusterRequestExecutor, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		return healthClusterRequestExecutor;
-	}
-
-	private StateClusterRequestExecutor _createStateClusterRequestExecutor(
-		OpenSearchConnectionManager openSearchConnectionManager) {
-
-		StateClusterRequestExecutor stateClusterRequestExecutor =
-			new StateClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			stateClusterRequestExecutor, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		return stateClusterRequestExecutor;
-	}
-
-	private StatsClusterRequestExecutor _createStatsClusterRequestExecutor(
-		ClusterHealthStatusTranslator clusterHealthStatusTranslator,
-		OpenSearchConnectionManager openSearchConnectionManager) {
-
-		StatsClusterRequestExecutor statsClusterRequestExecutor =
-			new StatsClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutor, "_clusterHealthStatusTranslator",
-			clusterHealthStatusTranslator);
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutor, "_openSearchConnectionManager",
-			openSearchConnectionManager);
-
-		return statsClusterRequestExecutor;
 	}
 
 	private ClusterRequestExecutor _clusterRequestExecutor;

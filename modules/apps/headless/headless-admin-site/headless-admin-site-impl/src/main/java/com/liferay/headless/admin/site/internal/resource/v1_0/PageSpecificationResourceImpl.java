@@ -67,11 +67,10 @@ public class PageSpecificationResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
-		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
-			pageSpecificationExternalReferenceCode,
+		Layout layout = _getLayout(
 			GroupUtil.getGroupId(
-				true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
+				true, contextCompany.getCompanyId(), siteExternalReferenceCode),
+			pageSpecificationExternalReferenceCode);
 
 		if (!layout.isDraftLayout() ||
 			(layout.isApproved() &&
@@ -166,11 +165,11 @@ public class PageSpecificationResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
-		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
-			pageSpecificationExternalReferenceCode,
+		Layout layout = _getLayout(
 			GroupUtil.getGroupId(
 				true, true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
+				siteExternalReferenceCode),
+			pageSpecificationExternalReferenceCode);
 
 		if (!layout.isTypeAssetDisplay() && !layout.isTypeContent() &&
 			!layout.isTypePortlet()) {
@@ -293,14 +292,15 @@ public class PageSpecificationResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
-		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
-			pageSpecificationExternalReferenceCode,
-			GroupUtil.getGroupId(
-				true, true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
+		long groupId = GroupUtil.getGroupId(
+			true, true, contextCompany.getCompanyId(),
+			siteExternalReferenceCode);
+
+		Layout layout = _getLayout(
+			groupId, pageSpecificationExternalReferenceCode);
 
 		ServiceContext serviceContext = ServiceContextBuilder.create(
-			layout.getGroupId(), contextHttpServletRequest, null
+			groupId, contextHttpServletRequest, null
 		).build();
 
 		serviceContext.setUserId(contextUser.getUserId());
@@ -450,6 +450,27 @@ public class PageSpecificationResourceImpl
 				throw new UnsupportedOperationException();
 			}
 		}
+	}
+
+	private Layout _getLayout(
+			long groupId, String pageSpecificationExternalReferenceCode)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.
+				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+					pageSpecificationExternalReferenceCode, groupId);
+
+		if ((layoutPageTemplateEntry != null) &&
+			(layoutPageTemplateEntry.getType() ==
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE)) {
+
+			return _layoutLocalService.getLayout(
+				layoutPageTemplateEntry.getPlid());
+		}
+
+		return _layoutService.getLayoutByExternalReferenceCode(
+			pageSpecificationExternalReferenceCode, groupId);
 	}
 
 	private PageExperience _getPageExperience(

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Item Selector Web
 Bundle-SymbolicName: com.liferay.fragment.item.selector.web
-Bundle-Version: 2.0.10
+Bundle-Version: 2.0.11
 Web-ContextPath: /fragment-item-selector-web

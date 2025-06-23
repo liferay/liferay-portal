@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Dispatch Test Utilities
+Bundle-SymbolicName: com.liferay.dispatch.test.util
+Bundle-Version: 1.0.2
+Export-Package: com.liferay.dispatch.test.util

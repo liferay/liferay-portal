@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Taglib
 Bundle-SymbolicName: com.liferay.commerce.taglib
-Bundle-Version: 9.0.0
+Bundle-Version: 9.0.1
 Export-Package: com.liferay.commerce.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.inventory.client.dto.v1_0.WarehouseChannel;
 import com.liferay.headless.commerce.admin.inventory.client.http.HttpInvoker;
@@ -199,12 +200,75 @@ public abstract class BaseWarehouseChannelResourceTestCase {
 
 	@Test
 	public void testDeleteWarehouseChannel() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		WarehouseChannel warehouseChannel =
+			testDeleteWarehouseChannel_addWarehouseChannel();
+
+		assertHttpResponseStatusCode(
+			204,
+			warehouseChannelResource.deleteWarehouseChannelHttpResponse(
+				warehouseChannel.getWarehouseChannelId()));
+	}
+
+	protected WarehouseChannel testDeleteWarehouseChannel_addWarehouseChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteWarehouseChannel() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		WarehouseChannel warehouseChannel1 =
+			testGraphQLDeleteWarehouseChannel_addWarehouseChannel();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteWarehouseChannel",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"warehouseChannelId",
+									warehouseChannel1.getWarehouseChannelId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteWarehouseChannel"));
+
+		// Using the namespace headlessCommerceAdminInventory_v1_0
+
+		WarehouseChannel warehouseChannel2 =
+			testGraphQLDeleteWarehouseChannel_addWarehouseChannel();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminInventory_v1_0",
+						new GraphQLField(
+							"deleteWarehouseChannel",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"warehouseChannelId",
+										warehouseChannel2.
+											getWarehouseChannelId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminInventory_v1_0",
+				"Object/deleteWarehouseChannel"));
+	}
+
+	protected WarehouseChannel
+			testGraphQLDeleteWarehouseChannel_addWarehouseChannel()
+		throws Exception {
+
+		return testGraphQLWarehouseChannel_addWarehouseChannel();
 	}
 
 	@Test
@@ -213,19 +277,18 @@ public abstract class BaseWarehouseChannelResourceTestCase {
 			testDeleteWarehouseChannelBatch_addWarehouseChannel();
 
 		testDeleteWarehouseChannelBatch_deleteWarehouseChannel(
-			"COMPLETED", null, warehouseChannel1.getWarehouseChannelId());
+			202, null, warehouseChannel1.getWarehouseChannelId());
 	}
 
 	protected WarehouseChannel
 			testDeleteWarehouseChannelBatch_addWarehouseChannel()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteWarehouseChannel_addWarehouseChannel();
 	}
 
 	protected void testDeleteWarehouseChannelBatch_deleteWarehouseChannel(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -238,10 +301,10 @@ public abstract class BaseWarehouseChannelResourceTestCase {
 						"warehouseChannelId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -307,6 +370,12 @@ public abstract class BaseWarehouseChannelResourceTestCase {
 			page,
 			testGetWarehouseByExternalReferenceCodeWarehouseChannelsPage_getExpectedActions(
 				externalReferenceCode));
+
+		warehouseChannelResource.deleteWarehouseChannel(
+			warehouseChannel1.getWarehouseChannelId());
+
+		warehouseChannelResource.deleteWarehouseChannel(
+			warehouseChannel2.getWarehouseChannelId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -505,6 +574,12 @@ public abstract class BaseWarehouseChannelResourceTestCase {
 		assertValid(
 			page,
 			testGetWarehouseIdWarehouseChannelsPage_getExpectedActions(id));
+
+		warehouseChannelResource.deleteWarehouseChannel(
+			warehouseChannel1.getWarehouseChannelId());
+
+		warehouseChannelResource.deleteWarehouseChannel(
+			warehouseChannel2.getWarehouseChannelId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -937,8 +1012,66 @@ public abstract class BaseWarehouseChannelResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WarehouseChannel warehouseChannel1 =
+			testBatchEngineDeleteImportTask_addWarehouseChannel();
+
+		testBatchEngineDeleteImportTask_deleteWarehouseChannel(
+			200, null, warehouseChannel1.getWarehouseChannelId());
+	}
+
+	protected WarehouseChannel
+			testBatchEngineDeleteImportTask_addWarehouseChannel()
+		throws Exception {
+
+		return testDeleteWarehouseChannel_addWarehouseChannel();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWarehouseChannel(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseChannel",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"warehouseChannelId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected WarehouseChannel testGraphQLWarehouseChannel_addWarehouseChannel()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		WarehouseChannel warehouseChannel,
@@ -1019,6 +1152,10 @@ public abstract class BaseWarehouseChannelResourceTestCase {
 		throws Exception {
 
 		boolean valid = true;
+
+		if (warehouseChannel.getWarehouseChannelId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

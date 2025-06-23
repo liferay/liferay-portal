@@ -6,7 +6,7 @@
 package com.liferay.layout.item.selector.web.internal;
 
 import com.liferay.item.selector.ItemSelectorView;
-import com.liferay.layout.item.selector.criterion.LayoutItemSelectorCriterion;
+import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;

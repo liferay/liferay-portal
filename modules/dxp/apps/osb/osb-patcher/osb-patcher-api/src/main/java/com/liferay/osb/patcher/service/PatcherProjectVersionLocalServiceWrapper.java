@@ -29,6 +29,21 @@ public class PatcherProjectVersionLocalServiceWrapper
 		_patcherProjectVersionLocalService = patcherProjectVersionLocalService;
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherProjectVersion
+			addPatcherProjectVersion(
+				long userId, long patcherProductVersionId,
+				long rootPatcherProjectVersionId, boolean combinedBranch,
+				String committish, String fixedIssues, boolean hide,
+				String name, String repositoryName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherProjectVersionLocalService.addPatcherProjectVersion(
+			userId, patcherProductVersionId, rootPatcherProjectVersionId,
+			combinedBranch, committish, fixedIssues, hide, name,
+			repositoryName);
+	}
+
 	/**
 	 * Adds the patcher project version to the database. Also notifies the appropriate model listeners.
 	 *
@@ -240,6 +255,22 @@ public class PatcherProjectVersionLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.patcher.model.PatcherProjectVersion
+		fetchPatcherProjectVersionByCommittish(String committish) {
+
+		return _patcherProjectVersionLocalService.
+			fetchPatcherProjectVersionByCommittish(committish);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherProjectVersion
+		fetchPatcherProjectVersionByName(String name) {
+
+		return _patcherProjectVersionLocalService.
+			fetchPatcherProjectVersionByName(name);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -280,6 +311,22 @@ public class PatcherProjectVersionLocalServiceWrapper
 			patcherProjectVersionId);
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherProjectVersion
+			getPatcherProjectVersionByName(String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherProjectVersionLocalService.
+			getPatcherProjectVersionByName(name);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherProjectVersion>
+		getPatcherProjectVersions() {
+
+		return _patcherProjectVersionLocalService.getPatcherProjectVersions();
+	}
+
 	/**
 	 * Returns a range of all the patcher project versions.
 	 *
@@ -297,6 +344,28 @@ public class PatcherProjectVersionLocalServiceWrapper
 
 		return _patcherProjectVersionLocalService.getPatcherProjectVersions(
 			start, end);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherProjectVersion>
+		getPatcherProjectVersions(long patcherProductVersionId) {
+
+		return _patcherProjectVersionLocalService.getPatcherProjectVersions(
+			patcherProductVersionId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherProjectVersion>
+		getPatcherProjectVersions(
+			long patcherProductVersionId, String repositoryName, int start,
+			int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.osb.patcher.model.PatcherProjectVersion>
+					orderByComparator) {
+
+		return _patcherProjectVersionLocalService.getPatcherProjectVersions(
+			patcherProductVersionId, repositoryName, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -320,6 +389,35 @@ public class PatcherProjectVersionLocalServiceWrapper
 
 		return _patcherProjectVersionLocalService.getPersistedModel(
 			primaryKeyObj);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherProjectVersion>
+		getRootPatcherProjectVersions() {
+
+		return _patcherProjectVersionLocalService.
+			getRootPatcherProjectVersions();
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherProjectVersion>
+		getRootPatcherProjectVersions(long patcherProductVersionId) {
+
+		return _patcherProjectVersionLocalService.getRootPatcherProjectVersions(
+			patcherProductVersionId);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherProjectVersion
+			updatePatcherProjectVersion(
+				long patcherProjectVersionId, long patcherProductVersionId,
+				boolean combinedBranch, String committish, String fixedIssues,
+				boolean hide, String name, String repositoryName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherProjectVersionLocalService.updatePatcherProjectVersion(
+			patcherProjectVersionId, patcherProductVersionId, combinedBranch,
+			committish, fixedIssues, hide, name, repositoryName);
 	}
 
 	/**

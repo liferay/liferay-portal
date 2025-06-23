@@ -8,24 +8,14 @@ import {ComponentProps} from 'react';
 import {useNavigate} from 'react-router-dom';
 
 import ListView from '../../../components/ListView';
-import {ListViewTypes} from '../../../components/ListView/hooks/ListViewContext';
 import Page from '../../../components/Page';
 import SearchBuilder from '../../../core/SearchBuilder';
 import {
 	ProductTypeVocabulary,
 	ProductWorkflowDisplayType,
-	ProductWorkflowStatusCode,
-	ProductWorkflowStatusLabel,
 } from '../../../enums/Product';
 import i18n from '../../../i18n';
-import HeadlessCommerceAdminCatalog from '../../../services/rest/HeadlessCommerceAdminCatalog';
 import {formatDate} from '../../../utils/date';
-
-const productStatuses = [
-	ProductWorkflowStatusCode.APPROVED,
-	ProductWorkflowStatusCode.DRAFT,
-	ProductWorkflowStatusCode.PENDING,
-];
 
 export default function Solutions() {
 	const navigate = useNavigate();
@@ -33,67 +23,25 @@ export default function Solutions() {
 	return (
 		<Page pageRendererProps={{className: 'border py-2'}} title="Solutions">
 			<ListView<Product>
-				id="administrator-solutions"
-				managementToolbarProps={{
-					filterItems: [
-						{
-							children: productStatuses.map((status) => ({
-								name: ProductWorkflowStatusLabel[status] || '',
-								onClick: (dispatch) => {
-									dispatch({
-										payload: {
-											filters: {
-												filter: {
-													statusCode: `${status}`,
-												},
-											},
-										},
-										type: ListViewTypes.SET_FILTERS,
-									});
-								},
-							})),
-							name: i18n.translate('status'),
-						},
-					],
-					visible: true,
-				}}
-				resource={function getProducts({
-					filters,
-					keywords,
-					page,
-					pageSize,
-					sort,
-				}) {
-					const searchBuilder = new SearchBuilder().lambda(
+				defaultFilters={{
+					filter: `${SearchBuilder.lambda(
 						'categoryNames',
 						ProductTypeVocabulary.SOLUTION
-					);
-
-					if (filters.filter) {
-						for (const [key, value] of Object.entries(
-							filters.filter
-						)) {
-							searchBuilder.and().eq(key, String(value));
-						}
-					}
-
-					if (keywords) {
-						searchBuilder.and().contains('name', keywords);
-					}
-
-					return HeadlessCommerceAdminCatalog.getProducts(
-						new URLSearchParams({
-							'filter': searchBuilder.build(),
-							'nestedFields': 'catalog,productSpecifications',
-							'page': page.toString(),
-							'pageSize': pageSize.toString(),
-							'productSpecifications.pageSize': '-1',
-							'sort': sort.key
-								? `${sort.key}:${sort.direction}`
-								: 'createDate:desc',
-						})
-					);
+					)}`,
 				}}
+				id="administrator-solutions"
+				managementToolbarProps={{
+					filterSchema: 'administratorSolutions',
+					searchVisible: true,
+					visible: true,
+				}}
+				resource={`/o/headless-commerce-admin-catalog/v1.0/products?${new URLSearchParams(
+					{
+						'nestedFields': 'catalog,productSpecifications',
+						'productSpecifications.pageSize': '-1',
+						'sort': 'createDate:desc',
+					}
+				)}`}
 				tableProps={{
 					actions: [
 						{

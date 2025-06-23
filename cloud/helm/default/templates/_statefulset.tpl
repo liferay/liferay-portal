@@ -174,9 +174,14 @@ metadata:
     name: {{ include "liferay.name" .root }}{{ $suffix }}
     namespace: {{ include "liferay.namespace" .root }}
 spec:
-    {{- with .statefulset.service.ports }}
+    {{- if or .statefulset.service.ports .statefulset.customServicePorts }}
     ports:
+    {{- with .statefulset.service.ports }}
         {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- range $k, $v := .statefulset.customServicePorts }}
+        {{- toYaml $v | nindent 8 }}
+    {{- end }}
     {{- end }}
     selector:
         app: {{ include "liferay.name" .root }}{{ $suffix }}

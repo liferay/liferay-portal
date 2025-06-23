@@ -11,11 +11,14 @@ import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
+import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {categorizationPagesTest} from '../fixtures/categorizationPagesTest';
+import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 import {DataSetPage} from '../pages/DataSetPage';
 
 const test = mergeTests(
 	categorizationPagesTest,
+	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-11232': {enabled: true},
@@ -341,6 +344,82 @@ test.describe("Category tests that don't focus on creation", () => {
 	);
 });
 
+test.describe('Move category tests', () => {
+	let categoryName: string;
+
+	test.beforeEach('Create Category via API', async ({apiHelpers}) => {
+		categoryName = getRandomString();
+
+		await apiHelpers.headlessAdminTaxonomy
+			.postTaxonomyVocabularyTaxonomyCategory({
+				name: categoryName,
+				vocabularyId,
+			})
+			.then((response) => response.id);
+	});
+
+	test(
+		'Can move a category to another vocabulary',
+		{tag: '@LPD-56092'},
+		async ({
+			categoriesPage,
+			editVocabularyPage,
+			page,
+			vocabulariesPage,
+		}) => {
+			const vocabularyName2 = await editVocabularyPage.createVocabulary();
+
+			await categoriesPage.goto(vocabularyId, vocabularyName);
+
+			await categoriesPage.execItemAction({
+				action: 'Move',
+				filter: categoryName,
+			});
+
+			await expect(categoriesPage.getItem(categoryName)).toBeVisible();
+
+			await page
+				.getByRole('treeitem', {name: vocabularyName2})
+				.locator('span')
+				.nth(1)
+				.click();
+
+			await page.getByRole('button', {name: 'move'}).click();
+
+			await expect(
+				categoriesPage.getItem(categoryName)
+			).not.toBeVisible();
+
+			await page.goto(PORTLET_URLS.cmsVocabularies);
+
+			await vocabulariesPage.execItemAction({
+				action: 'View Categories',
+				filter: vocabularyName2,
+			});
+
+			await expect(categoriesPage.getItem(categoryName)).toBeVisible();
+
+			await page.goto(PORTLET_URLS.cmsVocabularies);
+
+			await vocabulariesPage.execItemAction({
+				action: 'Delete',
+				filter: vocabularyName2,
+			});
+
+			await expect(
+				page.getByRole('heading', {name: `Delete "${vocabularyName2}"`})
+			).toBeVisible();
+
+			await clickAndExpectToBeVisible({
+				target: page.getByText(
+					'Success:Your request completed successfully.'
+				),
+				trigger: page.getByRole('button', {name: 'Delete'}),
+			});
+		}
+	);
+});
+
 test.describe('Subcategory tests', () => {
 	let categoryName: string;
 	let categoryId: number;
@@ -358,7 +437,7 @@ test.describe('Subcategory tests', () => {
 
 	test(
 		'Subcategories can be created within a Category with both the "Save and Add Another" and "Save" buttons',
-		{tag: '@LPD-56092'},
+		{tag: '@LPD-54221'},
 		async ({categoriesPage, editCategoryPage}) => {
 			await categoriesPage.gotoSubcategories(
 				categoryId,
@@ -396,7 +475,7 @@ test.describe('Subcategory tests', () => {
 
 	test(
 		'Subcategories can be created within a Category from the dropdown actions',
-		{tag: '@LPD-56092'},
+		{tag: '@LPD-54221'},
 		async ({categoriesPage, editCategoryPage}) => {
 			await categoriesPage.goto(vocabularyId, vocabularyName);
 

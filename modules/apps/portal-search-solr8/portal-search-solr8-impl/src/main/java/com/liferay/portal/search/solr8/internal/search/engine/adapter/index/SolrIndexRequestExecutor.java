@@ -34,7 +34,9 @@ import com.liferay.portal.search.engine.adapter.index.StatsIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.StatsIndexResponse;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.UpdateIndexSettingsIndexResponse;
+import com.liferay.portal.search.solr8.internal.connection.SolrClientManager;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -147,49 +149,45 @@ public class SolrIndexRequestExecutor implements IndexRequestExecutor {
 			updateIndexSettingsIndexRequest);
 	}
 
-	@Reference
-	private AnalyzeIndexRequestExecutor _analyzeIndexRequestExecutor;
+	@Activate
+	protected void activate() {
+		_refreshIndexRequestExecutor = new RefreshIndexRequestExecutor(
+			_solrClientManager);
+	}
 
-	@Reference
-	private CloseIndexRequestExecutor _closeIndexRequestExecutor;
-
-	@Reference
-	private CreateIndexRequestExecutor _createIndexRequestExecutor;
-
-	@Reference
-	private DeleteIndexRequestExecutor _deleteIndexRequestExecutor;
-
-	@Reference
-	private FlushIndexRequestExecutor _flushIndexRequestExecutor;
-
-	@Reference
-	private GetFieldMappingIndexRequestExecutor
-		_getFieldMappingIndexRequestExecutor;
-
-	@Reference
-	private GetIndexIndexRequestExecutor _getIndexIndexRequestExecutor;
-
-	@Reference
-	private GetMappingIndexRequestExecutor _getMappingIndexRequestExecutor;
-
-	@Reference
-	private IndicesExistsIndexRequestExecutor
-		_indicesExistsIndexRequestExecutor;
-
-	@Reference
-	private OpenIndexRequestExecutor _openIndexRequestExecutor;
-
-	@Reference
-	private PutMappingIndexRequestExecutor _putMappingIndexRequestExecutor;
-
-	@Reference
+	private final AnalyzeIndexRequestExecutor _analyzeIndexRequestExecutor =
+		new AnalyzeIndexRequestExecutor();
+	private final CloseIndexRequestExecutor _closeIndexRequestExecutor =
+		new CloseIndexRequestExecutor();
+	private final CreateIndexRequestExecutor _createIndexRequestExecutor =
+		new CreateIndexRequestExecutor();
+	private final DeleteIndexRequestExecutor _deleteIndexRequestExecutor =
+		new DeleteIndexRequestExecutor();
+	private final FlushIndexRequestExecutor _flushIndexRequestExecutor =
+		new FlushIndexRequestExecutor();
+	private final GetFieldMappingIndexRequestExecutor
+		_getFieldMappingIndexRequestExecutor =
+			new GetFieldMappingIndexRequestExecutor();
+	private final GetIndexIndexRequestExecutor _getIndexIndexRequestExecutor =
+		new GetIndexIndexRequestExecutor();
+	private final GetMappingIndexRequestExecutor
+		_getMappingIndexRequestExecutor = new GetMappingIndexRequestExecutor();
+	private final IndicesExistsIndexRequestExecutor
+		_indicesExistsIndexRequestExecutor =
+			new IndicesExistsIndexRequestExecutor();
+	private final OpenIndexRequestExecutor _openIndexRequestExecutor =
+		new OpenIndexRequestExecutor();
+	private final PutMappingIndexRequestExecutor
+		_putMappingIndexRequestExecutor = new PutMappingIndexRequestExecutor();
 	private RefreshIndexRequestExecutor _refreshIndexRequestExecutor;
+
+	@Reference
+	private SolrClientManager _solrClientManager;
 
 	private final StatsIndexRequestExecutor _statsIndexRequestExecutor =
 		new StatsIndexRequestExecutor();
-
-	@Reference
-	private UpdateIndexSettingsIndexRequestExecutor
-		_updateIndexSettingsIndexRequestExecutor;
+	private final UpdateIndexSettingsIndexRequestExecutor
+		_updateIndexSettingsIndexRequestExecutor =
+			new UpdateIndexSettingsIndexRequestExecutor();
 
 }

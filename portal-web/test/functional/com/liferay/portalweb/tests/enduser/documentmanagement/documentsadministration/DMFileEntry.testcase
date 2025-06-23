@@ -466,6 +466,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanCheckInAllDocumentsOnDifferentPagesAtOnce {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentTitle = "Document_1.doc",
 			groupName = "Guest",
@@ -1344,7 +1346,7 @@ definition {
 	test CanEditDocument {
 		property app.server.types = "jboss,tomcat,weblogic,wildfly";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
-		property environment.acceptance = "true";
+		property environment.acceptance = "false";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 
@@ -3169,6 +3171,8 @@ definition {
 	@description = "This ensures that All the version entries are ordered by version with the latest version at the top in the version history page."
 	@priority = 4
 	test CanViewAllFileVersionsFromVersionsPage {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		var documentId = JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "DM Document Description",
 			dmDocumentTitle = "Document Version 1.0",

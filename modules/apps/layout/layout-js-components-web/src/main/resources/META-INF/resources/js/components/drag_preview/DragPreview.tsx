@@ -11,6 +11,8 @@ import './DragPreview.scss';
 
 import {debounce} from 'frontend-js-web';
 
+import isNullOrUndefined from '../../utils/isNullOrUndefined';
+
 type Alignment = {
 	element: HTMLElement;
 	position: 'bottom' | 'middle' | 'top';
@@ -164,9 +166,14 @@ export default function DragPreview<T extends DragItem>({
 		};
 	});
 
-	// Return if no movement is enabled
+	// CKEditor allows you to drag text within the editor, so the drag preview
+	// should not appear in this case.
 
-	if ((!isDragging && !alignment) || (!icon && !label)) {
+	const isCKEditorText = !isNullOrUndefined(item) && 'text' in item;
+
+	// Return if no movement is enabled or the selected element is text
+
+	if ((!isDragging && !alignment) || (!icon && !label) || isCKEditorText) {
 		return null;
 	}
 

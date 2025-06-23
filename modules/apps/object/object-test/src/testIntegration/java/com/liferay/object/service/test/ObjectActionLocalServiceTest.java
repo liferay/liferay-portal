@@ -675,7 +675,7 @@ public class ObjectActionLocalServiceTest {
 			Assert.assertEquals(0, _argumentsList.size());
 
 			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -838,7 +838,7 @@ public class ObjectActionLocalServiceTest {
 				WorkflowConstants.ACTION_SAVE_DRAFT);
 
 			objectEntry = _objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -926,7 +926,7 @@ public class ObjectActionLocalServiceTest {
 
 			ObjectEntry rootObjectEntry =
 				_objectEntryLocalService.addObjectEntry(
-					TestPropsValues.getUserId(), 0,
+					0, TestPropsValues.getUserId(),
 					objectDefinitionA.getObjectDefinitionId(),
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -943,7 +943,7 @@ public class ObjectActionLocalServiceTest {
 					objectRelationshipA_AA.getObjectFieldId2());
 
 			objectEntry = _objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				objectDefinitionAA.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -970,7 +970,7 @@ public class ObjectActionLocalServiceTest {
 				objectRelationshipAA_AAA.getObjectFieldId2());
 
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				objectDefinitionAAA.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -1445,7 +1445,7 @@ public class ObjectActionLocalServiceTest {
 			objectField1, objectFieldValue1);
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -1579,7 +1579,7 @@ public class ObjectActionLocalServiceTest {
 			).build());
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -1889,7 +1889,7 @@ public class ObjectActionLocalServiceTest {
 			_objectDefinition.getClassName(), 0, 0, "Single Approver", 1);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -1960,7 +1960,7 @@ public class ObjectActionLocalServiceTest {
 		// Add object entry with unsatisfied condition
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -1976,7 +1976,7 @@ public class ObjectActionLocalServiceTest {
 		// Add object entry with satisfied condition
 
 		objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -2035,7 +2035,7 @@ public class ObjectActionLocalServiceTest {
 			false);
 
 		objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -2084,7 +2084,7 @@ public class ObjectActionLocalServiceTest {
 			false);
 
 		objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -2356,7 +2356,7 @@ public class ObjectActionLocalServiceTest {
 			ObjectActionKeys.ADD_OBJECT_ENTRY);
 
 		_objectEntryLocalService.addObjectEntry(
-			guestUser.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, guestUser.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);
 
@@ -2368,7 +2368,7 @@ public class ObjectActionLocalServiceTest {
 			user.getUserId(), LocaleUtil.BRAZIL.toLanguageTag());
 
 		_objectEntryLocalService.addObjectEntry(
-			user.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);
 
@@ -2387,7 +2387,7 @@ public class ObjectActionLocalServiceTest {
 			objectAction.getObjectActionTriggerKey(), unicodeProperties);
 
 		_objectEntryLocalService.addObjectEntry(
-			guestUser.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, guestUser.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);
 
@@ -2397,7 +2397,7 @@ public class ObjectActionLocalServiceTest {
 			user.getUserId(), LocaleUtil.US.toLanguageTag());
 
 		_objectEntryLocalService.addObjectEntry(
-			user.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);
 
@@ -2406,14 +2406,14 @@ public class ObjectActionLocalServiceTest {
 		serviceContext.setLanguageId(LocaleUtil.HUNGARY.toLanguageTag());
 
 		_objectEntryLocalService.addObjectEntry(
-			guestUser.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, guestUser.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);
 
 		_assertNotificationQueueEntrySubject("Subject");
 
 		_objectEntryLocalService.addObjectEntry(
-			user.getUserId(), 0, objectDefinition.getObjectDefinitionId(),
+			0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, Collections.emptyMap(), serviceContext);
 
@@ -2551,7 +2551,7 @@ public class ObjectActionLocalServiceTest {
 			).build());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -2563,8 +2563,9 @@ public class ObjectActionLocalServiceTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		_objectEntryLocalService.addOrUpdateObjectEntry(
-			objectEntry.getExternalReferenceCode(), TestPropsValues.getUserId(),
-			0, objectDefinition.getObjectDefinitionId(),
+			objectEntry.getExternalReferenceCode(), 0,
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			HashMapBuilder.<String, Serializable>put(
 				"attachment", StringPool.BLANK
@@ -2694,7 +2695,7 @@ public class ObjectActionLocalServiceTest {
 			false);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -2744,7 +2745,7 @@ public class ObjectActionLocalServiceTest {
 			).build());
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -2763,7 +2764,7 @@ public class ObjectActionLocalServiceTest {
 			notificationTemplate);
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -3098,7 +3099,7 @@ public class ObjectActionLocalServiceTest {
 		throws Exception {
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values, ServiceContextTestUtil.getServiceContext());
@@ -3322,7 +3323,7 @@ public class ObjectActionLocalServiceTest {
 				() -> {
 					try {
 						_objectEntryLocalService.addObjectEntry(
-							TestPropsValues.getUserId(), 0,
+							0, TestPropsValues.getUserId(),
 							_objectDefinition.getObjectDefinitionId(),
 							ObjectEntryFolderConstants.
 								PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -3461,7 +3462,7 @@ public class ObjectActionLocalServiceTest {
 			PrincipalThreadLocal.setName(_user.getUserId());
 
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -3502,7 +3503,7 @@ public class ObjectActionLocalServiceTest {
 		Assert.assertEquals(0, _argumentsList.size());
 
 		ObjectEntry objectEntry1 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -3519,7 +3520,7 @@ public class ObjectActionLocalServiceTest {
 			null, null, WorkflowConstants.STATUS_APPROVED);
 
 		ObjectEntry objectEntry2 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -3555,7 +3556,7 @@ public class ObjectActionLocalServiceTest {
 		Assert.assertEquals(0, _argumentsList.size());
 
 		ObjectEntry objectEntry3 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -3566,7 +3567,7 @@ public class ObjectActionLocalServiceTest {
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 		ObjectEntry objectEntry4 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -3606,7 +3607,7 @@ public class ObjectActionLocalServiceTest {
 			).build());
 
 		ObjectEntry objectEntry5 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -3617,7 +3618,7 @@ public class ObjectActionLocalServiceTest {
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 		ObjectEntry objectEntry6 = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,

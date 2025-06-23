@@ -84,7 +84,7 @@ public class AssetRendererSharingEntryInterpreterTest {
 					_group.getGroupId(), TestPropsValues.getUserId());
 
 			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), _group.getGroupId(),
+				_group.getGroupId(), TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(), 0, null,
 				HashMapBuilder.<String, Serializable>put(
 					"title", title

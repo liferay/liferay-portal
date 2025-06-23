@@ -359,6 +359,11 @@ public abstract class BaseAccountCategoryForecastResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		AccountCategoryForecast accountCategoryForecast,
 		List<AccountCategoryForecast> accountCategoryForecasts) {

@@ -288,7 +288,7 @@
 					}
 					else {
 						const editorContentHeight =
-							editorContent.getBoundingClientRect().height;
+							editorContent?.getBoundingClientRect().height;
 
 						const imgElement = new Image();
 

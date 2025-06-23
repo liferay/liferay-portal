@@ -5,7 +5,9 @@
 
 package com.liferay.analytics.cms.rest.internal.graphql.query.v1_0;
 
+import com.liferay.analytics.cms.rest.dto.v1_0.InventoryAnalysis;
 import com.liferay.analytics.cms.rest.dto.v1_0.Overview;
+import com.liferay.analytics.cms.rest.resource.v1_0.InventoryAnalysisResource;
 import com.liferay.analytics.cms.rest.resource.v1_0.OverviewResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
@@ -15,6 +17,7 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.annotation.Generated;
 
@@ -35,12 +38,51 @@ import org.osgi.service.component.ComponentServiceObjects;
 @Generated("")
 public class Query {
 
+	public static void setInventoryAnalysisResourceComponentServiceObjects(
+		ComponentServiceObjects<InventoryAnalysisResource>
+			inventoryAnalysisResourceComponentServiceObjects) {
+
+		_inventoryAnalysisResourceComponentServiceObjects =
+			inventoryAnalysisResourceComponentServiceObjects;
+	}
+
 	public static void setOverviewResourceComponentServiceObjects(
 		ComponentServiceObjects<OverviewResource>
 			overviewResourceComponentServiceObjects) {
 
 		_overviewResourceComponentServiceObjects =
 			overviewResourceComponentServiceObjects;
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {inventoryAnalysis(categoryId: ___, groupBy: ___, languageId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, spaceId: ___, structureId: ___, tagId: ___, vocabularyId: ___){inventoryAnalysisItems, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public InventoryAnalysis inventoryAnalysis(
+			@GraphQLName("categoryId") Long categoryId,
+			@GraphQLName("groupBy") String groupBy,
+			@GraphQLName("languageId") String languageId,
+			@GraphQLName("rangeEnd") String rangeEnd,
+			@GraphQLName("rangeKey") Integer rangeKey,
+			@GraphQLName("rangeStart") String rangeStart,
+			@GraphQLName("spaceId") Long spaceId,
+			@GraphQLName("structureId") Long structureId,
+			@GraphQLName("tagId") Long tagId,
+			@GraphQLName("vocabularyId") Long vocabularyId,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_inventoryAnalysisResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			inventoryAnalysisResource ->
+				inventoryAnalysisResource.getInventoryAnalysis(
+					categoryId, groupBy, languageId, rangeEnd, rangeKey,
+					rangeStart, spaceId, structureId, tagId, vocabularyId,
+					Pagination.of(page, pageSize)));
 	}
 
 	/**
@@ -54,7 +96,7 @@ public class Query {
 			@GraphQLName("rangeEnd") String rangeEnd,
 			@GraphQLName("rangeKey") Integer rangeKey,
 			@GraphQLName("rangeStart") String rangeStart,
-			@GraphQLName("spaceId") Integer spaceId)
+			@GraphQLName("spaceId") Long spaceId)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -75,7 +117,7 @@ public class Query {
 			@GraphQLName("rangeEnd") String rangeEnd,
 			@GraphQLName("rangeKey") Integer rangeKey,
 			@GraphQLName("rangeStart") String rangeStart,
-			@GraphQLName("spaceId") Integer spaceId)
+			@GraphQLName("spaceId") Long spaceId)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -83,6 +125,39 @@ public class Query {
 			this::_populateResourceContext,
 			overviewResource -> overviewResource.getFileOverview(
 				languageId, rangeEnd, rangeKey, rangeStart, spaceId));
+	}
+
+	@GraphQLName("InventoryAnalysisPage")
+	public class InventoryAnalysisPage {
+
+		public InventoryAnalysisPage(Page inventoryAnalysisPage) {
+			actions = inventoryAnalysisPage.getActions();
+
+			items = inventoryAnalysisPage.getItems();
+			lastPage = inventoryAnalysisPage.getLastPage();
+			page = inventoryAnalysisPage.getPage();
+			pageSize = inventoryAnalysisPage.getPageSize();
+			totalCount = inventoryAnalysisPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<InventoryAnalysis> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
 	}
 
 	@GraphQLName("OverviewPage")
@@ -137,6 +212,22 @@ public class Query {
 		}
 	}
 
+	private void _populateResourceContext(
+			InventoryAnalysisResource inventoryAnalysisResource)
+		throws Exception {
+
+		inventoryAnalysisResource.setContextAcceptLanguage(_acceptLanguage);
+		inventoryAnalysisResource.setContextCompany(_company);
+		inventoryAnalysisResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		inventoryAnalysisResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		inventoryAnalysisResource.setContextUriInfo(_uriInfo);
+		inventoryAnalysisResource.setContextUser(_user);
+		inventoryAnalysisResource.setGroupLocalService(_groupLocalService);
+		inventoryAnalysisResource.setRoleLocalService(_roleLocalService);
+	}
+
 	private void _populateResourceContext(OverviewResource overviewResource)
 		throws Exception {
 
@@ -150,6 +241,8 @@ public class Query {
 		overviewResource.setRoleLocalService(_roleLocalService);
 	}
 
+	private static ComponentServiceObjects<InventoryAnalysisResource>
+		_inventoryAnalysisResourceComponentServiceObjects;
 	private static ComponentServiceObjects<OverviewResource>
 		_overviewResourceComponentServiceObjects;
 

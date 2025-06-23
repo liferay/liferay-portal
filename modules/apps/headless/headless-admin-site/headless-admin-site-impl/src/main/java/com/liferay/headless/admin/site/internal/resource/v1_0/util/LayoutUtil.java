@@ -421,13 +421,15 @@ public class LayoutUtil {
 
 		return _updateLayout(
 			layout, nameMap, titleMap, descriptionMap, robotsMap,
-			_getStyleBookEntryId(layout, settings),
-			_getFaviconFileEntryId(layout, settings),
-			_getMasterLayoutPlid(layout, settings), friendlyURLMap,
-			serviceContext);
+			_getStyleBookEntryId(serviceContext.getScopeGroupId(), settings),
+			_getFaviconFileEntryId(settings, serviceContext),
+			_getMasterLayoutPlid(
+				serviceContext.getScopeGroupId(), layout, settings),
+			friendlyURLMap, serviceContext);
 	}
 
-	private static long _getFaviconFileEntryId(Layout layout, Settings settings)
+	private static long _getFaviconFileEntryId(
+			Settings settings, ServiceContext serviceContext)
 		throws Exception {
 
 		if ((settings == null) || (settings.getFavIcon() == null) ||
@@ -445,13 +447,13 @@ public class LayoutUtil {
 			return 0;
 		}
 
-		long groupId = layout.getGroupId();
+		long groupId = serviceContext.getScopeGroupId();
 
 		Scope scope = itemExternalReference.getScope();
 
 		if (scope != null) {
 			groupId = GroupUtil.getGroupId(
-				true, true, layout.getCompanyId(),
+				true, true, serviceContext.getCompanyId(),
 				scope.getExternalReferenceCode());
 		}
 
@@ -529,7 +531,8 @@ public class LayoutUtil {
 			layoutSetPrototype.getGroupId(), privateLayout);
 	}
 
-	private static long _getMasterLayoutPlid(Layout layout, Settings settings)
+	private static long _getMasterLayoutPlid(
+			long groupId, Layout layout, Settings settings)
 		throws Exception {
 
 		if (settings == null) {
@@ -565,8 +568,7 @@ public class LayoutUtil {
 		layoutPageTemplateEntry =
 			LayoutPageTemplateEntryServiceUtil.
 				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					itemExternalReference.getExternalReferenceCode(),
-					layout.getGroupId());
+					itemExternalReference.getExternalReferenceCode(), groupId);
 
 		if ((layoutPageTemplateEntry == null) ||
 			!Objects.equals(
@@ -579,7 +581,7 @@ public class LayoutUtil {
 		return layoutPageTemplateEntry.getPlid();
 	}
 
-	private static long _getStyleBookEntryId(Layout layout, Settings settings)
+	private static long _getStyleBookEntryId(long groupId, Settings settings)
 		throws Exception {
 
 		if (settings == null) {
@@ -598,8 +600,7 @@ public class LayoutUtil {
 
 		StyleBookEntry styleBookEntry =
 			StyleBookEntryServiceUtil.getStyleBookEntryByExternalReferenceCode(
-				itemExternalReference.getExternalReferenceCode(),
-				layout.getGroupId());
+				itemExternalReference.getExternalReferenceCode(), groupId);
 
 		return styleBookEntry.getStyleBookEntryId();
 	}

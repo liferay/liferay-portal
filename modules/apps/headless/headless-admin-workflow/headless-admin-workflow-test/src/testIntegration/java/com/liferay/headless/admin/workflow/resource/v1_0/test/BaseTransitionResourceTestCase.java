@@ -536,6 +536,11 @@ public abstract class BaseTransitionResourceTestCase {
 		return null;
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		Transition transition, List<Transition> transitions) {
 

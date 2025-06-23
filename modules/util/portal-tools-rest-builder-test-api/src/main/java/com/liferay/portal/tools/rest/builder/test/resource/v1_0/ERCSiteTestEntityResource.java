@@ -49,14 +49,18 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface ERCSiteTestEntityResource {
 
+	public void deleteSiteERCSiteTestEntity(
+			String ercSiteTestEntityExternalReferenceCode,
+			String siteExternalReferenceCode)
+		throws Exception;
+
 	public Page<ERCSiteTestEntity> getSiteERCSiteTestEntitiesPage(
 			String siteExternalReferenceCode)
 		throws Exception;
 
-	public ERCSiteTestEntity
-			getSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode(
-				String ercSiteTestEntityExternalReferenceCode,
-				String siteExternalReferenceCode)
+	public ERCSiteTestEntity getSiteERCSiteTestEntity(
+			String ercSiteTestEntityExternalReferenceCode,
+			String siteExternalReferenceCode)
 		throws Exception;
 
 	public Response postSiteERCSiteTestEntitiesPageExportBatch(
@@ -73,11 +77,10 @@ public interface ERCSiteTestEntityResource {
 			String siteExternalReferenceCode, String callbackURL, Object object)
 		throws Exception;
 
-	public ERCSiteTestEntity
-			putSiteERCSiteTestEntityErcSiteTestEntityExternalReferenceCode(
-				String ercSiteTestEntityExternalReferenceCode,
-				String siteExternalReferenceCode,
-				ERCSiteTestEntity ercSiteTestEntity)
+	public ERCSiteTestEntity putSiteERCSiteTestEntity(
+			String ercSiteTestEntityExternalReferenceCode,
+			String siteExternalReferenceCode,
+			ERCSiteTestEntity ercSiteTestEntity)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.OptionValue;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
@@ -328,29 +329,28 @@ public abstract class BaseOptionValueResourceTestCase {
 		OptionValue optionValue1 = testDeleteOptionValueBatch_addOptionValue();
 
 		testDeleteOptionValueBatch_deleteOptionValue(
-			"COMPLETED", null, optionValue1.getId());
+			202, optionValue1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			optionValueResource.getOptionValueHttpResponse(
 				optionValue1.getId()));
 
-		OptionValue optionValue2 = testDeleteOptionValueBatch_addOptionValue();
+		optionValue1 = testDeleteOptionValueBatch_addOptionValue();
 
 		testDeleteOptionValueBatch_deleteOptionValue(
-			"COMPLETED", optionValue2.getExternalReferenceCode(), null);
+			202, null, optionValue1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			optionValueResource.getOptionValueHttpResponse(
-				optionValue2.getId()));
+				optionValue1.getId()));
 
 		optionValue1 = testDeleteOptionValueBatch_addOptionValue();
-		optionValue2 = testDeleteOptionValueBatch_addOptionValue();
+		OptionValue optionValue2 = testDeleteOptionValueBatch_addOptionValue();
 
 		testDeleteOptionValueBatch_deleteOptionValue(
-			"COMPLETED", optionValue2.getExternalReferenceCode(),
-			optionValue1.getId());
+			202, optionValue2.getExternalReferenceCode(), optionValue1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -362,8 +362,7 @@ public abstract class BaseOptionValueResourceTestCase {
 				optionValue2.getId()));
 
 		testDeleteOptionValueBatch_deleteOptionValue(
-			"COMPLETED", optionValue2.getExternalReferenceCode(),
-			optionValue1.getId());
+			202, optionValue2.getExternalReferenceCode(), optionValue1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -378,7 +377,7 @@ public abstract class BaseOptionValueResourceTestCase {
 	}
 
 	protected void testDeleteOptionValueBatch_deleteOptionValue(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -391,10 +390,10 @@ public abstract class BaseOptionValueResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1593,6 +1592,95 @@ public abstract class BaseOptionValueResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		OptionValue optionValue1 =
+			testBatchEngineDeleteImportTask_addOptionValue();
+
+		testBatchEngineDeleteImportTask_deleteOptionValue(
+			200, optionValue1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			optionValueResource.getOptionValueHttpResponse(
+				optionValue1.getId()));
+
+		optionValue1 = testBatchEngineDeleteImportTask_addOptionValue();
+
+		testBatchEngineDeleteImportTask_deleteOptionValue(
+			200, null, optionValue1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			optionValueResource.getOptionValueHttpResponse(
+				optionValue1.getId()));
+
+		optionValue1 = testBatchEngineDeleteImportTask_addOptionValue();
+		OptionValue optionValue2 =
+			testBatchEngineDeleteImportTask_addOptionValue();
+
+		testBatchEngineDeleteImportTask_deleteOptionValue(
+			200, optionValue2.getExternalReferenceCode(), optionValue1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			optionValueResource.getOptionValueHttpResponse(
+				optionValue1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			optionValueResource.getOptionValueHttpResponse(
+				optionValue2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteOptionValue(
+			200, optionValue2.getExternalReferenceCode(), optionValue1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			optionValueResource.getOptionValueHttpResponse(
+				optionValue2.getId()));
+	}
+
+	protected OptionValue testBatchEngineDeleteImportTask_addOptionValue()
+		throws Exception {
+
+		return testDeleteOptionValue_addOptionValue();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteOptionValue(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.OptionValue",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected OptionValue testGraphQLOptionValue_addOptionValue()

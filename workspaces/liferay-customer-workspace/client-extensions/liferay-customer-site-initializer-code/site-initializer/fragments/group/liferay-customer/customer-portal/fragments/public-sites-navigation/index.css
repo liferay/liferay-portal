@@ -755,6 +755,7 @@ nav.public-sites-navigation .menu-button-group.menu-open .close-btn {
 
 nav.public-sites-navigation .search-account-container .search-icon {
 	border-radius: var(--border-radius-sm);
+	color: inherit;
 	cursor: pointer;
 	padding: 0.75rem;
 	transition-duration: 0.2s, 0.2s;

@@ -211,6 +211,23 @@ public abstract class BaseTopLevelBuild
 	}
 
 	@Override
+	public JSONObject getBuildReportJSONObject() {
+		JSONObject buildReportJSONObject = super.getBuildReportJSONObject();
+
+		buildReportJSONObject.put("buildParameters", getParameters());
+
+		if (!(this instanceof ControllerTopLevelBuild)) {
+			buildReportJSONObject.put(
+				"testSuiteName", getTestSuiteName()
+			).put(
+				"totalDuration", getTotalDuration()
+			);
+		}
+
+		return buildReportJSONObject;
+	}
+
+	@Override
 	public Build getControllerBuild() {
 		if (_controllerBuild != null) {
 			return _controllerBuild;

@@ -1,8 +1,21 @@
 <#if entries?has_content>
-	<#assign totalCount = 0 />
+	<#assign
+		sortedTaxonomyCategories = []
+		taxonomyVocabularyId = restClient.get("/headless-admin-taxonomy/v1.0/sites/${themeDisplay.getCompanyGroupId()}/taxonomy-vocabularies/by-external-reference-code/RESOURCE_TYPE").id
+		totalCount = 0
+		validTaxonomyCategoryIds = []
 
-	<#list assetCategoriesSearchFacetDisplayContext.getBucketDisplayContexts() as bucket>
-		<#assign totalCount = totalCount + bucket.getCount() />
+		taxonomyCategories = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-vocabularies/${taxonomyVocabularyId}/taxonomy-categories").items
+	/>
+
+	<#list taxonomyCategories as taxonomyCategory>
+		<#if stringUtil.equals(taxonomyCategory.externalReferenceCode, "HOW_TO") || stringUtil.equals(taxonomyCategory.externalReferenceCode, "OFFICIAL_DOCUMENTATION")>
+			<#assign validTaxonomyCategoryIds += [taxonomyCategory.id] />
+		</#if>
+	</#list>
+
+	<#list assetCategoriesSearchFacetDisplayContext.getBucketDisplayContexts() as bucketDisplayContext>
+		<#assign totalCount = totalCount + bucketDisplayContext.getCount() />
 	</#list>
 
 	<ul class="learn-category-facet-tabs list-unstyled tab-list" id="tab-list">
@@ -22,6 +35,20 @@
 		</li>
 
 		<#list entries as entry>
+			<#assign taxonomyCategoryId = entry.getFilterValue() />
+
+			<#list taxonomyCategories as taxonomyCategory>
+				<#if taxonomyCategory.id == taxonomyCategoryId>
+					<#if stringUtil.equals(taxonomyCategory.externalReferenceCode, "OFFICIAL_DOCUMENTATION")>
+						<#assign sortedTaxonomyCategories = [entry] + sortedTaxonomyCategories />
+					<#elseif stringUtil.equals(taxonomyCategory.externalReferenceCode, "HOW_TO")>
+						<#assign sortedTaxonomyCategories += [entry] />
+					</#if>
+				</#if>
+			</#list>
+		</#list>
+
+		<#list sortedTaxonomyCategories as entry>
 			<li class="facet-value">
 				<@clay.button
 					cssClass="btn-unstyled facet-term tab-btn term-name text-center ${(entry.isSelected())?then('selected-tab-btn', '')}"
@@ -30,10 +57,14 @@
 					displayType="link"
 					onClick="${namespace}updateSelection(event)"
 				>
-					<span class="term-text">${htmlUtil.escape(entry.getBucketText())}</span>
+					<span class="term-text">
+						${htmlUtil.escape(entry.getBucketText())}
+					</span>
 
 					<#if entry.isFrequencyVisible()>
-						<span class="term-count">${entry.getFrequency()}</span>
+						<span class="term-count">
+							${entry.getFrequency()}
+						</span>
 					</#if>
 				</@clay.button>
 			</li>
@@ -62,7 +93,7 @@
 					</#if>
 				</#list>
 				<#if facetCount == 0>
-					<span class="term-text">All results</span>
+					<span class="term-text">${languageUtil.get(locale, "all-results", "All Results")}</span>
 					<span class="term-count">${totalCount}</span>
 				</#if>
 			</div>

@@ -143,6 +143,20 @@ public class PatcherBuildRelPersistenceTest {
 	}
 
 	@Test
+	public void testCountByChildPatcherBuildId() throws Exception {
+		_persistence.countByChildPatcherBuildId(RandomTestUtil.nextLong());
+
+		_persistence.countByChildPatcherBuildId(0L);
+	}
+
+	@Test
+	public void testCountByParentPatcherBuildId() throws Exception {
+		_persistence.countByParentPatcherBuildId(RandomTestUtil.nextLong());
+
+		_persistence.countByParentPatcherBuildId(0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		PatcherBuildRel newPatcherBuildRel = addPatcherBuildRel();
 

@@ -469,6 +469,11 @@ public abstract class BaseProcessMetricResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		ProcessMetric processMetric, List<ProcessMetric> processMetrics) {
 

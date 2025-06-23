@@ -226,6 +226,11 @@ public abstract class BaseIndexResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(Index index, List<Index> indexes) {
 		boolean contains = false;
 

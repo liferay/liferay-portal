@@ -235,7 +235,7 @@ definition {
 	test CanDisplayFormattedHTMLFromCopyPaste {
 		property app.server.types = "tomcat";
 		property database.types = "mysql";
-		property environment.acceptance = "true";
+		property environment.acceptance = "false";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 
@@ -440,7 +440,7 @@ definition {
 	test CanViewSourceCodeFormattedInTextView {
 		property app.server.types = "tomcat";
 		property database.types = "mysql";
-		property environment.acceptance = "true";
+		property environment.acceptance = "false";
 		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 

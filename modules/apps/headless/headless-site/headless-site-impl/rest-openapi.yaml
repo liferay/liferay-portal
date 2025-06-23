@@ -48,7 +48,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.site.client', and version '1.0.22'."
+        'com.liferay.headless.site.client', and version '1.0.23'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

@@ -107,6 +107,27 @@ public class SkuOption implements Cloneable, Serializable {
 
 	protected String quantity;
 
+	public Boolean getRequired() {
+		return required;
+	}
+
+	public void setRequired(Boolean required) {
+		this.required = required;
+	}
+
+	public void setRequired(
+		UnsafeSupplier<Boolean, Exception> requiredUnsafeSupplier) {
+
+		try {
+			required = requiredUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean required;
+
 	public Long getSkuId() {
 		return skuId;
 	}

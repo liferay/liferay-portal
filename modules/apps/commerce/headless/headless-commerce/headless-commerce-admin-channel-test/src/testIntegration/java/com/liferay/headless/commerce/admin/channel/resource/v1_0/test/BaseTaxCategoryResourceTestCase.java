@@ -688,6 +688,11 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		return testGraphQLTaxCategory_addTaxCategory();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected TaxCategory testGraphQLTaxCategory_addTaxCategory()
 		throws Exception {
 

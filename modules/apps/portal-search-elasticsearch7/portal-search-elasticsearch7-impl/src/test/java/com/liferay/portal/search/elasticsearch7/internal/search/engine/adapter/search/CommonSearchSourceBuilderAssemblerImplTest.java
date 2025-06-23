@@ -14,8 +14,8 @@ import com.liferay.portal.search.elasticsearch7.internal.connection.IndexName;
 import com.liferay.portal.search.elasticsearch7.internal.facet.DefaultFacetTranslator;
 import com.liferay.portal.search.elasticsearch7.internal.filter.ElasticsearchFilterTranslatorFixture;
 import com.liferay.portal.search.elasticsearch7.internal.index.LiferayIndexFixture;
+import com.liferay.portal.search.elasticsearch7.internal.legacy.query.ElasticsearchQueryTranslatorFixture;
 import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslator;
-import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslatorFixture;
 import com.liferay.portal.search.elasticsearch7.internal.query.SearchAssert;
 import com.liferay.portal.search.engine.adapter.search.SearchSearchRequest;
 import com.liferay.portal.search.filter.ComplexQueryBuilderFactory;
@@ -575,11 +575,9 @@ public class CommonSearchSourceBuilderAssemblerImplTest {
 			commonSearchSourceBuilderAssembler, "_facetTranslator",
 			new DefaultFacetTranslator());
 
-		com.liferay.portal.search.elasticsearch7.internal.legacy.query.
-			ElasticsearchQueryTranslatorFixture
-				legacyElasticsearchQueryTranslatorFixture =
-					new com.liferay.portal.search.elasticsearch7.internal.
-						legacy.query.ElasticsearchQueryTranslatorFixture();
+		ElasticsearchQueryTranslatorFixture
+			legacyElasticsearchQueryTranslatorFixture =
+				new ElasticsearchQueryTranslatorFixture();
 
 		com.liferay.portal.search.elasticsearch7.internal.legacy.query.
 			ElasticsearchQueryTranslator legacyElasticsearchQueryTranslator =
@@ -599,15 +597,9 @@ public class CommonSearchSourceBuilderAssemblerImplTest {
 		ReflectionTestUtil.setFieldValue(
 			commonSearchSourceBuilderAssembler, "_legacyQueryTranslator",
 			legacyElasticsearchQueryTranslator);
-
-		ElasticsearchQueryTranslatorFixture
-			elasticsearchQueryTranslatorFixture =
-				new ElasticsearchQueryTranslatorFixture();
-
 		ReflectionTestUtil.setFieldValue(
 			commonSearchSourceBuilderAssembler, "_queryTranslator",
-			elasticsearchQueryTranslatorFixture.
-				getElasticsearchQueryTranslator());
+			new ElasticsearchQueryTranslator());
 
 		return commonSearchSourceBuilderAssembler;
 	}

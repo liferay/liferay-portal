@@ -1,0 +1,18 @@
+{
+	"friendlyURL": "/add-space-members",
+	"hidden": true,
+	"name_i18n": {
+		"en_US": "Add Space Members"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}

@@ -22,6 +22,7 @@ import performLogin, {
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import {getNextOrPreviousSaturday} from './utils/getNextOrPreviousSaturday';
 import {toLocalDateTimeFormatted} from './utils/toLocalDateTimeFormatted';
 
 export const test = mergeTests(
@@ -287,7 +288,7 @@ test('can create calendar event different start/end dates ensuring that the end 
 
 	await calendarWidgetPage.addEvent({
 		allDay: false,
-		dateEnd: endDateFormatted,
+		endDate: endDateFormatted,
 		publishEvent: true,
 		title,
 	});
@@ -472,4 +473,41 @@ test('can update an event with recurrence', async ({
 	await calendarWidgetPage.publishEvent({recurrenceOption: 'Single Event'});
 
 	await expect(calendarWidgetPage.successAlert).toBeVisible();
+});
+
+test('event ending at midnight does not render on the next day', async ({
+	calendarWidgetPage,
+	page,
+}) => {
+	const today = new Date();
+
+	const saturday = getNextOrPreviousSaturday(today);
+
+	const sunday = new Date(saturday);
+	sunday.setDate(saturday.getDate() + 1);
+
+	const [startDate, endDate] = [saturday, sunday].map((date) =>
+		toLocalDateTimeFormatted(date.toUTCString(), {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+		})
+	);
+
+	const title = getRandomInt().toString();
+
+	await calendarWidgetPage.addEvent({
+		allDay: false,
+		endDate,
+		endTime: '1200AM',
+		publishEvent: true,
+		startDate,
+		startTime: '1200PM',
+		title,
+	});
+
+	await calendarWidgetPage.closeModalEvent();
+	await calendarWidgetPage.monthViewTab.click();
+
+	await expect(page.getByTitle(title)).toHaveCount(1);
 });

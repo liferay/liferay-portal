@@ -455,6 +455,16 @@ public class PatcherFixLocalServiceWrapper
 		return _patcherFixLocalService.getPatcherFix(patcherFixId);
 	}
 
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			java.util.Date modifiedDate, boolean notified, int[] type,
+			int status) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			modifiedDate, notified, type, status);
+	}
+
 	/**
 	 * Returns a range of all the patcher fixes.
 	 *
@@ -473,6 +483,51 @@ public class PatcherFixLocalServiceWrapper
 		return _patcherFixLocalService.getPatcherFixes(start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			long patcherProjectVersionId, boolean latestFix, int type) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			patcherProjectVersionId, latestFix, type);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			long patcherProjectVersionId, boolean latestFix, int type,
+			int status) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			patcherProjectVersionId, latestFix, type, status);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			long patcherProjectVersionId, boolean latestFix, String name,
+			int type) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			patcherProjectVersionId, latestFix, name, type);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(String key, boolean latestFix, int type) {
+
+		return _patcherFixLocalService.getPatcherFixes(key, latestFix, type);
+	}
+
+	@Override
+	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
+		getPatcherFixes(
+			String key, double keyVersion, int type, boolean older) {
+
+		return _patcherFixLocalService.getPatcherFixes(
+			key, keyVersion, type, older);
+	}
+
 	/**
 	 * Returns the number of patcher fixes.
 	 *
@@ -481,6 +536,15 @@ public class PatcherFixLocalServiceWrapper
 	@Override
 	public int getPatcherFixesCount() {
 		return _patcherFixLocalService.getPatcherFixesCount();
+	}
+
+	@Override
+	public int getPatcherFixesCountByPatcherProjectVersionId(
+		long patcherProjectVersionId) {
+
+		return _patcherFixLocalService.
+			getPatcherFixesCountByPatcherProjectVersionId(
+				patcherProjectVersionId);
 	}
 
 	@Override

@@ -39,10 +39,6 @@ jest.mock('frontend-js-components-web', () => ({
 	openToast: jest.fn(),
 }));
 
-jest.mock('frontend-js-web', () => ({
-	sub: jest.fn((langKey, arg) => langKey.replace('x', arg)),
-}));
-
 const renderComponent = ({rules = []} = {}) => {
 	render(
 		<StoreAPIContextProvider

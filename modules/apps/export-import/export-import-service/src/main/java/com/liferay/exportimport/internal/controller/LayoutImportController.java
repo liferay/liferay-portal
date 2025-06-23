@@ -135,6 +135,8 @@ public class LayoutImportController implements ImportController {
 
 			// LAR validation
 
+			ExportImportThreadLocal.setExportImportConfigurationId(
+				exportImportConfiguration.getExportImportConfigurationId());
 			ExportImportThreadLocal.setLayoutDataDeletionImportInProcess(true);
 
 			Map<String, Serializable> settingsMap =

@@ -695,6 +695,10 @@ definition {
 
 	@summary = "Default summary"
 	macro importPortlet(importSchemaVersionMismatching = null, importValidationMissingItem = null, cannotImport = null, mirrorWithOverwriting = null, uploadFrom = null, initializeLiferayEvent = null, importDeletions = null, failureExpected = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
+		if (${copyAsNew} == "true") {
+			Staging.enableCopyAsNewImport();
+		}
+
 		LAR._gotoExportImport(initializeLiferayEvent = ${initializeLiferayEvent});
 
 		LAR._selectImportFile(
@@ -720,6 +724,10 @@ definition {
 
 	@summary = "Default summary"
 	macro importPortletWithDeleteApplicationData(cancelImport = null, uploadFrom = null, initializeLiferayEvent = null, importDeletions = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
+		if (${copyAsNew} == "true") {
+			Staging.enableCopyAsNewImport();
+		}
+
 		LAR._gotoExportImport(initializeLiferayEvent = ${initializeLiferayEvent});
 
 		LAR._selectImportFileWithDeleteApplicationData(
@@ -742,6 +750,10 @@ definition {
 
 	@summary = "Default summary"
 	macro importSiteCP(depotName = null, importValidationMissingItem = null, checkContentNameList = null, uncheckContentNameList = null, siteName = null, larFileName = null, privateLayout = null, deleteApplicationData = null, copyAsNew = null, contentName = null, baseURL = null, contentDeletion = null, uploadFrom = null, importCampaignValidationError = null, importPermissions = null) {
+		if (${copyAsNew} == "true") {
+			Staging.enableCopyAsNewImport(baseURL = ${baseURL});
+		}
+
 		if (isSet(depotName)) {
 			LAR.openDepotImportAdmin(
 				baseURL = ${baseURL},
@@ -771,28 +783,6 @@ definition {
 				privateLayout = ${privateLayout},
 				uncheckContentNameList = ${uncheckContentNameList});
 		}
-	}
-
-	@summary = "Default summary"
-	macro importTeam(cannotImport = null, mirrorWithOverwriting = null, uploadFrom = null, importDeletions = null, failureExpected = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
-		MouseOver.mouseOverNotVisible(locator1 = "Portlet#OPTIONS_ICON");
-
-		Click.waitForMenuToggleJSClick(locator1 = "Portlet#OPTIONS_ICON");
-
-		MenuItem.click(menuItem = "Export / Import");
-
-		LAR._selectImportFile(
-			cannotImport = ${cannotImport},
-			copyAsNew = ${copyAsNew},
-			failureExpected = ${failureExpected},
-			importDeletions = ${importDeletions},
-			importPermissions = ${importPermissions},
-			larFileName = ${larFileName},
-			mirrorWithOverwriting = ${mirrorWithOverwriting},
-			portletName = ${portletName},
-			uploadFrom = ${uploadFrom});
-
-		IFrame.closeFrame();
 	}
 
 	@summary = "Default summary"

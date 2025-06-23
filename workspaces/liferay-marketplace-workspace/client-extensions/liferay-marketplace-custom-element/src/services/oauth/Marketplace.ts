@@ -3,13 +3,28 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import CreateFilters from '../../core/CreateFilters';
+import {
+	FilterSchemaOption,
+	filterSchema as filterSchemas,
+} from '../../schema/filters';
 import {downloadFile} from '../../utils/file';
 import {MarketplaceSpringBootOAuth2} from './OAuth2Client';
 
 class MarketplaceOAuth2 extends MarketplaceSpringBootOAuth2 {
-	async downloadOrderReport(filter: string) {
+	async downloadOrderReport(
+		filter: {
+			[key: string]: string;
+		},
+		filterSchema?: FilterSchemaOption
+	) {
+		const searchBulider = CreateFilters.createFilter({
+			appliedFilter: filter,
+			filterSchema: (filterSchemas as any)[filterSchema ?? ''],
+		});
+
 		const response = await this.get<Response>(
-			`/orders/export?filter=${filter}`,
+			`/orders/export?filters=${searchBulider}`,
 			{earlyReturn: true}
 		);
 

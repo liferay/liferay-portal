@@ -8,7 +8,9 @@ package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.doc
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.engine.adapter.document.DeleteByQueryDocumentRequest;
 import com.liferay.portal.search.engine.adapter.document.DeleteByQueryDocumentResponse;
+import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
+import com.liferay.portal.search.opensearch2.internal.legacy.query.OpenSearchQueryTranslator;
 import com.liferay.portal.search.query.QueryTranslator;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import org.opensearch.client.opensearch._types.query_dsl.QueryVariant;
 import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
 import org.opensearch.client.opensearch.core.DeleteByQueryResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -40,6 +43,12 @@ public class DeleteByQueryDocumentRequestExecutorImpl
 
 		return new DeleteByQueryDocumentResponse(
 			deleteByQueryResponse.total(), deleteByQueryResponse.took());
+	}
+
+	@Activate
+	protected void activate() {
+		_legacyQueryTranslator = new OpenSearchQueryTranslator(
+			_indexNameBuilder);
 	}
 
 	protected DeleteByQueryRequest createDeleteByQueryRequest(
@@ -86,7 +95,9 @@ public class DeleteByQueryDocumentRequestExecutorImpl
 		}
 	}
 
-	@Reference(target = "(search.engine.impl=OpenSearch)")
+	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
 	private com.liferay.portal.kernel.search.query.QueryTranslator<QueryVariant>
 		_legacyQueryTranslator;
 

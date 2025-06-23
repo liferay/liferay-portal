@@ -19,6 +19,8 @@ import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategory;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategoryProperty;
 import com.liferay.headless.admin.taxonomy.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -28,6 +30,7 @@ import com.liferay.portal.vulcan.dto.action.DTOActionProvider;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
+import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -109,6 +112,17 @@ public class TaxonomyCategoryDTOConverter
 						assetCategory.getCategoryId(),
 						dtoConverterContext.getUriInfo(),
 						dtoConverterContext.getUserId()));
+				setAssetLibraryKey(
+					() -> {
+						Group group = _groupLocalService.fetchGroup(
+							assetCategory.getGroupId());
+
+						if (group == null) {
+							return null;
+						}
+
+						return GroupUtil.getAssetLibraryKey(group);
+					});
 				setAvailableLanguages(
 					() -> LocaleUtil.toW3cLanguageIds(
 						assetCategory.getAvailableLanguageIds()));
@@ -258,6 +272,9 @@ public class TaxonomyCategoryDTOConverter
 		target = "(dto.class.name=com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategory)"
 	)
 	private DTOActionProvider _dtoActionProvider;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Portal _portal;

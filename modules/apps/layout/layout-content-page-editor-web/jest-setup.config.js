@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+/* eslint-disable no-undef*/
+
 import {initializeCache} from './src/main/resources/META-INF/resources/page_editor/app/utils/cache';
 
 initializeCache();
@@ -16,6 +18,27 @@ Liferay.Util.sub.mockImplementation((key, ...args) => {
 		.replace(/-x$/, () => `-${argsArray.shift()}`);
 });
 
+Liferay.Util = {
+	...Liferay.Util,
+	Session: {
+		get: jest.fn(),
+		set: jest.fn(),
+	},
+};
+
+jest.mock('frontend-js-web', () => ({
+	...jest.requireActual('frontend-js-web'),
+	fetch: jest.fn(),
+	sub: jest.fn((key, ...args) => {
+		const argsArray = args.flatMap((arg) => arg);
+
+		return key
+			.replace(/^x-/, () => `${argsArray.shift()}-`)
+			.replace(/-x(\.?)-/g, (_, dot) => `-${argsArray.shift()}${dot}-`)
+			.replace(/-x$/, () => `-${argsArray.shift()}`);
+	}),
+}));
+
 if (typeof Array.prototype.flatMap !== 'function') {
 	Array.prototype.flatMap = function () {
 		return Array.prototype.map
@@ -24,7 +47,6 @@ if (typeof Array.prototype.flatMap !== 'function') {
 	};
 }
 
-// eslint-disable-next-line
 jest.mock(
 	'./src/main/resources/META-INF/resources/page_editor/app/config/index',
 	() => ({
@@ -81,10 +103,8 @@ jest.mock(
 	})
 );
 
-// eslint-disable-next-line
 jest.mock(
 	'./src/main/resources/META-INF/resources/page_editor/app/utils/useIsSmallResolution',
 
-	// eslint-disable-next-line
 	() => jest.fn(() => false)
 );

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.TermOrderType;
 import com.liferay.headless.commerce.admin.order.client.http.HttpInvoker;
@@ -196,12 +197,72 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 
 	@Test
 	public void testDeleteTermOrderType() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TermOrderType termOrderType =
+			testDeleteTermOrderType_addTermOrderType();
+
+		assertHttpResponseStatusCode(
+			204,
+			termOrderTypeResource.deleteTermOrderTypeHttpResponse(
+				termOrderType.getTermOrderTypeId()));
+	}
+
+	protected TermOrderType testDeleteTermOrderType_addTermOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteTermOrderType() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		TermOrderType termOrderType1 =
+			testGraphQLDeleteTermOrderType_addTermOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteTermOrderType",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"termOrderTypeId",
+									termOrderType1.getTermOrderTypeId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteTermOrderType"));
+
+		// Using the namespace headlessCommerceAdminOrder_v1_0
+
+		TermOrderType termOrderType2 =
+			testGraphQLDeleteTermOrderType_addTermOrderType();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminOrder_v1_0",
+						new GraphQLField(
+							"deleteTermOrderType",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"termOrderTypeId",
+										termOrderType2.getTermOrderTypeId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessCommerceAdminOrder_v1_0",
+				"Object/deleteTermOrderType"));
+	}
+
+	protected TermOrderType testGraphQLDeleteTermOrderType_addTermOrderType()
+		throws Exception {
+
+		return testGraphQLTermOrderType_addTermOrderType();
 	}
 
 	@Test
@@ -210,18 +271,17 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 			testDeleteTermOrderTypeBatch_addTermOrderType();
 
 		testDeleteTermOrderTypeBatch_deleteTermOrderType(
-			"COMPLETED", null, termOrderType1.getTermOrderTypeId());
+			202, null, termOrderType1.getTermOrderTypeId());
 	}
 
 	protected TermOrderType testDeleteTermOrderTypeBatch_addTermOrderType()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteTermOrderType_addTermOrderType();
 	}
 
 	protected void testDeleteTermOrderTypeBatch_deleteTermOrderType(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -234,10 +294,10 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 						"termOrderTypeId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -300,6 +360,12 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 			page,
 			testGetTermByExternalReferenceCodeTermOrderTypesPage_getExpectedActions(
 				externalReferenceCode));
+
+		termOrderTypeResource.deleteTermOrderType(
+			termOrderType1.getTermOrderTypeId());
+
+		termOrderTypeResource.deleteTermOrderType(
+			termOrderType2.getTermOrderTypeId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -492,6 +558,12 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 		assertContains(termOrderType2, (List<TermOrderType>)page.getItems());
 		assertValid(
 			page, testGetTermIdTermOrderTypesPage_getExpectedActions(id));
+
+		termOrderTypeResource.deleteTermOrderType(
+			termOrderType1.getTermOrderTypeId());
+
+		termOrderTypeResource.deleteTermOrderType(
+			termOrderType2.getTermOrderTypeId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -662,6 +734,63 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		TermOrderType termOrderType1 =
+			testBatchEngineDeleteImportTask_addTermOrderType();
+
+		testBatchEngineDeleteImportTask_deleteTermOrderType(
+			200, null, termOrderType1.getTermOrderTypeId());
+	}
+
+	protected TermOrderType testBatchEngineDeleteImportTask_addTermOrderType()
+		throws Exception {
+
+		return testDeleteTermOrderType_addTermOrderType();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteTermOrderType(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.order.dto.v1_0.TermOrderType",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"termOrderTypeId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
+	protected TermOrderType testGraphQLTermOrderType_addTermOrderType()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected void assertContains(
 		TermOrderType termOrderType, List<TermOrderType> termOrderTypes) {
 
@@ -734,6 +863,10 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 
 	protected void assertValid(TermOrderType termOrderType) throws Exception {
 		boolean valid = true;
+
+		if (termOrderType.getTermOrderTypeId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Layout SEO Web
 Bundle-SymbolicName: com.liferay.layout.seo.web
-Bundle-Version: 2.0.100
+Bundle-Version: 2.0.101
 Web-ContextPath: /layout-seo-web
 -dsannotations-options: inherit

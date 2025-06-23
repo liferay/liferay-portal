@@ -257,6 +257,15 @@ public class ObjectEntryFolderResourceTest
 	}
 
 	@Override
+	protected String
+			testDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
+				ObjectEntryFolder objectEntryFolder)
+		throws Exception {
+
+		return objectEntryFolder.getScopeKey();
+	}
+
+	@Override
 	protected ObjectEntryFolder testGetObjectEntryFolder_addObjectEntryFolder()
 		throws Exception {
 
@@ -276,6 +285,15 @@ public class ObjectEntryFolderResourceTest
 	}
 
 	@Override
+	protected String
+			testGetScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
+				ObjectEntryFolder objectEntryFolder)
+		throws Exception {
+
+		return objectEntryFolder.getScopeKey();
+	}
+
+	@Override
 	protected ObjectEntryFolder
 			testGetScopeScopeKeyObjectEntryFoldersPage_addObjectEntryFolder(
 				String scopeKey, ObjectEntryFolder objectEntryFolder)
@@ -288,6 +306,15 @@ public class ObjectEntryFolderResourceTest
 	@Override
 	protected String testGetScopeScopeKeyObjectEntryFoldersPage_getScopeKey() {
 		return String.valueOf(_testDepotEntry.getGroupId());
+	}
+
+	@Override
+	protected String
+			testGraphQLGetScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
+				ObjectEntryFolder objectEntryFolder)
+		throws Exception {
+
+		return objectEntryFolder.getScopeKey();
 	}
 
 	@Override
@@ -351,6 +378,15 @@ public class ObjectEntryFolderResourceTest
 			String.valueOf(_testDepotEntry.getGroupId()));
 
 		return objectEntryFolder;
+	}
+
+	@Override
+	protected String
+			testPutScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
+				ObjectEntryFolder objectEntryFolder)
+		throws Exception {
+
+		return objectEntryFolder.getScopeKey();
 	}
 
 	private void _testPatchScopeScopeKeyObjectEntryFolderByExternalReferenceCodeWithGroupKey()
@@ -532,8 +568,7 @@ public class ObjectEntryFolderResourceTest
 		ObjectEntryFolder putObjectEntryFolder =
 			objectEntryFolderResource.
 				putScopeScopeKeyObjectEntryFolderByExternalReferenceCode(
-					testPutScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
-						postObjectEntryFolder),
+					postObjectEntryFolder.getScopeKey(),
 					postObjectEntryFolder.getExternalReferenceCode(),
 					randomObjectEntryFolder);
 
@@ -563,8 +598,7 @@ public class ObjectEntryFolderResourceTest
 		ObjectEntryFolder putObjectEntryFolder =
 			objectEntryFolderResource.
 				putScopeScopeKeyObjectEntryFolderByExternalReferenceCode(
-					testPutScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
-						postObjectEntryFolder),
+					postObjectEntryFolder.getScopeKey(),
 					postObjectEntryFolder.getExternalReferenceCode(),
 					randomObjectEntryFolder);
 
@@ -597,8 +631,7 @@ public class ObjectEntryFolderResourceTest
 		try {
 			objectEntryFolderResource.
 				putScopeScopeKeyObjectEntryFolderByExternalReferenceCode(
-					testPutScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
-						postObjectEntryFolder),
+					postObjectEntryFolder.getScopeKey(),
 					postObjectEntryFolder.getExternalReferenceCode(),
 					randomObjectEntryFolder);
 
@@ -629,8 +662,7 @@ public class ObjectEntryFolderResourceTest
 		ObjectEntryFolder putObjectEntryFolder =
 			objectEntryFolderResource.
 				putScopeScopeKeyObjectEntryFolderByExternalReferenceCode(
-					testPutScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
-						postObjectEntryFolder),
+					postObjectEntryFolder.getScopeKey(),
 					postObjectEntryFolder.getExternalReferenceCode(),
 					randomObjectEntryFolder);
 
@@ -644,8 +676,7 @@ public class ObjectEntryFolderResourceTest
 		ObjectEntryFolder parentObjectEntryFolder =
 			objectEntryFolderResource.
 				getScopeScopeKeyObjectEntryFolderByExternalReferenceCode(
-					testGetScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
-						putObjectEntryFolder),
+					putObjectEntryFolder.getScopeKey(),
 					parentObjectEntryFolderExternalReferenceCode);
 
 		Assert.assertEquals(
@@ -668,8 +699,7 @@ public class ObjectEntryFolderResourceTest
 		try {
 			objectEntryFolderResource.
 				putScopeScopeKeyObjectEntryFolderByExternalReferenceCode(
-					testPutScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
-						postObjectEntryFolder),
+					postObjectEntryFolder.getScopeKey(),
 					postObjectEntryFolder.getExternalReferenceCode(),
 					randomObjectEntryFolder);
 

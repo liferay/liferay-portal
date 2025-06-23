@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.ChannelAccount;
 import com.liferay.headless.commerce.admin.channel.client.http.HttpInvoker;
@@ -199,12 +200,73 @@ public abstract class BaseChannelAccountResourceTestCase {
 
 	@Test
 	public void testDeleteChannelAccount() throws Exception {
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ChannelAccount channelAccount =
+			testDeleteChannelAccount_addChannelAccount();
+
+		assertHttpResponseStatusCode(
+			204,
+			channelAccountResource.deleteChannelAccountHttpResponse(
+				channelAccount.getChannelAccountId()));
+	}
+
+	protected ChannelAccount testDeleteChannelAccount_addChannelAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLDeleteChannelAccount() throws Exception {
-		Assert.assertTrue(false);
+
+		// No namespace
+
+		ChannelAccount channelAccount1 =
+			testGraphQLDeleteChannelAccount_addChannelAccount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteChannelAccount",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"channelAccountId",
+									channelAccount1.getChannelAccountId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteChannelAccount"));
+
+		// Using the namespace headlessCommerceAdminChannel_v1_0
+
+		ChannelAccount channelAccount2 =
+			testGraphQLDeleteChannelAccount_addChannelAccount();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminChannel_v1_0",
+						new GraphQLField(
+							"deleteChannelAccount",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"channelAccountId",
+										channelAccount2.getChannelAccountId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminChannel_v1_0",
+				"Object/deleteChannelAccount"));
+	}
+
+	protected ChannelAccount testGraphQLDeleteChannelAccount_addChannelAccount()
+		throws Exception {
+
+		return testGraphQLChannelAccount_addChannelAccount();
 	}
 
 	@Test
@@ -213,18 +275,17 @@ public abstract class BaseChannelAccountResourceTestCase {
 			testDeleteChannelAccountBatch_addChannelAccount();
 
 		testDeleteChannelAccountBatch_deleteChannelAccount(
-			"COMPLETED", null, channelAccount1.getChannelAccountId());
+			202, null, channelAccount1.getChannelAccountId());
 	}
 
 	protected ChannelAccount testDeleteChannelAccountBatch_addChannelAccount()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteChannelAccount_addChannelAccount();
 	}
 
 	protected void testDeleteChannelAccountBatch_deleteChannelAccount(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -237,10 +298,10 @@ public abstract class BaseChannelAccountResourceTestCase {
 						"channelAccountId", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -304,6 +365,12 @@ public abstract class BaseChannelAccountResourceTestCase {
 			page,
 			testGetChannelByExternalReferenceCodeChannelAccountsPage_getExpectedActions(
 				externalReferenceCode));
+
+		channelAccountResource.deleteChannelAccount(
+			channelAccount1.getChannelAccountId());
+
+		channelAccountResource.deleteChannelAccount(
+			channelAccount2.getChannelAccountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -499,6 +566,12 @@ public abstract class BaseChannelAccountResourceTestCase {
 		assertContains(channelAccount2, (List<ChannelAccount>)page.getItems());
 		assertValid(
 			page, testGetChannelIdChannelAccountsPage_getExpectedActions(id));
+
+		channelAccountResource.deleteChannelAccount(
+			channelAccount1.getChannelAccountId());
+
+		channelAccountResource.deleteChannelAccount(
+			channelAccount2.getChannelAccountId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -927,8 +1000,65 @@ public abstract class BaseChannelAccountResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		ChannelAccount channelAccount1 =
+			testBatchEngineDeleteImportTask_addChannelAccount();
+
+		testBatchEngineDeleteImportTask_deleteChannelAccount(
+			200, null, channelAccount1.getChannelAccountId());
+	}
+
+	protected ChannelAccount testBatchEngineDeleteImportTask_addChannelAccount()
+		throws Exception {
+
+		return testDeleteChannelAccount_addChannelAccount();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteChannelAccount(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.channel.dto.v1_0.ChannelAccount",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"channelAccountId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected ChannelAccount testGraphQLChannelAccount_addChannelAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
 
 	protected void assertContains(
 		ChannelAccount channelAccount, List<ChannelAccount> channelAccounts) {
@@ -1002,6 +1132,10 @@ public abstract class BaseChannelAccountResourceTestCase {
 
 	protected void assertValid(ChannelAccount channelAccount) throws Exception {
 		boolean valid = true;
+
+		if (channelAccount.getChannelAccountId() == null) {
+			valid = false;
+		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {

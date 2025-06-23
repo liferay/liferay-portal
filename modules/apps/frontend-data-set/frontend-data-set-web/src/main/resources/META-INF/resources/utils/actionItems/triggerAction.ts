@@ -5,10 +5,10 @@
 
 import {navigate} from 'frontend-js-web';
 
-import {ICreationActionItem} from '../../';
 import {IFrontendDataSetContext} from '../../FrontendDataSetContext';
 import {OPEN_MODAL, OPEN_SIDE_PANEL} from '../../utils/eventsDefinitions';
 import {resolveModalSize} from '../../utils/modals/resolveModalSize';
+import {ICreationActionItem} from '../types';
 import {ACTION_ITEM_TARGETS} from './constants';
 import formatActionURL from './formatActionURL';
 

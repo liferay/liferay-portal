@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Initializer CMS
 Bundle-SymbolicName: com.liferay.site.initializer.cms
-Bundle-Version: 1.0.10
+Bundle-Version: 1.0.11
 Liferay-Client-Extension-Batch: com/liferay/site/initializer/cms/internal/batch
 Liferay-Site-Initializer-Feature-Flag: LPD-17564
 Liferay-Site-Initializer-Name: CMS

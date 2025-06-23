@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -48,12 +49,15 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 		ObjectDefinitionService objectDefinitionService,
 		ObjectDefinitionSettingLocalService objectDefinitionSettingLocalService,
 		ObjectEntryFolderLocalService objectEntryFolderLocalService,
+		ModelResourcePermission<ObjectEntryFolder>
+			objectEntryFolderModelResourcePermission,
 		Portal portal) {
 
 		super(
 			depotEntryLocalService, groupLocalService, httpServletRequest,
 			language, objectDefinitionService,
-			objectDefinitionSettingLocalService, portal);
+			objectDefinitionSettingLocalService,
+			objectEntryFolderModelResourcePermission, portal);
 
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 	}

@@ -3,5 +3,4 @@ Bundle-SymbolicName: com.liferay.layout.item.selector.api
 Bundle-Version: 6.0.1
 Export-Package:\
 	com.liferay.layout.item.selector,\
-	com.liferay.layout.item.selector.criterion,\
 	com.liferay.layout.item.selector.view

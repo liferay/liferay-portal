@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Product Type Grouped Service
 Bundle-SymbolicName: com.liferay.commerce.product.type.grouped.service
-Bundle-Version: 4.0.54
+Bundle-Version: 4.0.55
 Liferay-Require-SchemaVersion: 1.2.1
 Liferay-Service: true
 -dsannotations-options: inherit

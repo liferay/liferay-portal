@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -289,6 +290,10 @@ public interface PatcherFixLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PatcherFix getPatcherFix(long patcherFixId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		Date modifiedDate, boolean notified, int[] type, int status);
+
 	/**
 	 * Returns a range of all the patcher fixes.
 	 *
@@ -303,6 +308,26 @@ public interface PatcherFixLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFix> getPatcherFixes(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, boolean latestFix, int type);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, boolean latestFix, int type, int status);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		long patcherProjectVersionId, boolean latestFix, String name, int type);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		String key, boolean latestFix, int type);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherFix> getPatcherFixes(
+		String key, double keyVersion, int type, boolean older);
+
 	/**
 	 * Returns the number of patcher fixes.
 	 *
@@ -310,6 +335,10 @@ public interface PatcherFixLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPatcherFixesCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPatcherFixesCountByPatcherProjectVersionId(
+		long patcherProjectVersionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFix> getPatcherFixPackPatcherFixes(

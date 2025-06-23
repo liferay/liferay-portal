@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Journal Web
 Bundle-SymbolicName: com.liferay.journal.web
-Bundle-Version: 5.0.191
+Bundle-Version: 5.0.192
 Liferay-JS-Config: /META-INF/resources/js/config.js
 Web-ContextPath: /journal-web
 -dsannotations-options: inherit

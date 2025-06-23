@@ -200,16 +200,16 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 		assertValid(getProductTaxConfiguration);
 	}
 
-	protected String
-			testGetProductByExternalReferenceCodeTaxConfiguration_getExternalReferenceCode()
+	protected ProductTaxConfiguration
+			testGetProductByExternalReferenceCodeTaxConfiguration_addProductTaxConfiguration()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected ProductTaxConfiguration
-			testGetProductByExternalReferenceCodeTaxConfiguration_addProductTaxConfiguration()
+	protected String
+			testGetProductByExternalReferenceCodeTaxConfiguration_getExternalReferenceCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -350,15 +350,16 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 		assertValid(getProductTaxConfiguration);
 	}
 
-	protected Long testGetProductIdTaxConfiguration_getId(
-			ProductTaxConfiguration productTaxConfiguration)
-		throws Exception {
-
-		return productTaxConfiguration.getId();
-	}
-
 	protected ProductTaxConfiguration
 			testGetProductIdTaxConfiguration_addProductTaxConfiguration()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetProductIdTaxConfiguration_getId(
+			ProductTaxConfiguration productTaxConfiguration)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -422,7 +423,8 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 			ProductTaxConfiguration productTaxConfiguration)
 		throws Exception {
 
-		return productTaxConfiguration.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test

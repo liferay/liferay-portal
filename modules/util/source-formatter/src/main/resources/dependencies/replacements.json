@@ -112,6 +112,33 @@
 	},
 	{
 		"classNames": [
+			"InfoCollectionProvider"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-8016",
+		"methodsToFormat": [
+			{
+				"from": "regex:@Override\n\t(?<methodSignature>public List<Resource> getInfoList\\(\\n\\s+InfoListProviderContext infoListProviderContext\\))",
+				"to": "${methodSignature}"
+			},
+			{
+				"from": "regex:@Override\n\t(?<methodSignature>public List<Resource> getInfoList\\(\\n*\\s*InfoListProviderContext infoListProviderContext, Pagination pagination,\\n*\\s*Sort sort\\))",
+				"to": "${methodSignature}"
+			},
+			{
+				"from": "regex:@Override\n\t(?<methodSignature>public int getInfoListCount\\(\\n*\\s*InfoListProviderContext infoListProviderContext\\))",
+				"to": "${methodSignature}"
+			}
+		],
+		"newImports": [
+			"com.liferay.info.collection.provider.CollectionQuery"
+		],
+		"newMethods": [
+			"@Override\n\tpublic InfoPage<Resource> getCollectionInfoPage(\n\t\tCollectionQuery collectionQuery) {\n\n\t\tList<Resource> resources = getResources();\n\n\t\tif (resources.size() <= 0) {\n\t\t\treturn InfoPage.of(Collections.emptyList());\n\t\t}\n\n\t\treturn InfoPage.of(resources);\n\t}"
+		]
+	},
+	{
+		"classNames": [
 			"HttpServletRequest"
 		],
 		"from": "regex:\t*\\w+\\.setAttribute\\(InfoDisplayWebKeys\\.INFO_ITEM_FIELD_VALUES_PROVIDER,.*?\\);\n",
@@ -156,6 +183,19 @@
 			"com.liferay.portal.kernel.util.HttpComponentsUtil"
 		],
 		"to": "HttpComponentsUtil.${methodName}"
+	},
+	{
+		"classNames": [
+			"BaseJSPProductNavigationControlMenuEntry"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-8041",
+		"methodsToFormat": [
+			{
+				"from": "regex:@Override\\s*@Reference\\s*\\(\\s*target\\s*=\\s*\"(?<target>[^\"]*)\",[\\s\\S]*?\\)\\s*public\\s+void\\s+setServletContext\\(ServletContext\\s+servletContext\\)\\s*\\{[\\s\\S]*?\\}",
+				"to": "@Reference(\n\t\ttarget = \"${target}\"\n\t)\n\tprivate ServletContext _servletContext;\n\n\t@Override\n\tpublic ServletContext getServletContext() {\n\t\treturn _servletContext;\n\t}"
+			}
+		]
 	},
 	{
 		"from": "new CalendarBookingStartTimeComparator()",

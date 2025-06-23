@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow Metrics Service
 Bundle-SymbolicName: com.liferay.portal.workflow.metrics.service
-Bundle-Version: 3.0.85
+Bundle-Version: 3.0.86
 Liferay-Require-SchemaVersion: 2.0.1
 Liferay-Service: true
 -dsannotations-options: inherit

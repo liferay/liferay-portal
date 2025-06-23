@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.Order;
 import com.liferay.headless.commerce.admin.order.client.http.HttpInvoker;
@@ -393,24 +394,24 @@ public abstract class BaseOrderResourceTestCase {
 	public void testDeleteOrderBatch() throws Exception {
 		Order order1 = testDeleteOrderBatch_addOrder();
 
-		testDeleteOrderBatch_deleteOrder("COMPLETED", null, order1.getId());
+		testDeleteOrderBatch_deleteOrder(
+			202, order1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404, orderResource.getOrderHttpResponse(order1.getId()));
 
+		order1 = testDeleteOrderBatch_addOrder();
+
+		testDeleteOrderBatch_deleteOrder(202, null, order1.getId());
+
+		assertHttpResponseStatusCode(
+			404, orderResource.getOrderHttpResponse(order1.getId()));
+
+		order1 = testDeleteOrderBatch_addOrder();
 		Order order2 = testDeleteOrderBatch_addOrder();
 
 		testDeleteOrderBatch_deleteOrder(
-			"COMPLETED", order2.getExternalReferenceCode(), null);
-
-		assertHttpResponseStatusCode(
-			404, orderResource.getOrderHttpResponse(order2.getId()));
-
-		order1 = testDeleteOrderBatch_addOrder();
-		order2 = testDeleteOrderBatch_addOrder();
-
-		testDeleteOrderBatch_deleteOrder(
-			"COMPLETED", order2.getExternalReferenceCode(), order1.getId());
+			202, order2.getExternalReferenceCode(), order1.getId());
 
 		assertHttpResponseStatusCode(
 			404, orderResource.getOrderHttpResponse(order1.getId()));
@@ -418,7 +419,7 @@ public abstract class BaseOrderResourceTestCase {
 			200, orderResource.getOrderHttpResponse(order2.getId()));
 
 		testDeleteOrderBatch_deleteOrder(
-			"COMPLETED", order2.getExternalReferenceCode(), order1.getId());
+			202, order2.getExternalReferenceCode(), order1.getId());
 
 		assertHttpResponseStatusCode(
 			404, orderResource.getOrderHttpResponse(order2.getId()));
@@ -429,7 +430,7 @@ public abstract class BaseOrderResourceTestCase {
 	}
 
 	protected void testDeleteOrderBatch_deleteOrder(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -442,10 +443,10 @@ public abstract class BaseOrderResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1372,17 +1373,93 @@ public abstract class BaseOrderResourceTestCase {
 			putOrder.getExternalReferenceCode());
 	}
 
+	protected Order testPutOrderByExternalReferenceCode_addOrder()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Order testPutOrderByExternalReferenceCode_createOrder()
 		throws Exception {
 
 		return randomOrder();
 	}
 
-	protected Order testPutOrderByExternalReferenceCode_addOrder()
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Order order1 = testBatchEngineDeleteImportTask_addOrder();
+
+		testBatchEngineDeleteImportTask_deleteOrder(
+			200, order1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404, orderResource.getOrderHttpResponse(order1.getId()));
+
+		order1 = testBatchEngineDeleteImportTask_addOrder();
+
+		testBatchEngineDeleteImportTask_deleteOrder(200, null, order1.getId());
+
+		assertHttpResponseStatusCode(
+			404, orderResource.getOrderHttpResponse(order1.getId()));
+
+		order1 = testBatchEngineDeleteImportTask_addOrder();
+		Order order2 = testBatchEngineDeleteImportTask_addOrder();
+
+		testBatchEngineDeleteImportTask_deleteOrder(
+			200, order2.getExternalReferenceCode(), order1.getId());
+
+		assertHttpResponseStatusCode(
+			404, orderResource.getOrderHttpResponse(order1.getId()));
+		assertHttpResponseStatusCode(
+			200, orderResource.getOrderHttpResponse(order2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteOrder(
+			200, order2.getExternalReferenceCode(), order1.getId());
+
+		assertHttpResponseStatusCode(
+			404, orderResource.getOrderHttpResponse(order2.getId()));
+	}
+
+	protected Order testBatchEngineDeleteImportTask_addOrder()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteOrder_addOrder();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteOrder(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.order.dto.v1_0.Order",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

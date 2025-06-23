@@ -9,9 +9,9 @@ import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React, {useContext, useState} from 'react';
 
-import {ICreationActionItem} from '../..';
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {triggerAction} from '../../utils/actionItems/triggerAction';
+import {ICreationActionItem} from '../../utils/types';
 
 const EMPTY_STATE_BUTTON_PROPS = {
 	'aria-label': undefined,

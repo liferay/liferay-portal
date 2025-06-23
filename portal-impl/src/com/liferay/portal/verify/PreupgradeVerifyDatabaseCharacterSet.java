@@ -42,8 +42,10 @@ public class PreupgradeVerifyDatabaseCharacterSet
 		Set<String> tableNames =
 			DBResourceUtil.getServiceComponentModuleTableNames(connection);
 
-		tableNames.addAll(DBResourceUtil.getPortalTableNames(connection));
+		tableNames.addAll(
+			DBResourceUtil.getServiceComponentPortalTableNames(connection));
 		tableNames.addAll(DBResourceUtil.getModuleTableNames(connection));
+		tableNames.addAll(DBResourceUtil.getPortalTableNames(connection));
 
 		String sql = StringBundler.concat(
 			"select distinct character_set_name, collation_name, table_name, ",

@@ -67,7 +67,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 	@Override
 	public Overview getContentOverview(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception {
 
 		List<DepotEntry> depotEntries = _getDepotEntries(spaceId);
@@ -90,7 +90,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 	@Override
 	public Overview getFileOverview(
 			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Integer spaceId)
+			String rangeStart, Long spaceId)
 		throws Exception {
 
 		List<DepotEntry> depotEntries = _getDepotEntries(spaceId);
@@ -114,9 +114,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 		return DateFormatFactoryUtil.getSimpleDateFormat("yyyy-MM-dd");
 	}
 
-	private List<DepotEntry> _getDepotEntries(Integer spaceId)
-		throws Exception {
-
+	private List<DepotEntry> _getDepotEntries(Long spaceId) throws Exception {
 		List<DepotEntry> depotEntries = new ArrayList<>();
 
 		if (spaceId == null) {

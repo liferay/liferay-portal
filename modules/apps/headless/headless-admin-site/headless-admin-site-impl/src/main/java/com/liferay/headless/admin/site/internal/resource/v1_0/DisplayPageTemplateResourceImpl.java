@@ -172,17 +172,21 @@ public class DisplayPageTemplateResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
+		long groupId = GroupUtil.getGroupId(
+			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+
 		return Page.of(
 			transform(
 				_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
-					GroupUtil.getGroupId(
-						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode),
-					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+					groupId, LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+					pagination.getStartPosition(), pagination.getEndPosition(),
+					null),
 				layoutPageTemplateEntry ->
 					_displayPageTemplateDTOConverter.toDTO(
-						layoutPageTemplateEntry)));
+						layoutPageTemplateEntry)),
+			pagination,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				groupId, LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE));
 	}
 
 	@Override

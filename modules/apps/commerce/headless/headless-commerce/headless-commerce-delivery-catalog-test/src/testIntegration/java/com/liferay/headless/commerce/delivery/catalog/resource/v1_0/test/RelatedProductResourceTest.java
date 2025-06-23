@@ -90,14 +90,6 @@ public class RelatedProductResourceTest
 		return _cpDefinition1.getCProductId();
 	}
 
-	@Override
-	protected RelatedProduct testGraphQLRelatedProduct_addRelatedProduct()
-		throws Exception {
-
-		return _addCPDefinitionLinkByCProductId(
-			_cpDefinition1.getCPDefinitionId(), randomRelatedProduct());
-	}
-
 	private RelatedProduct _addCPDefinitionLinkByCProductId(
 			Long cpDefinitionId, RelatedProduct relatedProduct)
 		throws Exception {

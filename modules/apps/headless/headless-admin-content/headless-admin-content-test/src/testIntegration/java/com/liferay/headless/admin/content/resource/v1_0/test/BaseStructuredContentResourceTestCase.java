@@ -219,15 +219,15 @@ public abstract class BaseStructuredContentResourceTestCase {
 				0L, testDeleteStructuredContentByVersion_getVersion()));
 	}
 
-	protected Double testDeleteStructuredContentByVersion_getVersion()
+	protected StructuredContent
+			testDeleteStructuredContentByVersion_addStructuredContent()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected StructuredContent
-			testDeleteStructuredContentByVersion_addStructuredContent()
+	protected Double testDeleteStructuredContentByVersion_getVersion()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -770,15 +770,15 @@ public abstract class BaseStructuredContentResourceTestCase {
 		assertValid(getStructuredContent);
 	}
 
-	protected Double testGetStructuredContentByVersion_getVersion()
+	protected StructuredContent
+			testGetStructuredContentByVersion_addStructuredContent()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected StructuredContent
-			testGetStructuredContentByVersion_addStructuredContent()
+	protected Double testGetStructuredContentByVersion_getVersion()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

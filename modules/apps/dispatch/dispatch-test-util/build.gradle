@@ -1,0 +1,9 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
+	compileOnly project(":apps:dispatch:dispatch-api")
+}
+
+liferay {
+	deployDir = file("${liferayHome}/osgi/test")
+}

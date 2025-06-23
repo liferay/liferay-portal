@@ -5,6 +5,8 @@
 
 package com.liferay.petra.string;
 
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.ReloadURLClassLoader;
 import com.liferay.portal.kernel.test.SwappableSecurityManager;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
@@ -742,12 +744,14 @@ public class StringBundlerTest {
 		Assert.assertEquals("test2", sb.stringAt(0));
 	}
 
-	@NewEnv(type = NewEnv.Type.CLASSLOADER)
+	@NewEnv(type = NewEnv.Type.JVM)
+	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
-	public void testStringBuilderFallbackOnUnsupportedJDK() {
-		AtomicInteger counter = new AtomicInteger();
+	public void testStringBuilderFallbackOnUnsupportedJDK() throws Exception {
+		ReloadURLClassLoader reloadURLClassLoader = new ReloadURLClassLoader(
+			StringBundler.class);
 
-		NoSuchFieldException noSuchFieldException = new NoSuchFieldException();
+		AtomicInteger counter = new AtomicInteger();
 
 		try (SwappableSecurityManager swappableSecurityManager =
 				new SwappableSecurityManager() {
@@ -757,11 +761,11 @@ public class StringBundlerTest {
 						if (Objects.equals(
 								permission.getName(),
 								"accessDeclaredMembers") &&
-							(counter.incrementAndGet() == 4)) {
+							(counter.incrementAndGet() == 1)) {
 
 							StringBundlerTest.this.
 								<RuntimeException>_throwException(
-									noSuchFieldException);
+									new NoSuchFieldException());
 						}
 					}
 
@@ -769,13 +773,34 @@ public class StringBundlerTest {
 
 			swappableSecurityManager.install();
 
-			StringBundler sb = new StringBundler();
+			Class<?> clazz = reloadURLClassLoader.loadClass(
+				StringBundler.class.getName());
 
-			sb.append("test1");
-			sb.append("test2");
-			sb.append("test3");
+			Object sbObject = clazz.newInstance();
 
-			Assert.assertEquals("test1test2test3", sb.toString());
+			ReflectionTestUtil.invoke(
+				sbObject, "append", new Class<?>[] {String.class}, "test1");
+			ReflectionTestUtil.invoke(
+				sbObject, "append", new Class<?>[] {String.class}, "test2");
+			ReflectionTestUtil.invoke(
+				sbObject, "append", new Class<?>[] {String.class}, "test3");
+
+			Assert.assertEquals("test1test2test3", sbObject.toString());
+		}
+
+		StringBundler sb = new StringBundler();
+
+		ReflectionTestUtil.setFieldValue(
+			sb, "_array", new String[] {"test1", "test2", null});
+
+		ReflectionTestUtil.setFieldValue(sb, "_arrayIndex", 3);
+
+		try {
+			sb.toString();
+
+			Assert.fail();
+		}
+		catch (NullPointerException nullPointerException) {
 		}
 	}
 

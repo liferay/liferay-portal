@@ -101,16 +101,28 @@ public abstract class BaseUserAccountResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null,
 			new ServiceContext() {
 				{
-					setCompanyId(testGroup.getCompanyId());
+					setCompanyId(testCompany.getCompanyId());
 					setUserId(TestPropsValues.getUserId());
 				}
 			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
 
 		_userAccountResource.setContextCompany(testCompany);
 
@@ -228,6 +240,14 @@ public abstract class BaseUserAccountResourceTestCase {
 					testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_getUserExternalReferenceCode()));
 	}
 
+	protected UserAccount
+			testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_addUserAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_getAssetLibraryExternalReferenceCode()
 		throws Exception {
@@ -238,14 +258,6 @@ public abstract class BaseUserAccountResourceTestCase {
 
 	protected String
 			testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_getUserExternalReferenceCode()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected UserAccount
-			testDeleteAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_addUserAccount()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -276,6 +288,13 @@ public abstract class BaseUserAccountResourceTestCase {
 				testDeleteAssetLibraryUserAccount_getUserId()));
 	}
 
+	protected UserAccount testDeleteAssetLibraryUserAccount_addUserAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long testDeleteAssetLibraryUserAccount_getAssetLibraryId()
 		throws Exception {
 
@@ -284,13 +303,6 @@ public abstract class BaseUserAccountResourceTestCase {
 	}
 
 	protected Long testDeleteAssetLibraryUserAccount_getUserId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected UserAccount testDeleteAssetLibraryUserAccount_addUserAccount()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -314,6 +326,14 @@ public abstract class BaseUserAccountResourceTestCase {
 		assertValid(getUserAccount);
 	}
 
+	protected UserAccount
+			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_addUserAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_getAssetLibraryExternalReferenceCode()
 		throws Exception {
@@ -324,14 +344,6 @@ public abstract class BaseUserAccountResourceTestCase {
 
 	protected String
 			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_getUserExternalReferenceCode()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected UserAccount
-			testGetAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_addUserAccount()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -711,6 +723,13 @@ public abstract class BaseUserAccountResourceTestCase {
 		assertValid(getUserAccount);
 	}
 
+	protected UserAccount testGetAssetLibraryUserAccount_addUserAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long testGetAssetLibraryUserAccount_getAssetLibraryId()
 		throws Exception {
 
@@ -719,13 +738,6 @@ public abstract class BaseUserAccountResourceTestCase {
 	}
 
 	protected Long testGetAssetLibraryUserAccount_getUserId() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected UserAccount testGetAssetLibraryUserAccount_addUserAccount()
-		throws Exception {
-
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -1059,7 +1071,7 @@ public abstract class BaseUserAccountResourceTestCase {
 			testGetAssetLibraryUserAccountsPage_getIrrelevantAssetLibraryId()
 		throws Exception {
 
-		return null;
+		return irrelevantDepotEntry.getDepotEntryId();
 	}
 
 	@Test
@@ -1090,6 +1102,14 @@ public abstract class BaseUserAccountResourceTestCase {
 		assertValid(getUserAccount);
 	}
 
+	protected UserAccount
+			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_addUserAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected String
 			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_getAssetLibraryExternalReferenceCode()
 		throws Exception {
@@ -1100,14 +1120,6 @@ public abstract class BaseUserAccountResourceTestCase {
 
 	protected String
 			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_getUserExternalReferenceCode()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected UserAccount
-			testPutAssetLibraryByExternalReferenceCodeAssetLibraryExternalReferenceCodeUserAccountByExternalReferenceCodeUserExternalReferenceCode_addUserAccount()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1138,6 +1150,13 @@ public abstract class BaseUserAccountResourceTestCase {
 		assertValid(getUserAccount);
 	}
 
+	protected UserAccount testPutAssetLibraryUserAccount_addUserAccount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long testPutAssetLibraryUserAccount_getAssetLibraryId()
 		throws Exception {
 
@@ -1146,20 +1165,6 @@ public abstract class BaseUserAccountResourceTestCase {
 	}
 
 	protected Long testPutAssetLibraryUserAccount_getUserId() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected UserAccount testPutAssetLibraryUserAccount_addUserAccount()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected UserAccount testGraphQLUserAccount_addUserAccount()
-		throws Exception {
-
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -1769,7 +1774,10 @@ public abstract class BaseUserAccountResourceTestCase {
 	protected UserAccountResource userAccountResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
 	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {

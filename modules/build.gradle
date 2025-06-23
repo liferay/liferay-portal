@@ -40,7 +40,7 @@ ext {
 		"com.liferay.gradle.plugins.theme.builder.version": "2.0.17",
 		"com.liferay.portal.tools.bundle.support.version": "3.7.5",
 		"com.liferay.portal.tools.service.builder.version": "1.0.501",
-		"com.liferay.portal.tools.rest.builder.version": "1.0.417",
+		"com.liferay.portal.tools.rest.builder.version": "1.0.418",
 		"com.liferay.portal.tools.soy.builder.version": "3.0.4",
 		"com.liferay.portal.tools.theme.builder.version": "1.1.9",
 		"com.liferay.portal.vulcan.api.version": "9.3.1"

@@ -337,12 +337,6 @@ public abstract class BaseSiteResourceTestCase {
 			putSite.getExternalReferenceCode());
 	}
 
-	protected Site testPutSiteByExternalReferenceCode_createSite()
-		throws Exception {
-
-		return randomSite();
-	}
-
 	protected Site testPutSiteByExternalReferenceCode_addSite()
 		throws Exception {
 
@@ -350,9 +344,10 @@ public abstract class BaseSiteResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	protected Site testGraphQLSite_addSite() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	protected Site testPutSiteByExternalReferenceCode_createSite()
+		throws Exception {
+
+		return randomSite();
 	}
 
 	protected void assertContains(Site site, List<Site> sites) {

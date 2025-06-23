@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Nested Portlets Web
 Bundle-SymbolicName: com.liferay.nested.portlets.web
-Bundle-Version: 6.0.47
+Bundle-Version: 6.0.48
 Web-ContextPath: /nested-portlets-web

@@ -168,7 +168,6 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -474,7 +473,7 @@ public class RenderLayoutStructureTagTest {
 
 		ObjectEntry relationshipObjectEntry =
 			_objectEntryLocalService.addObjectEntry(
-				TestPropsValues.getUserId(), 0,
+				0, TestPropsValues.getUserId(),
 				relationshipObjectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -496,7 +495,7 @@ public class RenderLayoutStructureTagTest {
 			).build());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), 0,
+			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -1181,11 +1180,7 @@ public class RenderLayoutStructureTagTest {
 			actualJournalArticle.getArticleId());
 	}
 
-	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-32050"), @FeatureFlag(value = "LPD-37927")
-		}
-	)
+	@FeatureFlag("LPD-32050")
 	@Test
 	@TestInfo("LPD-48715")
 	public void testRenderCollectionStyledLayoutStructureItemWithLocalizedObjectField()
@@ -1221,7 +1216,7 @@ public class RenderLayoutStructureTagTest {
 		String myTextValue = RandomTestUtil.randomString();
 
 		_objectEntryLocalService.addObjectEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,

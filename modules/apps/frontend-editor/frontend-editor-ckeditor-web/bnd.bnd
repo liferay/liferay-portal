@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend Editor CKEditor Web
 Bundle-SymbolicName: com.liferay.frontend.editor.ckeditor.web
-Bundle-Version: 5.0.113
+Bundle-Version: 5.0.114
 Liferay-JS-Config: /META-INF/resources/js/legacy/config.js
 Web-ContextPath: /frontend-editor-ckeditor-web
 -donotcopy: (\.touch|.*_diffs.*|.*.properties)

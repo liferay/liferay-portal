@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Product Navigation Simulation Device
 Bundle-SymbolicName: com.liferay.product.navigation.simulation.device
-Bundle-Version: 6.0.66
+Bundle-Version: 6.0.67
 Web-ContextPath: /product-navigation-simulation-device

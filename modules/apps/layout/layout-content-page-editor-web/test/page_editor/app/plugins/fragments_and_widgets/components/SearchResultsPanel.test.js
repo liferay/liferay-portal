@@ -12,7 +12,6 @@ import {StoreAPIContextProvider} from '../../../../../../src/main/resources/META
 import SearchResultsPanel from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/fragments_and_widgets/components/SearchResultsPanel';
 
 global.Liferay = {
-	FeatureFlags: {'LPD-34938': true},
 	Language: {get: (key) => key},
 };
 
@@ -104,30 +103,6 @@ describe('SearchResultsPanel', () => {
 	it('renders empty state when no filtered tabs are available', () => {
 		renderSearchResultsPanel({filteredTabs: []});
 		expect(screen.getByText('no-results-found')).toBeInTheDocument();
-	});
-
-	it('renders marketplace results if Liferay FeatureFlag is true', () => {
-		global.Liferay.FeatureFlags['LPD-34938'] = true;
-
-		renderSearchResultsPanel();
-
-		expect(
-			screen.getByTestId('marketplace-search-results')
-		).toBeInTheDocument();
-
-		global.Liferay.FeatureFlags['LPD-34938'] = false;
-	});
-
-	it('does not render marketplace results if Liferay FeatureFlag is false', () => {
-		global.Liferay.FeatureFlags['LPD-34938'] = false;
-
-		renderSearchResultsPanel();
-
-		expect(
-			screen.queryByTestId('marketplace-search-results')
-		).not.toBeInTheDocument();
-
-		global.Liferay.FeatureFlags['LPD-34938'] = true;
 	});
 
 	it('renders marketplace results if has permission to view marketplace', () => {

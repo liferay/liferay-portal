@@ -4041,6 +4041,41 @@
 				]
 			}
 		},
+		"/{object2Id}/expire": {
+			"post": {
+				"operationId": "postObject2Expire",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "object2Id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"default": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Object2"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/Object2"
+								}
+							}
+						},
+						"description": "default response"
+					}
+				},
+				"tags": [
+					"Object2"
+				]
+			}
+		},
 		"/{object2Id}/permissions": {
 			"get": {
 				"operationId": "getObject2PermissionsPage",

@@ -1,0 +1,24 @@
+.visualization-mode-cards {
+	.form-check-card {
+		&:hover,
+		&.active {
+			& .card {
+				box-shadow: $card-box-shadow;
+			}
+		}
+
+		&:hover .card {
+			background-color: $light;
+		}
+
+		&.active {
+			&:hover .card {
+				background-color: #d6e4ff;
+			}
+
+			.card {
+				background-color: $primary-l3;
+			}
+		}
+	}
+}

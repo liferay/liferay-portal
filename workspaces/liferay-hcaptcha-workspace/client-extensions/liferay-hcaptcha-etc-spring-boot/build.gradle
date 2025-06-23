@@ -1,0 +1,38 @@
+buildscript {
+	dependencies {
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "latest.release"
+		classpath group: "org.springframework.boot", name: "spring-boot-gradle-plugin", version: "2.7.18"
+	}
+
+	repositories {
+		maven {
+			url new File(rootProject.projectDir, "../../.m2-tmp")
+		}
+
+		maven {
+			url "https://repository-cdn.liferay.com/nexus/content/groups/public"
+		}
+	}
+}
+
+apply plugin: "com.liferay.source.formatter"
+apply plugin: "java-library"
+apply plugin: "org.springframework.boot"
+
+dependencies {
+	implementation group: "com.liferay", name: "com.liferay.client.extension.util.spring.boot3", version: "latest.release"
+	implementation group: "org.json", name: "json", version: "20231013"
+	implementation group: "org.springframework.boot", name: "spring-boot-starter-oauth2-resource-server", version: "2.7.18"
+	implementation group: "org.springframework.boot", name: "spring-boot-starter-web", version: "2.7.18"
+	implementation group: "org.springframework.boot", name: "spring-boot-starter-webflux", version: "2.7.18"
+}
+
+repositories {
+	maven {
+		url new File(rootProject.projectDir, "../../.m2-tmp")
+	}
+
+	maven {
+		url "https://repository-cdn.liferay.com/nexus/content/groups/public"
+	}
+}

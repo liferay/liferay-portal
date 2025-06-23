@@ -194,17 +194,10 @@ public abstract class BaseSitePageResourceTestCase {
 		SitePage postSitePage = testGetSiteSitePage_addSitePage();
 
 		SitePage getSitePage = sitePageResource.getSiteSitePage(
-			testGetSiteSitePage_getSiteId(postSitePage),
-			postSitePage.getFriendlyUrlPath());
+			postSitePage.getSiteId(), postSitePage.getFriendlyUrlPath());
 
 		assertEquals(postSitePage, getSitePage);
 		assertValid(getSitePage);
-	}
-
-	protected Long testGetSiteSitePage_getSiteId(SitePage sitePage)
-		throws Exception {
-
-		return sitePage.getSiteId();
 	}
 
 	protected SitePage testGetSiteSitePage_addSitePage() throws Exception {
@@ -230,10 +223,7 @@ public abstract class BaseSitePageResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteSitePage_getSiteId(
-													sitePage) + "\"");
-
+											"\"" + sitePage.getSiteId() + "\"");
 										put(
 											"friendlyUrlPath",
 											"\"" +
@@ -260,10 +250,8 @@ public abstract class BaseSitePageResourceTestCase {
 										{
 											put(
 												"siteKey",
-												"\"" +
-													testGraphQLGetSiteSitePage_getSiteId(
-														sitePage) + "\"");
-
+												"\"" + sitePage.getSiteId() +
+													"\"");
 											put(
 												"friendlyUrlPath",
 												"\"" +
@@ -275,12 +263,6 @@ public abstract class BaseSitePageResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/sitePage"))));
-	}
-
-	protected Long testGraphQLGetSiteSitePage_getSiteId(SitePage sitePage)
-		throws Exception {
-
-		return sitePage.getSiteId();
 	}
 
 	@Test
@@ -349,20 +331,18 @@ public abstract class BaseSitePageResourceTestCase {
 
 		SitePage getSitePage =
 			sitePageResource.getSiteSitePageExperienceExperienceKey(
-				testGetSiteSitePageExperienceExperienceKey_getSiteId(
-					postSitePage),
-				postSitePage.getFriendlyUrlPath(),
+				postSitePage.getSiteId(), postSitePage.getFriendlyUrlPath(),
 				testGetSiteSitePageExperienceExperienceKey_getExperienceKey());
 
 		assertEquals(postSitePage, getSitePage);
 		assertValid(getSitePage);
 	}
 
-	protected Long testGetSiteSitePageExperienceExperienceKey_getSiteId(
-			SitePage sitePage)
+	protected SitePage testGetSiteSitePageExperienceExperienceKey_addSitePage()
 		throws Exception {
 
-		return sitePage.getSiteId();
+		return sitePageResource.postSiteSitePage(
+			testGroup.getGroupId(), randomSitePage());
 	}
 
 	protected String
@@ -371,13 +351,6 @@ public abstract class BaseSitePageResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
-	}
-
-	protected SitePage testGetSiteSitePageExperienceExperienceKey_addSitePage()
-		throws Exception {
-
-		return sitePageResource.postSiteSitePage(
-			testGroup.getGroupId(), randomSitePage());
 	}
 
 	@Test
@@ -401,10 +374,7 @@ public abstract class BaseSitePageResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteSitePageExperienceExperienceKey_getSiteId(
-													sitePage) + "\"");
-
+											"\"" + sitePage.getSiteId() + "\"");
 										put(
 											"friendlyUrlPath",
 											"\"" +
@@ -438,10 +408,8 @@ public abstract class BaseSitePageResourceTestCase {
 										{
 											put(
 												"siteKey",
-												"\"" +
-													testGraphQLGetSiteSitePageExperienceExperienceKey_getSiteId(
-														sitePage) + "\"");
-
+												"\"" + sitePage.getSiteId() +
+													"\"");
 											put(
 												"friendlyUrlPath",
 												"\"" +
@@ -459,13 +427,6 @@ public abstract class BaseSitePageResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/sitePageExperienceExperienceKey"))));
-	}
-
-	protected Long testGraphQLGetSiteSitePageExperienceExperienceKey_getSiteId(
-			SitePage sitePage)
-		throws Exception {
-
-		return sitePage.getSiteId();
 	}
 
 	protected String
@@ -1125,6 +1086,11 @@ public abstract class BaseSitePageResourceTestCase {
 		SitePage sitePage = testGraphQLSitePage_addSitePage(randomSitePage);
 
 		Assert.assertTrue(equals(randomSitePage, sitePage));
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	@Rule

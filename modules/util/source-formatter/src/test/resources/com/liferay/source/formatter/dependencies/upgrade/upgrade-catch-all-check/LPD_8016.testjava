@@ -1,0 +1,40 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import com.liferay.info.list.provider.InfoListProvider;
+
+/**
+ * @author Nícolas Moura
+ */
+@Component(immediate = true, service = InfoListProvider.class)
+public class LPD_8016 implements InfoListProvider<Resource> {
+
+	@Override
+	public List<Resource> getInfoList(
+		InfoListProviderContext infoListProviderContext) {
+
+		return getResources();
+	}
+
+	@Override
+	public List<Resource> getInfoList(
+		InfoListProviderContext infoListProviderContext, Pagination pagination,
+		Sort sort) {
+
+		return getResources();
+	}
+
+	@Override
+	public int getInfoListCount(
+		InfoListProviderContext infoListProviderContext) {
+
+		List<Resource> resources = getResources();
+
+		return resources.size();
+	}
+
+}

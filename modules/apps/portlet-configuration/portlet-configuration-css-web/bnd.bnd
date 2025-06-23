@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portlet Configuration CSS Web
 Bundle-SymbolicName: com.liferay.portlet.configuration.css.web
-Bundle-Version: 6.0.74
+Bundle-Version: 6.0.75
 Web-ContextPath: /portlet-configuration-css-web

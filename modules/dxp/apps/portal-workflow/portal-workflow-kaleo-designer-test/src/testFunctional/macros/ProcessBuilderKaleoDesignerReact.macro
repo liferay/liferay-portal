@@ -651,6 +651,8 @@ definition {
 				locator1 = "TextInput#GENERIC_NUMBER_INPUT_N",
 				value1 = ${actionPriority});
 		}
+
+		Click(locator1 = "ProcessBuilderKaleoDesignerReact#SINGLE_SIDEBAR_HEADER");
 	}
 
 	@summary = "Default summary"

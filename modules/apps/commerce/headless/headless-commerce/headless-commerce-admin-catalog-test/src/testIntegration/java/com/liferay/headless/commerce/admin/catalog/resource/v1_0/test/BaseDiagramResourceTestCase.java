@@ -197,15 +197,15 @@ public abstract class BaseDiagramResourceTestCase {
 		assertValid(getDiagram);
 	}
 
-	protected String
-			testGetProductByExternalReferenceCodeDiagram_getExternalReferenceCode()
+	protected Diagram testGetProductByExternalReferenceCodeDiagram_addDiagram()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Diagram testGetProductByExternalReferenceCodeDiagram_addDiagram()
+	protected String
+			testGetProductByExternalReferenceCodeDiagram_getExternalReferenceCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -343,13 +343,14 @@ public abstract class BaseDiagramResourceTestCase {
 		assertValid(getDiagram);
 	}
 
+	protected Diagram testGetProductIdDiagram_addDiagram() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected Long testGetProductIdDiagram_getId(Diagram diagram)
 		throws Exception {
 
-		return diagram.getId();
-	}
-
-	protected Diagram testGetProductIdDiagram_addDiagram() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -408,7 +409,8 @@ public abstract class BaseDiagramResourceTestCase {
 	protected Long testGraphQLGetProductIdDiagram_getId(Diagram diagram)
 		throws Exception {
 
-		return diagram.getId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -501,6 +503,11 @@ public abstract class BaseDiagramResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected Diagram testGraphQLDiagram_addDiagram() throws Exception {

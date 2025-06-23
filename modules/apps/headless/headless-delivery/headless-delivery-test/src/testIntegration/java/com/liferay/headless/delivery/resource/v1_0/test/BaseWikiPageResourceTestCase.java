@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.delivery.client.dto.v1_0.Field;
 import com.liferay.headless.delivery.client.dto.v1_0.WikiPage;
@@ -243,29 +244,16 @@ public abstract class BaseWikiPageResourceTestCase {
 			204,
 			wikiPageResource.
 				deleteSiteWikiPageByExternalReferenceCodeHttpResponse(
-					testDeleteSiteWikiPageByExternalReferenceCode_getSiteId(
-						wikiPage),
-					wikiPage.getExternalReferenceCode()));
+					wikiPage.getSiteId(), wikiPage.getExternalReferenceCode()));
 
 		assertHttpResponseStatusCode(
 			404,
 			wikiPageResource.getSiteWikiPageByExternalReferenceCodeHttpResponse(
-				testDeleteSiteWikiPageByExternalReferenceCode_getSiteId(
-					wikiPage),
-				wikiPage.getExternalReferenceCode()));
+				wikiPage.getSiteId(), wikiPage.getExternalReferenceCode()));
 		assertHttpResponseStatusCode(
 			404,
 			wikiPageResource.getSiteWikiPageByExternalReferenceCodeHttpResponse(
-				testDeleteSiteWikiPageByExternalReferenceCode_getSiteId(
-					wikiPage),
-				"-"));
-	}
-
-	protected Long testDeleteSiteWikiPageByExternalReferenceCode_getSiteId(
-			WikiPage wikiPage)
-		throws Exception {
-
-		return wikiPage.getSiteId();
+				wikiPage.getSiteId(), "-"));
 	}
 
 	protected WikiPage
@@ -291,8 +279,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	}
 
 	protected WikiPage testDeleteWikiPage_addWikiPage() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostWikiPageWikiPage_addWikiPage(randomWikiPage());
 	}
 
 	@Test
@@ -374,8 +361,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	public void testDeleteWikiPageBatch() throws Exception {
 		WikiPage wikiPage1 = testDeleteWikiPageBatch_addWikiPage();
 
-		testDeleteWikiPageBatch_deleteWikiPage(
-			"COMPLETED", null, wikiPage1.getId());
+		testDeleteWikiPageBatch_deleteWikiPage(202, null, wikiPage1.getId());
 
 		assertHttpResponseStatusCode(
 			404, wikiPageResource.getWikiPageHttpResponse(wikiPage1.getId()));
@@ -386,7 +372,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	}
 
 	protected void testDeleteWikiPageBatch_deleteWikiPage(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -399,10 +385,10 @@ public abstract class BaseWikiPageResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -413,19 +399,11 @@ public abstract class BaseWikiPageResourceTestCase {
 
 		WikiPage getWikiPage =
 			wikiPageResource.getSiteWikiPageByExternalReferenceCode(
-				testGetSiteWikiPageByExternalReferenceCode_getSiteId(
-					postWikiPage),
+				postWikiPage.getSiteId(),
 				postWikiPage.getExternalReferenceCode());
 
 		assertEquals(postWikiPage, getWikiPage);
 		assertValid(getWikiPage);
-	}
-
-	protected Long testGetSiteWikiPageByExternalReferenceCode_getSiteId(
-			WikiPage wikiPage)
-		throws Exception {
-
-		return wikiPage.getSiteId();
 	}
 
 	protected WikiPage testGetSiteWikiPageByExternalReferenceCode_addWikiPage()
@@ -456,10 +434,7 @@ public abstract class BaseWikiPageResourceTestCase {
 									{
 										put(
 											"siteKey",
-											"\"" +
-												testGraphQLGetSiteWikiPageByExternalReferenceCode_getSiteId(
-													wikiPage) + "\"");
-
+											"\"" + wikiPage.getSiteId() + "\"");
 										put(
 											"externalReferenceCode",
 											"\"" +
@@ -488,10 +463,8 @@ public abstract class BaseWikiPageResourceTestCase {
 										{
 											put(
 												"siteKey",
-												"\"" +
-													testGraphQLGetSiteWikiPageByExternalReferenceCode_getSiteId(
-														wikiPage) + "\"");
-
+												"\"" + wikiPage.getSiteId() +
+													"\"");
 											put(
 												"externalReferenceCode",
 												"\"" +
@@ -503,13 +476,6 @@ public abstract class BaseWikiPageResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/wikiPageByExternalReferenceCode"))));
-	}
-
-	protected Long testGraphQLGetSiteWikiPageByExternalReferenceCode_getSiteId(
-			WikiPage wikiPage)
-		throws Exception {
-
-		return wikiPage.getSiteId();
 	}
 
 	@Test
@@ -1168,8 +1134,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	}
 
 	protected WikiPage testGetWikiPage_addWikiPage() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostWikiPageWikiPage_addWikiPage(randomWikiPage());
 	}
 
 	@Test
@@ -1263,6 +1228,7 @@ public abstract class BaseWikiPageResourceTestCase {
 
 	@Test
 	public void testGetWikiPagePermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WikiPage postWikiPage = testGetWikiPagePermissionsPage_addWikiPage();
 
 		Page<Permission> page = wikiPageResource.getWikiPagePermissionsPage(
@@ -1403,8 +1369,7 @@ public abstract class BaseWikiPageResourceTestCase {
 
 		WikiPage putWikiPage =
 			wikiPageResource.putSiteWikiPageByExternalReferenceCode(
-				testPutSiteWikiPageByExternalReferenceCode_getSiteId(
-					postWikiPage),
+				postWikiPage.getSiteId(),
 				postWikiPage.getExternalReferenceCode(), randomWikiPage);
 
 		assertEquals(randomWikiPage, putWikiPage);
@@ -1412,8 +1377,7 @@ public abstract class BaseWikiPageResourceTestCase {
 
 		WikiPage getWikiPage =
 			wikiPageResource.getSiteWikiPageByExternalReferenceCode(
-				testPutSiteWikiPageByExternalReferenceCode_getSiteId(
-					putWikiPage),
+				putWikiPage.getSiteId(),
 				putWikiPage.getExternalReferenceCode());
 
 		assertEquals(randomWikiPage, getWikiPage);
@@ -1423,15 +1387,14 @@ public abstract class BaseWikiPageResourceTestCase {
 			testPutSiteWikiPageByExternalReferenceCode_createWikiPage();
 
 		putWikiPage = wikiPageResource.putSiteWikiPageByExternalReferenceCode(
-			testPutSiteWikiPageByExternalReferenceCode_getSiteId(newWikiPage),
-			newWikiPage.getExternalReferenceCode(), newWikiPage);
+			newWikiPage.getSiteId(), newWikiPage.getExternalReferenceCode(),
+			newWikiPage);
 
 		assertEquals(newWikiPage, putWikiPage);
 		assertValid(putWikiPage);
 
 		getWikiPage = wikiPageResource.getSiteWikiPageByExternalReferenceCode(
-			testPutSiteWikiPageByExternalReferenceCode_getSiteId(putWikiPage),
-			putWikiPage.getExternalReferenceCode());
+			putWikiPage.getSiteId(), putWikiPage.getExternalReferenceCode());
 
 		assertEquals(newWikiPage, getWikiPage);
 
@@ -1440,11 +1403,11 @@ public abstract class BaseWikiPageResourceTestCase {
 			putWikiPage.getExternalReferenceCode());
 	}
 
-	protected Long testPutSiteWikiPageByExternalReferenceCode_getSiteId(
-			WikiPage wikiPage)
+	protected WikiPage testPutSiteWikiPageByExternalReferenceCode_addWikiPage()
 		throws Exception {
 
-		return wikiPage.getSiteId();
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected WikiPage
@@ -1452,13 +1415,6 @@ public abstract class BaseWikiPageResourceTestCase {
 		throws Exception {
 
 		return randomWikiPage();
-	}
-
-	protected WikiPage testPutSiteWikiPageByExternalReferenceCode_addWikiPage()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1481,8 +1437,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	}
 
 	protected WikiPage testPutWikiPage_addWikiPage() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostWikiPageWikiPage_addWikiPage(randomWikiPage());
 	}
 
 	@Test
@@ -1524,8 +1479,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	protected WikiPage testPutWikiPagePermissionsPage_addWikiPage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostWikiPageWikiPage_addWikiPage(randomWikiPage());
 	}
 
 	@Test
@@ -1543,8 +1497,7 @@ public abstract class BaseWikiPageResourceTestCase {
 	}
 
 	protected WikiPage testPutWikiPageSubscribe_addWikiPage() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostWikiPageWikiPage_addWikiPage(randomWikiPage());
 	}
 
 	@Test
@@ -1564,8 +1517,59 @@ public abstract class BaseWikiPageResourceTestCase {
 	protected WikiPage testPutWikiPageUnsubscribe_addWikiPage()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testPostWikiPageWikiPage_addWikiPage(randomWikiPage());
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		WikiPage wikiPage1 = testBatchEngineDeleteImportTask_addWikiPage();
+
+		testBatchEngineDeleteImportTask_deleteWikiPage(
+			200, null, wikiPage1.getId());
+
+		assertHttpResponseStatusCode(
+			404, wikiPageResource.getWikiPageHttpResponse(wikiPage1.getId()));
+	}
+
+	protected WikiPage testBatchEngineDeleteImportTask_addWikiPage()
+		throws Exception {
+
+		return testDeleteWikiPage_addWikiPage();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteWikiPage(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.delivery.dto.v1_0.WikiPage", null, null,
+				null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

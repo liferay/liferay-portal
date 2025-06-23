@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend JS Components Web
 Bundle-SymbolicName: com.liferay.frontend.js.components.web
-Bundle-Version: 2.0.86
+Bundle-Version: 2.0.87
 Liferay-JS-Config: /META-INF/resources/legacy/config.js
 Web-ContextPath: /frontend-js-components-web

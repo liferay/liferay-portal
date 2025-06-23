@@ -20,6 +20,28 @@
 		}
 	}
 
+	.category-selector-modal {
+		.selector-modal-tree {
+			border-radius: 4px;
+			height: 382px !important;
+			margin-top: 24px;
+			overflow: auto;
+			padding: 16px;
+
+			.disabled {
+				color: #cdced9 !important;
+
+				.component-icon {
+					color: #cdced9 !important;
+				}
+			}
+
+			.no-subcategories {
+				margin-left: 24px !important;
+			}
+		}
+	}
+
 	.cms-parent-container {
 		height: calc(100vh - 6rem - var(--control-menu-container-height, 0));
 

@@ -92,7 +92,7 @@ public abstract class BaseOverviewResourceImpl implements OverviewResource {
 			String rangeStart,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("spaceId")
-			Integer spaceId)
+			Long spaceId)
 		throws Exception {
 
 		return new Overview();
@@ -149,7 +149,7 @@ public abstract class BaseOverviewResourceImpl implements OverviewResource {
 			String rangeStart,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("spaceId")
-			Integer spaceId)
+			Long spaceId)
 		throws Exception {
 
 		return new Overview();

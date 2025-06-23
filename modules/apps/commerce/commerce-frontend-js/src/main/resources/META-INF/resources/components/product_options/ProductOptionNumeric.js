@@ -83,6 +83,7 @@ const ProductOptionNumeric = ({
 						...(skuOptionsAtomState[skuOptionsKey] || []),
 						{
 							key: productOption.key,
+							required: productOption.required,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
 							value: [value],
@@ -120,6 +121,7 @@ const ProductOptionNumeric = ({
 				if (skuOption.skuOptionKey === productOption.key) {
 					return {
 						key: productOption.key,
+						required: productOption.required,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
 						value: [value],
@@ -134,6 +136,7 @@ const ProductOptionNumeric = ({
 				...currentSkuOptions,
 				{
 					key: productOption.key,
+					required: productOption.required,
 					skuOptionKey: productOption.key,
 					skuOptionName: productOption.name,
 					value: [value],

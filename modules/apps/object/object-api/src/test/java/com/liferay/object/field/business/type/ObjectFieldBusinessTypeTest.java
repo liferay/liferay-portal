@@ -137,7 +137,7 @@ public class ObjectFieldBusinessTypeTest {
 		Assert.assertEquals(
 			fieldValue1,
 			testObjectFieldBusinessType.getValue(
-				_objectField, RandomTestUtil.randomLong(),
+				null, _objectField, RandomTestUtil.randomLong(),
 				HashMapBuilder.<String, Object>put(
 					fieldName, fieldValue1
 				).put(
@@ -159,7 +159,7 @@ public class ObjectFieldBusinessTypeTest {
 
 		try {
 			testObjectFieldBusinessType.getValue(
-				_objectField, RandomTestUtil.randomLong(),
+				null, _objectField, RandomTestUtil.randomLong(),
 				HashMapBuilder.<String, Object>put(
 					fieldName, fieldValue1
 				).put(
@@ -191,7 +191,7 @@ public class ObjectFieldBusinessTypeTest {
 		Assert.assertEquals(
 			fieldValue1,
 			testObjectFieldBusinessType.getValue(
-				_objectField, RandomTestUtil.randomLong(),
+				null, _objectField, RandomTestUtil.randomLong(),
 				HashMapBuilder.<String, Object>put(
 					fieldName, fieldValue1
 				).build()));
@@ -212,7 +212,7 @@ public class ObjectFieldBusinessTypeTest {
 			Assert.assertEquals(
 				fieldValue3,
 				testObjectFieldBusinessType.getValue(
-					_objectField, RandomTestUtil.randomLong(),
+					null, _objectField, RandomTestUtil.randomLong(),
 					HashMapBuilder.<String, Object>put(
 						fieldName, fieldValue1
 					).put(
@@ -227,7 +227,7 @@ public class ObjectFieldBusinessTypeTest {
 			Assert.assertEquals(
 				"",
 				testObjectFieldBusinessType.getValue(
-					_objectField, RandomTestUtil.randomLong(),
+					null, _objectField, RandomTestUtil.randomLong(),
 					HashMapBuilder.<String, Object>put(
 						fieldName, fieldValue1
 					).put(

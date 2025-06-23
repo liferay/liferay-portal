@@ -28,15 +28,34 @@ public abstract class BaseJakartaUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		for (String[] tableAndColumnNames : getTableAndColumnNames()) {
-			Queue<String> modifiedKeys = new ConcurrentLinkedQueue<>();
-
 			DBInspector dbInspector = new DBInspector(connection);
+
+			String tableName = dbInspector.normalizeName(
+				tableAndColumnNames[0]);
+
+			if (!dbInspector.hasTable(tableName)) {
+				if (_log.isInfoEnabled()) {
+					_log.info("Table " + tableName + " does not exist");
+				}
+
+				continue;
+			}
 
 			String columnName = dbInspector.normalizeName(
 				tableAndColumnNames[1]);
 
-			String tableName = dbInspector.normalizeName(
-				tableAndColumnNames[0]);
+			if (!dbInspector.hasColumn(tableName, columnName)) {
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Table ", tableName, " does not have column ",
+							columnName));
+				}
+
+				continue;
+			}
+
+			Queue<String> modifiedKeys = new ConcurrentLinkedQueue<>();
 
 			String[] primaryKeyColumnNames = getPrimaryKeyColumnNames(
 				connection, tableName);

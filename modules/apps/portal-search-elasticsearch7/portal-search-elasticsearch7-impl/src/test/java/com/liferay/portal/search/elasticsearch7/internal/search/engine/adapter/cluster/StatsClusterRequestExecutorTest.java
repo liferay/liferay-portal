@@ -6,7 +6,6 @@
 package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.cluster;
 
 import com.liferay.portal.json.JSONFactoryImpl;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchConnectionFixture;
 import com.liferay.portal.search.engine.adapter.cluster.StatsClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.StatsClusterResponse;
@@ -50,21 +49,12 @@ public class StatsClusterRequestExecutorTest {
 		StatsClusterRequest statsClusterRequest = new StatsClusterRequest(
 			new String[] {_NODE_ID});
 
-		StatsClusterRequestExecutorImpl statsClusterRequestExecutorImpl =
-			new StatsClusterRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutorImpl, "_clusterHealthStatusTranslator",
-			new ClusterHealthStatusTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutorImpl, "_elasticsearchClientResolver",
-			_elasticsearchConnectionFixture);
-		ReflectionTestUtil.setFieldValue(
-			statsClusterRequestExecutorImpl, "_jsonFactory",
-			new JSONFactoryImpl());
+		StatsClusterRequestExecutor statsClusterRequestExecutor =
+			new StatsClusterRequestExecutor(
+				_elasticsearchConnectionFixture, new JSONFactoryImpl());
 
 		StatsClusterResponse statsClusterResponse =
-			statsClusterRequestExecutorImpl.execute(statsClusterRequest);
+			statsClusterRequestExecutor.execute(statsClusterRequest);
 
 		Assert.assertNotNull(statsClusterResponse);
 		Assert.assertNotEquals(

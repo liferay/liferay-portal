@@ -7,6 +7,7 @@ package com.liferay.customer;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.client.extension.util.spring.boot3.client.LiferayOAuth2AccessTokenManager;
+import com.liferay.customer.exception.TicketAttachmentNotFoundException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.customer.service.GoogleCloudStorageService;
 import com.liferay.customer.service.NotificationQueueEntryService;
@@ -48,13 +49,6 @@ public class TicketAttachmentsRestController extends BaseRestController {
 				_ticketAttachmentService.fetchTicketAttachment(
 					"Bearer " + jwt.getTokenValue(), ticketAttachmentId);
 
-			if (ticketAttachment == null) {
-				return new ResponseEntity<>(
-					"Ticket attachment " + ticketAttachmentId +
-						" does not exist",
-					HttpStatus.NOT_FOUND);
-			}
-
 			_ticketAttachmentService.updateTicketAttachmentState(
 				"Bearer " + jwt.getTokenValue(), ticketAttachmentId,
 				WorkflowConstants.STATUS_IN_TRASH);
@@ -66,20 +60,30 @@ public class TicketAttachmentsRestController extends BaseRestController {
 
 				_ticketAttachmentService.deleteTicketAttachment(
 					"Bearer " + jwt.getTokenValue(), ticketAttachmentId);
+
+				return new ResponseEntity<>(HttpStatus.OK);
 			}
 			catch (Exception exception) {
 				_log.error(exception, exception);
 
-				return new ResponseEntity<>(HttpStatus.ACCEPTED);
+				return new ResponseEntity<>("", HttpStatus.ACCEPTED);
 			}
+		}
+		catch (TicketAttachmentNotFoundException
+					ticketAttachmentNotFoundException) {
 
-			return new ResponseEntity<>(HttpStatus.OK);
+			_log.error(
+				ticketAttachmentNotFoundException,
+				ticketAttachmentNotFoundException);
+
+			return new ResponseEntity<>(
+				"ATTACHMENT_NOT_FOUND", HttpStatus.NOT_FOUND);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
 
-			return new ResponseEntity(
-				exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(
+				"UNEXPECTED_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

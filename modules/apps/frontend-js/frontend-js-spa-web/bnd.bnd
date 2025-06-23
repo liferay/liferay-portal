@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend JS SPA Web
 Bundle-SymbolicName: com.liferay.frontend.js.spa.web
-Bundle-Version: 5.0.65
+Bundle-Version: 5.0.66
 Provide-Capability:\
 	osgi.extender;\
 		osgi.extender="liferay.spa";\

@@ -101,7 +101,10 @@ export default function AdministratorSummary() {
 						listViewProps={{
 							id: 'summary-orders',
 							initialContext: {pageSize: 5},
-							paginationOptions: {displayType: 'never'},
+							paginationOptions: {displayType: false},
+						}}
+						managementToolbarProps={{
+							visible: false,
 						}}
 					/>
 				</Page>
@@ -111,10 +114,14 @@ export default function AdministratorSummary() {
 					title={i18n.translate('published-apps')}
 				>
 					<AdministratorAppsListView
+						isSortable
 						listViewProps={{
 							id: 'summary-apps',
 							initialContext: {pageSize: 5},
-							paginationOptions: {displayType: 'never'},
+							paginationOptions: {displayType: false},
+						}}
+						managementToolbarProps={{
+							visible: false,
 						}}
 					/>
 				</Page>

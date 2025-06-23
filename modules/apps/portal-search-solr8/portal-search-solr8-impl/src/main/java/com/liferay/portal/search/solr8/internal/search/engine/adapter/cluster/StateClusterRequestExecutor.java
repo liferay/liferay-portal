@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.cluster.StateClusterResponse;
 /**
  * @author Bryan Engler
  */
-public interface StateClusterRequestExecutor {
+public class StateClusterRequestExecutor {
 
 	public StateClusterResponse execute(
-		StateClusterRequest stateClusterRequest);
+		StateClusterRequest stateClusterRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

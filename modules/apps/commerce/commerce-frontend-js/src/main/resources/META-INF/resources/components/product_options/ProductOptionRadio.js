@@ -89,6 +89,7 @@ const ProductOptionRadio = ({
 							price: defaultProductOptionValue?.price,
 							priceType: defaultProductOptionValue?.priceType,
 							quantity: defaultProductOptionValue?.quantity,
+							required: productOption.required,
 							skuId: defaultProductOptionValue?.skuId,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
@@ -100,6 +101,10 @@ const ProductOptionRadio = ({
 						},
 					],
 		});
+
+		if (defaultProductOptionValue) {
+			handleChange(selectedProductOption);
+		}
 
 		return () =>
 			isFromMiniCart
@@ -173,6 +178,7 @@ const ProductOptionRadio = ({
 						price: currentProductOptionValue.price,
 						priceType: currentProductOptionValue.priceType,
 						quantity: currentProductOptionValue.quantity,
+						required: productOption.required,
 						skuId: currentProductOptionValue.skuId,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
@@ -193,6 +199,7 @@ const ProductOptionRadio = ({
 					price: currentProductOptionValue.price,
 					priceType: currentProductOptionValue.priceType,
 					quantity: currentProductOptionValue.quantity,
+					required: productOption.required,
 					skuId: currentProductOptionValue.skuId,
 					skuOptionKey: productOption.key,
 					skuOptionName: productOption.name,

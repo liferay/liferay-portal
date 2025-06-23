@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.index;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.engine.adapter.index.FlushIndexRequest;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
@@ -39,19 +38,11 @@ public class FlushIndexRequestExecutorTest extends BaseOpenSearchTestCase {
 		flushIndexRequest.setForce(true);
 		flushIndexRequest.setWaitIfOngoing(true);
 
-		FlushIndexRequestExecutorImpl flushIndexRequestExecutorImpl =
-			new FlushIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			flushIndexRequestExecutorImpl,
-			"_indexRequestShardFailureTranslator",
-			new IndexRequestShardFailureTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			flushIndexRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
+		FlushIndexRequestExecutor flushIndexRequestExecutor =
+			new FlushIndexRequestExecutor(openSearchConnectionManager);
 
 		FlushRequest flushRequest =
-			flushIndexRequestExecutorImpl.createFlushRequest(flushIndexRequest);
+			flushIndexRequestExecutor.createFlushRequest(flushIndexRequest);
 
 		Assert.assertArrayEquals(
 			new String[] {TEST_INDEX_NAME},

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Product Type Virtual API
 Bundle-SymbolicName: com.liferay.commerce.product.type.virtual.api
-Bundle-Version: 11.0.0
+Bundle-Version: 11.0.1
 Export-Package:\
 	com.liferay.commerce.product.type.virtual.constants,\
 	com.liferay.commerce.product.type.virtual.exception,\

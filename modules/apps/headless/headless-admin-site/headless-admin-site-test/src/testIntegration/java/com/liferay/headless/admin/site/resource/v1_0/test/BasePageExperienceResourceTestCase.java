@@ -188,28 +188,220 @@ public abstract class BasePageExperienceResourceTestCase {
 	public void testDeleteSiteSiteByExternalReferenceCodePageExperience()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PageExperience pageExperience =
+			testDeleteSiteSiteByExternalReferenceCodePageExperience_addPageExperience();
+
+		assertHttpResponseStatusCode(
+			204,
+			pageExperienceResource.
+				deleteSiteSiteByExternalReferenceCodePageExperienceHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode(),
+					pageExperience.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			pageExperienceResource.
+				getSiteSiteByExternalReferenceCodePageExperienceHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode(),
+					pageExperience.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			pageExperienceResource.
+				getSiteSiteByExternalReferenceCodePageExperienceHttpResponse(
+					testDeleteSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode(),
+					"-"));
+	}
+
+	protected PageExperience
+			testDeleteSiteSiteByExternalReferenceCodePageExperience_addPageExperience()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testDeleteSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGetSiteSiteByExternalReferenceCodePageExperience()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		PageExperience postPageExperience =
+			testGetSiteSiteByExternalReferenceCodePageExperience_addPageExperience();
+
+		PageExperience getPageExperience =
+			pageExperienceResource.
+				getSiteSiteByExternalReferenceCodePageExperience(
+					testGetSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode(),
+					postPageExperience.getExternalReferenceCode());
+
+		assertEquals(postPageExperience, getPageExperience);
+		assertValid(getPageExperience);
+	}
+
+	protected PageExperience
+			testGetSiteSiteByExternalReferenceCodePageExperience_addPageExperience()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLGetSiteSiteByExternalReferenceCodePageExperience()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		PageExperience pageExperience =
+			testGraphQLGetSiteSiteByExternalReferenceCodePageExperience_addPageExperience();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				pageExperience,
+				PageExperienceSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"siteByExternalReferenceCodePageExperience",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"siteExternalReferenceCode",
+											"\"" +
+												testGraphQLGetSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode() +
+													"\"");
+										put(
+											"pageExperienceExternalReferenceCode",
+											"\"" +
+												pageExperience.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/siteByExternalReferenceCodePageExperience"))));
+
+		// Using the namespace headlessAdminSite_v1_0
+
+		Assert.assertTrue(
+			equals(
+				pageExperience,
+				PageExperienceSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"headlessAdminSite_v1_0",
+								new GraphQLField(
+									"siteByExternalReferenceCodePageExperience",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"siteExternalReferenceCode",
+												"\"" +
+													testGraphQLGetSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode() +
+														"\"");
+											put(
+												"pageExperienceExternalReferenceCode",
+												"\"" +
+													pageExperience.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data", "JSONObject/headlessAdminSite_v1_0",
+						"Object/siteByExternalReferenceCodePageExperience"))));
+	}
+
+	protected String
+			testGraphQLGetSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
 	public void testGraphQLGetSiteSiteByExternalReferenceCodePageExperienceNotFound()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		String irrelevantPageExperienceExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"siteByExternalReferenceCodePageExperience",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteExternalReferenceCode",
+									"\"" +
+										irrelevantGroup.
+											getExternalReferenceCode() + "\"");
+								put(
+									"pageExperienceExternalReferenceCode",
+									irrelevantPageExperienceExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace headlessAdminSite_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"headlessAdminSite_v1_0",
+						new GraphQLField(
+							"siteByExternalReferenceCodePageExperience",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"siteExternalReferenceCode",
+										"\"" +
+											irrelevantGroup.
+												getExternalReferenceCode() +
+													"\"");
+									put(
+										"pageExperienceExternalReferenceCode",
+										irrelevantPageExperienceExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected PageExperience
+			testGraphQLGetSiteSiteByExternalReferenceCodePageExperience_addPageExperience()
+		throws Exception {
+
+		return testGraphQLPageExperience_addPageExperience();
 	}
 
 	@Test
@@ -313,15 +505,14 @@ public abstract class BasePageExperienceResourceTestCase {
 			testGetSiteSiteByExternalReferenceCodePageSpecificationPageExperiencesPage_getSiteExternalReferenceCode()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGroup.getExternalReferenceCode();
 	}
 
 	protected String
 			testGetSiteSiteByExternalReferenceCodePageSpecificationPageExperiencesPage_getIrrelevantSiteExternalReferenceCode()
 		throws Exception {
 
-		return null;
+		return irrelevantGroup.getExternalReferenceCode();
 	}
 
 	protected String
@@ -343,7 +534,38 @@ public abstract class BasePageExperienceResourceTestCase {
 	public void testPatchSiteSiteByExternalReferenceCodePageExperience()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		PageExperience postPageExperience =
+			testPatchSiteSiteByExternalReferenceCodePageExperience_addPageExperience();
+
+		PageExperience randomPatchPageExperience = randomPatchPageExperience();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PageExperience patchPageExperience =
+			pageExperienceResource.
+				patchSiteSiteByExternalReferenceCodePageExperience(
+					null, postPageExperience.getExternalReferenceCode(),
+					randomPatchPageExperience);
+
+		PageExperience expectedPatchPageExperience = postPageExperience.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchPageExperience, expectedPatchPageExperience);
+
+		PageExperience getPageExperience =
+			pageExperienceResource.
+				getSiteSiteByExternalReferenceCodePageExperience(
+					null, patchPageExperience.getExternalReferenceCode());
+
+		assertEquals(expectedPatchPageExperience, getPageExperience);
+		assertValid(getPageExperience);
+	}
+
+	protected PageExperience
+			testPatchSiteSiteByExternalReferenceCodePageExperience_addPageExperience()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -373,7 +595,57 @@ public abstract class BasePageExperienceResourceTestCase {
 	public void testPutSiteSiteByExternalReferenceCodePageExperience()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		PageExperience postPageExperience =
+			testPutSiteSiteByExternalReferenceCodePageExperience_addPageExperience();
+
+		PageExperience randomPageExperience = randomPageExperience();
+
+		PageExperience putPageExperience =
+			pageExperienceResource.
+				putSiteSiteByExternalReferenceCodePageExperience(
+					testPutSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode(),
+					postPageExperience.getExternalReferenceCode(),
+					randomPageExperience);
+
+		assertEquals(randomPageExperience, putPageExperience);
+		assertValid(putPageExperience);
+
+		PageExperience getPageExperience =
+			pageExperienceResource.
+				getSiteSiteByExternalReferenceCodePageExperience(
+					testPutSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode(),
+					putPageExperience.getExternalReferenceCode());
+
+		assertEquals(randomPageExperience, getPageExperience);
+		assertValid(getPageExperience);
+	}
+
+	protected PageExperience
+			testPutSiteSiteByExternalReferenceCodePageExperience_addPageExperience()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testPutSiteSiteByExternalReferenceCodePageExperience_getSiteExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
+	protected PageExperience testGraphQLPageExperience_addPageExperience()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected void assertContains(

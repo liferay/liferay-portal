@@ -6,6 +6,8 @@
 package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
@@ -76,9 +78,12 @@ public class ContentStructureResourceTest
 				Long assetLibraryId, ContentStructure contentStructure)
 		throws Exception {
 
+		DepotEntry depotEntry = DepotEntryLocalServiceUtil.getDepotEntry(
+			assetLibraryId);
+
 		return _toContentStructure(
 			_addDDMStructure(
-				testDepotEntry.getGroup(), contentStructure.getName()));
+				depotEntry.getGroup(), contentStructure.getName()));
 	}
 
 	@Override

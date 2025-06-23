@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Organizations Item Selector Web
 Bundle-SymbolicName: com.liferay.organizations.item.selector.web
-Bundle-Version: 4.0.24
+Bundle-Version: 4.0.25
 Web-ContextPath: /organizations-item-selector-web

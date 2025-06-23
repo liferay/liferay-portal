@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.SiteTestEntity;
+import com.liferay.portal.tools.rest.builder.test.client.pagination.Page;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.SiteTestEntityResource;
 import com.liferay.portal.util.PropsValues;
 
@@ -33,6 +35,31 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class SiteTestEntityResourceTest
 	extends BaseSiteTestEntityResourceTestCase {
+
+	@Override
+	@Test
+	@TestInfo("LPD-53838")
+	public void testGetSiteSiteTestEntitiesPage() throws Exception {
+		super.testGetSiteSiteTestEntitiesPage();
+
+		Page<SiteTestEntity> page =
+			siteTestEntityResource.getSiteSiteTestEntitiesPage(
+				testGroup.getGroupId());
+
+		long totalCount = page.getTotalCount();
+
+		testGetSiteSiteTestEntitiesPage_addSiteTestEntity(
+			testGroup.getGroupId(), randomSiteTestEntity());
+
+		_assertSiteSiteTestEntitiesCount(
+			testGroup.getExternalReferenceCode(), totalCount + 1);
+
+		testGetSiteSiteTestEntitiesPage_addSiteTestEntity(
+			testGroup.getGroupId(), randomSiteTestEntity());
+
+		_assertSiteSiteTestEntitiesCount(
+			testGroup.getGroupKey(), totalCount + 2);
+	}
 
 	@Override
 	@Test
@@ -53,6 +80,17 @@ public class SiteTestEntityResourceTest
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"description"};
+	}
+
+	private void _assertSiteSiteTestEntitiesCount(
+			String siteId, long totalCount)
+		throws Exception {
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, "test/v1.0/sites/" + siteId + "/site-test-entities",
+			Http.Method.GET);
+
+		Assert.assertEquals(totalCount, jsonObject.getInt("totalCount"));
 	}
 
 	private SiteTestEntityResource _createSiteTestEntityResource(

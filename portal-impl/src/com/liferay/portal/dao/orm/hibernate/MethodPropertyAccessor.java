@@ -11,6 +11,9 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
@@ -55,20 +58,20 @@ public class MethodPropertyAccessor implements PropertyAccessStrategy {
 
 	private static class MethodHolder {
 
-		public Method getGetterMethod() {
-			if (_getterMethod == null) {
+		public MethodHandle getGetterMethodHandle() {
+			if (_getterMethodHandle == null) {
 				_initialize();
 			}
 
-			return _getterMethod;
+			return _getterMethodHandle;
 		}
 
-		public Method getSetterMethod() {
-			if (_setterMethod == null) {
+		public MethodHandle getSetterMethodHandle() {
+			if (_setterMethodHandle == null) {
 				_initialize();
 			}
 
-			return _setterMethod;
+			return _setterMethodHandle;
 		}
 
 		private MethodHolder(Class<?> clazz, String propertyName) {
@@ -106,45 +109,46 @@ public class MethodPropertyAccessor implements PropertyAccessStrategy {
 		}
 
 		private void _initialize() {
+			MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
 			try {
-				String methodName1 = _getMethodName1();
+				String methodName = _getMethodName1();
 
-				_getterMethod = _clazz.getMethod("get".concat(methodName1));
+				Method getterMethod = ReflectionUtil.fetchMethod(
+					_clazz, "get".concat(methodName));
 
-				_getterMethod.setAccessible(true);
+				if (getterMethod == null) {
+					methodName = _getMethodName2();
 
-				_setterMethod = _clazz.getMethod(
-					"set".concat(methodName1), _getterMethod.getReturnType());
+					getterMethod = ReflectionUtil.fetchMethod(
+						_clazz, "get".concat(methodName));
+				}
 
-				_setterMethod.setAccessible(true);
+				if (getterMethod == null) {
+					ReflectionUtil.throwException(
+						new NoSuchMethodException(
+							StringBundler.concat(
+								"Unable to locate getter method for class ",
+								_clazz.getName(), " and property ",
+								_propertyName)));
+				}
+
+				_getterMethodHandle = lookup.unreflect(getterMethod);
+
+				_setterMethodHandle = lookup.findVirtual(
+					_clazz, "set".concat(methodName),
+					MethodType.methodType(
+						void.class, getterMethod.getReturnType()));
 			}
-			catch (NoSuchMethodException noSuchMethodException1) {
-				try {
-					String methodName2 = _getMethodName2();
-
-					_getterMethod = _clazz.getMethod("get".concat(methodName2));
-
-					_getterMethod.setAccessible(true);
-
-					_setterMethod = _clazz.getMethod(
-						"set".concat(methodName2),
-						_getterMethod.getReturnType());
-
-					_setterMethod.setAccessible(true);
-				}
-				catch (NoSuchMethodException noSuchMethodException2) {
-					noSuchMethodException2.addSuppressed(
-						noSuchMethodException1);
-
-					ReflectionUtil.throwException(noSuchMethodException2);
-				}
+			catch (ReflectiveOperationException reflectiveOperationException) {
+				ReflectionUtil.throwException(reflectiveOperationException);
 			}
 		}
 
 		private final Class<?> _clazz;
-		private Method _getterMethod;
+		private MethodHandle _getterMethodHandle;
 		private final String _propertyName;
-		private Method _setterMethod;
+		private MethodHandle _setterMethodHandle;
 
 	}
 
@@ -188,13 +192,13 @@ public class MethodPropertyAccessor implements PropertyAccessStrategy {
 		@Override
 		public Object get(Object target) {
 			try {
-				Method getterMethod = _methodHolder.getGetterMethod();
+				MethodHandle getterMethodHandle =
+					_methodHolder.getGetterMethodHandle();
 
-				return getterMethod.invoke(target);
+				return getterMethodHandle.invoke(target);
 			}
-			catch (ReflectiveOperationException reflectiveOperationException) {
-				return ReflectionUtil.throwException(
-					reflectiveOperationException);
+			catch (Throwable throwable) {
+				return ReflectionUtil.throwException(throwable);
 			}
 		}
 
@@ -223,9 +227,12 @@ public class MethodPropertyAccessor implements PropertyAccessStrategy {
 
 		@Override
 		public Class getReturnType() {
-			Method getterMethod = _methodHolder.getGetterMethod();
+			MethodHandle getterMethodHandle =
+				_methodHolder.getGetterMethodHandle();
 
-			return getterMethod.getReturnType();
+			MethodType methodType = getterMethodHandle.type();
+
+			return methodType.returnType();
 		}
 
 		private MethodPropertyGetter(MethodHolder methodHolder) {
@@ -255,12 +262,13 @@ public class MethodPropertyAccessor implements PropertyAccessStrategy {
 			throws PropertyAccessException {
 
 			try {
-				Method setterMethod = _methodHolder.getSetterMethod();
+				MethodHandle setterMethodHandle =
+					_methodHolder.getSetterMethodHandle();
 
-				setterMethod.invoke(target, value);
+				setterMethodHandle.invoke(target, value);
 			}
-			catch (ReflectiveOperationException reflectiveOperationException) {
-				ReflectionUtil.throwException(reflectiveOperationException);
+			catch (Throwable throwable) {
+				ReflectionUtil.throwException(throwable);
 			}
 		}
 

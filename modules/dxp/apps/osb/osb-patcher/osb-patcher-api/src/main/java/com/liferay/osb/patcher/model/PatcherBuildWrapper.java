@@ -40,7 +40,6 @@ public class PatcherBuildWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("hotfixId", getHotfixId());
 		attributes.put("patcherAccountId", getPatcherAccountId());
 		attributes.put("patcherFixId", getPatcherFixId());
 		attributes.put("patcherProductVersionId", getPatcherProductVersionId());
@@ -50,6 +49,7 @@ public class PatcherBuildWrapper
 		attributes.put("childBuild", isChildBuild());
 		attributes.put("comments", getComments());
 		attributes.put("fileName", getFileName());
+		attributes.put("hotfixId", getHotfixId());
 		attributes.put("initialName", getInitialName());
 		attributes.put("key", getKey());
 		attributes.put("keyVersion", getKeyVersion());
@@ -122,12 +122,6 @@ public class PatcherBuildWrapper
 			setModifiedDate(modifiedDate);
 		}
 
-		Long hotfixId = (Long)attributes.get("hotfixId");
-
-		if (hotfixId != null) {
-			setHotfixId(hotfixId);
-		}
-
 		Long patcherAccountId = (Long)attributes.get("patcherAccountId");
 
 		if (patcherAccountId != null) {
@@ -182,6 +176,12 @@ public class PatcherBuildWrapper
 
 		if (fileName != null) {
 			setFileName(fileName);
+		}
+
+		Long hotfixId = (Long)attributes.get("hotfixId");
+
+		if (hotfixId != null) {
+			setHotfixId(hotfixId);
 		}
 
 		String initialName = (String)attributes.get("initialName");

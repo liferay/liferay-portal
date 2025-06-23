@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.cluster.UpdateSettingsClusterRes
 /**
  * @author Bryan Engler
  */
-public interface UpdateSettingsClusterRequestExecutor {
+public class UpdateSettingsClusterRequestExecutor {
 
 	public UpdateSettingsClusterResponse execute(
-		UpdateSettingsClusterRequest updateSettingsClusterRequest);
+		UpdateSettingsClusterRequest updateSettingsClusterRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

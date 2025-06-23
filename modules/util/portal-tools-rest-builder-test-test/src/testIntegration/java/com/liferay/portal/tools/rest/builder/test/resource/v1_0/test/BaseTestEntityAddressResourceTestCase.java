@@ -195,13 +195,6 @@ public abstract class BaseTestEntityAddressResourceTestCase {
 		assertValid(getTestEntityAddress);
 	}
 
-	protected Long testGetTestEntityTestEntityAddress_getTestEntityId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected TestEntityAddress
 			testGetTestEntityTestEntityAddress_addTestEntityAddress()
 		throws Exception {
@@ -210,8 +203,7 @@ public abstract class BaseTestEntityAddressResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	protected TestEntityAddress
-			testGraphQLTestEntityAddress_addTestEntityAddress()
+	protected Long testGetTestEntityTestEntityAddress_getTestEntityId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

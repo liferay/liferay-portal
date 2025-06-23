@@ -77,9 +77,3 @@ renderResponse.setTitle(LanguageUtil.get(request, "object-model-builder"));
 		module="{ModalDisableInheritance} from object-web"
 	/>
 </div>
-
-<div>
-	<react:component
-		module="{ModalDisableScheduleConfiguration} from object-web"
-	/>
-</div>

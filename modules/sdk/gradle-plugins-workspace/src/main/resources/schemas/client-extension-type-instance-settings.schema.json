@@ -1935,6 +1935,42 @@
 		},
 		{
 			"properties": {
+				"cssStyleSheetsMaxAge": {
+					"default": 86400,
+					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for CSS style sheets.",
+					"title": "CSS Style Sheets Max Age Directive Value",
+					"type": "number"
+				},
+				"esModulesMaxAge": {
+					"default": 86400,
+					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for ES modules.",
+					"title": "ES Modules Max Age Directive Value",
+					"type": "number"
+				},
+				"pid": {
+					"const": "com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfiguration",
+					"title": "Frontend Caching"
+				},
+				"sendNoCacheForCSSStyleSheets": {
+					"default": false,
+					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for CSS style sheets.",
+					"title": "Send No Cache Directive For CSS Style Sheets",
+					"type": "boolean"
+				},
+				"sendNoCacheForESModules": {
+					"default": false,
+					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for ES modules.",
+					"title": "Send No Cache Directive For ES Modules",
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Frontend Caching"
+		},
+		{
+			"properties": {
 				"addDefaultStructures": {
 					"default": true,
 					"title": "Add Default Structures",
@@ -2627,6 +2663,183 @@
 				"maximumRetentionPeriod"
 			],
 			"title": "Versioning for Entries"
+		},
+		{
+			"properties": {
+				"githubURL": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterApiPassword": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterApiUserName": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterFileRepoId": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterFileRepoURL": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterGetAccountApiEndpoint": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterJsonwsURL": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterTicketAttachmentApiEndpoint": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterTokenTicketDir": {
+					"default": "",
+					"type": "string"
+				},
+				"helpCenterURL": {
+					"default": "",
+					"type": "string"
+				},
+				"hotfixMountPath": {
+					"default": "",
+					"type": "string"
+				},
+				"infoModifyTicketsListURL": {
+					"default": "",
+					"type": "string"
+				},
+				"jenkinsAdminUserName": {
+					"default": "",
+					"type": "string"
+				},
+				"jenkinsAdminUserToken": {
+					"default": "",
+					"type": "string"
+				},
+				"jenkinsBuildWithParametersPath": {
+					"default": "",
+					"type": "string"
+				},
+				"jenkinsLoadBalancerBaseInvocationURL": {
+					"default": "",
+					"type": "string"
+				},
+				"jenkinsLoadBalancerEnabled": {
+					"default": false,
+					"type": "boolean"
+				},
+				"jenkinsToken": {
+					"default": "",
+					"type": "string"
+				},
+				"jenkinsURL": {
+					"default": "",
+					"type": "string"
+				},
+				"jiraURL": {
+					"default": "",
+					"type": "string"
+				},
+				"lesaURL": {
+					"default": "",
+					"type": "string"
+				},
+				"liferayUsersProfileURL": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherAccountWhitelist": {
+					"default": "",
+					"items": {
+						"type": "string"
+					},
+					"type": "array"
+				},
+				"patcherAgentJenkinsURL": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherBuildDownloadURL": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherGitTagPrefix": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherJenkinsRequestsEnabled": {
+					"default": false,
+					"type": "boolean"
+				},
+				"patcherLiferayPortalRepository": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherPubsubCredentialFilePath": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherPubsubProjectId": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherPubsubSubscriptionId": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherScanningEnabled": {
+					"default": false,
+					"type": "boolean"
+				},
+				"patcherSharedRequestAddFixPatcherType": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherSharedRequestBuildPatchPatcherType": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherStatusBuildJenkinsPath": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherStatusBuildJenkinsTestPath": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherStatusBuildPath": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherStatusFixPath": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherStatusPath": {
+					"default": "",
+					"type": "string"
+				},
+				"patcherTestsEnabled": {
+					"default": false,
+					"type": "boolean"
+				},
+				"pid": {
+					"const": "com.liferay.osb.patcher.configuration.PatcherConfiguration"
+				},
+				"troubleshootingURL": {
+					"default": "",
+					"type": "string"
+				}
+			},
+			"required": [
+				"pid"
+			]
 		},
 		{
 			"properties": {
@@ -4341,6 +4554,7 @@
 				"com.liferay.friendly.url.configuration.FriendlyURLRedirectionConfiguration",
 				"com.liferay.friendly.url.configuration.FriendlyURLSeparatorCompanyConfiguration",
 				"com.liferay.frontend.js.web.internal.configuration.CustomDialogsSettingsConfiguration",
+				"com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfiguration",
 				"com.liferay.journal.configuration.JournalServiceConfiguration",
 				"com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration",
 				"com.liferay.layout.locked.layouts.web.internal.configuration.LockedLayoutsCompanyConfiguration",
@@ -4358,6 +4572,7 @@
 				"com.liferay.object.configuration.ObjectConfiguration",
 				"com.liferay.object.configuration.ObjectEntryScheduleConfiguration",
 				"com.liferay.object.configuration.ObjectEntryVersionConfiguration",
+				"com.liferay.osb.patcher.configuration.PatcherConfiguration",
 				"com.liferay.portal.crypto.hash.provider.bcrypt.internal.configuration.BCryptCryptoHashProviderConfiguration",
 				"com.liferay.portal.crypto.hash.provider.message.digest.internal.configuration.MessageDigestCryptoHashProviderConfiguration",
 				"com.liferay.portal.defaultpermissions.configuration.PortalDefaultPermissionsCompanyConfiguration",

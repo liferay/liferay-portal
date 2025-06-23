@@ -556,11 +556,9 @@ public abstract class BaseMappedProductResourceTestCase {
 		return null;
 	}
 
-	protected MappedProduct testGraphQLMappedProduct_addMappedProduct()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(

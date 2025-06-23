@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.delivery.client.dto.v1_0.Field;
 import com.liferay.headless.delivery.client.dto.v1_0.MessageBoardThread;
@@ -356,7 +357,7 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 			testDeleteMessageBoardThreadBatch_addMessageBoardThread();
 
 		testDeleteMessageBoardThreadBatch_deleteMessageBoardThread(
-			"COMPLETED", null, messageBoardThread1.getId());
+			202, null, messageBoardThread1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
@@ -372,7 +373,7 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 	}
 
 	protected void testDeleteMessageBoardThreadBatch_deleteMessageBoardThread(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -386,10 +387,10 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 							"id", () -> id
 						)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1246,6 +1247,7 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 
 	@Test
 	public void testGetMessageBoardThreadPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
 		MessageBoardThread postMessageBoardThread =
 			testGetMessageBoardThreadPermissionsPage_addMessageBoardThread();
 
@@ -1260,8 +1262,8 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 			testGetMessageBoardThreadPermissionsPage_addMessageBoardThread()
 		throws Exception {
 
-		return testPostSiteMessageBoardThread_addMessageBoardThread(
-			randomMessageBoardThread());
+		return messageBoardThreadResource.postSiteMessageBoardThread(
+			testGroup.getGroupId(), randomMessageBoardThread());
 	}
 
 	@Test
@@ -1592,19 +1594,11 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 		MessageBoardThread getMessageBoardThread =
 			messageBoardThreadResource.
 				getSiteMessageBoardThreadByFriendlyUrlPath(
-					testGetSiteMessageBoardThreadByFriendlyUrlPath_getSiteId(
-						postMessageBoardThread),
+					postMessageBoardThread.getSiteId(),
 					postMessageBoardThread.getFriendlyUrlPath());
 
 		assertEquals(postMessageBoardThread, getMessageBoardThread);
 		assertValid(getMessageBoardThread);
-	}
-
-	protected Long testGetSiteMessageBoardThreadByFriendlyUrlPath_getSiteId(
-			MessageBoardThread messageBoardThread)
-		throws Exception {
-
-		return messageBoardThread.getSiteId();
 	}
 
 	protected MessageBoardThread
@@ -1637,9 +1631,8 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 										put(
 											"siteKey",
 											"\"" +
-												testGraphQLGetSiteMessageBoardThreadByFriendlyUrlPath_getSiteId(
-													messageBoardThread) + "\"");
-
+												messageBoardThread.getSiteId() +
+													"\"");
 										put(
 											"friendlyUrlPath",
 											"\"" +
@@ -1669,10 +1662,8 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 											put(
 												"siteKey",
 												"\"" +
-													testGraphQLGetSiteMessageBoardThreadByFriendlyUrlPath_getSiteId(
-														messageBoardThread) +
-															"\"");
-
+													messageBoardThread.
+														getSiteId() + "\"");
 											put(
 												"friendlyUrlPath",
 												"\"" +
@@ -1684,14 +1675,6 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 									getGraphQLFields()))),
 						"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
 						"Object/messageBoardThreadByFriendlyUrlPath"))));
-	}
-
-	protected Long
-			testGraphQLGetSiteMessageBoardThreadByFriendlyUrlPath_getSiteId(
-				MessageBoardThread messageBoardThread)
-		throws Exception {
-
-		return messageBoardThread.getSiteId();
 	}
 
 	@Test
@@ -1760,6 +1743,10 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 	public void testGetSiteMessageBoardThreadPermissionsPage()
 		throws Exception {
 
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		MessageBoardThread postMessageBoardThread =
+			testGetSiteMessageBoardThreadPermissionsPage_addMessageBoardThread();
+
 		Page<Permission> page =
 			messageBoardThreadResource.getSiteMessageBoardThreadPermissionsPage(
 				testGroup.getGroupId(), RoleConstants.GUEST);
@@ -1771,8 +1758,8 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 			testGetSiteMessageBoardThreadPermissionsPage_addMessageBoardThread()
 		throws Exception {
 
-		return testPostSiteMessageBoardThread_addMessageBoardThread(
-			randomMessageBoardThread());
+		return messageBoardThreadResource.postSiteMessageBoardThread(
+			testGroup.getGroupId(), randomMessageBoardThread());
 	}
 
 	@Test
@@ -2596,6 +2583,62 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 
 		return messageBoardThreadResource.postSiteMessageBoardThread(
 			testGroup.getGroupId(), randomMessageBoardThread());
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		MessageBoardThread messageBoardThread1 =
+			testBatchEngineDeleteImportTask_addMessageBoardThread();
+
+		testBatchEngineDeleteImportTask_deleteMessageBoardThread(
+			200, null, messageBoardThread1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			messageBoardThreadResource.getMessageBoardThreadHttpResponse(
+				messageBoardThread1.getId()));
+	}
+
+	protected MessageBoardThread
+			testBatchEngineDeleteImportTask_addMessageBoardThread()
+		throws Exception {
+
+		return testDeleteMessageBoardThread_addMessageBoardThread();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteMessageBoardThread(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.delivery.dto.v1_0.MessageBoardThread",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

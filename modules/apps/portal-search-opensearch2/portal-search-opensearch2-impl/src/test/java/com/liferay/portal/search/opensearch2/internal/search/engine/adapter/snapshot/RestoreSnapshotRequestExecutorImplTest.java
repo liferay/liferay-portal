@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter.snapshot;
 
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.engine.adapter.snapshot.RestoreSnapshotRequest;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
@@ -43,15 +42,11 @@ public class RestoreSnapshotRequestExecutorImplTest
 		restoreSnapshotRequest.setRestoreGlobalState(true);
 		restoreSnapshotRequest.setWaitForCompletion(true);
 
-		RestoreSnapshotRequestExecutorImpl restoreSnapshotRequestExecutorImpl =
-			new RestoreSnapshotRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			restoreSnapshotRequestExecutorImpl, "_openSearchConnectionManager",
-			openSearchConnectionManager);
+		RestoreSnapshotRequestExecutor restoreSnapshotRequestExecutor =
+			new RestoreSnapshotRequestExecutor(openSearchConnectionManager);
 
 		RestoreRequest restoreRequest =
-			restoreSnapshotRequestExecutorImpl.createRestoreRequest(
+			restoreSnapshotRequestExecutor.createRestoreRequest(
 				restoreSnapshotRequest);
 
 		Assert.assertEquals(

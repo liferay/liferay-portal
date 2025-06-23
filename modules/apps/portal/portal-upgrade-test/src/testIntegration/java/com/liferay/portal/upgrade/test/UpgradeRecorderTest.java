@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -29,6 +30,7 @@ import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.component.UpgradeRecorderTestComponent;
 import com.liferay.portal.upgrade.test.reference.UpgradeRecorderTestReference;
+import com.liferay.portal.verify.PreupgradeVerifyProcessSuite;
 import com.liferay.portal.verify.VerifyException;
 import com.liferay.portal.verify.VerifyProcess;
 
@@ -145,6 +147,42 @@ public class UpgradeRecorderTest {
 	}
 
 	@Test
+	public void testFailureResultByPreupgradeVerifyException() {
+		StartupHelperUtil.setUpgrading(true);
+
+		VerifyExceptionProcess verifyExceptionProcess =
+			new VerifyExceptionProcess();
+
+		try {
+			_appender.start();
+
+			verifyExceptionProcess.verify();
+
+			Assert.fail();
+		}
+		catch (VerifyException verifyException) {
+			_appender.append(
+				Log4jLogEvent.newBuilder(
+				).setLoggerName(
+					PreupgradeVerifyProcessSuite.class.getName()
+				).setLevel(
+					Level.ERROR
+				).setMessage(
+					new SimpleMessage(RandomTestUtil.randomString())
+				).setThrown(
+					verifyException
+				).build());
+		}
+		finally {
+			_appender.stop();
+
+			StartupHelperUtil.setUpgrading(false);
+		}
+
+		Assert.assertEquals("preupgrade verification failure", _getResult());
+	}
+
+	@Test
 	public void testFailureResultByVerifyException() {
 		StartupHelperUtil.setUpgrading(true);
 
@@ -162,11 +200,11 @@ public class UpgradeRecorderTest {
 			_appender.append(
 				Log4jLogEvent.newBuilder(
 				).setLoggerName(
-					"Verify Exception Error"
+					UpgradeRecorderTest.class.getName()
 				).setLevel(
 					Level.ERROR
 				).setMessage(
-					new SimpleMessage("A simple exception")
+					new SimpleMessage(RandomTestUtil.randomString())
 				).setThrown(
 					verifyException
 				).build());
@@ -512,7 +550,7 @@ public class UpgradeRecorderTest {
 
 		@Override
 		protected void doVerify() throws Exception {
-			throw new Exception("Exception message");
+			throw new Exception(RandomTestUtil.randomString());
 		}
 
 	}

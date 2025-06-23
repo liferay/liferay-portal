@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Security Script Management Web
 Bundle-SymbolicName: com.liferay.portal.security.script.management.web
-Bundle-Version: 1.0.24
+Bundle-Version: 1.0.25
 Web-ContextPath: /portal-security-script-management-web

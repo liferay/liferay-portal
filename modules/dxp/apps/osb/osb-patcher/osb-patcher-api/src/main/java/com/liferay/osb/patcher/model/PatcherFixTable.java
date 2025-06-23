@@ -66,8 +66,8 @@ public class PatcherFixTable extends BaseTable<PatcherFixTable> {
 		"keyVersion", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, Boolean> latestFix = createColumn(
 		"latestFix", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
-	public final Column<PatcherFixTable, Clob> name = createColumn(
-		"name", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<PatcherFixTable, String> name = createColumn(
+		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, Boolean> notified = createColumn(
 		"notified", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<PatcherFixTable, Boolean> obsolete = createColumn(

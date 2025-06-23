@@ -560,6 +560,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SINGLE_SIDEBAR_HEADER</td>
+	<td>//div[contains(@class,'sidebar-header')]//span[contains(@class,'title')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ICON_TRASH_TOP_RIGHT_SIDEBAR</td>
 	<td>//span[contains(., '${key_propertyName}')]/../../div[@class='spaced-items']/..//button[contains(@class, 'trash-button')]</td>
 	<td></td>

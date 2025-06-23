@@ -120,23 +120,30 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 				featureFlagKeys.addAll(
 					_getFeatureFlagKeys(fileContent, _featureFlagPattern1));
 				featureFlagKeys.addAll(
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern4));
+				featureFlagKeys.addAll(
 					_getFeatureFlagKeys(fileContent, _featureFlagPattern5));
 				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern6));
-				featureFlagKeys.addAll(_getFeatureFlagKeys(fileContent, true));
+					_getFeatureFlagKeysByFeatureFlagManagerUtilIsEnabledCall(
+						fileContent, true));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeysByMapUtilSingletonDictionaryCall(
+						fileContent));
 			}
 			else if (fileName.endsWith(".json")) {
 				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern4));
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern3));
 			}
 			else if (fileName.endsWith(".jsp") || fileName.endsWith(".jspf")) {
 				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern3));
-				featureFlagKeys.addAll(_getFeatureFlagKeys(fileContent, false));
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern2));
+				featureFlagKeys.addAll(
+					_getFeatureFlagKeysByFeatureFlagManagerUtilIsEnabledCall(
+						fileContent, false));
 			}
 			else {
 				featureFlagKeys.addAll(
-					_getFeatureFlagKeys(fileContent, _featureFlagPattern3));
+					_getFeatureFlagKeys(fileContent, _featureFlagPattern2));
 			}
 		}
 
@@ -305,12 +312,26 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private List<String> _getFeatureFlagKeys(
-		String content, boolean javaSource) {
+	private List<String> _getFeatureFlagKeys(String content, Pattern pattern) {
+		List<String> featureFlagKeys = new ArrayList<>();
+
+		Matcher matcher = pattern.matcher(content);
+
+		while (matcher.find()) {
+			featureFlagKeys.add(matcher.group(1));
+		}
+
+		return featureFlagKeys;
+	}
+
+	private List<String>
+		_getFeatureFlagKeysByFeatureFlagManagerUtilIsEnabledCall(
+			String content, boolean javaSource) {
 
 		List<String> featureFlagKeys = new ArrayList<>();
 
-		Matcher matcher = _featureFlagPattern2.matcher(content);
+		Matcher matcher = _featureFlagManagerUtilIsEnabledPattern.matcher(
+			content);
 
 		while (matcher.find()) {
 			String methodCall = null;
@@ -328,7 +349,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 				methodCall);
 
 			if (parameterList.isEmpty()) {
-				return featureFlagKeys;
+				continue;
 			}
 
 			String parameter = null;
@@ -340,23 +361,60 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 				parameter = parameterList.get(1);
 			}
 
-			if ((parameter != null) && parameter.endsWith(StringPool.QUOTE) &&
-				parameter.startsWith(StringPool.QUOTE)) {
+			if (!parameter.endsWith(StringPool.QUOTE) ||
+				!parameter.startsWith(StringPool.QUOTE)) {
 
-				featureFlagKeys.add(StringUtil.unquote(parameter));
+				continue;
 			}
+
+			String unquotedParameterValue = StringUtil.unquote(parameter);
+
+			if (!unquotedParameterValue.matches("[A-Z]+-\\d+")) {
+				continue;
+			}
+
+			featureFlagKeys.add(unquotedParameterValue);
 		}
 
 		return featureFlagKeys;
 	}
 
-	private List<String> _getFeatureFlagKeys(String content, Pattern pattern) {
+	private List<String> _getFeatureFlagKeysByMapUtilSingletonDictionaryCall(
+		String content) {
+
 		List<String> featureFlagKeys = new ArrayList<>();
 
-		Matcher matcher = pattern.matcher(content);
+		Matcher matcher = _mapUtilSingletonDictionaryPattern.matcher(content);
 
 		while (matcher.find()) {
-			featureFlagKeys.add(matcher.group(1));
+			List<String> parameterList = JavaSourceUtil.getParameterList(
+				JavaSourceUtil.getMethodCall(content, matcher.start()));
+
+			if (parameterList.size() != 2) {
+				continue;
+			}
+
+			String parameter = parameterList.get(0);
+
+			if (!parameter.equals("\"featureFlagKey\"")) {
+				continue;
+			}
+
+			parameter = parameterList.get(1);
+
+			if (!parameter.endsWith(StringPool.QUOTE) ||
+				!parameter.startsWith(StringPool.QUOTE)) {
+
+				continue;
+			}
+
+			String unquotedParameterValue = StringUtil.unquote(parameter);
+
+			if (!unquotedParameterValue.matches("[A-Z]+-\\d+")) {
+				continue;
+			}
+
+			featureFlagKeys.add(unquotedParameterValue);
 		}
 
 		return featureFlagKeys;
@@ -387,22 +445,24 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 	private static final Pattern _deprecationFeatureFlagPattern =
 		Pattern.compile("feature\\.flag\\.([A-Z]+-\\d+)\\.type=deprecation");
+	private static final Pattern _featureFlagManagerUtilIsEnabledPattern =
+		Pattern.compile("FeatureFlagManagerUtil\\.isEnabled\\(");
 	private static final Pattern _featureFlagPattern1 = Pattern.compile(
 		"feature\\.flag[.=]([A-Z]+-\\d+)");
 	private static final Pattern _featureFlagPattern2 = Pattern.compile(
-		"FeatureFlagManagerUtil\\.isEnabled\\(");
-	private static final Pattern _featureFlagPattern3 = Pattern.compile(
 		"Liferay\\.FeatureFlags\\['(.+?)'\\]");
-	private static final Pattern _featureFlagPattern4 = Pattern.compile(
+	private static final Pattern _featureFlagPattern3 = Pattern.compile(
 		"\"featureFlag\": \"(.+?)\"");
-	private static final Pattern _featureFlagPattern5 = Pattern.compile(
+	private static final Pattern _featureFlagPattern4 = Pattern.compile(
 		"\"featureFlagKey=([A-Z]+-\\d+)\"");
-	private static final Pattern _featureFlagPattern6 = Pattern.compile(
+	private static final Pattern _featureFlagPattern5 = Pattern.compile(
 		"featureFlagKey = \"([A-Z]+-\\d+)\"");
 	private static final Pattern _featureFlagsPattern = Pattern.compile(
 		"(\n|\\A)##\n## Feature Flag\n##(\n\n[\\s\\S]*?)(?=(\n\n##|\\Z))");
 	private static final Pattern _featureFlagUIPattern = Pattern.compile(
 		"(\n|\\A)##\n## Feature Flag UI\n##(\n\n[\\s\\S]*?)(?=(\n\n##|\\Z))");
+	private static final Pattern _mapUtilSingletonDictionaryPattern =
+		Pattern.compile("MapUtil\\.singletonDictionary\\(");
 
 	private List<String> _allFileNames;
 

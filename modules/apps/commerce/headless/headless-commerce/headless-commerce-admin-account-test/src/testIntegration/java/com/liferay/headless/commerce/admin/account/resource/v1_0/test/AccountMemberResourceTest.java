@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -129,6 +130,31 @@ public class AccountMemberResourceTest
 				_accountEntry.getAccountEntryId(), accountMember1.getUserId());
 
 		assertEquals(accountMember1, accountMember2);
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetAccountByExternalReferenceCodeAccountMember()
+		throws Exception {
+
+		super.testGraphQLGetAccountByExternalReferenceCodeAccountMember();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetAccountIdAccountMember() throws Exception {
+		super.testGraphQLGetAccountIdAccountMember();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetAccountIdAccountMemberNotFound()
+		throws Exception {
+
+		super.testGraphQLGetAccountIdAccountMemberNotFound();
 	}
 
 	@Override

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Initializer Utilities
 Bundle-SymbolicName: com.liferay.commerce.initializer.util
-Bundle-Version: 9.0.17
+Bundle-Version: 9.0.18
 Export-Package: com.liferay.commerce.initializer.util

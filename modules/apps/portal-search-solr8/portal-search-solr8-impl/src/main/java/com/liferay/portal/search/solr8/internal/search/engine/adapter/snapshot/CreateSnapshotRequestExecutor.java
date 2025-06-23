@@ -11,9 +11,12 @@ import com.liferay.portal.search.engine.adapter.snapshot.CreateSnapshotResponse;
 /**
  * @author Bryan Engler
  */
-public interface CreateSnapshotRequestExecutor {
+public class CreateSnapshotRequestExecutor {
 
 	public CreateSnapshotResponse execute(
-		CreateSnapshotRequest createSnapshotRequest);
+		CreateSnapshotRequest createSnapshotRequest) {
+
+		throw new UnsupportedOperationException();
+	}
 
 }

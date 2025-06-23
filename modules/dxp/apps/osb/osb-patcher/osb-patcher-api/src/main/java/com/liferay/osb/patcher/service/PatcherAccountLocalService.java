@@ -218,6 +218,9 @@ public interface PatcherAccountLocalService
 	public PatcherAccount fetchPatcherAccount(long patcherAccountId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherAccount fetchPatcherAccount(String accountEntryCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -241,6 +244,10 @@ public interface PatcherAccountLocalService
 	public PatcherAccount getPatcherAccount(long patcherAccountId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PatcherAccount getPatcherAccount(String accountEntryCode)
+		throws Exception;
+
 	/**
 	 * Returns a range of all the patcher accounts.
 	 *
@@ -254,6 +261,11 @@ public interface PatcherAccountLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherAccount> getPatcherAccounts(int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PatcherAccount> getPatcherAccounts(
+		long companyId, String keyword, int start, int end,
+		OrderByComparator<PatcherAccount> orderByComparator);
 
 	/**
 	 * Returns the number of patcher accounts.

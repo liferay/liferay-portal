@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.site.setting.client.dto.v1_0.MeasurementUnit;
 import com.liferay.headless.commerce.admin.site.setting.client.http.HttpInvoker;
@@ -334,29 +335,29 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 			testDeleteMeasurementUnitBatch_addMeasurementUnit();
 
 		testDeleteMeasurementUnitBatch_deleteMeasurementUnit(
-			"COMPLETED", null, measurementUnit1.getId());
+			202, measurementUnit1.getExternalReferenceCode(), null);
 
 		assertHttpResponseStatusCode(
 			404,
 			measurementUnitResource.getMeasurementUnitHttpResponse(
 				measurementUnit1.getId()));
 
-		MeasurementUnit measurementUnit2 =
-			testDeleteMeasurementUnitBatch_addMeasurementUnit();
+		measurementUnit1 = testDeleteMeasurementUnitBatch_addMeasurementUnit();
 
 		testDeleteMeasurementUnitBatch_deleteMeasurementUnit(
-			"COMPLETED", measurementUnit2.getExternalReferenceCode(), null);
+			202, null, measurementUnit1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			measurementUnitResource.getMeasurementUnitHttpResponse(
-				measurementUnit2.getId()));
+				measurementUnit1.getId()));
 
 		measurementUnit1 = testDeleteMeasurementUnitBatch_addMeasurementUnit();
-		measurementUnit2 = testDeleteMeasurementUnitBatch_addMeasurementUnit();
+		MeasurementUnit measurementUnit2 =
+			testDeleteMeasurementUnitBatch_addMeasurementUnit();
 
 		testDeleteMeasurementUnitBatch_deleteMeasurementUnit(
-			"COMPLETED", measurementUnit2.getExternalReferenceCode(),
+			202, measurementUnit2.getExternalReferenceCode(),
 			measurementUnit1.getId());
 
 		assertHttpResponseStatusCode(
@@ -369,7 +370,7 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 				measurementUnit2.getId()));
 
 		testDeleteMeasurementUnitBatch_deleteMeasurementUnit(
-			"COMPLETED", measurementUnit2.getExternalReferenceCode(),
+			202, measurementUnit2.getExternalReferenceCode(),
 			measurementUnit1.getId());
 
 		assertHttpResponseStatusCode(
@@ -386,7 +387,7 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 	}
 
 	protected void testDeleteMeasurementUnitBatch_deleteMeasurementUnit(
-			String expectedExecuteStatus, String externalReferenceCode, Long id)
+			int expectedStatusCode, String externalReferenceCode, Long id)
 		throws Exception {
 
 		HttpInvoker.HttpResponse httpResponse =
@@ -399,10 +400,10 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 						"id", () -> id
 					)));
 
-		Assert.assertEquals(202, httpResponse.getStatusCode());
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
 
 		waitForFinish(
-			expectedExecuteStatus,
+			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
@@ -1910,18 +1911,110 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 	}
 
 	protected MeasurementUnit
+			testPutMeasurementUnitByExternalReferenceCode_addMeasurementUnit()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected MeasurementUnit
 			testPutMeasurementUnitByExternalReferenceCode_createMeasurementUnit()
 		throws Exception {
 
 		return randomMeasurementUnit();
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		MeasurementUnit measurementUnit1 =
+			testBatchEngineDeleteImportTask_addMeasurementUnit();
+
+		testBatchEngineDeleteImportTask_deleteMeasurementUnit(
+			200, measurementUnit1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			measurementUnitResource.getMeasurementUnitHttpResponse(
+				measurementUnit1.getId()));
+
+		measurementUnit1 = testBatchEngineDeleteImportTask_addMeasurementUnit();
+
+		testBatchEngineDeleteImportTask_deleteMeasurementUnit(
+			200, null, measurementUnit1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			measurementUnitResource.getMeasurementUnitHttpResponse(
+				measurementUnit1.getId()));
+
+		measurementUnit1 = testBatchEngineDeleteImportTask_addMeasurementUnit();
+		MeasurementUnit measurementUnit2 =
+			testBatchEngineDeleteImportTask_addMeasurementUnit();
+
+		testBatchEngineDeleteImportTask_deleteMeasurementUnit(
+			200, measurementUnit2.getExternalReferenceCode(),
+			measurementUnit1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			measurementUnitResource.getMeasurementUnitHttpResponse(
+				measurementUnit1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			measurementUnitResource.getMeasurementUnitHttpResponse(
+				measurementUnit2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteMeasurementUnit(
+			200, measurementUnit2.getExternalReferenceCode(),
+			measurementUnit1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			measurementUnitResource.getMeasurementUnitHttpResponse(
+				measurementUnit2.getId()));
+	}
+
 	protected MeasurementUnit
-			testPutMeasurementUnitByExternalReferenceCode_addMeasurementUnit()
+			testBatchEngineDeleteImportTask_addMeasurementUnit()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testDeleteMeasurementUnit_addMeasurementUnit();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteMeasurementUnit(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.site.setting.dto.v1_0.MeasurementUnit",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule

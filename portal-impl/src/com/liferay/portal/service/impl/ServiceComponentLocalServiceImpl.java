@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.configuration.ServiceComponentConfiguration;
 import com.liferay.portal.kernel.service.configuration.servlet.ServletServiceContextComponentConfiguration;
@@ -141,7 +142,10 @@ public class ServiceComponentLocalServiceImpl
 						" has build number ", previousBuildNumber,
 						" which is newer than ", buildNumber));
 			}
-			else {
+			else if (!StringUtil.equals(
+						buildNamespace,
+						ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME)) {
+
 				return serviceComponent;
 			}
 		}

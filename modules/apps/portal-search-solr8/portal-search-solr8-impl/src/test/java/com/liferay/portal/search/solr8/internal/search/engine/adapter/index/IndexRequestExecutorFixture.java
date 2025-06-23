@@ -30,22 +30,9 @@ public class IndexRequestExecutorFixture {
 
 		ReflectionTestUtil.setFieldValue(
 			solrIndexRequestExecutor, "_refreshIndexRequestExecutor",
-			createRefreshIndexRequestExecutor(solrClientManager));
+			new RefreshIndexRequestExecutor(solrClientManager));
 
 		return solrIndexRequestExecutor;
-	}
-
-	protected RefreshIndexRequestExecutor createRefreshIndexRequestExecutor(
-		SolrClientManager solrClientManager) {
-
-		RefreshIndexRequestExecutorImpl refreshIndexRequestExecutorImpl =
-			new RefreshIndexRequestExecutorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			refreshIndexRequestExecutorImpl, "_solrClientManager",
-			solrClientManager);
-
-		return refreshIndexRequestExecutorImpl;
 	}
 
 	protected void setSolrClientManager(SolrClientManager solrClientManager) {

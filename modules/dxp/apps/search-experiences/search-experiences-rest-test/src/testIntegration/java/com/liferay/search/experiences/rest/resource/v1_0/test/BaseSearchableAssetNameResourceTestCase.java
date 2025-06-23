@@ -227,6 +227,11 @@ public abstract class BaseSearchableAssetNameResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		SearchableAssetName searchableAssetName,
 		List<SearchableAssetName> searchableAssetNames) {

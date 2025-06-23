@@ -4,13 +4,14 @@
  */
 
 type Key = string;
-type Value = string | number | boolean;
+type Value = string | number | boolean | null;
 
 export type Operators =
 	| 'contains'
 	| 'eq'
 	| 'ge'
 	| 'gt'
+	| 'lambda'
 	| 'le'
 	| 'lt'
 	| 'ne'
