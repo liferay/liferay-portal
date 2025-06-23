@@ -39,7 +39,7 @@ definition {
 	@description = "LPS-166479. Verify that new SVG spritemap is applied on the page"
 	@priority = 3
 	test CanExtendSvgFileFromDM {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		var portalURL = PropsUtil.get("portal.url");
 
@@ -81,7 +81,7 @@ definition {
 	@description = "LPS-173318. Verify that new SVG spritemap file from external site is applied on the page"
 	@priority = 3
 	test CanExtendSvgFileFromExternalSite {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("A created Theme svg extensions using the external URL") {
 			ClientExtensionGeneral.goToRemoteAppsPortlet();

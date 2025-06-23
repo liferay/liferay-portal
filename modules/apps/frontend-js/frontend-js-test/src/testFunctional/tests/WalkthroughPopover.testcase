@@ -156,6 +156,7 @@ definition {
 	@priority = 3
 	test CanHaveADarkBackgroundOverlay {
 		property custom.properties = "feature.flag.LPD-44091=true";
+		property portal.acceptance = "false";
 
 		task ("When click hotspot element") {
 			Click(locator1 = "Walkthrough#SAMPLE_PORTLET_HOTSPOT");
@@ -175,6 +176,7 @@ definition {
 	@priority = 2
 	test CanHaveAShadowAroundElement {
 		property custom.properties = "feature.flag.LPD-44091=true";
+		property portal.acceptance = "false";
 
 		task ("When click hotspot element until Step 4") {
 			Click(locator1 = "Walkthrough#SAMPLE_PORTLET_HOTSPOT");
@@ -199,6 +201,7 @@ definition {
 	@priority = 3
 	test CanReturnToPreviousStepIfElementDoesNotExist {
 		property custom.properties = "feature.flag.LPD-44091=true";
+		property portal.acceptance = "false";
 
 		task ("Given JSON file includes an element that does not exist on the page/sample portlet") {
 			Navigator.gotoNavTab(navTab = "Test Walkable");
