@@ -19,7 +19,13 @@ const test = mergeTests(
 	loginTest()
 );
 
-const assetTypes = ['All Asset Types', 'Blogs Entry', 'Document', 'User', 'Web Content Article'];
+const assetTypes = [
+	'All Asset Types',
+	'Blogs Entry',
+	'Document',
+	'User',
+	'Web Content Article',
+];
 
 test('Add, edit and delete a vocabulary', async ({
 	assetCategoriesAdminPage,
@@ -37,7 +43,7 @@ test('Add, edit and delete a vocabulary', async ({
 
 		await vocabulariesEditPage.add({
 			name: vocabularyName,
-			description: vocabularyDescription
+			description: vocabularyDescription,
 		});
 
 		await expect(
@@ -96,7 +102,7 @@ assetTypes.forEach(async (assetType, index) => {
 			page.getByRole('heading', {name: vocabularyName})
 		).toBeVisible();
 
-		await expect(page.getByText(assetType, { exact: true })).toBeVisible();
+		await expect(page.getByText(assetType, {exact: true})).toBeVisible();
 	});
 });
 
@@ -116,14 +122,16 @@ test('Delete an associated asset type of vocabulary', async ({
 
 		await vocabulariesEditPage.add({
 			name: vocabularyName,
-			assetTypes: assetTypes,
+			assetTypes,
 		});
 
 		await expect(
 			page.getByRole('heading', {name: vocabularyName})
 		).toBeVisible();
 
-		await expect(page.getByText(assetTypes.join(', '), { exact: true })).toBeVisible();
+		await expect(
+			page.getByText(assetTypes.join(', '), {exact: true})
+		).toBeVisible();
 	});
 
 	await test.step('Remove last associated asset type', async () => {
@@ -135,7 +143,9 @@ test('Delete an associated asset type of vocabulary', async ({
 
 		await waitForAlert(page);
 
-		await expect(page.getByText('Object Entry Folder', { exact: true })).not.toBeVisible();
+		await expect(
+			page.getByText('Object Entry Folder', {exact: true})
+		).not.toBeVisible();
 	});
 });
 
@@ -161,8 +171,6 @@ test('Delete all categories of a vocabulary', async ({
 
 		await waitForAlert(page);
 
-		await expect(
-			page.getByText('There are no categories')
-		).toBeVisible();
+		await expect(page.getByText('There are no categories')).toBeVisible();
 	});
 });

@@ -20,7 +20,7 @@ export class VocabulariesEditPage {
 
 	constructor(page: Page) {
 		this.addRowButton = page.getByRole('button', {
-			name: 'Add'
+			name: 'Add',
 		});
 		this.assetTypeSelect = page.locator('.vocabulary-asset-type-select');
 		this.deleteButton = page.getByRole('button', {name: 'Delete'});
@@ -28,7 +28,7 @@ export class VocabulariesEditPage {
 		this.nameInput = page.getByPlaceholder('Name');
 		this.page = page;
 		this.removeRowButton = page.getByRole('button', {
-			name: 'Remove'
+			name: 'Remove',
 		});
 		this.saveButton = page.getByRole('button', {
 			name: 'Save',
@@ -36,9 +36,9 @@ export class VocabulariesEditPage {
 	}
 
 	async add({
-		name,
-		description,
 		assetTypes,
+		description,
+		name,
 	}: {
 		name: string;
 		description?: string;
@@ -53,7 +53,7 @@ export class VocabulariesEditPage {
 		if (assetTypes) {
 			for (const [index, assetType] of assetTypes.entries()) {
 				await this.addAssociatedAssetType(assetType, index);
-				
+
 				if (assetTypes.length !== index + 1) {
 					await this.addRowButton.nth(index).click();
 				}
