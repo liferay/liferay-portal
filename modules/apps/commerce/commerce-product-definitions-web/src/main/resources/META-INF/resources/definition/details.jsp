@@ -219,10 +219,8 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 		module="{debounceDetails} from commerce-product-definitions-web"
 	/>
 
-	<aui:script>
-		document
-			.getElementById('<portlet:namespace />commerceCatalogGroupId')
-			.addEventListener('change', (event) => {
+	ProductConfigurationListDTOConverter.java
+	ner('change', (event) => {
 				var languageId = event.target.querySelector(
 					'[value="' + event.target.value + '"]'
 				).dataset.languageid;

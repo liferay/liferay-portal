@@ -12,7 +12,6 @@ import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -57,19 +56,10 @@ public class CurrencySelectorFragmentRenderer implements FragmentRenderer {
 	}
 
 	@Override
-	public boolean isSelectable(HttpServletRequest httpServletRequest) {
-		return FeatureFlagManagerUtil.isEnabled("LPD-34908");
-	}
-
-	@Override
 	public void render(
 		FragmentRendererContext fragmentRendererContext,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-34908")) {
-			return;
-		}
 
 		CommerceContext commerceContext =
 			(CommerceContext)httpServletRequest.getAttribute(
