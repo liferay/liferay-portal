@@ -52,6 +52,50 @@ const nestedSchemas: ISchemas = {
 		},
 		type: 'object',
 	},
+	D: {
+		properties: {
+			d_e: {
+				$ref: '#/components/schemas/E',
+			},
+		},
+		type: 'object',
+		['x-filterable']: ['d_e/code']
+	},
+	E: {
+		properties: {
+			'code': {
+				readOnly: true,
+				type: 'integer',
+				format: 'int32'
+			},
+			'name': {
+				readOnly: true,
+				type: 'string',
+			},
+		},
+		type: 'object',
+		['x-filterable']: []
+	},
+	F: {
+		properties: {
+			'keywords': {
+				items: {
+					type: 'string'
+				},
+				readOnly: true,
+				type: 'array',
+			},
+			'numbers': {
+				items: {
+					type: 'integer'
+				},
+				readOnly: true,
+				type: 'array',
+			},
+		},
+		type: 'object',
+		['x-filterable']: ['keywords', 'numbers']
+	},
 } as ISchemas;
 
 const simpleSchema = {
@@ -293,4 +337,80 @@ describe('getValidFields', () => {
 			}
 		}
 	});
+
+	it('Schema D include children properties from schemas reference and should be filterable', () => {
+		const result = getValidFields({
+			contextPath: '',
+			schemaName: 'D',
+			schemas: nestedSchemas,
+			visitedFields: [],
+			filterablePaths: nestedSchemas['D']['x-filterable'] || []
+		});
+
+		const d = result.find((item) => item.label === 'd_e');
+		expect(d?.name).toEqual('d_e.*');
+		expect(d?.filterable).toEqual(true);
+
+	});
+
+	it('Schema D has children and one of those should be named d_e.code and filterable', () => {
+		const result = getValidFields({
+			contextPath: '',
+			schemaName: 'D',
+			schemas: nestedSchemas,
+			visitedFields: [],
+			filterablePaths: nestedSchemas['D']['x-filterable'] || []
+		});
+
+		const d = result.find((item) => item.label === 'd_e');
+		d?.children && expect(d?.children[0]?.name).toEqual('d_e.code');
+		d?.children && expect(d?.children[0]?.filterable).toEqual(true);
+
+	});
+
+	it('Schema D has children and one of those should be named d_e.name and its not filterable', () => {
+		const result = getValidFields({
+			contextPath: '',
+			schemaName: 'D',
+			schemas: nestedSchemas,
+			visitedFields: [],
+			filterablePaths: nestedSchemas['D']['x-filterable'] || []
+		});
+
+		const d = result.find((item) => item.label === 'd_e');
+		d?.children && expect(d?.children[1]?.name).toEqual('d_e.name');
+		d?.children && expect(d?.children[1]?.filterable).toEqual(false);
+
+	});
+
+	it('Schema F has keywords property and it is an array and should be filterable', () => {
+		const result = getValidFields({
+			contextPath: '',
+			schemaName: 'F',
+			schemas: nestedSchemas,
+			visitedFields: [],
+			filterablePaths: nestedSchemas['F']['x-filterable'] || []
+		});
+
+		const f = result.find((item) => item.label === 'keywords');
+		expect(f?.filterable).toEqual(true);
+		expect(f?.entityFieldType).toEqual('array/type:string');
+
+	});
+
+	it('Schema F has numbers property and it is an array and should be filterable', () => {
+		const result = getValidFields({
+			contextPath: '',
+			schemaName: 'F',
+			schemas: nestedSchemas,
+			visitedFields: [],
+			filterablePaths: nestedSchemas['F']['x-filterable'] || []
+		});
+
+		const f = result.find((item) => item.label === 'numbers');
+		expect(f?.filterable).toEqual(true);
+		expect(f?.entityFieldType).toEqual('array/type:integer');
+
+	});
+
 });
