@@ -348,12 +348,6 @@ public class BuildDatabaseUtil {
 		String buildDatabaseFilePath =
 			JenkinsResultsParserUtil.getCanonicalPath(buildDatabaseFile);
 
-		File buildDatabaseSHAFile = new File(
-			parentDir, BuildDatabase.FILE_NAME_BUILD_DATABASE_JSON_SHA);
-
-		String buildDatabaseSHAFilePath =
-			JenkinsResultsParserUtil.getCanonicalPath(buildDatabaseSHAFile);
-
 		Retryable<Object> retryable = new Retryable<Object>(true, 3, 5, true) {
 
 			@Override
@@ -362,17 +356,6 @@ public class BuildDatabaseUtil {
 					_deleteBuildDatabaseFiles();
 
 					_downloadBuildDatabaseFiles();
-
-					if (!JenkinsResultsParserUtil.isMatchingSHAFile(
-							buildDatabaseFile, buildDatabaseSHAFile)) {
-
-						_deleteBuildDatabaseFiles();
-
-						throw new RuntimeException(
-							JenkinsResultsParserUtil.combine(
-								"Mismatched SHA for ", buildDatabaseFilePath,
-								" from ", path));
-					}
 
 					if (!_isValidBuildDatabaseFile(buildDatabaseFile)) {
 						_deleteBuildDatabaseFiles();
@@ -417,21 +400,19 @@ public class BuildDatabaseUtil {
 				if (buildDatabaseFile.exists()) {
 					JenkinsResultsParserUtil.delete(buildDatabaseFile);
 				}
-
-				if (buildDatabaseSHAFile.exists()) {
-					JenkinsResultsParserUtil.delete(buildDatabaseSHAFile);
-				}
 			}
 
 			private void _downloadBuildDatabaseFiles() {
-				CloudBucketUtil.copyS3File(
-					buildDatabaseFilePath,
-					path + "/" + BuildDatabase.FILE_NAME_BUILD_DATABASE_JSON);
-
-				CloudBucketUtil.copyS3File(
-					buildDatabaseSHAFilePath,
-					path + "/" +
-						BuildDatabase.FILE_NAME_BUILD_DATABASE_JSON_SHA);
+				try {
+					CloudBucketUtil.downloadS3File(
+						buildDatabaseFile,
+						path + "/" +
+							BuildDatabase.FILE_NAME_BUILD_DATABASE_JSON);
+				}
+				catch (IOException ioException) {
+					throw new RuntimeException(
+						"Unable to download build database files", ioException);
+				}
 			}
 
 		};
