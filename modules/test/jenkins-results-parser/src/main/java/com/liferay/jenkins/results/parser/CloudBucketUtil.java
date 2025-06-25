@@ -622,17 +622,21 @@ public class CloudBucketUtil {
 		downloadS3File(
 			destinationChecksumFile, s3SourcePath + _CHECKSUM_FILE_EXTENSION);
 
-		if (destinationChecksumFile.exists() &&
-			!JenkinsResultsParserUtil.isMatchingSHAFile(
-				destinationFile, destinationChecksumFile)) {
+		if (destinationChecksumFile.exists()) {
+			try {
+				if (!JenkinsResultsParserUtil.isMatchingSHAFile(
+						destinationFile, destinationChecksumFile)) {
 
-			destinationChecksumFile.delete();
+					destinationFile.delete();
 
-			destinationFile.delete();
-
-			throw new IOException(
-				destinationFile.getName() +
-					" content failed checksum validation");
+					throw new IOException(
+						destinationFile.getName() +
+							" content failed checksum validation");
+				}
+			}
+			finally {
+				destinationChecksumFile.delete();
+			}
 		}
 	}
 
