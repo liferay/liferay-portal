@@ -5,9 +5,6 @@
 
 package com.liferay.object.web.internal.object.entries.display.context;
 
-import com.liferay.dynamic.data.mapping.expression.CreateExpressionRequest;
-import com.liferay.dynamic.data.mapping.expression.DDMExpression;
-import com.liferay.dynamic.data.mapping.expression.DDMExpressionException;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
@@ -41,13 +38,13 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.constants.ObjectWebKeys;
 import com.liferay.object.display.context.ObjectEntryDisplayContext;
-import com.liferay.object.dynamic.data.mapping.expression.ObjectEntryDDMExpressionFieldAccessor;
 import com.liferay.object.exception.NoSuchObjectLayoutException;
 import com.liferay.object.exception.NoSuchObjectRelationshipException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.render.ObjectFieldRenderingContext;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
+import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectLayout;
@@ -1092,7 +1089,13 @@ public class ObjectEntryDisplayContextImpl
 			objectFieldBusinessType.getDDMFormFieldTypeName(
 				objectField.isLocalized()));
 
-		readOnly = _isReadOnly(objectEntry, objectField, readOnly);
+		if (!readOnly) {
+			readOnly = ObjectFieldUtil.isReadOnly(
+				_ddmExpressionFactory,
+				(objectEntry != null) ? objectEntry.getExternalReferenceCode() :
+					null,
+				objectField, _themeDisplay.getUserId());
+		}
 
 		objectField.setReadOnly(String.valueOf(readOnly));
 
@@ -1446,79 +1449,6 @@ public class ObjectEntryDisplayContextImpl
 				objectRelationship.getObjectDefinitionId1());
 
 		return relatedObjectDefinition.isActive();
-	}
-
-	private boolean _isReadOnly(
-			ObjectEntry objectEntry, ObjectField objectField, boolean readOnly)
-		throws PortalException {
-
-		if (readOnly) {
-			return true;
-		}
-
-		if (Objects.equals(
-				objectField.getReadOnly(),
-				ObjectFieldConstants.READ_ONLY_FALSE)) {
-
-			return false;
-		}
-
-		if (Objects.equals(
-				objectField.getReadOnly(),
-				ObjectFieldConstants.READ_ONLY_TRUE)) {
-
-			return true;
-		}
-
-		Map<String, Object> existingValues = new HashMap<>();
-
-		if (objectEntry == null) {
-			for (ObjectField objectField1 :
-					_objectFieldLocalService.getObjectFields(
-						objectField.getObjectDefinitionId())) {
-
-				existingValues.put(
-					objectField1.getName(),
-					ObjectFieldSettingUtil.getDefaultValue(
-						null, objectField, null));
-			}
-		}
-		else {
-			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
-				_objectEntryLocalService.getObjectEntry(
-					objectEntry.getExternalReferenceCode(),
-					objectField.getObjectDefinitionId());
-
-			existingValues.putAll(
-				_objectEntryLocalService.getSystemValues(
-					serviceBuilderObjectEntry));
-			existingValues.putAll(
-				_objectEntryLocalService.getValues(serviceBuilderObjectEntry));
-
-			existingValues.put("currentUserId", _themeDisplay.getUserId());
-		}
-
-		try {
-			DDMExpression<Boolean> ddmExpression =
-				_ddmExpressionFactory.createExpression(
-					CreateExpressionRequest.Builder.newBuilder(
-						objectField.getReadOnlyConditionExpression()
-					).withDDMExpressionFieldAccessor(
-						new ObjectEntryDDMExpressionFieldAccessor(
-							existingValues)
-					).build());
-
-			ddmExpression.setVariables(existingValues);
-
-			if (ddmExpression.evaluate()) {
-				return true;
-			}
-		}
-		catch (DDMExpressionException ddmExpressionException) {
-			_log.error(ddmExpressionException);
-		}
-
-		return false;
 	}
 
 	private void _setDDMFormFieldValueValue(
