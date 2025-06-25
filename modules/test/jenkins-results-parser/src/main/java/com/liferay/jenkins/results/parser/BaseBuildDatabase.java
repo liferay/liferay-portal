@@ -663,9 +663,6 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 					File tempFile = new File(
 						baseTempDirPath + "/" + FILE_NAME_BUILD_DATABASE_JSON);
 
-					String tempFilePath =
-						JenkinsResultsParserUtil.getCanonicalPath(tempFile);
-
 					try {
 						JenkinsResultsParserUtil.write(
 							_buildDatabaseFile, _jsonObject.toString());
@@ -673,7 +670,7 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 						JenkinsResultsParserUtil.copy(
 							_buildDatabaseFile, tempFile);
 
-						CloudBucketUtil.copyS3File(path, tempFilePath);
+						CloudBucketUtil.uploadS3File(path, tempFile);
 					}
 					catch (IOException ioException) {
 						throw new RuntimeException(ioException);
