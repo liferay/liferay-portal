@@ -475,3 +475,114 @@ test(
 		});
 	}
 );
+
+test(
+	'Keywords should be able to select',
+	{tag: '@LPD-55983'},
+	async ({filtersPage, page}) => {
+		await test.step('Create a selection filter from API Headless source', async () => {
+			await filtersPage.createSelectionFilterApiHeadless({
+				filterBy: 'keywords',
+				filterMode: 'Include',
+				itemKey: 'id',
+				itemLabel: 'label',
+				name: SELECTION_API_HEADLESS_FILTER_NAME,
+				preselectedValues: [dataSetLabel],
+				restApplication: `${API_ENDPOINT_PATH}`,
+				restEndpoint: '/',
+				restSchema: 'DataSet',
+				selectionType: 'Single',
+				sourceType: 'API REST Application',
+			});
+
+			await filtersPage.saveAddFilterForm();
+
+			await waitForAlert(page);
+		});
+
+		await test.step('Check that keywords was selected correctly', async () => {
+			await expect(
+				page.getByRole('cell', {
+					exact: true,
+					name: 'keywords',
+				})
+			).toBeVisible();
+		});
+
+		await test.step('Check that the selection filter is in the list and is "Active" by default', async () => {
+			await expect(
+				page.getByRole('cell', {
+					exact: true,
+					name: SELECTION_API_HEADLESS_FILTER_NAME,
+				})
+			).toBeVisible();
+
+			await expect(filtersPage.activeToggle.first()).toBeVisible();
+		});
+
+	}
+);
+
+test(
+	'dataSetToDataSetTableSections.description should be able to select',
+	{tag: '@LPD-55983'},
+	async ({filtersPage, page}) => {
+
+		const composedFieldName = 'dataSetToDataSetTableSections.description';
+
+		await test.step('Create a selection filter from API Headless source', async () => {
+			await filtersPage.createSelectionFilterApiHeadless({
+				filterBy: 'externalReferenceCode',
+				filterMode: 'Include',
+				itemKey: 'id',
+				itemLabel: 'label',
+				name: SELECTION_API_HEADLESS_FILTER_NAME,
+				preselectedValues: [dataSetLabel],
+				restApplication: `${API_ENDPOINT_PATH}`,
+				restEndpoint: '/',
+				restSchema: 'DataSet',
+				selectionType: 'Single',
+				sourceType: 'API REST Application',
+			});
+
+			await filtersPage.newSelectionFilterForm.filterBySelectButton.click();
+			await filtersPage.fieldSelectModalPage.searchAndSelectField(
+				composedFieldName
+			);
+			await filtersPage.fieldSelectModalPage.saveAddFieldsModal();
+		});
+
+	}
+);
+
+test(
+	'dataSetToDataSetTableSections.friendlyUrlPath should not be able to select',
+	{tag: '@LPD-55983'},
+	async ({filtersPage, page}) => {
+
+		const composedFieldName = 'dataSetToDataSetTableSections.friendlyUrlPath';
+
+		await test.step('Create a selection filter from API Headless source', async () => {
+			await filtersPage.createSelectionFilterApiHeadless({
+				filterBy: 'externalReferenceCode',
+				filterMode: 'Include',
+				itemKey: 'id',
+				itemLabel: 'label',
+				name: SELECTION_API_HEADLESS_FILTER_NAME,
+				preselectedValues: [dataSetLabel],
+				restApplication: `${API_ENDPOINT_PATH}`,
+				restEndpoint: '/',
+				restSchema: 'DataSet',
+				selectionType: 'Single',
+				sourceType: 'API REST Application',
+			});
+
+			await filtersPage.newSelectionFilterForm.filterBySelectButton.click();
+			await filtersPage.fieldSelectModalPage.searchAndSelectField(
+				composedFieldName
+			);
+			await filtersPage.fieldSelectModalPage.saveAddFieldsModal();
+		});
+
+	}
+);

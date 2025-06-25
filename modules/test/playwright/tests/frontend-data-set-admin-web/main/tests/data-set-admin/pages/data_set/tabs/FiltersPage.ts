@@ -301,7 +301,7 @@ export class FiltersPage {
 
 		await this.newSelectionFilterForm.filterBySelectButton.click();
 
-		const notSelectionFilterField = 'keywords';
+		const notSelectionFilterField = 'permissions';
 		await expect(
 			this.fieldSelectModalPage.getFieldCheckboxByLabel(
 				notSelectionFilterField

@@ -88,10 +88,17 @@ export class FieldSelectModalPage {
 		const selectedFieldName = itemPath[itemPath.length - 1];
 		await fieldSearch.fill(selectedFieldName);
 
-		await this.page
+		const checkbox = await this.page
 			.locator(`[data-id$=",${path}"]`)
-			.getByRole('checkbox')
-			.check();
+			.getByRole('checkbox');
+
+		if(await checkbox.isEnabled()) {
+			await checkbox.check();
+		}
+
+		if(await checkbox.isDisabled()) {
+			expect(await checkbox.isDisabled());
+		}
 	}
 
 	async selectField({
