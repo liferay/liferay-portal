@@ -113,15 +113,6 @@ public class ObjectEntryInfoItemUtil {
 			return themeDisplay;
 		}
 
-		User user = UserLocalServiceUtil.fetchUser(serviceContext.getUserId());
-
-		if (user == null) {
-			user = UserLocalServiceUtil.fetchGuestUser(
-				serviceContext.getCompanyId());
-		}
-
-		User finalUser = user;
-
 		return new ThemeDisplay() {
 			{
 				setCompany(
@@ -130,9 +121,33 @@ public class ObjectEntryInfoItemUtil {
 				setLocale(
 					LocaleUtil.fromLanguageId(serviceContext.getLanguageId()));
 				setSiteGroupId(serviceContext.getScopeGroupId());
-				setUser(finalUser);
+				setUser(getUser());
 			}
 		};
+	}
+
+	public static User getUser() {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext == null) {
+			return null;
+		}
+
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		if (themeDisplay != null) {
+			return themeDisplay.getUser();
+		}
+
+		User user = UserLocalServiceUtil.fetchUser(serviceContext.getUserId());
+
+		if (user == null) {
+			user = UserLocalServiceUtil.fetchGuestUser(
+				serviceContext.getCompanyId());
+		}
+
+		return user;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
