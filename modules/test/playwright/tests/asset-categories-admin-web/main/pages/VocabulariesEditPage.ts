@@ -51,6 +51,10 @@ export class VocabulariesEditPage {
 		}
 
 		if (assetTypes) {
+			if (await this.assetTypeSelect.first().isHidden()) {
+				await this.expandPanel('Associated Asset Types');
+			}
+
 			for (const [index, assetType] of assetTypes.entries()) {
 				await this.addAssociatedAssetType(assetType, index);
 
@@ -67,6 +71,10 @@ export class VocabulariesEditPage {
 
 	async addAssociatedAssetType(assetType: string, index: number) {
 		await this.assetTypeSelect.nth(index).selectOption(assetType);
+	}
+
+	async expandPanel(name: string) {
+		await this.page.getByRole('button', {name: name}).click();
 	}
 
 	async removeLastAssociatedAssetType() {
