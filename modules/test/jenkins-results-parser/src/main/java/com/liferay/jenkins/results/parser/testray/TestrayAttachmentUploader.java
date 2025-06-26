@@ -17,9 +17,9 @@ public interface TestrayAttachmentUploader {
 	public File getPreparedFilesBaseDir();
 
 	public TestrayAttachmentRecorder getTestrayAttachmentRecorder();
-	
+
 	public URL getTestrayServerLogsURL();
-	
+
 	public URL getTestrayServerURL();
 
 	public void prepareFiles();

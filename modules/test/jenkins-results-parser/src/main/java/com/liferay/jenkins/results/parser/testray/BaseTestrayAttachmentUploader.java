@@ -28,6 +28,11 @@ public abstract class BaseTestrayAttachmentUploader
 	implements TestrayAttachmentUploader {
 
 	@Override
+	public TestrayAttachmentRecorder getTestrayAttachmentRecorder() {
+		return _testrayAttachmentRecorder;
+	}
+
+	@Override
 	public URL getTestrayServerURL() {
 		return _testrayServerURL;
 	}
@@ -137,11 +142,6 @@ public abstract class BaseTestrayAttachmentUploader
 	protected List<File> getPreparedFiles() {
 		return JenkinsResultsParserUtil.findFiles(
 			getPreparedFilesBaseDir(), ".*");
-	}
-
-	@Override
-	public TestrayAttachmentRecorder getTestrayAttachmentRecorder() {
-		return _testrayAttachmentRecorder;
 	}
 
 	protected TopLevelBuildReport getTopLevelBuildReport() {

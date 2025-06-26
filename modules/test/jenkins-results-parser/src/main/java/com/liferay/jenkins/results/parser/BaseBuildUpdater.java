@@ -8,9 +8,7 @@ package com.liferay.jenkins.results.parser;
 import com.liferay.jenkins.results.parser.testray.TestrayAttachmentRecorder;
 import com.liferay.jenkins.results.parser.testray.TestrayAttachmentUploader;
 import com.liferay.jenkins.results.parser.testray.TestrayFactory;
-import com.liferay.jenkins.results.parser.testray.TestrayS3Bucket;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -132,6 +130,7 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 				return;
 			}
 		}
+
 		_build.setStatus("completed");
 
 		if (_build instanceof DownstreamBuild) {
@@ -362,22 +361,23 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 
 	private void _uploadConsoleTextTestrayAttachment(Build build) {
 		try {
-			String testrayServerString = JenkinsResultsParserUtil.getBuildProperty(
-				"testray.server.url");
+			String testrayServerString =
+				JenkinsResultsParserUtil.getBuildProperty("testray.server.url");
 
 			URL testrayServerURL = new URL(testrayServerString);
-	
+
 			TestrayAttachmentUploader testrayAttachmentUploader =
 				TestrayFactory.newTestrayAttachmentUploader(
 					build, testrayServerURL);
-	
+
 			TestrayAttachmentRecorder testrayAttachmentRecorder =
 				testrayAttachmentUploader.getTestrayAttachmentRecorder();
-	
+
 			testrayAttachmentRecorder.recordJenkinsConsole();
-	
+
 			testrayAttachmentUploader.upload();
-		} catch (Exception exception) {
+		}
+		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
 	}

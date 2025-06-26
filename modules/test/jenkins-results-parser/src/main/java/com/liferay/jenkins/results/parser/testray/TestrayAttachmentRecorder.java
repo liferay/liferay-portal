@@ -50,7 +50,6 @@ public class TestrayAttachmentRecorder {
 		JenkinsResultsParserUtil.delete(getRecordedFilesBaseDir());
 
 		try {
-			
 			if (_build instanceof TopLevelBuild) {
 				recordJenkinsConsole();
 				_recordBuildDatabase();
