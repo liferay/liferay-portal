@@ -5,6 +5,13 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.testray.TestrayAttachmentRecorder;
+import com.liferay.jenkins.results.parser.testray.TestrayAttachmentUploader;
+import com.liferay.jenkins.results.parser.testray.TestrayFactory;
+import com.liferay.jenkins.results.parser.testray.TestrayS3Bucket;
+
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,6 +131,20 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 				return;
 			}
 		}
+
+		URL testrayServerURL = JenkinsResultsParserUtil.getBuildProperty(
+			"testray.server.url");
+
+		TestrayAttachmentUploader testrayAttachmentUploader =
+			TestrayFactory.newTestrayAttachmentUploader(
+				_build, testrayServerURL);
+
+		TestrayAttachmentRecorder testrayAttachmentRecorder =
+			testrayAttachmentUploader.getTestryAttachmentRecorder();
+
+		testrayAttachmentRecorder.recordJenkinsConsole();
+
+		testrayAttachmentUploader.upload();
 
 		_build.setStatus("completed");
 
