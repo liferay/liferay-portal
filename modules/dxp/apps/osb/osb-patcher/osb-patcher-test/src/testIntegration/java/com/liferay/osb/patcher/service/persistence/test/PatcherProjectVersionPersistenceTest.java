@@ -290,12 +290,12 @@ public class PatcherProjectVersionPersistenceTest {
 
 	protected OrderByComparator<PatcherProjectVersion> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"PProjectVersion", "mvccVersion", true, "patcherProjectVersionId",
-			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "patcherProductVersionId",
-			true, "rootPatcherProjectVersionId", true, "combinedBranch", true,
-			"committish", true, "hide", true, "name", true, "productVersion",
-			true, "repositoryName", true);
+			"OSBPatcher_PProjectVersion", "mvccVersion", true,
+			"patcherProjectVersionId", true, "companyId", true, "userId", true,
+			"userName", true, "createDate", true, "modifiedDate", true,
+			"patcherProductVersionId", true, "rootPatcherProjectVersionId",
+			true, "combinedBranch", true, "committish", true, "hide", true,
+			"name", true, "productVersion", true, "repositoryName", true);
 	}
 
 	@Test

@@ -1841,27 +1841,29 @@ public class PatcherProductVersionPersistenceImpl
 		"patcherProductVersion.patcherProductVersionId";
 
 	private static final String _FILTER_SQL_SELECT_PATCHERPRODUCTVERSION_WHERE =
-		"SELECT DISTINCT {patcherProductVersion.*} FROM PProductVersion patcherProductVersion WHERE ";
+		"SELECT DISTINCT {patcherProductVersion.*} FROM OSBPatcher_PProductVersion patcherProductVersion WHERE ";
 
 	private static final String
 		_FILTER_SQL_SELECT_PATCHERPRODUCTVERSION_NO_INLINE_DISTINCT_WHERE_1 =
-			"SELECT {PProductVersion.*} FROM (SELECT DISTINCT patcherProductVersion.patcherProductVersionId FROM PProductVersion patcherProductVersion WHERE ";
+			"SELECT {OSBPatcher_PProductVersion.*} FROM (SELECT DISTINCT patcherProductVersion.patcherProductVersionId FROM OSBPatcher_PProductVersion patcherProductVersion WHERE ";
 
 	private static final String
 		_FILTER_SQL_SELECT_PATCHERPRODUCTVERSION_NO_INLINE_DISTINCT_WHERE_2 =
-			") TEMP_TABLE INNER JOIN PProductVersion ON TEMP_TABLE.patcherProductVersionId = PProductVersion.patcherProductVersionId";
+			") TEMP_TABLE INNER JOIN OSBPatcher_PProductVersion ON TEMP_TABLE.patcherProductVersionId = OSBPatcher_PProductVersion.patcherProductVersionId";
 
 	private static final String _FILTER_SQL_COUNT_PATCHERPRODUCTVERSION_WHERE =
-		"SELECT COUNT(DISTINCT patcherProductVersion.patcherProductVersionId) AS COUNT_VALUE FROM PProductVersion patcherProductVersion WHERE ";
+		"SELECT COUNT(DISTINCT patcherProductVersion.patcherProductVersionId) AS COUNT_VALUE FROM OSBPatcher_PProductVersion patcherProductVersion WHERE ";
 
 	private static final String _FILTER_ENTITY_ALIAS = "patcherProductVersion";
 
-	private static final String _FILTER_ENTITY_TABLE = "PProductVersion";
+	private static final String _FILTER_ENTITY_TABLE =
+		"OSBPatcher_PProductVersion";
 
 	private static final String _ORDER_BY_ENTITY_ALIAS =
 		"patcherProductVersion.";
 
-	private static final String _ORDER_BY_ENTITY_TABLE = "PProductVersion.";
+	private static final String _ORDER_BY_ENTITY_TABLE =
+		"OSBPatcher_PProductVersion.";
 
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
 		"No PatcherProductVersion exists with the primary key ";

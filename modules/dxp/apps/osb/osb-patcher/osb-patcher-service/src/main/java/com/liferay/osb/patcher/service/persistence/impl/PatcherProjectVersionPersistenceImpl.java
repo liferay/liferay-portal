@@ -5125,27 +5125,29 @@ public class PatcherProjectVersionPersistenceImpl
 		"patcherProjectVersion.patcherProjectVersionId";
 
 	private static final String _FILTER_SQL_SELECT_PATCHERPROJECTVERSION_WHERE =
-		"SELECT DISTINCT {patcherProjectVersion.*} FROM PProjectVersion patcherProjectVersion WHERE ";
+		"SELECT DISTINCT {patcherProjectVersion.*} FROM OSBPatcher_PProjectVersion patcherProjectVersion WHERE ";
 
 	private static final String
 		_FILTER_SQL_SELECT_PATCHERPROJECTVERSION_NO_INLINE_DISTINCT_WHERE_1 =
-			"SELECT {PProjectVersion.*} FROM (SELECT DISTINCT patcherProjectVersion.patcherProjectVersionId FROM PProjectVersion patcherProjectVersion WHERE ";
+			"SELECT {OSBPatcher_PProjectVersion.*} FROM (SELECT DISTINCT patcherProjectVersion.patcherProjectVersionId FROM OSBPatcher_PProjectVersion patcherProjectVersion WHERE ";
 
 	private static final String
 		_FILTER_SQL_SELECT_PATCHERPROJECTVERSION_NO_INLINE_DISTINCT_WHERE_2 =
-			") TEMP_TABLE INNER JOIN PProjectVersion ON TEMP_TABLE.patcherProjectVersionId = PProjectVersion.patcherProjectVersionId";
+			") TEMP_TABLE INNER JOIN OSBPatcher_PProjectVersion ON TEMP_TABLE.patcherProjectVersionId = OSBPatcher_PProjectVersion.patcherProjectVersionId";
 
 	private static final String _FILTER_SQL_COUNT_PATCHERPROJECTVERSION_WHERE =
-		"SELECT COUNT(DISTINCT patcherProjectVersion.patcherProjectVersionId) AS COUNT_VALUE FROM PProjectVersion patcherProjectVersion WHERE ";
+		"SELECT COUNT(DISTINCT patcherProjectVersion.patcherProjectVersionId) AS COUNT_VALUE FROM OSBPatcher_PProjectVersion patcherProjectVersion WHERE ";
 
 	private static final String _FILTER_ENTITY_ALIAS = "patcherProjectVersion";
 
-	private static final String _FILTER_ENTITY_TABLE = "PProjectVersion";
+	private static final String _FILTER_ENTITY_TABLE =
+		"OSBPatcher_PProjectVersion";
 
 	private static final String _ORDER_BY_ENTITY_ALIAS =
 		"patcherProjectVersion.";
 
-	private static final String _ORDER_BY_ENTITY_TABLE = "PProjectVersion.";
+	private static final String _ORDER_BY_ENTITY_TABLE =
+		"OSBPatcher_PProjectVersion.";
 
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
 		"No PatcherProjectVersion exists with the primary key ";

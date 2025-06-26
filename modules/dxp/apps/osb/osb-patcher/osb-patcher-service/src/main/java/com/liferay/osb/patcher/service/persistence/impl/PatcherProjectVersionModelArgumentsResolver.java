@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"class.name=com.liferay.osb.patcher.model.impl.PatcherProjectVersionImpl",
-		"table.name=PProjectVersion"
+		"table.name=OSBPatcher_PProjectVersion"
 	},
 	service = ArgumentsResolver.class
 )

@@ -14,7 +14,7 @@ import java.sql.Types;
 import java.util.Date;
 
 /**
- * The table class for the &quot;PProjectVersion&quot; database table.
+ * The table class for the &quot;OSBPatcher_PProjectVersion&quot; database table.
  *
  * @author Brian Wing Shun Chan
  * @see PatcherProjectVersion
@@ -78,7 +78,7 @@ public class PatcherProjectVersionTable
 			"repositoryName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 	private PatcherProjectVersionTable() {
-		super("PProjectVersion", PatcherProjectVersionTable::new);
+		super("OSBPatcher_PProjectVersion", PatcherProjectVersionTable::new);
 	}
 
 }

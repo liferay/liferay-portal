@@ -7,6 +7,15 @@ create index IX_9AFA27FA on OSBPatcher_PBuilds_PFixes (patcherFixId);
 create index IX_CF1FC91 on OSBPatcher_PFixes_PFixPacks (companyId);
 create index IX_F9C0797F on OSBPatcher_PFixes_PFixPacks (patcherFixPackId);
 
+create index IX_D2A17063 on OSBPatcher_PProductVersion (fixDeliveryMethod);
+create unique index IX_5486A556 on OSBPatcher_PProductVersion (name[$COLUMN_LENGTH:75$]);
+
+create unique index IX_D818D7E2 on OSBPatcher_PProjectVersion (committish[$COLUMN_LENGTH:150$]);
+create unique index IX_DD66CDEC on OSBPatcher_PProjectVersion (name[$COLUMN_LENGTH:150$]);
+create index IX_7F6073C5 on OSBPatcher_PProjectVersion (patcherProductVersionId, repositoryName[$COLUMN_LENGTH:75$]);
+create index IX_B470DAA1 on OSBPatcher_PProjectVersion (patcherProductVersionId, rootPatcherProjectVersionId);
+create index IX_64D9A2F0 on OSBPatcher_PProjectVersion (rootPatcherProjectVersionId);
+
 create unique index IX_AFEBA92C on OSBPatcher_PatcherAccount (accountEntryCode[$COLUMN_LENGTH:75$]);
 
 create unique index IX_D4018EE8 on OSBPatcher_PatcherBuild (key_[$COLUMN_LENGTH:75$], keyVersion);
@@ -42,12 +51,3 @@ create index IX_4AD488F0 on OSBPatcher_PatcherFixRel (childPatcherFixId);
 create index IX_1EC46890 on OSBPatcher_PatcherFixRel (parentPatcherFixId);
 
 create unique index IX_5039C483 on OSBPatcher_PatcherTicketHint (patcherProductVersionId);
-
-create index IX_BBA5575B on PProductVersion (fixDeliveryMethod);
-create unique index IX_855ECB5E on PProductVersion (name[$COLUMN_LENGTH:75$]);
-
-create unique index IX_DAEE57EA on PProjectVersion (committish[$COLUMN_LENGTH:150$]);
-create unique index IX_E3EF3F4 on PProjectVersion (name[$COLUMN_LENGTH:150$]);
-create index IX_E3E050BD on PProjectVersion (patcherProductVersionId, repositoryName[$COLUMN_LENGTH:75$]);
-create index IX_3E71D0A9 on PProjectVersion (patcherProductVersionId, rootPatcherProjectVersionId);
-create index IX_DC4333E8 on PProjectVersion (rootPatcherProjectVersionId);
