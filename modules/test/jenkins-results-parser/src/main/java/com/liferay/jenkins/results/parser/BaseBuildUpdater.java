@@ -10,6 +10,7 @@ import com.liferay.jenkins.results.parser.testray.TestrayAttachmentUploader;
 import com.liferay.jenkins.results.parser.testray.TestrayFactory;
 import com.liferay.jenkins.results.parser.testray.TestrayS3Bucket;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -131,25 +132,12 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 				return;
 			}
 		}
-
-		URL testrayServerURL = JenkinsResultsParserUtil.getBuildProperty(
-			"testray.server.url");
-
-		TestrayAttachmentUploader testrayAttachmentUploader =
-			TestrayFactory.newTestrayAttachmentUploader(
-				_build, testrayServerURL);
-
-		TestrayAttachmentRecorder testrayAttachmentRecorder =
-			testrayAttachmentUploader.getTestryAttachmentRecorder();
-
-		testrayAttachmentRecorder.recordJenkinsConsole();
-
-		testrayAttachmentUploader.upload();
-
 		_build.setStatus("completed");
 
 		if (_build instanceof DownstreamBuild) {
 			DownstreamBuild downstreamBuild = (DownstreamBuild)_build;
+
+			_uploadConsoleTextTestrayAttachment(_build);
 
 			downstreamBuild.generateBuildReport();
 		}
@@ -370,6 +358,28 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 		}
 
 		slaveOfflineRule.takeSlaveOffline(build);
+	}
+
+	private void _uploadConsoleTextTestrayAttachment(Build build) {
+		try {
+			String testrayServerString = JenkinsResultsParserUtil.getBuildProperty(
+				"testray.server.url");
+
+			URL testrayServerURL = new URL(testrayServerString);
+	
+			TestrayAttachmentUploader testrayAttachmentUploader =
+				TestrayFactory.newTestrayAttachmentUploader(
+					build, testrayServerURL);
+	
+			TestrayAttachmentRecorder testrayAttachmentRecorder =
+				testrayAttachmentUploader.getTestrayAttachmentRecorder();
+	
+			testrayAttachmentRecorder.recordJenkinsConsole();
+	
+			testrayAttachmentUploader.upload();
+		} catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	private final Build _build;

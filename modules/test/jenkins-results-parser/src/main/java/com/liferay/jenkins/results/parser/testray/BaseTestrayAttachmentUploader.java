@@ -139,7 +139,8 @@ public abstract class BaseTestrayAttachmentUploader
 			getPreparedFilesBaseDir(), ".*");
 	}
 
-	protected TestrayAttachmentRecorder getTestrayAttachmentRecorder() {
+	@Override
+	public TestrayAttachmentRecorder getTestrayAttachmentRecorder() {
 		return _testrayAttachmentRecorder;
 	}
 
