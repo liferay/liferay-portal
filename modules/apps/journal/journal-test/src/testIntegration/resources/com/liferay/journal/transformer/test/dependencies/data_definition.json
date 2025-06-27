@@ -79,6 +79,12 @@
 									"salary"
 								],
 								"size": 7
+							},
+							{
+								"fields": [
+									"language"
+								],
+								"size": 75
 							}
 						]
 					}
@@ -185,6 +191,40 @@
 					},
 					"localizable": true,
 					"name": "salary",
+					"nestedDataDefinitionFields": [
+					],
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"en_US": ""
+					}
+				},
+				{
+					"customProperties": {
+						"dataType": "text",
+						"fieldNamespace": "",
+						"fieldReference": "language",
+						"labelAtStructureLevel": true,
+						"nativeField": false,
+						"objectFieldName": "",
+						"requiredErrorMessage": {
+							"en_US": ""
+						},
+						"visibilityExpression": ""
+					},
+					"defaultValue": {
+						"en_US": ""
+					},
+					"fieldType": "text",
+					"indexType": "keyword",
+					"indexable": true,
+					"label": {
+						"en_US": "Text"
+					},
+					"localizable": true,
+					"name": "language",
 					"nestedDataDefinitionFields": [
 					],
 					"readOnly": false,

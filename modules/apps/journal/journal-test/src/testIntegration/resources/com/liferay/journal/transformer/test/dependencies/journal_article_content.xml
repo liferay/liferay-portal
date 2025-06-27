@@ -12,5 +12,8 @@
 		<dynamic-element index-type="keyword" instance-id="CWwtPaEO" name="salary" type="numeric">
 			<dynamic-content language-id="en_US"><![CDATA[100]]></dynamic-content>
 		</dynamic-element>
+		<dynamic-element index-type="keyword" instance-id="M2LopT4x" name="language" type="text">
+			<dynamic-content language-id="en_US"><![CDATA[English]]></dynamic-content>
+		</dynamic-element>
 	</dynamic-element>
 </root>
