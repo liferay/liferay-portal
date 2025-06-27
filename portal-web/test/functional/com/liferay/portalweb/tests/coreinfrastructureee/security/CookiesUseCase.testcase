@@ -90,12 +90,12 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: Site Administrator disabled the cookie preference handling in instance level and the implicit cookie consent mode.") {
-			CookiePreferenceHandlingAdmin.disablePreferenceHandlingWithOutCookieConsentInSiteSettings(
+			CookiePreferenceHandlingAdmin.disablePreferenceHandlingInSiteSettings(
 				baseURL = "http://localhost:8080",
 				portlet = "Preference Handling",
 				siteURLKey = "guest");
 
-			CookiePreferenceHandlingAdmin.disablePreferenceHandling(explicitMode = "disable");
+			CookiePreferenceHandlingAdmin.disablePreferenceHandling();
 		}
 
 		task ("When: End User first visits the site") {
@@ -127,7 +127,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: Site Administrator enabled the cookie preference handling in instance level and the explicit cookie consent mode.") {
-			CookiePreferenceHandlingAdmin.disablePreferenceHandlingWithOutCookieConsentInSiteSettings(
+			CookiePreferenceHandlingAdmin.disablePreferenceHandlingInSiteSettings(
 				baseURL = "http://localhost:8080",
 				portlet = "Preference Handling",
 				siteURLKey = "guest");
@@ -214,7 +214,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given: Site Administrator enabled the cookie preference handling in instance level and the explicit cookie consent mode.") {
-			CookiePreferenceHandlingAdmin.disablePreferenceHandlingWithOutCookieConsentInSiteSettings(
+			CookiePreferenceHandlingAdmin.disablePreferenceHandlingInSiteSettings(
 				baseURL = "http://localhost:8080",
 				portlet = "Preference Handling",
 				siteURLKey = "guest");
