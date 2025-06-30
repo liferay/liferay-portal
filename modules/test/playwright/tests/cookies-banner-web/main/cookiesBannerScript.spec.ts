@@ -7,16 +7,20 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
-import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 
-export const test = mergeTests(loginTest(), systemSettingsPageTest);
+export const test = mergeTests(
+	journalPagesTest,
+	loginTest(),
+	systemSettingsPageTest
+);
 
 test(
 	'Cookie Banner Script',
 	{tag: '@LPD-25701'},
-	async ({page, systemSettingsPage}) => {
+	async ({journalEditArticlePage, page, systemSettingsPage}) => {
 		await test.step('Enable Third Party Cookies', async () => {
 			await systemSettingsPage.goToSystemSetting(
 				'Cookies',
@@ -74,51 +78,11 @@ test(
 				await openProductButton.click();
 			}
 
-			const contentAndDataTab = page.getByRole('menuitem', {
-				name: 'Content & Data',
-			});
-
-			await contentAndDataTab.waitFor({state: 'visible'});
-
-			await contentAndDataTab.click();
-
-			const webContentButton = page.getByRole('menuitem', {
-				name: 'Web Content',
-			});
-
-			await webContentButton.waitFor({state: 'visible'});
-
-			await webContentButton.click();
-
-			const newButton = page.getByRole('button', {name: 'New'});
-
-			await newButton.waitFor({state: 'visible'});
-
-			await newButton.click();
-
-			const basicWebContentButton = page.getByRole('menuitem', {
-				name: 'Basic Web Content',
-			});
-
-			await basicWebContentButton.waitFor({state: 'visible'});
-
-			await basicWebContentButton.click();
-
-			const currentLanguageButton = page.getByLabel(
-				'Select a language, current'
-			);
-
-			await currentLanguageButton.waitFor({state: 'visible'});
-
-			const webContentTitle = page.getByPlaceholder(
-				'Untitled Basic Web Content'
-			);
-
-			await webContentTitle.waitFor({state: 'visible'});
+			await journalEditArticlePage.goto();
 
 			const randomTitle = getRandomString();
 
-			await webContentTitle.fill(randomTitle);
+			await journalEditArticlePage.fillTitle(randomTitle);
 
 			const sourceButton = page.getByLabel('Source', {exact: true});
 
@@ -136,19 +100,7 @@ test(
 					'</script>'
 			);
 
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: page.getByRole('menuitem', {
-					name: 'Publish With Permissions',
-				}),
-				trigger: page.getByRole('button', {
-					name: 'Select and Confirm Publish Settings',
-				}),
-			});
-
-			await page
-				.getByRole('button', {exact: true, name: 'Publish'})
-				.click();
+			await journalEditArticlePage.publishArticle();
 
 			await waitForAlert(
 				page,
