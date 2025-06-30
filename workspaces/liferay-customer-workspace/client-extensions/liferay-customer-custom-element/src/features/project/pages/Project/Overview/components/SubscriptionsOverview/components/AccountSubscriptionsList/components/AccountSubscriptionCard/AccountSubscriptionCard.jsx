@@ -41,7 +41,6 @@ const AccountSubscriptionCard = ({
 		accountSubscription?.productKey,
 		IsPortalOrDXP
 	);
-
 	const currentConsumption = useMemo(
 		() =>
 			accountSubscriptionUsageData?.getAccountSubscriptionUsage
@@ -53,10 +52,9 @@ const AccountSubscriptionCard = ({
 
 	const now = new Date();
 
-	const [{data}] = useOrderItems(
-		accountSubscription.externalReferenceCode,
-		1000
-	);
+	const {
+		orderItemsData: {data: data}
+	} = useOrderItems(accountSubscription.externalReferenceCode, 1000);
 
 	data?.orderItems?.items?.map((item) => {
 		if (
@@ -66,6 +64,7 @@ const AccountSubscriptionCard = ({
 			quantity += item.quantity;
 		}
 	});
+	
 	const DisplayOnCard = {
 		Blank: null,
 		Purchased: (

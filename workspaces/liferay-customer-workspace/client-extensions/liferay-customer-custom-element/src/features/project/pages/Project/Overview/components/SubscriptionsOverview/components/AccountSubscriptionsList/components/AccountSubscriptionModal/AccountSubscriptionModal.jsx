@@ -31,11 +31,17 @@ const AccountSubscriptionModal = ({
 	onClose,
 	title,
 }) => {
-	const [
-		{activePage, setActivePage},
-		itemsPerPage,
-		{data, loading},
-	] = useOrderItems(externalReferenceCode);
+	const {
+		activePage: {
+			activePage: activePage,
+			setActivePage: setActivePage
+		},
+		pageSize: itemsPerPage,
+		orderItemsData: {
+			data: data,
+			loading: loading
+		},
+ 	} = useOrderItems(externalReferenceCode);
 
 	const {articleWhatIsMyInstanceSizingValueURL} = useAppPropertiesContext();
 
