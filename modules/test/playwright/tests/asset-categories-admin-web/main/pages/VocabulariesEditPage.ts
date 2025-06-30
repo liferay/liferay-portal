@@ -40,9 +40,9 @@ export class VocabulariesEditPage {
 		description,
 		name,
 	}: {
-		name: string;
-		description?: string;
 		assetTypes?: string[];
+		description?: string;
+		name: string;
 	}) {
 		await this.fillName(name);
 
@@ -51,7 +51,7 @@ export class VocabulariesEditPage {
 		}
 
 		if (assetTypes) {
-			if (await this.assetTypeSelect.first().isHidden()) {
+			if (await this.page.getByLabel('Asset Types').isHidden()) {
 				await this.expandPanel('Associated Asset Types');
 			}
 
@@ -74,7 +74,7 @@ export class VocabulariesEditPage {
 	}
 
 	async expandPanel(name: string) {
-		await this.page.getByRole('button', {name: name}).click();
+		await this.page.getByRole('button', {name}).click();
 	}
 
 	async removeLastAssociatedAssetType() {

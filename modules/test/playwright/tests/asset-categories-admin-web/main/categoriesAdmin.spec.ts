@@ -121,8 +121,8 @@ test('Delete an associated asset type of vocabulary', async ({
 		await assetCategoriesAdminPage.newVocabularyButton.click();
 
 		await vocabulariesEditPage.add({
-			name: vocabularyName,
 			assetTypes,
+			name: vocabularyName,
 		});
 
 		await expect(
