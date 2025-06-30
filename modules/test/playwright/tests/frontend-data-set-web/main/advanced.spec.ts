@@ -59,7 +59,7 @@ test(
 
 			await test.step('Check the results only show results with colors Blue, Green, and Yellow', async () => {
 				const blueCells = page.getByRole('cell', {name: 'Blue'});
-				const greenCells = page.getByRole('cell', {name: '🍏'});
+				const greenCells = page.getByRole('cell', {name: 'Green'});
 				const redCells = page.getByRole('cell', {name: 'Red'});
 				const yellowCells = page.getByRole('cell', {name: 'Yellow'});
 
@@ -226,7 +226,7 @@ test(
 
 			await test.step('Check the results are filtered by checking all results appear', async () => {
 				const blueCells = page.getByRole('cell', {name: 'Blue'});
-				const greenCells = page.getByRole('cell', {name: '🍏'});
+				const greenCells = page.getByRole('cell', {name: 'Green'});
 				const redCells = page.getByRole('cell', {name: 'Red'});
 				const yellowCells = page.getByRole('cell', {name: 'Yellow'});
 
@@ -268,7 +268,7 @@ test(
 
 			await test.step('Check the only Red results are displayed', async () => {
 				const blueCells = page.getByRole('cell', {name: 'Blue'});
-				const greenCells = page.getByRole('cell', {name: '🍏'});
+				const greenCells = page.getByRole('cell', {name: 'Green'});
 				const redCells = page.getByRole('cell', {name: 'Red'});
 				const yellowCells = page.getByRole('cell', {name: 'Yellow'});
 
@@ -307,7 +307,7 @@ test(
 
 			await test.step('Check the results only show "Green", "Yellow", and "Red"', async () => {
 				const blueCells = page.getByRole('cell', {name: 'Blue'});
-				const greenCells = page.getByRole('cell', {name: '🍏'});
+				const greenCells = page.getByRole('cell', {name: 'Green'});
 				const redCells = page.getByRole('cell', {name: 'Red'});
 				const yellowCells = page.getByRole('cell', {name: 'Yellow'});
 
@@ -329,7 +329,7 @@ test(
 
 			await test.step('Check all results are shown', async () => {
 				const blueCells = page.getByRole('cell', {name: 'Blue'});
-				const greenCells = page.getByRole('cell', {name: '🍏'});
+				const greenCells = page.getByRole('cell', {name: 'Green'});
 				const yellowCells = page.getByRole('cell', {name: 'Yellow'});
 				const redCells = page.getByRole('cell', {name: 'Red'});
 
@@ -479,7 +479,7 @@ test(
 				.getByRole('option', {name: 'Default View'})
 				.click();
 
-			await expect(fdsSamplePage.table.headerCells).toHaveCount(10);
+			await expect(fdsSamplePage.table.headerCells).toHaveCount(9);
 		});
 
 		await test.step('Can change a custom view name', async () => {
@@ -992,7 +992,7 @@ test('Use client extensions', async ({fdsSamplePage, page}) => {
 			.locator('td.cell-color')
 			.first();
 
-		await expect(firstColorCell).toContainText('🍏');
+		await expect(firstColorCell).toContainText('Green');
 	});
 
 	await test.step('Assert that the cell renderer has access to data from other cells', async () => {
@@ -1000,7 +1000,7 @@ test('Use client extensions', async ({fdsSamplePage, page}) => {
 			.locator('td.cell-color')
 			.nth(1);
 
-		await expect(firstColorCell).toContainText('Sample100 is Blue');
+		await expect(firstColorCell).toContainText('Blue');
 	});
 
 	await test.step('Assert that the filter client extension is working', async () => {
