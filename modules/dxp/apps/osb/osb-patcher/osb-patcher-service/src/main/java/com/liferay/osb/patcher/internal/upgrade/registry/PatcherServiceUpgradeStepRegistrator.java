@@ -61,7 +61,9 @@ public class PatcherServiceUpgradeStepRegistrator
 			new UpgradeCompanyId(), new UpgradePortletId(),
 			new UpgradeThemeId(),
 			UpgradeProcessFactory.alterColumnName(
-				"OSBPatcher_PatcherBuild", "originalName", "initialName TEXT"));
+				"OSBPatcher_PatcherBuild", "originalName", "initialName TEXT"),
+			UpgradeProcessFactory.alterColumnType(
+				"OSBPatcher_PatcherBuild", "name", "STRING null"));
 	}
 
 	@Reference
