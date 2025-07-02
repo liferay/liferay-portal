@@ -25,11 +25,8 @@ String messageAsLocalizedXML = moneyOrderGroupServiceConfiguration.messageAsLoca
 
 		<div id="<portlet:namespace />message">
 			<aui:field-wrapper label="message">
-				<liferay-ui:input-localized
-					fieldPrefix="settings"
-					fieldPrefixSeparator="--"
+				<liferay-editor:input-localized
 					name="messageAsLocalizedXML"
-					type="editor"
 					xml="<%= messageAsLocalizedXML %>"
 				/>
 			</aui:field-wrapper>

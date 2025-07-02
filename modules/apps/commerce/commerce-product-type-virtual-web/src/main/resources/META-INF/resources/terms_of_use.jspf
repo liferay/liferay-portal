@@ -55,11 +55,9 @@
 				<div class="h4 text-default"><liferay-ui:message key="or" /></div>
 
 				<div class="entry-content form-group">
-					<liferay-ui:input-localized
-						cssClass="form-control"
-						disabled="<%= useTermsOfUseJournal %>"
+					<liferay-editor:input-localized
+						defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
 						name="termsOfUseContent"
-						type="editor"
 						xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
 					/>
 				</div>

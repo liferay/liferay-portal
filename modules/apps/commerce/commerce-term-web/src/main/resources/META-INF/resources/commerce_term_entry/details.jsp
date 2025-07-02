@@ -87,10 +87,9 @@ if ((commerceTermEntry != null) && (commerceTermEntry.getExpirationDate() != nul
 							<label class="control-label" for="<portlet:namespace />descriptionMapAsXML"><liferay-ui:message key="description" /></label>
 
 							<div class="entry-content form-group">
-								<liferay-ui:input-localized
+								<liferay-editor:input-localized
 									defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
 									name="descriptionMapAsXML"
-									type="editor"
 									xml="<%= descriptionMapAsXML %>"
 								/>
 							</div>
