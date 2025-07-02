@@ -146,8 +146,8 @@ export function DatePicker({
 	 * but it keep user's input case theres no language change.
 	 */
 	useEffect(() => {
-		setDate(({formattedDate, name, rawDate, value}) =>
-			name === date.name && value === date.value && rawDate === ''
+		setDate(({formattedDate, name, rawDate}) =>
+			name === date.name && rawDate === ''
 				? {...date, formattedDate}
 				: date
 		);
