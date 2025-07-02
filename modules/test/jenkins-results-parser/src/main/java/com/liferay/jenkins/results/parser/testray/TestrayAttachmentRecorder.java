@@ -52,6 +52,7 @@ public class TestrayAttachmentRecorder {
 		try {
 			if (_build instanceof TopLevelBuild) {
 				recordJenkinsConsole();
+
 				_recordBuildDatabase();
 				_recordJobSummary();
 				_recordJenkinsReport();
