@@ -225,6 +225,13 @@ public class KaleoServiceUpgradeStepRegistrator
 				WorkflowContextUpgradeProcess());
 
 		registry.register("4.2.1", "4.3.0", new KaleoLogUpgradeProcess());
+
+		registry.register(
+			"4.3.0", "4.3.1",
+			new com.liferay.portal.workflow.kaleo.internal.upgrade.v4_3_1.
+				KaleoDefinitionUpgradeProcess(),
+			new com.liferay.portal.workflow.kaleo.internal.upgrade.v4_3_1.
+				KaleoDefinitionVersionUpgradeProcess());
 	}
 
 }
