@@ -16,6 +16,7 @@ import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import java.sql.Connection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -57,6 +58,7 @@ public class DataCleanupPreupgradeProcessSuite {
 		DataCleanupPreupgradeProcessSuite.class);
 
 	private final List<DataCleanupPreupgradeProcess>
-		_dataCleanupPreupgradeProcesses = new ArrayList<>();
+		_dataCleanupPreupgradeProcesses = new ArrayList<>(
+			Arrays.asList(new CompanyIdDataCleanupPreupgradeProcess()));
 
 }
