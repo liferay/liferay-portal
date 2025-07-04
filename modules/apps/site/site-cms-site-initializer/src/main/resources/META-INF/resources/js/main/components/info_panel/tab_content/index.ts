@@ -8,7 +8,14 @@ import DetailsTabContent from './DetailsTabContent';
 import PerformanceTabContent from './PerformanceTabContent';
 import VersionsTabContent from './VersionsTabContent';
 
-export const TABS = {
+type Tab = {
+	className?: string;
+	component: React.ComponentType;
+	id: string;
+	name: string;
+};
+
+export const TABS: Record<string, Tab> = {
 	CATEGORIZATION: {
 		component: CategorizationTabContent,
 		id: 'categorization',
@@ -20,6 +27,7 @@ export const TABS = {
 		name: Liferay.Language.get('details'),
 	},
 	PERFORMANCE: {
+		className: 'p-4',
 		component: PerformanceTabContent,
 		id: 'performance',
 		name: Liferay.Language.get('performance'),

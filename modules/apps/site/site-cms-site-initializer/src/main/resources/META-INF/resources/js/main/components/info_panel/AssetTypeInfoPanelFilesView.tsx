@@ -35,7 +35,10 @@ const AssetTypeInfoPanelFilesView = () => {
 
 			<Tabs.Content active={active} fade>
 				{sortedTabs.map((tab, index) => (
-					<Tabs.TabPane key={`pane_${tab.id}_${index}`}>
+					<Tabs.TabPane
+						className={tab.className || ''}
+						key={`pane_${tab.id}_${index}`}
+					>
 						<tab.component />
 					</Tabs.TabPane>
 				))}
