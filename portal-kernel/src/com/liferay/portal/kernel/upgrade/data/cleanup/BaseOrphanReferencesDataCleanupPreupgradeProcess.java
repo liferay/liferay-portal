@@ -33,7 +33,6 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 	protected void doUpgrade() throws Exception {
 		DBInspector dbInspector = new DBInspector(connection);
 
-		String columnName = dbInspector.normalizeName(_columnName);
 		String tableName = dbInspector.normalizeName(_tableName);
 
 		List<String> tableNames = dbInspector.getTableNames(null);
@@ -41,40 +40,43 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 		tableNames.remove(tableName);
 
 		for (String currentTableName : tableNames) {
-			if (dbInspector.hasColumn(currentTableName, columnName)) {
-				try (PreparedStatement preparedStatement1 =
-						connection.prepareStatement(
+			if (!dbInspector.hasColumn(currentTableName, _columnName)) {
+				continue;
+			}
+
+			String columnName = dbInspector.normalizeName(_columnName);
+
+			try (PreparedStatement preparedStatement1 =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"select ", columnName, ", count(1) from ",
+							currentTableName,
+							_getWhereClause(
+								columnName, tableName, currentTableName),
+							" group by ", columnName));
+				PreparedStatement preparedStatement2 =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"delete from ", currentTableName,
+							_getWhereClause(
+								columnName, tableName, currentTableName)));
+				ResultSet resultSet = preparedStatement1.executeQuery()) {
+
+				preparedStatement2.execute();
+
+				while (resultSet.next()) {
+					if (_log.isInfoEnabled()) {
+						long columnValue = resultSet.getLong(1);
+						long columnCount = resultSet.getLong(2);
+
+						_log.info(
 							StringBundler.concat(
-								"select ", columnName, ", count(1) from ",
-								currentTableName,
-								_getWhereClause(
-									columnName, tableName, currentTableName),
-								" group by ", columnName));
-					PreparedStatement preparedStatement2 =
-						connection.prepareStatement(
-							StringBundler.concat(
-								"delete from ", currentTableName,
-								_getWhereClause(
-									columnName, tableName, currentTableName)));
-					ResultSet resultSet = preparedStatement1.executeQuery()) {
-
-					preparedStatement2.execute();
-
-					while (resultSet.next()) {
-						if (_log.isInfoEnabled()) {
-							long columnValue = resultSet.getLong(1);
-							long columnCount = resultSet.getLong(2);
-
-							_log.info(
-								StringBundler.concat(
-									String.valueOf(columnCount),
-									" orphan entries from table ",
-									currentTableName,
-									" have been deleted because value ",
-									String.valueOf(columnValue),
-									" cannot be found in the origin table ",
-									tableName, " column ", columnName));
-						}
+								String.valueOf(columnCount),
+								" orphan entries from table ", currentTableName,
+								" have been deleted because value ",
+								String.valueOf(columnValue),
+								" cannot be found in the origin table ",
+								tableName, " column ", columnName));
 					}
 				}
 			}
