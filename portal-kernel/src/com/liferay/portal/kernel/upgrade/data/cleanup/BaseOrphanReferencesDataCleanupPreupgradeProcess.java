@@ -64,20 +64,22 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 
 				preparedStatement2.execute();
 
-				while (resultSet.next()) {
-					if (_log.isInfoEnabled()) {
-						long columnValue = resultSet.getLong(1);
-						long columnCount = resultSet.getLong(2);
+				if (!_log.isInfoEnabled()) {
+					continue;
+				}
 
-						_log.info(
-							StringBundler.concat(
-								String.valueOf(columnCount),
-								" orphan entries from table ", currentTableName,
-								" have been deleted because value ",
-								String.valueOf(columnValue),
-								" cannot be found in the origin table ",
-								tableName, " column ", columnName));
-					}
+				while (resultSet.next()) {
+					long columnCount = resultSet.getLong(2);
+					long columnValue = resultSet.getLong(1);
+
+					_log.info(
+						StringBundler.concat(
+							String.valueOf(columnCount),
+							" orphan entries from table ", currentTableName,
+							" have been deleted because value ",
+							String.valueOf(columnValue),
+							" cannot be found in the origin table ", tableName,
+							" column ", columnName));
 				}
 			}
 		}
