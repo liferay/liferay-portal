@@ -5,8 +5,10 @@
 
 import React from 'react';
 
+import {Metrics} from '../../Metrics';
+
 const PerformanceTabContent = () => {
-	return <></>;
+	return <Metrics />;
 };
 
 export default PerformanceTabContent;
