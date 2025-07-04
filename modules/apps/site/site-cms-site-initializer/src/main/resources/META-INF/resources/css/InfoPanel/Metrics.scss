@@ -1,23 +1,18 @@
-.fds-info-panel {
-	min-width: fit-content;
-	background-color: rgb(255, 0, 0, 0.1);
-
-	.sidebar-body {
-		padding-left: 0 !important;
-		padding-right: 0 !important;
-	}
-}
 .metrics-card {
-	min-width: 128px;
-
 	border: 1px solid #e7e7ed;
 	color: #6b6c7e;
-
+	min-width: 128px;
 	padding: 12px;
 	transition: all 0.15s ease-in-out;
 
 	.body {
 		margin-top: 8px;
+	}
+
+	&.active {
+		background-color: #f0f5ff;
+		border-color: #5791ff;
+		color: #272833;
 	}
 
 	&:focus {
@@ -27,11 +22,5 @@
 	&:hover {
 		background-color: #f7f8f9;
 		border-color: #e7e7ed;
-	}
-
-	&.active {
-		background-color: #f0f5ff;
-		border-color: #5791ff;
-		color: #272833;
 	}
 }
