@@ -1,0 +1,25 @@
+{
+	"friendlyURL": "/shared-with-me",
+	"hidden": false,
+	"name_i18n": {
+		"en_US": "Shared with me"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "CMS Administrator",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}
