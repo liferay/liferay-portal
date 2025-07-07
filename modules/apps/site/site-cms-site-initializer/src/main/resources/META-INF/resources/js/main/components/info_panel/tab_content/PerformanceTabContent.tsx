@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
-import { Metrics } from '../../Metrics';
-import { getEmptyState } from '../EmptyState';
+import {Metrics} from '../../Metrics';
+import {getEmptyState} from '../EmptyState';
 
 export type Metric = {
 	comparison: number;
@@ -16,56 +16,58 @@ export type Metric = {
 
 export type EmptyStateData = {
 	analyticsSettingsPortletURL: string;
-	siteEditDepotEntryDepotAdminPortletURL: string;
 	connectedToAnalyticsCloud: boolean;
 	connectedToSpace: boolean;
-	siteSyncedToAnalyticsCloud: boolean;
 	isAdmin: boolean;
+	siteEditDepotEntryDepotAdminPortletURL: string;
+	siteSyncedToAnalyticsCloud: boolean;
 };
 
 const defaultSelectedMetric = 'Impressions';
 
 const metricsMock: Metric[] = [
-	// {
-	// 	comparison: 0,
-	// 	title: 'Impressions',
-	// 	total: 11,
-	// },
-	// {
-	// 	comparison: -12.3,
-	// 	title: 'Views',
-	// 	total: 25321,
-	// },
-	// {
-	// 	comparison: 32.1,
-	// 	title: 'Downloads',
-	// 	total: 220153310,
-	// },
+	{
+		comparison: 0,
+		title: 'Impressions',
+		total: 11,
+	},
+	{
+		comparison: -12.3,
+		title: 'Views',
+		total: 25321,
+	},
+	{
+		comparison: 32.1,
+		title: 'Downloads',
+		total: 220153310,
+	},
 ];
 
 async function fetchComponentData(): Promise<Metric[]> {
 	return metricsMock;
 }
 
-async function fetchEmptyStateData(contentPerformanceDataFetchURL: string): Promise<EmptyStateData> {
-	
-	//Endpoint
-	
+async function fetchEmptyStateData(
+	_contentPerformanceDataFetchURL: string
+): Promise<EmptyStateData> {
+
+	// TO DO Endpoint
+
 	// const response = await fetch(contentPerformanceDataFetchURL, {
 	// 	method: 'GET',
 	// });
 
 	// return await response.json();
 
-	//Mock
+	// Mock Empty State
 
 	return {
-		analyticsSettingsPortletURL: '/mock-analytics',
-		siteEditDepotEntryDepotAdminPortletURL: '/mock-depot',
+		analyticsSettingsPortletURL: '/mock-url',
 		connectedToAnalyticsCloud: true,
 		connectedToSpace: true,
-		siteSyncedToAnalyticsCloud: true,
 		isAdmin: true,
+		siteEditDepotEntryDepotAdminPortletURL: '/mock-url',
+		siteSyncedToAnalyticsCloud: true,
 	};
 }
 
@@ -97,8 +99,9 @@ const PerformanceTabContent: React.FC<Props> = ({
 
 					setEmptyStateData(emptyData);
 				}
-			} catch (err) {
-				console.error(err);
+			}
+			catch (error) {
+				console.error(error);
 			}
 		};
 
