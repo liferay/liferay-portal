@@ -46,6 +46,10 @@ helm.sh/chart: {{ include "liferay.chart" . }}
 {{- include "liferay.customLabels" . }}
 {{- end }}
 
+{{- define "liferay.licenseSecretName" -}}
+{{- include "liferay.name" . }}-license-secret
+{{- end }}
+
 {{- define "liferay.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
