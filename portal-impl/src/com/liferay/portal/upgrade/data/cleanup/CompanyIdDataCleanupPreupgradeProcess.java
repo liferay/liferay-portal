@@ -6,6 +6,9 @@
 package com.liferay.portal.upgrade.data.cleanup;
 
 import com.liferay.portal.kernel.upgrade.data.cleanup.BaseOrphanReferencesDataCleanupPreupgradeProcess;
+import com.liferay.portal.kernel.util.PortletKeys;
+
+import java.util.Arrays;
 
 /**
  * @author Luis Ortiz
@@ -14,7 +17,12 @@ public class CompanyIdDataCleanupPreupgradeProcess
 	extends BaseOrphanReferencesDataCleanupPreupgradeProcess {
 
 	public CompanyIdDataCleanupPreupgradeProcess() {
-		super("companyId", "Company");
+		super(
+			"companyId", "Company", Arrays.asList("ownerId", "ownerId"),
+			Arrays.asList("PortalPreferences", "PortletPreferences"),
+			Arrays.asList(
+				"ownerId = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY,
+				"ownerId = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY));
 	}
 
 }
