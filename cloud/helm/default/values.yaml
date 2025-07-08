@@ -381,6 +381,12 @@ startupProbe:
     initialDelaySeconds: 60
     periodSeconds: 10
     timeoutSeconds: 5
+subscription:
+    authToken: testtoken
+    host: "http://localhost:8787"
+    id: testsubscriptionid
+    path: "/o/provisioning-rest/v1.0/subscription/"
+    refreshSchedule: "*/15 * * * *"
 tolerations: []
 updateStrategy:
     type: RollingUpdate
