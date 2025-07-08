@@ -37,6 +37,14 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 
 		String tableName = dbInspector.normalizeName(_tableName);
 
+		if (!dbInspector.hasTable(tableName)) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Table " + tableName + " does not exist");
+			}
+
+			return;
+		}
+
 		List<String> tableNames = dbInspector.getTableNames(null);
 
 		tableNames.remove(tableName);
