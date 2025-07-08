@@ -1,0 +1,33 @@
+<svg fill="none" height="250" width="250" xmlns="http://www.w3.org/2000/svg">
+	<path d="M125 157.932v-51.211m0 22.636a6.509 6.509 0 0 1-6.508 6.509H59.687a7.422 7.422 0 0 0-7.421 7.422v26.148" stroke="#80ACFF" stroke-dasharray="5.94 5.94" stroke-width="2" />
+	<path d="M125 129.357a6.509 6.509 0 0 0 6.508 6.509h58.804a7.422 7.422 0 0 1 7.422 7.422v26.148" stroke="#80ACFF" stroke-dasharray="5.94 5.94" stroke-width="2" />
+	<rect fill="#fff" height="45.5" rx="22.75" stroke="#80ACFF" stroke-width="2" width="45.5" x="31" y="161.344" />
+	<mask height="24" id="_Illustration__a" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="19" x="44" y="172">
+		<path clip-rule="evenodd" d="M57.032 172.219h-10.02c-1.23 0-2.226.996-2.226 2.226v19.297c0 1.231.996 2.227 2.227 2.227h13.359c1.23 0 2.226-.996 2.226-2.227v-15.957l-5.566-5.566Zm2.598 11.133c0 .41-.333.742-.742.742H48.497a.742.742 0 1 1 0-1.484h10.39c.41 0 .743.332.743.742Zm-.742 2.226H48.497a.743.743 0 0 0 0 1.485h10.39a.743.743 0 0 0 0-1.485Zm-10.391 2.969h4.453a.742.742 0 1 1 0 1.484h-4.453a.742.742 0 1 1 0-1.484Z" fill="#000" fill-rule="evenodd" />
+	</mask>
+	<g mask="url(#_Illustration__a)">
+		<path d="M41.817 172.219h23.75v23.75h-23.75z" fill="#0B5FFF" />
+	</g>
+	<rect fill="#fff" height="45.5" rx="22.75" stroke="#80ACFF" stroke-width="2" width="45.5" x="102.25" y="161.344" />
+	<mask height="24" id="_Illustration__b" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="18" x="116" y="172">
+		<path d="M128.282 172.22h-10.019a2.226 2.226 0 0 0-2.227 2.227v19.297c0 1.231.996 2.226 2.227 2.226h13.359a2.225 2.225 0 0 0 2.227-2.226v-15.957l-5.567-5.567Zm-6.679 8.907c.613 0 1.113.5 1.113 1.113s-.5 1.113-1.113 1.113c-.614 0-1.114-.5-1.114-1.113s.5-1.113 1.114-1.113Zm-2.227 7.793 3.34-4.454 2.227 2.227 2.226-3.34 3.34 5.567h-11.133Z" fill="#000" />
+	</mask>
+	<g mask="url(#_Illustration__b)">
+		<path d="M113.067 172.219h23.75v23.75h-23.75z" fill="#0B5FFF" />
+	</g>
+	<rect fill="#fff" height="45.5" rx="22.75" stroke="#80ACFF" stroke-width="2" width="45.5" x="173.5" y="161.344" />
+	<mask height="24" id="_Illustration__c" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="19" x="187" y="172">
+		<path d="M199.532 172.22h-10.019a2.226 2.226 0 0 0-2.227 2.227v19.295c0 1.231.996 2.227 2.227 2.227h13.359a2.226 2.226 0 0 0 2.227-2.227v-15.955l-5.567-5.567Zm-6.123 17.2v-8.793l6.623 4.396-6.623 4.397Z" fill="#000" />
+	</mask>
+	<g mask="url(#_Illustration__c)">
+		<path d="M184.317 172.219h23.75v23.75h-23.75z" fill="#0B5FFF" />
+	</g>
+	<rect fill="#0B5FFF" height="47.5" rx="23.75" width="47.5" x="101.436" y="69.797" />
+	<mask height="22" id="_Illustration__d" maskUnits="userSpaceOnUse" style="mask-type:alpha" width="19" x="116" y="83">
+		<path d="M129.763 87.698c0 2.438-1.994 4.414-4.453 4.414-2.46 0-4.453-1.976-4.453-4.414 0-2.438 1.993-4.414 4.453-4.414 2.459 0 4.453 1.976 4.453 4.414Z" fill="#000" />
+		<path d="M134.216 100.204c0 5.149-17.813 5.149-17.813 0 0-9.104 17.813-9.012 17.813 0Z" fill="#000" />
+	</mask>
+	<g mask="url(#_Illustration__d)">
+		<path d="M113.311 81.672h23.75v23.75h-23.75z" fill="#F0F5FF" />
+	</g>
+</svg>

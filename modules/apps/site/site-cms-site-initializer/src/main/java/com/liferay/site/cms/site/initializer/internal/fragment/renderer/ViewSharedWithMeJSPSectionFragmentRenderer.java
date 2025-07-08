@@ -29,7 +29,7 @@ public class ViewSharedWithMeJSPSectionFragmentRenderer
 	protected ViewSharedWithMeSectionDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new ViewSharedWithMeSectionDisplayContext();
+		return new ViewSharedWithMeSectionDisplayContext(httpServletRequest);
 	}
 
 	@Override

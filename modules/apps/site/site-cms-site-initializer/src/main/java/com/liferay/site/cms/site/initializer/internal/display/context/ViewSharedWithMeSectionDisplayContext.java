@@ -5,12 +5,45 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
+
 /**
  * @author Alicia García
  */
 public class ViewSharedWithMeSectionDisplayContext {
 
-	public ViewSharedWithMeSectionDisplayContext() {
+	public ViewSharedWithMeSectionDisplayContext(
+		HttpServletRequest httpServletRequest) {
+
+		_httpServletRequest = httpServletRequest;
 	}
+
+	public String getAPIURL() throws PortalException {
+		return StringPool.BLANK;
+	}
+
+	public Map<String, Object> getEmptyState() {
+		return HashMapBuilder.<String, Object>put(
+			"description",
+			LanguageUtil.get(
+				_httpServletRequest,
+				"items-shared-with-you-by-other-users-will-appear-here")
+		).put(
+			"image", "/states/empty-state-shared-with-me.svg"
+		).put(
+			"title",
+			LanguageUtil.get(
+				_httpServletRequest, "no-items-shared-with-you-yet")
+		).build();
+	}
+
+	private final HttpServletRequest _httpServletRequest;
 
 }
