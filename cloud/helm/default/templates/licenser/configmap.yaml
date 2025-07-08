@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: "{{ include "liferay.name" . }}-licenser-config"
+    namespace: {{ include "liferay.namespace" . }}
+data:
+    update-license.sh: |-
+{{ .Files.Get "scripts/update-license.sh" | indent 8 }}

@@ -1,0 +1,10 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: "{{ include "liferay.name" . }}-licenser-init"
+spec:
+    template:
+        spec:
+            {{- include "liferay.licenser.jobSpec" . | nindent 12 }}

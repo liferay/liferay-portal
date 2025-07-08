@@ -1,0 +1,31 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+    name: "{{ include "liferay.name" . }}-licenser-role"
+    namespace: {{ include "liferay.namespace" . }}
+rules:
+    -   apiGroups: [""]
+        resources:
+            - secrets
+        verbs:
+            - get
+            - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+    name: "{{ include "liferay.name" . }}-licenser-rolebinding"
+    namespace: {{ include "liferay.namespace" . }}
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: "{{ include "liferay.name" . }}-licenser-role"
+subjects:
+    -   kind: ServiceAccount
+        name: "{{ include "liferay.name" . }}-licenser-serviceaccount"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    name: "{{ include "liferay.name" . }}-licenser-serviceaccount"
+    namespace: {{ include "liferay.namespace" . }}

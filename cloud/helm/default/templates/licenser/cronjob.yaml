@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: "{{ include "liferay.name" . }}-licenser"
+    namespace: {{ include "liferay.namespace" . }}
+spec:
+    concurrencyPolicy: Forbid
+    jobTemplate:
+        spec:
+            template:
+                metadata:
+                    labels:
+                        {{- include "liferay.labels" . | nindent 24 }}
+                    name: "{{ include "liferay.name" . }}-licenser"
+                spec:
+                    {{- include "liferay.licenser.jobSpec" . | nindent 20 }}
+    schedule: {{ .Values.subscription.refreshSchedule | quote }}
