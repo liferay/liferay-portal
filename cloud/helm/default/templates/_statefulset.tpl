@@ -103,11 +103,11 @@ spec:
                             name: liferay-license
                             subPath: license.xml
                         {{- with .statefulset.volumeMounts }}
-                        {{- toYaml . | nindent 22 }}
+                        {{- toYaml . | nindent 24 }}
                         {{- end }}
                         {{- range $k, $v := .statefulset.customVolumeMounts }}
                         {{- if and $v (gt (len $v) 0) }}
-                        {{- toYaml $v | nindent 22 }}
+                        {{- toYaml $v | nindent 24 }}
                         {{- end }}
                         {{- end }}
             {{- if or .statefulset.pullSecrets .statefulset.customPullSecrets}}
