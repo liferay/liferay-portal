@@ -31,6 +31,26 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 		_tableName = tableName;
 	}
 
+	public BaseOrphanReferencesDataCleanupPreupgradeProcess(
+		String columnName, String tableName, List<String> targetColumnNames,
+		List<String> targetTableNames,
+		List<String> targetAdditionalWhereClauses) {
+
+		if ((targetColumnNames.size() != targetTableNames.size()) ||
+			(targetColumnNames.size() != targetAdditionalWhereClauses.size())) {
+
+			throw new IllegalArgumentException(
+				"target parameters must have the same size");
+		}
+
+		_columnName = columnName;
+		_tableName = tableName;
+
+		_targetColumnNames.addAll(targetColumnNames);
+		_targetTableNames.addAll(targetTableNames);
+		_targetAdditionalWhereClauses.addAll(targetAdditionalWhereClauses);
+	}
+
 	@Override
 	protected void doUpgrade() throws Exception {
 		DBInspector dbInspector = new DBInspector(connection);
@@ -53,60 +73,108 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 			tableNames.remove(dbInspector.normalizeName(excludedTableName));
 		}
 
+		String columnName = dbInspector.normalizeName(_columnName);
+
 		for (String currentTableName : tableNames) {
-			if (!dbInspector.hasColumn(currentTableName, _columnName)) {
+			if (!dbInspector.hasColumn(currentTableName, columnName)) {
 				continue;
 			}
 
-			String columnName = dbInspector.normalizeName(_columnName);
+			_cleanUpTable(
+				columnName, tableName, columnName, currentTableName, null);
+		}
 
-			try (PreparedStatement preparedStatement1 =
-					connection.prepareStatement(
-						StringBundler.concat(
-							"select ", columnName, ", count(1) from ",
-							currentTableName,
-							_getWhereClause(
-								columnName, tableName, currentTableName),
-							" group by ", columnName));
-				PreparedStatement preparedStatement2 =
-					connection.prepareStatement(
-						StringBundler.concat(
-							"delete from ", currentTableName,
-							_getWhereClause(
-								columnName, tableName, currentTableName)));
-				ResultSet resultSet = preparedStatement1.executeQuery()) {
+		for (int i = 0; i < _targetTableNames.size(); i++) {
+			String targetColumnName = dbInspector.normalizeName(
+				_targetColumnNames.get(i));
 
-				preparedStatement2.execute();
+			String targetTableName = dbInspector.normalizeName(
+				_targetTableNames.get(i));
 
-				if (!_log.isInfoEnabled()) {
-					continue;
+			if (!dbInspector.hasTable(targetTableName)) {
+				if (_log.isDebugEnabled()) {
+					_log.debug("Table " + targetTableName + " does not exist");
 				}
 
-				while (resultSet.next()) {
-					long columnCount = resultSet.getLong(2);
-					long columnValue = resultSet.getLong(1);
+				continue;
+			}
 
-					_log.info(
+			if (!dbInspector.hasColumn(targetTableName, targetColumnName)) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
 						StringBundler.concat(
-							String.valueOf(columnCount),
-							" orphan entries from table ", currentTableName,
-							" have been deleted because value ",
-							String.valueOf(columnValue),
-							" cannot be found in the origin table ", tableName,
-							" column ", columnName));
+							"Table ", targetTableName, " does not have column ",
+							targetColumnName));
 				}
+
+				continue;
+			}
+
+			String targetAdditionalWhereClause =
+				_targetAdditionalWhereClauses.get(i);
+
+			_cleanUpTable(
+				columnName, tableName, targetColumnName, targetTableName,
+				targetAdditionalWhereClause);
+		}
+	}
+
+	private void _cleanUpTable(
+			String sourceColumnName, String sourceTableName,
+			String targetColumnName, String targetTableName,
+			String targetAdditionalWhereClause)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				StringBundler.concat(
+					"select ", targetColumnName, ", count(1) from ",
+					targetTableName,
+					_getWhereClause(
+						sourceColumnName, sourceTableName, targetColumnName,
+						targetColumnName, targetAdditionalWhereClause),
+					" group by ", targetColumnName));
+			PreparedStatement preparedStatement2 = connection.prepareStatement(
+				StringBundler.concat(
+					"delete from ", targetColumnName,
+					_getWhereClause(
+						sourceColumnName, sourceTableName, targetColumnName,
+						targetTableName, targetAdditionalWhereClause)));
+			ResultSet resultSet = preparedStatement1.executeQuery()) {
+
+			preparedStatement2.execute();
+
+			if (!_log.isInfoEnabled()) {
+				return;
+			}
+
+			while (resultSet.next()) {
+				long columnCount = resultSet.getLong(2);
+				long columnValue = resultSet.getLong(1);
+
+				_log.info(
+					StringBundler.concat(
+						String.valueOf(columnCount),
+						" orphan entries from table ", targetTableName,
+						" have been deleted because value ",
+						String.valueOf(columnValue),
+						" cannot be found in the origin table ",
+						sourceTableName, " column ", sourceColumnName));
 			}
 		}
 	}
 
 	private String _getWhereClause(
-		String columnName, String sourceTableName, String targetTableName) {
+		String sourceColumnName, String sourceTableName,
+		String targetColumnName, String targetTableName,
+		String targetAdditionalWhereClause) {
 
 		return StringBundler.concat(
 			" where not exists (select 1 from ", sourceTableName, " where ",
-			sourceTableName, StringPool.PERIOD, columnName, " = ",
-			targetTableName, StringPool.PERIOD, columnName, ") and ",
-			columnName, " is not null and ", columnName, " != 0");
+			sourceTableName, StringPool.PERIOD, sourceColumnName, " = ",
+			targetTableName, StringPool.PERIOD, targetColumnName, ") and ",
+			targetColumnName, " is not null and ", targetColumnName, " != 0",
+			(targetAdditionalWhereClause != null) ?
+				" and " + targetAdditionalWhereClause : "");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -117,5 +185,9 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 
 	private final String _columnName;
 	private final String _tableName;
+	private final List<String> _targetAdditionalWhereClauses =
+		new ArrayList<>();
+	private final List<String> _targetColumnNames = new ArrayList<>();
+	private final List<String> _targetTableNames = new ArrayList<>();
 
 }
