@@ -48,7 +48,10 @@ configmap:
     annotations: {}
     data: {}
     overrideDefaults: false
-customEnv: {}
+customEnv:
+    x-license:
+        -   name: LIFERAY_DISABLE_TRIAL_LICENSE
+            value: "true"
 customEnvFrom: {}
 customInitContainers:
     x-liferay-overlay:
