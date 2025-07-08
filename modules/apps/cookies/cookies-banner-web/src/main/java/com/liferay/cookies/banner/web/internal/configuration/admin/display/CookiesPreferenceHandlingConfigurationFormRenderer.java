@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -64,16 +64,44 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 		throws IOException {
 
 		try {
-			ExtendedObjectClassDefinition.Scope scope = _getScope(
+			String portletId = PortalUtil.getPortletId(
 				(PortletRequest)httpServletRequest.getAttribute(
 					JavaConstants.JAKARTA_PORTLET_REQUEST));
 
-			httpServletRequest.setAttribute(
-				CookiesBannerWebKeys.
-					COOKIES_PREFERENCE_HANDLING_CONFIGURATION_DISPLAY_CONTEXT,
-				new CookiesPreferenceHandlingConfigurationDisplayContext(
-					_cookiesConfigurationProvider, scope,
-					_getScopePK(httpServletRequest, scope)));
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			if (portletId.equals(
+					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
+
+				httpServletRequest.setAttribute(
+					CookiesBannerWebKeys.
+						COOKIES_PREFERENCE_HANDLING_CONFIGURATION_DISPLAY_CONTEXT,
+					new CookiesPreferenceHandlingConfigurationDisplayContext(
+						_cookiesConfigurationProvider,
+						ExtendedObjectClassDefinition.Scope.COMPANY,
+						themeDisplay.getCompanyId()));
+			}
+			else if (portletId.equals(
+						ConfigurationAdminPortletKeys.SITE_SETTINGS)) {
+
+				httpServletRequest.setAttribute(
+					CookiesBannerWebKeys.
+						COOKIES_PREFERENCE_HANDLING_CONFIGURATION_DISPLAY_CONTEXT,
+					new CookiesPreferenceHandlingConfigurationDisplayContext(
+						_cookiesConfigurationProvider,
+						ExtendedObjectClassDefinition.Scope.GROUP,
+						themeDisplay.getScopeGroupId()));
+			}
+			else {
+				httpServletRequest.setAttribute(
+					CookiesBannerWebKeys.
+						COOKIES_PREFERENCE_HANDLING_CONFIGURATION_DISPLAY_CONTEXT,
+					new CookiesPreferenceHandlingConfigurationDisplayContext(
+						_cookiesConfigurationProvider,
+						ExtendedObjectClassDefinition.Scope.SYSTEM, 0L));
+			}
 
 			RequestDispatcher requestDispatcher =
 				_servletContext.getRequestDispatcher(
@@ -87,44 +115,6 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 					"/view.jsp",
 				exception);
 		}
-	}
-
-	private ExtendedObjectClassDefinition.Scope _getScope(
-		PortletRequest portletRequest) {
-
-		String portletId = PortalUtil.getPortletId(portletRequest);
-
-		if (portletId.equals(ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
-			return ExtendedObjectClassDefinition.Scope.COMPANY;
-		}
-		else if (portletId.equals(
-					ConfigurationAdminPortletKeys.SITE_SETTINGS)) {
-
-			return ExtendedObjectClassDefinition.Scope.GROUP;
-		}
-
-		return ExtendedObjectClassDefinition.Scope.SYSTEM;
-	}
-
-	private long _getScopePK(
-		HttpServletRequest httpServletRequest,
-		ExtendedObjectClassDefinition.Scope scope) {
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		if (scope == ExtendedObjectClassDefinition.Scope.COMPANY) {
-			return themeDisplay.getCompanyId();
-		}
-		else if (scope == ExtendedObjectClassDefinition.Scope.GROUP) {
-			return themeDisplay.getScopeGroupId();
-		}
-		else if (scope == ExtendedObjectClassDefinition.Scope.SYSTEM) {
-			return 0L;
-		}
-
-		throw new IllegalArgumentException("Unsupported scope: " + scope);
 	}
 
 	@Reference
