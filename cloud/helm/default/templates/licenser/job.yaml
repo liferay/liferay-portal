@@ -1,3 +1,4 @@
+{{- if .Values.subscription.enabled -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -8,3 +9,4 @@ spec:
     template:
         spec:
             {{- include "liferay.licenser.jobSpec" . | nindent 12 }}
+{{- end -}}
