@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.user.internal.resource.v1_0;
 
 import com.liferay.headless.admin.user.dto.v1_0.SharedAsset;
+import com.liferay.headless.admin.user.internal.odata.entity.v1_0.SharedAssetEntityModel;
 import com.liferay.headless.admin.user.resource.v1_0.SharedAssetResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -26,6 +28,8 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.service.SharingEntryService;
+
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.HashMap;
 
@@ -41,6 +45,11 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = SharedAssetResource.class
 )
 public class SharedAssetResourceImpl extends BaseSharedAssetResourceImpl {
+
+	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return new SharedAssetEntityModel();
+	}
 
 	@Override
 	public Page<SharedAsset> getMyUserAccountSharedAssetsSharedByMePage(
