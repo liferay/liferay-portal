@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Luis Ortiz
@@ -69,25 +68,9 @@ public class CrossOrphanReferencesDataCleanupPreupgradeProcess
 				continue;
 			}
 
-			Map<Long, Long> deletedRows =
-				OrphanReferencesDataCleanupUtil.cleanUpTable(
-					connection, null, columnName, currentTableName, columnName,
-					tableName);
-
-			if (!_log.isInfoEnabled()) {
-				continue;
-			}
-
-			for (Map.Entry<Long, Long> entry : deletedRows.entrySet()) {
-				_log.info(
-					StringBundler.concat(
-						String.valueOf(entry.getValue()),
-						" orphan entries from table ", currentTableName,
-						" have been deleted because value ",
-						String.valueOf(entry.getKey()),
-						" were not found in the origin table ", tableName,
-						" column ", columnName));
-			}
+			OrphanReferencesDataCleanupUtil.cleanUpTable(
+				connection, null, columnName, currentTableName, columnName,
+				tableName);
 		}
 	}
 

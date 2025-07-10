@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
-import java.util.Map;
-
 /**
  * @author Luis Ortiz
  */
@@ -81,25 +79,9 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 			return;
 		}
 
-		Map<Long, Long> deletedRows =
-			OrphanReferencesDataCleanupUtil.cleanUpTable(
-				connection, _sourceAdditionalWhereClause, sourceColumnName,
-				sourceTableName, targetColumnName, targetTableName);
-
-		if (!_log.isInfoEnabled()) {
-			return;
-		}
-
-		for (Map.Entry<Long, Long> entry : deletedRows.entrySet()) {
-			_log.info(
-				StringBundler.concat(
-					String.valueOf(entry.getValue()),
-					" orphan entries from table ", sourceTableName,
-					" have been deleted because value ",
-					String.valueOf(entry.getKey()),
-					" were not found in the origin table ", targetTableName,
-					" column ", targetColumnName));
-		}
+		OrphanReferencesDataCleanupUtil.cleanUpTable(
+			connection, _sourceAdditionalWhereClause, sourceColumnName,
+			sourceTableName, targetColumnName, targetTableName);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

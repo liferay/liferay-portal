@@ -6,21 +6,20 @@
 package com.liferay.portal.kernel.upgrade.data.cleanup.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Luis Ortiz
  */
 public class OrphanReferencesDataCleanupUtil {
 
-	public static Map<Long, Long> cleanUpTable(
+	public static void cleanUpTable(
 			Connection connection, String sourceAdditionalWhereClause,
 			String sourceColumnName, String sourceTableName,
 			String targetColumnName, String targetTableName)
@@ -44,13 +43,20 @@ public class OrphanReferencesDataCleanupUtil {
 
 			preparedStatement2.execute();
 
-			Map<Long, Long> deletedRows = new HashMap<>();
-
-			while (resultSet.next()) {
-				deletedRows.put(resultSet.getLong(1), resultSet.getLong(2));
+			if (!_log.isInfoEnabled()) {
+				return;
 			}
 
-			return deletedRows;
+			while (resultSet.next()) {
+				_log.info(
+					StringBundler.concat(
+						String.valueOf(resultSet.getLong(2)),
+						" orphan entries from table ", sourceTableName,
+						" have been deleted because value ",
+						String.valueOf(resultSet.getLong(1)),
+						" was not found in the origin table ", targetTableName,
+						" column ", targetColumnName));
+			}
 		}
 	}
 
@@ -67,5 +73,8 @@ public class OrphanReferencesDataCleanupUtil {
 			(sourceAdditionalWhereClause != null) ?
 				" and " + sourceAdditionalWhereClause : "");
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		OrphanReferencesDataCleanupUtil.class);
 
 }
