@@ -5,8 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -25,8 +23,9 @@ public class ViewSharedWithMeSectionDisplayContext {
 		_httpServletRequest = httpServletRequest;
 	}
 
-	public String getAPIURL() throws PortalException {
-		return StringPool.BLANK;
+	public String getAPIURL() {
+		return "/o/headless-admin-user/v1.0/my-user-account/shared-assets" +
+			"/shared-with-me";
 	}
 
 	public Map<String, Object> getEmptyState() {
