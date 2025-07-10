@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,10 +57,6 @@ public class CrossOrphanReferencesDataCleanupPreupgradeProcess
 
 		tableNames.remove(tableName);
 
-		for (String excludedTableName : _excludedTableNames) {
-			tableNames.remove(dbInspector.normalizeName(excludedTableName));
-		}
-
 		for (String currentTableName : tableNames) {
 			if (!dbInspector.hasColumn(currentTableName, columnName)) {
 				continue;
@@ -76,9 +70,6 @@ public class CrossOrphanReferencesDataCleanupPreupgradeProcess
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CrossOrphanReferencesDataCleanupPreupgradeProcess.class);
-
-	private static final List<String> _excludedTableNames = new ArrayList<>(
-		Arrays.asList("Audit_AuditEvent"));
 
 	private final String _columnName;
 	private final String _tableName;

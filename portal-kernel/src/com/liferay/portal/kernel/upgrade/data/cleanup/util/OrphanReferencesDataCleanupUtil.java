@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.upgrade.data.cleanup.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -13,6 +14,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Luis Ortiz
@@ -24,6 +29,19 @@ public class OrphanReferencesDataCleanupUtil {
 			String sourceColumnName, String sourceTableName,
 			String targetColumnName, String targetTableName)
 		throws Exception {
+
+		if (_normalizedExcludedTableNames.isEmpty()) {
+			DBInspector dbInspector = new DBInspector(connection);
+
+			for (String excludedTableName : _excludedTableNames) {
+				_normalizedExcludedTableNames.add(
+					dbInspector.normalizeName(excludedTableName));
+			}
+		}
+
+		if (_normalizedExcludedTableNames.contains(sourceTableName)) {
+			return;
+		}
 
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
@@ -76,5 +94,10 @@ public class OrphanReferencesDataCleanupUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OrphanReferencesDataCleanupUtil.class);
+
+	private static final List<String> _excludedTableNames = new ArrayList<>(
+		Arrays.asList("Audit_AuditEvent"));
+	private static final List<String> _normalizedExcludedTableNames =
+		new ArrayList<>();
 
 }
