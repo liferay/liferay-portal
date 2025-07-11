@@ -35,6 +35,8 @@ public class SharingEntryModelDocumentContributor
 			Field.CLASS_PK, String.valueOf(sharingEntry.getClassPK()));
 		document.addDate(Field.CREATE_DATE, sharingEntry.getCreateDate());
 		document.addDate(Field.MODIFIED_DATE, sharingEntry.getModifiedDate());
+		document.addLocalizedText(
+			"localized_title", _getTitleMap(sharingEntry), true);
 		document.addLocalizedText(Field.TITLE, _getTitleMap(sharingEntry));
 		document.addKeyword(Field.USER_ID, sharingEntry.getUserId());
 		document.addKeyword(

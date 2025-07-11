@@ -34,7 +34,10 @@ public class ViewShareWithMeTableFDSView extends BaseTableFDSView {
 		return fdsTableSchemaBuilder.add(
 			"title", "title",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"title")
+				"title"
+			).setSortable(
+				true
+			)
 		).add(
 			"assetType", "type",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
