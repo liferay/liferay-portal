@@ -46,11 +46,17 @@ public class ViewShareWithMeTableFDSView extends BaseTableFDSView {
 		).add(
 			"dateCreated", "shared-date",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"dateTime")
+				"dateTime"
+			).setSortable(
+				true
+			)
 		).add(
 			"dateModified", "modified",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"dateTime")
+				"dateTime"
+			).setSortable(
+				true
+			)
 		).build();
 	}
 
