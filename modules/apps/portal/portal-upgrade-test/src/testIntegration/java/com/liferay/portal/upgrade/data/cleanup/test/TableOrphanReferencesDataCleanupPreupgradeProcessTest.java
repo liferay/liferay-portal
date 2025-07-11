@@ -11,7 +11,7 @@ import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.upgrade.data.cleanup.BaseOrphanReferencesDataCleanupPreupgradeProcess;
+import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
  * @author Luis Ortiz
  */
 @RunWith(Arquillian.class)
-public class BaseOrphanReferencesDataCleanupPreupgradeProcessTest
+public class TableOrphanReferencesDataCleanupPreupgradeProcessTest
 	extends BaseOrphanReferencesDataCleanupPreupgradeProcessTestCase {
 
 	@Before
@@ -71,7 +71,7 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcessTest
 
 	@Override
 	protected UpgradeProcess getUpgradeProcess() {
-		return new BaseOrphanReferencesDataCleanupPreupgradeProcess(
+		return new TableOrphanReferencesDataCleanupPreupgradeProcess(
 			"ownerType = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY, "ownerId",
 			"PortletPreferences", "companyId", "Company");
 	}

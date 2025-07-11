@@ -5,9 +5,9 @@
 
 package com.liferay.portal.upgrade.data.cleanup;
 
-import com.liferay.portal.kernel.upgrade.data.cleanup.BaseOrphanReferencesDataCleanupPreupgradeProcess;
-import com.liferay.portal.kernel.upgrade.data.cleanup.CrossOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
+import com.liferay.portal.kernel.upgrade.data.cleanup.DatabaseOrphanReferencesDataCleanupPreupgradeProcess;
+import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 /**
@@ -19,14 +19,14 @@ public class CompanyIdDataCleanupPreupgradeProcess
 	@Override
 	protected void doUpgrade() throws Exception {
 		upgrade(
-			new CrossOrphanReferencesDataCleanupPreupgradeProcess(
+			new DatabaseOrphanReferencesDataCleanupPreupgradeProcess(
 				"companyId", "Company"));
 		upgrade(
-			new BaseOrphanReferencesDataCleanupPreupgradeProcess(
+			new TableOrphanReferencesDataCleanupPreupgradeProcess(
 				"ownerId = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY, "ownerId",
 				"PortalPreferences", "companyId", "Company"));
 		upgrade(
-			new BaseOrphanReferencesDataCleanupPreupgradeProcess(
+			new TableOrphanReferencesDataCleanupPreupgradeProcess(
 				"ownerId = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY, "ownerId",
 				"PortletPreferences", "companyId", "Company"));
 	}

@@ -14,10 +14,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 /**
  * @author Luis Ortiz
  */
-public class BaseOrphanReferencesDataCleanupPreupgradeProcess
+public class TableOrphanReferencesDataCleanupPreupgradeProcess
 	extends DataCleanupPreupgradeProcess {
 
-	public BaseOrphanReferencesDataCleanupPreupgradeProcess(
+	public TableOrphanReferencesDataCleanupPreupgradeProcess(
 		String sourceAdditionalWhereClause, String sourceColumnName,
 		String sourceTableName, String targetColumnName,
 		String targetTableName) {
@@ -85,7 +85,7 @@ public class BaseOrphanReferencesDataCleanupPreupgradeProcess
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		BaseOrphanReferencesDataCleanupPreupgradeProcess.class);
+		TableOrphanReferencesDataCleanupPreupgradeProcess.class);
 
 	private final String _sourceAdditionalWhereClause;
 	private final String _sourceColumnName;

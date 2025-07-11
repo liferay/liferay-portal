@@ -16,10 +16,10 @@ import java.util.List;
 /**
  * @author Luis Ortiz
  */
-public class CrossOrphanReferencesDataCleanupPreupgradeProcess
+public class DatabaseOrphanReferencesDataCleanupPreupgradeProcess
 	extends DataCleanupPreupgradeProcess {
 
-	public CrossOrphanReferencesDataCleanupPreupgradeProcess(
+	public DatabaseOrphanReferencesDataCleanupPreupgradeProcess(
 		String columnName, String tableName) {
 
 		_columnName = columnName;
@@ -69,7 +69,7 @@ public class CrossOrphanReferencesDataCleanupPreupgradeProcess
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CrossOrphanReferencesDataCleanupPreupgradeProcess.class);
+		DatabaseOrphanReferencesDataCleanupPreupgradeProcess.class);
 
 	private final String _columnName;
 	private final String _tableName;
