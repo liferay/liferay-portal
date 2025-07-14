@@ -479,7 +479,13 @@ function SelectionFilter({
 					disabled={submitDisabled}
 					onClick={() => {
 						if (actionType === 'delete') {
-							setFilter({active: false});
+							setFilter({
+								active: false,
+								selectedData: {
+									exclude: false,
+									selectedItems: [],
+								},
+							});
 						}
 						else {
 							const newSelectedData = {
