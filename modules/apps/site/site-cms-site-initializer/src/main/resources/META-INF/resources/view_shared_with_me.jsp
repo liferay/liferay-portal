@@ -18,6 +18,7 @@ ViewSharedWithMeSectionDisplayContext viewSharedWithMeSectionDisplayContext = (V
 		formName="fm"
 		id="<%= CMSSiteInitializerFDSNames.SHARED_WITH_ME %>"
 		itemsPerPage="<%= 20 %>"
+		propsTransformer="{SharedWithMeFDSPropsTransformer} from site-cms-site-initializer"
 		selectedItemsKey="id"
 		selectionType="multiple"
 		style="fluid"
