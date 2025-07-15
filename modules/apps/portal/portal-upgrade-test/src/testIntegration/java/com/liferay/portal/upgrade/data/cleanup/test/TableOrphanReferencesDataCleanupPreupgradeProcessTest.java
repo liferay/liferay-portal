@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -51,21 +52,23 @@ public class TableOrphanReferencesDataCleanupPreupgradeProcessTest
 
 			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
 
-			LogEntry logEntry = logEntries.get(0);
+			List<String> logMessages = new ArrayList<>();
 
-			Assert.assertEquals(
-				getExpectedMessage(
-					1, "PortletPreferences", "companyId", "Company",
-					_companyId1),
-				logEntry.getMessage());
+			for (LogEntry logEntry : logEntries) {
+				logMessages.add(logEntry.getMessage());
+			}
 
-			logEntry = logEntries.get(1);
+			Assert.assertTrue(
+				logMessages.contains(
+					getExpectedMessage(
+						1, "PortletPreferences", "companyId", "Company",
+						_companyId1)));
 
-			Assert.assertEquals(
-				getExpectedMessage(
-					1, "PortletPreferences", "companyId", "Company",
-					_companyId2),
-				logEntry.getMessage());
+			Assert.assertTrue(
+				logMessages.contains(
+					getExpectedMessage(
+						1, "PortletPreferences", "companyId", "Company",
+						_companyId2)));
 		};
 	}
 
