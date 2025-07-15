@@ -6,6 +6,8 @@
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
+import SharedItemRenderer from './cell_renderers/SharedItemRenderer';
+
 export default function SharedWithMeFDSPropsTransformer({
 	...otherProps
 }: {
@@ -18,6 +20,11 @@ export default function SharedWithMeFDSPropsTransformer({
 				{
 					component: AuthorRenderer,
 					name: 'authorTableCellRenderer',
+					type: 'internal',
+				} as IInternalRenderer,
+				{
+					component: SharedItemRenderer,
+					name: 'sharedItemTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 			],
