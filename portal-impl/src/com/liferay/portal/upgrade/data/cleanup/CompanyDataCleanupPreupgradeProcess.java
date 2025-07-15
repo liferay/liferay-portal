@@ -5,21 +5,21 @@
 
 package com.liferay.portal.upgrade.data.cleanup;
 
+import com.liferay.portal.kernel.upgrade.data.cleanup.AllTablesOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
-import com.liferay.portal.kernel.upgrade.data.cleanup.DatabaseOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 /**
  * @author Luis Ortiz
  */
-public class CompanyIdDataCleanupPreupgradeProcess
+public class CompanyDataCleanupPreupgradeProcess
 	extends DataCleanupPreupgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		upgrade(
-			new DatabaseOrphanReferencesDataCleanupPreupgradeProcess(
+			new AllTablesOrphanReferencesDataCleanupPreupgradeProcess(
 				"companyId", "Company"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(

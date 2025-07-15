@@ -16,38 +16,38 @@ import java.util.List;
 /**
  * @author Luis Ortiz
  */
-public class DatabaseOrphanReferencesDataCleanupPreupgradeProcess
+public class AllTablesOrphanReferencesDataCleanupPreupgradeProcess
 	extends DataCleanupPreupgradeProcess {
 
-	public DatabaseOrphanReferencesDataCleanupPreupgradeProcess(
-		String columnName, String tableName) {
+	public AllTablesOrphanReferencesDataCleanupPreupgradeProcess(
+		String targetColumnName, String targetTableName) {
 
-		_columnName = columnName;
-		_tableName = tableName;
+		_targetColumnName = targetColumnName;
+		_targetTableName = targetTableName;
 	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		DBInspector dbInspector = new DBInspector(connection);
 
-		String tableName = dbInspector.normalizeName(_tableName);
+		String targetTableName = dbInspector.normalizeName(_targetTableName);
 
-		if (!dbInspector.hasTable(tableName)) {
+		if (!dbInspector.hasTable(targetTableName)) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Table " + tableName + " does not exist");
+				_log.debug("Table " + targetTableName + " does not exist");
 			}
 
 			return;
 		}
 
-		String columnName = dbInspector.normalizeName(_columnName);
+		String targetColumnName = dbInspector.normalizeName(_targetColumnName);
 
-		if (!dbInspector.hasColumn(tableName, columnName)) {
+		if (!dbInspector.hasColumn(targetTableName, targetColumnName)) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
-						"Table ", tableName, " does not have column ",
-						columnName));
+						"Table ", targetTableName, " does not have column ",
+						targetColumnName));
 			}
 
 			return;
@@ -55,23 +55,23 @@ public class DatabaseOrphanReferencesDataCleanupPreupgradeProcess
 
 		List<String> tableNames = dbInspector.getTableNames(null);
 
-		tableNames.remove(tableName);
+		tableNames.remove(targetTableName);
 
-		for (String currentTableName : tableNames) {
-			if (!dbInspector.hasColumn(currentTableName, columnName)) {
+		for (String sourceTableName : tableNames) {
+			if (!dbInspector.hasColumn(sourceTableName, targetColumnName)) {
 				continue;
 			}
 
 			OrphanReferencesDataCleanupUtil.cleanUpTable(
-				connection, null, columnName, currentTableName, columnName,
-				tableName);
+				connection, null, targetColumnName, sourceTableName,
+				targetColumnName, targetTableName);
 		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		DatabaseOrphanReferencesDataCleanupPreupgradeProcess.class);
+		AllTablesOrphanReferencesDataCleanupPreupgradeProcess.class);
 
-	private final String _columnName;
-	private final String _tableName;
+	private final String _targetColumnName;
+	private final String _targetTableName;
 
 }

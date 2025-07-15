@@ -11,7 +11,7 @@ import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.upgrade.data.cleanup.DatabaseOrphanReferencesDataCleanupPreupgradeProcess;
+import com.liferay.portal.kernel.upgrade.data.cleanup.AllTablesOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
  * @author Luis Ortiz
  */
 @RunWith(Arquillian.class)
-public class DatabaseOrphanReferencesDataCleanupPreupgradeProcessTest
+public class AllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 	extends BaseOrphanReferencesDataCleanupPreupgradeProcessTestCase {
 
 	@Before
@@ -81,7 +81,7 @@ public class DatabaseOrphanReferencesDataCleanupPreupgradeProcessTest
 
 	@Override
 	protected UpgradeProcess getUpgradeProcess() {
-		return new DatabaseOrphanReferencesDataCleanupPreupgradeProcess(
+		return new AllTablesOrphanReferencesDataCleanupPreupgradeProcess(
 			"companyId", "Company");
 	}
 

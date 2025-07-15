@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.upgrade.data.cleanup.CompanyIdDataCleanupPreupgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.CompanyDataCleanupPreupgradeProcess;
 
 import java.util.List;
 
@@ -39,8 +39,8 @@ import org.junit.runner.RunWith;
  */
 @DataGuard(autoDelete = false, scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
-public class CompanyIdDataCleanupPreupgradeProcessTest
-	extends CompanyIdDataCleanupPreupgradeProcess {
+public class CompanyDataCleanupPreupgradeProcessTest
+	extends CompanyDataCleanupPreupgradeProcess {
 
 	@ClassRule
 	@Rule
