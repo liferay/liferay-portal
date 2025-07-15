@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
+import getRandomString from '../../../utils/getRandomString';
 import {headlessDiscoveryPagesTest} from './fixtures/headlessDiscoveryPagesTest';
 
 export const test = mergeTests(headlessDiscoveryPagesTest, loginTest());
@@ -43,3 +44,15 @@ test(
 		});
 	}
 );
+
+test('Error mensaje is shown if the endpoint parameter is wrong', async ({
+	page,
+}) => {
+	const nameEndpoint = getRandomString();
+
+	await page.goto(`/o/api?endpoint=${nameEndpoint}/openapi.json`);
+
+	await expect(page.getByText(`Forbidden access.`)).toBeVisible({
+		timeout: 30 * 10,
+	});
+});
