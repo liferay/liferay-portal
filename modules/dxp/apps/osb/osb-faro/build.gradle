@@ -186,62 +186,68 @@ stopDocker {
 	}
 }
 
-configure(project(":dxp:apps:osb:osb-faro:osb-faro-dependencies")) {
-	task copyCloudResources(type: Copy)
+def deployToDocker = providers.gradleProperty("deployToDocker")
 
-	String deployDir = "../osb-faro-docker/cloud/modules"
+if (deployToDocker.present) {
+	configure(project(":dxp:apps:osb:osb-faro:osb-faro-dependencies")) {
+		task copyCloudResources(type: Copy)
 
-	copyCloudResources {
-		doFirst {
-			delete file(deployDir)
+		String deployDir = "../osb-faro-docker/cloud/modules"
+
+		copyCloudResources {
+			doFirst {
+				delete file(deployDir)
+			}
+
+			from configurations.compileOnly
+			into deployDir
 		}
-
-		from configurations.compileOnly
-		into deployDir
-	}
-}
-
-configure(project(":dxp:apps:osb:osb-faro:osb-faro-dependencies")) {
-	task copyWedeployResources(type: Copy)
-	task wedeploy(type: Exec)
-
-	String deployDir = "../wedeploy/" + faroEnvironmentName + "/deploy"
-
-	copyWedeployResources {
-		doFirst {
-			delete file(deployDir)
-		}
-
-		from configurations.compileOnly
-		into deployDir
 	}
 
-	wedeploy {
-		args "deploy", "--project", "ac-" + faroEnvironmentName
-		dependsOn copyWedeployResources
-		executable = "lcp"
-		workingDir "../wedeploy/".concat(faroEnvironmentName)
+	configure(project(":dxp:apps:osb:osb-faro:osb-faro-dependencies")) {
+		task copyWedeployResources(type: Copy)
+		task wedeploy(type: Exec)
+
+		String deployDir = "../wedeploy/" + faroEnvironmentName + "/deploy"
+
+		copyWedeployResources {
+			doFirst {
+				delete file(deployDir)
+			}
+
+			from configurations.compileOnly
+			into deployDir
+		}
+
+		wedeploy {
+			args "deploy", "--project", "ac-" + faroEnvironmentName
+			dependsOn copyWedeployResources
+			executable = "lcp"
+			workingDir "../wedeploy/".concat(faroEnvironmentName)
+		}
 	}
 }
 
 subprojects {
-	afterEvaluate {
-		task moveToDocker(type: Exec)
+	if (deployToDocker.present) {
+		afterEvaluate {
+			task moveToDocker(type: Exec)
 
-		deploy {
-			doFirst {
-				delete file(liferay.deployDir)
+			deploy {
+				doFirst {
+					delete file(liferay.deployDir)
+				}
+
+				finalizedBy moveToDocker
+
+				liferay {
+					deployDir = new File("${rootDir}/dxp/apps/osb/osb-faro/build/deploy")
+				}
 			}
 
-			finalizedBy moveToDocker
-
-			liferay {
-				deployDir = new File("${rootDir}/dxp/apps/osb/osb-faro/build/deploy")
+			moveToDocker {
+				commandLine "docker", "cp", "-a", liferay.deployDir, dockerContainerId + ":/opt/liferay"
 			}
-		}
-
-		moveToDocker {
-			commandLine "docker", "cp", "-a", liferay.deployDir, dockerContainerId + ":/opt/liferay"
 		}
 	}
 
@@ -251,7 +257,7 @@ subprojects {
 		if (task.name == "baseline") {
 			enabled = false
 		}
-		else if (task.name == "deployDependencies") {
+		else if (deployToDocker.present && task.name == "deployDependencies") {
 			prepareAppDockerImageInputDir {
 				from task.inputs.files
 			}
