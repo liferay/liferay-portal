@@ -1,0 +1,5 @@
+task deployDependencies
+
+deployDependencies {
+	dependsOn build
+}

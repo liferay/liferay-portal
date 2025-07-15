@@ -4,6 +4,10 @@ task osbYarnInstall(type: YarnInstallTask)
 task osbYarnTest(type: Exec)
 task osbYarnWebpack(type: Exec)
 
+copyCSS {
+	dependsOn packageRunWebpack
+}
+
 dependencies {
 	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.2"
 	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
@@ -95,6 +99,8 @@ packageRunTest {
 }
 
 packageRunWebpack {
+	dependsOn osbYarnWebpack
+
 	if (project.hasProperty("faroEnvironmentName")) {
 		environment "FARO_ENVIRONMENT_NAME", faroEnvironmentName
 	}
