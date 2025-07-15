@@ -150,25 +150,28 @@ public class OrphanReferencesDataCleanupUtilTest {
 					StringBundler.concat(
 						"insert into PortletPreferences (mvccVersion, ",
 						"ctCollectionId, portletPreferencesId, ownerId, ",
-						"ownerType, companyId) values (0, 0, ",
+						"ownerType, companyId, portletId) values (0, 0, ",
 						RandomTestUtil.nextLong(), ", ", companyId, ", ",
-						ownerType1, ", ", companyId, ")"));
+						ownerType1, ", ", companyId, ", '",
+						RandomTestUtil.randomString(), "')"));
 				_db.runSQL(
 					_connection,
 					StringBundler.concat(
 						"insert into PortletPreferences (mvccVersion, ",
 						"ctCollectionId, portletPreferencesId, ownerId, ",
-						"ownerType, companyId) values (0, 0, ",
+						"ownerType, companyId, portletId) values (0, 0, ",
 						RandomTestUtil.nextLong(), ", ", companyId, ", ",
-						ownerType1, ", ", companyId, ")"));
+						ownerType1, ", ", companyId, ", '",
+						RandomTestUtil.randomString(), "')"));
 				_db.runSQL(
 					_connection,
 					StringBundler.concat(
 						"insert into PortletPreferences (mvccVersion, ",
 						"ctCollectionId, portletPreferencesId, ownerId, ",
-						"ownerType, companyId) values (0, 0, ",
+						"ownerType, companyId, portletId) values (0, 0, ",
 						RandomTestUtil.nextLong(), ", ", companyId, ", ",
-						ownerType2, ", ", companyId, ")"));
+						ownerType2, ", ", companyId, ", '",
+						RandomTestUtil.randomString(), "')"));
 			},
 			"ownerType = " + ownerType1, "ownerId", "PortletPreferences",
 			"companyId", "Company");
