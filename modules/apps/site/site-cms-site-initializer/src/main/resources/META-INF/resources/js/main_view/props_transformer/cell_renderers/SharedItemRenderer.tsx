@@ -27,6 +27,8 @@ export default function SharedItemRenderer({
 	options: {actionId: string};
 	value: string;
 }) {
+	const {fileTypeIcon, fileTypeIconColor, shareable, siteName} = itemData;
+
 	const linkHref = useMemo(() => {
 		const {actionId} = options;
 
@@ -44,7 +46,13 @@ export default function SharedItemRenderer({
 	}, [actions, itemData, options]);
 
 	return (
-		<span className="align-items-center d-flex table-list-title">
+		<span className="align-items-center c-gap-2 d-flex table-list-title">
+			{itemData.fileTypeIcon && itemData.fileTypeIconColor && (
+				<span className={fileTypeIconColor}>
+					<ClayIcon aria-hidden="true" symbol={fileTypeIcon} />
+				</span>
+			)}
+
 			{linkHref ? (
 				<ClayLink aria-label={value} data-senna-off href={linkHref}>
 					{value}
@@ -53,19 +61,16 @@ export default function SharedItemRenderer({
 				<span>{value}</span>
 			)}
 
-			{itemData.shareable && (
+			{shareable && (
 				<ClayTooltipProvider>
 					<span
 						data-tooltip-align="top"
 						title={sub(
 							Liferay.Language.get('shared-from-x'),
-							itemData.siteName
+							siteName
 						)}
 					>
-						<ClayIcon
-							className="c-ml-2 text-secondary"
-							symbol="users"
-						/>
+						<ClayIcon className="text-secondary" symbol="users" />
 					</span>
 				</ClayTooltipProvider>
 			)}
