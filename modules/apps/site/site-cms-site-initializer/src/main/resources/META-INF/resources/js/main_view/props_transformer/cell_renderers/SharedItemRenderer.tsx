@@ -5,6 +5,8 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
+import {ClayTooltipProvider} from '@clayui/tooltip';
+import {sub} from 'frontend-js-web';
 import React, {useMemo} from 'react';
 
 import formatActionURL from '../../../common/utils/formatActionURL';
@@ -51,7 +53,22 @@ export default function SharedItemRenderer({
 				<span>{value}</span>
 			)}
 
-			<ClayIcon className="c-ml-2 text-secondary" symbol="users" />
+			{itemData.shareable && (
+				<ClayTooltipProvider>
+					<span
+						data-tooltip-align="top"
+						title={sub(
+							Liferay.Language.get('shared-from-x'),
+							itemData.siteName
+						)}
+					>
+						<ClayIcon
+							className="c-ml-2 text-secondary"
+							symbol="users"
+						/>
+					</span>
+				</ClayTooltipProvider>
+			)}
 		</span>
 	);
 }
