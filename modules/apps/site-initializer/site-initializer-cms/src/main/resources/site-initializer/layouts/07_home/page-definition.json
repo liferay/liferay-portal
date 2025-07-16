@@ -1,0 +1,14 @@
+{
+	"pageElement": {
+		"pageElements": [
+
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "cms-master"
+		}
+	},
+	"version": 1.1
+}
