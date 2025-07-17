@@ -66,10 +66,15 @@ public class FaroPropsValues {
 		PropsUtil.get("osb.asah.backend.url"),
 		System.getenv("OSB_ASAH_BACKEND_URL"));
 
-	public static final String OSB_ASAH_LOCAL_CLUSTER_URL =
+	public static final String OSB_ASAH_LOCAL_CLUSTER_BACKEND_URL =
 		GetterUtil.getString(
-			PropsUtil.get("osb.asah.local.cluster.url"),
-			System.getenv("OSB_ASAH_LOCAL_CLUSTER_URL"));
+			PropsUtil.get("osb.asah.local.cluster.backend.url"),
+			System.getenv("OSB_ASAH_LOCAL_CLUSTER_BACKEND_URL"));
+
+	public static final String OSB_ASAH_LOCAL_CLUSTER_PUBLISHER_URL =
+		GetterUtil.getString(
+			PropsUtil.get("osb.asah.local.cluster.publisher.url"),
+			System.getenv("OSB_ASAH_LOCAL_CLUSTER_PUBLISHER_URL"));
 
 	public static final String OSB_ASAH_PUBLISHER_URL = GetterUtil.getString(
 		PropsUtil.get("osb.asah.publisher.url"),

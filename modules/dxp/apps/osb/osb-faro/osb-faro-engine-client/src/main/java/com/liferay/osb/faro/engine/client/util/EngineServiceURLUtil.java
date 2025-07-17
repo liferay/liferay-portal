@@ -47,6 +47,14 @@ public class EngineServiceURLUtil {
 	public static String getBackendURL(FaroProject faroProject, String path)
 		throws URISyntaxException {
 
+		if (StringUtils.isNotBlank(
+				FaroPropsValues.OSB_ASAH_LOCAL_CLUSTER_BACKEND_URL)) {
+
+			return _getURL(
+				faroProject, FaroPropsValues.OSB_ASAH_LOCAL_CLUSTER_BACKEND_URL,
+				path);
+		}
+
 		String url = StringUtil.replace(
 			_getClusterBaseURL(faroProject), "{service}", "osbasahbackend");
 
@@ -70,6 +78,14 @@ public class EngineServiceURLUtil {
 	public static String getPublisherURL(FaroProject faroProject, String path)
 		throws URISyntaxException {
 
+		if (StringUtils.isNotBlank(
+				FaroPropsValues.OSB_ASAH_LOCAL_CLUSTER_PUBLISHER_URL)) {
+
+			return _getURL(
+				faroProject,
+				FaroPropsValues.OSB_ASAH_LOCAL_CLUSTER_PUBLISHER_URL, path);
+		}
+
 		String url = StringUtil.replace(
 			_getClusterBaseURL(faroProject), "{service}", "osbasahpublisher");
 
@@ -77,12 +93,6 @@ public class EngineServiceURLUtil {
 	}
 
 	private static String _getClusterBaseURL(FaroProject faroProject) {
-		if (StringUtils.isNotBlank(
-				FaroPropsValues.OSB_ASAH_LOCAL_CLUSTER_URL)) {
-
-			return FaroPropsValues.OSB_ASAH_LOCAL_CLUSTER_URL;
-		}
-
 		LCPProject.Cluster cluster = LCPProject.Cluster.fromString(
 			faroProject.getServerLocation());
 
