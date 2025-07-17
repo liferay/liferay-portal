@@ -21,6 +21,7 @@ import com.liferay.analytics.settings.rest.internal.client.pagination.Pagination
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -548,9 +549,10 @@ public class AnalyticsCloudClient {
 
 		String domain = HttpComponentsUtil.getDomain(url);
 
-		if (InetAddressUtil.isLocalInetAddress(
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-59745") &&
+			(InetAddressUtil.isLocalInetAddress(
 				InetAddressUtil.getInetAddressByName(domain)) ||
-			!StringUtil.endsWith(domain, analyticsCloudDomainAllowed)) {
+			 !StringUtil.endsWith(domain, analyticsCloudDomainAllowed))) {
 
 			throw new DataSourceConnectionException("Invalid URL domain");
 		}
