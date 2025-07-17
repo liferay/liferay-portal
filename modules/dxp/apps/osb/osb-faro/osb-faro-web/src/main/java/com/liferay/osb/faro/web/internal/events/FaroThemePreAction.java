@@ -8,6 +8,7 @@ package com.liferay.osb.faro.web.internal.events;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -37,6 +38,10 @@ public class FaroThemePreAction extends Action {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws ActionException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-59746")) {
+			return;
+		}
 
 		try {
 			ThemeDisplay themeDisplay =

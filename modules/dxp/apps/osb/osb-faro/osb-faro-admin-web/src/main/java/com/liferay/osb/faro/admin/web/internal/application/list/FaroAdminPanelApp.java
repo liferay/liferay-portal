@@ -9,7 +9,10 @@ import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.osb.faro.admin.web.internal.constants.FaroAdminPortletKeys;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,6 +37,11 @@ public class FaroAdminPanelApp extends BasePanelApp {
 	@Override
 	public String getPortletId() {
 		return FaroAdminPortletKeys.FARO_ADMIN;
+	}
+
+	@Override
+	public boolean isShow(PermissionChecker permissionChecker, Group group) {
+		return FeatureFlagManagerUtil.isEnabled("LPD-59746");
 	}
 
 	@Reference(
