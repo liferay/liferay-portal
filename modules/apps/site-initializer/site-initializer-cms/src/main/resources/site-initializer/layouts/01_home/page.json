@@ -1,13 +1,17 @@
 {
-	"friendlyURL": "/",
+	"friendlyURL": "/home",
 	"hidden": false,
 	"name_i18n": {
 		"en_US": "Home"
 	},
 	"permissions": [
 		{
-			"actionIds": [
-			],
+			"actionIds": ["VIEW"],
+			"roleName": "CMS Administrator",
+			"scope": 4
+		},
+		{
+			"actionIds": [],
 			"roleName": "Guest",
 			"scope": 4
 		}
