@@ -87,6 +87,14 @@ const APIGUI = () => {
 		return req;
 	};
 
+	// Spinner
+	const LoadingSpinner = () => (
+		<div className="loading-container">
+			<div className="spinner"></div>
+			<p className="loading-text">LOADING</p>
+		</div>
+	);
+
 	return (
 		<div className="api-gui-root">
 			<nav className="navbar navbar-expand-md navbar-underline">
@@ -303,7 +311,9 @@ const APIGUI = () => {
 					</ClayModal>
 				)}
 
-				{showGraphQL ? (
+				{!origin ? (
+					<LoadingSpinner />
+				) :showGraphQL ? (
 					<ClayLayout.Row className="vh-100">
 						<GraphiQL fetcher={graphQLFetcher} />
 					</ClayLayout.Row>
