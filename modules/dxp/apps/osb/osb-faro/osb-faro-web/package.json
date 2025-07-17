@@ -167,6 +167,7 @@
 	"private": true,
 	"repository": "https://github.com/liferay/com-liferay-osb-faro-private",
 	"scripts": {
+		"build": "webpack --config webpack.prod.js",
 		"coveralls": "cat ./coverage/lcov.info | coveralls",
 		"email": "mjml -l strict \"src/main/templates/email/*.mjml\" -o \"../osb-faro-service/src/main/resources/com/liferay/osb/faro/dependencies\"",
 		"format": "eslint --fix \"src/main/js/**/*.+(js|ts)?(x)\"",
