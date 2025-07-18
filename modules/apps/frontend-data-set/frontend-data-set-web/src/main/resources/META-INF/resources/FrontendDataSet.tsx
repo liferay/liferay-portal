@@ -31,8 +31,6 @@ import isFileDropEnabled from './utils/isFileDropEnabled';
 
 import './styles/main.scss';
 
-import ClayEmptyState from '@clayui/empty-state';
-
 import DnDContext from './DnDContext';
 import FrontendDataSetContext, {
 	IDataSetData,
@@ -68,6 +66,7 @@ import {loadData} from './utils/loadData';
 
 import {logError} from './utils/logError';
 import {
+	availablesEmptyStateType,
 	ESelectionTrigger,
 	IField,
 	IFrontendDataSetProps,
@@ -75,6 +74,7 @@ import {
 	IRequestOptions,
 	ISuccessNotification,
 	IView,
+	TEmptyState,
 	TSort,
 } from './utils/types';
 import ViewsContext from './views/ViewsContext';
@@ -86,6 +86,7 @@ import getViewComponent from './views/getViewComponent';
 // @ts-ignore
 
 import {VIEWS_ACTION_TYPES, viewsReducer} from './views/viewsReducer';
+import EmptyState from './utils/EmptyState';
 
 const DEFAULT_PAGINATION_DELTA = 20;
 const DEFAULT_PAGINATION_PAGE_NUMBER = 1;
@@ -281,6 +282,8 @@ const FrontendDataSetContent = ({
 		...currentViewProps
 	} = activeView;
 
+	const [emptyStateType, setEmptyStateType] = useState<TEmptyState>(availablesEmptyStateType.default);
+
 	const requestData = useCallback(() => {
 		if (!apiURL) {
 			return;
@@ -301,6 +304,10 @@ const FrontendDataSetContent = ({
 			sorts.length > 1
 				? sorts.filter((sort: TSort) => sort.active)
 				: sorts;
+
+		if(activeFiltersOdataStrings.length > 0) setEmptyStateType(availablesEmptyStateType.filters);		
+		if(searchParam && searchParam.length > 0) setEmptyStateType(availablesEmptyStateType.search);		
+		if((searchParam && searchParam.length > 0) && activeFiltersOdataStrings.length > 0) setEmptyStateType(availablesEmptyStateType.searchAndFilters);		
 
 		return loadData({
 			additionalAPIURLParameters,
@@ -846,24 +853,35 @@ const FrontendDataSetContent = ({
 						{...currentViewProps}
 					/>
 				) : (
-					<ClayEmptyState
-						description={
-							emptyState?.description ??
-							Liferay.Language.get('sorry,-no-results-were-found')
-						}
-						imgSrc={
-							Liferay.ThemeDisplay.getPathThemeImages() +
-							(emptyState?.image ?? '/states/search_state.svg')
-						}
-						title={
-							emptyState?.title ??
-							Liferay.Language.get('no-results-found')
-						}
+					<EmptyState
+						description={emptyState?.description}
+						image={emptyState?.image}
+						title={emptyState?.title}
+						type={emptyStateType}
+						clearButton={() => {
+							deselectItems(selectedItemsValue);
+							setAllItemsSelectedActive(false);
+
+							if(emptyStateType === availablesEmptyStateType.search) setSearchParam('');
+
+							if(emptyStateType === availablesEmptyStateType.filters || emptyStateType === availablesEmptyStateType.searchAndFilters) {
+								if(emptyStateType === availablesEmptyStateType.searchAndFilters) setSearchParam('');
+								viewsDispatch({
+									type: VIEWS_ACTION_TYPES.UPDATE_FILTERS,
+									value: filters.map((filter:any) => ({
+										...filter,
+										active: false,
+										odataFilterString: undefined,
+										selectedData: undefined,
+									})),
+								});
+							}
+						}}
 					>
 						{creationMenu && (
 							<CreationMenu {...creationMenu} inEmptyState />
 						)}
-					</ClayEmptyState>
+					</EmptyState>
 				)}
 			</div>
 		) : (
