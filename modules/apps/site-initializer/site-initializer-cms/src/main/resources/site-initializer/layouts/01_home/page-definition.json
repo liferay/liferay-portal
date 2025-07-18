@@ -2,56 +2,146 @@
 	"pageElement": {
 		"pageElements": [
 			{
-				"definition": {
-					"fragment": {
-						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewQuickActionsJSPSectionFragmentRenderer"
+				"definition": {"indexed": true, "layout": {}},
+				"id": "27edfb44-ab3e-1169-1b7d-3c8ace340ecc",
+				"pageElements": [
+					{
+						"definition": {"indexed": true, "layout": {}},
+						"id": "2c14a5f5-e235-2951-a146-34999055341d",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSearchBarJSPSectionFragmentRenderer"
+									},
+									"fragmentConfig": {},
+									"fragmentFields": [],
+									"indexed": true
+								},
+								"type": "Fragment"
+							}
+						],
+						"type": "Section"
 					},
-					"fragmentConfig": {
+					{
+						"definition": {"indexed": true, "layout": {}},
+						"id": "5d512a72-a41d-405d-334f-b7b73ed33053",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewQuickActionsJSPSectionFragmentRenderer"
+									},
+									"fragmentConfig": {},
+									"fragmentFields": [],
+									"indexed": true
+								},
+								"type": "Fragment"
+							}
+						],
+						"type": "Section"
 					},
-					"fragmentFields": [
-					],
-					"indexed": true
-				},
-				"type": "Fragment"
-			},
-			{
-				"definition": {
-					"fragment": {
-						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewQuickActionsJSPSectionFragmentRenderer"
-					},
-					"fragmentConfig": {
-					},
-					"fragmentFields": [
-					],
-					"indexed": true
-				},
-				"type": "Fragment"
-			},
-			{
-				"definition": {
-					"fragment": {
-						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewWorkflowTasksJSPSectionFragmentRenderer"
-					},
-					"fragmentConfig": {
-					},
-					"fragmentFields": [
-					],
-					"indexed": true
-				},
-				"type": "Fragment"
-			},
-			{
-				"definition": {
-					"fragment": {
-						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSearchBarJSPSectionFragmentRenderer"
-					},
-					"fragmentConfig": {
-					},
-					"fragmentFields": [
-					],
-					"indexed": true
-				},
-				"type": "Fragment"
+					{
+						"definition": {
+							"gutters": true,
+							"indexed": true,
+							"modulesPerRow": 2,
+							"numberOfColumns": 2,
+							"reverseOrder": false,
+							"rowViewports": [
+								{
+									"id": "landscapeMobile",
+									"rowViewportDefinition": {
+										"modulesPerRow": 1
+									}
+								},
+								{
+									"id": "portraitMobile",
+									"rowViewportDefinition": {}
+								},
+								{"id": "tablet", "rowViewportDefinition": {}}
+							],
+							"verticalAlignment": "top"
+						},
+						"id": "217ebad7-ef54-65e6-5ded-b181b89419f7",
+						"pageElements": [
+							{
+								"definition": {
+									"columnViewports": [
+										{
+											"columnViewportDefinition": {
+												"size": 12
+											},
+											"id": "landscapeMobile"
+										},
+										{
+											"columnViewportDefinition": {},
+											"id": "portraitMobile"
+										},
+										{
+											"columnViewportDefinition": {},
+											"id": "tablet"
+										}
+									],
+									"size": 7
+								},
+								"id": "02137bb8-14cd-84a1-615c-a5fdb57a5033",
+								"pageElements": [
+									{
+										"definition": {
+											"fragment": {
+												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewRecentAssetsJSPSectionFragmentRenderer"
+											},
+											"fragmentConfig": {},
+											"fragmentFields": [],
+											"indexed": true
+										},
+										"type": "Fragment"
+									}
+								],
+								"type": "Column"
+							},
+							{
+								"definition": {
+									"columnViewports": [
+										{
+											"columnViewportDefinition": {
+												"size": 12
+											},
+											"id": "landscapeMobile"
+										},
+										{
+											"columnViewportDefinition": {},
+											"id": "portraitMobile"
+										},
+										{
+											"columnViewportDefinition": {},
+											"id": "tablet"
+										}
+									],
+									"size": 5
+								},
+								"id": "3e7c52b6-4a61-9160-3de8-1f1e3cc21427",
+								"pageElements": [
+									{
+										"definition": {
+											"fragment": {
+												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewWorkflowTasksJSPSectionFragmentRenderer"
+											},
+											"fragmentConfig": {},
+											"fragmentFields": [],
+											"indexed": true
+										},
+										"type": "Fragment"
+									}
+								],
+								"type": "Column"
+							}
+						],
+						"type": "Row"
+					}
+				],
+				"type": "Section"
 			}
 		],
 		"type": "Root"
