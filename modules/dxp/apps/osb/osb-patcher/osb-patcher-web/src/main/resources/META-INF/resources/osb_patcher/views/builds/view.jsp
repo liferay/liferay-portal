@@ -310,9 +310,8 @@ else if (!patcherBuild.getLatestKeyBuild()) {
 					<%= patcherBuild.getInitialName() %>
 				</p>
 
-				<liferay-ui:icon
-					image="../api/exception"
-					message=""
+				<clay:icon
+					symbol="warning-full"
 				/>
 
 				<clay:link
