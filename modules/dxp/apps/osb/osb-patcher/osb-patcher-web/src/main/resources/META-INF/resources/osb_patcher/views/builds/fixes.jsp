@@ -74,7 +74,6 @@ else if (patcherFixes.size() > 1) {
 			name="fix-id"
 		>
 			<clay:link
-				cssClass="clean-link"
 				href="javascript:void(0);"
 				label="<%= String.valueOf(patcherFix.getPatcherFixId()) %>"
 				onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherFixURL + "'); " %>'
@@ -198,18 +197,4 @@ else if (patcherFixes.size() > 1) {
 	function <portlet:namespace />navigateWindow(targetURL) {
 		window.location.href = targetURL;
 	}
-
-	AUI().ready(function () {
-		var A = AUI();
-
-		var cleanLinks = A.all('.clean-link');
-
-		cleanLinks.each(function (cleanLink) {
-			var href = cleanLink.attr('href');
-
-			var index = href.indexOf('?');
-
-			cleanLink.set('href', href.substring(0, index));
-		});
-	});
 </aui:script>
