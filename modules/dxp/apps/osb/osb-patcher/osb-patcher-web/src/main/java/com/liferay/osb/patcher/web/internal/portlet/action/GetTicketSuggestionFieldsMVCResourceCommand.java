@@ -55,14 +55,9 @@ public class GetTicketSuggestionFieldsMVCResourceCommand
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
 			JSONUtil.put(
-				"regression", ""
-			).put(
-				"security", ""
-			).put(
 				"troubleshooting",
 				_getPatcherTicketHintList(
-					productVersionId, tickets, projectVersionId)
-			));
+					productVersionId, tickets, projectVersionId)));
 	}
 
 	private String _getPatcherTicketHintList(

@@ -82,40 +82,14 @@ PatcherBuild patcherBuild = patcherCreateBuildsDisplayContext.getPatcherBuild();
 			</clay:col>
 
 			<clay:col>
-				<div class="mb-3">
-					<aui:input label="troubleshooting-ticket-suggestions" name="troubleshootingTicketList" type="textarea" wrapperCssClass="mb-1" />
+				<aui:input label="troubleshooting-ticket-suggestions" name="troubleshootingTicketList" type="textarea" wrapperCssClass="mb-1" />
 
-					<clay:button
-						displayType="secondary"
-						icon="plus"
-						onClick='<%= liferayPortletResponse.getNamespace() + "troubleshootAddOnClick(this.value);" %>'
-						small="<%= true %>"
-					/>
-				</div>
-
-				<div class="d-none">
-					<div class="mb-3">
-						<aui:input label="security-ticket-suggestions" name="securityTicketList" type="textarea" wrapperCssClass="mb-1" />
-
-						<clay:button
-							displayType="secondary"
-							icon="plus"
-							onClick='<%= liferayPortletResponse.getNamespace() + "securityAddOnClick(this.value);" %>'
-							small="<%= true %>"
-						/>
-					</div>
-
-					<div class="mb-3">
-						<aui:input label="regression-ticket-suggestions" name="regressionTicketList" type="textarea" wrapperCssClass="mb-1" />
-
-						<clay:button
-							displayType="secondary"
-							icon="plus"
-							onClick='<%= liferayPortletResponse.getNamespace() + "regressionAddOnClick(this.value);" %>'
-							small="<%= true %>"
-						/>
-					</div>
-				</div>
+				<clay:button
+					displayType="secondary"
+					icon="plus"
+					onClick='<%= liferayPortletResponse.getNamespace() + "troubleshootAddOnClick(this.value);" %>'
+					small="<%= true %>"
+				/>
 			</clay:col>
 		</clay:row>
 	</liferay-frontend:edit-form-body>
@@ -137,12 +111,6 @@ PatcherBuild patcherBuild = patcherCreateBuildsDisplayContext.getPatcherBuild();
 	);
 	var patcherProjectVersionId = document.getElementById(
 		'<portlet:namespace />patcherProjectVersionId'
-	);
-	var regressionTextArea = document.getElementById(
-		'<portlet:namespace />regressionTicketList'
-	);
-	var securityTextArea = document.getElementById(
-		'<portlet:namespace />securityTicketList'
 	);
 	var select = document.getElementById(
 		'<portlet:namespace />patcherProjectVersionId'
@@ -208,8 +176,6 @@ PatcherBuild patcherBuild = patcherCreateBuildsDisplayContext.getPatcherBuild();
 				return response.json();
 			})
 			.then((data) => {
-				regressionTextArea.value = data.regression;
-				securityTextArea.value = data.security;
 				troubleshootingTextArea.value = String(
 					data.troubleshooting
 				).replaceAll(' ', '');
@@ -268,26 +234,6 @@ PatcherBuild patcherBuild = patcherCreateBuildsDisplayContext.getPatcherBuild();
 			else {
 				patcherBuildName.value = troubleshootingTextArea.value;
 			}
-		},
-		['aui-base']
-	);
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />securityAddOnClick',
-		function () {
-			patcherBuildName.value =
-				patcherBuildName.value + ',' + securityTextArea.value;
-		},
-		['aui-base']
-	);
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />regressionAddOnClick',
-		function () {
-			patcherBuildName.value =
-				patcherBuildName.value + ',' + regressionTextArea.value;
 		},
 		['aui-base']
 	);
