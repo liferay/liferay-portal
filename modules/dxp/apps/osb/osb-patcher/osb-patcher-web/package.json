@@ -1,7 +1,8 @@
 {
 	"dependencies": {
-		"@clayui/autocomplete": "3.140.0",
-		"@clayui/drop-down": "3.140.0",
+		"@clayui/form": "3.140.0",
+		"@clayui/link": "3.128.0",
+		"@clayui/popover": "3.140.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"

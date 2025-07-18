@@ -44,7 +44,22 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 		<aui:select label="project-version" name="patcherProjectVersionId" required="<%= true %>" />
 
-		<aui:input label="content" name="name" type="textarea" />
+		<div>
+			<aui:input label="content" name="patcherFixName" type="textarea" />
+
+			<react:component
+				module="{PopoverTooltip} from osb-patcher-web"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"label", LanguageUtil.get(request, "content")
+					).put(
+						"name", "patcherFixName"
+					).put(
+						"namespace", liferayPortletResponse.getNamespace()
+					).build()
+				%>'
+			/>
+		</div>
 
 		<aui:input label="branch-name" name="committish" />
 
@@ -90,13 +105,5 @@ String redirect = ParamUtil.getString(request, "redirect");
 			select,
 			<%= PatcherProjectVersionUtil.getPatcherProjectVersionsJSONObject() %>
 		);
-	});
-
-	YUI().ready('aui-popover', function (Y) {
-		var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-		var tickets = document.getElementById('<portlet:namespace />name');
-		var trigger = Y.one('#<portlet:namespace />name');
-
-		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
 	});
 </aui:script>
