@@ -118,6 +118,7 @@ import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.object.tree.ObjectEntryTreeFactory;
 import com.liferay.object.tree.Tree;
+import com.liferay.object.util.comparator.ObjectEntryVersionVersionComparator;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -225,11 +226,13 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
@@ -249,6 +252,8 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.sharing.service.SharingEntryLocalService;
+import com.liferay.trash.exception.TrashEntryException;
+import com.liferay.trash.service.TrashEntryLocalService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -1726,6 +1731,54 @@ public class ObjectEntryLocalServiceImpl
 				dynamicObjectDefinitionTable, new HashMap<>(), primaryKey,
 				false, values);
 		}
+	}
+
+	@Override
+	public ObjectEntry moveObjectEntryToTrash(
+			long userId, ObjectEntry objectEntry, ServiceContext serviceContext)
+		throws PortalException {
+
+		if (objectEntry.getStatus() == WorkflowConstants.STATUS_IN_TRASH) {
+			throw new TrashEntryException();
+		}
+
+		int oldStatus = objectEntry.getStatus();
+
+		List<ObjectEntryVersion> objectEntryVersions =
+			_objectEntryVersionLocalService.getObjectEntryVersions(
+				objectEntry.getObjectEntryId());
+
+		objectEntryVersions = ListUtil.sort(
+			objectEntryVersions,
+			ObjectEntryVersionVersionComparator.getInstance(false));
+
+		List<ObjectValuePair<Long, Integer>> objectEntryVersionStatusOVPs =
+			new ArrayList<>();
+
+		if ((objectEntryVersions != null) && !objectEntryVersions.isEmpty()) {
+			objectEntryVersionStatusOVPs = _getEntryVersionStatuses(
+				objectEntryVersions);
+		}
+
+		objectEntry = updateStatus(
+			userId, objectEntry, WorkflowConstants.STATUS_IN_TRASH,
+			serviceContext);
+
+		_trashEntryLocalService.addTrashEntry(
+			userId, objectEntry.getGroupId(), ObjectEntry.class.getName(),
+			objectEntry.getObjectEntryId(), objectEntry.getUuid(), null,
+			oldStatus, objectEntryVersionStatusOVPs,
+			UnicodePropertiesBuilder.put(
+				"title", objectEntry.getObjectEntryId()
+			).build());
+
+		for (ObjectEntryVersion version : objectEntryVersions) {
+			version.setStatus(WorkflowConstants.STATUS_IN_TRASH);
+
+			_objectEntryVersionLocalService.updateObjectEntryVersion(version);
+		}
+
+		return objectEntry;
 	}
 
 	@Override
@@ -3476,6 +3529,22 @@ public class ObjectEntryLocalServiceImpl
 			_objectFieldLocalService.getObjectFields(
 				objectDefinitionId, objectDefinition.getDBTableName()),
 			objectDefinition.getDBTableName());
+	}
+
+	private List<ObjectValuePair<Long, Integer>> _getEntryVersionStatuses(
+		List<ObjectEntryVersion> entries) {
+
+		return TransformUtil.transform(
+			entries,
+			entry -> {
+				int status = entry.getStatus();
+
+				if (status == WorkflowConstants.STATUS_PENDING) {
+					status = WorkflowConstants.STATUS_DRAFT;
+				}
+
+				return new ObjectValuePair<>(entry.getObjectEntryId(), status);
+			});
 	}
 
 	private DynamicObjectDefinitionTable
@@ -7031,6 +7100,9 @@ public class ObjectEntryLocalServiceImpl
 	@Reference
 	private SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
+
+	@Reference
+	private TrashEntryLocalService _trashEntryLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
