@@ -8,6 +8,8 @@
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
 <%
+PatcherViewFixPacksDisplayContext patcherViewFixPacksDisplayContext = new PatcherViewFixPacksDisplayContext(request, renderRequest, renderResponse);
+
 long patcherFixPackId = ParamUtil.getLong(request, "patcherFixPackId");
 
 PatcherFixPack patcherFixPack = PatcherFixPackLocalServiceUtil.fetchPatcherFixPack(patcherFixPackId);
@@ -295,54 +297,11 @@ if (patcherBuild != null) {
 				<liferay-ui:search-container-column-text
 					align="right"
 				>
-					<liferay-ui:icon-menu
-						direction="left-side"
-						icon="<%= StringPool.BLANK %>"
-						markupView="lexicon"
-						message="<%= StringPool.BLANK %>"
-						showWhenSingleIcon="<%= true %>"
-					>
-						<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT, patcherFix.getUserId()) && patcherFix.getLatestFix() %>">
-							<portlet:renderURL var="editPatcherFixURL">
-								<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fixes" />
-								<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-								<portlet:param name="redirect" value="<%= currentURL %>" />
-							</portlet:renderURL>
-
-							<liferay-ui:icon
-								image="edit"
-								method="get"
-								url="<%= editPatcherFixURL %>"
-							/>
-						</c:if>
-
-						<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
-							<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-								<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_pack_fields_fixes" />
-								<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-							</portlet:renderURL>
-
-							<liferay-ui:icon
-								image="edit"
-								message="edit-fix-packs"
-								onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + editPatcherFixFixPackFieldsURL + "');" %>'
-								url="javascript:void(0);"
-							/>
-						</c:if>
-
-						<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.SET_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
-							<portlet:actionURL name="/patcher/set_fix_pack_fields_fixes" var="setFixPackFieldsURL">
-								<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-								<portlet:param name="redirect" value="<%= currentURL %>" />
-							</portlet:actionURL>
-
-							<liferay-ui:icon
-								image="remove"
-								message="remove-fix-packs"
-								url="<%= setFixPackFieldsURL %>"
-							/>
-						</c:if>
-					</liferay-ui:icon-menu>
+					<clay:dropdown-actions
+						aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+						dropdownItems="<%= patcherViewFixPacksDisplayContext.getDropdownItems(patcherFix) %>"
+						propsTransformer="{PatcherDropdownDefaultPropsTransformer} from osb-patcher-web"
+					/>
 				</liferay-ui:search-container-column-text>
 			</liferay-ui:search-container-row>
 
@@ -432,12 +391,3 @@ Set<PatcherFixPack> prerequisitePatcherFixPacks = PatcherFixPackUtil.getPrerequi
 		</clay:sheet>
 	</clay:container-fluid>
 </c:if>
-
-<aui:script>
-	function <portlet:namespace />handleClick(url) {
-		Liferay.Util.openModal({
-			title: '<liferay-ui:message key="edit-fix-packs" />',
-			url: url,
-		});
-	}
-</aui:script>

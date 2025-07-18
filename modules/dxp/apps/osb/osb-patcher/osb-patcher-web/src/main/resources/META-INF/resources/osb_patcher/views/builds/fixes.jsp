@@ -8,6 +8,8 @@
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
 <%
+PatcherBuildFixesDisplayContext patcherBuildFixesDisplayContext = new PatcherBuildFixesDisplayContext(request, renderRequest, renderResponse);
+
 long patcherBuildId = ParamUtil.getLong(request, "patcherBuildId");
 
 PatcherBuild patcherBuild = PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherBuildId);
@@ -143,40 +145,11 @@ else if (patcherFixes.size() > 1) {
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
-			<liferay-ui:icon-menu
-				direction="left-side"
-				icon="<%= StringPool.BLANK %>"
-				markupView="lexicon"
-				message="<%= StringPool.BLANK %>"
-				showWhenSingleIcon="<%= true %>"
-			>
-				<c:if test="<%= (patcherFix.getStatus() == WorkflowConstants.STATUS_FIX_FAILED) || (patcherFix.getStatus() == WorkflowConstants.STATUS_FIX_CONFLICT) %>">
-					<portlet:renderURL var="editPatcherFixURL">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fixes" />
-						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						method="get"
-						url="<%= editPatcherFixURL %>"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EXCLUDE, patcherFix.getUserId()) && (patcherFix.getType() != PatcherFixConstants.TYPE_EXCLUDED) %>">
-					<portlet:actionURL name="/patcher/exclude_fixes" var="excludePatcherFixURL">
-						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="../api/method"
-						message="exclude"
-						url="<%= excludePatcherFixURL %>"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<clay:dropdown-actions
+				aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+				dropdownItems="<%= patcherBuildFixesDisplayContext.getDropdownItems(patcherFix) %>"
+				propsTransformer="{PatcherDropdownDefaultPropsTransformer} from osb-patcher-web"
+			/>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 

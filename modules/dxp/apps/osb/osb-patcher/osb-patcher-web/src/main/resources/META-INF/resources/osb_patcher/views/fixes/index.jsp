@@ -176,92 +176,11 @@ PatcherFixesDisplayContext patcherFixesDisplayContext = new PatcherFixesDisplayC
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
-			<liferay-ui:icon-menu
-				direction="left-side"
-				icon="<%= StringPool.BLANK %>"
-				markupView="lexicon"
-				message="<%= StringPool.BLANK %>"
-				showWhenSingleIcon="<%= true %>"
-			>
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT, patcherFix.getUserId()) && patcherFix.isLatestFix() && (patcherFix.getType() != PatcherFixConstants.TYPE_FIX_PACK) %>">
-					<portlet:renderURL var="editPatcherFixURL">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fixes" />
-						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						method="get"
-						url="<%= editPatcherFixURL %>"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherFix.getUserId()) %>">
-					<liferay-ui:icon
-						image="edit"
-						message="edit-engineer-comments"
-						method="get"
-						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.get(request, "edit-engineer-comments") + "', '" + editPatcherFixCommentsFieldURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EDIT_FIX_PACK_FIELDS, patcherFix.getUserId()) %>">
-					<portlet:renderURL var="editPatcherFixFixPackFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_pack_fields_fixes" />
-						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						message="edit-fix-packs"
-						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.get(request, "edit-fix-packs") + "', '" + editPatcherFixFixPackFieldsURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.BUILDS, patcherFix.getUserId()) %>">
-					<portlet:renderURL var="viewPatcherFixPatcherBuildsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds_fixes" />
-						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="view"
-						message="view-builds"
-						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-builds-for-fix-id-x", patcherFix.getPatcherFixId()) + "', '" + viewPatcherFixPatcherBuildsURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.FIXES, patcherFix.getUserId()) %>">
-					<portlet:renderURL var="viewPatcherFixesPopUpURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_fixes" />
-						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="view"
-						message="view-fixes"
-						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "view-fixes-for-fix-id-x", patcherFix.getPatcherFixId()) + "', '" + viewPatcherFixesPopUpURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFix, PatcherActionKeys.EXCLUDE, patcherFix.getUserId()) && (patcherFix.getType() != PatcherFixConstants.TYPE_EXCLUDED) && (patcherFix.getType() != PatcherFixConstants.TYPE_FIX_PACK) %>">
-					<portlet:actionURL name="/patcher/exclude_fixes" var="excludePatcherFixURL">
-						<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="../api/method"
-						message="exclude"
-						url="<%= excludePatcherFixURL %>"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<clay:dropdown-actions
+				aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+				dropdownItems="<%= patcherFixesDisplayContext.getDropdownItems(patcherFix) %>"
+				propsTransformer="{PatcherDropdownDefaultPropsTransformer} from osb-patcher-web"
+			/>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 

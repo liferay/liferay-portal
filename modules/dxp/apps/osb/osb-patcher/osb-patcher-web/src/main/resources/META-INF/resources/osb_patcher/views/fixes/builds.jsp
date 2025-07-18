@@ -8,11 +8,9 @@
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
 <%
-long patcherFixId = ParamUtil.getLong(request, "patcherFixId");
+PatcherFixBuildsDisplayContext patcherFixBuildsDisplayContext = new PatcherFixBuildsDisplayContext(request, patcherConfiguration, renderRequest, renderResponse);
 
-PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(patcherFixId);
-
-List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPatcherBuilds(patcherFixId);
+List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPatcherBuilds(patcherFixBuildsDisplayContext.getPatcherFixId());
 %>
 
 <liferay-ui:search-container
@@ -175,57 +173,11 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
-			<liferay-ui:icon-menu
-				direction="left-side"
-				icon="<%= StringPool.BLANK %>"
-				markupView="lexicon"
-				message="<%= StringPool.BLANK %>"
-				showWhenSingleIcon="<%= true %>"
-			>
-				<c:if test="<%= Validator.isNotNull(patcherFix.getGitHash()) && JenkinsUtil.isValidJenkinsSetup() && JenkinsUtil.isValidSendDistJenkinsRequest(patcherBuild) %>">
-					<portlet:actionURL name="/patcher/build_builds" var="buildPatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="build"
-						method="get"
-						url="<%= buildPatcherBuildURL %>"
-					/>
-				</c:if>
-
-				<c:if test="<%= patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-					<portlet:actionURL name="/patcher/test_builds" var="testPatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED) %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="test"
-						method="get"
-						url="<%= testPatcherBuildURL %>"
-					/>
-
-					<portlet:actionURL name="/patcher/test_builds" var="smokeTestPatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY) %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="smoke-test"
-						method="get"
-						url="<%= smokeTestPatcherBuildURL %>"
-					/>
-
-					<liferay-ui:icon
-						image="download"
-						url="<%= hotfixURL %>"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<clay:dropdown-actions
+				aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+				dropdownItems="<%= patcherFixBuildsDisplayContext.getDropdownItems(patcherBuild) %>"
+				propsTransformer="{PatcherDropdownDefaultPropsTransformer} from osb-patcher-web"
+			/>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 

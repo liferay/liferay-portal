@@ -8,6 +8,8 @@
 <%@ include file="/osb_patcher/views/init.jsp" %>
 
 <%
+PatcherChildBuildsDisplayContext patcherChildBuildsDisplayContext = new PatcherChildBuildsDisplayContext(request, renderRequest, renderResponse);
+
 long patcherBuildId = ParamUtil.getLong(request, "patcherBuildId");
 
 PatcherBuild patcherBuild = PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherBuildId);
@@ -104,27 +106,10 @@ List<PatcherBuild> childPatcherBuilds = PatcherBuildRelUtil.getChildPatcherBuild
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
-			<liferay-ui:icon-menu
-				direction="left-side"
-				icon="<%= StringPool.BLANK %>"
-				markupView="lexicon"
-				message="<%= StringPool.BLANK %>"
-				showWhenSingleIcon="<%= true %>"
-			>
-				<portlet:renderURL var="viewPatcherBuildPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-					<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_builds" />
-					<portlet:param name="patcherBuildId" value="<%= String.valueOf(childPatcherBuild.getPatcherBuildId()) %>" />
-				</portlet:renderURL>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, childPatcherBuild, PatcherActionKeys.FIXES, childPatcherBuild.getUserId()) %>">
-					<liferay-ui:icon
-						image="view"
-						message="view-fixes"
-						method="get"
-						url="<%= viewPatcherBuildPatcherFixesURL %>"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<clay:dropdown-actions
+				aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+				dropdownItems="<%= patcherChildBuildsDisplayContext.getDropdownItems(childPatcherBuild) %>"
+			/>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 

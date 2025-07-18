@@ -5,9 +5,13 @@
 
 package com.liferay.osb.patcher.web.internal.display.context;
 
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.osb.patcher.constants.PatcherActionKeys;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
+import com.liferay.osb.patcher.permission.resource.PatcherPermission;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalServiceUtil;
 import com.liferay.osb.patcher.util.PatcherProductVersionUtil;
@@ -15,6 +19,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -23,9 +28,12 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.search.SearchResultUtil;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
@@ -47,6 +55,57 @@ public class PatcherProjectVersionsDisplayContext {
 		_httpServletRequest = httpServletRequest;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+	}
+
+	public List<DropdownItem> getDropdownItems(
+		PatcherProjectVersion patcherProjectVersion) {
+
+		return DropdownItemListBuilder.add(
+			() -> PatcherPermission.contains(
+				_themeDisplay.getPermissionChecker(), patcherProjectVersion,
+				PatcherActionKeys.EDIT, patcherProjectVersion.getUserId()),
+			dropdownItem -> {
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_renderResponse
+					).setMVCRenderCommandName(
+						"/patcher/edit_project_versions"
+					).setRedirect(
+						_themeDisplay.getURLCurrent()
+					).setParameter(
+						"patcherProjectVersionId",
+						patcherProjectVersion.getPatcherProjectVersionId()
+					).buildString());
+				dropdownItem.setIcon("pencil");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "edit"));
+			}
+		).add(
+			() -> PatcherPermission.contains(
+				_themeDisplay.getPermissionChecker(), patcherProjectVersion,
+				ActionKeys.DELETE, patcherProjectVersion.getUserId()),
+			dropdownItem -> {
+				dropdownItem.putData("action", "delete");
+				dropdownItem.putData(
+					"url",
+					PortletURLBuilder.createActionURL(
+						_renderResponse
+					).setActionName(
+						"/patcher/delete_project_versions"
+					).setRedirect(
+						_themeDisplay.getURLCurrent()
+					).setParameter(
+						"patcherProjectVersionId",
+						patcherProjectVersion.getPatcherProjectVersionId()
+					).buildString());
+				dropdownItem.setIcon("trash");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "delete"));
+			}
+		).build();
 	}
 
 	public JSONArray getDXP70AndNewerPatcherProductVersionIdsJSONArray() {
@@ -226,5 +285,6 @@ public class PatcherProjectVersionsDisplayContext {
 	private String _redirect;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private final ThemeDisplay _themeDisplay;
 
 }

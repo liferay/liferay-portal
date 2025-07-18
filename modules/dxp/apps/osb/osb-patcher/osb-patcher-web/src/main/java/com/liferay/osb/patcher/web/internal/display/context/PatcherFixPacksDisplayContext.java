@@ -5,11 +5,18 @@
 
 package com.liferay.osb.patcher.web.internal.display.context;
 
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.osb.patcher.constants.PatcherActionKeys;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
+import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.model.PatcherFixPack;
+import com.liferay.osb.patcher.permission.resource.PatcherPermission;
+import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixPackLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
@@ -19,14 +26,18 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.search.SearchResultUtil;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
  * @author Eudaldo Alonso
@@ -40,6 +51,66 @@ public class PatcherFixPacksDisplayContext {
 		_httpServletRequest = httpServletRequest;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+	}
+
+	public List<DropdownItem> getDropdownItems(PatcherFixPack patcherFixPack) {
+		return DropdownItemListBuilder.add(
+			() -> PatcherPermission.contains(
+				_themeDisplay.getPermissionChecker(), patcherFixPack,
+				PatcherActionKeys.EDIT, patcherFixPack.getUserId()),
+			dropdownItem -> {
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_renderResponse
+					).setMVCRenderCommandName(
+						"/patcher/edit_fix_packs"
+					).setRedirect(
+						_themeDisplay.getURLCurrent()
+					).setParameter(
+						"patcherFixPackId", patcherFixPack.getPatcherFixPackId()
+					).buildString());
+				dropdownItem.setIcon("pencil");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "edit"));
+			}
+		).add(
+			() -> {
+				PatcherBuild patcherBuild =
+					PatcherBuildLocalServiceUtil.fetchPatcherBuild(
+						patcherFixPack.getPatcherBuildId());
+
+				if ((patcherBuild != null) &&
+					(patcherBuild.getStatus() ==
+						WorkflowConstants.STATUS_BUILD_COMPLETE)) {
+
+					return true;
+				}
+
+				return false;
+			},
+			dropdownItem -> {
+				dropdownItem.putData("action", "submitForm");
+				dropdownItem.putData(
+					"url",
+					PortletURLBuilder.createActionURL(
+						_renderResponse
+					).setActionName(
+						"/patcher/test_builds"
+					).setRedirect(
+						_themeDisplay.getURLCurrent()
+					).setParameter(
+						"patcherFixPackId", patcherFixPack.getPatcherFixPackId()
+					).setParameter(
+						"status",
+						WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED
+					).buildString());
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "test"));
+			}
+		).build();
 	}
 
 	public SearchContainer<PatcherFixPack> getSearchContainer()
@@ -165,5 +236,6 @@ public class PatcherFixPacksDisplayContext {
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private Integer _status;
+	private final ThemeDisplay _themeDisplay;
 
 }

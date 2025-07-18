@@ -405,161 +405,15 @@ else if (!patcherBuild.getLatestKeyBuild()) {
 				/>
 			</c:if>
 
-			<liferay-ui:icon-menu
-				cssClass="osb-patcher-icon-menu"
-			>
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT, patcherBuild.getUserId()) && PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<portlet:renderURL var="createPatcherBuildTemplateURL">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/add_builds" />
-						<portlet:param name="templatePatcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						message="use-as-build-template"
-						method="get"
-						url="<%= createPatcherBuildTemplateURL %>"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_COMMENTS_FIELD, patcherBuild.getUserId()) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<portlet:renderURL var="editPatcherBuildCommentsFieldURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_comments_field_builds" />
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						message="edit-engineer-comments"
-						method="get"
-						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "edit-engineer-comments-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + editPatcherBuildCommentsFieldURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.EDIT_QA_FIELDS, patcherBuild.getUserId()) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<portlet:renderURL var="editPatcherBuildQAFieldsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_qa_fields_builds" />
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						message="edit-qa-status"
-						method="get"
-						onClick='<%= liferayPortletResponse.getNamespace() + "handleClick('" + UnicodeLanguageUtil.format(request, "edit-qa-status-for-build-id-x", patcherBuild.getPatcherBuildId()) + "', '" + editPatcherBuildQAFieldsURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherBuild, PatcherActionKeys.SEND_REQUEST, patcherBuild.getUserId()) && JenkinsUtil.isValidJenkinsSetup() && JenkinsUtil.isValidSendDistJenkinsRequest(patcherBuild) && (patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK) %>">
-					<portlet:actionURL name="/patcher/build_builds" var="buildPatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="build"
-						method="get"
-						url="<%= buildPatcherBuildURL %>"
-					/>
-				</c:if>
-
-				<c:if test="<%= patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-					<portlet:actionURL name="/patcher/test_builds" var="testPatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="test"
-						method="get"
-						url="<%= testPatcherBuildURL %>"
-					/>
-
-					<portlet:actionURL name="/patcher/test_builds" var="smokeTestPatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="smoke-test"
-						method="get"
-						url="<%= smokeTestPatcherBuildURL %>"
-					/>
-				</c:if>
-
-				<c:if test="<%= patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE %>">
-
-					<%
-					String releaseConfirmMessageKey = "this-patch-has-not-passed-qa-testing-are-you-sure-you-want-to-release-this-patch-to-the-customer";
-
-					if (PatcherBuildUtil.isTestingPassed(patcherBuild)) {
-						releaseConfirmMessageKey = "are-you-sure-you-want-to-release-this-patch-to-the-customer";
-					}
-					%>
-
-					<portlet:actionURL name="/patcher/release_builds" var="releasePatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="ready-for-release"
-						method="get"
-						onClick='<%= liferayPortletResponse.getNamespace() + "confirm('" + LanguageUtil.get(request, releaseConfirmMessageKey) + "', '" + releasePatcherBuildURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-
-				<c:if test="<%= (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE) || (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_READY_TO_RELEASE) %>">
-
-					<%
-					String releaseConfirmMessageKey = "this-patch-has-not-passed-qa-testing-are-you-sure-you-want-to-release-this-patch-to-the-customer";
-
-					if (PatcherBuildUtil.isTestingPassed(patcherBuild)) {
-						releaseConfirmMessageKey = "are-you-sure-you-want-to-release-this-patch-to-the-customer";
-					}
-					%>
-
-					<portlet:actionURL name="/patcher/release_builds" var="releasePatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_RELEASED) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="release-manually"
-						method="get"
-						onClick='<%= liferayPortletResponse.getNamespace() + "confirm('" + LanguageUtil.get(request, releaseConfirmMessageKey) + "', '" + releasePatcherBuildURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-
-					<portlet:actionURL name="/patcher/release_builds" var="releasePatcherBuildURL">
-						<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_RELEASED) %>" />
-						<portlet:param name="releaseToHelpCenter" value="<%= Boolean.TRUE.toString() %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="release-to-help-center"
-						method="get"
-						onClick='<%= liferayPortletResponse.getNamespace() + "confirm('" + LanguageUtil.get(request, releaseConfirmMessageKey) + "', '" + releasePatcherBuildURL + "');" %>'
-						url="javascript:void(0);"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<div class="btn-group-item">
+				<clay:dropdown-menu
+					aria-label='<%= LanguageUtil.get(request, "actions") %>'
+					cssClass="btn btn-secondary"
+					dropdownItems="<%= patcherViewBuildsDisplayContext.getDropdownItems(patcherBuild) %>"
+					label='<%= LanguageUtil.get(request, "actions") %>'
+					propsTransformer="{PatcherDropdownDefaultPropsTransformer} from osb-patcher-web"
+				/>
+			</div>
 		</aui:button-row>
 	</clay:sheet>
 </clay:container-fluid>
@@ -645,14 +499,4 @@ SearchContainer<PatcherBuild> patcherBuildSearchContainer = patcherViewBuildsDis
 			url: url,
 		});
 	}
-
-	Liferay.provide(
-		window,
-		'<portlet:namespace />confirm',
-		function (message, url) {
-			if (confirm(message)) {
-				window.location.href = url;
-			}
-		}
-	);
 </aui:script>

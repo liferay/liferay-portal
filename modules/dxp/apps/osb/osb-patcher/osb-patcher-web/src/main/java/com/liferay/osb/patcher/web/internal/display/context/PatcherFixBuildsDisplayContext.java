@@ -7,20 +7,18 @@ package com.liferay.osb.patcher.web.internal.display.context;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
-import com.liferay.osb.patcher.constants.PatcherActionKeys;
+import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
-import com.liferay.osb.patcher.permission.resource.PatcherPermission;
+import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
+import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.util.JenkinsUtil;
-import com.liferay.osb.patcher.util.PatcherBuildRelUtil;
-import com.liferay.osb.patcher.util.PatcherBuildUtil;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -32,6 +30,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
@@ -45,13 +44,15 @@ import java.util.List;
 /**
  * @author Eudaldo Alonso
  */
-public class PatcherBuildsDisplayContext {
+public class PatcherFixBuildsDisplayContext {
 
-	public PatcherBuildsDisplayContext(
-		HttpServletRequest httpServletRequest, RenderRequest renderRequest,
+	public PatcherFixBuildsDisplayContext(
+		HttpServletRequest httpServletRequest,
+		PatcherConfiguration patcherConfiguration, RenderRequest renderRequest,
 		RenderResponse renderResponse) {
 
 		_httpServletRequest = httpServletRequest;
+		_patcherConfiguration = patcherConfiguration;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
 
@@ -60,124 +61,14 @@ public class PatcherBuildsDisplayContext {
 	}
 
 	public List<DropdownItem> getDropdownItems(PatcherBuild patcherBuild) {
+		PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
+			getPatcherFixId());
+
 		return DropdownItemListBuilder.add(
 			() ->
-				PatcherPermission.contains(
-					_themeDisplay.getPermissionChecker(), patcherBuild,
-					PatcherActionKeys.EDIT, patcherBuild.getUserId()) &&
-				PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) &&
-				(patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK),
-			dropdownItem -> {
-				dropdownItem.setHref(
-					PortletURLBuilder.createRenderURL(
-						_renderResponse
-					).setMVCRenderCommandName(
-						"/patcher/edit_builds"
-					).setRedirect(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"patcherBuildId", patcherBuild.getPatcherBuildId()
-					).buildString());
-				dropdownItem.setIcon("pencil");
-				dropdownItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "edit"));
-			}
-		).add(
-			() ->
-				PatcherPermission.contains(
-					_themeDisplay.getPermissionChecker(), patcherBuild,
-					PatcherActionKeys.EDIT, patcherBuild.getUserId()) &&
-				PatcherBuildUtil.isLatestPatcherBuild(patcherBuild) &&
-				(patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK),
-			dropdownItem -> {
-				dropdownItem.setHref(
-					PortletURLBuilder.createRenderURL(
-						_renderResponse
-					).setMVCRenderCommandName(
-						"/patcher/add_builds"
-					).setRedirect(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"templatePatcherBuildId",
-						patcherBuild.getPatcherBuildId()
-					).buildString());
-				dropdownItem.setIcon("pencil");
-				dropdownItem.setLabel(
-					LanguageUtil.get(
-						_httpServletRequest, "use-as-build-template"));
-			}
-		).add(
-			() ->
-				PatcherPermission.contains(
-					_themeDisplay.getPermissionChecker(), patcherBuild,
-					PatcherActionKeys.EDIT_COMMENTS_FIELD,
-					patcherBuild.getUserId()) &&
-				(patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK),
-			dropdownItem -> {
-				dropdownItem.putData("action", "openModal");
-				dropdownItem.putData(
-					"title",
-					LanguageUtil.format(
-						_httpServletRequest,
-						"edit-engineer-comments-for-build-id-x",
-						patcherBuild.getPatcherBuildId()));
-				dropdownItem.putData(
-					"url",
-					PortletURLBuilder.createRenderURL(
-						_renderResponse
-					).setMVCRenderCommandName(
-						"/patcher/edit_comments_field_builds"
-					).setRedirect(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"patcherBuildId", patcherBuild.getPatcherBuildId()
-					).setWindowState(
-						LiferayWindowState.POP_UP
-					).buildString());
-				dropdownItem.setIcon("pencil");
-				dropdownItem.setLabel(
-					LanguageUtil.get(
-						_httpServletRequest, "edit-engineer-comments"));
-			}
-		).add(
-			() ->
-				PatcherPermission.contains(
-					_themeDisplay.getPermissionChecker(), patcherBuild,
-					PatcherActionKeys.EDIT_QA_FIELDS,
-					patcherBuild.getUserId()) &&
-				(patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK),
-			dropdownItem -> {
-				dropdownItem.putData("action", "openModal");
-				dropdownItem.putData(
-					"title",
-					LanguageUtil.format(
-						_httpServletRequest, "edit-qa-status-for-build-id-x",
-						patcherBuild.getPatcherBuildId()));
-				dropdownItem.putData(
-					"url",
-					PortletURLBuilder.createRenderURL(
-						_renderResponse
-					).setMVCRenderCommandName(
-						"/patcher/edit_qa_fields_builds"
-					).setRedirect(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"patcherBuildId", patcherBuild.getPatcherBuildId()
-					).setWindowState(
-						LiferayWindowState.POP_UP
-					).buildString());
-				dropdownItem.setIcon("pencil");
-				dropdownItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "edit-qa-status"));
-			}
-		).add(
-			() ->
-				PatcherPermission.contains(
-					_themeDisplay.getPermissionChecker(), patcherBuild,
-					PatcherActionKeys.SEND_REQUEST, patcherBuild.getUserId()) &&
+				Validator.isNotNull(patcherFix.getGitHash()) &&
 				JenkinsUtil.isValidJenkinsSetup() &&
-				JenkinsUtil.isValidSendDistJenkinsRequest(patcherBuild) &&
-				(patcherBuild.getType() != PatcherBuildConstants.TYPE_FIX_PACK),
+				JenkinsUtil.isValidSendDistJenkinsRequest(patcherBuild),
 			dropdownItem -> {
 				dropdownItem.putData("action", "submitForm");
 				dropdownItem.putData(
@@ -243,65 +134,37 @@ public class PatcherBuildsDisplayContext {
 			}
 		).add(
 			() ->
-				PatcherPermission.contains(
-					_themeDisplay.getPermissionChecker(), patcherBuild,
-					PatcherActionKeys.FIXES, patcherBuild.getUserId()) &&
-				!PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild),
+				patcherBuild.getStatus() ==
+					WorkflowConstants.STATUS_BUILD_COMPLETE,
 			dropdownItem -> {
-				dropdownItem.putData("action", "openModal");
-				dropdownItem.putData(
-					"title",
-					LanguageUtil.format(
-						_httpServletRequest, "view-fixes-for-build-id-x",
-						patcherBuild.getPatcherBuildId()));
-				dropdownItem.putData(
-					"url",
-					PortletURLBuilder.createRenderURL(
-						_renderResponse
-					).setMVCRenderCommandName(
-						"/patcher/view_fixes_builds"
-					).setRedirect(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"patcherBuildId", patcherBuild.getPatcherBuildId()
-					).setWindowState(
-						LiferayWindowState.POP_UP
-					).buildString());
-				dropdownItem.setIcon("view");
+				String fileName = patcherBuild.getFileName();
+
+				String hotfixURL =
+					"https://releases-cdn.liferay.com/dxp/hotfix/" + fileName;
+
+				if (!fileName.contains("/liferay-dxp-")) {
+					hotfixURL =
+						_patcherConfiguration.patcherBuildDownloadURL() + "/" +
+							fileName;
+				}
+
+				dropdownItem.setHref(hotfixURL);
+
+				dropdownItem.setIcon("download");
 				dropdownItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "view-fixes"));
-			}
-		).add(
-			() ->
-				PatcherPermission.contains(
-					_themeDisplay.getPermissionChecker(), patcherBuild,
-					PatcherActionKeys.CHILD_BUILDS, patcherBuild.getUserId()) &&
-				PatcherBuildRelUtil.hasChildPatcherBuilds(patcherBuild),
-			dropdownItem -> {
-				dropdownItem.putData("action", "openModal");
-				dropdownItem.putData(
-					"title",
-					LanguageUtil.format(
-						_httpServletRequest, "view-child-builds-for-build-id-x",
-						patcherBuild.getPatcherBuildId()));
-				dropdownItem.putData(
-					"url",
-					PortletURLBuilder.createRenderURL(
-						_renderResponse
-					).setMVCRenderCommandName(
-						"/patcher/view_child_builds_builds"
-					).setRedirect(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"patcherBuildId", patcherBuild.getPatcherBuildId()
-					).setWindowState(
-						LiferayWindowState.POP_UP
-					).buildString());
-				dropdownItem.setIcon("view");
-				dropdownItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "view-child-builds"));
+					LanguageUtil.get(_httpServletRequest, "download"));
 			}
 		).build();
+	}
+
+	public long getPatcherFixId() {
+		if (_patcherFixId != null) {
+			return _patcherFixId;
+		}
+
+		_patcherFixId = ParamUtil.getLong(_httpServletRequest, "patcherFixId");
+
+		return _patcherFixId;
 	}
 
 	public SearchContainer<PatcherBuild> getSearchContainer() throws Exception {
@@ -453,6 +316,8 @@ public class PatcherBuildsDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
 	private SearchContainer<PatcherBuild> _patcherBuildSearchContainer;
+	private final PatcherConfiguration _patcherConfiguration;
+	private Long _patcherFixId;
 	private Long _patcherProjectVersionId;
 	private PortletURL _portletURL;
 	private Integer _qaStatus;

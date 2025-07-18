@@ -45,27 +45,10 @@ PatcherProductVersionsDisplayContext patcherProductVersionsDisplayContext = new 
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
-			<liferay-ui:icon-menu
-				direction="left-side"
-				icon="<%= StringPool.BLANK %>"
-				markupView="lexicon"
-				message="<%= StringPool.BLANK %>"
-				showWhenSingleIcon="<%= true %>"
-			>
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherProductVersion, PatcherActionKeys.EDIT, patcherProductVersion.getUserId()) %>">
-					<portlet:renderURL var="editPatcherProductVersionURL">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_product_versions" />
-						<portlet:param name="patcherProductVersionId" value="<%= String.valueOf(patcherProductVersion.getPatcherProductVersionId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						method="get"
-						url="<%= editPatcherProductVersionURL %>"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<clay:dropdown-actions
+				aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+				dropdownItems="<%= patcherProductVersionsDisplayContext.getDropdownItems(patcherProductVersion) %>"
+			/>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 

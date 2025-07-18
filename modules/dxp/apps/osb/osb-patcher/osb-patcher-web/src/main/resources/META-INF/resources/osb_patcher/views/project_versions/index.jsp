@@ -84,38 +84,11 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
-			<liferay-ui:icon-menu
-				direction="left-side"
-				icon="<%= StringPool.BLANK %>"
-				markupView="lexicon"
-				message="<%= StringPool.BLANK %>"
-				showWhenSingleIcon="<%= true %>"
-			>
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherProjectVersion, PatcherActionKeys.EDIT, patcherProjectVersion.getUserId()) %>">
-					<portlet:renderURL var="editPatcherProjectVersionURL">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_project_versions" />
-						<portlet:param name="patcherProjectVersionId" value="<%= String.valueOf(patcherProjectVersion.getPatcherProjectVersionId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						method="get"
-						url="<%= editPatcherProjectVersionURL %>"
-					/>
-				</c:if>
-
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherProjectVersion, ActionKeys.DELETE, patcherProjectVersion.getUserId()) %>">
-					<portlet:actionURL name="/patcher/delete_project_versions" var="deletePatcherProjectVersionURL">
-						<portlet:param name="patcherProjectVersionId" value="<%= String.valueOf(patcherProjectVersion.getPatcherProjectVersionId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon-delete
-						url="<%= deletePatcherProjectVersionURL %>"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<clay:dropdown-actions
+				aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+				dropdownItems="<%= patcherProjectVersionsDisplayContext.getDropdownItems(patcherProjectVersion) %>"
+				propsTransformer="{PatcherDropdownDefaultPropsTransformer} from osb-patcher-web"
+			/>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 

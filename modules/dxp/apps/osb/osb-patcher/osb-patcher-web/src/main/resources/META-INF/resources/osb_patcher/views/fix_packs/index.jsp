@@ -99,46 +99,11 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 		<liferay-ui:search-container-column-text
 			align="right"
 		>
-			<liferay-ui:icon-menu
-				direction="left-side"
-				icon="<%= StringPool.BLANK %>"
-				markupView="lexicon"
-				message="<%= StringPool.BLANK %>"
-				showWhenSingleIcon="<%= true %>"
-			>
-				<c:if test="<%= PatcherPermission.contains(permissionChecker, patcherFixPack, PatcherActionKeys.EDIT, patcherFixPack.getUserId()) %>">
-					<portlet:renderURL var="editPatcherFixPackURL">
-						<portlet:param name="mvcRenderCommandName" value="/patcher/edit_fix_packs" />
-						<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:renderURL>
-
-					<liferay-ui:icon
-						image="edit"
-						method="get"
-						url="<%= editPatcherFixPackURL %>"
-					/>
-				</c:if>
-
-				<%
-				PatcherBuild patcherBuild = PatcherBuildLocalServiceUtil.fetchPatcherBuild(patcherFixPack.getPatcherBuildId());
-				%>
-
-				<c:if test="<%= (patcherBuild != null) && (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_COMPLETE) %>">
-					<portlet:actionURL name="/patcher/test_builds" var="testPatcherFixPackURL">
-						<portlet:param name="patcherFixPackId" value="<%= String.valueOf(patcherFixPack.getPatcherFixPackId()) %>" />
-						<portlet:param name="status" value="<%= String.valueOf(WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED) %>" />
-						<portlet:param name="redirect" value="<%= currentURL %>" />
-					</portlet:actionURL>
-
-					<liferay-ui:icon
-						image="post"
-						message="test"
-						method="get"
-						url="<%= testPatcherFixPackURL %>"
-					/>
-				</c:if>
-			</liferay-ui:icon-menu>
+			<clay:dropdown-actions
+				aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+				dropdownItems="<%= patcherFixPacksDisplayContext.getDropdownItems(patcherFixPack) %>"
+				propsTransformer="{PatcherDropdownDefaultPropsTransformer} from osb-patcher-web"
+			/>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
 
