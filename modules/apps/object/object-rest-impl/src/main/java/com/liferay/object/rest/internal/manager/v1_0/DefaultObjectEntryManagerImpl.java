@@ -298,8 +298,19 @@ public class DefaultObjectEntryManagerImpl
 		_checkObjectEntryObjectDefinitionId(
 			objectDefinition, serviceBuilderObjectEntry);
 
-		_objectEntryService.deleteObjectEntry(
-			serviceBuilderObjectEntry.getObjectEntryId());
+		if (serviceBuilderObjectEntry.getStatus() ==
+				WorkflowConstants.STATUS_IN_TRASH) {
+
+			_objectEntryService.deleteObjectEntry(
+				serviceBuilderObjectEntry.getObjectEntryId());
+
+			return;
+		}
+
+		_objectEntryService.moveObjectEntryToTrash(
+			dtoConverterContext.getUserId(), serviceBuilderObjectEntry,
+			ServiceContextUtil.createServiceContext(
+				serviceBuilderObjectEntry.getObjectEntryId()));
 	}
 
 	@Override
@@ -307,11 +318,26 @@ public class DefaultObjectEntryManagerImpl
 			ObjectDefinition objectDefinition, long objectEntryId)
 		throws Exception {
 
-		_checkObjectEntryObjectDefinitionId(
-			objectDefinition,
-			_objectEntryService.getObjectEntry(objectEntryId));
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+			_objectEntryService.getObjectEntry(objectEntryId);
 
-		_objectEntryService.deleteObjectEntry(objectEntryId);
+		_checkObjectEntryObjectDefinitionId(
+			objectDefinition, serviceBuilderObjectEntry);
+
+		if (serviceBuilderObjectEntry.getStatus() ==
+				WorkflowConstants.STATUS_IN_TRASH) {
+
+			_objectEntryService.deleteObjectEntry(objectEntryId);
+
+			return;
+		}
+
+		ServiceContext serviceContext = ServiceContextUtil.createServiceContext(
+			serviceBuilderObjectEntry.getObjectEntryId());
+
+		_objectEntryService.moveObjectEntryToTrash(
+			serviceContext.getUserId(), serviceBuilderObjectEntry,
+			serviceContext);
 	}
 
 	@Override

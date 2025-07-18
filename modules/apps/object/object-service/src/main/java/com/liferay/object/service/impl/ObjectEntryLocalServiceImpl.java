@@ -719,6 +719,9 @@ public class ObjectEntryLocalServiceImpl
 					objectDefinition.getClassName()),
 				objectEntry.getObjectEntryId());
 
+			_trashEntryLocalService.deleteEntry(
+				objectDefinition.getClassName(), objectEntry.getPrimaryKey());
+
 			_deleteFromLocalizationTable(
 				objectDefinition, objectEntry.getObjectEntryId());
 
@@ -1742,7 +1745,9 @@ public class ObjectEntryLocalServiceImpl
 			throw new TrashEntryException();
 		}
 
-		int oldStatus = objectEntry.getStatus();
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(
+				objectEntry.getObjectDefinitionId());
 
 		List<ObjectEntryVersion> objectEntryVersions =
 			_objectEntryVersionLocalService.getObjectEntryVersions(
@@ -1760,12 +1765,14 @@ public class ObjectEntryLocalServiceImpl
 				objectEntryVersions);
 		}
 
+		int oldStatus = objectEntry.getStatus();
+
 		objectEntry = updateStatus(
 			userId, objectEntry, WorkflowConstants.STATUS_IN_TRASH,
 			serviceContext);
 
 		_trashEntryLocalService.addTrashEntry(
-			userId, objectEntry.getGroupId(), ObjectEntry.class.getName(),
+			userId, objectEntry.getGroupId(), objectDefinition.getClassName(),
 			objectEntry.getObjectEntryId(), objectEntry.getUuid(), null,
 			oldStatus, objectEntryVersionStatusOVPs,
 			UnicodePropertiesBuilder.put(
