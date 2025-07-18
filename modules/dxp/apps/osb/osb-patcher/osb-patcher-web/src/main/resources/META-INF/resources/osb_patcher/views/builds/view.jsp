@@ -278,7 +278,25 @@ else if (!patcherBuild.getLatestKeyBuild()) {
 			</p>
 
 			<p class="text-secondary">
-				<%= patcherBuild.getName() %>
+
+				<%
+				List<String> tickets = ListUtil.sort(StringUtil.split(patcherBuild.getName()));
+
+				for (String ticket : tickets) {
+				%>
+
+					<clay:link
+						href='<%= "https://liferay.atlassian.net/browse/" + ticket %>'
+						label="<%= ticket %>"
+						target="_blank"
+					/>
+
+					<%= StringPool.NBSP %>
+
+				<%
+				}
+				%>
+
 			</p>
 		</div>
 
@@ -638,14 +656,4 @@ SearchContainer<PatcherBuild> patcherBuildSearchContainer = patcherViewBuildsDis
 			}
 		}
 	);
-
-	YUI().ready('aui-popover', function (Y) {
-		var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-		var tickets = document.getElementById(
-			'_1_WAR_osbpatcherportlet_patcherBuildName'
-		);
-		var trigger = Y.one('#_1_WAR_osbpatcherportlet_patcherBuildName');
-
-		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
-	});
 </aui:script>

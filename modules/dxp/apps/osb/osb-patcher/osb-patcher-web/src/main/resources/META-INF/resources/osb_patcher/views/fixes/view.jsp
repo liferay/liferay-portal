@@ -195,7 +195,25 @@ if (!patcherFix.isLatestFix()) {
 			</p>
 
 			<p class="text-secondary">
-				<%= patcherFix.getName() %>
+
+				<%
+				List<String> tickets = ListUtil.sort(StringUtil.split(patcherFix.getName()));
+
+				for (String ticket : tickets) {
+				%>
+
+					<clay:link
+						href='<%= "https://liferay.atlassian.net/browse/" + ticket %>'
+						label="<%= ticket %>"
+						target="_blank"
+					/>
+
+					<%= StringPool.NBSP %>
+
+				<%
+				}
+				%>
+
 			</p>
 		</div>
 
@@ -372,14 +390,4 @@ SearchContainer<PatcherFix> patcherFixSearchContainer = patcherViewFixesDisplayC
 			url: url,
 		});
 	}
-
-	YUI().ready('aui-popover', function (Y) {
-		var align_points = [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC];
-		var tickets = document.getElementById(
-			'<portlet:namespace />patcherFixName'
-		);
-		var trigger = Y.one('#<portlet:namespace />patcherFixName');
-
-		Liferay.Patcher.getTicketLinksPopover(Y, align_points, tickets, trigger);
-	});
 </aui:script>
