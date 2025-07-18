@@ -23,10 +23,10 @@ public class ViewWorkflowTasksJSPSectionFragmentRenderer
 
 	@Override
 	public String getLabelKey() {
-		return "workflowTasks";
+		return "cms-workflow-tasks";
 	}
 
-    @Override
+	@Override
 	protected ViewWorkflowTasksDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
@@ -34,7 +34,7 @@ public class ViewWorkflowTasksJSPSectionFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
 	}
-    
+
 	@Override
 	protected String getJSPPath() {
 		return "/view_workflow_tasks.jsp";

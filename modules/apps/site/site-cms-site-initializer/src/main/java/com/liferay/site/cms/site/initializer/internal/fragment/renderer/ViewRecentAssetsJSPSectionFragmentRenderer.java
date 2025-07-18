@@ -23,10 +23,10 @@ public class ViewRecentAssetsJSPSectionFragmentRenderer
 
 	@Override
 	public String getLabelKey() {
-		return "recentAssets";
+		return "recent-assets";
 	}
 
-    @Override
+	@Override
 	protected ViewRecentAssetsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 

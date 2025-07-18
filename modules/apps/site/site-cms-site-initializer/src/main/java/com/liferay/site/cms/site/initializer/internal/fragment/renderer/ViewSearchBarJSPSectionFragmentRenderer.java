@@ -23,10 +23,10 @@ public class ViewSearchBarJSPSectionFragmentRenderer
 
 	@Override
 	public String getLabelKey() {
-		return "searchBar";
+		return "cms-search-bar";
 	}
 
-    @Override
+	@Override
 	protected ViewSearchBarDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 

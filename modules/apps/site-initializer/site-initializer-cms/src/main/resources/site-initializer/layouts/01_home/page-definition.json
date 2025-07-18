@@ -2,11 +2,19 @@
 	"pageElement": {
 		"pageElements": [
 			{
-				"definition": {"indexed": true, "layout": {}},
+				"definition": {
+					"indexed": true,
+					"layout": {
+					}
+				},
 				"id": "27edfb44-ab3e-1169-1b7d-3c8ace340ecc",
 				"pageElements": [
 					{
-						"definition": {"indexed": true, "layout": {}},
+						"definition": {
+							"indexed": true,
+							"layout": {
+							}
+						},
 						"id": "2c14a5f5-e235-2951-a146-34999055341d",
 						"pageElements": [
 							{
@@ -14,8 +22,10 @@
 									"fragment": {
 										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSearchBarJSPSectionFragmentRenderer"
 									},
-									"fragmentConfig": {},
-									"fragmentFields": [],
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
 									"indexed": true
 								},
 								"type": "Fragment"
@@ -24,7 +34,11 @@
 						"type": "Section"
 					},
 					{
-						"definition": {"indexed": true, "layout": {}},
+						"definition": {
+							"indexed": true,
+							"layout": {
+							}
+						},
 						"id": "5d512a72-a41d-405d-334f-b7b73ed33053",
 						"pageElements": [
 							{
@@ -32,8 +46,10 @@
 									"fragment": {
 										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewQuickActionsJSPSectionFragmentRenderer"
 									},
-									"fragmentConfig": {},
-									"fragmentFields": [],
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
 									"indexed": true
 								},
 								"type": "Fragment"
@@ -57,9 +73,14 @@
 								},
 								{
 									"id": "portraitMobile",
-									"rowViewportDefinition": {}
+									"rowViewportDefinition": {
+									}
 								},
-								{"id": "tablet", "rowViewportDefinition": {}}
+								{
+									"id": "tablet",
+									"rowViewportDefinition": {
+									}
+								}
 							],
 							"verticalAlignment": "top"
 						},
@@ -75,11 +96,13 @@
 											"id": "landscapeMobile"
 										},
 										{
-											"columnViewportDefinition": {},
+											"columnViewportDefinition": {
+											},
 											"id": "portraitMobile"
 										},
 										{
-											"columnViewportDefinition": {},
+											"columnViewportDefinition": {
+											},
 											"id": "tablet"
 										}
 									],
@@ -92,8 +115,10 @@
 											"fragment": {
 												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewRecentAssetsJSPSectionFragmentRenderer"
 											},
-											"fragmentConfig": {},
-											"fragmentFields": [],
+											"fragmentConfig": {
+											},
+											"fragmentFields": [
+											],
 											"indexed": true
 										},
 										"type": "Fragment"
@@ -111,11 +136,13 @@
 											"id": "landscapeMobile"
 										},
 										{
-											"columnViewportDefinition": {},
+											"columnViewportDefinition": {
+											},
 											"id": "portraitMobile"
 										},
 										{
-											"columnViewportDefinition": {},
+											"columnViewportDefinition": {
+											},
 											"id": "tablet"
 										}
 									],
@@ -128,8 +155,10 @@
 											"fragment": {
 												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewWorkflowTasksJSPSectionFragmentRenderer"
 											},
-											"fragmentConfig": {},
-											"fragmentFields": [],
+											"fragmentConfig": {
+											},
+											"fragmentFields": [
+											],
 											"indexed": true
 										},
 										"type": "Fragment"
