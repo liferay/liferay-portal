@@ -1,7 +1,58 @@
 {
 	"pageElement": {
 		"pageElements": [
-
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewQuickActionsJSPSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewQuickActionsJSPSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewWorkflowTasksJSPSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true
+				},
+				"type": "Fragment"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSearchBarJSPSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true
+				},
+				"type": "Fragment"
+			}
 		],
 		"type": "Root"
 	},
