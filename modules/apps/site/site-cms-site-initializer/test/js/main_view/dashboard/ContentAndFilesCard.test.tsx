@@ -14,9 +14,9 @@ import React from 'react';
 import {
 	ContentAndFilesCard,
 	IMetricsProps,
-	TrendClassification,
 } from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/ContentAndFilesCard';
 import {RangeSelectors} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/RangeSelectorsDropdown';
+import {TrendClassification} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/utils/metrics';
 
 const mockedResponse: IMetricsProps = {
 	categoriesCount: 10,
