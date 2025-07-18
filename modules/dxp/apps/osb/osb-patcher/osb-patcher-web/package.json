@@ -8,6 +8,7 @@
 	},
 	"main": "js/index.js",
 	"name": "@liferay/osb-patcher-web",
+	"private": true,
 	"scripts": {
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
