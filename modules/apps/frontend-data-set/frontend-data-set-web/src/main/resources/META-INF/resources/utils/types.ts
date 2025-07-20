@@ -362,11 +362,20 @@ export {
 
 export {Card} from '../views/cards/Cards';
 
-export type TEmptyState = "DEFAULT" | "SEARCH" | "FILTERS" | "SEARCH_AND_FILTERS";
+export type TEmptyState =
+	| 'DEFAULT'
+	| 'SEARCH'
+	| 'FILTERS'
+	| 'SEARCH_AND_FILTERS';
 
-export const availablesEmptyStateType: {default: TEmptyState; search: TEmptyState, filters: TEmptyState, searchAndFilters: TEmptyState} = {
-	default: "DEFAULT",
-	search: "SEARCH",
-	filters: "FILTERS",
-	searchAndFilters: "SEARCH_AND_FILTERS",
+export const availablesEmptyStateType: {
+	default: TEmptyState;
+	search: TEmptyState;
+	filters: TEmptyState;
+	searchAndFilters: TEmptyState;
+} = {
+	default: 'DEFAULT',
+	search: 'SEARCH',
+	filters: 'FILTERS',
+	searchAndFilters: 'SEARCH_AND_FILTERS',
 };
