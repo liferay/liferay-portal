@@ -53,6 +53,7 @@ javax.interceptor:javax.interceptor-api=jakarta.interceptor:jakarta.interceptor-
 javax.jws:javax.jws-api=jakarta.jws:jakarta.jws-api:3.0.0
 javax.mvc:javax.mvc-api=jakarta.mvc:jakarta.mvc-api:2.1.0
 javax.portlet:portlet-api=com.liferay.jakarta.portlet:com.liferay.jakarta.portlet-api:4.0.0
+javax.servlet:servlet-api=jakarta.servlet:jakarta.servlet-api:6.0.0
 javax.servlet.jsp:javax.servlet.jsp-api=jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1
 javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api=jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2
 javax.transaction:javax.transaction-api=jakarta.transaction:jakarta.transaction-api:2.0.1
