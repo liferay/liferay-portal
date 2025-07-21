@@ -241,6 +241,12 @@ public class PatcherBuildLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public PatcherBuild updatePatcherBuild(PatcherBuild patcherBuild) {
+		return super.updatePatcherBuild(patcherBuild);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public PatcherBuild updatePatcherFixId(
 			long patcherBuildId, long patcherFixId)
 		throws PortalException {

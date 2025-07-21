@@ -198,6 +198,12 @@ public class PatcherFixPackLocalServiceImpl
 		return patcherFixPackPersistence.update(patcherFixPack);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherFixPack updatePatcherFixPack(PatcherFixPack patcherFixPack) {
+		return super.updatePatcherFixPack(patcherFixPack);
+	}
+
 	private void _validateAdd(long patcherFixComponentId, int version)
 		throws PortalException {
 

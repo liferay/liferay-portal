@@ -291,6 +291,12 @@ public class PatcherFixLocalServiceImpl extends PatcherFixLocalServiceBaseImpl {
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public PatcherFix updatePatcherFix(PatcherFix patcherFix) {
+		return super.updatePatcherFix(patcherFix);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public PatcherFix updateRequestKey(long patcherFixId, String requestKey)
 		throws PortalException {
 
