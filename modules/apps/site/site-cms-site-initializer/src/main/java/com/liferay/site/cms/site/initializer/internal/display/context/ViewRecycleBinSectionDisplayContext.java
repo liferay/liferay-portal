@@ -5,10 +5,19 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.service.ObjectDefinitionService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,29 +26,60 @@ import java.util.Map;
 /**
  * @author Pedro Leite
  */
-public class ViewRecycleBinSectionDisplayContext {
+public class ViewRecycleBinSectionDisplayContext
+	extends BaseSectionDisplayContext {
 
 	public ViewRecycleBinSectionDisplayContext(
-		HttpServletRequest httpServletRequest) {
+		DepotEntryLocalService depotEntryLocalService,
+		GroupLocalService groupLocalService,
+		HttpServletRequest httpServletRequest, Language language,
+		ObjectDefinitionService objectDefinitionService,
+		ObjectDefinitionSettingLocalService objectDefinitionSettingLocalService,
+		ModelResourcePermission<ObjectEntryFolder>
+			objectEntryFolderModelResourcePermission,
+		Portal portal) {
 
-		_httpServletRequest = httpServletRequest;
+		super(
+			depotEntryLocalService, groupLocalService, httpServletRequest,
+			language, objectDefinitionService,
+			objectDefinitionSettingLocalService,
+			objectEntryFolderModelResourcePermission, portal);
 	}
 
-	public String getAPIURL() throws PortalException {
-		return StringPool.BLANK;
+	@Override
+	public CreationMenu getCreationMenu() {
+		return null;
 	}
 
 	public Map<String, Object> getEmptyState() {
 		return HashMapBuilder.<String, Object>put(
 			"description",
-			LanguageUtil.get(_httpServletRequest, "the-recycle-bin-is-empty")
+			LanguageUtil.get(httpServletRequest, "the-recycle-bin-is-empty")
 		).put(
 			"image", "/states/cms_empty_state_files.svg"
 		).put(
-			"title", LanguageUtil.get(_httpServletRequest, "no-assets-yet")
+			"title", LanguageUtil.get(httpServletRequest, "no-assets-yet")
 		).build();
 	}
 
-	private final HttpServletRequest _httpServletRequest;
+	@Override
+	protected String getCMSSectionFilterString() {
+		return "(cmsSection eq 'contents' or cmsSection eq 'files') and " +
+			"cmsKind eq 'object' and status eq " +
+				WorkflowConstants.STATUS_IN_TRASH;
+	}
+
+	@Override
+	protected String[] getObjectFolderExternalReferenceCodes() {
+		return new String[] {
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES
+		};
+	}
+
+	@Override
+	protected String getRootObjectEntryFolderExternalReferenceCode() {
+		return null;
+	}
 
 }
