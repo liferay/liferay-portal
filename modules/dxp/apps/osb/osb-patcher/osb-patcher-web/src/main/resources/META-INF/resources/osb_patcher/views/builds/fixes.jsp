@@ -64,9 +64,8 @@ else if (patcherFixes.size() > 1) {
 				<clay:link
 					aria-label='<%= LanguageUtil.get(request, "this-fix-is-obsolete") %>'
 					cssClass="lfr-portal-tooltip"
-					href="javascript:void(0);"
+					href="<%= viewPatcherFixURL %>"
 					icon="check-circle"
-					onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherFixURL + "')" %>'
 					title='<%= LanguageUtil.get(request, "this-fix-is-obsolete") %>'
 				/>
 			</c:if>
@@ -78,7 +77,7 @@ else if (patcherFixes.size() > 1) {
 			<clay:link
 				href="javascript:void(0);"
 				label="<%= String.valueOf(patcherFix.getPatcherFixId()) %>"
-				onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherFixURL + "'); " %>'
+				onClick="<%= viewPatcherFixURL %>"
 			/>
 		</liferay-ui:search-container-column-text>
 
@@ -165,9 +164,5 @@ else if (patcherFixes.size() > 1) {
 			title: title,
 			url: url,
 		});
-	}
-
-	function <portlet:namespace />navigateWindow(targetURL) {
-		window.location.href = targetURL;
 	}
 </aui:script>

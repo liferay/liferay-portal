@@ -29,37 +29,27 @@ List<PatcherFix> patcherFixes = PatcherFixUtil.getParentPatcherFixes(childPatche
 		keyProperty="patcherFixId"
 		modelVar="patcherFix"
 	>
-		<portlet:renderURL var="viewPatcherFixPatcherFixesURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes_fixes" />
-			<portlet:param name="patcherFixId" value="<%= String.valueOf(childPatcherFix.getPatcherFixId()) %>" />
-		</portlet:renderURL>
-
 		<portlet:renderURL var="viewPatcherFixURL">
 			<portlet:param name="mvcRenderCommandName" value="/patcher/view_fixes" />
 			<portlet:param name="patcherFixId" value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>" />
-			<portlet:param name="redirect" value="<%= viewPatcherFixPatcherFixesURL %>" />
+			<portlet:param name="redirect" value="<%= currentURL %>" />
 		</portlet:renderURL>
 
 		<liferay-ui:search-container-column-text>
 			<c:if test="<%= patcherFix.isObsolete() %>">
-				<clay:button
-					displayType="link"
+				<clay:link
+					href="<%= viewPatcherFixURL %>"
 					icon="warning"
-					onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherFixURL + "'); " %>'
 					title='<%= LanguageUtil.get(request, "this-fix-is-obsolete") %>'
 				/>
 			</c:if>
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text
+			href="<%= viewPatcherFixURL %>"
 			name="fix-id"
-		>
-			<clay:link
-				href="javascript:void(0);"
-				label="<%= String.valueOf(patcherFix.getPatcherFixId()) %>"
-				onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherFixURL + "'); " %>'
-			/>
-		</liferay-ui:search-container-column-text>
+			value="<%= String.valueOf(patcherFix.getPatcherFixId()) %>"
+		/>
 
 		<liferay-ui:search-container-column-text
 			name="content"
@@ -110,9 +100,3 @@ List<PatcherFix> patcherFixes = PatcherFixUtil.getParentPatcherFixes(childPatche
 		paginate="<%= false %>"
 	/>
 </liferay-ui:search-container>
-
-<aui:script>
-	function <portlet:namespace />navigateWindow(targetURL) {
-		window.location.href = targetURL;
-	}
-</aui:script>

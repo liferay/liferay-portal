@@ -40,9 +40,8 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 						<clay:link
 							aria-label='<%= LanguageUtil.get(request, "this-build-is-obsolete") %>'
 							cssClass="lfr-portal-tooltip"
-							href="javascript:void(0);"
+							href="<%= viewPatcherBuildPatcherFixesURL %>"
 							icon="check-circle"
-							onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherBuildPatcherFixesURL + "'); " %>'
 							title='<%= LanguageUtil.get(request, "this-build-is-obsolete") %>'
 						/>
 					</c:when>
@@ -65,7 +64,7 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 			</c:if>
 		</liferay-ui:search-container-column-text>
 
-		<portlet:renderURL var="viewPatcherBuildURL">
+		<portlet:renderURL var="viewPatcherBuildURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 			<portlet:param name="mvcRenderCommandName" value="/patcher/view_builds" />
 			<portlet:param name="patcherBuildId" value="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
@@ -74,10 +73,9 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 		<liferay-ui:search-container-column-text
 			name="build-id"
 		>
-			<clay:button
-				displayType="link"
+			<clay:link
+				href="<%= viewPatcherBuildURL %>"
 				icon="warning"
-				onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherBuildURL + "'); " %>'
 				title="<%= String.valueOf(patcherBuild.getPatcherBuildId()) %>"
 			/>
 		</liferay-ui:search-container-column-text>
@@ -186,9 +184,3 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 		paginate="<%= false %>"
 	/>
 </liferay-ui:search-container>
-
-<aui:script>
-	function <portlet:namespace />navigateWindow(targetURL) {
-		window.location.href = targetURL;
-	}
-</aui:script>

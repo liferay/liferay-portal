@@ -41,9 +41,8 @@ List<PatcherBuild> childPatcherBuilds = PatcherBuildRelUtil.getChildPatcherBuild
 			name="build-id"
 		>
 			<clay:link
-				href="javascript:void(0);"
+				href="<%= viewPatcherBuildURL %>"
 				label="<%= String.valueOf(childPatcherBuild.getPatcherBuildId()) %>"
-				onClick='<%= liferayPortletResponse.getNamespace() + "navigateWindow('" + viewPatcherBuildURL + "'); " %>'
 			/>
 		</liferay-ui:search-container-column-text>
 
@@ -118,13 +117,3 @@ List<PatcherBuild> childPatcherBuilds = PatcherBuildRelUtil.getChildPatcherBuild
 		paginate="<%= false %>"
 	/>
 </liferay-ui:search-container>
-
-<aui:script>
-	Liferay.provide(
-		window,
-		'<portlet:namespace />navigateWindow',
-		function (targetURL) {
-			window.location.href = targetURL;
-		}
-	);
-</aui:script>
