@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.trash.TrashRenderer;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -43,7 +44,7 @@ import java.util.Locale;
  * @author Feliphe Marinho
  */
 public class ObjectEntryAssetRenderer
-	extends BaseJSPAssetRenderer<ObjectEntry> {
+	extends BaseJSPAssetRenderer<ObjectEntry> implements TrashRenderer {
 
 	public ObjectEntryAssetRenderer(
 			AssetDisplayPageFriendlyURLProvider
@@ -277,4 +278,13 @@ public class ObjectEntryAssetRenderer
 		_objectEntryDisplayContextFactory;
 	private final ObjectEntryService _objectEntryService;
 
+	@Override
+	public String getPortletId() {
+		return _objectDefinition.getPortletId();
+	}
+
+	@Override
+	public String getType() {
+		return _objectDefinition.getClassName();
+	}
 }

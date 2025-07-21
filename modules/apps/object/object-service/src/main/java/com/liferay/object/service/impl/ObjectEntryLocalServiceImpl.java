@@ -1745,10 +1745,6 @@ public class ObjectEntryLocalServiceImpl
 			throw new TrashEntryException();
 		}
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.findByPrimaryKey(
-				objectEntry.getObjectDefinitionId());
-
 		List<ObjectEntryVersion> objectEntryVersions =
 			_objectEntryVersionLocalService.getObjectEntryVersions(
 				objectEntry.getObjectEntryId());
@@ -1771,8 +1767,9 @@ public class ObjectEntryLocalServiceImpl
 			userId, objectEntry, WorkflowConstants.STATUS_IN_TRASH,
 			serviceContext);
 
+
 		_trashEntryLocalService.addTrashEntry(
-			userId, objectEntry.getGroupId(), objectDefinition.getClassName(),
+			userId, objectEntry.getGroupId(), ObjectEntry.class.getName(),
 			objectEntry.getObjectEntryId(), objectEntry.getUuid(), null,
 			oldStatus, objectEntryVersionStatusOVPs,
 			UnicodePropertiesBuilder.put(

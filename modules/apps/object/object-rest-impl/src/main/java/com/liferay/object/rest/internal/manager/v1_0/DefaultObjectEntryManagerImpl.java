@@ -88,6 +88,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -336,7 +337,7 @@ public class DefaultObjectEntryManagerImpl
 			serviceBuilderObjectEntry.getObjectEntryId());
 
 		_objectEntryService.moveObjectEntryToTrash(
-			serviceContext.getUserId(), serviceBuilderObjectEntry,
+			PrincipalThreadLocal.getUserId(), serviceBuilderObjectEntry,
 			serviceContext);
 	}
 
