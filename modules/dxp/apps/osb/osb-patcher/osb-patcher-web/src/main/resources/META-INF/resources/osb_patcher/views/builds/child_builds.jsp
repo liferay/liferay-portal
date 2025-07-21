@@ -52,6 +52,7 @@ List<PatcherBuild> childPatcherBuilds = PatcherBuildRelUtil.getChildPatcherBuild
 		/>
 
 		<liferay-ui:search-container-column-text
+			cssClass="table-cell-expand table-cell-minw-200"
 			name="name"
 		>
 
