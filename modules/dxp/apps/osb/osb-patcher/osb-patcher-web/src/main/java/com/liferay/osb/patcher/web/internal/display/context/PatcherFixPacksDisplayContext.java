@@ -102,7 +102,7 @@ public class PatcherFixPacksDisplayContext {
 					).setRedirect(
 						_themeDisplay.getURLCurrent()
 					).setParameter(
-						"patcherFixPackId", patcherFixPack.getPatcherFixPackId()
+						"patcherBuildId", patcherFixPack.getPatcherBuildId()
 					).setParameter(
 						"status",
 						WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED
