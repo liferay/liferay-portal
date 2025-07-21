@@ -19,11 +19,9 @@ if (!patcherFix.isLatestFix()) {
 }
 %>
 
-<c:if test="<%= !windowState.equals(LiferayWindowState.POP_UP) %>">
-	<liferay-ui:header
-		title="view-fix"
-	/>
-</c:if>
+<liferay-ui:header
+	title="view-fix"
+/>
 
 <aui:model-context bean="<%= patcherFix %>" model="<%= PatcherFix.class %>" />
 
