@@ -1,0 +1,41 @@
+@import 'cadmin-variables';
+
+.empty-state-performance-tab {
+	.c-empty-state-aspect-ratio {
+		padding-bottom: 50%;
+		position: relative;
+		width: 100%;
+	}
+}
+
+.metrics-container {
+	gap: 1rem;
+
+	.metrics-card {
+		background-color: $cadmin-white;
+		border: 1px solid $cadmin-secondary-l3;
+		color: $cadmin-secondary;
+		min-width: 8rem;
+		padding: 0.75rem;
+		transition: all 0.15s ease-in-out;
+
+		&.selected {
+			background-color: $cadmin-primary-l3;
+			border-color: $cadmin-primary-l0;
+			color: $cadmin-black;
+		}
+
+		&:focus {
+			border-radius: 4px;
+			box-shadow:
+				0 0 0 2px $cadmin-white,
+				0 0 0 4px $cadmin-primary-l0;
+			outline: 0;
+		}
+
+		&:hover:not(.selected) {
+			background-color: $cadmin-light-l1;
+			border-color: $cadmin-secondary-l3;
+		}
+	}
+}
