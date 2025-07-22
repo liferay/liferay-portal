@@ -413,6 +413,10 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 
 				String line = unsyncBufferedReader.readLine();
 
+				if (line.startsWith(_BOM_CHAR)) {
+					line = unsyncBufferedReader.readLine();
+				}
+
 				if ((line != null) && line.startsWith(_CSS_COMMENT_BEGIN) &&
 					line.endsWith(_CSS_COMMENT_END)) {
 
@@ -499,9 +503,7 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 				return null;
 			}
 
-			content = StringBundler.concat(
-				_CSS_COMMENT_BEGIN, URLUtil.getLastModifiedTime(resourceURL),
-				_CSS_COMMENT_END, StringPool.NEW_LINE, content);
+			content = _moveBOMChar(content, resourceURL);
 
 			FileUtil.write(cacheDataFile, content);
 
@@ -534,11 +536,8 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 										finalContent);
 								}
 
-								minifiedContent = StringBundler.concat(
-									_CSS_COMMENT_BEGIN,
-									URLUtil.getLastModifiedTime(resourceURL),
-									_CSS_COMMENT_END, StringPool.NEW_LINE,
-									minifiedContent);
+								minifiedContent = _moveBOMChar(
+									minifiedContent, resourceURL);
 
 								File tempFile = FileUtil.createTempFile();
 
@@ -700,6 +699,21 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		}
 	}
 
+	private String _moveBOMChar(String content, URL resourceURL)
+		throws IOException {
+
+		if (content.startsWith(_BOM_CHAR)) {
+			return StringBundler.concat(
+				_BOM_CHAR, StringPool.NEW_LINE, _CSS_COMMENT_BEGIN,
+				URLUtil.getLastModifiedTime(resourceURL), _CSS_COMMENT_END,
+				StringPool.NEW_LINE, content.substring(1));
+		}
+
+		return StringBundler.concat(
+			_CSS_COMMENT_BEGIN, URLUtil.getLastModifiedTime(resourceURL),
+			_CSS_COMMENT_END, StringPool.NEW_LINE, content);
+	}
+
 	private String _readResource(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String resourcePath)
@@ -723,6 +737,8 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 	}
 
 	private static final String _BASE_URL = "@base_url@";
+
+	private static final String _BOM_CHAR = "\uFEFF";
 
 	private static final String _CSS_COMMENT_BEGIN = "/*";
 

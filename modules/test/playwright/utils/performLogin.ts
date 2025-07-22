@@ -101,7 +101,7 @@ export async function performLoginViaApi({
 	rememberMe = true,
 	screenName,
 }: LoginOptions) {
-	const {password} = userData[screenName || 'test'];
+	const {password} = userData[screenName || 'Test'];
 
 	const params = new URLSearchParams({
 		login: `${screenName}${domain}`,

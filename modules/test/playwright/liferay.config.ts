@@ -10,7 +10,7 @@ const liferayConfig = {
 			: 'http://localhost:8080',
 		password: process.env.LIFERAY_USER_PASSWORD
 			? process.env.LIFERAY_USER_PASSWORD
-			: 'test',
+			: 'Test',
 	},
 };
 
