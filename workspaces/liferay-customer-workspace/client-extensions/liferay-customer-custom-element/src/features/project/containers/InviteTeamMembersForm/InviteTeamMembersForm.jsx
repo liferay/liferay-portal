@@ -22,7 +22,7 @@ import {
 	getUserAccountByEmail,
 	patchUserAccount,
 } from '~/services/liferay/graphql/queries';
-import {addContactRoleNameByEmailByProject} from '~/services/liferay/rest/raysource/LicenseKeys';
+import {addContactRoleNameByEmailByProject} from '~/services/liferay/rest/raysource/TeamMembers';
 import {ROLE_TYPES, SLA_TYPES} from '~/utils/constants';
 import getInitialInvite from '~/utils/getInitialInvite';
 import getProjectRoles from '~/utils/getProjectRoles';

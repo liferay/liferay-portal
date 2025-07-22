@@ -7,7 +7,7 @@ import {NetworkStatus} from '@apollo/client';
 import {useMemo} from 'react';
 import useSearchTerm from '~/hooks/useSearchTerm';
 import {useGetUserAccountsByAccountExternalReferenceCode} from '~/services/liferay/graphql/user-accounts';
-import {addContactRoleNameByEmailByProject} from '~/services/liferay/rest/raysource/LicenseKeys';
+import {addContactRoleNameByEmailByProject} from '~/services/liferay/rest/raysource/TeamMembers';
 
 import {
 	getRaysourceContactRoleName,
