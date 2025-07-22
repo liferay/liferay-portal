@@ -156,7 +156,9 @@ export const assignUserAccountWithAccount = gql`
 		createAccountUserAccountByExternalReferenceCodeByEmailAddress(
 			externalReferenceCode: $accountKey
 			emailAddress: $emailAddress
-		)
+		) {
+			id
+		}
 	}
 `;
 
