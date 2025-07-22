@@ -499,9 +499,18 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 				return null;
 			}
 
-			content = StringBundler.concat(
-				_CSS_COMMENT_BEGIN, URLUtil.getLastModifiedTime(resourceURL),
-				_CSS_COMMENT_END, StringPool.NEW_LINE, content);
+			if (content.startsWith(_BOM_CHAR)) {
+				content = StringBundler.concat(
+					_BOM_CHAR, _CSS_COMMENT_BEGIN,
+					URLUtil.getLastModifiedTime(resourceURL), _CSS_COMMENT_END,
+					StringPool.NEW_LINE, content.substring(1));
+			}
+			else {
+				content = StringBundler.concat(
+					_CSS_COMMENT_BEGIN,
+					URLUtil.getLastModifiedTime(resourceURL), _CSS_COMMENT_END,
+					StringPool.NEW_LINE, content);
+			}
 
 			FileUtil.write(cacheDataFile, content);
 
@@ -723,6 +732,8 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 	}
 
 	private static final String _BASE_URL = "@base_url@";
+
+	private static final String _BOM_CHAR = "\uFEFF";
 
 	private static final String _CSS_COMMENT_BEGIN = "/*";
 
