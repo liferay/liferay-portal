@@ -107,6 +107,8 @@ import com.liferay.portal.vulcan.jaxrs.extension.ExtendedEntity;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+import com.liferay.trash.model.TrashEntry;
+import com.liferay.trash.service.TrashEntryLocalService;
 
 import jakarta.ws.rs.core.UriInfo;
 
@@ -268,6 +270,27 @@ public class ObjectEntryDTOConverter
 						ObjectEntryVersionModel::getCreateDate,
 						serviceBuilderObjectEntry,
 						ObjectEntryModel::getCreateDate));
+				setDateDeleted(
+					() -> {
+						if (serviceBuilderObjectEntry.getStatus() ==
+								WorkflowConstants.STATUS_IN_TRASH) {
+
+							TrashEntry trashEntry =
+								_trashEntryLocalService.fetchEntry(
+									com.liferay.object.model.ObjectEntry.class.
+										getName(),
+									serviceBuilderObjectEntry.
+										getObjectEntryId());
+
+							if (trashEntry == null) {
+								return null;
+							}
+
+							return trashEntry.getCreateDate();
+						}
+
+						return null;
+					});
 				setDateModified(
 					() -> _getAttribute(
 						objectEntryVersion,
@@ -281,6 +304,30 @@ public class ObjectEntryDTOConverter
 
 							return serviceBuilderObjectEntry.
 								getDefaultLanguageId();
+						}
+
+						return null;
+					});
+				setDeletedBy(
+					() -> {
+						if (serviceBuilderObjectEntry.getStatus() ==
+								WorkflowConstants.STATUS_IN_TRASH) {
+
+							TrashEntry trashEntry =
+								_trashEntryLocalService.fetchEntry(
+									com.liferay.object.model.ObjectEntry.class.
+										getName(),
+									serviceBuilderObjectEntry.
+										getObjectEntryId());
+
+							if (trashEntry == null) {
+								return null;
+							}
+
+							return CreatorUtil.toCreator(
+								_portal, dtoConverterContext.getUriInfo(),
+								_userLocalService.fetchUser(
+									trashEntry.getUserId()));
 						}
 
 						return null;
@@ -1451,6 +1498,9 @@ public class ObjectEntryDTOConverter
 	@Reference
 	private SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
+
+	@Reference
+	private TrashEntryLocalService _trashEntryLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
