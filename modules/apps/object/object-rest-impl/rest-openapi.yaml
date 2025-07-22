@@ -116,11 +116,18 @@ components:
                 dateCreated:
                     format: date
                     type: string
+                dateDeleted:
+                    format: date
+                    readOnly: true
+                    type: string
                 dateModified:
                     format: date
                     type: string
                 defaultLanguageId:
                     type: string
+                deletedBy:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
                 displayDate:
                     format: date
                     type: string
