@@ -85,6 +85,7 @@ page import="com.liferay.portal.kernel.model.LayoutSetPrototype" %><%@
 page import="com.liferay.portal.kernel.model.ListType" %><%@
 page import="com.liferay.portal.kernel.model.ListTypeConstants" %><%@
 page import="com.liferay.portal.kernel.model.ModelHintsConstants" %><%@
+page import="com.liferay.portal.kernel.model.ModelHintsUtil" %><%@
 page import="com.liferay.portal.kernel.model.OrgLabor" %><%@
 page import="com.liferay.portal.kernel.model.Organization" %><%@
 page import="com.liferay.portal.kernel.model.OrganizationConstants" %><%@

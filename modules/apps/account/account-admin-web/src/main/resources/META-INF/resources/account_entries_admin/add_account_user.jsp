@@ -66,6 +66,16 @@ renderResponse.setTitle(LanguageUtil.format(request, "add-new-user-to-x", accoun
 			<liferay-ui:error exception="<%= UserScreenNameException.MustNotBeReserved.class %>" focusField="screenName" message="the-screen-name-you-requested-is-reserved" />
 			<liferay-ui:error exception="<%= UserScreenNameException.MustNotBeReservedForAnonymous.class %>" focusField="screenName" message="the-screen-name-you-requested-is-reserved-for-the-anonymous-user" />
 			<liferay-ui:error exception="<%= UserScreenNameException.MustNotBeUsedByGroup.class %>" focusField="screenName" message="the-screen-name-you-requested-is-already-taken-by-a-site" />
+
+			<liferay-ui:error exception="<%= UserScreenNameException.MustNotExceedMaximumLength.class %>" focusField="screenName">
+
+				<%
+				int screenNameMaxLength = ModelHintsUtil.getMaxLength(User.class.getName(), "screenName");
+				%>
+
+				<liferay-ui:message arguments="<%= String.valueOf(screenNameMaxLength) %>" key="please-enter-a-screen-name-with-fewer-than-x-characters" />
+			</liferay-ui:error>
+
 			<liferay-ui:error exception="<%= UserScreenNameException.MustProduceValidFriendlyURL.class %>" focusField="screenName" message="the-screen-name-you-requested-must-produce-a-valid-friendly-url" />
 
 			<liferay-ui:error exception="<%= UserScreenNameException.MustValidate.class %>" focusField="screenName">
