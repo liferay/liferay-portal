@@ -59,6 +59,7 @@ import {config as exportImportWebConfig} from './tests/export-import-web/main/co
 import {config as featureFlagWebConfig} from './tests/feature-flag-web/main/config';
 import {config as fragmentWebConfig} from './tests/fragment-web/main/config';
 import {config as friendlyURLConfig} from './tests/friendly-url-web/main/config';
+import {config as frontendCssCadminWebConfig} from './tests/frontend-css-cadmin-web/main/config';
 import {config as frontendDataSetAdminWebConfig} from './tests/frontend-data-set-admin-web/main/config';
 import {config as frontendDataSetWebConfig} from './tests/frontend-data-set-web/main/config';
 import {config as frontendEditorCKEditorWebConfig} from './tests/frontend-editor-ckeditor-web/main/config';
@@ -218,6 +219,7 @@ export default defineConfig({
 		featureFlagWebConfig,
 		fragmentWebConfig,
 		friendlyURLConfig,
+		frontendCssCadminWebConfig,
 		frontendDataSetAdminWebConfig,
 		frontendDataSetWebConfig,
 		frontendEditorCKEditorWebConfig,
