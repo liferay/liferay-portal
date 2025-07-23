@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.exception;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.ScreenNameValidator;
 import com.liferay.portal.kernel.util.ClassUtil;
@@ -138,6 +139,20 @@ public class UserScreenNameException extends PortalException {
 		public final Group group;
 		public final String screenName;
 		public final long userId;
+
+	}
+
+	public static class MustNotExceedMaximumLength
+		extends UserScreenNameException {
+
+		public MustNotExceedMaximumLength(
+			String screenName, int screenNameMaxLength) {
+
+			super(
+				StringBundler.concat(
+					"Screen Name ", screenName, " must have fewer than ",
+					screenNameMaxLength, " characters"));
+		}
 
 	}
 
