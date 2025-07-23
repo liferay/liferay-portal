@@ -118,5 +118,12 @@ portletDisplay.setURLBack(String.valueOf(renderResponse.createRenderURL()));
 </aui:form>
 
 <liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"allowedSkuContributorTypeNames", StringUtil.merge(CPConstants.PRODUCT_OPTION_SKU_CONTRIBUTOR_FIELD_TYPES, StringPool.COMMA)
+		).put(
+			"availableTypeNames", cpOptionDisplayContext.getCommerceOptionTypeKeys()
+		).build()
+	%>'
 	module="{editCpOptionAndValue} from commerce-product-options-web"
 />
