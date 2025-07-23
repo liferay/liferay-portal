@@ -7197,6 +7197,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			throw new UserScreenNameException.MustNotBeNull(userId);
 		}
 
+		int screenNameMaxLength = ModelHintsUtil.getMaxLength(
+			User.class.getName(), "screenName");
+
+		if (screenName.length() > screenNameMaxLength) {
+			throw new UserScreenNameException.MustNotExceedMaximumLength(
+				screenName, screenNameMaxLength);
+		}
+
 		ScreenNameValidator screenNameValidator =
 			ScreenNameValidatorFactory.getInstance();
 
