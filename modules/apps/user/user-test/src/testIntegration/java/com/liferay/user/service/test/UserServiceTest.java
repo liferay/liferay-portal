@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
@@ -145,6 +146,40 @@ public class UserServiceTest {
 					StringBundler.concat(
 						"Contact first name must have fewer than ",
 						firstNameMaxLength, " characters")));
+		}
+	}
+
+	@Test
+	public void testAddUserWithInvalidScreenName() {
+		int screenNameMaxLength = ModelHintsUtil.getMaxLength(
+			User.class.getName(), "screenName");
+
+		String screenName = RandomTestUtil.randomString(
+			screenNameMaxLength + 1, NumericStringRandomizerBumper.INSTANCE,
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		try {
+			UserTestUtil.addUser(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+				screenName, LocaleUtil.getDefault(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				new long[] {
+					ServiceContextTestUtil.getServiceContext(
+					).getScopeGroupId()
+				},
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			String message = exception.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					StringBundler.concat(
+						"Screen Name ", StringUtil.toLowerCase(screenName),
+						" must have fewer than ", screenNameMaxLength,
+						" characters")));
 		}
 	}
 
