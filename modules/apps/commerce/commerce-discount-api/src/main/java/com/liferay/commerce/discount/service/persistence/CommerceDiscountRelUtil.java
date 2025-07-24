@@ -678,6 +678,219 @@ public class CommerceDiscountRelUtil {
 	}
 
 	/**
+	 * Returns all the commerce discount rels where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @return the matching commerce discount rels
+	 */
+	public static List<CommerceDiscountRel> findByCD_CN_CPK(
+		long commerceDiscountId, long classNameId, long classPK) {
+
+		return getPersistence().findByCD_CN_CPK(
+			commerceDiscountId, classNameId, classPK);
+	}
+
+	/**
+	 * Returns a range of all the commerce discount rels where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceDiscountRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param start the lower bound of the range of commerce discount rels
+	 * @param end the upper bound of the range of commerce discount rels (not inclusive)
+	 * @return the range of matching commerce discount rels
+	 */
+	public static List<CommerceDiscountRel> findByCD_CN_CPK(
+		long commerceDiscountId, long classNameId, long classPK, int start,
+		int end) {
+
+		return getPersistence().findByCD_CN_CPK(
+			commerceDiscountId, classNameId, classPK, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the commerce discount rels where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceDiscountRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param start the lower bound of the range of commerce discount rels
+	 * @param end the upper bound of the range of commerce discount rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching commerce discount rels
+	 */
+	public static List<CommerceDiscountRel> findByCD_CN_CPK(
+		long commerceDiscountId, long classNameId, long classPK, int start,
+		int end, OrderByComparator<CommerceDiscountRel> orderByComparator) {
+
+		return getPersistence().findByCD_CN_CPK(
+			commerceDiscountId, classNameId, classPK, start, end,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the commerce discount rels where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceDiscountRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param start the lower bound of the range of commerce discount rels
+	 * @param end the upper bound of the range of commerce discount rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching commerce discount rels
+	 */
+	public static List<CommerceDiscountRel> findByCD_CN_CPK(
+		long commerceDiscountId, long classNameId, long classPK, int start,
+		int end, OrderByComparator<CommerceDiscountRel> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByCD_CN_CPK(
+			commerceDiscountId, classNameId, classPK, start, end,
+			orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first commerce discount rel in the ordered set where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce discount rel
+	 * @throws NoSuchDiscountRelException if a matching commerce discount rel could not be found
+	 */
+	public static CommerceDiscountRel findByCD_CN_CPK_First(
+			long commerceDiscountId, long classNameId, long classPK,
+			OrderByComparator<CommerceDiscountRel> orderByComparator)
+		throws com.liferay.commerce.discount.exception.
+			NoSuchDiscountRelException {
+
+		return getPersistence().findByCD_CN_CPK_First(
+			commerceDiscountId, classNameId, classPK, orderByComparator);
+	}
+
+	/**
+	 * Returns the first commerce discount rel in the ordered set where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce discount rel, or <code>null</code> if a matching commerce discount rel could not be found
+	 */
+	public static CommerceDiscountRel fetchByCD_CN_CPK_First(
+		long commerceDiscountId, long classNameId, long classPK,
+		OrderByComparator<CommerceDiscountRel> orderByComparator) {
+
+		return getPersistence().fetchByCD_CN_CPK_First(
+			commerceDiscountId, classNameId, classPK, orderByComparator);
+	}
+
+	/**
+	 * Returns the last commerce discount rel in the ordered set where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching commerce discount rel
+	 * @throws NoSuchDiscountRelException if a matching commerce discount rel could not be found
+	 */
+	public static CommerceDiscountRel findByCD_CN_CPK_Last(
+			long commerceDiscountId, long classNameId, long classPK,
+			OrderByComparator<CommerceDiscountRel> orderByComparator)
+		throws com.liferay.commerce.discount.exception.
+			NoSuchDiscountRelException {
+
+		return getPersistence().findByCD_CN_CPK_Last(
+			commerceDiscountId, classNameId, classPK, orderByComparator);
+	}
+
+	/**
+	 * Returns the last commerce discount rel in the ordered set where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching commerce discount rel, or <code>null</code> if a matching commerce discount rel could not be found
+	 */
+	public static CommerceDiscountRel fetchByCD_CN_CPK_Last(
+		long commerceDiscountId, long classNameId, long classPK,
+		OrderByComparator<CommerceDiscountRel> orderByComparator) {
+
+		return getPersistence().fetchByCD_CN_CPK_Last(
+			commerceDiscountId, classNameId, classPK, orderByComparator);
+	}
+
+	/**
+	 * Returns the commerce discount rels before and after the current commerce discount rel in the ordered set where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param commerceDiscountRelId the primary key of the current commerce discount rel
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next commerce discount rel
+	 * @throws NoSuchDiscountRelException if a commerce discount rel with the primary key could not be found
+	 */
+	public static CommerceDiscountRel[] findByCD_CN_CPK_PrevAndNext(
+			long commerceDiscountRelId, long commerceDiscountId,
+			long classNameId, long classPK,
+			OrderByComparator<CommerceDiscountRel> orderByComparator)
+		throws com.liferay.commerce.discount.exception.
+			NoSuchDiscountRelException {
+
+		return getPersistence().findByCD_CN_CPK_PrevAndNext(
+			commerceDiscountRelId, commerceDiscountId, classNameId, classPK,
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the commerce discount rels where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63; from the database.
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 */
+	public static void removeByCD_CN_CPK(
+		long commerceDiscountId, long classNameId, long classPK) {
+
+		getPersistence().removeByCD_CN_CPK(
+			commerceDiscountId, classNameId, classPK);
+	}
+
+	/**
+	 * Returns the number of commerce discount rels where commerceDiscountId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param commerceDiscountId the commerce discount ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @return the number of matching commerce discount rels
+	 */
+	public static int countByCD_CN_CPK(
+		long commerceDiscountId, long classNameId, long classPK) {
+
+		return getPersistence().countByCD_CN_CPK(
+			commerceDiscountId, classNameId, classPK);
+	}
+
+	/**
 	 * Caches the commerce discount rel in the entity cache if it is enabled.
 	 *
 	 * @param commerceDiscountRel the commerce discount rel

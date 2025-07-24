@@ -17,7 +17,7 @@ create index IX_707E0345 on CommerceDiscountOrderTypeRel (commerceOrderTypeId);
 create index IX_CEE22E81 on CommerceDiscountOrderTypeRel (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_6B4EEC38 on CommerceDiscountRel (classNameId, classPK);
-create index IX_DDFDEF40 on CommerceDiscountRel (commerceDiscountId, classNameId);
+create index IX_2BF40CA3 on CommerceDiscountRel (commerceDiscountId, classNameId, classPK);
 
 create index IX_CB9E6769 on CommerceDiscountRule (commerceDiscountId);
 
