@@ -238,6 +238,11 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
+		<finder name="CD_CN_CPK" return-type="Collection">
+			<finder-column name="commerceDiscountId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="CommerceDiscountRule" remote-service="true">
 
