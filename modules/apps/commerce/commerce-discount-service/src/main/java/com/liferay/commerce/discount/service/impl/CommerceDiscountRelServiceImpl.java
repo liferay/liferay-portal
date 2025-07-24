@@ -68,6 +68,24 @@ public class CommerceDiscountRelServiceImpl
 
 	@Override
 	public CommerceDiscountRel fetchCommerceDiscountRel(
+			long commerceDiscountId, String className, long classPK)
+		throws PortalException {
+
+		CommerceDiscountRel commerceDiscountRel =
+			commerceDiscountRelLocalService.fetchCommerceDiscountRel(
+				commerceDiscountId, className, classPK);
+
+		if (commerceDiscountRel != null) {
+			_commerceDiscountResourcePermission.check(
+				getPermissionChecker(),
+				commerceDiscountRel.getCommerceDiscountId(), ActionKeys.UPDATE);
+		}
+
+		return commerceDiscountRel;
+	}
+
+	@Override
+	public CommerceDiscountRel fetchCommerceDiscountRel(
 			String className, long classPK)
 		throws PortalException {
 
