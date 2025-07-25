@@ -71,6 +71,12 @@ public class ViewFilesSectionDisplayContext
 				StringPool.BLANK, "info-circle-open", "show-details",
 				LanguageUtil.get(httpServletRequest, "show-details"), null,
 				null, "infoPanel"));
+		fdsActionDropdownItems.add(
+			4,
+			new FDSActionDropdownItem(
+				StringPool.BLANK, "view", "viewFile",
+				LanguageUtil.get(httpServletRequest, "view"), null, null,
+				null));
 
 		return fdsActionDropdownItems;
 	}

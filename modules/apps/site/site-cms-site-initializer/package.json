@@ -35,6 +35,7 @@
 		"@liferay/layout-js-components-web": "*",
 		"@liferay/object-js-components-web": "*",
 		"classnames": "2.3.1",
+		"document-library-preview-image": "*",
 		"formik": "2.1.4",
 		"frontend-editor-ckeditor-web": "*",
 		"frontend-js-components-web": "*",
