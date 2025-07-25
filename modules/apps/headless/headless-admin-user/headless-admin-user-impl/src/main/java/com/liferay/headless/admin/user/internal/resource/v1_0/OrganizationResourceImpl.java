@@ -14,6 +14,7 @@ import com.liferay.account.service.AccountEntryService;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.dto.v1_0.AccountBrief;
 import com.liferay.headless.admin.user.dto.v1_0.EmailAddress;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.OrgLabor;
@@ -85,6 +87,7 @@ import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -125,7 +128,9 @@ import org.osgi.service.component.annotations.ServiceScope;
 	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
 	service = OrganizationResource.class
 )
-public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
+public class OrganizationResourceImpl
+		extends BaseOrganizationResourceImpl
+		implements ExportImportVulcanBatchEngineTaskItemDelegate<Organization> {
 
 	@Override
 	public void deleteAccountByExternalReferenceCodeOrganization(
@@ -1412,6 +1417,22 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 			serviceBuilderOrganization.getCompanyId(),
 			organization.getPermissions(), _resourcePermissionLocalService,
 			_roleService, _roleTypeContributorProvider);
+	}
+
+	@Override
+	public String getPortletId() {
+		if (FeatureFlagManagerUtil.isEnabled(
+			CompanyConstants.SYSTEM, "LPD-35914")) {
+
+			return PortletKeys.USERS_ADMIN;
+		}
+
+		return null;
+	}
+
+	@Override
+	public Scope getScope() {
+		return Scope.COMPANY;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
