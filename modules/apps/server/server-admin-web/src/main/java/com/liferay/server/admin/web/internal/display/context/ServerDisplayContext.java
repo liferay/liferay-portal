@@ -88,7 +88,7 @@ public class ServerDisplayContext {
 	}
 
 	private static final String[] _TABS1_NAMES = {
-		"resources", "log-levels", "properties", "data-migration", "mail",
+		"resources", "log-levels", "properties", "data-migration",
 		"external-services", "script", "shutdown"
 	};
 
