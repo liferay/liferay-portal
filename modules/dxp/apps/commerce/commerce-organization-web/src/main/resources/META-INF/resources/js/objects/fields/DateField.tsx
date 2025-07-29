@@ -99,11 +99,40 @@ const DateField = ({
 			</label>
 
 			<ClayDatePicker
+				ariaLabels={{
+					buttonChooseDate: `${Liferay.Language.get('select-date')}`,
+					buttonDot: `${Liferay.Language.get('select-current-date')}`,
+					buttonNextMonth: `${Liferay.Language.get(
+						'select-next-month'
+					)}`,
+					buttonPreviousMonth: `${Liferay.Language.get(
+						'select-previous-month'
+					)}`,
+					dialog: `${Liferay.Language.get('select-date')}`,
+					selectMonth: `${Liferay.Language.get('select-a-month')}`,
+					selectYear: `${Liferay.Language.get('select-a-year')}`,
+				}}
 				disabled={disabled || readOnly}
+				firstDayOfWeek={dateUtils.getFirstDayOfWeek()}
 				id={`${namespace}${id}`}
 				inputName={`${namespace}${name}`}
+				months={[
+					`${Liferay.Language.get('january')}`,
+					`${Liferay.Language.get('february')}`,
+					`${Liferay.Language.get('march')}`,
+					`${Liferay.Language.get('april')}`,
+					`${Liferay.Language.get('may')}`,
+					`${Liferay.Language.get('june')}`,
+					`${Liferay.Language.get('july')}`,
+					`${Liferay.Language.get('august')}`,
+					`${Liferay.Language.get('september')}`,
+					`${Liferay.Language.get('october')}`,
+					`${Liferay.Language.get('november')}`,
+					`${Liferay.Language.get('december')}`,
+				]}
 				onChange={onChangeHandler}
 				value={internalValue}
+				weekdaysShort={dateUtils.getWeekdaysShort()}
 				years={{
 					end: new Date().getFullYear() + 100,
 					start: new Date().getFullYear() - 100,

@@ -9,6 +9,7 @@ import ClayDatePicker from '@clayui/date-picker';
 import ClayDropdown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
+import {dateUtils} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 type Item = {
@@ -154,11 +155,44 @@ const CustomRangeView: React.FC<Omit<IView, 'availableRangeSelectors'>> = ({
 					</label>
 
 					<ClayDatePicker
+						ariaLabels={{
+							buttonChooseDate: `${Liferay.Language.get(
+								'select-date'
+							)}`,
+							buttonDot: `${Liferay.Language.get(
+								'select-current-date'
+							)}`,
+							buttonNextMonth: `${Liferay.Language.get(
+								'select-next-month'
+							)}`,
+							buttonPreviousMonth: `${Liferay.Language.get(
+								'select-previous-month'
+							)}`,
+							dialog: `${Liferay.Language.get('select-date')}`,
+							selectMonth: `${Liferay.Language.get('select-a-month')}`,
+							selectYear: `${Liferay.Language.get('select-a-year')}`,
+						}}
 						dateFormat="yyyy-MM-dd"
+						firstDayOfWeek={dateUtils.getFirstDayOfWeek()}
 						inputName="rangeStartId"
+						months={[
+							`${Liferay.Language.get('january')}`,
+							`${Liferay.Language.get('february')}`,
+							`${Liferay.Language.get('march')}`,
+							`${Liferay.Language.get('april')}`,
+							`${Liferay.Language.get('may')}`,
+							`${Liferay.Language.get('june')}`,
+							`${Liferay.Language.get('july')}`,
+							`${Liferay.Language.get('august')}`,
+							`${Liferay.Language.get('september')}`,
+							`${Liferay.Language.get('october')}`,
+							`${Liferay.Language.get('november')}`,
+							`${Liferay.Language.get('december')}`,
+						]}
 						onChange={setRangeStart}
 						placeholder="YYYY-MM-DD"
 						value={rangeStart}
+						weekdaysShort={dateUtils.getWeekdaysShort()}
 						years={{
 							end: new Date().getFullYear() + 25,
 							start: new Date().getFullYear() - 50,

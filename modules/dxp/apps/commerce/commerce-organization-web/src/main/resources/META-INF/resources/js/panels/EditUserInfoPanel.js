@@ -643,6 +643,23 @@ function EditUserInfoPanel({
 						</label>
 
 						<ClayDatePicker
+							ariaLabels={{
+								buttonChooseDate: `${Liferay.Language.get(
+									'select-date'
+								)}`,
+								buttonDot: `${Liferay.Language.get(
+									'select-current-date'
+								)}`,
+								buttonNextMonth: `${Liferay.Language.get(
+									'select-next-month'
+								)}`,
+								buttonPreviousMonth: `${Liferay.Language.get(
+									'select-previous-month'
+								)}`,
+								dialog: `${Liferay.Language.get('select-date')}`,
+								selectMonth: `${Liferay.Language.get('select-a-month')}`,
+								selectYear: `${Liferay.Language.get('select-a-year')}`,
+							}}
 							dateFormat="P"
 							disabled={isLoading}
 							firstDayOfWeek={dateUtils.getFirstDayOfWeek()}
