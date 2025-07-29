@@ -20,7 +20,6 @@ import com.liferay.document.library.kernel.store.Store;
 import com.liferay.document.library.preview.processor.BasePreviewableDLProcessor;
 import com.liferay.image.Ghostscript;
 import com.liferay.image.ImageMagick;
-import com.liferay.mail.kernel.service.MailService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
@@ -162,15 +161,8 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-
 		PermissionChecker permissionChecker =
 			themeDisplay.getPermissionChecker();
-
-		PortletPreferences portletPreferences = _prefsProps.getPreferences(
-			ParamUtil.getLong(actionRequest, "preferencesCompanyId"));
 
 		if (!permissionChecker.isOmniadmin()) {
 			SessionErrors.add(
@@ -181,6 +173,10 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 
 			return;
 		}
+
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
 		if (!cmd.equals("addLogLevel") &&
 			!cmd.equals("dlGenerateAudioPreviews") &&
@@ -272,6 +268,9 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 			_threadDump();
 		}
 		else if (cmd.equals("updateExternalServices")) {
+			PortletPreferences portletPreferences = _prefsProps.getPreferences(
+				ParamUtil.getLong(actionRequest, "preferencesCompanyId"));
+
 			_updateExternalServices(actionRequest, portletPreferences);
 		}
 		else if (cmd.equals("updateLogLevels")) {
@@ -888,9 +887,6 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private LayoutRevisionLocalService _layoutRevisionLocalService;
-
-	@Reference
-	private MailService _mailService;
 
 	@Reference
 	private MessageBus _messageBus;
