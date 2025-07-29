@@ -1256,37 +1256,6 @@ public class PropsValues {
 	public static final boolean MAIL_SESSION_MAIL = GetterUtil.getBoolean(
 		PropsUtil.get(PropsKeys.MAIL_SESSION_MAIL));
 
-	public static final String MAIL_SESSION_MAIL_ADVANCED_PROPERTIES =
-		PropsUtil.get(PropsKeys.MAIL_SESSION_MAIL_ADVANCED_PROPERTIES);
-
-	public static final String MAIL_SESSION_MAIL_POP3_HOST = PropsUtil.get(
-		PropsKeys.MAIL_SESSION_MAIL_POP3_HOST);
-
-	public static final String MAIL_SESSION_MAIL_POP3_PASSWORD = PropsUtil.get(
-		PropsKeys.MAIL_SESSION_MAIL_POP3_PASSWORD);
-
-	public static final int MAIL_SESSION_MAIL_POP3_PORT = GetterUtil.getInteger(
-		PropsUtil.get(PropsKeys.MAIL_SESSION_MAIL_POP3_PORT));
-
-	public static final String MAIL_SESSION_MAIL_POP3_USER = PropsUtil.get(
-		PropsKeys.MAIL_SESSION_MAIL_POP3_USER);
-
-	public static final String MAIL_SESSION_MAIL_SMTP_HOST = PropsUtil.get(
-		PropsKeys.MAIL_SESSION_MAIL_SMTP_HOST);
-
-	public static final String MAIL_SESSION_MAIL_SMTP_PASSWORD = PropsUtil.get(
-		PropsKeys.MAIL_SESSION_MAIL_SMTP_PASSWORD);
-
-	public static final int MAIL_SESSION_MAIL_SMTP_PORT = GetterUtil.getInteger(
-		PropsUtil.get(PropsKeys.MAIL_SESSION_MAIL_SMTP_PORT));
-
-	public static final boolean MAIL_SESSION_MAIL_SMTP_STARTTLS_ENABLE =
-		GetterUtil.getBoolean(
-			PropsUtil.get(PropsKeys.MAIL_SESSION_MAIL_SMTP_STARTTLS_ENABLE));
-
-	public static final String MAIL_SESSION_MAIL_SMTP_USER = PropsUtil.get(
-		PropsKeys.MAIL_SESSION_MAIL_SMTP_USER);
-
 	public static final String MAIL_SESSION_MAIL_STORE_PROTOCOL = PropsUtil.get(
 		PropsKeys.MAIL_SESSION_MAIL_STORE_PROTOCOL);
 
@@ -1769,10 +1738,6 @@ public class PropsValues {
 
 	public static String PHONE_NUMBER_FORMAT_USA_REGEXP = GetterUtil.getString(
 		PropsUtil.get(PropsKeys.PHONE_NUMBER_FORMAT_USA_REGEXP));
-
-	public static final boolean POP_SERVER_NOTIFICATIONS_ENABLED =
-		GetterUtil.getBoolean(
-			PropsUtil.get(PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED));
 
 	public static final String POP_SERVER_SUBDOMAIN = PropsUtil.get(
 		PropsKeys.POP_SERVER_SUBDOMAIN);
