@@ -5,6 +5,7 @@
 
 import ClayDatePicker from '@clayui/date-picker';
 import {FieldBase} from 'frontend-js-components-web';
+import {dateUtils} from 'frontend-js-web';
 
 // @ts-ignore
 
@@ -90,15 +91,10 @@ export function DatePicker({
 }: DatePickerProps) {
 	const [expanded, setExpanded] = useState(false);
 
-	const momentLocale = moment().locale(locale ?? defaultLanguageId);
-	const months = momentLocale.localeData().months();
-	const weekdaysShort = momentLocale.localeData().weekdaysShort();
-
 	const inputRef = useRef(null);
 	const maskRef = useRef<null | MaskRef>(null);
 	const {
 		clayFormat,
-		firstDayOfWeek,
 		isDateTime = false,
 		momentFormat = '',
 		placeholder,
@@ -207,12 +203,38 @@ export function DatePicker({
 			required={required}
 		>
 			<ClayDatePicker
+				ariaLabels={{
+					buttonChooseDate: `${Liferay.Language.get('select-date')}`,
+					buttonDot: `${Liferay.Language.get('select-current-date')}`,
+					buttonNextMonth: `${Liferay.Language.get(
+						'select-next-month'
+					)}`,
+					buttonPreviousMonth: `${Liferay.Language.get(
+						'select-previous-month'
+					)}`,
+					dialog: `${Liferay.Language.get('select-date')}`,
+					selectMonth: `${Liferay.Language.get('select-a-month')}`,
+					selectYear: `${Liferay.Language.get('select-a-year')}`,
+				}}
 				dateFormat={clayFormat}
 				disabled={disabled}
 				expanded={expanded}
-				firstDayOfWeek={firstDayOfWeek}
+				firstDayOfWeek={dateUtils.getFirstDayOfWeek()}
 				id={id}
-				months={months}
+				months={[
+					`${Liferay.Language.get('january')}`,
+					`${Liferay.Language.get('february')}`,
+					`${Liferay.Language.get('march')}`,
+					`${Liferay.Language.get('april')}`,
+					`${Liferay.Language.get('may')}`,
+					`${Liferay.Language.get('june')}`,
+					`${Liferay.Language.get('july')}`,
+					`${Liferay.Language.get('august')}`,
+					`${Liferay.Language.get('september')}`,
+					`${Liferay.Language.get('october')}`,
+					`${Liferay.Language.get('november')}`,
+					`${Liferay.Language.get('december')}`,
+				]}
 				onBlur={onBlur}
 				onChange={handleValueChange}
 				onExpandedChange={() => {
@@ -225,7 +247,7 @@ export function DatePicker({
 				time={isDateTime}
 				use12Hours={use12Hours}
 				value={formattedDate}
-				weekdaysShort={weekdaysShort}
+				weekdaysShort={dateUtils.getWeekdaysShort()}
 				years={years}
 				yearsCheck={false}
 			/>
