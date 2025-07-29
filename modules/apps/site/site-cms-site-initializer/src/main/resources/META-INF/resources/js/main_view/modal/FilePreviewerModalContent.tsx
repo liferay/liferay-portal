@@ -5,6 +5,7 @@
 
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import ClayModal from '@clayui/modal';
 import classNames from 'classnames';
 import {ImagePreviewer} from 'document-library-preview-image';
@@ -36,13 +37,18 @@ export default function FilePreviewerModalContent(file: File) {
 					</div>
 
 					<div className="autofit-col pr-3">
-						<a className="btn btn-primary btn-sm" href={link.href}>
+						<ClayLink
+							button
+							displayType="primary"
+							href={link.href}
+							small
+						>
 							<span className="inline-item inline-item-before">
 								<ClayIcon symbol="download" />
 							</span>
 
 							{Liferay.Language.get('download')}
-						</a>
+						</ClayLink>
 					</div>
 				</div>
 			</ClayModal.Header>
