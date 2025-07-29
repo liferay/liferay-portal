@@ -9,6 +9,7 @@ import {
 	createAutoCorrectedDatePipe,
 	datetimeUtils,
 } from '@liferay/object-js-components-web';
+import {dateUtils} from 'frontend-js-web';
 
 // @ts-ignore
 
@@ -36,7 +37,6 @@ export interface DatePickerBaseProps {
 	localizable: boolean;
 	localizedObjectField: boolean;
 	localizedValue?: LocalizedValue<string>;
-	months: string[];
 	name: string;
 	onBlur: any;
 	onChange: any;
@@ -55,7 +55,6 @@ export interface DatePickerBaseProps {
 	type: 'date' | 'date_time';
 	valid: boolean;
 	value: string | LocalizedValue<string>;
-	weekdaysShort: string[];
 }
 
 type MaskRef = {
@@ -76,7 +75,6 @@ export default function DatePickerBase({
 	htmlAutocompleteAttribute,
 	id,
 	locale,
-	months,
 	name,
 	onBlur,
 	onChange,
@@ -87,14 +85,12 @@ export default function DatePickerBase({
 	setValidField,
 	tip,
 	valid,
-	weekdaysShort,
 }: DatePickerBaseProps) {
 	const inputRef = useRef(null);
 	const maskRef = useRef<null | MaskRef>(null);
 
 	const {
 		clayFormat,
-		firstDayOfWeek,
 		isDateTime = false,
 		momentFormat = '',
 		placeholder = '',
@@ -292,9 +288,22 @@ export default function DatePickerBase({
 					dir={dir}
 					disabled={readOnly}
 					expanded={expanded}
-					firstDayOfWeek={firstDayOfWeek}
+					firstDayOfWeek={dateUtils.getFirstDayOfWeek()}
 					id={name}
-					months={months}
+					months={[
+						`${Liferay.Language.get('january')}`,
+						`${Liferay.Language.get('february')}`,
+						`${Liferay.Language.get('march')}`,
+						`${Liferay.Language.get('april')}`,
+						`${Liferay.Language.get('may')}`,
+						`${Liferay.Language.get('june')}`,
+						`${Liferay.Language.get('july')}`,
+						`${Liferay.Language.get('august')}`,
+						`${Liferay.Language.get('september')}`,
+						`${Liferay.Language.get('october')}`,
+						`${Liferay.Language.get('november')}`,
+						`${Liferay.Language.get('december')}`,
+					]}
 					onBlur={handleBlur}
 					onChange={handleValueChange}
 					onExpandedChange={handleExpandedChange}
@@ -305,7 +314,7 @@ export default function DatePickerBase({
 					time={isDateTime}
 					use12Hours={use12Hours}
 					value={formattedDate}
-					weekdaysShort={weekdaysShort}
+					weekdaysShort={dateUtils.getWeekdaysShort()}
 					years={years}
 					yearsCheck={false}
 				/>
