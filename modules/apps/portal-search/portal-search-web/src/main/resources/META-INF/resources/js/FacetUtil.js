@@ -397,7 +397,9 @@ export default function ({namespace: portletNamespace}) {
 
 	if (portletNamespace) {
 		FacetUtil.enableInputs(
-			document.querySelectorAll(`#${portletNamespace}fm .facet-term`)
+			document.querySelectorAll(
+				`[id^="${portletNamespace}fm"] .facet-term`
+			)
 		);
 	}
 }
