@@ -36,7 +36,7 @@ CPOptionsSearchFacetDisplayContext cpOptionsSearchFacetDisplayContext = (CPOptio
 				%>
 
 					<c:if test="<%= !termCollectors.isEmpty() %>">
-						<aui:form action="#" method="post" name="fm">
+						<aui:form action="#" method="post" name='<%= "fm_" + facet.getFieldName() %>'>
 							<aui:input cssClass="facet-parameter-name" name="facet-parameter-name" type="hidden" value="<%= cpOptionsSearchFacetDisplayContext.getCPOptionKey(companyId, facet.getFieldName()) %>" />
 							<aui:input cssClass="start-parameter-name" name="start-parameter-name" type="hidden" value="<%= cpOptionsSearchFacetDisplayContext.getPaginationStartParameterName() %>" />
 

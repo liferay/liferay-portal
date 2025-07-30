@@ -62,7 +62,7 @@ CPPriceRangeFacetsDisplayContext cpPriceRangeFacetsDisplayContext = (CPPriceRang
 						%>
 
 						<c:if test="<%= !termCollectors.isEmpty() %>">
-							<aui:form action="#" method="post" name="fm">
+							<aui:form action="#" method="post" name='<%= "fm_" + facet.getFieldName() %>'>
 								<aui:input cssClass="facet-parameter-name" name="facet-parameter-name" type="hidden" value="<%= facet.getFieldName() %>" />
 								<aui:input cssClass="start-parameter-name" name="start-parameter-name" type="hidden" value="<%= cpPriceRangeFacetsDisplayContext.getPaginationStartParameterName() %>" />
 
