@@ -20,7 +20,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSearchBarJSPSectionFragmentRenderer"
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewHomeSearchBarJSPSectionFragmentRenderer"
 									},
 									"fragmentConfig": {
 									},
@@ -44,7 +44,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewQuickActionsJSPSectionFragmentRenderer"
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewHomeQuickActionsJSPSectionFragmentRenderer"
 									},
 									"fragmentConfig": {
 									},
@@ -113,7 +113,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewRecentAssetsJSPSectionFragmentRenderer"
+												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewHomeRecentAssetsJSPSectionFragmentRenderer"
 											},
 											"fragmentConfig": {
 											},
@@ -153,7 +153,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewWorkflowTasksJSPSectionFragmentRenderer"
+												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewHomeWorkflowTasksJSPSectionFragmentRenderer"
 											},
 											"fragmentConfig": {
 											},

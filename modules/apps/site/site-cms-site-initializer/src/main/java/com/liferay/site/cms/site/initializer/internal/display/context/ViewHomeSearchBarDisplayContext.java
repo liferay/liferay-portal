@@ -15,9 +15,9 @@ import java.util.Map;
 /**
  * @author Christian Dorado
  */
-public class ViewWorkflowTasksDisplayContext {
+public class ViewHomeSearchBarDisplayContext {
 
-	public ViewWorkflowTasksDisplayContext(ThemeDisplay themeDisplay) {
+	public ViewHomeSearchBarDisplayContext(ThemeDisplay themeDisplay) {
 		_themeDisplay = themeDisplay;
 	}
 

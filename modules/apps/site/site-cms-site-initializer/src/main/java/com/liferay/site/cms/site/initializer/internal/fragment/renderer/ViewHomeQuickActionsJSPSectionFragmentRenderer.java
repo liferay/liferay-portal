@@ -8,7 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.site.cms.site.initializer.internal.display.context.ViewQuickActionsDisplayContext;
+import com.liferay.site.cms.site.initializer.internal.display.context.ViewHomeQuickActionsDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,26 +18,26 @@ import org.osgi.service.component.annotations.Component;
  * @author Christian Dorado
  */
 @Component(service = FragmentRenderer.class)
-public class ViewQuickActionsJSPSectionFragmentRenderer
-	extends BaseJSPSectionFragmentRenderer<ViewQuickActionsDisplayContext> {
+public class ViewHomeQuickActionsJSPSectionFragmentRenderer
+	extends BaseJSPSectionFragmentRenderer<ViewHomeQuickActionsDisplayContext> {
 
 	@Override
 	public String getLabelKey() {
-		return "quick-actions";
+		return "home-quick-actions";
 	}
 
 	@Override
-	protected ViewQuickActionsDisplayContext getDisplayContext(
+	protected ViewHomeQuickActionsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new ViewQuickActionsDisplayContext(
+		return new ViewHomeQuickActionsDisplayContext(
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
 	}
 
 	@Override
 	protected String getJSPPath() {
-		return "/view_quick_actions.jsp";
+		return "/view_home_quick_actions.jsp";
 	}
 
 }

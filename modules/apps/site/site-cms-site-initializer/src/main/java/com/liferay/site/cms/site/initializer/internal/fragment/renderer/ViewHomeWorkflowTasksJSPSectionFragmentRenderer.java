@@ -8,7 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.site.cms.site.initializer.internal.display.context.ViewWorkflowTasksDisplayContext;
+import com.liferay.site.cms.site.initializer.internal.display.context.ViewHomeWorkflowTasksDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,26 +18,27 @@ import org.osgi.service.component.annotations.Component;
  * @author Christian Dorado
  */
 @Component(service = FragmentRenderer.class)
-public class ViewWorkflowTasksJSPSectionFragmentRenderer
-	extends BaseJSPSectionFragmentRenderer<ViewWorkflowTasksDisplayContext> {
+public class ViewHomeWorkflowTasksJSPSectionFragmentRenderer
+	extends BaseJSPSectionFragmentRenderer
+		<ViewHomeWorkflowTasksDisplayContext> {
 
 	@Override
 	public String getLabelKey() {
-		return "cms-workflow-tasks";
+		return "home-workflow-tasks";
 	}
 
 	@Override
-	protected ViewWorkflowTasksDisplayContext getDisplayContext(
+	protected ViewHomeWorkflowTasksDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new ViewWorkflowTasksDisplayContext(
+		return new ViewHomeWorkflowTasksDisplayContext(
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
 	}
 
 	@Override
 	protected String getJSPPath() {
-		return "/view_workflow_tasks.jsp";
+		return "/view_home_workflow_tasks.jsp";
 	}
 
 }

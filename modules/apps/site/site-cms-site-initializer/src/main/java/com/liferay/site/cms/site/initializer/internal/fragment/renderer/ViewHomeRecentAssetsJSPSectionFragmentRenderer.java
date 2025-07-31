@@ -8,7 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.site.cms.site.initializer.internal.display.context.ViewSearchBarDisplayContext;
+import com.liferay.site.cms.site.initializer.internal.display.context.ViewHomeRecentAssetsDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,26 +18,26 @@ import org.osgi.service.component.annotations.Component;
  * @author Christian Dorado
  */
 @Component(service = FragmentRenderer.class)
-public class ViewSearchBarJSPSectionFragmentRenderer
-	extends BaseJSPSectionFragmentRenderer<ViewSearchBarDisplayContext> {
+public class ViewHomeRecentAssetsJSPSectionFragmentRenderer
+	extends BaseJSPSectionFragmentRenderer<ViewHomeRecentAssetsDisplayContext> {
 
 	@Override
 	public String getLabelKey() {
-		return "cms-search-bar";
+		return "home-recent-assets";
 	}
 
 	@Override
-	protected ViewSearchBarDisplayContext getDisplayContext(
+	protected ViewHomeRecentAssetsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new ViewSearchBarDisplayContext(
+		return new ViewHomeRecentAssetsDisplayContext(
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
 	}
 
 	@Override
 	protected String getJSPPath() {
-		return "/view_search_bar.jsp";
+		return "/view_home_recent_assets.jsp";
 	}
 
 }

@@ -15,9 +15,9 @@ import java.util.Map;
 /**
  * @author Christian Dorado
  */
-public class ViewQuickActionsDisplayContext {
+public class ViewHomeRecentAssetsDisplayContext {
 
-	public ViewQuickActionsDisplayContext(ThemeDisplay themeDisplay) {
+	public ViewHomeRecentAssetsDisplayContext(ThemeDisplay themeDisplay) {
 		_themeDisplay = themeDisplay;
 	}
 
