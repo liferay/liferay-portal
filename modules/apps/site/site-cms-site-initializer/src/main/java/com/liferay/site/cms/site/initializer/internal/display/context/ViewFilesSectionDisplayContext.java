@@ -74,7 +74,7 @@ public class ViewFilesSectionDisplayContext
 		fdsActionDropdownItems.add(
 			4,
 			new FDSActionDropdownItem(
-				StringPool.BLANK, "view", "viewFile",
+				StringPool.BLANK, "view", "view-file",
 				LanguageUtil.get(httpServletRequest, "view"), null, null,
 				null));
 

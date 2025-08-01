@@ -265,9 +265,11 @@ test(
 			await expect(page.getByRole('dialog')).toBeVisible();
 
 			await expect(page.getByText(imageName)).toBeVisible();
-			await expect(page.getByRole('link', { name: 'Download' })).toBeVisible();
+			await expect(
+				page.getByRole('link', {name: 'Download'})
+			).toBeVisible();
 
-			await expect(page.getByText("No preview available")).toBeVisible();
+			await expect(page.getByText('No preview available')).toBeVisible();
 		}
 		finally {
 			await apiHelpers.objectEntry.deleteObjectEntry(
@@ -277,4 +279,3 @@ test(
 		}
 	}
 );
-

@@ -94,6 +94,16 @@ export default function FilesFDSPropsTransformer({
 						),
 				};
 			}
+			else if (action?.data?.id === 'view-file') {
+				return {
+					...action,
+					isVisible: (item: any) =>
+						Boolean(
+							item?.entryClassName !==
+								OBJECT_ENTRY_FOLDER_CLASSNAME
+						),
+				};
+			}
 
 			return action;
 		}),
@@ -108,7 +118,7 @@ export default function FilesFDSPropsTransformer({
 				Liferay.fire(EVENTS.ASSET_DATA, {items: [{...itemData}]});
 			}
 
-			if (action?.data?.id === 'viewFile') {
+			if (action?.data?.id === 'view-file') {
 				openModal({
 					containerProps: {
 						className: '',
