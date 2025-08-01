@@ -10,6 +10,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
+import com.liferay.mail.kernel.service.MailSettingConfigurationProviderUtil;
 import com.liferay.mail.kernel.template.MailTemplate;
 import com.liferay.mail.kernel.template.MailTemplateContext;
 import com.liferay.mail.kernel.template.MailTemplateContextBuilder;
@@ -7062,9 +7063,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				emailAddress, emailAddressValidator);
 		}
 
-		String pop3User = PrefsPropsUtil.getString(
-			PropsKeys.MAIL_SESSION_MAIL_POP3_USER,
-			PropsValues.MAIL_SESSION_MAIL_POP3_USER);
+
+		String pop3User = MailSettingConfigurationProviderUtil.getPOPUserName();
 
 		if (StringUtil.equalsIgnoreCase(emailAddress, pop3User)) {
 			throw new UserEmailAddressException.MustNotBePOP3User(emailAddress);

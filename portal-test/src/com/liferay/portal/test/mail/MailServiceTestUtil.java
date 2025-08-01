@@ -126,9 +126,8 @@ public class MailServiceTestUtil {
 		int smtpPort = _getFreePort();
 
 		_safeCloseable = PrefsPropsTestUtil.swapWithSafeCloseable(
-			CompanyThreadLocal.getCompanyId(),
-			PropsKeys.MAIL_SESSION_MAIL_SMTP_PORT, smtpPort,
-			PropsKeys.MAIL_SESSION_MAIL, true);
+			CompanyThreadLocal.getCompanyId(), PropsKeys.MAIL_SESSION_MAIL,
+			true);
 
 		_smtpServer = new SmtpServer();
 
