@@ -43,7 +43,7 @@ export class FilesPage {
 		action,
 		filter,
 	}: {
-		action: 'Download';
+		action: 'Download' | 'View';
 		filter: string;
 	}) {
 		await this.dataSetFragmentPage.execItemAction({

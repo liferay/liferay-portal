@@ -228,3 +228,53 @@ test(
 		await apiHelpers.jsonWebServicesDepot.deleteDepotEntry(depotEntryId);
 	}
 );
+
+test(
+	'There is a View action for items the Files section',
+	{tag: '@LPD-58720'},
+	async ({apiHelpers, filesPage, page}) => {
+		const applicationName = 'cms/basic-documents';
+		const imageName = `Image ${getRandomString()}`;
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64: 'R0lGODlhAQABAAAAACw=',
+					name: `file_${getRandomString()}.png`,
+				},
+				objectEntryFolderExternalReferenceCode: 'L_FILES',
+				title: imageName,
+			},
+			applicationName,
+			'Default'
+		);
+
+		try {
+			apiHelpers.data.push({
+				id: objectEntry.file.id,
+				type: 'document',
+			});
+
+			await filesPage.goto();
+
+			await filesPage.execItemAction({
+				action: 'View',
+				filter: objectEntry.title,
+			});
+
+			await expect(page.getByRole('dialog')).toBeVisible();
+
+			await expect(page.getByText(imageName)).toBeVisible();
+			await expect(page.getByRole('link', { name: 'Download' })).toBeVisible();
+
+			await expect(page.getByText("No preview available")).toBeVisible();
+		}
+		finally {
+			await apiHelpers.objectEntry.deleteObjectEntry(
+				applicationName,
+				String(objectEntry.id)
+			);
+		}
+	}
+);
+
