@@ -1,4 +1,4 @@
-String luceneVersion = "8.6.2"
+String luceneVersion = "8.11.3"
 
 dependencies {
 	compileInclude group: "org.apache.lucene", name: "lucene-analyzers-common", version: luceneVersion
