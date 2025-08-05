@@ -1,4 +1,5 @@
 dependencies {
+	testIntegrationImplementation project(":apps:mail:mail-setting")
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "jakarta.mail", name: "jakarta.mail-api", version: "2.1.3"
