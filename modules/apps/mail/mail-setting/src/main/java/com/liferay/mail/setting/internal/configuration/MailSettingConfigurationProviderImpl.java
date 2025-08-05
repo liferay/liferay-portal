@@ -10,6 +10,8 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 
 import java.util.Map;
 
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -94,6 +96,20 @@ public class MailSettingConfigurationProviderImpl
 	protected void activate(Map<String, Object> properties) {
 		_mailSettingConfiguration = ConfigurableUtil.createConfigurable(
 			MailSettingConfiguration.class, properties);
+
+
+//		try {
+//			if (companyId > CompanyConstants.SYSTEM) {
+//				return _configurationProvider.getCompanyConfiguration(
+//					FriendlyURLRedirectionConfiguration.class, companyId);
+//			}
+//
+//			return _configurationProvider.getSystemConfiguration(
+//				FriendlyURLRedirectionConfiguration.class);
+//		}
+//		catch (ConfigurationException configurationException) {
+//			return ReflectionUtil.throwException(configurationException);
+//		}
 	}
 
 	private volatile MailSettingConfiguration _mailSettingConfiguration;
