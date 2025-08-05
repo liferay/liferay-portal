@@ -1,5 +1,5 @@
 {
-	"@generated": "d388290390d5c7bead7b0041bd3dcc5f89236ddb",
+	"@generated": "916b46581c3a81a4d5b96cf4da445d8111a7b4ba",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -25,6 +25,9 @@
 			],
 			"@liferay/object-js-components-web": [
 				"../../../object/object-js-components-web/src/main/resources/META-INF/resources/index.ts"
+			],
+			"document-library-preview-image": [
+				"../../../document-library/document-library-preview-image/src/main/resources/META-INF/resources/preview/js/index.js"
 			],
 			"frontend-editor-ckeditor-web": [
 				"../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/js/index.ts"
@@ -74,6 +77,9 @@
 		},
 		{
 			"path": "../../../object/object-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../document-library/document-library-preview-image/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/tsconfig.json"
