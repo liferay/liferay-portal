@@ -54,6 +54,12 @@ public class ViewVersionHistoryDisplayContext {
 				_language.get(_httpServletRequest, "download"), "get", null,
 				"link"),
 			new FDSActionDropdownItem(
+				StringPool.BLANK, "view", "view-file",
+				_language.get(_httpServletRequest, "view"), null, null, null,
+				HashMapBuilder.<String, Object>put(
+					"objectEntryFolderExternalReferenceCode", "L_FILES"
+				).build()),
+			new FDSActionDropdownItem(
 				"{actions.restore.href}", "restore", "restore",
 				_language.get(_httpServletRequest, "restore"), "put", "restore",
 				null),
