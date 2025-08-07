@@ -7,6 +7,7 @@ import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 import {openModal} from 'frontend-js-components-web';
 import {navigate, sessionStorage, sub} from 'frontend-js-web';
 
+import formatActionURL from '../../common/utils/formatActionURL';
 import FilePreviewerModalContent from '../modal/FilePreviewerModalContent';
 import deleteEntryAction from './actions/deleteEntryAction';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
@@ -53,22 +54,9 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 			itemData,
 			loadData,
 		}: {
-			action: {data: {id: string; successMessage: string}; href?: string};
+			action: any;
 			event: Event;
-			itemData: {
-				actions: {
-					copy: {href: string; method: string};
-					delete: {href: string; method: string};
-					expire: {href: string; method: string};
-					restore: {href: string; method: string};
-				};
-				file: any;
-				systemProperties: {
-					version: {
-						number: number;
-					};
-				};
-			};
+			itemData: any;
 			loadData: () => {};
 		}) {
 			if (action.data.id === 'copy') {
@@ -142,12 +130,25 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 					url: itemData.actions.restore.href,
 				});
 			}
+			else if (action?.data?.id === 'view-content') {
+				event?.preventDefault();
+
+				openModal({
+					containerProps: {
+						className: '',
+					},
+					size: 'full-screen',
+					title: sub(
+						Liferay.Language.get('x-version-x'),
+						itemData.title,
+						`${sub(Liferay.Language.get('version-x'), itemData.systemProperties.version.number)}`
+					),
+					url: formatActionURL(itemData, action.href),
+				});
+			}
 			else if (action?.data?.id === 'view-file') {
 				if (itemData.file) {
 					openModal({
-						containerProps: {
-							className: '',
-						},
 						contentComponent: () =>
 							FilePreviewerModalContent(itemData.file),
 						size: 'full-screen',
