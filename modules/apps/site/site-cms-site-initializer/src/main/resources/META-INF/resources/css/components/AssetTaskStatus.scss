@@ -1,0 +1,66 @@
+@import 'atlas-variables';
+
+.dropdown-menu {
+	max-height: none;
+	max-width: none;
+	padding: 0;
+}
+
+.task-status {
+	margin: 0;
+	overflow-x: hidden;
+	padding: 0.5rem 0;
+	max-height: 36.25rem !important;
+	width: 17.5rem;
+
+	.panel {
+		margin-bottom: 0.2rem;
+	}
+
+	.panel-body {
+		gap: 0.6rem;
+		padding: 0 0 0 2.0625rem;
+	}
+
+	.panel-header {
+		margin-left: 0.6rem;
+		margin-top: 0.3rem;
+		padding: 0;
+
+		.collapse-icon-closed,
+		.collapse-icon-open {
+			font-size: 0.75rem;
+			margin-right: 0.25rem;
+			margin-top: 0.25rem;
+			top: 0;
+			transform: none;
+		}
+	}
+
+	.task-status-item {
+		gap: 0.5rem;
+
+		&-icon {
+			.loading-animation {
+				margin-top: 0;
+			}
+		}
+
+		&-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.1875rem;
+			width: 13rem;
+		}
+	}
+}
+
+.task-status-dropdown {
+
+	.dropdown-toggle {
+		border-bottom-left-radius: unset;
+		border-left: unset;
+		border-top-left-radius: unset;
+	}
+}
+
