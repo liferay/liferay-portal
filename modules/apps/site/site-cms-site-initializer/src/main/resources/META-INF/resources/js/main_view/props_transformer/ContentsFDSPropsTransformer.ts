@@ -4,7 +4,9 @@
  */
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {openModal} from 'frontend-js-components-web';
 
+import formatActionURL from '../../common/utils/formatActionURL';
 import AssetTypeInfoPanel from '../info_panel/AssetTypeInfoPanelContent';
 import {EVENTS} from '../info_panel/util/constants';
 import createAssetAction from './actions/createAssetAction';
@@ -87,12 +89,6 @@ export default function ContentFDSPropsTransformer({
 			if (action?.data?.id === 'viewContent') {
 				return {
 					...action,
-					data: {
-						...action.data,
-						disableHeader: false,
-						size: 'full-screen',
-						title: 'View',
-					},
 					isVisible: (item: any) =>
 						Boolean(
 							item?.entryClassName !==
@@ -105,13 +101,24 @@ export default function ContentFDSPropsTransformer({
 		}),
 		onActionDropdownItemClick: ({
 			action,
+			event,
 			itemData,
 		}: {
 			action: any;
-			itemData: [];
+			event: Event;
+			itemData: any;
 		}) => {
 			if (action?.data?.id === 'show-details') {
 				Liferay.fire(EVENTS.ASSET_DATA, {items: [{...itemData}]});
+			}
+			else if (action?.data?.id === 'viewContent') {
+				event?.preventDefault();
+
+				openModal({
+					size: 'full-screen',
+					title: itemData.embedded.title,
+					url: formatActionURL(itemData, action.href),
+				});
 			}
 		},
 		onSelectedItemsChange: (selectedItems: any[]) => {
