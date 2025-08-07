@@ -92,19 +92,6 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 					url: itemData.actions.copy.href,
 				});
 			}
-			else if (action.data.id === 'expire') {
-				event?.preventDefault();
-
-				executeAsyncItemAction({
-					method: itemData.actions.expire.method,
-					refreshData: loadData,
-					successMessage: sub(
-						Liferay.Language.get('expire-version-success-message'),
-						`<strong>${sub(Liferay.Language.get('version-x'), itemData.systemProperties.version.number)}</strong>`
-					),
-					url: itemData.actions.expire.href,
-				});
-			}
 			else if (action.data.id === 'delete') {
 				event?.preventDefault();
 
@@ -124,6 +111,19 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 						Liferay.Language.get('delete-version-x'),
 						itemData.systemProperties.version.number
 					),
+				});
+			}
+			else if (action.data.id === 'expire') {
+				event?.preventDefault();
+
+				executeAsyncItemAction({
+					method: itemData.actions.expire.method,
+					refreshData: loadData,
+					successMessage: sub(
+						Liferay.Language.get('expire-version-success-message'),
+						`<strong>${sub(Liferay.Language.get('version-x'), itemData.systemProperties.version.number)}</strong>`
+					),
+					url: itemData.actions.expire.href,
 				});
 			}
 			else if (action.data.id === 'restore') {
