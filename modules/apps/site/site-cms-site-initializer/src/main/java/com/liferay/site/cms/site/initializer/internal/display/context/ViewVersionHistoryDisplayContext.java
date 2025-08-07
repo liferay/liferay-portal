@@ -12,6 +12,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -53,6 +56,18 @@ public class ViewVersionHistoryDisplayContext {
 				"{file.link.href}", "download", "download",
 				_language.get(_httpServletRequest, "download"), "get", null,
 				"link"),
+			new FDSActionDropdownItem(
+				StringBundler.concat(
+					_themeDisplay.getPortalURL(), _themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?objectEntryId={id}",
+					"&p_l_mode=read&p_p_state=", LiferayWindowState.POP_UP,
+					"&redirect=", _themeDisplay.getURLCurrent()),
+				"view", "view-content",
+				LanguageUtil.get(_httpServletRequest, "view"), null, null, null,
+				HashMapBuilder.<String, Object>put(
+					"objectEntryFolderExternalReferenceCode", "L_CONTENTS"
+				).build()),
 			new FDSActionDropdownItem(
 				StringPool.BLANK, "view", "view-file",
 				_language.get(_httpServletRequest, "view"), null, null, null,
