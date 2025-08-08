@@ -6,6 +6,9 @@
 package com.liferay.object.model.impl;
 
 import com.liferay.object.model.ObjectLayoutBox;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +22,12 @@ public class ObjectLayoutTabImpl extends ObjectLayoutTabBaseImpl {
 	@Override
 	public List<ObjectLayoutBox> getObjectLayoutBoxes() {
 		return _objectLayoutBoxes;
+	}
+
+	@Override
+	public ObjectRelationship getObjectRelationship() throws PortalException {
+		return ObjectRelationshipLocalServiceUtil.getObjectRelationship(
+			getObjectRelationshipId());
 	}
 
 	@Override
