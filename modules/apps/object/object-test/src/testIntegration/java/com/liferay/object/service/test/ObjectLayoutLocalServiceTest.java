@@ -15,6 +15,7 @@ import com.liferay.object.exception.DefaultObjectLayoutException;
 import com.liferay.object.exception.ObjectDefinitionModifiableException;
 import com.liferay.object.exception.ObjectLayoutBoxCategorizationTypeException;
 import com.liferay.object.exception.ObjectLayoutColumnSizeException;
+import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -24,14 +25,18 @@ import com.liferay.object.model.ObjectLayoutBox;
 import com.liferay.object.model.ObjectLayoutColumn;
 import com.liferay.object.model.ObjectLayoutRow;
 import com.liferay.object.model.ObjectLayoutTab;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectLayoutLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.persistence.ObjectLayoutBoxPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutColumnPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutRowPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutTabPersistence;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -51,6 +56,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,6 +75,22 @@ public class ObjectLayoutLocalServiceTest {
 			new LiferayIntegrationTestRule(),
 			new TransactionalTestRule(
 				Propagation.REQUIRED, "com.liferay.object.service"));
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_objectDefinitionA =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+		_objectDefinitionAA =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
+		_objectRelationshipA_AA =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _objectDefinitionA,
+				_objectDefinitionAA);
+
+		TreeTestUtil.bind(
+			_objectRelationshipLocalService, List.of(_objectRelationshipA_AA));
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -218,6 +240,54 @@ public class ObjectLayoutLocalServiceTest {
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					Collections.singletonList(objectLayoutTab));
+			});
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationships cannot be associated to object layout " +
+				"tabs",
+			() -> {
+				ObjectLayoutTab objectLayoutTab = _addObjectLayoutTab();
+
+				objectLayoutTab.setObjectRelationshipId(
+					_objectRelationshipA_AA.getObjectRelationshipId());
+
+				_objectLayoutLocalService.addObjectLayout(
+					TestPropsValues.getUserId(),
+					_objectDefinitionA.getObjectDefinitionId(), false,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
+			});
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationship object fields cannot be associated to " +
+				"object layouts",
+			() -> {
+				ObjectLayoutColumn objectLayoutColumn = _addObjectLayoutColumn(
+					false);
+
+				objectLayoutColumn.setObjectFieldId(
+					_objectRelationshipA_AA.getObjectFieldId2());
+
+				ObjectLayoutRow objectLayoutRow = _addObjectLayoutRow();
+
+				objectLayoutRow.setObjectLayoutColumns(
+					List.of(objectLayoutColumn));
+
+				ObjectLayoutBox objectLayoutBox = _addObjectLayoutBox();
+
+				objectLayoutBox.setObjectLayoutRows(List.of(objectLayoutRow));
+
+				ObjectLayoutTab objectLayoutTab = _addObjectLayoutTab();
+
+				objectLayoutTab.setObjectLayoutBoxes(List.of(objectLayoutBox));
+
+				_objectLayoutLocalService.addObjectLayout(
+					TestPropsValues.getUserId(),
+					_objectDefinitionAA.getObjectDefinitionId(), true,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
 			});
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
@@ -446,6 +516,72 @@ public class ObjectLayoutLocalServiceTest {
 
 	@Test
 	public void testUpdateObjectLayout() throws Exception {
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationships cannot be associated to object layout " +
+				"tabs",
+			() -> {
+				ObjectLayout objectLayout = _addObjectLayout();
+
+				ObjectLayoutTab objectLayoutTab = _addObjectLayoutTab();
+
+				objectLayoutTab.setObjectRelationshipId(
+					_objectRelationshipA_AA.getObjectRelationshipId());
+
+				_objectLayoutLocalService.updateObjectLayout(
+					objectLayout.getObjectLayoutId(), false,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
+			});
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationship object fields cannot be associated to " +
+				"object layouts",
+			() -> {
+				ObjectField objectField =
+					_objectFieldLocalService.getObjectField(
+						_objectDefinitionAA.getObjectDefinitionId(),
+						"externalReferenceCode");
+
+				ObjectLayoutColumn objectLayoutColumn = _addObjectLayoutColumn(
+					false);
+
+				objectLayoutColumn.setObjectFieldId(
+					objectField.getObjectFieldId());
+
+				ObjectLayoutRow objectLayoutRow = _addObjectLayoutRow();
+
+				objectLayoutRow.setObjectLayoutColumns(
+					List.of(objectLayoutColumn));
+
+				ObjectLayoutBox objectLayoutBox = _addObjectLayoutBox();
+
+				objectLayoutBox.setObjectLayoutRows(List.of(objectLayoutRow));
+
+				ObjectLayoutTab objectLayoutTab = _addObjectLayoutTab();
+
+				objectLayoutTab.setObjectLayoutBoxes(List.of(objectLayoutBox));
+
+				ObjectLayout objectLayout =
+					_objectLayoutLocalService.addObjectLayout(
+						TestPropsValues.getUserId(),
+						_objectDefinitionAA.getObjectDefinitionId(), false,
+						RandomTestUtil.randomLocaleStringMap(),
+						Collections.singletonList(objectLayoutTab));
+
+				objectLayoutColumn.setObjectFieldId(
+					_objectRelationshipA_AA.getObjectFieldId2());
+
+				_objectLayoutLocalService.updateObjectLayout(
+					objectLayout.getObjectLayoutId(), false,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
+			});
+
+		_objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
 		List<ScreenNavigationCategory> screenNavigationCategories =
 			ScreenNavigationRegistryUtil.getScreenNavigationCategories(
 				_objectDefinition.getClassName(), TestPropsValues.getUser(),
@@ -570,6 +706,18 @@ public class ObjectLayoutLocalServiceTest {
 		return objectLayoutColumn;
 	}
 
+	private ObjectLayoutColumn _addObjectLayoutColumn(long objectFieldId)
+		throws Exception {
+
+		ObjectLayoutColumn objectLayoutColumn =
+			_objectLayoutColumnPersistence.create(0);
+
+		objectLayoutColumn.setObjectFieldId(objectFieldId);
+		objectLayoutColumn.setPriority(0);
+
+		return objectLayoutColumn;
+	}
+
 	private ObjectLayoutRow _addObjectLayoutRow() throws Exception {
 		ObjectLayoutRow objectLayoutRow = _objectLayoutRowPersistence.create(0);
 
@@ -585,8 +733,7 @@ public class ObjectLayoutLocalServiceTest {
 	private ObjectLayoutTab _addObjectLayoutTab() throws Exception {
 		ObjectLayoutTab objectLayoutTab = _objectLayoutTabPersistence.create(0);
 
-		objectLayoutTab.setNameMap(
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()));
+		objectLayoutTab.setNameMap(RandomTestUtil.randomLocaleStringMap());
 		objectLayoutTab.setObjectLayoutBoxes(
 			Arrays.asList(_addObjectLayoutBox(), _addObjectLayoutBox()));
 
@@ -634,6 +781,14 @@ public class ObjectLayoutLocalServiceTest {
 			_objectFieldLocalService.deleteObjectField(objectField);
 		}
 	}
+
+	private static ObjectDefinition _objectDefinitionA;
+	private static ObjectDefinition _objectDefinitionAA;
+	private static ObjectRelationship _objectRelationshipA_AA;
+
+	@Inject
+	private static ObjectRelationshipLocalService
+		_objectRelationshipLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
