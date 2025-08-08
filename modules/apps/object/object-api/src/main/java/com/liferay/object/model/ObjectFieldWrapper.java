@@ -517,6 +517,11 @@ public class ObjectFieldWrapper
 		return model.getObjectFieldSettings();
 	}
 
+	@Override
+	public ObjectRelationship getObjectRelationship() {
+		return model.getObjectRelationship();
+	}
+
 	/**
 	 * Returns the primary key of this object field.
 	 *

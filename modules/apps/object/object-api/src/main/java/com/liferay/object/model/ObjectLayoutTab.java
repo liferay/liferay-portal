@@ -52,4 +52,7 @@ public interface ObjectLayoutTab extends ObjectLayoutTabModel, PersistedModel {
 	public void setObjectLayoutBoxes(
 		java.util.List<ObjectLayoutBox> objectLayoutBoxes);
 
+	public ObjectRelationship getObjectRelationship()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 }
