@@ -228,6 +228,81 @@ test(
 );
 
 test(
+	'Edit Experience with Draft AB Test',
+	{
+		tag: '@LPS-103334',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+		const siteName = getRandomString();
+
+		await apiHelpers.headlessSite.createSite({
+			name: siteName,
+		});
+
+		const pageTitle = 'MyPage-' + getRandomString();
+
+		const layout = await createSitePage({
+			apiHelpers,
+			pageTitle,
+			siteName,
+		});
+
+		const channelName = 'My Property - ' + getRandomString();
+
+		await syncAnalyticsCloud({
+			apiHelpers,
+			channelName,
+			page,
+			siteName,
+		});
+
+		await test.step('Go to site page', async () => {
+			await navigateToSitePage({
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await page.waitForSelector('.segments-experiment-icon');
+		});
+
+		await test.step('Create a new Experience', async () => {
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			await pageEditorPage.createExperience('Experience 1');
+
+			await pageEditorPage.publishPage();
+
+			await pageEditorPage.switchExperience('Experience 1');
+		});
+
+		const abTestName = 'AB Test -' + getRandomString();
+
+		await test.step('Create a new AB Test with a variant', async () => {
+			await openABTesSidebar(page);
+
+			await createABTest({
+				name: abTestName,
+				page,
+			});
+
+			await createVariant({
+				name: 'Variant -' + getRandomString(),
+				page,
+			});
+		});
+
+		await test.step('Able to Edit Experience', async () => {
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			await pageEditorPage.openExperienceSelector();
+
+			await expect(page.getByLabel('Edit Experience')).toBeVisible();
+		});
+	}
+);
+
+test(
 	'Terminate button in AC is redirecting to DXP',
 	{
 		tag: '@LRAC-14220',
