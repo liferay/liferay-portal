@@ -1,0 +1,4 @@
+Bundle-Name: Liferay CMS Theme CSS Client Extension
+Bundle-SymbolicName: com.liferay.cms.theme.css.client.extension
+Bundle-Version: 1.0.0
+Web-ContextPath: /cms-theme-css-client-extension

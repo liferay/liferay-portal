@@ -1,0 +1,8 @@
+{
+    "private": true,
+    "workspaces": {
+        "packages": [
+            "cms-theme-css-client-extension"
+        ]
+    }
+}

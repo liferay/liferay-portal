@@ -1,0 +1,375 @@
+@import 'clay/atlas/variables/_globals';
+
+$border-radius: 0.5rem;
+$border-radius-lg: 0.5rem;
+$border-radius-sm: 0.5rem;
+
+$breadcrumb-divider-svg-icon: clay-icon(slash, $gray-600);
+$breadcrumb-divider-svg-icon-height: 0.9em;
+
+$btn-xs-border-radius: 0.25rem;
+
+$custom-checkbox-indicator-border-radius: 0.25rem;
+
+$label-border-radius: 0.25rem;
+
+$sticker-sm-border-radius: 0.25rem;
+
+$label-font-size: 0.75rem;
+$label-text-transform: capitalize;
+
+$btn-sizes: () !default;
+$btn-sizes: map-deep-merge(
+	(
+		btn-xs: (
+			border-radius: $btn-xs-border-radius,
+		),
+	),
+	$btn-sizes
+);
+
+$label-lg: () !default;
+$label-lg: map-deep-merge(
+	(
+		border-radius: $border-radius-lg,
+	),
+	$label-lg
+);
+
+$label-primary-close: () !default;
+$label-primary-close: map-deep-merge(
+	(
+		hover: (
+			color: $info,
+		),
+		focus: (
+			color: $info,
+		),
+	),
+	$label-primary-close
+);
+
+$label-primary: () !default;
+$label-primary: map-deep-merge(
+	(
+		background-color: $info-l2,
+		border-color: $info-l2,
+		color: $info,
+		href: (
+			hover: (
+				background-color: $info-l2,
+				border-color: $info-l2,
+				color: $info,
+			),
+			focus: (
+				color: $info,
+			),
+		),
+		link: (
+			color: $info,
+			hover: (
+				color: $info,
+			),
+		),
+		close: $label-primary-close,
+	),
+	$label-primary
+);
+
+$label-secondary-close: () !default;
+$label-secondary-close: map-deep-merge(
+	(
+		hover: (
+			color: $dark,
+		),
+		focus: (
+			color: $dark,
+		),
+	),
+	$label-secondary-close
+);
+
+$label-secondary: () !default;
+$label-secondary: map-deep-merge(
+	(
+		background-color: $secondary-l3,
+		border-color: $secondary-l3,
+		color: $dark,
+		href: (
+			hover: (
+				background-color: $secondary-l3,
+				border-color: $secondary-l3,
+				color: $dark,
+			),
+			focus: (
+				color: $dark,
+			),
+		),
+		link: (
+			color: $dark,
+			hover: (
+				color: $dark,
+			),
+		),
+		close: $label-secondary-close,
+	),
+	$label-secondary
+);
+
+$label-success-close: () !default;
+$label-success-close: map-deep-merge(
+	(
+		hover: (
+			color: $success,
+		),
+		focus: (
+			color: $success,
+		),
+	),
+	$label-success-close
+);
+
+$label-success: () !default;
+$label-success: map-deep-merge(
+	(
+		background-color: $success-l2,
+		border-color: $success-l2,
+		color: $success,
+		href: (
+			hover: (
+				background-color: $success-l2,
+				border-color: $success-l2,
+				color: $success,
+			),
+			focus: (
+				color: $success,
+			),
+		),
+		link: (
+			color: $success,
+			hover: (
+				color: $success,
+			),
+		),
+		close: $label-success-close,
+	),
+	$label-success
+);
+
+$label-info-close: () !default;
+$label-info-close: map-deep-merge(
+	(
+		hover: (
+			color: $info,
+		),
+		focus: (
+			color: $info,
+		),
+	),
+	$label-info-close
+);
+
+$label-info: () !default;
+$label-info: map-deep-merge(
+	(
+		background-color: $info-l2,
+		border-color: $info-l2,
+		color: $info,
+		href: (
+			hover: (
+				background-color: $info-l2,
+				border-color: $info-l2,
+				color: $info,
+			),
+			focus: (
+				color: $info,
+			),
+		),
+		link: (
+			color: $info,
+			hover: (
+				color: $info,
+			),
+		),
+		close: $label-info-close,
+	),
+	$label-info
+);
+
+$label-warning-close: () !default;
+$label-warning-close: map-deep-merge(
+	(
+		hover: (
+			color: $warning,
+		),
+		focus: (
+			color: $warning,
+		),
+	),
+	$label-warning-close
+);
+
+$label-warning: () !default;
+$label-warning: map-deep-merge(
+	(
+		background-color: $warning-l2,
+		border-color: $warning-l2,
+		color: $warning,
+		href: (
+			hover: (
+				background-color: $warning-l2,
+				border-color: $warning-l2,
+				color: $warning,
+			),
+			focus: (
+				color: $warning,
+			),
+		),
+		link: (
+			color: warning,
+			hover: (
+				color: $warning,
+			),
+		),
+		close: $label-warning-close,
+	),
+	$label-warning
+);
+
+$label-danger-close: () !default;
+$label-danger-close: map-deep-merge(
+	(
+		hover: (
+			color: $danger,
+		),
+		focus: (
+			color: $danger,
+		),
+	),
+	$label-danger-close
+);
+
+$label-danger: () !default;
+$label-danger: map-deep-merge(
+	(
+		background-color: $danger-l2,
+		border-color: $danger-l2,
+		color: $danger,
+		href: (
+			hover: (
+				background-color: $danger-l2,
+				border-color: $danger-l2,
+				color: $danger,
+			),
+			focus: (
+				color: $danger,
+			),
+		),
+		link: (
+			color: $danger,
+			hover: (
+				color: $danger,
+			),
+		),
+		close: $label-danger-close,
+	),
+	$label-danger
+);
+
+$sticker-sizes: () !default;
+$sticker-sizes: map-deep-merge(
+	(
+		sticker-xs: (
+			border-radius: $sticker-sm-border-radius,
+		),
+	),
+	$sticker-sizes
+);
+
+$sticker-sm: () !default;
+$sticker-sm: map-deep-merge(
+	(
+		border-radius: $sticker-sm-border-radius,
+	),
+	$sticker-sm
+);
+
+$sticker-outline-1: () !default;
+$sticker-outline-1: map-deep-merge(
+	(
+		background-color: #f9f0ff,
+		border: 1px solid $purple,
+		color: $purple,
+	),
+	$sticker-outline-1
+);
+
+$sticker-outline-2: () !default;
+$sticker-outline-2: map-deep-merge(
+	(
+		background-color: #fff8e5,
+		border: 1px solid $yellow-d3,
+		color: $yellow-d3,
+	),
+	$sticker-outline-2
+);
+
+$sticker-outline-3: () !default;
+$sticker-outline-3: map-deep-merge(
+	(
+		background-color: #f1fce9,
+		border: 1px solid $green,
+		color: $green,
+	),
+	$sticker-outline-3
+);
+
+$sticker-outline-4: () !default;
+$sticker-outline-4: map-deep-merge(
+	(
+		background-color: #fff0f0,
+		border: 1px solid $red,
+		color: $red,
+	),
+	$sticker-outline-4
+);
+
+$sticker-outline-5: () !default;
+$sticker-outline-5: map-deep-merge(
+	(
+		background-color: #fff3eb,
+		border: 1px solid $orange,
+		color: $orange,
+	),
+	$sticker-outline-5
+);
+
+$sticker-outline-6: () !default;
+$sticker-outline-6: map-deep-merge(
+	(
+		background-color: #eafbf8,
+		border: 1px solid $teal,
+		color: $teal,
+	),
+	$sticker-outline-6
+);
+
+$sticker-outline-7: () !default;
+$sticker-outline-7: map-deep-merge(
+	(
+		background-color: #f0faff,
+		border: 1px solid $cyan,
+		color: $cyan,
+	),
+	$sticker-outline-7
+);
+
+$sticker-outline-8: () !default;
+$sticker-outline-8: map-deep-merge(
+	(
+		background-color: #fff0f8,
+		border: 1px solid $pink,
+		color: $pink-d4,
+	),
+	$sticker-outline-8
+);

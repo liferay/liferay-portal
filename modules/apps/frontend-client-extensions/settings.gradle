@@ -1,0 +1,9 @@
+buildscript {
+	apply from: file("../../build-buildscript.gradle"), to: buildscript
+
+	dependencies {
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.workspace", version: "13.1.3"
+	}
+}
+
+apply plugin: "com.liferay.workspace"

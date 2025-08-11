@@ -1,0 +1,15 @@
+.cms-sticker-dropdown {
+	&:focus,
+	&:hover {
+		background-color: $gray-100;
+		border-color: $gray-600;
+		font-size: 0;
+
+		&:after {
+			background-image: url(../images/clay/caret-double.svg);
+			content: '';
+			height: 10px;
+			width: 10px;
+		}
+	}
+}

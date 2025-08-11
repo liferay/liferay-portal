@@ -1,0 +1,12 @@
+.cms-control-menu {
+	border-bottom-width: 0.05rem;
+	border-color: $secondary-l0;
+}
+
+.top-bar {
+	top: var(--control-menu-container-height);
+
+	@include media-breakpoint-down(sm) {
+		position: static;
+	}
+}
