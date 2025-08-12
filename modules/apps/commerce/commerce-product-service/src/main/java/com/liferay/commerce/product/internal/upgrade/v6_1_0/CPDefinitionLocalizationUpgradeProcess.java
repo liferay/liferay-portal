@@ -5,13 +5,10 @@
 
 package com.liferay.commerce.product.internal.upgrade.v6_1_0;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 /**
  * @author Andrea Sbarra
@@ -20,22 +17,12 @@ public class CPDefinitionLocalizationUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"update CPDefinitionLocalization set CProductId = ? where " +
-					"CPDefinitionId = ?");
-			Statement s = connection.createStatement();
-			ResultSet resultSet = s.executeQuery(
-				"select * from CPDefinitionLocalization")) {
-
-			while (resultSet.next()) {
-				long cpDefinitionId = resultSet.getLong("CPDefinitionId");
-
-				preparedStatement.setLong(1, _getCProductId(cpDefinitionId));
-				preparedStatement.setLong(2, cpDefinitionId);
-
-				preparedStatement.execute();
-			}
-		}
+		runSQL(
+			StringBundler.concat(
+				"update CPDefinitionLocalization set CProductId = (select ",
+				"CProductId from CPDefinition where ",
+				"CPDefinition.CPDefinitionId = ",
+				"CPDefinitionLocalization.CPDefinitionId)"));
 	}
 
 	@Override
@@ -44,20 +31,6 @@ public class CPDefinitionLocalizationUpgradeProcess extends UpgradeProcess {
 			UpgradeProcessFactory.addColumns(
 				"CPDefinitionLocalization", "CProductId LONG")
 		};
-	}
-
-	private long _getCProductId(long cpDefinitionId) throws Exception {
-		try (Statement s = connection.createStatement();
-			ResultSet resultSet = s.executeQuery(
-				"select CProductId from CPDefinition where CPDefinitionId = " +
-					cpDefinitionId)) {
-
-			if (resultSet.next()) {
-				return resultSet.getLong("CProductId");
-			}
-		}
-
-		return 0;
 	}
 
 }
