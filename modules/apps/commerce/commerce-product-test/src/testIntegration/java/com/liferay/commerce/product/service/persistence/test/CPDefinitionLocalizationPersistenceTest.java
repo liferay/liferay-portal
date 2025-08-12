@@ -145,6 +145,8 @@ public class CPDefinitionLocalizationPersistenceTest {
 		newCPDefinitionLocalization.setMetaKeywords(
 			RandomTestUtil.randomString());
 
+		newCPDefinitionLocalization.setCProductId(RandomTestUtil.nextLong());
+
 		_cpDefinitionLocalizations.add(
 			_persistence.update(newCPDefinitionLocalization));
 
@@ -188,6 +190,9 @@ public class CPDefinitionLocalizationPersistenceTest {
 		Assert.assertEquals(
 			existingCPDefinitionLocalization.getMetaKeywords(),
 			newCPDefinitionLocalization.getMetaKeywords());
+		Assert.assertEquals(
+			existingCPDefinitionLocalization.getCProductId(),
+			newCPDefinitionLocalization.getCProductId());
 	}
 
 	@Test
@@ -241,7 +246,7 @@ public class CPDefinitionLocalizationPersistenceTest {
 			true, "cpDefinitionLocalizationId", true, "companyId", true,
 			"CPDefinitionId", true, "languageId", true, "name", true,
 			"shortDescription", true, "metaTitle", true, "metaDescription",
-			true, "metaKeywords", true);
+			true, "metaKeywords", true, "CProductId", true);
 	}
 
 	@Test
@@ -554,6 +559,8 @@ public class CPDefinitionLocalizationPersistenceTest {
 			RandomTestUtil.randomString());
 
 		cpDefinitionLocalization.setMetaKeywords(RandomTestUtil.randomString());
+
+		cpDefinitionLocalization.setCProductId(RandomTestUtil.nextLong());
 
 		_cpDefinitionLocalizations.add(
 			_persistence.update(cpDefinitionLocalization));

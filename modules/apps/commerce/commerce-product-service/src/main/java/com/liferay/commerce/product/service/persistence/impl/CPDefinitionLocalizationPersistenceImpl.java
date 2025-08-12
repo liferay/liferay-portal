@@ -1731,6 +1731,7 @@ public class CPDefinitionLocalizationPersistenceImpl
 		ctMergeColumnNames.add("metaTitle");
 		ctMergeColumnNames.add("metaDescription");
 		ctMergeColumnNames.add("metaKeywords");
+		ctMergeColumnNames.add("CProductId");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);

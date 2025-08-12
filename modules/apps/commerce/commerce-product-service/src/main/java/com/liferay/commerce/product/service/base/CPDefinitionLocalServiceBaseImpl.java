@@ -757,6 +757,8 @@ public abstract class CPDefinitionLocalServiceBaseImpl
 					cpDefinition.getCtCollectionId());
 				cpDefinitionLocalization.setCompanyId(
 					cpDefinition.getCompanyId());
+				cpDefinitionLocalization.setCProductId(
+					cpDefinition.getCProductId());
 
 				cpDefinitionLocalization.setName(localizedValues[0]);
 				cpDefinitionLocalization.setShortDescription(
@@ -791,6 +793,8 @@ public abstract class CPDefinitionLocalServiceBaseImpl
 			cpDefinitionLocalization.setCPDefinitionId(
 				cpDefinition.getCPDefinitionId());
 			cpDefinitionLocalization.setCompanyId(cpDefinition.getCompanyId());
+			cpDefinitionLocalization.setCProductId(
+				cpDefinition.getCProductId());
 
 			cpDefinitionLocalization.setLanguageId(languageId);
 
@@ -833,6 +837,7 @@ public abstract class CPDefinitionLocalServiceBaseImpl
 		cpDefinitionLocalization.setCtCollectionId(
 			cpDefinition.getCtCollectionId());
 		cpDefinitionLocalization.setCompanyId(cpDefinition.getCompanyId());
+		cpDefinitionLocalization.setCProductId(cpDefinition.getCProductId());
 
 		cpDefinitionLocalization.setName(name);
 		cpDefinitionLocalization.setShortDescription(shortDescription);

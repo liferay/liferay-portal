@@ -50,6 +50,7 @@ public class CPDefinitionLocalizationWrapper
 		attributes.put("metaTitle", getMetaTitle());
 		attributes.put("metaDescription", getMetaDescription());
 		attributes.put("metaKeywords", getMetaKeywords());
+		attributes.put("CProductId", getCProductId());
 
 		return attributes;
 	}
@@ -128,6 +129,12 @@ public class CPDefinitionLocalizationWrapper
 		if (metaKeywords != null) {
 			setMetaKeywords(metaKeywords);
 		}
+
+		Long CProductId = (Long)attributes.get("CProductId");
+
+		if (CProductId != null) {
+			setCProductId(CProductId);
+		}
 	}
 
 	@Override
@@ -163,6 +170,16 @@ public class CPDefinitionLocalizationWrapper
 	@Override
 	public long getCpDefinitionLocalizationId() {
 		return model.getCpDefinitionLocalizationId();
+	}
+
+	/**
+	 * Returns the c product ID of this cp definition localization.
+	 *
+	 * @return the c product ID of this cp definition localization
+	 */
+	@Override
+	public long getCProductId() {
+		return model.getCProductId();
 	}
 
 	/**
@@ -293,6 +310,16 @@ public class CPDefinitionLocalizationWrapper
 	@Override
 	public void setCpDefinitionLocalizationId(long cpDefinitionLocalizationId) {
 		model.setCpDefinitionLocalizationId(cpDefinitionLocalizationId);
+	}
+
+	/**
+	 * Sets the c product ID of this cp definition localization.
+	 *
+	 * @param CProductId the c product ID of this cp definition localization
+	 */
+	@Override
+	public void setCProductId(long CProductId) {
+		model.setCProductId(CProductId);
 	}
 
 	/**

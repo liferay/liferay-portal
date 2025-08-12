@@ -68,7 +68,7 @@ public class CPDefinitionLocalizationCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -94,6 +94,8 @@ public class CPDefinitionLocalizationCacheModel
 		sb.append(metaDescription);
 		sb.append(", metaKeywords=");
 		sb.append(metaKeywords);
+		sb.append(", CProductId=");
+		sb.append(CProductId);
 		sb.append("}");
 
 		return sb.toString();
@@ -160,6 +162,8 @@ public class CPDefinitionLocalizationCacheModel
 			cpDefinitionLocalizationImpl.setMetaKeywords(metaKeywords);
 		}
 
+		cpDefinitionLocalizationImpl.setCProductId(CProductId);
+
 		cpDefinitionLocalizationImpl.resetOriginalValues();
 
 		return cpDefinitionLocalizationImpl;
@@ -185,6 +189,8 @@ public class CPDefinitionLocalizationCacheModel
 		metaTitle = objectInput.readUTF();
 		metaDescription = objectInput.readUTF();
 		metaKeywords = objectInput.readUTF();
+
+		CProductId = objectInput.readLong();
 	}
 
 	@Override
@@ -247,6 +253,8 @@ public class CPDefinitionLocalizationCacheModel
 		else {
 			objectOutput.writeUTF(metaKeywords);
 		}
+
+		objectOutput.writeLong(CProductId);
 	}
 
 	public long mvccVersion;
@@ -261,5 +269,6 @@ public class CPDefinitionLocalizationCacheModel
 	public String metaTitle;
 	public String metaDescription;
 	public String metaKeywords;
+	public long CProductId;
 
 }

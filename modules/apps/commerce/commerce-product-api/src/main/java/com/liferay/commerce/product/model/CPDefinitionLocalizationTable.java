@@ -62,6 +62,9 @@ public class CPDefinitionLocalizationTable
 	public final Column<CPDefinitionLocalizationTable, String> metaKeywords =
 		createColumn(
 			"metaKeywords", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionLocalizationTable, Long> CProductId =
+		createColumn(
+			"CProductId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 
 	private CPDefinitionLocalizationTable() {
 		super("CPDefinitionLocalization", CPDefinitionLocalizationTable::new);

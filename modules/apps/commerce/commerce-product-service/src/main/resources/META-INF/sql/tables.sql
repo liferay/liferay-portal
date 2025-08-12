@@ -260,6 +260,7 @@ create table CPDefinitionLocalization (
 	metaTitle VARCHAR(255) null,
 	metaDescription VARCHAR(255) null,
 	metaKeywords VARCHAR(255) null,
+	CProductId LONG,
 	primary key (cpDefinitionLocalizationId, ctCollectionId)
 );
 
