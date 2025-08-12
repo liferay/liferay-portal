@@ -586,6 +586,7 @@
 		<!-- Localized entity -->
 
 		<localized-entity>
+			<column name="CProductId" type="long" />
 			<localized-column name="name" />
 			<localized-column name="shortDescription" />
 			<localized-column name="description" />

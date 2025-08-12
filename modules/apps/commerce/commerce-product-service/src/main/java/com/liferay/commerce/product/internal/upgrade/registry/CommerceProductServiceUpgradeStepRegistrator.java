@@ -673,6 +673,11 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.dropColumns(
 				"CPConfigurationEntry", "visible"));
 
+		registry.register(
+			"6.0.0", "6.1.0",
+			new com.liferay.commerce.product.internal.upgrade.v6_1_0.
+				CPDefinitionLocalizationUpgradeProcess());
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
