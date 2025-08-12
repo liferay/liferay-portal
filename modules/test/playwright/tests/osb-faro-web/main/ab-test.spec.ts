@@ -11,6 +11,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginAnalyticsCloudTest} from '../../../fixtures/loginAnalyticsCloudTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {syncAnalyticsCloud} from '../../analytics-settings-web/main/utils/analytics-settings';
 import {
 	assertTerminatedABTest,
@@ -35,7 +36,8 @@ export const test = mergeTests(
 		'LPS-178052': {enabled: true},
 	}),
 	loginAnalyticsCloudTest(),
-	loginTest()
+	loginTest(),
+	pageEditorPagesTest
 );
 
 test(
