@@ -18,6 +18,9 @@ module "s3_bucket" {
 		}
 	}
 	source="terraform-aws-modules/s3-bucket/aws"
+	tags={
+		Backup="true"
+	}
 	version="~> 4.1.1"
 }
 resource "aws_db_instance" "postgres" {
@@ -34,6 +37,7 @@ resource "aws_db_instance" "postgres" {
 	skip_final_snapshot=true
 	storage_type="gp2"
 	tags={
+		Backup="true"
 		Name="${var.deployment_name}-postgres-db"
 	}
 	username=random_password.postgres_username.result
