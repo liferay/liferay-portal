@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import './CodeMirrorKeyboardMessage.scss';
 
@@ -15,8 +16,25 @@ interface IProps {
 export default function CodeMirrorKeyboardMessage({
 	keyIsEnabled = false,
 }: IProps) {
+	const REDUCE_TIMEOUT_MS = 4000;
+	const [reduce, setReduce] = useState<boolean>(false);
+
+	useEffect(() => {
+		setReduce(false);
+
+		const time = setTimeout(() => {
+			setReduce(true);
+		}, REDUCE_TIMEOUT_MS);
+
+		return () => clearTimeout(time);
+	}, [keyIsEnabled]);
+
 	return (
-		<div className="keyboard-message popover px-2 py-1">
+		<div
+			className={classNames('keyboard-message popover', {
+				'd-reduce': reduce,
+			})}
+		>
 			<span className="c-kbd-sm">
 				{`${sub(
 					Liferay.Language.get('x-tab-key-using'),
