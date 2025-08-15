@@ -77,6 +77,10 @@ export default function SpaceGeneralSettings({
 			mimeTypeLimits: mimeTypeLimitsWithIds,
 			name: space.name,
 			sharingEnabled: space.settings?.sharingEnabled ?? false,
+			trashEnabled: space.settings?.trashEnabled ?? true,
+			trashEntriesMaxAge: String(
+				space.settings?.trashEntriesMaxAge ?? ''
+			),
 		},
 		onSubmit: async (values) => {
 			const {
@@ -86,6 +90,8 @@ export default function SpaceGeneralSettings({
 				mimeTypeLimits,
 				name,
 				sharingEnabled,
+				trashEnabled,
+				trashEntriesMaxAge,
 			} = values;
 
 			const {data, error} = await SpaceService.updateSpace(erc, {
@@ -100,6 +106,8 @@ export default function SpaceGeneralSettings({
 							Object.values(mimeTypeLimit).some((value) => value)
 						),
 					sharingEnabled,
+					trashEnabled,
+					trashEntriesMaxAge,
 				},
 			});
 
@@ -136,6 +144,9 @@ export default function SpaceGeneralSettings({
 						invalidCharacters(['*']),
 						maxLength(150),
 					],
+					trashEntriesMaxAge: values.trashEnabled
+						? [required, validNumber]
+						: [],
 				},
 				values,
 				errors
@@ -239,6 +250,48 @@ export default function SpaceGeneralSettings({
 					setTouched={setTouched}
 					touched={touched}
 				/>
+			</SpacePanel>
+
+			<SpacePanel title={Liferay.Language.get('recycle-bin')}>
+				<>
+					<p className="mb-4">
+						{Liferay.Language.get(
+							'enable-this-option-to-allow-restoration-of-deleted-items'
+						)}
+					</p>
+
+					<ClayForm.Group>
+						<ClayCheckbox
+							checked={values.trashEnabled}
+							label={Liferay.Language.get('enable-recycle-bin')}
+							onChange={({target: {checked}}) =>
+								setFieldValue('trashEnabled', checked)
+							}
+						/>
+					</ClayForm.Group>
+
+					{values.trashEnabled && (
+						<FieldText
+							errorMessage={
+								touched.trashEntriesMaxAge
+									? (errors?.trashEntriesMaxAge as string)
+									: undefined
+							}
+							formGroupProps={{className: 'col-12 col-sm-6 p-0'}}
+							helpIcon={Liferay.Language.get(
+								'maximum-age-of-trash-entries-help-message'
+							)}
+							label={Liferay.Language.get(
+								'trash-entries-max-age'
+							)}
+							name="trashEntriesMaxAge"
+							onBlur={handleBlur}
+							onChange={handleChange}
+							type="number"
+							value={String(values.trashEntriesMaxAge ?? '')}
+						/>
+					)}
+				</>
 			</SpacePanel>
 
 			<ClayButton.Group className="mt-2" spaced>
