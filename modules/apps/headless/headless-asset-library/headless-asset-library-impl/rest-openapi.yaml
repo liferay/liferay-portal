@@ -177,6 +177,11 @@ components:
                 sharingEnabled:
                     default: false
                     type: boolean
+                trashEnabled:
+                    default: true
+                    type: boolean
+                trashEntriesMaxAge:
+                    type: integer
                 useCustomLanguages:
                     default: false
                     type: boolean
