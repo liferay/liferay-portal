@@ -163,6 +163,12 @@ public class AssetLibraryDTOConverter
 					() -> GetterUtil.getBoolean(
 						unicodeProperties.get("sharingEnabled"),
 						SharingConfigurationConstants.SHARING_ENABLED_DEFAULT));
+				setTrashEnabled(
+					() -> GetterUtil.getBoolean(
+						unicodeProperties.get("trashEnabled")));
+				setTrashEntriesMaxAge(
+					() -> GetterUtil.getInteger(
+						unicodeProperties.getProperty("trashEntriesMaxAge")));
 				setUseCustomLanguages(
 					() -> !GetterUtil.getBoolean(
 						unicodeProperties.get("inheritLocales")));

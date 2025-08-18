@@ -574,6 +574,17 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			_getBooleanValue(
 				unicodeProperties.getProperty("sharingEnabled"),
 				settings.getSharingEnabled())
+		).put(
+			"trashEnabled",
+			_getBooleanValue(
+				unicodeProperties.getProperty("trashEnabled"),
+				settings.getTrashEnabled())
+		).put(
+			"trashEntriesMaxAge",
+			GetterUtil.getInteger(
+				settings.getTrashEntriesMaxAge(),
+				GetterUtil.getInteger(
+					unicodeProperties.getProperty("trashEntriesMaxAge")))
 		).build();
 	}
 
