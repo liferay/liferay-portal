@@ -95,7 +95,8 @@ DLOpenerGoogleDriveFileReference dlOpenerGoogleDriveFileReference = (DLOpenerGoo
 			Liferay.Util.openModal({
 				className: 'google-docs-redirect-modal',
 				containerProps: {},
-				html: '<p><liferay-ui:message key="<%= messageKey %>" /></p><div aria-hidden="true" class="loading-animation"></div>',
+				bodyHTML:
+					'<p><liferay-ui:message key="<%= messageKey %>" /></p><div aria-hidden="true" class="loading-animation"></div>',
 				id: dialogId,
 				onOpen: () => {
 					setTimeout(polling, TIME_POLLING);
