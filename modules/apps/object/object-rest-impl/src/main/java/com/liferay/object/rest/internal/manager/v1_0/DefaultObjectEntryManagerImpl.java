@@ -87,6 +87,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -144,6 +145,7 @@ import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributo
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.configuration.SharingConfigurationFactory;
 import com.liferay.subscription.service.SubscriptionLocalService;
+import com.liferay.trash.TrashHelper;
 
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -1759,20 +1761,30 @@ public class DefaultObjectEntryManagerImpl
 			objectDefinition, serviceBuilderObjectEntry);
 		_checkRootDescendantNode(serviceBuilderObjectEntry, false);
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-53981") ||
-			(serviceBuilderObjectEntry.getStatus() ==
-				WorkflowConstants.STATUS_IN_TRASH)) {
+		long groupId = serviceBuilderObjectEntry.getGroupId();
 
-			_objectEntryService.deleteObjectEntry(
-				serviceBuilderObjectEntry.getObjectEntryId());
+		Group group = groupLocalService.getGroup(groupId);
+
+		if (Objects.equals(
+				group.getTypeLabel(),
+				GroupConstants.getTypeLabel(GroupConstants.TYPE_DEPOT)) &&
+			Objects.equals(
+				group.getTypeSettingsProperty("trashEnabled"), "true") &&
+			_trashHelper.isTrashEnabled(groupId) &&
+			(serviceBuilderObjectEntry.getStatus() !=
+				WorkflowConstants.STATUS_IN_TRASH) &&
+			FeatureFlagManagerUtil.isEnabled("LPD-53981")) {
+
+			_objectEntryService.moveObjectEntryToTrash(
+				dtoConverterContext.getUserId(), serviceBuilderObjectEntry,
+				ServiceContextUtil.createServiceContext(
+					serviceBuilderObjectEntry.getObjectEntryId()));
 
 			return;
 		}
 
-		_objectEntryService.moveObjectEntryToTrash(
-			dtoConverterContext.getUserId(), serviceBuilderObjectEntry,
-			ServiceContextUtil.createServiceContext(
-				serviceBuilderObjectEntry.getObjectEntryId()));
+		_objectEntryService.deleteObjectEntry(
+			serviceBuilderObjectEntry.getObjectEntryId());
 	}
 
 	private void _deleteRelateObjectEntry(
@@ -3433,6 +3445,9 @@ public class DefaultObjectEntryManagerImpl
 	@Reference
 	private SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
+
+	@Reference
+	private TrashHelper _trashHelper;
 
 	@Reference
 	private UserLocalService _userLocalService;
