@@ -455,6 +455,11 @@ public interface ObjectFieldLocalService
 			long objectDefinitionId)
 		throws PortalException;
 
+	public void validateObjectFields(
+			long objectDefinitionId, String objectDefinitionDefaultLanguageId,
+			Map<Locale, String> objectDefinitionLabel)
+		throws PortalException;
+
 	public void validateReadOnlyAndReadOnlyConditionExpression(
 			String businessType, String readOnly,
 			String readOnlyConditionExpression, boolean required)
