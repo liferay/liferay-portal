@@ -2560,8 +2560,9 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		if (!poshiProperties.browserType.equals("safari")) {
 			WebDriver.Timeouts timeouts = options.timeouts();
 
-			timeouts.implicitlyWait(
-				GetterUtil.getInteger(timeout), TimeUnit.SECONDS);
+			Duration duration = Duration.ofSeconds(GetterUtil.getInteger(timeout));
+
+			timeouts.implicitlyWait(duration);
 		}
 	}
 
