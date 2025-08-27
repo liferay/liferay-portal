@@ -301,6 +301,88 @@ public class Settings implements Serializable {
 	private Supplier<Boolean> _sharingEnabledSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Boolean getTrashEnabled() {
+		if (_trashEnabledSupplier != null) {
+			trashEnabled = _trashEnabledSupplier.get();
+
+			_trashEnabledSupplier = null;
+		}
+
+		return trashEnabled;
+	}
+
+	public void setTrashEnabled(Boolean trashEnabled) {
+		this.trashEnabled = trashEnabled;
+
+		_trashEnabledSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTrashEnabled(
+		UnsafeSupplier<Boolean, Exception> trashEnabledUnsafeSupplier) {
+
+		_trashEnabledSupplier = () -> {
+			try {
+				return trashEnabledUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean trashEnabled;
+
+	@JsonIgnore
+	private Supplier<Boolean> _trashEnabledSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Integer getTrashEntriesMaxAge() {
+		if (_trashEntriesMaxAgeSupplier != null) {
+			trashEntriesMaxAge = _trashEntriesMaxAgeSupplier.get();
+
+			_trashEntriesMaxAgeSupplier = null;
+		}
+
+		return trashEntriesMaxAge;
+	}
+
+	public void setTrashEntriesMaxAge(Integer trashEntriesMaxAge) {
+		this.trashEntriesMaxAge = trashEntriesMaxAge;
+
+		_trashEntriesMaxAgeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTrashEntriesMaxAge(
+		UnsafeSupplier<Integer, Exception> trashEntriesMaxAgeUnsafeSupplier) {
+
+		_trashEntriesMaxAgeSupplier = () -> {
+			try {
+				return trashEntriesMaxAgeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Integer trashEntriesMaxAge;
+
+	@JsonIgnore
+	private Supplier<Integer> _trashEntriesMaxAgeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getUseCustomLanguages() {
 		if (_useCustomLanguagesSupplier != null) {
 			useCustomLanguages = _useCustomLanguagesSupplier.get();
@@ -470,6 +552,30 @@ public class Settings implements Serializable {
 			sb.append("\"sharingEnabled\": ");
 
 			sb.append(sharingEnabled);
+		}
+
+		Boolean trashEnabled = getTrashEnabled();
+
+		if (trashEnabled != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"trashEnabled\": ");
+
+			sb.append(trashEnabled);
+		}
+
+		Integer trashEntriesMaxAge = getTrashEntriesMaxAge();
+
+		if (trashEntriesMaxAge != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"trashEntriesMaxAge\": ");
+
+			sb.append(trashEntriesMaxAge);
 		}
 
 		Boolean useCustomLanguages = getUseCustomLanguages();
