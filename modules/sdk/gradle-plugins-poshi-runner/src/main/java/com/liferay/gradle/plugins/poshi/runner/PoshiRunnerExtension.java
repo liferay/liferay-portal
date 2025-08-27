@@ -134,6 +134,6 @@ public class PoshiRunnerExtension {
 	private final Project _project;
 	private final Set<Object> _testNames = new LinkedHashSet<>();
 	private Object _testRunType = "sequential";
-	private Object _version = "1.0.496";
+	private Object _version = "1.0.498";
 
 }
