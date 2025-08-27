@@ -24,10 +24,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Tina Tian
@@ -332,6 +335,36 @@ public class HttpComponentsUtil {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	public static Set<String> getParameterKeys(String queryString) {
+		if (Validator.isNull(queryString)) {
+			return Collections.emptySet();
+		}
+
+		Set<String> parameterKeys = new HashSet<>();
+
+		int startPos = 0;
+
+		while (true) {
+			int equalPos = queryString.indexOf(CharPool.EQUAL, startPos);
+
+			if (equalPos <= 0) {
+				break;
+			}
+
+			parameterKeys.add(queryString.substring(startPos, equalPos));
+
+			startPos = queryString.indexOf(CharPool.AMPERSAND, equalPos + 1);
+
+			if (startPos < 0) {
+				break;
+			}
+
+			startPos++;
+		}
+
+		return parameterKeys;
 	}
 
 	public static Map<String, String[]> getParameterMap(String queryString) {
