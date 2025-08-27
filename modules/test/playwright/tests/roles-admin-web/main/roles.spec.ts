@@ -117,7 +117,7 @@ test(
 		const title = getRandomString();
 
 		await rolePage.keyInput.fill(role.name);
-		await rolePage.nameInput.fill(title);
+		await rolePage.titleInput.fill(title);
 		await rolePage.saveButton.click();
 
 		await waitForAlert(page, 'Your request failed to complete', {
@@ -155,7 +155,7 @@ test(
 
 		await rolePage.descriptionInput.fill(description);
 		await rolePage.keyInput.fill(name);
-		await rolePage.nameInput.fill(title);
+		await rolePage.titleInput.fill(title);
 		await rolePage.saveButton.click();
 
 		await waitForAlert(page);
@@ -177,7 +177,7 @@ test(
 
 		await expect(rolePage.descriptionInput).toHaveValue(description);
 		await expect(rolePage.keyInput).toHaveValue(name);
-		await expect(rolePage.nameInput).toHaveValue(title);
+		await expect(rolePage.titleInput).toHaveValue(title);
 	}
 );
 
@@ -219,7 +219,7 @@ test(
 		await (await rolesPage.rolesTable.cellLink(key)).click();
 
 		await expect(rolePage.keyInput).toHaveValue(key);
-		await expect(rolePage.nameInput).toHaveValue('');
+		await expect(rolePage.titleInput).toHaveValue('');
 	}
 );
 

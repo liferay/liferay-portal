@@ -481,7 +481,7 @@ test(
 		await customFieldLabel.click();
 		await customFieldLabel.fill('fieldTest');
 
-		const customFieldValue = page.getByLabel('Values Required Enter one');
+		const customFieldValue = page.getByLabel('Values Required');
 
 		await customFieldValue.waitFor({state: 'visible'});
 		await customFieldValue.click();

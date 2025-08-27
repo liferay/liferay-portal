@@ -16,9 +16,9 @@ export class RolePage {
 	readonly definePermissionsLink: Locator;
 	readonly descriptionInput: Locator;
 	readonly keyInput: Locator;
-	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
+	readonly titleInput: Locator;
 	readonly uniqueNameError: Locator;
 
 	constructor(page: Page) {
@@ -33,9 +33,9 @@ export class RolePage {
 		this.keyInput = page.locator(
 			'#_com_liferay_roles_admin_web_portlet_RolesAdminPortlet_name'
 		);
-		this.nameInput = page.getByLabel('Name');
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.titleInput = page.getByLabel('Title');
 		this.uniqueNameError = page.getByText('Please enter a unique name');
 	}
 
@@ -49,7 +49,7 @@ export class RolePage {
 	) {
 		await this.keyInput.fill(name);
 		await this.descriptionInput.fill(description);
-		await this.nameInput.fill(title || name);
+		await this.titleInput.fill(title || name);
 
 		await this.saveButton.click();
 
