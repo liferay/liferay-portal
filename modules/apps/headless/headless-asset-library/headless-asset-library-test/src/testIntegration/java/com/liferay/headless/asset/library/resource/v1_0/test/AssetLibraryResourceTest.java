@@ -550,6 +550,14 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		settings.setUseCustomLanguages(useCustomLanguages);
 
+		boolean trashEnabled = true;
+
+		settings.setTrashEnabled(trashEnabled);
+
+		int trashEntriesMaxAge = 1234;
+
+		settings.setTrashEntriesMaxAge(trashEntriesMaxAge);
+
 		assetLibrary.setSettings(settings);
 
 		assetLibrary =
