@@ -196,6 +196,24 @@ components:
                 value:
                     type: object
             type: object
+        ObjectDefinitionValidationError:
+            properties:
+                errorMessage:
+                    type: string
+                exceptionClassName:
+                    type: string
+                objectDefinitionName:
+                    type: string
+                objectFieldName:
+                    type: string
+                objectFieldValue:
+                    type: string
+        ObjectDefinitionValidationResponse:
+            properties:
+                objectDefinitionValidationErrors:
+                    items:
+                        $ref: "#/components/schemas/ObjectDefinitionValidationError"
+                    type: array
         ObjectField:
             properties:
                 DBType:
@@ -854,6 +872,12 @@ paths:
             tags: ["ObjectDefinition"]
         post:
             operationId: postObjectDefinition
+            parameters:
+                -   in: query
+                    name: accumulateOnValidation
+                    schema:
+                        default: false
+                        type: boolean
             requestBody:
                 content:
                     application/json:
@@ -899,6 +923,11 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: accumulateOnValidation
+                    schema:
+                        default: false
+                        type: boolean
             requestBody:
                 content:
                     application/json:
