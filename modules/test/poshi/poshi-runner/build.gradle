@@ -33,7 +33,7 @@ dependencies {
 	api group: "org.jsoup", name: "jsoup", version: "1.15.3"
 	api group: "org.junit.vintage", name: "junit-vintage-engine", version: "5.10.2"
 	api group: "org.seleniumhq.selenium", name: "selenium-devtools-v138", version: "4.35.0"
-	api group: "org.seleniumhq.selenium", name: "selenium-java", version: "4.7.2"
+	api group: "org.seleniumhq.selenium", name: "selenium-java", version: "4.8.3"
 	api group: "org.sikuli", name: "sikuli-api", version: "1.2.0"
 	api group: "xml-apis", name: "xml-apis", version: "1.4.01"
 }
