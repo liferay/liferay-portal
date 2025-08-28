@@ -13263,6 +13263,7 @@ analytics.cloud.domain.allowed=*</echo>
 			app.server.dir=${app.server.dir}
 			app.server.temp.dir=${app.server.tomcat.temp.dir}
 			app.server.type=${app.server.type}
+			browser.chrome.bin.file=/opt/google/chrome/chrome
 			component.names=${component.names}
 			custom.default.user.email=${custom.default.user.email}
 			custom.default.user.first.password=${custom.default.user.first.password}

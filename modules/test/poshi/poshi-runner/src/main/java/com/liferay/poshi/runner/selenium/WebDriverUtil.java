@@ -204,6 +204,10 @@ public class WebDriverUtil {
 
 		chromeOptions.setExperimentalOption("prefs", preferences);
 
+        if (Validator.isNotNull(poshiProperties.browserChromeBinFile)) {
+            chromeOptions.setBinary(poshiProperties.browserChromeBinFile);
+        }
+
 		if (Validator.isNotNull(poshiProperties.browserChromeBinArgs)) {
 			chromeOptions.addArguments(
 				poshiProperties.browserChromeBinArgs.split("\\s+"));
