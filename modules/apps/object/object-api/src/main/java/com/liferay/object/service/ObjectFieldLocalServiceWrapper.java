@@ -30,6 +30,14 @@ public class ObjectFieldLocalServiceWrapper
 	}
 
 	@Override
+	public void _partialValidateObjectFields(
+			com.liferay.object.model.ObjectDefinition objectDefinition)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectFieldLocalService._partialValidateObjectFields(objectDefinition);
+	}
+
+	@Override
 	public com.liferay.object.model.ObjectField addCustomObjectField(
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,

@@ -37,6 +37,13 @@ public class ObjectFieldLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectFieldLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static void _partialValidateObjectFields(
+			com.liferay.object.model.ObjectDefinition objectDefinition)
+		throws PortalException {
+
+		getService()._partialValidateObjectFields(objectDefinition);
+	}
+
 	public static ObjectField addCustomObjectField(
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,

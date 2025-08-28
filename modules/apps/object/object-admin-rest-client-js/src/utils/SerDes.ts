@@ -8,6 +8,8 @@
 	import {ObjectAction} from '../models/ObjectAction';
 	import {ObjectDefinition} from '../models/ObjectDefinition';
 	import {ObjectDefinitionSetting} from '../models/ObjectDefinitionSetting';
+	import {ObjectDefinitionValidationError} from '../models/ObjectDefinitionValidationError';
+	import {ObjectDefinitionValidationResponse} from '../models/ObjectDefinitionValidationResponse';
 	import {ObjectField} from '../models/ObjectField';
 	import {ObjectFieldSetting} from '../models/ObjectFieldSetting';
 	import {ObjectFolder} from '../models/ObjectFolder';
@@ -76,6 +78,8 @@ const typeMap: {[index: string]: any} = {
 	ObjectAction,
 	ObjectDefinition,
 	ObjectDefinitionSetting,
+	ObjectDefinitionValidationError,
+	ObjectDefinitionValidationResponse,
 	ObjectField,
 	ObjectFieldSetting,
 	ObjectFolder,

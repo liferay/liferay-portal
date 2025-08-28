@@ -294,6 +294,8 @@ public class Mutation {
 
 	@GraphQLField
 	public ObjectDefinition createObjectDefinition(
+			@GraphQLName("accumulateOnValidation") Boolean
+				accumulateOnValidation,
 			@GraphQLName("objectDefinition") ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -302,11 +304,13 @@ public class Mutation {
 			this::_populateResourceContext,
 			objectDefinitionResource ->
 				objectDefinitionResource.postObjectDefinition(
-					objectDefinition));
+					accumulateOnValidation, objectDefinition));
 	}
 
 	@GraphQLField
 	public Response createObjectDefinitionBatch(
+			@GraphQLName("accumulateOnValidation") Boolean
+				accumulateOnValidation,
 			@GraphQLName("callbackURL") String callbackURL,
 			@GraphQLName("object") Object object)
 		throws Exception {
@@ -316,7 +320,7 @@ public class Mutation {
 			this::_populateResourceContext,
 			objectDefinitionResource ->
 				objectDefinitionResource.postObjectDefinitionBatch(
-					callbackURL, object));
+					accumulateOnValidation, callbackURL, object));
 	}
 
 	@GraphQLField
@@ -386,6 +390,8 @@ public class Mutation {
 	@GraphQLField
 	public ObjectDefinition updateObjectDefinitionByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("accumulateOnValidation") Boolean
+				accumulateOnValidation,
 			@GraphQLName("objectDefinition") ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -395,7 +401,8 @@ public class Mutation {
 			objectDefinitionResource ->
 				objectDefinitionResource.
 					putObjectDefinitionByExternalReferenceCode(
-						externalReferenceCode, objectDefinition));
+						externalReferenceCode, accumulateOnValidation,
+						objectDefinition));
 	}
 
 	@GraphQLField

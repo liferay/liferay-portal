@@ -374,6 +374,7 @@ export class ObjectDefinitionAPI {
 					}
 		/**
 		 * 
+				 * @param accumulateOnValidation
 		 		* @param requestBody Request body that can be one of multiple content types
 		 * @param headers Optional custom request headers
 		 */
@@ -393,6 +394,7 @@ export class ObjectDefinitionAPI {
 								type: "application/xml"
 							}
 								,
+						accumulateOnValidation?: boolean,
 			headers?: {[name: string]: string},
 		): Promise<{
 				body: ObjectDefinition;
@@ -407,9 +409,13 @@ export class ObjectDefinitionAPI {
 						}
 
 			const path = this._basePath + "/object-admin/v1.0/object-definitions"
-;
+				;
 
 			const queryParameters: any = {};
+
+						if (accumulateOnValidation !== undefined) {
+							queryParameters["accumulateOnValidation"] = ObjectSerializer.serialize(accumulateOnValidation, "boolean");
+						}
 
 			const queryString = Object.keys(queryParameters).length ?
 				"?" + new URLSearchParams(queryParameters).toString() :
@@ -445,10 +451,12 @@ export class ObjectDefinitionAPI {
 
 					/**
 					 *  - Default method for JSON body
+							 * @param accumulateOnValidation
 						 * @param objectDefinition
 					 */
 					public async postObjectDefinition(
 							objectDefinition?: ObjectDefinition,
+									accumulateOnValidation?: boolean,
 						headers?: {[name: string]: string}
 					): Promise<{
 							body: ObjectDefinition;
@@ -461,6 +469,7 @@ export class ObjectDefinitionAPI {
 								},
 								type: "application/json"
 							},
+										accumulateOnValidation,
 							headers
 						);
 					}
@@ -622,6 +631,7 @@ export class ObjectDefinitionAPI {
 		/**
 		 * 
 				 * @param externalReferenceCode
+				 * @param accumulateOnValidation
 		 		* @param requestBody Request body that can be one of multiple content types
 		 * @param headers Optional custom request headers
 		 */
@@ -642,6 +652,7 @@ export class ObjectDefinitionAPI {
 								type: "application/xml"
 							}
 								,
+						accumulateOnValidation?: boolean,
 			headers?: {[name: string]: string},
 		): Promise<{
 				body: ObjectDefinition;
@@ -657,12 +668,16 @@ export class ObjectDefinitionAPI {
 
 			const path = this._basePath + "/object-admin/v1.0/object-definitions/by-external-reference-code/{externalReferenceCode}"
 						.replace("{externalReferenceCode}",encodeURIComponent(externalReferenceCode))
-				;
+								;
 
 			const queryParameters: any = {};
 
 						if (externalReferenceCode === null || externalReferenceCode === undefined) {
 							throw new Error("Required parameter externalReferenceCode was null or undefined when calling putObjectDefinitionByExternalReferenceCode.");
+						}
+
+						if (accumulateOnValidation !== undefined) {
+							queryParameters["accumulateOnValidation"] = ObjectSerializer.serialize(accumulateOnValidation, "boolean");
 						}
 
 			const queryString = Object.keys(queryParameters).length ?
@@ -700,11 +715,13 @@ export class ObjectDefinitionAPI {
 					/**
 					 *  - Default method for JSON body
 							 * @param externalReferenceCode
+							 * @param accumulateOnValidation
 						 * @param objectDefinition
 					 */
 					public async putObjectDefinitionByExternalReferenceCode(
 									externalReferenceCode: string,
 							objectDefinition?: ObjectDefinition,
+									accumulateOnValidation?: boolean,
 						headers?: {[name: string]: string}
 					): Promise<{
 							body: ObjectDefinition;
@@ -718,6 +735,7 @@ export class ObjectDefinitionAPI {
 								},
 								type: "application/json"
 							},
+										accumulateOnValidation,
 							headers
 						);
 					}

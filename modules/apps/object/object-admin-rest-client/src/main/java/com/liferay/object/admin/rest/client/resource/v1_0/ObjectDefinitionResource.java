@@ -84,18 +84,19 @@ public interface ObjectDefinitionResource {
 		throws Exception;
 
 	public ObjectDefinition postObjectDefinition(
-			ObjectDefinition objectDefinition)
+			Boolean accumulateOnValidation, ObjectDefinition objectDefinition)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postObjectDefinitionHttpResponse(
-			ObjectDefinition objectDefinition)
+			Boolean accumulateOnValidation, ObjectDefinition objectDefinition)
 		throws Exception;
 
-	public void postObjectDefinitionBatch(String callbackURL, Object object)
+	public void postObjectDefinitionBatch(
+			Boolean accumulateOnValidation, String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postObjectDefinitionBatchHttpResponse(
-			String callbackURL, Object object)
+			Boolean accumulateOnValidation, String callbackURL, Object object)
 		throws Exception;
 
 	public ObjectDefinition postObjectDefinitionPublish(Long objectDefinitionId)
@@ -132,12 +133,14 @@ public interface ObjectDefinitionResource {
 		throws Exception;
 
 	public ObjectDefinition putObjectDefinitionByExternalReferenceCode(
-			String externalReferenceCode, ObjectDefinition objectDefinition)
+			String externalReferenceCode, Boolean accumulateOnValidation,
+			ObjectDefinition objectDefinition)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			putObjectDefinitionByExternalReferenceCodeHttpResponse(
-				String externalReferenceCode, ObjectDefinition objectDefinition)
+				String externalReferenceCode, Boolean accumulateOnValidation,
+				ObjectDefinition objectDefinition)
 		throws Exception;
 
 	public static class Builder {
@@ -903,11 +906,13 @@ public interface ObjectDefinitionResource {
 		}
 
 		public ObjectDefinition postObjectDefinition(
+				Boolean accumulateOnValidation,
 				ObjectDefinition objectDefinition)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postObjectDefinitionHttpResponse(objectDefinition);
+				postObjectDefinitionHttpResponse(
+					accumulateOnValidation, objectDefinition);
 
 			String content = httpResponse.getContent();
 
@@ -969,6 +974,7 @@ public interface ObjectDefinitionResource {
 		}
 
 		public HttpInvoker.HttpResponse postObjectDefinitionHttpResponse(
+				Boolean accumulateOnValidation,
 				ObjectDefinition objectDefinition)
 			throws Exception {
 
@@ -995,6 +1001,12 @@ public interface ObjectDefinitionResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
+			if (accumulateOnValidation != null) {
+				httpInvoker.parameter(
+					"accumulateOnValidation",
+					String.valueOf(accumulateOnValidation));
+			}
+
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
@@ -1008,11 +1020,14 @@ public interface ObjectDefinitionResource {
 			return httpInvoker.invoke();
 		}
 
-		public void postObjectDefinitionBatch(String callbackURL, Object object)
+		public void postObjectDefinitionBatch(
+				Boolean accumulateOnValidation, String callbackURL,
+				Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postObjectDefinitionBatchHttpResponse(callbackURL, object);
+				postObjectDefinitionBatchHttpResponse(
+					accumulateOnValidation, callbackURL, object);
 
 			String content = httpResponse.getContent();
 
@@ -1063,7 +1078,8 @@ public interface ObjectDefinitionResource {
 		}
 
 		public HttpInvoker.HttpResponse postObjectDefinitionBatchHttpResponse(
-				String callbackURL, Object object)
+				Boolean accumulateOnValidation, String callbackURL,
+				Object object)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1088,6 +1104,12 @@ public interface ObjectDefinitionResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (accumulateOnValidation != null) {
+				httpInvoker.parameter(
+					"accumulateOnValidation",
+					String.valueOf(accumulateOnValidation));
+			}
 
 			if (callbackURL != null) {
 				httpInvoker.parameter(
@@ -1550,12 +1572,14 @@ public interface ObjectDefinitionResource {
 		}
 
 		public ObjectDefinition putObjectDefinitionByExternalReferenceCode(
-				String externalReferenceCode, ObjectDefinition objectDefinition)
+				String externalReferenceCode, Boolean accumulateOnValidation,
+				ObjectDefinition objectDefinition)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				putObjectDefinitionByExternalReferenceCodeHttpResponse(
-					externalReferenceCode, objectDefinition);
+					externalReferenceCode, accumulateOnValidation,
+					objectDefinition);
 
 			String content = httpResponse.getContent();
 
@@ -1619,6 +1643,7 @@ public interface ObjectDefinitionResource {
 		public HttpInvoker.HttpResponse
 				putObjectDefinitionByExternalReferenceCodeHttpResponse(
 					String externalReferenceCode,
+					Boolean accumulateOnValidation,
 					ObjectDefinition objectDefinition)
 			throws Exception {
 
@@ -1644,6 +1669,12 @@ public interface ObjectDefinitionResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.PUT);
+
+			if (accumulateOnValidation != null) {
+				httpInvoker.parameter(
+					"accumulateOnValidation",
+					String.valueOf(accumulateOnValidation));
+			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +

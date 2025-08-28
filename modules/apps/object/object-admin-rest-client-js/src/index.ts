@@ -22,6 +22,8 @@
 	export {ObjectAction} from './models/ObjectAction';
 	export {ObjectDefinition} from './models/ObjectDefinition';
 	export {ObjectDefinitionSetting} from './models/ObjectDefinitionSetting';
+	export {ObjectDefinitionValidationError} from './models/ObjectDefinitionValidationError';
+	export {ObjectDefinitionValidationResponse} from './models/ObjectDefinitionValidationResponse';
 	export {ObjectField} from './models/ObjectField';
 	export {ObjectFieldSetting} from './models/ObjectFieldSetting';
 	export {ObjectFolder} from './models/ObjectFolder';

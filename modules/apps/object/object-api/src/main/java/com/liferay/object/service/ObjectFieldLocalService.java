@@ -6,6 +6,7 @@
 package com.liferay.object.service;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.petra.sql.dsl.Column;
@@ -61,6 +62,10 @@ public interface ObjectFieldLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectFieldLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the object field local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ObjectFieldLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public void _partialValidateObjectFields(
+			long objectDefinitionId, Map<Locale, String> objectDefinitionLabel)
+		throws PortalException;
+
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectField addCustomObjectField(
 			String externalReferenceCode, long userId,

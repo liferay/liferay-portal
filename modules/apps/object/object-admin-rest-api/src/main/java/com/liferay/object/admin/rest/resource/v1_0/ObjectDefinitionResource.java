@@ -73,10 +73,11 @@ public interface ObjectDefinitionResource {
 		throws Exception;
 
 	public ObjectDefinition postObjectDefinition(
-			ObjectDefinition objectDefinition)
+			Boolean accumulateOnValidation, ObjectDefinition objectDefinition)
 		throws Exception;
 
-	public Response postObjectDefinitionBatch(String callbackURL, Object object)
+	public Response postObjectDefinitionBatch(
+			Boolean accumulateOnValidation, String callbackURL, Object object)
 		throws Exception;
 
 	public ObjectDefinition postObjectDefinitionPublish(Long objectDefinitionId)
@@ -97,7 +98,8 @@ public interface ObjectDefinitionResource {
 		throws Exception;
 
 	public ObjectDefinition putObjectDefinitionByExternalReferenceCode(
-			String externalReferenceCode, ObjectDefinition objectDefinition)
+			String externalReferenceCode, Boolean accumulateOnValidation,
+			ObjectDefinition objectDefinition)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
