@@ -651,10 +651,20 @@ public class JournalConverterImpl implements JournalConverter {
 
 			if (multiple) {
 				for (int i = 0; i < jsonArray.length(); i++) {
+					DDMFormFieldOptions ddmFormFieldOptions =
+						ddmFormField.getDDMFormFieldOptions();
+
 					Element optionElement = dynamicContentElement.addElement(
 						"option");
 
+					Element optionReferenceElement =
+						dynamicContentElement.addElement("optionReference");
+
 					optionElement.addCDATA(jsonArray.getString(i));
+
+					optionReferenceElement.addCDATA(
+						ddmFormFieldOptions.getOptionReference(
+							jsonArray.getString(i)));
 				}
 			}
 			else {
