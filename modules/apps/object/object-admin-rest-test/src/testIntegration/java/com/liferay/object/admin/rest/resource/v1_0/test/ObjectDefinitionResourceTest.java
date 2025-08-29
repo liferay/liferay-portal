@@ -565,7 +565,7 @@ public class ObjectDefinitionResourceTest
 
 		ObjectDefinition postObjectDefinition =
 			objectDefinitionResource.postObjectDefinition(
-				randomObjectDefinition);
+				false, randomObjectDefinition);
 
 		com.liferay.object.model.ObjectDefinition
 			serviceBuilderAccountEntryObjectDefinition =
@@ -645,7 +645,7 @@ public class ObjectDefinitionResourceTest
 		// Default language ID
 
 		postObjectDefinition = objectDefinitionResource.postObjectDefinition(
-			randomObjectDefinition());
+			false, randomObjectDefinition());
 
 		String objectDefinitionDefaultLanguageId = "pt_BR";
 
@@ -677,7 +677,7 @@ public class ObjectDefinitionResourceTest
 		// Draft custom object definition
 
 		postObjectDefinition = objectDefinitionResource.postObjectDefinition(
-			randomObjectDefinition());
+			false, randomObjectDefinition());
 
 		Assert.assertEquals(
 			postObjectDefinition.getStatus(),
@@ -843,7 +843,7 @@ public class ObjectDefinitionResourceTest
 		randomObjectDefinition.setEnableObjectEntrySubscription(true);
 
 		postObjectDefinition = objectDefinitionResource.postObjectDefinition(
-			randomObjectDefinition);
+			false, randomObjectDefinition);
 
 		ObjectAction[] objectActions = postObjectDefinition.getObjectActions();
 
@@ -1052,7 +1052,7 @@ public class ObjectDefinitionResourceTest
 			});
 
 		postObjectDefinition = objectDefinitionResource.postObjectDefinition(
-			randomObjectDefinition);
+			false, randomObjectDefinition);
 
 		Assert.assertArrayEquals(
 			new ObjectDefinitionSetting[] {
@@ -1381,7 +1381,7 @@ public class ObjectDefinitionResourceTest
 
 		ObjectDefinition putObjectDefinition =
 			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
-				randomObjectDefinition.getExternalReferenceCode(),
+				randomObjectDefinition.getExternalReferenceCode(), false,
 				randomObjectDefinition);
 
 		ObjectField[] objectFields = ArrayUtil.filter(
@@ -1453,7 +1453,7 @@ public class ObjectDefinitionResourceTest
 
 		putObjectDefinition =
 			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
-				randomObjectDefinition.getExternalReferenceCode(),
+				randomObjectDefinition.getExternalReferenceCode(), false,
 				randomObjectDefinition);
 
 		ObjectRelationship[] objectRelationships =
@@ -1692,7 +1692,7 @@ public class ObjectDefinitionResourceTest
 		throws Exception {
 
 		objectDefinition = objectDefinitionResource.postObjectDefinition(
-			objectDefinition);
+			false, objectDefinition);
 
 		_objectDefinitions.add(
 			_objectDefinitionLocalService.fetchObjectDefinition(
@@ -1921,7 +1921,7 @@ public class ObjectDefinitionResourceTest
 
 		ObjectDefinition objectDefinition =
 			objectDefinitionResource.postObjectDefinition(
-				randomObjectDefinition());
+				false, randomObjectDefinition());
 
 		String objectDefinitionPluralName = StringUtil.lowerCaseFirstLetter(
 			TextFormatter.formatPlural(objectDefinition.getName()));
@@ -1936,10 +1936,11 @@ public class ObjectDefinitionResourceTest
 
 		ObjectDefinition objectDefinitionA =
 			objectDefinitionResource.postObjectDefinition(
-				randomObjectDefinition());
+				false, randomObjectDefinition());
+
 		ObjectDefinition objectDefinitionAA =
 			objectDefinitionResource.postObjectDefinition(
-				randomObjectDefinition());
+				false, randomObjectDefinition());
 
 		TreeTestUtil.bind(
 			objectDefinitionA.getId(), objectDefinitionAA.getId(),
@@ -1947,7 +1948,7 @@ public class ObjectDefinitionResourceTest
 
 		ObjectDefinition objectDefinitionB =
 			objectDefinitionResource.postObjectDefinition(
-				randomObjectDefinition());
+				false, randomObjectDefinition());
 
 		TreeTestUtil.bind(
 			objectDefinitionB.getId(), objectDefinitionAA.getId(),
@@ -2136,7 +2137,7 @@ public class ObjectDefinitionResourceTest
 			JSONFactoryUtil.createJSONObject(
 				batchObjectDefinitionResource.
 					postObjectDefinitionBatchHttpResponse(
-						null,
+						false, null,
 						JSONUtil.putAll(
 							JSONFactoryUtil.createJSONObject(
 								String.valueOf(objectDefinition1)),

@@ -1274,7 +1274,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 				objectDefinition =
 					objectDefinitionResource.postObjectDefinition(
-						objectDefinition);
+						false, objectDefinition);
 
 				objectDefinitionIds.add(objectDefinition.getId());
 			}
