@@ -172,7 +172,7 @@ public class ImportObjectDefinitionMVCActionCommand
 				ObjectDefinition putObjectDefinition =
 					objectDefinitionResource.
 						putObjectDefinitionByExternalReferenceCode(
-							objectDefinition.getExternalReferenceCode(),
+							objectDefinition.getExternalReferenceCode(), false,
 							objectDefinition);
 
 				putObjectDefinition.setPortlet(objectDefinition::getPortlet);
