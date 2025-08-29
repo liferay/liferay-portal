@@ -247,7 +247,7 @@ public class ObjectFolderResourceImpl extends BaseObjectFolderResourceImpl {
 						objectDefinitionResource.
 							putObjectDefinitionByExternalReferenceCode(
 								objectDefinition.getExternalReferenceCode(),
-								objectDefinition);
+								false, objectDefinition);
 
 					_objectFolderItemLocalService.updateObjectFolderItem(
 						objectDefinition.getId(), objectFolderId,
