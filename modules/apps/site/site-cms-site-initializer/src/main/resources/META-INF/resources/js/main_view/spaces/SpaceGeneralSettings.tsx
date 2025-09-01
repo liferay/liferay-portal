@@ -256,7 +256,7 @@ export default function SpaceGeneralSettings({
 				<>
 					<p className="mb-4">
 						{Liferay.Language.get(
-							'enable-this-option-to-allow-restoration-of-deleted-items'
+							'enable-this-option-to-allow-users-to-move-assets-into-recycle-bin'
 						)}
 					</p>
 
@@ -279,7 +279,7 @@ export default function SpaceGeneralSettings({
 							}
 							formGroupProps={{className: 'col-12 col-sm-6 p-0'}}
 							helpIcon={Liferay.Language.get(
-								'maximum-age-of-trash-entries-help-message'
+								'trash-entries-max-age-in-days-help'
 							)}
 							label={Liferay.Language.get(
 								'trash-entries-max-age'
