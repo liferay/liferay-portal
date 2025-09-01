@@ -34,7 +34,6 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.mockito.MockedStatic;
@@ -63,40 +62,6 @@ public class HashedFileFrontendResourceRequestHandlerTest {
 
 			_fallbackKeysSettingsUtilMockedStatic = null;
 		}
-	}
-
-	@Ignore
-	@Test
-	public void testCanHandleRequest() throws Exception {
-		_mockFallbackKeysSettingsUtil(
-			HashMapBuilder.<String, Object>put(
-				"maxAgeKey", RandomTestUtil.randomLong()
-			).put(
-				"sendNoCacheKey", false
-			).build());
-
-		HashedFileFrontendResourceRequestHandler
-			hashedFileFrontendResourceRequestHandler =
-				new HashedFileFrontendResourceRequestHandler(
-					ContentTypes.TEXT_JAVASCRIPT, ".js",
-					_mockHashedFilesRegistry(), RandomTestUtil.randomLong(),
-					"maxAgeKey", _mockPortal(), false, "sendNoCacheKey",
-					_mockServiceTrackerMap(
-						_mockServletContext(_hashedFilePath)));
-
-		Assert.assertTrue(
-			hashedFileFrontendResourceRequestHandler.canHandleRequest(
-				_mockHttpServletRequest(
-					"/o/frontend-js-web" + _UNHASHED_FILE_PATH)));
-
-		Assert.assertTrue(
-			hashedFileFrontendResourceRequestHandler.canHandleRequest(
-				_mockHttpServletRequest(
-					"/o/frontend-js-web" + _hashedFilePath)));
-
-		Assert.assertFalse(
-			hashedFileFrontendResourceRequestHandler.canHandleRequest(
-				_mockHttpServletRequest("/nonsense/request/index.js")));
 	}
 
 	@Test
@@ -131,31 +96,6 @@ public class HashedFileFrontendResourceRequestHandlerTest {
 		Assert.assertEquals(31536000L, frontendResource.getMaxAge());
 		Assert.assertTrue(frontendResource.isImmutable());
 		Assert.assertFalse(frontendResource.isSendNoCache());
-	}
-
-	@Ignore
-	@Test
-	public void testHandleRequestWithNoConfiguration() throws Exception {
-		_mockFallbackKeysSettingsUtil(null);
-
-		long maxAge = RandomTestUtil.randomLong();
-
-		HashedFileFrontendResourceRequestHandler
-			hashedFileFrontendResourceRequestHandler =
-				new HashedFileFrontendResourceRequestHandler(
-					ContentTypes.TEXT_JAVASCRIPT, ".js",
-					_mockHashedFilesRegistry(), maxAge, "maxAgeKey",
-					_mockPortal(), true, "sendNoCacheKey",
-					_mockServiceTrackerMap(
-						_mockServletContext(_hashedFilePath)));
-
-		FrontendResource frontendResource =
-			hashedFileFrontendResourceRequestHandler.handleRequest(
-				_mockHttpServletRequest(
-					"/o/frontend-js-web" + _UNHASHED_FILE_PATH));
-
-		Assert.assertEquals(maxAge, frontendResource.getMaxAge());
-		Assert.assertTrue(frontendResource.isSendNoCache());
 	}
 
 	@Test

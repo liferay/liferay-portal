@@ -55,21 +55,6 @@ public class HashedFileFrontendResourceRequestHandler
 
 	@Override
 	public boolean canHandleRequest(HttpServletRequest httpServletRequest) {
-
-		// LPD-52709
-
-		if (true) {
-			return false;
-		}
-
-		String requestURI = httpServletRequest.getRequestURI();
-
-		if (requestURI.contains("/__liferay__/") &&
-			requestURI.endsWith(_fileExtension)) {
-
-			return true;
-		}
-
 		return false;
 	}
 
