@@ -208,6 +208,15 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 
 	@Override
 	@Test
+	public void testPatchDocument() throws Exception {
+		super.testPatchDocument();
+
+		_testPatchDocumentWithFriendlyUrlPath();
+		_testPatchDocumentWithoutFriendlyUrlPath();
+	}
+
+	@Override
+	@Test
 	public void testPostDocumentFolderDocument() throws Exception {
 		super.testPostDocumentFolderDocument();
 
@@ -288,7 +297,9 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"description", "fileName", "friendlyUrlPath", "title"};
+		return new String[] {
+			"description", "fileName", "friendlyUrlPath", "title"
+		};
 	}
 
 	@Override
@@ -497,6 +508,53 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 		HttpInvoker.HttpResponse httpResponse = httpInvoker.invoke();
 
 		return httpResponse.getContent();
+	}
+
+	private void _testPatchDocumentWithFriendlyUrlPath() throws Exception {
+		Document postDocument = testPatchDocument_addDocument();
+
+		Document document = new Document();
+
+		String friendlyUrlPath = StringUtil.toLowerCase(
+			StringUtil.randomString());
+
+		document.setFriendlyUrlPath(friendlyUrlPath);
+
+		Document patchDocument = documentResource.patchDocument(
+			postDocument.getId(), document, new HashMap<>());
+
+		Document expectedPatchDocument = postDocument.clone();
+
+		expectedPatchDocument.setFriendlyUrlPath(friendlyUrlPath);
+
+		Document getDocument = documentResource.getDocument(
+			patchDocument.getId());
+
+		assertEquals(expectedPatchDocument, getDocument);
+		assertValid(getDocument);
+	}
+
+	private void _testPatchDocumentWithoutFriendlyUrlPath() throws Exception {
+		Document postDocument = testPatchDocument_addDocument();
+
+		Document document = new Document();
+
+		String description = StringUtil.toLowerCase(StringUtil.randomString());
+
+		document.setDescription(description);
+
+		Document patchDocument = documentResource.patchDocument(
+			postDocument.getId(), document, new HashMap<>());
+
+		Document expectedPatchDocument = postDocument.clone();
+
+		expectedPatchDocument.setDescription(description);
+
+		Document getDocument = documentResource.getDocument(
+			patchDocument.getId());
+
+		assertEquals(expectedPatchDocument, getDocument);
+		assertValid(getDocument);
 	}
 
 	private void _testPostDocumentFolderDocumentWithDLFileEntryType()
