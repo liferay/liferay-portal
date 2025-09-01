@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public class FragmentEntryLinkModelListener
 	}
 
 	private String _escapeTextEditableValues(
-		JSONObject editableValuesJSONObject, List<InfoField<?>> infoFields) {
+		JSONObject editableValuesJSONObject,
+		List<ObjectValuePair<InfoField<?>, String>> infoFieldObjectValuePairs) {
 
 		for (String fragmentEntryProcessorKey :
 				_FRAGMENT_ENTRY_PROCESSOR_KEYS) {
@@ -75,7 +77,11 @@ public class FragmentEntryLinkModelListener
 				continue;
 			}
 
-			for (InfoField<?> infoField : infoFields) {
+			for (ObjectValuePair<InfoField<?>, String>
+					infoFieldObjectValuePair : infoFieldObjectValuePairs) {
+
+				InfoField<?> infoField = infoFieldObjectValuePair.getKey();
+
 				if (!Objects.equals(
 						infoField.getInfoFieldType(),
 						TextInfoFieldType.INSTANCE)) {
@@ -146,7 +152,8 @@ public class FragmentEntryLinkModelListener
 			return;
 		}
 
-		List<InfoField<?>> infoFields = new ArrayList<>();
+		List<ObjectValuePair<InfoField<?>, String>> infoFieldObjectValuePairs =
+			new ArrayList<>();
 
 		try {
 			try (AutoCloseable autoCloseable =
@@ -156,20 +163,23 @@ public class FragmentEntryLinkModelListener
 				InfoFieldUtil.forEachInfoField(
 					fragmentEntryLink, _fragmentRendererController,
 					(fieldObjectValuePair, infoField, unsafeSupplier) ->
-						infoFields.add(infoField));
+						infoFieldObjectValuePairs.add(
+							new ObjectValuePair<>(
+								infoField, fieldObjectValuePair.getValue())));
 			}
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
 		}
 
-		if (infoFields.isEmpty()) {
+		if (infoFieldObjectValuePairs.isEmpty()) {
 			return;
 		}
 
 		fragmentEntryLink.setEditableValues(
 			_escapeTextEditableValues(
-				fragmentEntryLink.getEditableValuesJSONObject(), infoFields));
+				fragmentEntryLink.getEditableValuesJSONObject(),
+				infoFieldObjectValuePairs));
 	}
 
 	private static final String[] _FRAGMENT_ENTRY_PROCESSOR_KEYS = {
