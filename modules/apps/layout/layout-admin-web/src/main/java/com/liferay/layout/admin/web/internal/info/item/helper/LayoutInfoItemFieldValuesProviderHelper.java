@@ -137,12 +137,14 @@ public class LayoutInfoItemFieldValuesProviderHelper {
 
 			InfoFieldUtil.forEachInfoField(
 				_fragmentRendererController, layout, segmentsExperienceId,
-				(name, infoField, unsafeSupplier) -> infoFieldValues.add(
-					new InfoFieldValue<>(
-						infoField,
-						_getInfoLocalizedValue(
-							unsafeSupplier.get(), name,
-							layout.getDefaultLanguageId()))));
+				(fieldObjectValuePair, infoField, unsafeSupplier) ->
+					infoFieldValues.add(
+						new InfoFieldValue<>(
+							infoField,
+							_getInfoLocalizedValue(
+								unsafeSupplier.get(),
+								fieldObjectValuePair.getKey(),
+								layout.getDefaultLanguageId()))));
 
 			return infoFieldValues;
 		}

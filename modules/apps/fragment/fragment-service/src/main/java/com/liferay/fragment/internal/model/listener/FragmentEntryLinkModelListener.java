@@ -155,8 +155,8 @@ public class FragmentEntryLinkModelListener
 
 				InfoFieldUtil.forEachInfoField(
 					fragmentEntryLink, _fragmentRendererController,
-					(name, infoField, unsafeSupplier) -> infoFields.add(
-						infoField));
+					(fieldObjectValuePair, infoField, unsafeSupplier) ->
+						infoFields.add(infoField));
 			}
 		}
 		catch (Exception exception) {

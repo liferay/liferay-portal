@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -45,7 +46,7 @@ public class InfoFieldUtil {
 			FragmentEntryLink fragmentEntryLink,
 			FragmentRendererController fragmentRendererController,
 			UnsafeTriConsumer
-				<String, InfoField<?>,
+				<ObjectValuePair<String, String>, InfoField<?>,
 				 UnsafeSupplier<JSONObject, JSONException>, E> consumer)
 		throws E {
 
@@ -68,7 +69,7 @@ public class InfoFieldUtil {
 
 			if (!name.equals(defaultElementName) && _isTextFieldType(type)) {
 				consumer.accept(
-					name,
+					new ObjectValuePair<>(name, type),
 					_getInfoField(
 						fragmentEntryLink.getFragmentEntryLinkId(), name, type),
 					fragmentEntryLink::getEditableValuesJSONObject);
@@ -80,7 +81,7 @@ public class InfoFieldUtil {
 			FragmentRendererController fragmentRendererController,
 			Layout layout, long segmentsExperienceId,
 			UnsafeTriConsumer
-				<String, InfoField<?>,
+				<ObjectValuePair<String, String>, InfoField<?>,
 				 UnsafeSupplier<JSONObject, JSONException>, E> consumer)
 		throws E {
 
