@@ -715,7 +715,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			"sharingEnabled",
 			GetterUtil.getBoolean(settings.getSharingEnabled())
 		).put(
-			"trashEnabled", GetterUtil.getBoolean(settings.getTrashEnabled())
+			"trashEnabled", GetterUtil.getBoolean(settings.getTrashEnabled(), true)
 		).put(
 			"trashEntriesMaxAge",
 			GetterUtil.getInteger(settings.getTrashEntriesMaxAge())

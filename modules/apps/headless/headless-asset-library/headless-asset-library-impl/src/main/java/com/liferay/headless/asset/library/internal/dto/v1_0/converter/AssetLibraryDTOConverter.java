@@ -165,7 +165,7 @@ public class AssetLibraryDTOConverter
 						SharingConfigurationConstants.SHARING_ENABLED_DEFAULT));
 				setTrashEnabled(
 					() -> GetterUtil.getBoolean(
-						unicodeProperties.get("trashEnabled")));
+						unicodeProperties.get("trashEnabled"), true));
 				setTrashEntriesMaxAge(
 					() -> GetterUtil.getInteger(
 						unicodeProperties.getProperty("trashEntriesMaxAge")));
