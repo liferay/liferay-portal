@@ -1389,8 +1389,11 @@ public abstract class Base${schemaName}ResourceImpl
 						return ${parserMethodDataType}.parse${parserMethodDataType}(value);
 					</#if>
 				}
-
-				return null;
+				<#if stringUtil.equals(parserMethodDataType, "Boolean")>
+					return Boolean.FALSE;
+				<#else>
+					return null;
+				</#if>
 			}
 		</#list>
 	</#if>
