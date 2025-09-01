@@ -1761,16 +1761,12 @@ public class DefaultObjectEntryManagerImpl
 			objectDefinition, serviceBuilderObjectEntry);
 		_checkRootDescendantNode(serviceBuilderObjectEntry, false);
 
-		long groupId = serviceBuilderObjectEntry.getGroupId();
-
-		Group group = groupLocalService.getGroup(groupId);
+		Group group = groupLocalService.getGroup(serviceBuilderObjectEntry.getGroupId());
 
 		if (Objects.equals(
-				group.getTypeLabel(),
-				GroupConstants.getTypeLabel(GroupConstants.TYPE_DEPOT)) &&
-			Objects.equals(
-				group.getTypeSettingsProperty("trashEnabled"), "true") &&
-			_trashHelper.isTrashEnabled(groupId) &&
+				group.getType(),
+				GroupConstants.TYPE_DEPOT) &&
+			_trashHelper.isTrashEnabled(serviceBuilderObjectEntry.getGroupId()) &&
 			(serviceBuilderObjectEntry.getStatus() !=
 				WorkflowConstants.STATUS_IN_TRASH) &&
 			FeatureFlagManagerUtil.isEnabled("LPD-53981")) {
