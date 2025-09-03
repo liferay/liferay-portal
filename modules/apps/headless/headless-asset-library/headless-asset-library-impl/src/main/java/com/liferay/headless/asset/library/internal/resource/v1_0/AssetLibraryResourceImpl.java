@@ -8,10 +8,8 @@ package com.liferay.headless.asset.library.internal.resource.v1_0;
 import com.liferay.depot.constants.DepotActionKeys;
 import com.liferay.depot.model.DepotAppCustomization;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.model.DepotEntryPin;
 import com.liferay.depot.service.DepotAppCustomizationLocalService;
-import com.liferay.depot.service.DepotEntryGroupRelService;
 import com.liferay.depot.service.DepotEntryPinLocalService;
 import com.liferay.depot.service.DepotEntryPinService;
 import com.liferay.depot.service.DepotEntryService;
@@ -26,11 +24,9 @@ import com.liferay.headless.asset.library.internal.util.AssetLibraryUtil;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -39,7 +35,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -67,7 +62,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -251,37 +245,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				contextCompany.getCompanyId(),
 				group.getExternalReferenceCode()));
 
-		List<DepotEntryGroupRel> depotEntryGroupRels =
-			_depotEntryGroupRelService.getDepotEntryGroupRels(
-				depotEntry, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		List<Long> groupIds;
-
-		if (!depotEntryGroupRels.isEmpty()) {
-			groupIds = _getEligibleGroupIds(
-				_groupLocalService.getGroup(
-					depotEntryGroupRels.get(
-						0
-					).getToGroupId()));
-		}
-		else {
-			groupIds = _getEligibleGroupIds(depotEntry.getGroup());
-		}
-
-		if (!groupIds.isEmpty() ||
-			Objects.equals(
-				unicodeProperties.getProperty("trashEnabled"), "true")) {
-
-			for (DepotEntryGroupRel depotEntryGroupRel : depotEntryGroupRels) {
-				Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-					depotEntryGroupRel.getToGroupId(), false, "/recycle-bin");
-
-				layout.setHidden(false);
-
-				_layoutLocalService.updateLayout(layout);
-			}
-		}
-
 		return _toAssetLibrary(
 			_addOrUpdateDepotEntry(
 				assetLibrary,
@@ -420,40 +383,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			_updateDLSizeLimitConfiguration(
 				assetLibrary, group.getGroupId(), mimeTypeSizeLimits);
 
-			List<DepotEntryGroupRel> depotEntryGroupRels =
-				_depotEntryGroupRelService.getDepotEntryGroupRels(
-					depotEntry, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			List<Long> groupIds;
-
-			if (!depotEntryGroupRels.isEmpty()) {
-				groupIds = _getEligibleGroupIds(
-					_groupLocalService.getGroup(
-						depotEntryGroupRels.get(
-							0
-						).getToGroupId()));
-			}
-			else {
-				groupIds = _getEligibleGroupIds(depotEntry.getGroup());
-			}
-
-			if ((groupIds.isEmpty() || (groupIds.size() == 1)) &&
-				Objects.equals(
-					unicodeProperties.getProperty("trashEnabled"), "false")) {
-
-				for (DepotEntryGroupRel depotEntryGroupRel :
-						depotEntryGroupRels) {
-
-					Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-						depotEntryGroupRel.getToGroupId(), false,
-						"/recycle-bin");
-
-					layout.setHidden(true);
-
-					_layoutLocalService.updateLayout(layout);
-				}
-			}
-
 			return _depotEntryService.updateDepotEntry(
 				depotEntry.getDepotEntryId(), nameMap, descriptionMap,
 				_getDepotAppCustomizationMap(
@@ -542,34 +471,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		return depotAppCustomizationMap;
 	}
 
-	private List<Long> _getEligibleGroupIds(Group group) throws Exception {
-		List<Long> ids = new ArrayList<>();
-
-		long groupId = group.getGroupId();
-
-		List<DepotEntry> depots =
-			_depotEntryService.getGroupConnectedDepotEntries(
-				groupId, -1, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (DepotEntry depot : depots) {
-			Group depotGroup = groupLocalService.fetchGroup(depot.getGroupId());
-
-			if ((depotGroup != null) && _isTrashEnabled(depotGroup)) {
-				ids.add(depotGroup.getGroupId());
-			}
-		}
-
-		Group scopeGroup = groupLocalService.fetchGroup(groupId);
-
-		if ((scopeGroup != null) && scopeGroup.isDepot() &&
-			_isTrashEnabled(scopeGroup)) {
-
-			ids.add(groupId);
-		}
-
-		return ids;
-	}
-
 	private DepotEntry _getGroupDepotEntry(Long assetLibraryId)
 		throws Exception {
 
@@ -627,11 +528,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		}
 
 		return value;
-	}
-
-	private boolean _isTrashEnabled(Group group) {
-		return Boolean.parseBoolean(
-			group.getTypeSettingsProperty("trashEnabled"));
 	}
 
 	private UnicodeProperties _patchUnicodeProperties(
@@ -715,7 +611,8 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			"sharingEnabled",
 			GetterUtil.getBoolean(settings.getSharingEnabled())
 		).put(
-			"trashEnabled", GetterUtil.getBoolean(settings.getTrashEnabled(), true)
+			"trashEnabled",
+			GetterUtil.getBoolean(settings.getTrashEnabled(), true)
 		).put(
 			"trashEntriesMaxAge",
 			GetterUtil.getInteger(settings.getTrashEntriesMaxAge())
@@ -865,9 +762,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	private DepotAppCustomizationLocalService
 		_depotAppCustomizationLocalService;
 
-	@Reference
-	private DepotEntryGroupRelService _depotEntryGroupRelService;
-
 	@Reference(target = "(model.class.name=com.liferay.depot.model.DepotEntry)")
 	private ModelResourcePermission<DepotEntry>
 		_depotEntryModelResourcePermission;
@@ -894,8 +788,5 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		target = "(model.class.name=com.liferay.portal.kernel.model.Group)"
 	)
 	private ModelResourcePermission<Group> _groupModelResourcePermission;
-
-	@Reference
-	private LayoutLocalService _layoutLocalService;
 
 }
