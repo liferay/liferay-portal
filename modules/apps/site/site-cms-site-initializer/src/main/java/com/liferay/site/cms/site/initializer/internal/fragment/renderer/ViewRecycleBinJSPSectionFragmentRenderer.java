@@ -14,6 +14,7 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewRecycleBinSectionDisplayContext;
+import com.liferay.site.cms.site.initializer.internal.util.InfoItemUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -38,8 +39,9 @@ public class ViewRecycleBinJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return new ViewRecycleBinSectionDisplayContext(
-			_depotEntryLocalService, groupLocalService, httpServletRequest,
-			language, _objectDefinitionService,
+			_depotEntryLocalService,
+			InfoItemUtil.getGroupId(httpServletRequest), groupLocalService,
+			httpServletRequest, language, _objectDefinitionService,
 			_objectDefinitionSettingLocalService,
 			_objectEntryFolderLocalService,
 			_objectEntryFolderModelResourcePermission, _portal);

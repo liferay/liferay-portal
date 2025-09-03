@@ -50,7 +50,7 @@ public class ViewRecycleBinSectionDisplayContext
 	extends BaseSectionDisplayContext {
 
 	public ViewRecycleBinSectionDisplayContext(
-		DepotEntryLocalService depotEntryLocalService,
+		DepotEntryLocalService depotEntryLocalService, long groupId,
 		GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest, Language language,
 		ObjectDefinitionService objectDefinitionService,
@@ -66,6 +66,7 @@ public class ViewRecycleBinSectionDisplayContext
 			objectDefinitionSettingLocalService,
 			objectEntryFolderModelResourcePermission, portal);
 
+		_groupId = groupId;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 	}
 
@@ -172,7 +173,7 @@ public class ViewRecycleBinSectionDisplayContext
 		Long[] groupIds;
 
 		try {
-			groupIds = _getGroupIds(httpServletRequest);
+			groupIds = _getGroupIds();
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -204,14 +205,10 @@ public class ViewRecycleBinSectionDisplayContext
 		return sb.toString();
 	}
 
-	private Long[] _getGroupIds(HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		long scopeGroupId = portal.getScopeGroupId(httpServletRequest);
-
+	private Long[] _getGroupIds() throws PortalException {
 		List<DepotEntry> depotEntries =
 			depotEntryLocalService.getGroupConnectedDepotEntries(
-				scopeGroupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+				_groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
 
 		List<DepotEntry> trashEnabledDepotEntries = ListUtil.filter(
@@ -226,12 +223,12 @@ public class ViewRecycleBinSectionDisplayContext
 		Long[] groupIds = TransformUtil.transformToArray(
 			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
 
-		Group scopeGroup = groupLocalService.fetchGroup(scopeGroupId);
+		Group scopeGroup = groupLocalService.fetchGroup(_groupId);
 
 		if ((scopeGroup != null) && scopeGroup.isDepot() &&
 			_isTrashEnabled(scopeGroup)) {
 
-			groupIds = ArrayUtil.append(groupIds, scopeGroupId);
+			groupIds = ArrayUtil.append(groupIds, _groupId);
 		}
 
 		return groupIds;
@@ -245,6 +242,7 @@ public class ViewRecycleBinSectionDisplayContext
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewRecycleBinSectionDisplayContext.class);
 
+	private final long _groupId;
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 }
