@@ -27,7 +27,6 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -44,12 +43,12 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
@@ -78,9 +77,11 @@ public class GroupModelListener extends BaseModelListener<Group> {
 	}
 
 	@Override
-	public void onBeforeRemove(Group group) throws ModelListenerException {
+	public void onAfterUpdate(Group originalGroup, Group group)
+		throws ModelListenerException {
+
 		try {
-			_onBeforeRemove(group);
+			_onAfterUpdate(originalGroup, group);
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
@@ -210,86 +211,16 @@ public class GroupModelListener extends BaseModelListener<Group> {
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Override
-	public void onAfterUpdate(Group originalGroup, Group group) throws ModelListenerException {
-		try{
-			_onAfterUpdate(originalGroup, group);
+	public void onBeforeRemove(Group group) throws ModelListenerException {
+		try {
+			_onBeforeRemove(group);
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
 		}
 	}
 
-	private void _onAfterUpdate(Group originalGroup, Group group)
-		throws Exception {
-		if(group.isDepot()){
-
-			UnicodeProperties unicodeProperties = _getUnicodeProperties(group.getCompanyId(), group.getExternalReferenceCode());
-
-			if(Objects.equals(
-				originalGroup.getTypeSettingsProperty("trashEnabled"),
-				group.getTypeSettingsProperty("trashEnabled"))){
-				return;
-			}
-
-			if(!unicodeProperties.containsKey("trashEnabled")){
-				return;
-			}
-
-			DepotEntry depotEntry = _depotEntryService.fetchGroupDepotEntry(group.getGroupId());
-
-			List<DepotEntryGroupRel> depotEntryGroupRels =
-				_depotEntryGroupRelService.getDepotEntryGroupRels(
-					depotEntry, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			Long[] groupIds;
-
-			if (!depotEntryGroupRels.isEmpty()) {
-				groupIds = _getGroupIds(
-					_groupLocalService.getGroup(
-						depotEntryGroupRels.get(
-							0
-						).getToGroupId()));
-			}
-			else {
-				groupIds = _getGroupIds(depotEntry.getGroup());
-			}
-
-			if (groupIds.length != 0 ||
-				Objects.equals(
-					unicodeProperties.getProperty("trashEnabled"), "true") && !unicodeProperties.getProperty("trashEnabled").isEmpty()) {
-
-				for (DepotEntryGroupRel depotEntryGroupRel : depotEntryGroupRels) {
-					Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-						depotEntryGroupRel.getToGroupId(), false, "/recycle-bin");
-
-					layout.setHidden(false);
-
-					_layoutLocalService.updateLayout(layout);
-				}
-			}
-
-			if ((groupIds.length == 0) &&
-				Objects.equals(
-					unicodeProperties.getProperty("trashEnabled"), "false") && !unicodeProperties.getProperty("trashEnabled").isEmpty()) {
-
-				for (DepotEntryGroupRel depotEntryGroupRel :
-					depotEntryGroupRels) {
-
-					Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-						depotEntryGroupRel.getToGroupId(), false,
-						"/recycle-bin");
-
-					layout.setHidden(true);
-
-					_layoutLocalService.updateLayout(layout);
-				}
-			}
-		}
-	}
-
 	private Long[] _getGroupIds(Group group) throws Exception {
-		List<Long> ids = new ArrayList<>();
-
 		long groupId = group.getGroupId();
 
 		List<DepotEntry> depotEntries =
@@ -336,6 +267,107 @@ public class GroupModelListener extends BaseModelListener<Group> {
 	private boolean _isTrashEnabled(Group group) {
 		return Boolean.parseBoolean(
 			group.getTypeSettingsProperty("trashEnabled"));
+	}
+
+	private void _onAfterUpdate(Group originalGroup, Group group)
+		throws Exception {
+
+		if (group.isDepot()) {
+			UnicodeProperties unicodeProperties = _getUnicodeProperties(
+				group.getCompanyId(), group.getExternalReferenceCode());
+
+			if (Objects.equals(
+					originalGroup.getTypeSettingsProperty("trashEnabled"),
+					group.getTypeSettingsProperty("trashEnabled")) ||
+				!unicodeProperties.containsKey("trashEnabled")) {
+
+				return;
+			}
+
+			DepotEntry depotEntry = _depotEntryService.fetchGroupDepotEntry(
+				group.getGroupId());
+
+			List<DepotEntryGroupRel> depotEntryGroupRels =
+				_depotEntryGroupRelService.getDepotEntryGroupRels(
+					depotEntry, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			Long[] groupIds;
+
+			if (!depotEntryGroupRels.isEmpty()) {
+				groupIds = _getGroupIds(
+					_groupLocalService.getGroup(
+						depotEntryGroupRels.get(
+							0
+						).getToGroupId()));
+			}
+			else {
+				groupIds = _getGroupIds(depotEntry.getGroup());
+			}
+
+			if ((groupIds.length != 0) ||
+				(Objects.equals(
+					unicodeProperties.getProperty("trashEnabled"), "true") &&
+				 !unicodeProperties.getProperty(
+					 "trashEnabled"
+				 ).isEmpty())) {
+
+				for (DepotEntryGroupRel depotEntryGroupRel :
+						depotEntryGroupRels) {
+
+					Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
+						depotEntryGroupRel.getToGroupId(), false,
+						"/recycle-bin");
+
+					layout.setHidden(false);
+
+					_layoutLocalService.updateLayout(layout);
+				}
+			}
+
+			if ((groupIds.length == 0) &&
+				Objects.equals(
+					unicodeProperties.getProperty("trashEnabled"), "false") &&
+				!unicodeProperties.getProperty(
+					"trashEnabled"
+				).isEmpty()) {
+
+				for (DepotEntryGroupRel depotEntryGroupRel :
+						depotEntryGroupRels) {
+
+					Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
+						depotEntryGroupRel.getToGroupId(), false,
+						"/recycle-bin");
+
+					layout.setHidden(true);
+
+					_layoutLocalService.updateLayout(layout);
+				}
+			}
+		}
+	}
+
+	private void _onBeforeRemove(Group group) throws Exception {
+		if ((group.getType() != GroupConstants.TYPE_DEPOT) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-17564")) {
+
+			return;
+		}
+
+		try (SafeCloseable safeCloseable =
+				ObjectEntryFolderThreadLocal.
+					setForceDeleteSystemObjectEntryFolderWithSafeCloseable(
+						true)) {
+
+			_objectEntryFolderLocalService.
+				deleteObjectEntryFolderByExternalReferenceCode(
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+					group.getGroupId(), group.getCompanyId());
+			_objectEntryFolderLocalService.
+				deleteObjectEntryFolderByExternalReferenceCode(
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
+					group.getGroupId(), group.getCompanyId());
+		}
 	}
 
 	@Reference

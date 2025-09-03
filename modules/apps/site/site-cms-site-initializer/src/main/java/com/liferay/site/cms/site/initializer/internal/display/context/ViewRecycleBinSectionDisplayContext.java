@@ -12,19 +12,17 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringUtil;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -42,7 +40,6 @@ import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collections;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -169,8 +166,8 @@ public class ViewRecycleBinSectionDisplayContext
 	@Override
 	protected String getCMSSectionFilterString() {
 		String filter =
-			"cmsRoot eq true and (cmsSection eq 'contents' or cmsSection " +
-			"eq 'files') and status eq " + WorkflowConstants.STATUS_IN_TRASH;
+			"cmsRoot eq true and (cmsSection eq 'contents' or cmsSection eq " +
+				"'files') and status eq " + WorkflowConstants.STATUS_IN_TRASH;
 
 		Long[] groupIds;
 
@@ -249,4 +246,5 @@ public class ViewRecycleBinSectionDisplayContext
 		ViewRecycleBinSectionDisplayContext.class);
 
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
 }
