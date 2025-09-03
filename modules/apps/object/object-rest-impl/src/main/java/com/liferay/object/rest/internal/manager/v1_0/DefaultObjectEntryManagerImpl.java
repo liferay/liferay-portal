@@ -87,7 +87,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -1761,12 +1760,12 @@ public class DefaultObjectEntryManagerImpl
 			objectDefinition, serviceBuilderObjectEntry);
 		_checkRootDescendantNode(serviceBuilderObjectEntry, false);
 
-		Group group = groupLocalService.getGroup(serviceBuilderObjectEntry.getGroupId());
+		Group group = groupLocalService.getGroup(
+			serviceBuilderObjectEntry.getGroupId());
 
-		if (Objects.equals(
-				group.getType(),
-				GroupConstants.TYPE_DEPOT) &&
-			_trashHelper.isTrashEnabled(serviceBuilderObjectEntry.getGroupId()) &&
+		if (group.isDepot() &&
+			_trashHelper.isTrashEnabled(
+				serviceBuilderObjectEntry.getGroupId()) &&
 			(serviceBuilderObjectEntry.getStatus() !=
 				WorkflowConstants.STATUS_IN_TRASH) &&
 			FeatureFlagManagerUtil.isEnabled("LPD-53981")) {
@@ -1775,12 +1774,11 @@ public class DefaultObjectEntryManagerImpl
 				dtoConverterContext.getUserId(), serviceBuilderObjectEntry,
 				ServiceContextUtil.createServiceContext(
 					serviceBuilderObjectEntry.getObjectEntryId()));
-
-			return;
 		}
-
-		_objectEntryService.deleteObjectEntry(
-			serviceBuilderObjectEntry.getObjectEntryId());
+		else {
+			_objectEntryService.deleteObjectEntry(
+				serviceBuilderObjectEntry.getObjectEntryId());
+		}
 	}
 
 	private void _deleteRelateObjectEntry(
