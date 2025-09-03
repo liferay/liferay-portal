@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.model.listener;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelService;
@@ -12,6 +13,7 @@ import com.liferay.depot.service.DepotEntryService;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -25,6 +27,8 @@ import com.liferay.portal.kernel.model.ModelListener;
 
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -105,7 +109,7 @@ public class GroupModelListener extends BaseModelListener<Group> {
 				_depotEntryGroupRelService.getDepotEntryGroupRels(
 					depotEntry, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-			List<Long> groupIds;
+			Long[] groupIds;
 
 			if (!depotEntryGroupRels.isEmpty()) {
 				groupIds = _getGroupIds(
@@ -118,7 +122,7 @@ public class GroupModelListener extends BaseModelListener<Group> {
 				groupIds = _getGroupIds(depotEntry.getGroup());
 			}
 
-			if (!groupIds.isEmpty() ||
+			if (groupIds.length != 0 ||
 				Objects.equals(
 					unicodeProperties.getProperty("trashEnabled"), "true") && !unicodeProperties.getProperty("trashEnabled").isEmpty()) {
 
@@ -132,7 +136,7 @@ public class GroupModelListener extends BaseModelListener<Group> {
 				}
 			}
 
-			if ((groupIds.isEmpty()) &&
+			if ((groupIds.length == 0) &&
 				Objects.equals(
 					unicodeProperties.getProperty("trashEnabled"), "false") && !unicodeProperties.getProperty("trashEnabled").isEmpty()) {
 
@@ -151,32 +155,37 @@ public class GroupModelListener extends BaseModelListener<Group> {
 		}
 	}
 
-	private List<Long> _getGroupIds(Group group) throws Exception {
+	private Long[] _getGroupIds(Group group) throws Exception {
 		List<Long> ids = new ArrayList<>();
 
 		long groupId = group.getGroupId();
 
-		List<DepotEntry> depots =
+		List<DepotEntry> depotEntries =
 			_depotEntryService.getGroupConnectedDepotEntries(
-				groupId, -1, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
-		for (DepotEntry depot : depots) {
-			Group depotGroup = _groupLocalService.fetchGroup(depot.getGroupId());
+		List<DepotEntry> trashEnabledDepotEntries = ListUtil.filter(
+			depotEntries,
+			depotEntry -> {
+				Group depotGroup = _groupLocalService.fetchGroup(
+					depotEntry.getGroupId());
 
-			if ((depotGroup != null) && _isTrashEnabled(depotGroup)) {
-				ids.add(depotGroup.getGroupId());
-			}
-		}
+				return (depotGroup != null) && _isTrashEnabled(depotGroup);
+			});
+
+		Long[] groupIds = TransformUtil.transformToArray(
+			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
 
 		Group scopeGroup = _groupLocalService.fetchGroup(groupId);
 
 		if ((scopeGroup != null) && scopeGroup.isDepot() &&
 			_isTrashEnabled(scopeGroup)) {
 
-			ids.add(groupId);
+			groupIds = ArrayUtil.append(groupIds, groupId);
 		}
 
-		return ids;
+		return groupIds;
 	}
 
 	private UnicodeProperties _getUnicodeProperties(
