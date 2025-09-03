@@ -5,18 +5,21 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -168,10 +172,10 @@ public class ViewRecycleBinSectionDisplayContext
 			"cmsRoot eq true and (cmsSection eq 'contents' or cmsSection " +
 			"eq 'files') and status eq " + WorkflowConstants.STATUS_IN_TRASH;
 
-		List<Long> eligible = new ArrayList<>();
+		Long[] groupIds;
 
 		try {
-			eligible = _getEligibleGroupIds(httpServletRequest);
+			groupIds = _getGroupIds(httpServletRequest);
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -182,78 +186,58 @@ public class ViewRecycleBinSectionDisplayContext
 			return filter;
 		}
 
-		if (eligible.isEmpty()) {
-			return "cmsKind eq 'object' and (cmsSection eq 'contents' or " +
-				"cmsSection eq 'files') and status eq -1";
+		if (groupIds.length == 0) {
+			return filter + WorkflowConstants.STATUS_ANY;
 		}
 
-		return filter + _buildGroupIdsAnyClause(eligible);
+		return filter + _buildGroupIdsAnyClause(groupIds);
 	}
 
-	private String _buildGroupIdsAnyClause(List<Long> groupIds) {
-		if (groupIds.isEmpty()) {
+	private String _buildGroupIdsAnyClause(Long[] groupIds) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return "";
 		}
 
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(3);
 
-		if (groupIds.size() == 1) {
-			sb.append(" and groupIds/any(g:g eq ");
-			sb.append(groupIds.get(0));
-			sb.append(")");
-
-			return sb.toString();
-		}
-
-		sb.append(" and (");
-
-		boolean first = true;
-
-		for (Long id : groupIds) {
-			if (!first) {
-				sb.append(" or ");
-			}
-
-			sb.append("groupIds/any(g:g eq ");
-			sb.append(id);
-			sb.append(")");
-
-			first = false;
-		}
-
-		sb.append(")");
+		sb.append(" and groupIds/any(g:g in (");
+		sb.append(StringUtil.merge(groupIds, ","));
+		sb.append("))");
 
 		return sb.toString();
 	}
 
-	private List<Long> _getEligibleGroupIds(
-			HttpServletRequest httpServletRequest)
+	private Long[] _getGroupIds(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
 		long scopeGroupId = portal.getScopeGroupId(httpServletRequest);
-		List<Long> ids = new ArrayList<>();
 
-		List<DepotEntry> depots =
+		List<DepotEntry> depotEntries =
 			depotEntryLocalService.getGroupConnectedDepotEntries(
-				scopeGroupId, -1, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				scopeGroupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
-		for (DepotEntry depot : depots) {
-			Group depotGroup = groupLocalService.fetchGroup(depot.getGroupId());
+		List<DepotEntry> trashEnabledDepotEntries = ListUtil.filter(
+			depotEntries,
+			depotEntry -> {
+				Group depotGroup = groupLocalService.fetchGroup(
+					depotEntry.getGroupId());
 
-			if ((depotGroup != null) && _isTrashEnabled(depotGroup)) {
-				ids.add(depotGroup.getGroupId());
-			}
-		}
+				return (depotGroup != null) && _isTrashEnabled(depotGroup);
+			});
+
+		Long[] groupIds = TransformUtil.transformToArray(
+			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
 
 		Group scopeGroup = groupLocalService.fetchGroup(scopeGroupId);
 
 		if ((scopeGroup != null) && scopeGroup.isDepot() &&
 			_isTrashEnabled(scopeGroup)) {
 
-			ids.add(scopeGroupId);
+			groupIds = ArrayUtil.append(groupIds, scopeGroupId);
 		}
 
-		return ids;
+		return groupIds;
 	}
 
 	private boolean _isTrashEnabled(Group group) {
