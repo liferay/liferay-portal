@@ -154,17 +154,7 @@ public class GroupModelListener extends BaseModelListener<Group> {
 					 "trashEnabled"
 				 ).isEmpty())) {
 
-				for (DepotEntryGroupRel depotEntryGroupRel :
-						depotEntryGroupRels) {
-
-					Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-						depotEntryGroupRel.getToGroupId(), false,
-						"/recycle-bin");
-
-					layout.setHidden(false);
-
-					_layoutLocalService.updateLayout(layout);
-				}
+				_updateRecycleBinLayouts(depotEntryGroupRels, false);
 			}
 
 			if ((groupIds.length == 0) &&
@@ -174,17 +164,7 @@ public class GroupModelListener extends BaseModelListener<Group> {
 					"trashEnabled"
 				).isEmpty()) {
 
-				for (DepotEntryGroupRel depotEntryGroupRel :
-						depotEntryGroupRels) {
-
-					Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-						depotEntryGroupRel.getToGroupId(), false,
-						"/recycle-bin");
-
-					layout.setHidden(true);
-
-					_layoutLocalService.updateLayout(layout);
-				}
+				_updateRecycleBinLayouts(depotEntryGroupRels, true);
 			}
 		}
 	}
@@ -210,6 +190,20 @@ public class GroupModelListener extends BaseModelListener<Group> {
 				deleteObjectEntryFolderByExternalReferenceCode(
 					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
 					group.getGroupId(), group.getCompanyId());
+		}
+	}
+
+	private void _updateRecycleBinLayouts(
+			List<DepotEntryGroupRel> depotEntryGroupRels, boolean hidden)
+		throws Exception {
+
+		for (DepotEntryGroupRel depotEntryGroupRel : depotEntryGroupRels) {
+			Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
+				depotEntryGroupRel.getToGroupId(), false, "/recycle-bin");
+
+			layout.setHidden(hidden);
+
+			_layoutLocalService.updateLayout(layout);
 		}
 	}
 
