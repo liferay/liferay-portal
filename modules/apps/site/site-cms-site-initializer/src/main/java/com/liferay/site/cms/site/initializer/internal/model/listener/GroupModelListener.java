@@ -5,13 +5,12 @@
 
 package com.liferay.site.cms.site.initializer.internal.model.listener;
 
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelService;
 import com.liferay.depot.service.DepotEntryService;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
@@ -22,11 +21,11 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -35,14 +34,13 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
-
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -86,6 +84,65 @@ public class GroupModelListener extends BaseModelListener<Group> {
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
 		}
+	}
+
+	@Override
+	public void onBeforeRemove(Group group) throws ModelListenerException {
+		try {
+			_onBeforeRemove(group);
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
+
+	private Long[] _getGroupIds(Group group) throws Exception {
+		long groupId = group.getGroupId();
+
+		List<DepotEntry> depotEntries =
+			_depotEntryService.getGroupConnectedDepotEntries(
+				groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		List<DepotEntry> trashEnabledDepotEntries = ListUtil.filter(
+			depotEntries,
+			depotEntry -> {
+				Group depotGroup = _groupLocalService.fetchGroup(
+					depotEntry.getGroupId());
+
+				return (depotGroup != null) && _isTrashEnabled(depotGroup);
+			});
+
+		Long[] groupIds = TransformUtil.transformToArray(
+			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
+
+		Group scopeGroup = _groupLocalService.fetchGroup(groupId);
+
+		if ((scopeGroup != null) && scopeGroup.isDepot() &&
+			_isTrashEnabled(scopeGroup)) {
+
+			groupIds = ArrayUtil.append(groupIds, groupId);
+		}
+
+		return groupIds;
+	}
+
+	private UnicodeProperties _getUnicodeProperties(
+		long companyId, String externalReferenceCode) {
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, companyId);
+
+		if (group != null) {
+			return group.getTypeSettingsProperties();
+		}
+
+		return new UnicodeProperties(true);
+	}
+
+	private boolean _isTrashEnabled(Group group) {
+		return Boolean.parseBoolean(
+			group.getTypeSettingsProperty("trashEnabled"));
 	}
 
 	private void _onAfterCreate(Group group) throws PortalException {
@@ -176,97 +233,6 @@ public class GroupModelListener extends BaseModelListener<Group> {
 
 		_objectEntryLocalService.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
-	}
-
-	private void _onBeforeRemove(Group group) throws Exception {
-		if ((group.getType() != GroupConstants.TYPE_DEPOT) ||
-			!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
-
-		try (SafeCloseable safeCloseable =
-				ObjectEntryFolderThreadLocal.
-					setForceDeleteSystemObjectEntryFolderWithSafeCloseable(
-						true)) {
-
-			_objectEntryFolderLocalService.
-				deleteObjectEntryFolderByExternalReferenceCode(
-					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
-					group.getGroupId(), group.getCompanyId());
-			_objectEntryFolderLocalService.
-				deleteObjectEntryFolderByExternalReferenceCode(
-					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
-					group.getGroupId(), group.getCompanyId());
-		}
-	}
-
-	@Reference(
-		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
-	)
-	private FilterFactory<Predicate> _filterFactory;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Override
-	public void onBeforeRemove(Group group) throws ModelListenerException {
-		try {
-			_onBeforeRemove(group);
-		}
-		catch (Exception exception) {
-			throw new ModelListenerException(exception);
-		}
-	}
-
-	private Long[] _getGroupIds(Group group) throws Exception {
-		long groupId = group.getGroupId();
-
-		List<DepotEntry> depotEntries =
-			_depotEntryService.getGroupConnectedDepotEntries(
-				groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		List<DepotEntry> trashEnabledDepotEntries = ListUtil.filter(
-			depotEntries,
-			depotEntry -> {
-				Group depotGroup = _groupLocalService.fetchGroup(
-					depotEntry.getGroupId());
-
-				return (depotGroup != null) && _isTrashEnabled(depotGroup);
-			});
-
-		Long[] groupIds = TransformUtil.transformToArray(
-			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
-
-		Group scopeGroup = _groupLocalService.fetchGroup(groupId);
-
-		if ((scopeGroup != null) && scopeGroup.isDepot() &&
-			_isTrashEnabled(scopeGroup)) {
-
-			groupIds = ArrayUtil.append(groupIds, groupId);
-		}
-
-		return groupIds;
-	}
-
-	private UnicodeProperties _getUnicodeProperties(
-		long companyId, String externalReferenceCode) {
-
-		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, companyId);
-
-		if (group != null) {
-			return group.getTypeSettingsProperties();
-		}
-
-		return new UnicodeProperties(true);
-	}
-
-	private boolean _isTrashEnabled(Group group) {
-		return Boolean.parseBoolean(
-			group.getTypeSettingsProperty("trashEnabled"));
 	}
 
 	private void _onAfterUpdate(Group originalGroup, Group group)
@@ -370,11 +336,19 @@ public class GroupModelListener extends BaseModelListener<Group> {
 	@Reference
 	private DepotEntryService _depotEntryService;
 
+	@Reference(
+		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
+	)
+	private FilterFactory<Predicate> _filterFactory;
+
 	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
