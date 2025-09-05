@@ -4,6 +4,9 @@
  */
 
 import {MapBase} from '@liferay/map-common';
+import L from 'leaflet';
+
+import 'leaflet/dist/leaflet.css';
 
 import OpenStreetMapDialog from './OpenStreetMapDialog';
 import OpenStreetMapGeoJSON from './OpenStreetMapGeoJSON';

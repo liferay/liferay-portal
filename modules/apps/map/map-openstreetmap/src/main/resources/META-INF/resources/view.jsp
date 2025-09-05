@@ -17,14 +17,6 @@ String points = (String)request.getAttribute("liferay-map:map:points");
 name = AUIUtil.getNamespace(liferayPortletRequest, liferayPortletResponse) + name;
 %>
 
-<liferay-util:html-top
-	outputKey="com.liferay.map.openstreetmap#/view.jsp"
->
-	<aui:link crossOrigin="anonymous" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha384-VzLXTJGPSyTLX6d96AxgkKvE/LRb7ECGyTxuwtpjHnVWVZs2gp5RDjeM/tgBnVdM" rel="stylesheet" />
-
-	<aui:script crossOrigin="anonymous" integrity="sha384-RFZC58YeKApoNsIbBxf4z6JJXmh+geBSgkCQXFyh+4tiFSJmJBt+2FbjxW7Ar16M" src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" type="text/javascript"></aui:script>
-</liferay-util:html-top>
-
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(

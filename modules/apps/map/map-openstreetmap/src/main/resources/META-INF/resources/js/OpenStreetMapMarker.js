@@ -4,6 +4,9 @@
  */
 
 import {MarkerBase} from '@liferay/map-common';
+import L from 'leaflet';
+
+import 'leaflet/dist/leaflet.css';
 
 /**
  * OpenStreetMapMarker

@@ -1,7 +1,8 @@
 {
 	"dependencies": {
 		"@liferay/map-common": "*",
-		"frontend-js-web": "*"
+		"frontend-js-web": "*",
+		"leaflet": "1.7.1"
 	},
 	"main": "js/index.js",
 	"name": "@liferay/map-openstreetmap",
