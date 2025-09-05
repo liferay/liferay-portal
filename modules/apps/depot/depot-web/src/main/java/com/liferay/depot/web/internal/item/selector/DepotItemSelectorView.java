@@ -6,13 +6,15 @@
 package com.liferay.depot.web.internal.item.selector;
 
 import com.liferay.depot.web.internal.application.list.DepotPanelAppController;
-import com.liferay.depot.web.internal.util.DepotAdminGroupSearchProvider;
+import com.liferay.depot.web.internal.search.DepotEntrySearch;
+import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.GroupItemSelectorReturnType;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -54,11 +56,13 @@ import org.osgi.service.component.annotations.Reference;
 	service = ItemSelectorView.class
 )
 public class DepotItemSelectorView
-	implements ItemSelectorView<GroupItemSelectorCriterion> {
+	implements ItemSelectorView<DepotGroupItemSelectorCriterion> {
 
 	@Override
-	public Class<GroupItemSelectorCriterion> getItemSelectorCriterionClass() {
-		return GroupItemSelectorCriterion.class;
+	public Class<DepotGroupItemSelectorCriterion>
+		getItemSelectorCriterionClass() {
+
+		return DepotGroupItemSelectorCriterion.class;
 	}
 
 	@Override
@@ -76,14 +80,14 @@ public class DepotItemSelectorView
 
 	@Override
 	public boolean isVisible(
-		GroupItemSelectorCriterion groupItemSelectorCriterion,
+		DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion,
 		ThemeDisplay themeDisplay) {
 
-		if (groupItemSelectorCriterion == null) {
+		if (depotGroupItemSelectorCriterion == null) {
 			return true;
 		}
 
-		String portletId = groupItemSelectorCriterion.getPortletId();
+		String portletId = depotGroupItemSelectorCriterion.getPortletId();
 
 		if (Validator.isNull(portletId)) {
 			return true;
@@ -95,7 +99,7 @@ public class DepotItemSelectorView
 	@Override
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
-			GroupItemSelectorCriterion groupItemSelectorCriterion,
+			DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion,
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
@@ -103,7 +107,7 @@ public class DepotItemSelectorView
 			depotSitesItemSelectorViewDisplayContext =
 				new DepotSitesItemSelectorViewDisplayContext(
 					(HttpServletRequest)servletRequest, itemSelectedEventName,
-					portletURL, groupItemSelectorCriterion);
+					portletURL, depotGroupItemSelectorCriterion);
 
 		_siteItemSelectorViewRenderer.renderHTML(
 			depotSitesItemSelectorViewDisplayContext);
@@ -117,7 +121,7 @@ public class DepotItemSelectorView
 				new UUIDItemSelectorReturnType()));
 
 	@Reference
-	private DepotAdminGroupSearchProvider _depotAdminGroupSearchProvider;
+	private DepotEntryAdminSearchProvider _depotEntryAdminSearchProvider;
 
 	@Reference
 	private DepotPanelAppController _depotPanelAppController;
@@ -131,12 +135,12 @@ public class DepotItemSelectorView
 		public DepotSitesItemSelectorViewDisplayContext(
 			HttpServletRequest httpServletRequest, String itemSelectedEventName,
 			PortletURL portletURL,
-			GroupItemSelectorCriterion groupItemSelectorCriterion) {
+			DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion) {
 
 			_httpServletRequest = httpServletRequest;
 			_itemSelectedEventName = itemSelectedEventName;
 			_portletURL = portletURL;
-			_groupItemSelectorCriterion = groupItemSelectorCriterion;
+			_depotGroupItemSelectorCriterion = depotGroupItemSelectorCriterion;
 		}
 
 		@Override
@@ -147,7 +151,7 @@ public class DepotItemSelectorView
 
 		@Override
 		public GroupItemSelectorCriterion getGroupItemSelectorCriterion() {
-			return _groupItemSelectorCriterion;
+			return _depotGroupItemSelectorCriterion;
 		}
 
 		@Override
@@ -162,9 +166,24 @@ public class DepotItemSelectorView
 		@Override
 		public GroupSearch getGroupSearch() {
 			try {
-				return _depotAdminGroupSearchProvider.getGroupSearch(
-					_groupItemSelectorCriterion, getPortletRequest(),
-					getPortletURL());
+				GroupSearch groupSearch = new GroupSearch(
+					getPortletRequest(), _portletURL);
+
+				DepotEntrySearch depotEntrySearch =
+					_depotEntryAdminSearchProvider.getDepotEntrySearch(
+						_depotGroupItemSelectorCriterion, getPortletRequest(),
+						getPortletResponse(), getPortletURL());
+
+				groupSearch.setEmptyResultsMessage(
+					depotEntrySearch.getEmptyResultsMessage());
+
+				groupSearch.setResultsAndTotal(
+					() -> TransformUtil.transform(
+						depotEntrySearch.getResults(),
+						depotEntry -> depotEntry.getGroup()),
+					depotEntrySearch.getTotal());
+
+				return groupSearch;
 			}
 			catch (PortalException portalException) {
 				return ReflectionUtil.throwException(portalException);
@@ -208,7 +227,8 @@ public class DepotItemSelectorView
 			return true;
 		}
 
-		private final GroupItemSelectorCriterion _groupItemSelectorCriterion;
+		private final DepotGroupItemSelectorCriterion
+			_depotGroupItemSelectorCriterion;
 		private final HttpServletRequest _httpServletRequest;
 		private final String _itemSelectedEventName;
 		private final PortletURL _portletURL;
