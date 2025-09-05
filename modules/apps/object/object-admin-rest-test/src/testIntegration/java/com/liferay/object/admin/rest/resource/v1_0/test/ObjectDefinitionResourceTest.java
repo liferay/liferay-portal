@@ -15,6 +15,8 @@ import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectAction;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinitionSetting;
+import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinitionValidationError;
+import com.liferay.object.admin.rest.client.dto.v1_0.ObjectDefinitionValidationResponse;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectField;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectFieldSetting;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectLayout;
@@ -41,12 +43,21 @@ import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.constants.ObjectValidationRuleConstants;
 import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
+import com.liferay.object.definition.util.ObjectDefinitionValidationThreadLocal;
+import com.liferay.object.exception.DuplicateObjectDefinitionExternalReferenceCodeException;
+import com.liferay.object.exception.DuplicateObjectFieldExternalReferenceCodeException;
+import com.liferay.object.exception.ObjectDefinitionExternalReferenceCodeException;
+import com.liferay.object.exception.ObjectDefinitionNameException;
+import com.liferay.object.exception.ObjectDefinitionValidationException;
+import com.liferay.object.exception.ObjectFieldListTypeDefinitionIdException;
+import com.liferay.object.exception.ObjectFieldNameException;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.TreeTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -96,7 +107,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
+import jodd.util.ArraysUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -126,6 +139,433 @@ public class ObjectDefinitionResourceTest
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString());
 	}
+
+	@Test
+	public void test_POST() throws Exception {
+		ObjectDefinition objectDefinition1 = objectDefinitionResource.postObjectDefinition(
+			false, randomObjectDefinition());
+
+		ObjectDefinition objectDefinition2 = randomObjectDefinition();
+
+		objectDefinition2.setName(objectDefinition1.getName());
+
+		objectDefinition2.setExternalReferenceCode(objectDefinition1.getExternalReferenceCode());
+
+		String randomERC = RandomTestUtil.randomString();
+
+		String randomName = "NAME" + RandomTestUtil.randomString();
+
+		List<ObjectField> objectFields =
+			new ArrayList<>(List.of(objectDefinition2.getObjectFields()));
+
+		objectFields.addAll(List.of(
+			new ObjectField[]{
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = randomERC;
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						localized = false;
+						name = randomName;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = randomERC;
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						localized = false;
+						name = randomName;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				}
+			}
+		));
+
+		ObjectField[] objectFieldsArray = objectFields.toArray(new ObjectField[0]);
+
+		objectDefinition2.setObjectFields(objectFieldsArray);
+
+		try {
+			objectDefinitionResource.postObjectDefinition( true,
+				objectDefinition2);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Problem problem =
+				((Problem.ProblemException)exception).getProblem();
+
+			Assert.assertEquals(
+				problem.getType(),
+				ObjectDefinitionValidationException.class.getSimpleName());
+
+			ObjectDefinitionValidationError[] objectDefinitionValidationErrors =
+				ObjectDefinitionValidationResponse.toDTO(
+					problem.getDetail()
+				).getObjectDefinitionValidationErrors();
+
+			Assert.assertEquals(6, objectDefinitionValidationErrors.length);
+
+			Assert.assertTrue(
+				_expectedObjectDefinitionValidationExceptions.containsAll(
+					TransformUtil.transform(List.of(objectDefinitionValidationErrors),
+						ObjectDefinitionValidationError::getExceptionClassName)));
+		}
+
+		ObjectDefinition objectDefinition3 = randomObjectDefinition();
+
+		String randomERC1 = RandomTestUtil.randomString();
+
+		String randomName1 = "NAME" + RandomTestUtil.randomString();
+
+		String randomName2 = "name" + RandomTestUtil.randomString();
+
+		List<ObjectField> objectFields1 =
+			new ArrayList<>(List.of(objectDefinition3.getObjectFields()));
+
+		objectFields1.addAll(List.of(
+			new ObjectField[]{
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = randomERC1;
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						localized = false;
+						name = randomName1;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = randomERC1;
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						localized = false;
+						name = randomName1;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = RandomTestUtil.randomString();
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						localized = false;
+						name = randomName2;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = RandomTestUtil.randomString();
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						localized = false;
+						name = randomName2;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				}
+			}
+		));
+
+		objectDefinition3.setObjectFields(objectFields1.toArray(new ObjectField[0]));
+
+		try {
+			objectDefinitionResource.postObjectDefinition( true,
+				objectDefinition3);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Problem problem =
+				((Problem.ProblemException)exception).getProblem();
+
+			Assert.assertEquals(
+				problem.getType(),
+				ObjectDefinitionValidationException.class.getSimpleName());
+
+			ObjectDefinitionValidationError[] objectDefinitionValidationErrors =
+				ObjectDefinitionValidationResponse.toDTO(
+					problem.getDetail()
+				).getObjectDefinitionValidationErrors();
+
+			Assert.assertEquals(5, objectDefinitionValidationErrors.length);
+
+			Assert.assertTrue(
+				_expectedObjectDefinitionValidationExceptions.containsAll(
+					TransformUtil.transform(List.of(objectDefinitionValidationErrors),
+						ObjectDefinitionValidationError::getExceptionClassName)));
+		}
+		finally {
+			objectDefinitionResource.deleteObjectDefinition(
+				objectDefinition1.getId());
+		}
+	}
+
+	@Test
+	public void test_PUT() throws Exception {
+		ObjectDefinition objectDefinition1 = objectDefinitionResource.postObjectDefinition(
+			false, randomObjectDefinition());;
+
+		ObjectDefinition objectDefinition2 = objectDefinitionResource.postObjectDefinition(
+			false, randomObjectDefinition());;
+
+		objectDefinition2.setName(objectDefinition1.getName());
+
+		objectDefinition2.setName(objectDefinition1.getExternalReferenceCode());
+
+		String randomERC = RandomTestUtil.randomString();
+
+		String randomName = "NAME" + RandomTestUtil.randomString();
+
+		List<ObjectField> objectFields =
+			new ArrayList<>(List.of(objectDefinition2.getObjectFields()));
+
+		objectFields.addAll(List.of(
+			new ObjectField[]{
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = randomERC;
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						listTypeDefinitionExternalReferenceCode =
+							RandomTestUtil.randomString();
+						localized = false;
+						name = randomName;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = randomERC;
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						listTypeDefinitionExternalReferenceCode =
+							RandomTestUtil.randomString();
+						localized = false;
+						name = randomName;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				}
+			}
+		));
+
+		objectDefinition2.setObjectFields(objectFields.toArray(new ObjectField[0]));
+
+		try {
+			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
+				objectDefinition2.getExternalReferenceCode(), true,
+				objectDefinition2);
+		}
+		catch (Exception exception) {
+			Problem problem =
+				((Problem.ProblemException)exception).getProblem();
+
+			Assert.assertEquals(
+				problem.getType(),
+				ObjectDefinitionValidationException.class.getSimpleName());
+
+			ObjectDefinitionValidationError[] objectDefinitionValidationErrors =
+				ObjectDefinitionValidationResponse.toDTO(
+					problem.getDetail()
+				).getObjectDefinitionValidationErrors();
+
+			Assert.assertEquals(7, objectDefinitionValidationErrors.length);
+
+			Assert.assertTrue(
+				_expectedObjectDefinitionValidationExceptions.containsAll(
+					TransformUtil.transform(
+						List.of(objectDefinitionValidationErrors),
+						ObjectDefinitionValidationError::getExceptionClassName)));
+		}
+
+		ObjectDefinition objectDefinition3 = objectDefinitionResource.postObjectDefinition(
+			false, randomObjectDefinition());;
+
+		String randomName2 = "NAME" + RandomTestUtil.randomString();
+
+		String randomName3 = "name" + RandomTestUtil.randomString();
+
+		List<ObjectField> objectFields1 =
+			new ArrayList<>(List.of(objectDefinition3.getObjectFields()));
+
+		objectFields1.addAll(List.of(
+			new ObjectField[]{
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = RandomTestUtil.randomString();
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						listTypeDefinitionExternalReferenceCode =
+							RandomTestUtil.randomString();
+						localized = false;
+						name = randomName2;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = RandomTestUtil.randomString();
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						listTypeDefinitionExternalReferenceCode =
+							RandomTestUtil.randomString();
+						localized = false;
+						name = randomName2;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = RandomTestUtil.randomString();
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						listTypeDefinitionExternalReferenceCode =
+							RandomTestUtil.randomString();
+						localized = false;
+						name = randomName3;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+				new ObjectField() {
+					{
+						businessType = BusinessType.PICKLIST;
+						DBType = ObjectField.DBType.create("String");
+						externalReferenceCode = RandomTestUtil.randomString();
+						indexed = false;
+						indexedAsKeyword = false;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						listTypeDefinitionExternalReferenceCode =
+							RandomTestUtil.randomString();
+						localized = false;
+						name = randomName3;
+						readOnly = ReadOnly.FALSE;
+						required = false;
+						state = false;
+						system = false;
+					}
+				},
+			}
+		));
+
+		ObjectField[] objectFieldsArray1 = objectFields1.toArray(new ObjectField[0]);
+
+		objectDefinition3.setObjectFields(objectFieldsArray1);
+
+		try {
+			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
+				objectDefinition3.getExternalReferenceCode(), true,
+				objectDefinition3);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Problem problem =
+				((Problem.ProblemException)exception).getProblem();
+
+			Assert.assertEquals(
+				problem.getType(),
+				ObjectDefinitionValidationException.class.getSimpleName());
+
+			ObjectDefinitionValidationError[] objectDefinitionValidationErrors =
+				ObjectDefinitionValidationResponse.toDTO(
+					problem.getDetail()
+				).getObjectDefinitionValidationErrors();
+
+			Assert.assertEquals(4, objectDefinitionValidationErrors.length);
+
+			Assert.assertTrue(
+				_expectedObjectDefinitionValidationExceptions.containsAll(
+					TransformUtil.transform(
+						List.of(objectDefinitionValidationErrors),
+						ObjectDefinitionValidationError::getExceptionClassName)));
+		}
+		finally {
+			objectDefinitionResource.deleteObjectDefinition(
+				objectDefinition1.getId());
+		}
+	}
+
 
 	@FeatureFlag("LPD-17564")
 	@Override
@@ -552,6 +992,8 @@ public class ObjectDefinitionResourceTest
 
 		_testPostObjectDefinitionBatch();
 		_testPostObjectDefinitionWithSystemAggregationObjectField();
+
+		test_POST();
 	}
 
 	@FeatureFlags(
@@ -1342,6 +1784,8 @@ public class ObjectDefinitionResourceTest
 		Assert.assertEquals(
 			"titleObjectFieldName",
 			randomObjectDefinition.getTitleObjectFieldName());
+
+		test_PUT();
 	}
 
 	@Override
@@ -2114,6 +2558,19 @@ public class ObjectDefinitionResourceTest
 			}
 		}
 	}
+
+	private static final Set<String> _expectedObjectDefinitionValidationExceptions = Set.of(
+	//  Object Definition common errors
+	DuplicateObjectDefinitionExternalReferenceCodeException.class.getName(),
+	ObjectDefinitionExternalReferenceCodeException.MustNotStartWithPrefix.class.getName(),
+	ObjectDefinitionNameException.MustNotBeDuplicate.class.getName(),
+	ObjectDefinitionNameException.MustBeginWithUpperCaseLetter.class.getName(),
+
+	// Object Field common errors
+	ObjectFieldListTypeDefinitionIdException.class.getName(),
+	ObjectFieldNameException.MustBeginWithLowerCaseLetter.class.getName(),
+	ObjectFieldNameException.MustNotBeDuplicate.class.getName(),
+	DuplicateObjectFieldExternalReferenceCodeException.class.getName());
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
