@@ -679,6 +679,11 @@ public class PortalUpgradeProcessRegistryImpl
 					"update Release_ set verified = [$FALSE$] where ",
 					"servletContextName = '",
 					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME, "'")));
+
+		upgradeVersionTreeMap.put(
+			new Version(35, 0, 0),
+			UpgradeModulesFactory.create(
+				new String[] {"com.liferay.mail.settings.impl"}, null));
 	}
 
 }

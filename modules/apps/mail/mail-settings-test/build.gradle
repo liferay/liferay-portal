@@ -1,0 +1,11 @@
+dependencies {
+	testCompileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	testIntegrationImplementation project(":apps:mail:mail-settings-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
+	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}

@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Mail Settings Implementation
+Bundle-SymbolicName: com.liferay.mail.settings.impl
+Bundle-Version: 1.0.0
