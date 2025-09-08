@@ -7,24 +7,20 @@ package com.liferay.portal.util.mail.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mail.kernel.service.MailService;
+import com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PrefsPropsUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.mail.Session;
-
-import jakarta.portlet.ActionRequest;
-import jakarta.portlet.PortletPreferences;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -50,79 +46,111 @@ public class MailServiceTest {
 		long companyId1 = RandomTestUtil.randomLong();
 		long companyId2 = RandomTestUtil.randomLong();
 
-		_setCompanyPortletPreferences(
-			companyId1, PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED, "false");
-		_setCompanyPortletPreferences(
-			companyId2, PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED, "false");
+		MailSettingCompanyConfiguration mailSettingCompanyConfiguration1;
+		MailSettingCompanyConfiguration mailSettingCompanyConfiguration2;
 
-		Assert.assertFalse(
-			PrefsPropsUtil.getBoolean(
-				companyId1, PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED));
-		Assert.assertFalse(
-			PrefsPropsUtil.getBoolean(
-				companyId2, PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED));
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper1 =
+					new CompanyConfigurationTemporarySwapper(
+						companyId1,
+						"com.liferay.mail.settings.configuration." +
+							"MailSettingCompanyConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enablePOPServerNotifications", "false"
+						).build());
+			CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper2 =
+					new CompanyConfigurationTemporarySwapper(
+						companyId2,
+						"com.liferay.mail.settings.configuration." +
+							"MailSettingCompanyConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enablePOPServerNotifications", "false"
+						).build())) {
 
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
+			mailSettingCompanyConfiguration1 =
+				_configurationProvider.getCompanyConfiguration(
+					MailSettingCompanyConfiguration.class, companyId1);
 
-		mockLiferayPortletActionRequest.addParameter(
-			"popServerNotificationsEnabled", "true");
+			mailSettingCompanyConfiguration2 =
+				_configurationProvider.getCompanyConfiguration(
+					MailSettingCompanyConfiguration.class, companyId2);
 
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_updateMail",
-			new Class<?>[] {ActionRequest.class, PortletPreferences.class},
-			mockLiferayPortletActionRequest,
-			PrefsPropsUtil.getPreferences(companyId1));
+			Assert.assertFalse(
+				mailSettingCompanyConfiguration1.
+					enablePOPServerNotifications());
 
-		Assert.assertTrue(
-			PrefsPropsUtil.getBoolean(
-				companyId1, PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED));
-		Assert.assertFalse(
-			PrefsPropsUtil.getBoolean(
-				companyId2, PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED));
+			Assert.assertFalse(
+				mailSettingCompanyConfiguration2.
+					enablePOPServerNotifications());
+
+			try (CompanyConfigurationTemporarySwapper
+					companyConfigurationTemporarySwapper =
+						new CompanyConfigurationTemporarySwapper(
+							companyId1,
+							"com.liferay.mail.settings.configuration." +
+								"MailSettingCompanyConfiguration",
+							HashMapDictionaryBuilder.<String, Object>put(
+								"enablePOPServerNotifications", "true"
+							).build())) {
+
+				mailSettingCompanyConfiguration1 =
+					_configurationProvider.getCompanyConfiguration(
+						MailSettingCompanyConfiguration.class, companyId1);
+
+				mailSettingCompanyConfiguration2 =
+					_configurationProvider.getCompanyConfiguration(
+						MailSettingCompanyConfiguration.class, companyId2);
+
+				Assert.assertTrue(
+					mailSettingCompanyConfiguration1.
+						enablePOPServerNotifications());
+
+				Assert.assertFalse(
+					mailSettingCompanyConfiguration2.
+						enablePOPServerNotifications());
+			}
+		}
 	}
 
 	@Test
-	public void testGetSessionWithCompanyId() {
+	public void testGetSessionWithCompanyId() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
 		String smtpHost = "test.local";
 
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						companyId,
+						"com.liferay.mail.settings.configuration." +
+							"MailSettingCompanyConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"outgoingSMTPServer", smtpHost
+						).build())) {
 
-		mockLiferayPortletActionRequest.addParameter("smtpHost", smtpHost);
+			Session session = _mailService.getSession(companyId);
 
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_updateMail",
-			new Class<?>[] {ActionRequest.class, PortletPreferences.class},
-			mockLiferayPortletActionRequest,
-			PrefsPropsUtil.getPreferences(companyId));
+			Assert.assertEquals(
+				smtpHost, session.getProperty("mail.smtp.host"));
 
-		Session session = _mailService.getSession(companyId);
+			session = _mailService.getSession(_portal.getDefaultCompanyId());
 
-		Assert.assertEquals(smtpHost, session.getProperty("mail.smtp.host"));
+			MailSettingCompanyConfiguration mailSettingCompanyConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					MailSettingCompanyConfiguration.class,
+					_portal.getDefaultCompanyId());
 
-		session = _mailService.getSession(_portal.getDefaultCompanyId());
-
-		Assert.assertEquals(
-			PropsValues.MAIL_SESSION_MAIL_SMTP_HOST,
-			session.getProperty("mail.smtp.host"));
-	}
-
-	private void _setCompanyPortletPreferences(
-			long companyId, String key, String value)
-		throws Exception {
-
-		PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(
-			companyId);
-
-		portletPreferences.setValue(key, value);
-
-		portletPreferences.store();
+			Assert.assertEquals(
+				mailSettingCompanyConfiguration.outgoingSMTPServer(),
+				session.getProperty("mail.smtp.host"));
+		}
 	}
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private ConfigurationProvider _configurationProvider;
 
 	@Inject
 	private MailService _mailService;
