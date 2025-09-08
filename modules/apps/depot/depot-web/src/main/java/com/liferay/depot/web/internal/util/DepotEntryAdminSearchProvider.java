@@ -6,10 +6,10 @@
 package com.liferay.depot.web.internal.util;
 
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.item.selector.DepotGroupItemSelectorCriterion;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.service.DepotEntryService;
-import com.liferay.depot.web.internal.item.selector.DepotGroupItemSelectorCriterion;
-import com.liferay.depot.web.internal.search.DepotEntrySearch;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
@@ -83,9 +83,7 @@ public class DepotEntryAdminSearchProvider {
 				portletRequest.getLocale(), "no-asset-libraries-were-found"));
 
 		depotEntrySearch.setResultsAndTotal(
-			() -> _getResults(
-				depotEntryType, portletRequest, depotEntrySearch.getStart(),
-				depotEntrySearch.getEnd()),
+			() -> _getResults(depotEntryType, depotEntrySearch, portletRequest),
 			_getTotal(depotEntryType, portletRequest));
 
 		return depotEntrySearch;
@@ -119,8 +117,8 @@ public class DepotEntryAdminSearchProvider {
 	}
 
 	private List<DepotEntry> _getResults(
-			int depotEntryType, PortletRequest portletRequest, int start,
-			int end)
+			int depotEntryType, DepotEntrySearch depotEntrySearch,
+			PortletRequest portletRequest)
 		throws PortalException {
 
 		List<DepotEntry> depotEntries = new ArrayList<>();
@@ -128,8 +126,13 @@ public class DepotEntryAdminSearchProvider {
 		Indexer<Object> indexer = IndexerRegistryUtil.getIndexer(
 			DepotEntry.class.getName());
 
-		Hits hits = indexer.search(
-			_getSearchContext(depotEntryType, portletRequest, start, end));
+		SearchContext searchContext = _getSearchContext(
+			depotEntryType, portletRequest);
+
+		searchContext.setEnd(depotEntrySearch.getEnd());
+		searchContext.setStart(depotEntrySearch.getStart());
+
+		Hits hits = indexer.search(searchContext);
 
 		for (Document document : hits.getDocs()) {
 			long classPK = GetterUtil.getLong(
@@ -146,7 +149,7 @@ public class DepotEntryAdminSearchProvider {
 	}
 
 	private SearchContext _getSearchContext(
-		int depotEntryType, PortletRequest portletRequest, int start, int end) {
+		int depotEntryType, PortletRequest portletRequest) {
 
 		SearchContext searchContext = new SearchContext();
 
@@ -157,15 +160,11 @@ public class DepotEntryAdminSearchProvider {
 
 		searchContext.setCompanyId(themeDisplay.getCompanyId());
 
-		searchContext.setEnd(end);
-
 		String keywords = ParamUtil.getString(portletRequest, "keywords");
 
 		if (Validator.isNotNull(keywords)) {
 			searchContext.setKeywords(keywords);
 		}
-
-		searchContext.setStart(start);
 
 		return searchContext;
 	}
@@ -177,7 +176,7 @@ public class DepotEntryAdminSearchProvider {
 			DepotEntry.class.getName());
 
 		return (int)indexer.searchCount(
-			_getSearchContext(depotEntryType, portletRequest, start, end));
+			_getSearchContext(depotEntryType, portletRequest));
 	}
 
 	@Reference
