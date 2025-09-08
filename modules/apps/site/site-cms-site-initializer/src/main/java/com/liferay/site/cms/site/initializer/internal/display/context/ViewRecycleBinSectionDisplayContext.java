@@ -223,18 +223,8 @@ public class ViewRecycleBinSectionDisplayContext
 					   _trashHelper.isTrashEnabled(depotGroup);
 			});
 
-		Long[] groupIds = TransformUtil.transformToArray(
+		return TransformUtil.transformToArray(
 			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
-
-		Group scopeGroup = groupLocalService.fetchGroup(_groupId);
-
-		if ((scopeGroup != null) && scopeGroup.isDepot() &&
-			_trashHelper.isTrashEnabled(scopeGroup)) {
-
-			groupIds = ArrayUtil.append(groupIds, _groupId);
-		}
-
-		return groupIds;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
