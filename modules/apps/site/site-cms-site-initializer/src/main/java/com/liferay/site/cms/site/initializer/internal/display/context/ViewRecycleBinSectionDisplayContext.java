@@ -6,7 +6,6 @@
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -175,12 +174,13 @@ public class ViewRecycleBinSectionDisplayContext
 		Long[] groupIds;
 
 		try {
-			groupIds = _getGroupIds();
+			groupIds = _getDepotGroupIds();
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"Unable to resolve eligible group ids", portalException);
+					"Unable to get depot group ids for group " + _groupId,
+					portalException);
 			}
 
 			return filter;
@@ -207,24 +207,22 @@ public class ViewRecycleBinSectionDisplayContext
 		return sb.toString();
 	}
 
-	private Long[] _getGroupIds() throws PortalException {
-		List<DepotEntry> depotEntries =
+	private Long[] _getDepotGroupIds() throws PortalException {
+		return TransformUtil.transformToArray(
 			depotEntryLocalService.getGroupConnectedDepotEntries(
 				_groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		List<DepotEntry> trashEnabledDepotEntries = ListUtil.filter(
-			depotEntries,
+				QueryUtil.ALL_POS),
 			depotEntry -> {
-				Group depotGroup = groupLocalService.fetchGroup(
+				Group group = groupLocalService.fetchGroup(
 					depotEntry.getGroupId());
 
-				return (depotGroup != null) &&
-					   _trashHelper.isTrashEnabled(depotGroup);
-			});
+				if ((group == null) || !_trashHelper.isTrashEnabled(group)) {
+					return null;
+				}
 
-		return TransformUtil.transformToArray(
-			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
+				return group.getGroupId();
+			},
+			Long.class);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
