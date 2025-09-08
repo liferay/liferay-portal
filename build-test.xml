@@ -12921,18 +12921,20 @@ jdbc.test.password=${database.password}</echo>
 			<equals arg1="${ms.exchange.enabled}" arg2="true" />
 
 			<then>
-				<echo append="true" file="portal-impl/src/portal-ext.properties">
-mail.session.mail=true
-mail.session.mail.pop3.host=outlook.office365.com
-mail.session.mail.pop3.port=995
-mail.session.mail.pop3.user=qa-exchange-pop-test@liferay0.onmicrosoft.com
-mail.session.mail.smtp.host=smtp.office365.com
-mail.session.mail.smtp.port=587
-mail.session.mail.smtp.user=qa-exchange-pop-test@liferay0.onmicrosoft.com
-mail.session.mail.store.protocol=pop3s
+				<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration.config"><![CDATA[
+incomingPOPServer="outlook.office365.com"
+incomingPOPPort="995"
+popUserName="qa-exchange-pop-test@liferay0.onmicrosoft.com"
+outgoingSMTPServer="smtp.office365.com"
+outgoingSMTPPort="587"
+smtpUserName="qa-exchange-pop-test@liferay0.onmicrosoft.com"
+storeProtocol="pop3s"
+enablePOPServerNotifications=b"true"
+]]>
+				</echo>
 
+				<echo append="true" file="portal-impl/src/portal-ext.properties">
 pop.server.subdomain=
-pop.server.notifications.enabled=true
 				</echo>
 			</then>
 		</if>
@@ -13201,9 +13203,9 @@ include-and-override=${liferay.home}/portal-setup-wizard.properties</echo>
 		<if>
 			<isset property="test.smtp.server.enabled" />
 			<then>
-				<echo append="true" file="portal-impl/src/portal-ext.properties">
-
-mail.session.mail.smtp.port=25000</echo>
+				<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration.config"><![CDATA[
+outgoingSMTPPort="25000"
+]]></echo>
 			</then>
 		</if>
 
