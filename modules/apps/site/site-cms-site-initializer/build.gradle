@@ -42,6 +42,7 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:subscription:subscription-api")
 	compileOnly project(":apps:translation:translation-api")
+	compileOnly project(":apps:trash:trash-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")

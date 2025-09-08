@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewRecycleBinSectionDisplayContext;
+import com.liferay.trash.TrashHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -50,7 +51,7 @@ public class ViewRecycleBinJSPSectionFragmentRenderer
 			groupLocalService, httpServletRequest, language,
 			_objectDefinitionService, _objectDefinitionSettingLocalService,
 			_objectEntryFolderLocalService,
-			_objectEntryFolderModelResourcePermission, _portal);
+			_objectEntryFolderModelResourcePermission, _portal, _trashHelper);
 	}
 
 	@Override
@@ -79,5 +80,8 @@ public class ViewRecycleBinJSPSectionFragmentRenderer
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private TrashHelper _trashHelper;
 
 }

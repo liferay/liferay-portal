@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
+import com.liferay.trash.TrashHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -58,7 +59,7 @@ public class ViewRecycleBinSectionDisplayContext
 		ObjectEntryFolderLocalService objectEntryFolderLocalService,
 		ModelResourcePermission<ObjectEntryFolder>
 			objectEntryFolderModelResourcePermission,
-		Portal portal) {
+		Portal portal, TrashHelper trashHelper) {
 
 		super(
 			depotEntryLocalService, null, groupLocalService, httpServletRequest,
@@ -68,6 +69,7 @@ public class ViewRecycleBinSectionDisplayContext
 
 		_groupId = groupId;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
+		_trashHelper = trashHelper;
 	}
 
 	public Map<String, Object> getBreadcrumbProps() {
@@ -217,7 +219,8 @@ public class ViewRecycleBinSectionDisplayContext
 				Group depotGroup = groupLocalService.fetchGroup(
 					depotEntry.getGroupId());
 
-				return (depotGroup != null) && _isTrashEnabled(depotGroup);
+				return (depotGroup != null) &&
+					   _trashHelper.isTrashEnabled(depotGroup);
 			});
 
 		Long[] groupIds = TransformUtil.transformToArray(
@@ -226,7 +229,7 @@ public class ViewRecycleBinSectionDisplayContext
 		Group scopeGroup = groupLocalService.fetchGroup(_groupId);
 
 		if ((scopeGroup != null) && scopeGroup.isDepot() &&
-			_isTrashEnabled(scopeGroup)) {
+			_trashHelper.isTrashEnabled(scopeGroup)) {
 
 			groupIds = ArrayUtil.append(groupIds, _groupId);
 		}
@@ -234,15 +237,11 @@ public class ViewRecycleBinSectionDisplayContext
 		return groupIds;
 	}
 
-	private boolean _isTrashEnabled(Group group) {
-		return Boolean.parseBoolean(
-			group.getTypeSettingsProperty("trashEnabled"));
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewRecycleBinSectionDisplayContext.class);
 
 	private final long _groupId;
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+	private final TrashHelper _trashHelper;
 
 }
