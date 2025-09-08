@@ -5,6 +5,7 @@
 
 package com.liferay.depot.web.internal.item.selector;
 
+import com.liferay.depot.item.selector.DepotGroupItemSelectorCriterion;
 import com.liferay.item.selector.BaseItemSelectorCriterionHandler;
 import com.liferay.item.selector.ItemSelectorCriterionHandler;
 

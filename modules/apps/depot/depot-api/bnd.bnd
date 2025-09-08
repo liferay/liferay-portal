@@ -1,13 +1,15 @@
 Bundle-Name: Liferay Depot API
 Bundle-SymbolicName: com.liferay.depot.api
-Bundle-Version: 8.1.1
+Bundle-Version: 8.2.0
 Export-Package:\
 	com.liferay.depot.application,\
 	com.liferay.depot.configuration,\
 	com.liferay.depot.constants,\
 	com.liferay.depot.exception,\
 	com.liferay.depot.group.provider,\
+	com.liferay.depot.item.selector,\
 	com.liferay.depot.model,\
+	com.liferay.depot.search,\
 	com.liferay.depot.service,\
 	com.liferay.depot.service.persistence,\
 	com.liferay.depot.util

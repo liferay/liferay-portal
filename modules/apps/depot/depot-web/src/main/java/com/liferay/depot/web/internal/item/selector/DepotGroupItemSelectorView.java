@@ -5,7 +5,8 @@
 
 package com.liferay.depot.web.internal.item.selector;
 
-import com.liferay.depot.web.internal.search.DepotEntrySearch;
+import com.liferay.depot.item.selector.DepotGroupItemSelectorCriterion;
+import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
