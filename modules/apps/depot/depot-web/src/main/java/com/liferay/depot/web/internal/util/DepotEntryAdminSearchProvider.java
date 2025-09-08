@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -130,6 +131,7 @@ public class DepotEntryAdminSearchProvider {
 			depotEntryType, portletRequest);
 
 		searchContext.setEnd(depotEntrySearch.getEnd());
+		searchContext.setSorts(new Sort(Field.NAME, false));
 		searchContext.setStart(depotEntrySearch.getStart());
 
 		Hits hits = indexer.search(searchContext);
