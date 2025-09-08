@@ -7,10 +7,11 @@ package com.liferay.depot.web.internal.util.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.item.selector.DepotGroupItemSelectorCriterion;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
@@ -32,9 +33,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.site.search.GroupSearch;
 
 import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 import jakarta.portlet.PortletURL;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Roberto Díaz
  */
 @RunWith(Arquillian.class)
-public class DepotAdminGroupSearchProviderTest {
+public class DepotEntryAdminSearchProviderTest {
 
 	@ClassRule
 	@Rule
@@ -69,17 +70,17 @@ public class DepotAdminGroupSearchProviderTest {
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
 
-		_depotAdminGroupSearchProvider = _getDepotAdminGroupSearchProvider();
+		_depotEntryAdminSearchProvider = _getDepotEntryAdminSearchProvider();
 
 		_addDepotEntries();
 	}
 
 	@Test
-	public void testGetGroupSearch() throws Exception {
-		GroupItemSelectorCriterion groupItemSelectorCriterion =
-			new GroupItemSelectorCriterion();
+	public void testGetDepotEntrySearch() throws Exception {
+		DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion =
+			new DepotGroupItemSelectorCriterion();
 
-		groupItemSelectorCriterion.setIncludeAllVisibleGroups(false);
+		depotGroupItemSelectorCriterion.setIncludeAllVisibleGroups(false);
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
@@ -90,21 +91,23 @@ public class DepotAdminGroupSearchProviderTest {
 		_assertDepotEntries(
 			4,
 			ReflectionTestUtil.invoke(
-				_depotAdminGroupSearchProvider, "getGroupSearch",
+				_depotEntryAdminSearchProvider, "getDepotEntrySearch",
 				new Class<?>[] {
-					GroupItemSelectorCriterion.class, PortletRequest.class,
-					PortletURL.class
+					DepotGroupItemSelectorCriterion.class, PortletRequest.class,
+					PortletResponse.class, PortletURL.class
 				},
-				groupItemSelectorCriterion, mockLiferayPortletActionRequest,
+				depotGroupItemSelectorCriterion,
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletRenderResponse(),
 				new MockLiferayPortletURL()));
 	}
 
 	@Test
 	public void testGetGroupSearchWithKeywords() throws Exception {
-		GroupItemSelectorCriterion groupItemSelectorCriterion =
-			new GroupItemSelectorCriterion();
+		DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion =
+			new DepotGroupItemSelectorCriterion();
 
-		groupItemSelectorCriterion.setIncludeAllVisibleGroups(false);
+		depotGroupItemSelectorCriterion.setIncludeAllVisibleGroups(false);
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
@@ -117,12 +120,14 @@ public class DepotAdminGroupSearchProviderTest {
 		_assertDepotEntries(
 			3,
 			ReflectionTestUtil.invoke(
-				_depotAdminGroupSearchProvider, "getGroupSearch",
+				_depotEntryAdminSearchProvider, "getDepotEntrySearch",
 				new Class<?>[] {
-					GroupItemSelectorCriterion.class, PortletRequest.class,
-					PortletURL.class
+					DepotGroupItemSelectorCriterion.class, PortletRequest.class,
+					PortletResponse.class, PortletURL.class
 				},
-				groupItemSelectorCriterion, mockLiferayPortletActionRequest,
+				depotGroupItemSelectorCriterion,
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletRenderResponse(),
 				new MockLiferayPortletURL()));
 	}
 
@@ -144,33 +149,30 @@ public class DepotAdminGroupSearchProviderTest {
 			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
-		_depotEntries.add(depotEntry);
+		_initialDepotEntries.add(depotEntry);
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			depotEntry.getDepotEntryId(), _group.getGroupId());
 	}
 
-	private void _assertDepotEntries(int total, GroupSearch groupSearch)
-		throws Exception {
+	private void _assertDepotEntries(
+		int total, DepotEntrySearch depotEntrySearch) {
 
-		Assert.assertEquals(total, groupSearch.getTotal());
+		Assert.assertEquals(total, depotEntrySearch.getTotal());
 
-		List<Group> groups = groupSearch.getResults();
+		List<DepotEntry> curDepotEntries = depotEntrySearch.getResults();
 
 		for (int i = 0; i < total; i++) {
-			Group group = groups.get(i);
+			DepotEntry depotEntry1 = _initialDepotEntries.get(i);
 
-			DepotEntry depotEntry = _depotEntries.get(i);
-
-			Group depotEntryGroup = depotEntry.getGroup();
+			DepotEntry depotEntry2 = curDepotEntries.get(i);
 
 			Assert.assertEquals(
-				depotEntryGroup.getName(LocaleUtil.getDefault()),
-				group.getName(LocaleUtil.getDefault()));
+				depotEntry1.getDepotEntryId(), depotEntry2.getDepotEntryId());
 		}
 	}
 
-	private Object _getDepotAdminGroupSearchProvider() throws Exception {
+	private Object _getDepotEntryAdminSearchProvider() throws Exception {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest(_getMockHttpServletRequest());
 
@@ -180,7 +182,7 @@ public class DepotAdminGroupSearchProviderTest {
 
 		return mockLiferayPortletRenderRequest.getAttribute(
 			"com.liferay.depot.web.internal.util." +
-				"DepotAdminGroupSearchProvider");
+				"DepotEntryAdminSearchProvider");
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest()
@@ -212,10 +214,7 @@ public class DepotAdminGroupSearchProviderTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	private Object _depotAdminGroupSearchProvider;
-
-	@DeleteAfterTestRun
-	private final List<DepotEntry> _depotEntries = new ArrayList<>();
+	private Object _depotEntryAdminSearchProvider;
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
@@ -224,6 +223,10 @@ public class DepotAdminGroupSearchProviderTest {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _group;
+
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _initialDepotEntries = new ArrayList<>();
+
 	private String _keywords;
 
 	@Inject(
