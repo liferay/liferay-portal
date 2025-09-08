@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Mail Settings API
+Bundle-SymbolicName: com.liferay.mail.settings.api
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.mail.settings.configuration
