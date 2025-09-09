@@ -12,7 +12,9 @@ import com.liferay.account.manager.CurrentAccountEntryManager;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryModel;
 import com.liferay.account.model.AccountEntryUserRel;
+import com.liferay.account.role.AccountRolePermissionThreadLocal;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.commerce.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.configuration.CommerceAccountServiceConfiguration;
@@ -497,8 +499,15 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 		throws PortalException {
 
 		if (commerceAccountId > 0) {
-			_checkAccountType(commerceChannelGroupId, commerceAccountId);
+			AccountEntry accountEntry = _accountEntryService.getAccountEntry(
+				commerceAccountId);
+
+			_checkAccountType(
+				commerceChannelGroupId, accountEntry.getAccountEntryId());
 		}
+
+		AccountRolePermissionThreadLocal.setAccountEntryIdWithSafeCloseable(
+			commerceAccountId);
 
 		if (PortalSessionThreadLocal.getHttpSession() == null) {
 			PortalSessionThreadLocal.setHttpSession(
@@ -624,6 +633,9 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
 
 	@Reference
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
