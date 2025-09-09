@@ -594,16 +594,6 @@ public class ObjectFieldLocalServiceUtil {
 			objectDefinitionId);
 	}
 
-	public static void validateObjectFields(
-			long objectDefinitionId, String objectDefinitionDefaultLanguageId,
-			Map<java.util.Locale, String> objectDefinitionLabel)
-		throws PortalException {
-
-		getService().validateObjectFields(
-			objectDefinitionId, objectDefinitionDefaultLanguageId,
-			objectDefinitionLabel);
-	}
-
 	public static void validateReadOnlyAndReadOnlyConditionExpression(
 			String businessType, String readOnly,
 			String readOnlyConditionExpression, boolean required)

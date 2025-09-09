@@ -62,8 +62,7 @@ public interface ObjectFieldLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectFieldLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the object field local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ObjectFieldLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public void _partialValidateObjectFields(
-			long objectDefinitionId, Map<Locale, String> objectDefinitionLabel)
+	public void _partialValidateObjectFields(ObjectDefinition objectDefinition)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -453,11 +452,6 @@ public interface ObjectFieldLocalService
 	public void validateExternalReferenceCode(
 			String externalReferenceCode, long objectFieldId, long companyId,
 			long objectDefinitionId)
-		throws PortalException;
-
-	public void validateObjectFields(
-			long objectDefinitionId, String objectDefinitionDefaultLanguageId,
-			Map<Locale, String> objectDefinitionLabel)
 		throws PortalException;
 
 	public void validateReadOnlyAndReadOnlyConditionExpression(
