@@ -1526,44 +1526,6 @@ public interface PropsKeys {
 
 	public static final String MAIL_SEND_BLACKLIST = "mail.send.blacklist";
 
-	public static final String MAIL_SESSION_MAIL = "mail.session.mail";
-
-	public static final String MAIL_SESSION_MAIL_ADVANCED_PROPERTIES =
-		"mail.session.mail.advanced.properties";
-
-	public static final String MAIL_SESSION_MAIL_POP3_HOST =
-		"mail.session.mail.pop3.host";
-
-	public static final String MAIL_SESSION_MAIL_POP3_PASSWORD =
-		"mail.session.mail.pop3.password";
-
-	public static final String MAIL_SESSION_MAIL_POP3_PORT =
-		"mail.session.mail.pop3.port";
-
-	public static final String MAIL_SESSION_MAIL_POP3_USER =
-		"mail.session.mail.pop3.user";
-
-	public static final String MAIL_SESSION_MAIL_SMTP_HOST =
-		"mail.session.mail.smtp.host";
-
-	public static final String MAIL_SESSION_MAIL_SMTP_PASSWORD =
-		"mail.session.mail.smtp.password";
-
-	public static final String MAIL_SESSION_MAIL_SMTP_PORT =
-		"mail.session.mail.smtp.port";
-
-	public static final String MAIL_SESSION_MAIL_SMTP_STARTTLS_ENABLE =
-		"mail.session.mail.smtp.starttls.enable";
-
-	public static final String MAIL_SESSION_MAIL_SMTP_USER =
-		"mail.session.mail.smtp.user";
-
-	public static final String MAIL_SESSION_MAIL_STORE_PROTOCOL =
-		"mail.session.mail.store.protocol";
-
-	public static final String MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL =
-		"mail.session.mail.transport.protocol";
-
 	public static final String MAIL_THROWS_EXCEPTION_ON_FAILURE =
 		"mail.throws.exception.on.failure";
 
@@ -2067,9 +2029,6 @@ public interface PropsKeys {
 
 	public static final String PHONE_NUMBER_FORMAT_USA_REGEXP =
 		"phone.number.format.usa.regexp";
-
-	public static final String POP_SERVER_NOTIFICATIONS_ENABLED =
-		"pop.server.notifications.enabled";
 
 	public static final String POP_SERVER_SUBDOMAIN = "pop.server.subdomain";
 
