@@ -176,7 +176,7 @@ public class ViewRecycleBinSectionDisplayContext
 	protected String getCMSSectionFilterString() {
 		String filter =
 			"cmsRoot eq true and (cmsSection eq 'contents' or cmsSection eq " +
-				"'files') and status eq " + WorkflowConstants.STATUS_IN_TRASH;
+				"'files') and status eq ";
 
 		Long[] groupIds;
 
@@ -190,14 +190,15 @@ public class ViewRecycleBinSectionDisplayContext
 					exception);
 			}
 
-			return filter;
+			return filter + WorkflowConstants.STATUS_ANY;
 		}
 
 		if (groupIds.length == 0) {
 			return filter + WorkflowConstants.STATUS_ANY;
 		}
 
-		return filter + _buildGroupIdsAnyClause(groupIds);
+		return filter + WorkflowConstants.STATUS_IN_TRASH +
+			_buildGroupIdsAnyClause(groupIds);
 	}
 
 	private String _buildGroupIdsAnyClause(Long[] groupIds) {
