@@ -7,6 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
@@ -47,9 +48,10 @@ public class ViewRecycleBinJSPSectionFragmentRenderer
 				WebKeys.THEME_DISPLAY);
 
 		return new ViewRecycleBinSectionDisplayContext(
-			_depotEntryLocalService, themeDisplay.getScopeGroupId(),
-			groupLocalService, httpServletRequest, language,
-			_objectDefinitionService, _objectDefinitionSettingLocalService,
+			_assetLibraryResourceFactory, _depotEntryLocalService,
+			themeDisplay.getScopeGroupId(), groupLocalService,
+			httpServletRequest, language, _objectDefinitionService,
+			_objectDefinitionSettingLocalService,
 			_objectEntryFolderLocalService,
 			_objectEntryFolderModelResourcePermission, _portal, _trashHelper);
 	}
@@ -58,6 +60,9 @@ public class ViewRecycleBinJSPSectionFragmentRenderer
 	protected String getJSPPath() {
 		return "/view_recycle_bin.jsp";
 	}
+
+	@Reference
+	private AssetLibraryResource.Factory _assetLibraryResourceFactory;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
