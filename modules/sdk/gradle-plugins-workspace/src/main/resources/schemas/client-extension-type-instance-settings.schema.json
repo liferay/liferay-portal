@@ -2345,6 +2345,83 @@
 		},
 		{
 			"properties": {
+				"additionalJavaMailProperties": {
+					"default": "",
+					"title": "Manually specify additional JavaMail properties to override the above configuration.",
+					"type": "string"
+				},
+				"enablePOPServerNotifications": {
+					"default": false,
+					"title": "Enable POP Server Notifications",
+					"type": "boolean"
+				},
+				"enableStartTLS": {
+					"default": true,
+					"title": "Enable StartTLS",
+					"type": "boolean"
+				},
+				"incomingPOPPort": {
+					"default": "110",
+					"title": "Incoming Port",
+					"type": "string"
+				},
+				"incomingPOPServer": {
+					"default": "localhost",
+					"title": "Incoming POP Server",
+					"type": "string"
+				},
+				"outgoingSMTPPort": {
+					"default": "25",
+					"title": "Outgoing Port",
+					"type": "string"
+				},
+				"outgoingSMTPServer": {
+					"default": "localhost",
+					"title": "Outgoing SMTP Server",
+					"type": "string"
+				},
+				"pid": {
+					"const": "com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration",
+					"title": "Mail Settings"
+				},
+				"popPassword": {
+					"default": "",
+					"title": "Password",
+					"type": "string"
+				},
+				"popUserName": {
+					"default": "",
+					"title": "User Name",
+					"type": "string"
+				},
+				"smtpPassword": {
+					"default": "",
+					"title": "Password",
+					"type": "string"
+				},
+				"smtpUserName": {
+					"default": "",
+					"title": "User Name",
+					"type": "string"
+				},
+				"storeProtocol": {
+					"default": "pop3",
+					"title": "Store Protocol",
+					"type": "string"
+				},
+				"transportProtocol": {
+					"default": "smtp",
+					"title": "Transport Protocol",
+					"type": "string"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Mail Settings"
+		},
+		{
+			"properties": {
 				"emailFromAddress": {
 					"description": "Set the sender address on the one-time password email.",
 					"title": "Template for Email \"From\" Field",
@@ -4760,6 +4837,7 @@
 				"com.liferay.layout.seo.internal.configuration.LayoutSEOCompanyConfiguration",
 				"com.liferay.layout.set.prototype.configuration.LayoutSetPrototypeConfiguration",
 				"com.liferay.mail.outlook.auth.connector.provider.internal.configuration.MailOutlookAuthConnectorCompanyConfiguration",
+				"com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration",
 				"com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration",
 				"com.liferay.multi.factor.authentication.fido2.web.internal.configuration.MFAFIDO2Configuration",
 				"com.liferay.multi.factor.authentication.ip.address.internal.configuration.MFAIPAddressConfiguration",
