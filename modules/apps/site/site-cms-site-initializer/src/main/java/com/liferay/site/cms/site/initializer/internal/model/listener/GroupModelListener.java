@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
 import java.util.Objects;
@@ -108,8 +109,8 @@ public class GroupModelListener extends BaseModelListener<Group> {
 	}
 
 	private boolean _isTrashEnabled(Group group) {
-		return Boolean.parseBoolean(
-			group.getTypeSettingsProperty("trashEnabled"));
+		return GetterUtil.getBoolean(
+			group.getTypeSettingsProperty("trashEnabled"), true);
 	}
 
 	private void _onAfterCreate(Group group) throws PortalException {
