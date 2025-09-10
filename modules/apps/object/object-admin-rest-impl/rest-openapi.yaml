@@ -856,6 +856,12 @@ paths:
             tags: ["ObjectDefinition"]
         post:
             operationId: postObjectDefinition
+            parameters:
+                -   in: query
+                    name: accumulateError
+                    schema:
+                        default: false
+                        type: boolean
             requestBody:
                 content:
                     application/json:
@@ -901,6 +907,11 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: accumulateError
+                    schema:
+                        default: false
+                        type: boolean
             requestBody:
                 content:
                     application/json:
