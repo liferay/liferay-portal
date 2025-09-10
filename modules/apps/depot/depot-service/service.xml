@@ -60,6 +60,10 @@
 		<finder name="GroupId" return-type="DepotEntry" unique="true">
 			<finder-column name="groupId" />
 		</finder>
+		<finder name="C_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="type" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="DepotEntryGroupRel" remote-service="true" uuid="true">
 
