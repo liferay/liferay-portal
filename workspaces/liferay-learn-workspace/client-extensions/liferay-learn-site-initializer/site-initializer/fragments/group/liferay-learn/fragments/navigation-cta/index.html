@@ -1,0 +1,16 @@
+[#if !themeDisplay.isSignedIn()]
+<a class="navigation-cta navigation-cta-sign-in" href="${htmlUtil.escape(themeDisplay.getURLSignIn())}">
+<span data-lfr-editable-id="text-sign-in" data-lfr-editable-type="rich-text">
+	Sign in
+</span>
+</a>
+[#else]
+<a
+	class="navigation-cta navigation-cta-dashboard"
+	href="${htmlUtil.escape(themeDisplay.getURLPortal())}/user-dashboard"
+>
+<span data-lfr-editable-id="text-dashboard" data-lfr-editable-type="rich-text">
+	Dashboard
+</span>
+</a>
+[/#if]
