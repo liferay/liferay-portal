@@ -55,11 +55,6 @@
 						<div class="description search-results-entry-content">
 							${searchEntryContent}
 						</div>
-						<#if searchEntry.getPublishedDateString()?has_content>
-							<div class="pt-2 published-date">
-								${languageUtil.get(locale, "published-date")}: ${searchEntry.getPublishedDateString()}
-							</div>
-						</#if>
 					</a>
 				</div>
 			</#if>
