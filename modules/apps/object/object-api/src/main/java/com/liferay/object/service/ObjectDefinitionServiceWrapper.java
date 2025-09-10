@@ -228,6 +228,8 @@ public class ObjectDefinitionServiceWrapper
 				String scope, int status,
 				java.util.List<com.liferay.object.model.ObjectDefinitionSetting>
 					objectDefinitionSettings,
+				java.util.List<com.liferay.object.model.ObjectField>
+					objectFields,
 				java.util.List
 					<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
 						workflowDefinitionLinks)
@@ -244,7 +246,7 @@ public class ObjectDefinitionServiceWrapper
 			enableObjectEntrySubscription, enableObjectEntryVersioning,
 			friendlyURLSeparator, labelMap, name, panelAppOrder,
 			panelCategoryKey, portlet, pluralLabelMap, scope, status,
-			objectDefinitionSettings, workflowDefinitionLinks);
+			objectDefinitionSettings, objectFields, workflowDefinitionLinks);
 	}
 
 	@Override
@@ -264,6 +266,8 @@ public class ObjectDefinitionServiceWrapper
 				long objectFolderId, long titleObjectFieldId,
 				java.util.List<com.liferay.object.model.ObjectDefinitionSetting>
 					objectDefinitionSettings,
+				java.util.List<com.liferay.object.model.ObjectField>
+					objectFields,
 				java.util.List
 					<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
 						workflowDefinitionLinks)
@@ -271,7 +275,7 @@ public class ObjectDefinitionServiceWrapper
 
 		return _objectDefinitionService.updateSystemObjectDefinition(
 			externalReferenceCode, objectDefinitionId, objectFolderId,
-			titleObjectFieldId, objectDefinitionSettings,
+			titleObjectFieldId, objectDefinitionSettings, objectFields,
 			workflowDefinitionLinks);
 	}
 

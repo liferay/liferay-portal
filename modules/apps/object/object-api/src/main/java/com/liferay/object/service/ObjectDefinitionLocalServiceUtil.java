@@ -606,6 +606,7 @@ public class ObjectDefinitionLocalServiceUtil {
 			int status,
 			List<com.liferay.object.model.ObjectDefinitionSetting>
 				objectDefinitionSettings,
+			List<com.liferay.object.model.ObjectField> objectFields,
 			List<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
 				workflowDefinitionLinks)
 		throws PortalException {
@@ -621,7 +622,7 @@ public class ObjectDefinitionLocalServiceUtil {
 			enableObjectEntrySubscription, enableObjectEntryVersioning,
 			friendlyURLSeparator, labelMap, name, panelAppOrder,
 			panelCategoryKey, portlet, pluralLabelMap, scope, status,
-			objectDefinitionSettings, workflowDefinitionLinks);
+			objectDefinitionSettings, objectFields, workflowDefinitionLinks);
 	}
 
 	public static ObjectDefinition updateExternalReferenceCode(
@@ -661,13 +662,14 @@ public class ObjectDefinitionLocalServiceUtil {
 			long objectFolderId, long titleObjectFieldId,
 			List<com.liferay.object.model.ObjectDefinitionSetting>
 				objectDefinitionSettings,
+			List<com.liferay.object.model.ObjectField> objectFields,
 			List<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
 				workflowDefinitionLinks)
 		throws PortalException {
 
 		return getService().updateSystemObjectDefinition(
 			externalReferenceCode, objectDefinitionId, objectFolderId,
-			titleObjectFieldId, objectDefinitionSettings,
+			titleObjectFieldId, objectDefinitionSettings, objectFields,
 			workflowDefinitionLinks);
 	}
 
