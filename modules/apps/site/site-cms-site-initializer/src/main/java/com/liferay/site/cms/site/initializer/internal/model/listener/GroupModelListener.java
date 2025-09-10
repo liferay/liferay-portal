@@ -7,7 +7,6 @@ package com.liferay.site.cms.site.initializer.internal.model.listener;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -23,7 +22,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -37,12 +35,8 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -98,7 +92,8 @@ public class GroupModelListener extends BaseModelListener<Group> {
 
 	private Long[] _getDepotGroupIds(long companyId) throws Exception {
 		return TransformUtil.transformToArray(
-			_depotEntryLocalService.getDepotEntries(companyId, DepotConstants.TYPE_SPACE),
+			_depotEntryLocalService.getDepotEntries(
+				companyId, DepotConstants.TYPE_SPACE),
 			depotEntry -> {
 				Group group = _groupLocalService.fetchGroup(
 					depotEntry.getGroupId());
@@ -227,24 +222,37 @@ public class GroupModelListener extends BaseModelListener<Group> {
 
 			Long[] groupIds = _getDepotGroupIds(group.getCompanyId());
 
+			Group cmsRelatedGroup = _groupLocalService.loadGetGroup(
+				group.getCompanyId(), GroupConstants.CMS);
+
 			if ((groupIds.length != 0) ||
 				(Objects.equals(
-					group.getTypeSettingsProperties().getProperty("trashEnabled"), Boolean.TRUE.toString()) &&
-				 !group.getTypeSettingsProperties().getProperty(
+					group.getTypeSettingsProperties(
+					).getProperty(
+						"trashEnabled"
+					),
+					Boolean.TRUE.toString()) &&
+				 !group.getTypeSettingsProperties(
+				 ).getProperty(
 					 "trashEnabled"
 				 ).isEmpty())) {
 
-				_updateRecycleBinLayouts(depotEntryGroupRels, false);
+				_updateRecycleBinLayout(cmsRelatedGroup, false);
 			}
 
 			if ((groupIds.length == 0) &&
 				Objects.equals(
-					group.getTypeSettingsProperties().getProperty("trashEnabled"), Boolean.FALSE.toString()) &&
-				!group.getTypeSettingsProperties().getProperty(
+					group.getTypeSettingsProperties(
+					).getProperty(
+						"trashEnabled"
+					),
+					Boolean.FALSE.toString()) &&
+				!group.getTypeSettingsProperties(
+				).getProperty(
 					"trashEnabled"
 				).isEmpty()) {
 
-				_updateRecycleBinLayouts(depotEntryGroupRels, true);
+				_updateRecycleBinLayout(cmsRelatedGroup, true);
 			}
 		}
 	}
@@ -273,25 +281,22 @@ public class GroupModelListener extends BaseModelListener<Group> {
 		}
 	}
 
-	private void _updateRecycleBinLayouts(
-			List<DepotEntryGroupRel> depotEntryGroupRels, boolean hidden)
+	private void _updateRecycleBinLayout(Group group, boolean hidden)
 		throws Exception {
 
-		for (DepotEntryGroupRel depotEntryGroupRel : depotEntryGroupRels) {
-			Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-				depotEntryGroupRel.getToGroupId(), false, "/recycle-bin");
+		Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
+			group.getGroupId(), false, "/recycle-bin");
 
-			layout.setHidden(hidden);
+		layout.setHidden(hidden);
 
-			_layoutLocalService.updateLayout(layout);
-		}
+		_layoutLocalService.updateLayout(layout);
 	}
 
 	@Reference
-	private DepotEntryService _depotEntryService;
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
-	private DepotEntryLocalService _depotEntryLocalService;
+	private DepotEntryService _depotEntryService;
 
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
