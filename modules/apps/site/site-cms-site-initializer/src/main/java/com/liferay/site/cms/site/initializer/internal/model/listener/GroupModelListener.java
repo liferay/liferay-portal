@@ -8,7 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.model.listener;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
-import com.liferay.depot.service.DepotEntryGroupRelService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -39,7 +39,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
 import java.util.List;
@@ -96,48 +96,20 @@ public class GroupModelListener extends BaseModelListener<Group> {
 		}
 	}
 
-	private Long[] _getGroupIds(Group group) throws Exception {
-		long groupId = group.getGroupId();
-
-		List<DepotEntry> depotEntries =
-			_depotEntryService.getGroupConnectedDepotEntries(
-				groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		List<DepotEntry> trashEnabledDepotEntries = ListUtil.filter(
-			depotEntries,
+	private Long[] _getDepotGroupIds(long companyId) throws Exception {
+		return TransformUtil.transformToArray(
+			_depotEntryLocalService.getDepotEntries(companyId, DepotConstants.TYPE_SPACE),
 			depotEntry -> {
-				Group depotGroup = _groupLocalService.fetchGroup(
+				Group group = _groupLocalService.fetchGroup(
 					depotEntry.getGroupId());
 
-				return (depotGroup != null) && _isTrashEnabled(depotGroup);
-			});
+				if ((group == null) || !_isTrashEnabled(group)) {
+					return null;
+				}
 
-		Long[] groupIds = TransformUtil.transformToArray(
-			trashEnabledDepotEntries, DepotEntry::getGroupId, Long.class);
-
-		Group scopeGroup = _groupLocalService.fetchGroup(groupId);
-
-		if ((scopeGroup != null) && scopeGroup.isDepot() &&
-			_isTrashEnabled(scopeGroup)) {
-
-			groupIds = ArrayUtil.append(groupIds, groupId);
-		}
-
-		return groupIds;
-	}
-
-	private UnicodeProperties _getUnicodeProperties(
-		long companyId, String externalReferenceCode) {
-
-		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, companyId);
-
-		if (group != null) {
-			return group.getTypeSettingsProperties();
-		}
-
-		return new UnicodeProperties(true);
+				return group.getGroupId();
+			},
+			Long.class);
 	}
 
 	private boolean _isTrashEnabled(Group group) {
@@ -239,41 +211,26 @@ public class GroupModelListener extends BaseModelListener<Group> {
 		throws Exception {
 
 		if (group.isDepot()) {
-			UnicodeProperties unicodeProperties = _getUnicodeProperties(
-				group.getCompanyId(), group.getExternalReferenceCode());
+			DepotEntry depotEntry = _depotEntryService.fetchGroupDepotEntry(
+				group.getGroupId());
 
-			if (Objects.equals(
+			if ((depotEntry == null) ||
+				!(depotEntry.getType() == DepotConstants.TYPE_SPACE) ||
+				Objects.equals(
 					originalGroup.getTypeSettingsProperty("trashEnabled"),
 					group.getTypeSettingsProperty("trashEnabled")) ||
-				!unicodeProperties.containsKey("trashEnabled")) {
+				!FeatureFlagManagerUtil.isEnabled(
+					group.getCompanyId(), "LPD-53981")) {
 
 				return;
 			}
 
-			DepotEntry depotEntry = _depotEntryService.fetchGroupDepotEntry(
-				group.getGroupId());
-
-			List<DepotEntryGroupRel> depotEntryGroupRels =
-				_depotEntryGroupRelService.getDepotEntryGroupRels(
-					depotEntry, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			Long[] groupIds;
-
-			if (!depotEntryGroupRels.isEmpty()) {
-				groupIds = _getGroupIds(
-					_groupLocalService.getGroup(
-						depotEntryGroupRels.get(
-							0
-						).getToGroupId()));
-			}
-			else {
-				groupIds = _getGroupIds(depotEntry.getGroup());
-			}
+			Long[] groupIds = _getDepotGroupIds(group.getCompanyId());
 
 			if ((groupIds.length != 0) ||
 				(Objects.equals(
-					unicodeProperties.getProperty("trashEnabled"), "true") &&
-				 !unicodeProperties.getProperty(
+					group.getTypeSettingsProperties().getProperty("trashEnabled"), Boolean.TRUE.toString()) &&
+				 !group.getTypeSettingsProperties().getProperty(
 					 "trashEnabled"
 				 ).isEmpty())) {
 
@@ -282,8 +239,8 @@ public class GroupModelListener extends BaseModelListener<Group> {
 
 			if ((groupIds.length == 0) &&
 				Objects.equals(
-					unicodeProperties.getProperty("trashEnabled"), "false") &&
-				!unicodeProperties.getProperty(
+					group.getTypeSettingsProperties().getProperty("trashEnabled"), Boolean.FALSE.toString()) &&
+				!group.getTypeSettingsProperties().getProperty(
 					"trashEnabled"
 				).isEmpty()) {
 
@@ -331,10 +288,10 @@ public class GroupModelListener extends BaseModelListener<Group> {
 	}
 
 	@Reference
-	private DepotEntryGroupRelService _depotEntryGroupRelService;
+	private DepotEntryService _depotEntryService;
 
 	@Reference
-	private DepotEntryService _depotEntryService;
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
