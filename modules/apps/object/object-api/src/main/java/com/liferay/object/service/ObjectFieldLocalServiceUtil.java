@@ -587,6 +587,14 @@ public class ObjectFieldLocalServiceUtil {
 			objectDefinitionId);
 	}
 
+	public static void validateObjectFields(
+			com.liferay.object.model.ObjectDefinition objectDefinition,
+			List<ObjectField> objectFields)
+		throws PortalException {
+
+		getService().validateObjectFields(objectDefinition, objectFields);
+	}
+
 	public static void validateReadOnlyAndReadOnlyConditionExpression(
 			String businessType, String readOnly,
 			String readOnlyConditionExpression, boolean required)

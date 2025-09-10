@@ -675,6 +675,8 @@ public class ObjectDefinitionServiceHttp {
 				String scope, int status,
 				java.util.List<com.liferay.object.model.ObjectDefinitionSetting>
 					objectDefinitionSettings,
+				java.util.List<com.liferay.object.model.ObjectField>
+					objectFields,
 				java.util.List
 					<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
 						workflowDefinitionLinks)
@@ -697,7 +699,8 @@ public class ObjectDefinitionServiceHttp {
 				enableObjectEntrySubscription, enableObjectEntryVersioning,
 				friendlyURLSeparator, labelMap, name, panelAppOrder,
 				panelCategoryKey, portlet, pluralLabelMap, scope, status,
-				objectDefinitionSettings, workflowDefinitionLinks);
+				objectDefinitionSettings, objectFields,
+				workflowDefinitionLinks);
 
 			Object returnObj = null;
 
@@ -777,6 +780,8 @@ public class ObjectDefinitionServiceHttp {
 				long titleObjectFieldId,
 				java.util.List<com.liferay.object.model.ObjectDefinitionSetting>
 					objectDefinitionSettings,
+				java.util.List<com.liferay.object.model.ObjectField>
+					objectFields,
 				java.util.List
 					<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
 						workflowDefinitionLinks)
@@ -791,7 +796,7 @@ public class ObjectDefinitionServiceHttp {
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, objectDefinitionId,
 				objectFolderId, titleObjectFieldId, objectDefinitionSettings,
-				workflowDefinitionLinks);
+				objectFields, workflowDefinitionLinks);
 
 			Object returnObj = null;
 
@@ -934,7 +939,7 @@ public class ObjectDefinitionServiceHttp {
 	private static final Class<?>[]
 		_updateSystemObjectDefinitionParameterTypes16 = new Class[] {
 			String.class, long.class, long.class, long.class,
-			java.util.List.class, java.util.List.class
+			java.util.List.class, java.util.List.class, java.util.List.class
 		};
 	private static final Class<?>[] _updateTitleObjectFieldIdParameterTypes17 =
 		new Class[] {long.class, long.class};

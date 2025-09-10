@@ -6,6 +6,7 @@
 package com.liferay.object.service;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.petra.sql.dsl.Column;
@@ -448,6 +449,10 @@ public interface ObjectFieldLocalService
 	public void validateExternalReferenceCode(
 			String externalReferenceCode, long objectFieldId, long companyId,
 			long objectDefinitionId)
+		throws PortalException;
+
+	public void validateObjectFields(
+			ObjectDefinition objectDefinition, List<ObjectField> objectFields)
 		throws PortalException;
 
 	public void validateReadOnlyAndReadOnlyConditionExpression(
