@@ -245,6 +245,9 @@ public interface DepotEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DepotEntry> getDepotEntries(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DepotEntry> getDepotEntries(long companyId, int type);
+
 	/**
 	 * Returns all the depot entries matching the UUID and company.
 	 *

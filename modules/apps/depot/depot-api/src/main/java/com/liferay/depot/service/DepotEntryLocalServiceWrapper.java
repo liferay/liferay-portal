@@ -285,6 +285,13 @@ public class DepotEntryLocalServiceWrapper
 		return _depotEntryLocalService.getDepotEntries(start, end);
 	}
 
+	@Override
+	public java.util.List<DepotEntry> getDepotEntries(
+		long companyId, int type) {
+
+		return _depotEntryLocalService.getDepotEntries(companyId, type);
+	}
+
 	/**
 	 * Returns all the depot entries matching the UUID and company.
 	 *

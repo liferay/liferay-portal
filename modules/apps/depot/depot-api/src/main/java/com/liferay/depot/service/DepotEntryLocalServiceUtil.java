@@ -261,6 +261,10 @@ public class DepotEntryLocalServiceUtil {
 		return getService().getDepotEntries(start, end);
 	}
 
+	public static List<DepotEntry> getDepotEntries(long companyId, int type) {
+		return getService().getDepotEntries(companyId, type);
+	}
+
 	/**
 	 * Returns all the depot entries matching the UUID and company.
 	 *

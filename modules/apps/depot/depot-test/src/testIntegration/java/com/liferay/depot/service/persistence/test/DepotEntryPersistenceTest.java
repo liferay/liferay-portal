@@ -204,6 +204,14 @@ public class DepotEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_T() throws Exception {
+		_persistence.countByC_T(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByC_T(0L, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		DepotEntry newDepotEntry = addDepotEntry();
 
