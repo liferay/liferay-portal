@@ -35,8 +35,8 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
+import com.liferay.trash.TrashHelper;
 
 import java.util.Objects;
 
@@ -99,18 +99,13 @@ public class GroupModelListener extends BaseModelListener<Group> {
 				Group group = _groupLocalService.fetchGroup(
 					depotEntry.getGroupId());
 
-				if ((group == null) || !_isTrashEnabled(group)) {
+				if ((group == null) || !_trashHelper.isTrashEnabled(group)) {
 					return null;
 				}
 
 				return group.getGroupId();
 			},
 			Long.class);
-	}
-
-	private boolean _isTrashEnabled(Group group) {
-		return GetterUtil.getBoolean(
-			group.getTypeSettingsProperty("trashEnabled"), true);
 	}
 
 	private void _onAfterCreate(Group group) throws PortalException {
@@ -221,39 +216,16 @@ public class GroupModelListener extends BaseModelListener<Group> {
 				return;
 			}
 
-			Long[] groupIds = _getDepotGroupIds(group.getCompanyId());
-
-			Group cmsRelatedGroup = _groupLocalService.loadGetGroup(
+			Group siteGroup = _groupLocalService.getGroup(
 				group.getCompanyId(), GroupConstants.CMS);
 
-			if ((groupIds.length != 0) ||
-				(Objects.equals(
-					group.getTypeSettingsProperties(
-					).getProperty(
-						"trashEnabled"
-					),
-					Boolean.TRUE.toString()) &&
-				 !group.getTypeSettingsProperties(
-				 ).getProperty(
-					 "trashEnabled"
-				 ).isEmpty())) {
+			Long[] groupIds = _getDepotGroupIds(group.getCompanyId());
 
-				_updateRecycleBinLayout(cmsRelatedGroup, false);
+			if (groupIds.length > 0) {
+				_updateRecycleBinLayout(siteGroup, false);
 			}
-
-			if ((groupIds.length == 0) &&
-				Objects.equals(
-					group.getTypeSettingsProperties(
-					).getProperty(
-						"trashEnabled"
-					),
-					Boolean.FALSE.toString()) &&
-				!group.getTypeSettingsProperties(
-				).getProperty(
-					"trashEnabled"
-				).isEmpty()) {
-
-				_updateRecycleBinLayout(cmsRelatedGroup, true);
+			else {
+				_updateRecycleBinLayout(siteGroup, true);
 			}
 		}
 	}
@@ -321,5 +293,8 @@ public class GroupModelListener extends BaseModelListener<Group> {
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private TrashHelper _trashHelper;
 
 }
