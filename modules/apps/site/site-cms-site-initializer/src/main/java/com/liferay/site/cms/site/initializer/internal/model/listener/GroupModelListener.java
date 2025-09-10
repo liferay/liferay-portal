@@ -260,6 +260,10 @@ public class GroupModelListener extends BaseModelListener<Group> {
 		Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
 			group.getGroupId(), false, "/recycle-bin");
 
+		if (layout.isHidden() == hidden) {
+			return;
+		}
+
 		layout.setHidden(hidden);
 
 		_layoutLocalService.updateLayout(layout);
