@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
@@ -17,7 +18,6 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 import com.liferay.trash.TrashHelper;
 
@@ -182,7 +181,7 @@ public class ViewRecycleBinSectionDisplayContext
 		Long[] groupIds;
 
 		try {
-			groupIds = _getDepotGroupIds();
+			groupIds = _getDepotGroupIds(_themeDisplay.getCompanyId());
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -202,22 +201,13 @@ public class ViewRecycleBinSectionDisplayContext
 			_getGroupIdsAnyClause(groupIds);
 	}
 
-	private Long[] _getDepotGroupIds() throws Exception {
-		AssetLibraryResource.Builder builder =
-			_assetLibraryResourceFactory.create();
-
-		AssetLibraryResource assetLibraryResource = builder.user(
-			_themeDisplay.getUser()
-		).build();
-
+	private Long[] _getDepotGroupIds(long companyId) throws Exception {
 		return TransformUtil.transformToArray(
-			assetLibraryResource.getAssetLibrariesPage(
-				null, null, assetLibraryResource.toFilter("type eq 'Space'"),
-				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null
-			).getItems(),
-			assetLibrary -> {
+			depotEntryLocalService.getDepotEntries(
+				companyId, DepotConstants.TYPE_SPACE),
+			depotEntry -> {
 				Group group = groupLocalService.fetchGroup(
-					assetLibrary.getSiteId());
+					depotEntry.getGroupId());
 
 				if ((group == null) || !_trashHelper.isTrashEnabled(group)) {
 					return null;

@@ -238,7 +238,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		return assetLibrary;
 	}
 
-	protected AssetLibrary randomAssetLibraryWithRecycleBinEnabled()
+	protected AssetLibrary randomAssetLibraryWithTrashEnabled()
 		throws Exception {
 
 		AssetLibrary assetLibrary = super.randomAssetLibrary();
