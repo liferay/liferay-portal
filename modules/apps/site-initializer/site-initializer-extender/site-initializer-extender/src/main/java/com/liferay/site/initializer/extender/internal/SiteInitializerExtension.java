@@ -17,6 +17,7 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.document.library.util.DLURLHelper;
@@ -127,6 +128,7 @@ public class SiteInitializerExtension {
 		DDMTemplateLocalService ddmTemplateLocalService,
 		DefaultDDMStructureHelper defaultDDMStructureHelper,
 		DependencyManager dependencyManager,
+		DepotEntryGroupRelLocalService depotEntryGroupRelLocalService,
 		DepotEntryLocalService depotEntryLocalService,
 		DLFileEntryTypeLocalService dlFileEntryTypeLocalService,
 		DLURLHelper dlURLHelper,
@@ -211,8 +213,8 @@ public class SiteInitializerExtension {
 			clientExtensionEntryLocalService, companyLocalService,
 			configurationProvider, dataDefinitionResourceFactory,
 			ddmStructureLocalService, ddmTemplateLocalService,
-			defaultDDMStructureHelper, depotEntryLocalService,
-			dlFileEntryTypeLocalService, dlURLHelper,
+			defaultDDMStructureHelper, depotEntryGroupRelLocalService,
+			depotEntryLocalService, dlFileEntryTypeLocalService, dlURLHelper,
 			documentFolderResourceFactory, documentResourceFactory,
 			expandoValueLocalService, fragmentEntryLinkLocalService,
 			fragmentsImporter, groupLocalService, journalArticleLocalService,
