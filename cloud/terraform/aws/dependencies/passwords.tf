@@ -7,8 +7,11 @@ resource "random_password" "opensearch_password" {
 	override_special="!#%&*()-_=+[]{}<>:?"
 	special=true
 }
-resource "random_password" "opensearch_username" {
+resource "random_string" "opensearch_username" {
 	length=16
+	lower=true
+	upper=false
+	number=false
 	special=false
 }
 resource "random_password" "postgres_password" {
@@ -16,7 +19,10 @@ resource "random_password" "postgres_password" {
 	override_special="!#%&*()-_=+[]{}<>:?"
 	special=true
 }
-resource "random_password" "postgres_username" {
+resource "random_string" "postgres_username" {
 	length=16
+	lower=true
+	upper=false
+	number=false
 	special=false
 }

@@ -19,7 +19,7 @@ module "postgres_blue" {
 		"Active"=tostring(local.is_active_data_blue)
 	}
 	source="../modules/db-instance"
-	username=random_password.postgres_username.result
+	username=random_string.postgres_username.result
 	vpc_security_group_ids=[aws_security_group.rds.id]
 }
 module "postgres_green" {
@@ -32,7 +32,7 @@ module "postgres_green" {
 		"Active"=tostring(local.is_active_data_green)
 	}
 	source="../modules/db-instance"
-	username=random_password.postgres_username.result
+	username=random_string.postgres_username.result
 	vpc_security_group_ids=[aws_security_group.rds.id]
 }
 module "s3_bucket_blue" {
@@ -126,7 +126,7 @@ POLICY
 		enabled=true
 		internal_user_database_enabled=true
 		master_user_options {
-			master_user_name=random_password.opensearch_username.result
+			master_user_name=random_string.opensearch_username.result
 			master_user_password=random_password.opensearch_password.result
 		}
 	}
@@ -201,10 +201,10 @@ resource "kubernetes_secret" "managed_service_details" {
 		"DATABASE_ENDPOINT"=local.db_active.address
 		"DATABASE_PASSWORD"=random_password.postgres_password.result
 		"DATABASE_PORT"=local.db_active.port
-		"DATABASE_USERNAME"=random_password.postgres_username.result
+		"DATABASE_USERNAME"=random_string.postgres_username.result
 		"OPENSEARCH_ENDPOINT"=aws_opensearch_domain.os.endpoint
 		"OPENSEARCH_PASSWORD"=random_password.opensearch_password.result
-		"OPENSEARCH_USERNAME"=random_password.opensearch_username.result
+		"OPENSEARCH_USERNAME"=random_string.opensearch_username.result
 		"S3_BUCKET_ID"=local.bucket_active.s3_bucket_id
 		"S3_BUCKET_REGION"=var.region
 	}
