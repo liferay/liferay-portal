@@ -2709,8 +2709,8 @@ public class ObjectDefinitionLocalServiceTest {
 						LocaleUtil.BRAZIL, RandomTestUtil.randomString()
 					).build(),
 					objectDefinition.getScope(), objectDefinition.getStatus(),
-					Collections.emptyList(), ions.emptyList(),
- Collections.emptyList());
+					Collections.emptyList(), Collections.emptyList(),
+					Collections.emptyList());
 
 			Assert.assertEquals(
 				objectField.getObjectFieldId(),
@@ -3861,41 +3861,6 @@ public class ObjectDefinitionLocalServiceTest {
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition2);
 		}
-	}
-
-	private void _testUpdateRootDescendantObjectDefinition(
-			ObjectDefinition objectDefinition, String panelCategoryKey)
-		throws Exception {
-
-		objectDefinition = _objectDefinitionLocalService.fetchObjectDefinition(
-			objectDefinition.getObjectDefinitionId());
-
-		_objectDefinitionLocalService.updateCustomObjectDefinition(
-			objectDefinition.getExternalReferenceCode(),
-			objectDefinition.getObjectDefinitionId(),
-			objectDefinition.getAccountEntryRestrictedObjectFieldId(),
-			objectDefinition.getDescriptionObjectFieldId(),
-			objectDefinition.getObjectFolderId(),
-			objectDefinition.getTitleObjectFieldId(),
-			objectDefinition.isAccountEntryRestricted(),
-			objectDefinition.isActive(), objectDefinition.getClassName(),
-			objectDefinition.isEnableCategorization(),
-			objectDefinition.isEnableComments(),
-			objectDefinition.isEnableFriendlyURLCustomization(),
-			objectDefinition.isEnableIndexSearch(),
-			objectDefinition.isEnableLocalization(),
-			objectDefinition.isEnableObjectEntryDraft(),
-			objectDefinition.isEnableObjectEntryHistory(),
-			objectDefinition.isEnableObjectEntrySchedule(),
-			objectDefinition.isEnableObjectEntrySubscription(),
-			objectDefinition.isEnableObjectEntryVersioning(),
-			objectDefinition.getFriendlyURLSeparator(),
-			objectDefinition.getLabelMap(), objectDefinition.getName(),
-			objectDefinition.getPanelAppOrder(), panelCategoryKey,
-			objectDefinition.isPortlet(), objectDefinition.getPluralLabelMap(),
-			objectDefinition.getScope(), objectDefinition.getStatus(),
-			Collections.emptyList(), Collections.emptyList(),
-			Collections.emptyList());
 	}
 
 	private ObjectDefinition _updateCustomObjectDefinition(
