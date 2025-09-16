@@ -359,7 +359,11 @@ public class ObjectDefinitionResourceTest
 					objectDefinitionsJSONObject.getString("items"))));
 	}
 
-	@FeatureFlag(value = "LPD-17564")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(value = "LPD-17564"), @FeatureFlag(value = "LPD-51345")
+		}
+	)
 	@Override
 	@Test
 	@TestInfo("LPD-49994")
@@ -1465,6 +1469,7 @@ public class ObjectDefinitionResourceTest
 			postObjectDefinition.getId());
 	}
 
+	@FeatureFlag("LPD-51345")
 	@Override
 	@Test
 	public void testPutObjectDefinitionByExternalReferenceCode()
