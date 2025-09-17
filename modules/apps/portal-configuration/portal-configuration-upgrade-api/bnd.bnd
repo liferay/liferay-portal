@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Configuration Upgrade API
 Bundle-SymbolicName: com.liferay.portal.configuration.upgrade.api
-Bundle-Version: 4.0.8
+Bundle-Version: 5.0.0
 Export-Package: com.liferay.portal.configuration.upgrade
