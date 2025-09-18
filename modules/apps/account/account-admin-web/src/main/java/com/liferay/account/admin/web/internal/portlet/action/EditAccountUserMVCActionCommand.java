@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -84,29 +85,45 @@ public class EditAccountUserMVCActionCommand
 
 		accountUserContact.setPrefixListTypeId(
 			_getListTypeId(
-				accountUser.getCompanyId(), actionRequest,
-				"prefixListTypeValue", ListTypeConstants.CONTACT_PREFIX));
+				accountUser, actionRequest, "prefixListTypeValue",
+				ListTypeConstants.CONTACT_PREFIX));
 		accountUserContact.setSuffixListTypeId(
 			_getListTypeId(
-				accountUser.getCompanyId(), actionRequest,
-				"suffixListTypeValue", ListTypeConstants.CONTACT_SUFFIX));
+				accountUser, actionRequest, "suffixListTypeValue",
+				ListTypeConstants.CONTACT_SUFFIX));
 
 		_contactLocalService.updateContact(accountUserContact);
 	}
 
 	private long _getListTypeId(
-		long companyId, PortletRequest portletRequest, String parameterName,
-		String type) {
+			User accountUser, PortletRequest portletRequest,
+			String parameterName, String type)
+		throws Exception {
 
 		String parameterValue = ParamUtil.getString(
 			portletRequest, parameterName);
 
 		if (Validator.isNull(parameterValue)) {
+			User currentUser = _portal.getUser(portletRequest);
+
+			if (!UsersAdminUtil.hasUpdateFieldPermission(
+					_permissionCheckerFactory.create(currentUser), currentUser,
+					accountUser, parameterName)) {
+
+				Contact contact = accountUser.getContact();
+
+				if (parameterName.equals("prefixListTypeValue")) {
+					return contact.getPrefixListTypeId();
+				}
+
+				return contact.getSuffixListTypeId();
+			}
+
 			return 0;
 		}
 
 		ListType listType = _listTypeLocalService.addListType(
-			companyId, parameterValue, type);
+			user.getCompanyId(), parameterValue, type);
 
 		return listType.getListTypeId();
 	}
