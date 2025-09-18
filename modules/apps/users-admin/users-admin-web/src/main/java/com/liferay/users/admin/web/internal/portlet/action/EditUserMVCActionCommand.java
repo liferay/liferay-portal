@@ -611,8 +611,7 @@ public class EditUserMVCActionCommand
 
 		if (Validator.isNull(parameterValue)) {
 			User currentUser = _portal.getUser(portletRequest);
-			User selUser = _userLocalService.getUser(
-				ParamUtil.getLong(portletRequest, "userId"));
+			User selUser = _portal.getSelectedUser(portletRequest);
 
 			if (!UsersAdminUtil.hasUpdateFieldPermission(
 					_permissionCheckerFactory.create(currentUser), currentUser,

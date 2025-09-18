@@ -123,7 +123,7 @@ public class EditAccountUserMVCActionCommand
 		}
 
 		ListType listType = _listTypeLocalService.addListType(
-			user.getCompanyId(), parameterValue, type);
+			accountUser.getCompanyId(), parameterValue, type);
 
 		return listType.getListTypeId();
 	}
