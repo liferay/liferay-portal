@@ -8,9 +8,12 @@ package com.liferay.users.admin.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.ListType;
+import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.portlet.LiferayActionRequest;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -38,6 +42,9 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
@@ -45,7 +52,9 @@ import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.ActionRequestFactory;
+import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
 import jakarta.portlet.ActionRequest;
@@ -56,7 +65,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -76,14 +87,36 @@ public class EditUserMVCActionCommandTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Test
-	public void testProcessAction() throws Exception {
-		String originalName = PrincipalThreadLocal.getName();
-
-		PermissionChecker originalPermissionChecker =
+	@Before
+	public void setUp() {
+		_originalName = PrincipalThreadLocal.getName();
+		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+	}
+
+	@After
+	public void tearDown() {
+		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
+		PrincipalThreadLocal.setName(_originalName);
+	}
+
+	@Test
+	public void testEditUserWithPrefixAndSuffixFields() throws Exception {
+		String[] fieldEditableUserTypes = PropsValues.FIELD_EDITABLE_USER_TYPES;
 
 		try {
+			PropsUtil.set(
+				PropsKeys.FIELD_EDITABLE_USER_TYPES, StringPool.BLANK);
+			PropsUtil.set(
+				PropsKeys.FIELD_EDITABLE_DOMAINS + "[firstName]",
+				StringPool.STAR);
+			PropsUtil.set(
+				PropsKeys.FIELD_EDITABLE_DOMAINS + "[prefix]",
+				StringPool.BLANK);
+			PropsUtil.set(
+				PropsKeys.FIELD_EDITABLE_DOMAINS + "[suffix]",
+				StringPool.BLANK);
+
 			PrincipalThreadLocal.setName(TestPropsValues.getUserId());
 
 			PermissionChecker adminPermissionChecker =
@@ -91,64 +124,130 @@ public class EditUserMVCActionCommandTest {
 
 			PermissionThreadLocal.setPermissionChecker(adminPermissionChecker);
 
-			_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
-				null, TestPropsValues.getUserId(),
-				TestPropsValues.getCompanyId(),
-				GroupConstants.DEFAULT_LIVE_GROUP_ID, User.class.getName(), 0,
-				0, "Single Approver", 1);
+			Assert.assertTrue(
+				UsersAdminUtil.hasUpdateFieldPermission(
+					adminPermissionChecker, TestPropsValues.getUser(),
+					TestPropsValues.getUser(), "suffixListTypeId"));
 
-			User user = _userLocalService.addUserWithWorkflow(
+			ListType prefixListType = _listTypeLocalService.getListType(
+				TestPropsValues.getCompanyId(), "dr",
+				ListTypeConstants.CONTACT_PREFIX);
+			ListType suffixListType = _listTypeLocalService.getListType(
+				TestPropsValues.getCompanyId(), "ii",
+				ListTypeConstants.CONTACT_SUFFIX);
+
+			User user = _userLocalService.addUser(
 				0, TestPropsValues.getCompanyId(), false, "test", "test", false,
 				RandomTestUtil.randomString(),
-				RandomTestUtil.randomString() + "@liferay.com", LocaleUtil.US,
+				RandomTestUtil.randomString() + "@example.com", LocaleUtil.US,
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), 0, 0, true, 1, 1, 1970,
+				RandomTestUtil.randomString(), prefixListType.getListTypeId(),
+				suffixListType.getListTypeId(), true, 1, 1, 1970,
 				StringPool.BLANK, UserConstants.TYPE_REGULAR, null, null, null,
 				null, true,
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getCompanyId(),
 					TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_PENDING, user.getStatus());
+			PrincipalThreadLocal.setName(user.getUserId());
+
+			PermissionChecker userPermissionChecker =
+				PermissionCheckerFactoryUtil.create(user);
+
+			PermissionThreadLocal.setPermissionChecker(userPermissionChecker);
+
+			Assert.assertFalse(
+				UsersAdminUtil.hasUpdateFieldPermission(
+					userPermissionChecker, user, user, "suffixListTypeId"));
+
+			String firstName = RandomTestUtil.randomString();
 
 			_processAction(
 				"/users_admin/edit_user",
 				HashMapBuilder.put(
-					Constants.CMD, Constants.RESTORE
+					Constants.CMD, Constants.UPDATE
 				).put(
-					"deleteUserIds", String.valueOf(user.getUserId())
+					"firstName", firstName
+				).put(
+					"p_u_i_d", String.valueOf(user.getUserId())
 				).build(),
-				adminPermissionChecker);
-
-			List<WorkflowTask> workflowTasks =
-				_workflowTaskManager.getWorkflowTasksByWorkflowInstance(
-					TestPropsValues.getCompanyId(), null,
-					_workflowInstanceLinkLocalService.fetchWorkflowInstanceLink(
-						TestPropsValues.getCompanyId(),
-						WorkflowConstants.DEFAULT_GROUP_ID,
-						User.class.getName(), user.getUserId()
-					).getWorkflowInstanceId(),
-					null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			Assert.assertEquals(
-				workflowTasks.toString(), 1, workflowTasks.size());
-
-			WorkflowTask workflowTask = workflowTasks.get(0);
-
-			Assert.assertTrue(workflowTask.isCompleted());
+				userPermissionChecker, user.getUserId());
 
 			user = _userLocalService.getUser(user.getUserId());
 
+			Assert.assertEquals(user.getFirstName(), firstName);
+
+			Contact contact = user.getContact();
+
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_APPROVED, user.getStatus());
+				prefixListType.getListTypeId(), contact.getPrefixListTypeId());
+			Assert.assertEquals(
+				suffixListType.getListTypeId(), contact.getSuffixListTypeId());
 		}
 		finally {
-			PrincipalThreadLocal.setName(originalName);
-
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
+			PropsUtil.set(
+				PropsKeys.FIELD_EDITABLE_USER_TYPES,
+				StringUtil.merge(fieldEditableUserTypes, StringPool.COMMA));
 		}
+	}
+
+	@Test
+	public void testProcessAction() throws Exception {
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		PermissionChecker adminPermissionChecker =
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser());
+
+		PermissionThreadLocal.setPermissionChecker(adminPermissionChecker);
+
+		_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
+			null, TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, User.class.getName(), 0, 0,
+			"Single Approver", 1);
+
+		User user = _userLocalService.addUserWithWorkflow(
+			0, TestPropsValues.getCompanyId(), false, "test", "test", false,
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com", LocaleUtil.US,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), 0, 0, true, 1, 1, 1970,
+			StringPool.BLANK, UserConstants.TYPE_REGULAR, null, null, null,
+			null, true,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				TestPropsValues.getUserId()));
+
+		Assert.assertEquals(WorkflowConstants.STATUS_PENDING, user.getStatus());
+
+		_processAction(
+			"/users_admin/edit_user",
+			HashMapBuilder.put(
+				Constants.CMD, Constants.RESTORE
+			).put(
+				"deleteUserIds", String.valueOf(user.getUserId())
+			).build(),
+			adminPermissionChecker, TestPropsValues.getUserId());
+
+		List<WorkflowTask> workflowTasks =
+			_workflowTaskManager.getWorkflowTasksByWorkflowInstance(
+				TestPropsValues.getCompanyId(), null,
+				_workflowInstanceLinkLocalService.fetchWorkflowInstanceLink(
+					TestPropsValues.getCompanyId(),
+					WorkflowConstants.DEFAULT_GROUP_ID, User.class.getName(),
+					user.getUserId()
+				).getWorkflowInstanceId(),
+				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(workflowTasks.toString(), 1, workflowTasks.size());
+
+		WorkflowTask workflowTask = workflowTasks.get(0);
+
+		Assert.assertTrue(workflowTask.isCompleted());
+
+		user = _userLocalService.getUser(user.getUserId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, user.getStatus());
 	}
 
 	private ThemeDisplay _getThemeDisplay(PermissionChecker permissionChecker)
@@ -177,7 +276,7 @@ public class EditUserMVCActionCommandTest {
 
 	private void _processAction(
 			String actionName, Map<String, String> params,
-			PermissionChecker permissionChecker)
+			PermissionChecker permissionChecker, long userId)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -198,8 +297,7 @@ public class EditUserMVCActionCommandTest {
 			WebKeys.PORTLET_ID, UsersAdminPortletKeys.USERS_ADMIN);
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(permissionChecker));
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.USER_ID, TestPropsValues.getUserId());
+		mockLiferayPortletActionRequest.setAttribute(WebKeys.USER_ID, userId);
 
 		LiferayActionRequest liferayActionRequest = ActionRequestFactory.create(
 			mockLiferayPortletActionRequest.getHttpServletRequest(),
@@ -230,8 +328,14 @@ public class EditUserMVCActionCommandTest {
 	@Inject
 	private LayoutLocalService _layoutLocalService;
 
+	@Inject
+	private ListTypeLocalService _listTypeLocalService;
+
 	@Inject(filter = "mvc.command.name=/users_admin/edit_user")
 	private MVCActionCommand _mvcActionCommand;
+
+	private String _originalName;
+	private PermissionChecker _originalPermissionChecker;
 
 	@Inject(
 		filter = "component.name=com.liferay.users.admin.web.internal.portlet.UsersAdminPortlet"
