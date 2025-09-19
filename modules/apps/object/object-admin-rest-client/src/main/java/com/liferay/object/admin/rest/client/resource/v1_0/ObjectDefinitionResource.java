@@ -84,18 +84,19 @@ public interface ObjectDefinitionResource {
 		throws Exception;
 
 	public ObjectDefinition postObjectDefinition(
-			ObjectDefinition objectDefinition)
+			Boolean accumulateError, ObjectDefinition objectDefinition)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postObjectDefinitionHttpResponse(
-			ObjectDefinition objectDefinition)
+			Boolean accumulateError, ObjectDefinition objectDefinition)
 		throws Exception;
 
-	public void postObjectDefinitionBatch(String callbackURL, Object object)
+	public void postObjectDefinitionBatch(
+			Boolean accumulateError, String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postObjectDefinitionBatchHttpResponse(
-			String callbackURL, Object object)
+			Boolean accumulateError, String callbackURL, Object object)
 		throws Exception;
 
 	public ObjectDefinition postObjectDefinitionPublish(Long objectDefinitionId)
@@ -132,12 +133,14 @@ public interface ObjectDefinitionResource {
 		throws Exception;
 
 	public ObjectDefinition putObjectDefinitionByExternalReferenceCode(
-			String externalReferenceCode, ObjectDefinition objectDefinition)
+			String externalReferenceCode, Boolean accumulateError,
+			ObjectDefinition objectDefinition)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			putObjectDefinitionByExternalReferenceCodeHttpResponse(
-				String externalReferenceCode, ObjectDefinition objectDefinition)
+				String externalReferenceCode, Boolean accumulateError,
+				ObjectDefinition objectDefinition)
 		throws Exception;
 
 	public static class Builder {
@@ -903,11 +906,12 @@ public interface ObjectDefinitionResource {
 		}
 
 		public ObjectDefinition postObjectDefinition(
-				ObjectDefinition objectDefinition)
+				Boolean accumulateError, ObjectDefinition objectDefinition)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postObjectDefinitionHttpResponse(objectDefinition);
+				postObjectDefinitionHttpResponse(
+					accumulateError, objectDefinition);
 
 			String content = httpResponse.getContent();
 
@@ -969,7 +973,7 @@ public interface ObjectDefinitionResource {
 		}
 
 		public HttpInvoker.HttpResponse postObjectDefinitionHttpResponse(
-				ObjectDefinition objectDefinition)
+				Boolean accumulateError, ObjectDefinition objectDefinition)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -995,6 +999,11 @@ public interface ObjectDefinitionResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
+			if (accumulateError != null) {
+				httpInvoker.parameter(
+					"accumulateError", String.valueOf(accumulateError));
+			}
+
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
@@ -1008,11 +1017,13 @@ public interface ObjectDefinitionResource {
 			return httpInvoker.invoke();
 		}
 
-		public void postObjectDefinitionBatch(String callbackURL, Object object)
+		public void postObjectDefinitionBatch(
+				Boolean accumulateError, String callbackURL, Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postObjectDefinitionBatchHttpResponse(callbackURL, object);
+				postObjectDefinitionBatchHttpResponse(
+					accumulateError, callbackURL, object);
 
 			String content = httpResponse.getContent();
 
@@ -1063,7 +1074,7 @@ public interface ObjectDefinitionResource {
 		}
 
 		public HttpInvoker.HttpResponse postObjectDefinitionBatchHttpResponse(
-				String callbackURL, Object object)
+				Boolean accumulateError, String callbackURL, Object object)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1088,6 +1099,11 @@ public interface ObjectDefinitionResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (accumulateError != null) {
+				httpInvoker.parameter(
+					"accumulateError", String.valueOf(accumulateError));
+			}
 
 			if (callbackURL != null) {
 				httpInvoker.parameter(
@@ -1550,12 +1566,13 @@ public interface ObjectDefinitionResource {
 		}
 
 		public ObjectDefinition putObjectDefinitionByExternalReferenceCode(
-				String externalReferenceCode, ObjectDefinition objectDefinition)
+				String externalReferenceCode, Boolean accumulateError,
+				ObjectDefinition objectDefinition)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				putObjectDefinitionByExternalReferenceCodeHttpResponse(
-					externalReferenceCode, objectDefinition);
+					externalReferenceCode, accumulateError, objectDefinition);
 
 			String content = httpResponse.getContent();
 
@@ -1618,7 +1635,7 @@ public interface ObjectDefinitionResource {
 
 		public HttpInvoker.HttpResponse
 				putObjectDefinitionByExternalReferenceCodeHttpResponse(
-					String externalReferenceCode,
+					String externalReferenceCode, Boolean accumulateError,
 					ObjectDefinition objectDefinition)
 			throws Exception {
 
@@ -1644,6 +1661,11 @@ public interface ObjectDefinitionResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.PUT);
+
+			if (accumulateError != null) {
+				httpInvoker.parameter(
+					"accumulateError", String.valueOf(accumulateError));
+			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +

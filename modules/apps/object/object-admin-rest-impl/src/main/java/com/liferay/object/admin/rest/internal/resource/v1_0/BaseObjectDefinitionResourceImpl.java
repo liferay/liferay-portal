@@ -462,6 +462,14 @@ public abstract class BaseObjectDefinitionResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/object-admin/v1.0/object-definitions' -d $'{"accountEntryRestricted": ___, "accountEntryRestrictedObjectFieldName": ___, "active": ___, "className": ___, "defaultLanguageId": ___, "enableCategorization": ___, "enableComments": ___, "enableFormContainer": ___, "enableFriendlyURLCustomization": ___, "enableIndexSearch": ___, "enableLocalization": ___, "enableObjectEntryDraft": ___, "enableObjectEntryHistory": ___, "enableObjectEntrySchedule": ___, "enableObjectEntrySubscription": ___, "enableObjectEntryVersioning": ___, "externalReferenceCode": ___, "friendlyURLSeparator": ___, "label": ___, "modifiable": ___, "name": ___, "objectActions": ___, "objectDefinitionSettings": ___, "objectFields": ___, "objectFolderExternalReferenceCode": ___, "objectLayouts": ___, "objectRelationships": ___, "objectValidationRules": ___, "objectViews": ___, "panelAppOrder": ___, "panelCategoryKey": ___, "pluralLabel": ___, "portlet": ___, "scope": ___, "status": ___, "storageType": ___, "system": ___, "titleObjectFieldName": ___, "workflowDefinitionLinks": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "accumulateError"
+			)
+		}
+	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "ObjectDefinition")
@@ -473,6 +481,10 @@ public abstract class BaseObjectDefinitionResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public ObjectDefinition postObjectDefinition(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.DefaultValue("false")
+			@jakarta.ws.rs.QueryParam("accumulateError")
+			Boolean accumulateError,
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -486,6 +498,10 @@ public abstract class BaseObjectDefinitionResourceImpl
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "accumulateError"
+			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "callbackURL"
@@ -503,6 +519,10 @@ public abstract class BaseObjectDefinitionResourceImpl
 	@jakarta.ws.rs.Produces("application/json")
 	@Override
 	public Response postObjectDefinitionBatch(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.DefaultValue("false")
+			@jakarta.ws.rs.QueryParam("accumulateError")
+			Boolean accumulateError,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("callbackURL")
 			String callbackURL,
@@ -729,6 +749,10 @@ public abstract class BaseObjectDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "accumulateError"
 			)
 		}
 	)
@@ -749,6 +773,10 @@ public abstract class BaseObjectDefinitionResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("externalReferenceCode")
 			String externalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.DefaultValue("false")
+			@jakarta.ws.rs.QueryParam("accumulateError")
+			Boolean accumulateError,
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -770,7 +798,9 @@ public abstract class BaseObjectDefinitionResourceImpl
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
 			objectDefinitionUnsafeFunction =
-				objectDefinition -> postObjectDefinition(objectDefinition);
+				objectDefinition -> postObjectDefinition(
+					_parseBoolean((String)parameters.get("accumulateError")),
+					objectDefinition);
 		}
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
@@ -792,6 +822,8 @@ public abstract class BaseObjectDefinitionResourceImpl
 					}
 					catch (NoSuchModelException noSuchModelException) {
 						persistedObjectDefinition = postObjectDefinition(
+							_parseBoolean(
+								(String)parameters.get("accumulateError")),
 							objectDefinition);
 					}
 
@@ -806,6 +838,8 @@ public abstract class BaseObjectDefinitionResourceImpl
 					persistedObjectDefinition =
 						putObjectDefinitionByExternalReferenceCode(
 							objectDefinition.getExternalReferenceCode(),
+							_parseBoolean(
+								(String)parameters.get("accumulateError")),
 							objectDefinition);
 
 					return persistedObjectDefinition;
@@ -963,6 +997,14 @@ public abstract class BaseObjectDefinitionResourceImpl
 				objectDefinitionUnsafeFunction.apply(objectDefinition);
 			}
 		}
+	}
+
+	private Boolean _parseBoolean(String value) {
+		if (value != null) {
+			return Boolean.parseBoolean(value);
+		}
+
+		return Boolean.FALSE;
 	}
 
 	@Override

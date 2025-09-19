@@ -1428,6 +1428,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 		ObjectDefinition putObjectDefinition =
 			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
 				postObjectDefinition.getExternalReferenceCode(),
+				testPutObjectDefinitionByExternalReferenceCode_getAccumulateError(),
 				randomObjectDefinition);
 
 		assertEquals(randomObjectDefinition, putObjectDefinition);
@@ -1446,6 +1447,7 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 		putObjectDefinition =
 			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
 				newObjectDefinition.getExternalReferenceCode(),
+				testPutObjectDefinitionByExternalReferenceCode_getAccumulateError(),
 				newObjectDefinition);
 
 		assertEquals(newObjectDefinition, putObjectDefinition);
@@ -1464,6 +1466,14 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 
 	protected ObjectDefinition
 			testPutObjectDefinitionByExternalReferenceCode_addObjectDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Boolean
+			testPutObjectDefinitionByExternalReferenceCode_getAccumulateError()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
