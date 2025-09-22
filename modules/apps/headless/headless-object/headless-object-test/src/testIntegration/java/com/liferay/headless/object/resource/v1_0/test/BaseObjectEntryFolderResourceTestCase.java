@@ -231,6 +231,7 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 		objectEntryFolder.setLabel(regex);
 		objectEntryFolder.setParentObjectEntryFolderExternalReferenceCode(
 			regex);
+		objectEntryFolder.setScopeExternalReferenceCode(regex);
 		objectEntryFolder.setScopeKey(regex);
 		objectEntryFolder.setTitle(regex);
 
@@ -248,6 +249,8 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 			regex,
 			objectEntryFolder.
 				getParentObjectEntryFolderExternalReferenceCode());
+		Assert.assertEquals(
+			regex, objectEntryFolder.getScopeExternalReferenceCode());
 		Assert.assertEquals(regex, objectEntryFolder.getScopeKey());
 		Assert.assertEquals(regex, objectEntryFolder.getTitle());
 	}
@@ -2121,6 +2124,24 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"scopeExternalReferenceCode", additionalAssertFieldName)) {
+
+				if (objectEntryFolder.getScopeExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("scopeId", additionalAssertFieldName)) {
+				if (objectEntryFolder.getScopeId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("scopeKey", additionalAssertFieldName)) {
 				if (objectEntryFolder.getScopeKey() == null) {
 					valid = false;
@@ -2462,6 +2483,30 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 				if (!Objects.deepEquals(
 						objectEntryFolder1.getRemovedDate(),
 						objectEntryFolder2.getRemovedDate())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"scopeExternalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						objectEntryFolder1.getScopeExternalReferenceCode(),
+						objectEntryFolder2.getScopeExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("scopeId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						objectEntryFolder1.getScopeId(),
+						objectEntryFolder2.getScopeId())) {
 
 					return false;
 				}
@@ -2940,6 +2985,57 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("scopeExternalReferenceCode")) {
+			Object object = objectEntryFolder.getScopeExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("scopeId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("scopeKey")) {
 			Object object = objectEntryFolder.getScopeKey();
 
@@ -3096,6 +3192,9 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 					StringUtil.toLowerCase(RandomTestUtil.randomString());
 				parentObjectEntryFolderId = RandomTestUtil.randomLong();
 				removedDate = RandomTestUtil.nextDate();
+				scopeExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				scopeId = RandomTestUtil.randomLong();
 				scopeKey = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				title = StringUtil.toLowerCase(RandomTestUtil.randomString());

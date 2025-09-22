@@ -834,6 +834,98 @@ public class ObjectEntryFolder implements Serializable {
 	private Supplier<Date> _removedDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The scope external reference code of the object entry folder."
+	)
+	public String getScopeExternalReferenceCode() {
+		if (_scopeExternalReferenceCodeSupplier != null) {
+			scopeExternalReferenceCode =
+				_scopeExternalReferenceCodeSupplier.get();
+
+			_scopeExternalReferenceCodeSupplier = null;
+		}
+
+		return scopeExternalReferenceCode;
+	}
+
+	public void setScopeExternalReferenceCode(
+		String scopeExternalReferenceCode) {
+
+		this.scopeExternalReferenceCode = scopeExternalReferenceCode;
+
+		_scopeExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScopeExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			scopeExternalReferenceCodeUnsafeSupplier) {
+
+		_scopeExternalReferenceCodeSupplier = () -> {
+			try {
+				return scopeExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The scope external reference code of the object entry folder."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String scopeExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _scopeExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The scope id of the object entry folder."
+	)
+	public Long getScopeId() {
+		if (_scopeIdSupplier != null) {
+			scopeId = _scopeIdSupplier.get();
+
+			_scopeIdSupplier = null;
+		}
+
+		return scopeId;
+	}
+
+	public void setScopeId(Long scopeId) {
+		this.scopeId = scopeId;
+
+		_scopeIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScopeId(
+		UnsafeSupplier<Long, Exception> scopeIdUnsafeSupplier) {
+
+		_scopeIdSupplier = () -> {
+			try {
+				return scopeIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The scope id of the object entry folder.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long scopeId;
+
+	@JsonIgnore
+	private Supplier<Long> _scopeIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The scope key of the object entry folder."
 	)
 	public String getScopeKey() {
@@ -1251,6 +1343,34 @@ public class ObjectEntryFolder implements Serializable {
 			sb.append(liferayToJSONDateFormat.format(removedDate));
 
 			sb.append("\"");
+		}
+
+		String scopeExternalReferenceCode = getScopeExternalReferenceCode();
+
+		if (scopeExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scopeExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(scopeExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		Long scopeId = getScopeId();
+
+		if (scopeId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scopeId\": ");
+
+			sb.append(scopeId);
 		}
 
 		String scopeKey = getScopeKey();
