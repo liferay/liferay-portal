@@ -156,6 +156,19 @@ components:
                     format: date
                     readOnly: true
                     type: string
+                scopeExternalReferenceCode:
+                    # @review
+                    description:
+                        The scope external reference code of the object entry folder.
+                    readOnly: true
+                    type: string
+                scopeId:
+                    # @review
+                    description:
+                        The scope id of the object entry folder.
+                    format: int64
+                    readOnly: true
+                    type: integer
                 scopeKey:
                     # @review
                     description:
