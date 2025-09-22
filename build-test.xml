@@ -15323,14 +15323,14 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 
 		<get-test-app-server-lib-portal-dir />
 
-		<if>
+		<!-- <if>
 			<not>
 				<contains string="${portal.version}" substring="u" />
 			</not>
 			<then>
 				<delete dir="${liferay.home}/data/elasticsearch7" />
 			</then>
-		</if>
+		</if> -->
 
 		<if>
 			<contains string="${portal.version}" substring="6.2" />

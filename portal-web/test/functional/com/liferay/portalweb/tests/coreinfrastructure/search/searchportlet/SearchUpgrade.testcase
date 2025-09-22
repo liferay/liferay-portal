@@ -243,7 +243,6 @@ definition {
 	@priority = 5
 	test ViewResultRankingsEntryArchive7310 {
 		property data.archive.type = "data-archive-search-result-rankings";
-		property portal.acceptance = "quarantine";
 		property portal.version = "7.3.10";
 		property test.run.environment = "EE";
 
@@ -679,7 +678,6 @@ definition {
 	@priority = 5
 	test ViewSynonymsEntryArchive7310 {
 		property data.archive.type = "data-archive-search-synonyms";
-		property portal.acceptance = "quarantine";
 		property portal.version = "7.3.10";
 		property test.run.environment = "EE";
 
