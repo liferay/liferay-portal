@@ -506,12 +506,6 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 				throw new ValidationException();
 			}
 
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.
-					getObjectDefinitionByExternalReferenceCode(
-						"L_CMS_DEFAULT_PERMISSION",
-						contextCompany.getCompanyId());
-
 			String filterString = StringBundler.concat(
 				"(className eq '", ObjectEntryFolder.class.getName(),
 				"') and ");
@@ -525,48 +519,30 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 					filterString, "(startswith(treePath, '", treePath, "'))");
 			}
 
-			Predicate predicate = _filterFactory.create(
-				filterString, objectDefinition);
-
-			List<Long> primaryKeys = _objectEntryLocalService.getPrimaryKeys(
-				new Long[0], contextCompany.getCompanyId(),
-				contextUser.getUserId(),
-				objectDefinition.getObjectDefinitionId(), predicate, null,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			if (ListUtil.isEmpty(primaryKeys)) {
-				return bulkActionItemsMap;
-			}
-
-			for (long primaryKey : primaryKeys) {
-				bulkActionItemsMap.computeIfAbsent(
-					objectDefinition.getClassName(),
-					className -> new ArrayList<>()
-				).add(
-					new BulkActionItem() {
-						{
-							setClassPK(() -> primaryKey);
-						}
-					}
-				);
-			}
-
-			return bulkActionItemsMap;
+			return _populateDefaultPermissionBulkActionItemsMap(
+				bulkActionItemsMap, filterString);
 		}
 
 		if (ArrayUtil.isEmpty(bulkActionItems)) {
 			return bulkActionItemsMap;
 		}
 
-		for (BulkActionItem bulkActionItem : bulkActionItems) {
-			bulkActionItemsMap.computeIfAbsent(
-				bulkActionItem.getClassName(), className -> new ArrayList<>()
-			).add(
-				bulkActionItem
-			);
-		}
+		BulkActionItem bulkActionItem = bulkActionItems[0];
 
-		return bulkActionItemsMap;
+		String filterString = StringBundler.concat(
+			"(className eq '", bulkActionItem.getClassName(), "') and (",
+			StringUtil.merge(
+				transform(
+					bulkActionItems,
+					item ->
+						"(classExternalReferenceCode eq '" +
+							item.getClassExternalReferenceCode() + "')",
+					String.class),
+				" or "),
+			")");
+
+		return _populateDefaultPermissionBulkActionItemsMap(
+			bulkActionItemsMap, filterString);
 	}
 
 	private Map<String, List<BulkActionItem>> _getDeleteBulkActionItemsMap(
@@ -738,6 +714,44 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		}
 
 		return usagesCount;
+	}
+
+	private Map<String, List<BulkActionItem>>
+			_populateDefaultPermissionBulkActionItemsMap(
+				Map<String, List<BulkActionItem>> bulkActionItemsMap,
+				String filterString)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_DEFAULT_PERMISSION", contextCompany.getCompanyId());
+
+		Predicate predicate = _filterFactory.create(
+			filterString, objectDefinition);
+
+		List<Long> primaryKeys = _objectEntryLocalService.getPrimaryKeys(
+			new Long[0], contextCompany.getCompanyId(), contextUser.getUserId(),
+			objectDefinition.getObjectDefinitionId(), predicate, null,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		if (ListUtil.isEmpty(primaryKeys)) {
+			return bulkActionItemsMap;
+		}
+
+		for (long primaryKey : primaryKeys) {
+			bulkActionItemsMap.computeIfAbsent(
+				objectDefinition.getClassName(), className -> new ArrayList<>()
+			).add(
+				new BulkActionItem() {
+					{
+						setClassPK(() -> primaryKey);
+					}
+				}
+			);
+		}
+
+		return bulkActionItemsMap;
 	}
 
 	private BulkActionItem _toBulkActionItem(long classPK) {
