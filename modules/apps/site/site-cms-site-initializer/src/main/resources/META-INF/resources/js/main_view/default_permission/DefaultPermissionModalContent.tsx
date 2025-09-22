@@ -60,6 +60,7 @@ export default function DefaultPermissionModalContent({
 					return CMSDefaultPermissionService.batchUpdateObjectEntry({
 						defaultPermissions: JSON.stringify(currentValues),
 						depotGroupId: currentObjectEntry?.depotGroupId || 0,
+						selectAll: true,
 						treePath: currentObjectEntry?.treePath || '',
 					});
 				}

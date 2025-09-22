@@ -21,6 +21,14 @@ export interface AssetType {
 	label: string;
 }
 
+export interface BulkDefaultPermissionModalContentProps {
+	actions: ActionsMap;
+	className: string;
+	closeModal: () => void;
+	roles: Role[];
+	selectedData: any;
+}
+
 export interface CheckedRoleActions {
 	[key: string]: boolean;
 }
