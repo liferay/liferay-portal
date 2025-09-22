@@ -350,3 +350,87 @@ test(
 		}
 	}
 );
+
+test(
+	'Change space permissions in bulk',
+	{tag: '@LPD-62475'},
+	async ({defaultPermissionsPage, page}) => {
+		const getTableRowByText = async (text: string) => {
+			return page
+				.locator('table.table tbody tr', {hasText: text})
+				.first();
+		};
+
+		const checkPermission = async (folderName: string) => {
+			await expect(async () => {
+				await (await getTableRowByText(folderName))
+					.getByRole('button', {name: 'Actions'})
+					.click();
+				await page
+					.getByRole('menuitem', {
+						exact: true,
+						name: 'Default Permissions',
+					})
+					.click();
+			}).toPass();
+
+			await defaultPermissionsPage.verifyPermissionIsChecked(
+				'Power User',
+				'DELETE'
+			);
+
+			await defaultPermissionsPage.permissionsModalCancelButton.click();
+		};
+
+		await page.goto(PORTLET_URLS.cmsAllSpaces);
+
+		await page.getByTestId('fdsCreationActionButton').click();
+
+		const spaceName = 'Space' + getRandomInt();
+
+		await page.getByLabel('Space Name').fill(spaceName);
+		await page.getByRole('button', {name: 'Continue'}).click();
+		await page
+			.getByRole('button', {name: 'Continue Without Members'})
+			.click();
+
+		try {
+			await page.goto(PORTLET_URLS.cmsAllSpaces);
+
+			await page.locator('input[name="items-selector"]').check();
+
+			await expect(async () => {
+				await page
+					.locator(
+						'button[aria-label="Actions"][aria-haspopup="true"]'
+					)
+					.click();
+				await page
+					.getByRole('menuitem', {name: 'Default Permissions'})
+					.click();
+			}).toPass();
+
+			await defaultPermissionsPage.checkPermissionAndSave(
+				'Power User',
+				'DELETE'
+			);
+
+			await page.goto(PORTLET_URLS.cmsAllSpaces);
+
+			await checkPermission(spaceName);
+			await checkPermission('Default');
+		}
+		finally {
+			await page.goto(PORTLET_URLS.cmsAllSpaces);
+
+			await expect(async () => {
+				await (await getTableRowByText(spaceName))
+					.getByRole('button', {name: 'Actions'})
+					.click();
+				await page.getByRole('menuitem', {name: 'Delete'}).click();
+			}).toPass();
+
+			await page.getByRole('button', {name: 'Delete'}).click();
+		}
+	}
+);
