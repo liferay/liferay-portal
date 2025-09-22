@@ -63,6 +63,8 @@ public class ObjectEntryFolderDTOConverter
 		}
 
 		TrashEntry finalTrashEntry = trashEntry;
+		Group group = _groupLocalService.fetchGroup(
+			objectEntryFolder.getGroupId());
 
 		return new ObjectEntryFolder() {
 			{
@@ -145,17 +147,22 @@ public class ObjectEntryFolderDTOConverter
 
 						return null;
 					});
-				setScopeKey(
+				setScopeExternalReferenceCode(
 					() -> {
-						Group group = _groupLocalService.fetchGroup(
-							objectEntryFolder.getGroupId());
-
-						if (group == null) {
-							return String.valueOf(
-								objectEntryFolder.getGroupId());
+						if (group != null) {
+							return group.getExternalReferenceCode();
 						}
 
-						return group.getGroupKey();
+						return String.valueOf(objectEntryFolder.getGroupId());
+					});
+				setScopeId(objectEntryFolder::getGroupId);
+				setScopeKey(
+					() -> {
+						if (group != null) {
+							return group.getGroupKey();
+						}
+
+						return String.valueOf(objectEntryFolder.getGroupId());
 					});
 				setTitle(objectEntryFolder::getName);
 			}
