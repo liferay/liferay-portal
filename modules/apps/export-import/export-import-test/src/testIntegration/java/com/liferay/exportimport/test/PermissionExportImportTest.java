@@ -145,6 +145,11 @@ public class PermissionExportImportTest {
 		_testPortletGuestPermissionsExportImport(false);
 	}
 
+	@Test
+	public void testPortletGuestPermissionsPrivateLayoutExportImport() throws Exception {
+		_testPortletGuestPermissionsExportImport(true);
+	}
+
 	private void _testPortletGuestPermissionsExportImport(boolean privateLayout) throws Exception {
 
 		// Export
