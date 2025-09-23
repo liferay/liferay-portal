@@ -142,6 +142,10 @@ public class PermissionExportImportTest {
 
 	@Test
 	public void testPortletGuestPermissionsExportImport() throws Exception {
+		_testPortletGuestPermissionsExportImport(false);
+	}
+
+	private void _testPortletGuestPermissionsExportImport(boolean privateLayout) throws Exception {
 
 		// Export
 
@@ -151,7 +155,7 @@ public class PermissionExportImportTest {
 		Group exportGroup = exportLayoutSetPrototype.getGroup();
 
 		Layout exportLayout = LayoutTestUtil.addTypePortletLayout(
-			exportGroup, true);
+			exportGroup, privateLayout);
 
 		String exportResourcePrimKey = PortletPermissionUtil.getPrimaryKey(
 			exportLayout.getPlid(), _PORTLET_ID);
