@@ -37,9 +37,9 @@ export class OpenIdInstanceSettingsPage {
 		});
 		this.addButton = page.getByRole('link', {name: 'Add'});
 		this.providerNameField = page.getByLabel('Provider Name');
-		this.discoveryEndpointField = page.getByLabel('Discovery Endpoint', {
-			exact: true,
-		});
+		this.discoveryEndpointField = page.getByLabel(
+			'Discovery Endpoint Set the'
+		);
 		this.openIDConnectClientIDField = page.getByLabel(
 			'OpenID Connect Client ID'
 		);
