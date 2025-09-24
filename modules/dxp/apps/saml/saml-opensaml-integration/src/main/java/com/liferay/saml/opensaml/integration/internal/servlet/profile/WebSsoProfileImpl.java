@@ -2057,9 +2057,12 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			messageContext.getSubcontext(SAMLPeerEntityContext.class);
 
 		SAMLEndpointContext samlPeerEndpointContext =
-			samlPeerEntityContext.getSubcontext(SAMLEndpointContext.class);
+			samlPeerEntityContext.getSubcontext(
+				SAMLEndpointContext.class, true);
 
 		samlPeerEndpointContext.setEndpoint(assertionConsumerService);
+
+		samlPeerEntityContext.addSubcontext(samlPeerEndpointContext);
 
 		Credential credential = getSigningCredential();
 
@@ -2068,6 +2071,8 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 		MessageContext<Response> outboundMessageContext =
 			inOutOperationContext.getOutboundMessageContext();
+
+		outboundMessageContext.addSubcontext(samlPeerEntityContext);
 
 		SecurityParametersContext securityParametersContext =
 			outboundMessageContext.getSubcontext(
@@ -2082,6 +2087,7 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 		Response response = OpenSamlUtil.buildResponse();
 
+		response.setID(generateIdentifier(20));
 		response.setDestination(assertionConsumerService.getLocation());
 
 		MessageContext<?> inboundMessageContext =
@@ -2102,7 +2108,10 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 		response.setIssuer(
 			OpenSamlUtil.buildIssuer(samlSelfEntityContext.getEntityId()));
 
-		StatusCode statusCode = OpenSamlUtil.buildStatusCode(statusURI);
+		StatusCode statusCode = OpenSamlUtil.buildStatusCode(
+			StatusCode.RESPONDER);
+
+		statusCode.setStatusCode(OpenSamlUtil.buildStatusCode(statusURI));
 
 		response.setStatus(OpenSamlUtil.buildStatus(statusCode));
 
