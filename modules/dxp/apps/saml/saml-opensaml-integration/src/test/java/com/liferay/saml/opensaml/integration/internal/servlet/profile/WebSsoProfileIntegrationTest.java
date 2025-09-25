@@ -8,6 +8,8 @@ package com.liferay.saml.opensaml.integration.internal.servlet.profile;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.cookies.CookiesManager;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -171,6 +173,10 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			getMockPortletService(
 				SamlSpIdpConnectionLocalServiceUtil.class,
 				SamlSpIdpConnectionLocalService.class));
+		ReflectionTestUtil.setFieldValue(
+			_webSsoProfileImpl, "_userLocalService",
+			getMockPortletService(
+				UserLocalServiceUtil.class, UserLocalService.class));
 
 		_webSsoProfileImpl.activate(
 			SystemBundleUtil.getBundleContext(), new HashMap<String, Object>());
@@ -726,6 +732,37 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 				Assert.assertTrue(authnRequest.isForceAuthn());
 			},
 			samlSsoRequestContext);
+	}
+
+	@Test
+	public void testIsPassive() throws Exception {
+		SamlSpIdpConnection samlSpIdpConnection = new SamlSpIdpConnectionImpl();
+
+		samlSpIdpConnection.setForceAuthn(true);
+
+		samlSpIdpConnection.setSamlIdpEntityId(IDP_ENTITY_ID);
+
+		_setUpWebSsoProfilerImpl(samlSpIdpConnection);
+
+		prepareIdentityProvider(IDP_ENTITY_ID);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			getMockHttpServletRequest(
+				StringBundler.concat(
+					SSO_URL, "?SAMLRequest=", _SAML_REQUEST_ENCODED));
+
+		mockHttpServletRequest.setAttribute(
+			SamlWebKeys.SAML_SP_IDP_CONNECTION, samlSpIdpConnection);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_webSsoProfileImpl.processAuthnRequest(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		String content = mockHttpServletResponse.getContentAsString();
+
+		Assert.assertTrue(content.contains("SAMLResponse"));
 	}
 
 	@Test(expected = SignatureException.class)
@@ -1345,6 +1382,35 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			assertion.getSignature(), messageContext,
 			_webSsoProfileImpl.getSignatureTrustEngine());
 	}
+
+	/**
+	 * Encoded value of below SAMLRequest
+	 * <pre>
+	 * {@code
+	 *
+	 * samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+	 *                     AssertionConsumerServiceURL="http://localhost:8080/c/portal/saml/acs"
+	 *                     Destination="http://localhost:8080/c/portal/saml/sso"
+	 *                     ID="_ab1c2d3e4f5g6h7i8j9k0l"
+	 *                     IsPassive="true"
+	 *                     IssueInstant="2025-09-25T12:00:00Z"
+	 *                     ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+	 *                     Version="2.0">
+	 *     saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">testsp /saml:Issuer>
+	 *     samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"/>
+	 * /samlp:AuthnRequest>
+	 * }
+	 * </pre>
+	 */
+	private static final String _SAML_REQUEST_ENCODED = StringBundler.concat(
+		"jVJdT8IwFH33Vyx9ny1TFBqGQQhxiR8LDB98MaVUV%2B3a2XuH%2B",
+		"u8dQxISB7HpU3vuOfeecwdXX4UJ1sqDdjYmnVNGAmWlW2n7GpNFNg175Gp4MgBRmJ",
+		"KPKsztTH1UCjCoCy3w5iMmlbfcCdDArSgUcJR8Prq75dEp46V36KQz5CRoOSMA5bF",
+		"WHzsLVaH8XPm1lmoxu41JjlhySo2TwuQOkPdYj1FJS%2BdRGLoRp0JCO%2FOk7",
+		"lJbgc1k%2F2ECcO1MySQmz2LZkdHqTJ2%2FdF8v8kvde%2Bu%2FswNDJZAKAL1WMU",
+		"FfqUMgqFRiAYXFmEQs6oasH0bdrBNxxur71F6X%2Fvp5re02pmPmL7cg4DdZlobpw",
+		"zxrJ33crUBdRIYNpAmdN136vbSP64ldnGSItf9QDugezR5xye%2Fr4mSSOqPldzAy",
+		"xn2OvRK48yyYOl8IPC63edGr8KWBcvTCglYWCa13lv5d2uEP");
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
