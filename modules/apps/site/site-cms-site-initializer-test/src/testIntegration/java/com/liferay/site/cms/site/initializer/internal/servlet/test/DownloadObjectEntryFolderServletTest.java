@@ -9,11 +9,21 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -22,6 +32,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -29,16 +40,19 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 
 import java.util.Collections;
 
@@ -72,55 +86,8 @@ public class DownloadObjectEntryFolderServletTest {
 
 	@Test
 	public void testDownloadBulkAction() throws Exception {
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-		String originalName = PrincipalThreadLocal.getName();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
-		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
-
-		ObjectEntryFolder objectEntryFolder = _addObjectFolderEntry(
-			_depotEntry.getGroupId());
-
-		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(
-				JSONUtil.put(
-					"bulkActionItems",
-					JSONUtil.put(
-						JSONUtil.put(
-							"className",
-							"com.liferay.object.model.ObjectEntryFolder"
-						).put(
-							"classPK",
-							objectEntryFolder.getObjectEntryFolderId()
-						).put(
-							"classExternalReferenceCode",
-							objectEntryFolder.getExternalReferenceCode()
-						).put(
-							"name", objectEntryFolder.getName()
-						))
-				).put(
-					"selectAll", false
-				).put(
-					"type", "DownloadBulkAction"
-				).toString(
-				).getBytes(),
-				HttpMethods.POST, 0);
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
-
-		Assert.assertEquals(
-			ContentTypes.APPLICATION_ZIP,
-			mockHttpServletResponse.getContentType());
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-
-		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
-		PrincipalThreadLocal.setName(originalName);
+		_downloadBulkAction();
+		_downloadBulkActionWithSelectAll();
 	}
 
 	@Test
@@ -179,6 +146,133 @@ public class DownloadObjectEntryFolderServletTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	private void _downloadBulkAction() throws Exception {
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+		String originalName = PrincipalThreadLocal.getName();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		ObjectEntryFolder objectEntryFolder = _addObjectFolderEntry(
+			_depotEntry.getGroupId());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(
+				JSONUtil.put(
+					"bulkActionItems",
+					JSONUtil.put(
+						JSONUtil.put(
+							"classExternalReferenceCode",
+							objectEntryFolder.getExternalReferenceCode()
+						).put(
+							"className",
+							"com.liferay.object.model.ObjectEntryFolder"
+						).put(
+							"classPK",
+							objectEntryFolder.getObjectEntryFolderId()
+						).put(
+							"name", objectEntryFolder.getName()
+						))
+				).put(
+					"selectAll", false
+				).put(
+					"type", "DownloadBulkAction"
+				).toString(
+				).getBytes(),
+				HttpMethods.POST, 0);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_ZIP,
+			mockHttpServletResponse.getContentType());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
+		PrincipalThreadLocal.setName(originalName);
+	}
+
+	private void _downloadBulkActionWithSelectAll() throws Exception {
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+		String originalName = PrincipalThreadLocal.getName();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		DLFolder dlFolder = DLTestUtil.addDLFolder(_depotEntry.getGroupId());
+		byte[] bytes = TestDataConstants.TEST_BYTE_ARRAY;
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), dlFolder.getGroupId(),
+			dlFolder.getRepositoryId(), dlFolder.getFolderId(),
+			RandomTestUtil.randomString() + ".pdf",
+			ContentTypes.APPLICATION_PDF, RandomTestUtil.randomString(),
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT, null,
+			null, new ByteArrayInputStream(bytes), bytes.length, null, null,
+			null,
+			ServiceContextTestUtil.getServiceContext(dlFolder.getGroupId()));
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_BASIC_DOCUMENT", _group.getCompanyId());
+
+		ObjectEntryTestUtil.addObjectEntry(
+			_depotEntry.getGroupId(), objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				"file", String.valueOf(dlFileEntry.getFileEntryId())
+			).put(
+				"name", RandomTestUtil.randomString()
+			).build());
+
+		ObjectEntryTestUtil.addObjectEntry(
+			_depotEntry.getGroupId(), objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				"file", String.valueOf(dlFileEntry.getFileEntryId())
+			).put(
+				"name", RandomTestUtil.randomString()
+			).build());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(
+				_jsonFactory.createJSONObject(
+				).put(
+					"selectAll", true
+				).put(
+					"type", "DownloadBulkAction"
+				).toString(
+				).getBytes(),
+				HttpMethods.POST, 0);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_ZIP,
+			mockHttpServletResponse.getContentType());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
+		PrincipalThreadLocal.setName(originalName);
+	}
+
 	private MockHttpServletRequest _getMockHttpServletRequest(
 			byte[] content, String method, long objectEntryFolderId)
 		throws Exception {
@@ -191,7 +285,7 @@ public class DownloadObjectEntryFolderServletTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(mockHttpServletRequest));
 		mockHttpServletRequest.setAttribute(
-			WebKeys.USER, TestPropsValues.getUserId());
+			WebKeys.USER, TestPropsValues.getUser());
 
 		if (content != null) {
 			mockHttpServletRequest.setContent(content);
@@ -235,8 +329,17 @@ public class DownloadObjectEntryFolderServletTest {
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
+	@Inject
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private JSONFactory _jsonFactory;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
