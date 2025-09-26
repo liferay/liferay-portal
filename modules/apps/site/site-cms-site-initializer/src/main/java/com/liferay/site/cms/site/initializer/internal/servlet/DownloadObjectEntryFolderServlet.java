@@ -26,9 +26,11 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -42,6 +44,15 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.portal.search.document.Document;
+import com.liferay.portal.search.hits.SearchHit;
+import com.liferay.portal.search.query.BooleanQuery;
+import com.liferay.portal.search.query.Queries;
+import com.liferay.portal.search.query.TermsQuery;
+import com.liferay.portal.search.searcher.SearchRequestBuilder;
+import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
+import com.liferay.portal.search.searcher.SearchResponse;
+import com.liferay.portal.search.searcher.Searcher;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
@@ -139,105 +150,51 @@ public class DownloadObjectEntryFolderServlet extends HttpServlet {
 			HttpHeaders.CACHE_CONTROL,
 			HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
 
-		JSONObject jsonObject = null;
+		JSONObject jsonObject = _parseAndValidateRequest(
+			httpServletRequest, httpServletResponse);
 
-		try {
-			jsonObject = _jsonFactory.createJSONObject(
-				StreamUtil.toString(
-					httpServletRequest.getInputStream(), StringPool.UTF8));
-		}
-		catch (JSONException jsonException) {
-			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-			if (_log.isWarnEnabled()) {
-				_log.warn(jsonException);
-			}
-
+		if (jsonObject == null) {
 			return;
 		}
-
-		String type = jsonObject.getString("type");
-
-		if (!StringUtil.equalsIgnoreCase("DownloadBulkAction", type)) {
-			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-			if (_log.isWarnEnabled()) {
-				_log.warn("Type is not \"DownloadBulkAction\"");
-			}
-
-			return;
-		}
-
-		boolean selectAll = jsonObject.getBoolean("selectAll");
-
-		if (selectAll) {
-			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-			if (_log.isWarnEnabled()) {
-				_log.warn("The value for \"selectAll\" is true");
-			}
-
-			return;
-		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
 
 		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
 
-		JSONArray jsonArray = jsonObject.getJSONArray("bulkActionItems");
+		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
 
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject itemJSONObject = jsonArray.getJSONObject(i);
-
-			String className = itemJSONObject.getString("className");
-			long classPK = itemJSONObject.getLong("classPK");
-
-			if (StringUtil.equalsIgnoreCase(
-					className, ObjectEntryFolder.class.getName())) {
-
-				ObjectEntryFolder objectEntryFolder =
-					_objectEntryFolderService.getObjectEntryFolder(classPK);
-
-				_zipObjectEntryFolder(
-					objectEntryFolder.getGroupId(), classPK,
-					objectEntryFolder.getName(), themeDisplay, zipWriter);
-			}
-			else if (StringUtil.equalsIgnoreCase(
-						className,
-						"com.liferay.object.model.ObjectDefinition#Z7P5")) {
-
-				_zipObjectEntry(
-					_objectEntryLocalService.getObjectEntry(classPK),
-					StringPool.SLASH, themeDisplay.getPermissionChecker(),
-					zipWriter);
+			if (jsonObject.getBoolean("selectAll")) {
+				_handleSelectAllDownload(
+					httpServletRequest, themeDisplay, zipWriter);
 			}
 			else {
-				httpServletResponse.setStatus(
-					HttpServletResponse.SC_BAD_REQUEST);
+				_handleSpecificItemsDownload(
+					jsonObject.getJSONArray("bulkActionItems"), themeDisplay,
+					zipWriter, httpServletResponse);
+			}
 
-				if (_log.isWarnEnabled()) {
-					_log.warn("Invalid class name " + className);
-				}
+			try (InputStream inputStream = new FileInputStream(
+					zipWriter.getFile())) {
 
-				return;
+				ServletResponseUtil.sendFile(
+					httpServletRequest, httpServletResponse,
+					"download-" + Time.getTimestamp() + ".zip", inputStream, 0,
+					ContentTypes.APPLICATION_ZIP,
+					HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT);
 			}
 		}
-
-		try (InputStream inputStream = new FileInputStream(
-				zipWriter.getFile())) {
-
-			ServletResponseUtil.sendFile(
-				httpServletRequest, httpServletResponse,
-				"download-" + Time.getTimestamp() + ".zip", inputStream, 0,
-				ContentTypes.APPLICATION_ZIP,
-				HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT);
+		catch (Exception exception) {
+			_log.error("Error during bulk download processing", exception);
+			httpServletResponse.setStatus(
+				HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 		finally {
 			File file = zipWriter.getFile();
 
-			file.delete();
+			if ((file != null) && file.exists()) {
+				file.delete();
+			}
 		}
 	}
 
@@ -290,7 +247,9 @@ public class DownloadObjectEntryFolderServlet extends HttpServlet {
 		finally {
 			File file = zipWriter.getFile();
 
-			file.delete();
+			if ((file != null) && file.exists()) {
+				file.delete();
+			}
 		}
 	}
 
@@ -304,6 +263,158 @@ public class DownloadObjectEntryFolderServlet extends HttpServlet {
 				httpServletRequest.getServletPath();
 
 		return requestURI.substring(path.length() + 1);
+	}
+
+	private User _getUser(HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		User user = _portal.getUser(httpServletRequest);
+
+		if (user == null) {
+			user = _userLocalService.getGuestUser(
+				_portal.getCompanyId(httpServletRequest));
+		}
+
+		return user;
+	}
+
+	private void _handleSelectAllDownload(
+			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay,
+			ZipWriter zipWriter)
+		throws IOException, PortalException {
+
+		User user = _getUser(httpServletRequest);
+
+		BooleanQuery booleanQuery = _queries.booleanQuery();
+
+		booleanQuery.addFilterQueryClauses(_queries.term("cms_kind", "object"));
+
+		TermsQuery cmsSection = _queries.terms("cms_section");
+
+		cmsSection.addValues("contents", "files");
+
+		booleanQuery.addFilterQueryClauses(cmsSection);
+
+		SearchRequestBuilder searchRequestBuilder =
+			_searchRequestBuilderFactory.builder();
+
+		searchRequestBuilder.emptySearchEnabled(
+			true
+		).fetchSource(
+			true
+		).withSearchContext(
+			searchContext -> {
+				searchContext.setCompanyId(user.getCompanyId());
+				searchContext.setEnd(QueryUtil.ALL_POS);
+				searchContext.setLocale(user.getLocale());
+				searchContext.setStart(QueryUtil.ALL_POS);
+				searchContext.setTimeZone(user.getTimeZone());
+				searchContext.setUserId(user.getUserId());
+			}
+		);
+
+		SearchResponse searchResponse = _searcher.search(
+			searchRequestBuilder.query(
+				booleanQuery
+			).build());
+
+		for (SearchHit searchHit :
+				searchResponse.getSearchHits(
+				).getSearchHits()) {
+
+			Document document = searchHit.getDocument();
+
+			if (StringUtil.equalsIgnoreCase(
+					document.getString("entryClassName"),
+					"com.liferay.object.model.ObjectDefinition#Z7P5")) {
+
+				_zipObjectEntry(
+					_objectEntryLocalService.getObjectEntry(
+						document.getLong("objectEntryId")),
+					StringPool.SLASH, themeDisplay.getPermissionChecker(),
+					zipWriter);
+			}
+		}
+	}
+
+	private void _handleSpecificItemsDownload(
+			JSONArray jsonArray, ThemeDisplay themeDisplay, ZipWriter zipWriter,
+			HttpServletResponse httpServletResponse)
+		throws IOException, PortalException {
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject itemJSONObject = jsonArray.getJSONObject(i);
+
+			String className = itemJSONObject.getString("className");
+			long classPK = itemJSONObject.getLong("classPK");
+
+			if (StringUtil.equalsIgnoreCase(
+					className, ObjectEntryFolder.class.getName())) {
+
+				ObjectEntryFolder objectEntryFolder =
+					_objectEntryFolderService.getObjectEntryFolder(classPK);
+
+				_zipObjectEntryFolder(
+					objectEntryFolder.getGroupId(), classPK,
+					objectEntryFolder.getName(), themeDisplay, zipWriter);
+			}
+			else if (StringUtil.equalsIgnoreCase(
+						className,
+						"com.liferay.object.model.ObjectDefinition#Z7P5")) {
+
+				_zipObjectEntry(
+					_objectEntryLocalService.getObjectEntry(classPK),
+					StringPool.SLASH, themeDisplay.getPermissionChecker(),
+					zipWriter);
+			}
+			else {
+				httpServletResponse.setStatus(
+					HttpServletResponse.SC_BAD_REQUEST);
+
+				if (_log.isWarnEnabled()) {
+					_log.warn("Invalid class name " + className);
+				}
+
+				throw new IllegalArgumentException(
+					"Invalid class name: " + className);
+			}
+		}
+	}
+
+	private JSONObject _parseAndValidateRequest(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws IOException {
+
+		try {
+			JSONObject jsonObject = _jsonFactory.createJSONObject(
+				StreamUtil.toString(
+					httpServletRequest.getInputStream(), StringPool.UTF8));
+
+			if (!StringUtil.equalsIgnoreCase(
+					"DownloadBulkAction", jsonObject.getString("type"))) {
+
+				httpServletResponse.setStatus(
+					HttpServletResponse.SC_BAD_REQUEST);
+
+				if (_log.isWarnEnabled()) {
+					_log.warn("Type is not \"DownloadBulkAction\"");
+				}
+
+				return null;
+			}
+
+			return jsonObject;
+		}
+		catch (JSONException jsonException) {
+			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+			if (_log.isWarnEnabled()) {
+				_log.warn("Failed to parse JSON request", jsonException);
+			}
+
+			return null;
+		}
 	}
 
 	private void _zipObjectEntry(
@@ -396,6 +507,18 @@ public class DownloadObjectEntryFolderServlet extends HttpServlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private Queries _queries;
+
+	@Reference
+	private Searcher _searcher;
+
+	@Reference
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 	@Reference
 	private ZipWriterFactory _zipWriterFactory;
