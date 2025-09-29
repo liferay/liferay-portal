@@ -122,7 +122,7 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 									String fileName = patcherBuild.getFileName();
 									%>
 
-									<span class="text-success"><liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getStatus()) %>" /></span> (<clay:link href='<%= fileName.contains("/liferay-dxp-") ? "https://releases-cdn.liferay.com/dxp/hotfix" : patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName %>' label="download" target="_blank" />)
+									<span class="text-success"><liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getStatus()) %>" /></span> (<clay:link href='<%= fileName.contains("/liferay-dxp-") ? "https://storage.cloud.google.com/liferay-releases-hotfix" : patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName %>' label="download" target="_blank" />)
 								</c:when>
 								<c:when test="<%= (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_FAILED) || (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_FAILED_MERGING_ONLY) %>">
 									<span class="text-danger"><liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getStatus()) %>" /></span>

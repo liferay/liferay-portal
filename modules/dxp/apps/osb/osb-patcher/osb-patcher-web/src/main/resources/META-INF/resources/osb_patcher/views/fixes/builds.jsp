@@ -83,7 +83,7 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 		<%
 		String fileName = patcherBuild.getFileName();
 
-		String hotfixURL = "https://releases-cdn.liferay.com/dxp/hotfix/" + fileName;
+		String hotfixURL = "https://storage.cloud.google.com/liferay-releases-hotfix" + fileName;
 
 		if (!fileName.contains("/liferay-dxp-")) {
 			hotfixURL = patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName;

@@ -177,7 +177,7 @@ public class EmailUtil {
 			String fileName = patcherBuild.getFileName();
 
 			if (fileName.contains("/liferay-dxp-")) {
-				sb.append("https://releases-cdn.liferay.com/dxp/hotfix");
+				sb.append("https://storage.cloud.google.com/liferay-releases-hotfix");
 			}
 			else {
 				PatcherConfiguration patcherConfiguration =
