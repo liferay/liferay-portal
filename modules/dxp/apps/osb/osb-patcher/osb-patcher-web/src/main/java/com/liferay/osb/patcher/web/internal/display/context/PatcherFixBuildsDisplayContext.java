@@ -140,13 +140,8 @@ public class PatcherFixBuildsDisplayContext {
 				String fileName = patcherBuild.getFileName();
 
 				String hotfixURL =
-					"https://storage.cloud.google.com/liferay-releases-hotfix" + fileName;
-
-				if (!fileName.contains("/liferay-dxp-")) {
-					hotfixURL =
-						_patcherConfiguration.patcherBuildDownloadURL() + "/" +
-							fileName;
-				}
+					_patcherConfiguration.patcherBuildDownloadURL() + "/" +
+						fileName;
 
 				dropdownItem.setHref(hotfixURL);
 

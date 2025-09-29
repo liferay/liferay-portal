@@ -247,7 +247,7 @@ PatcherBuildsDisplayContext patcherBuildsDisplayContext = new PatcherBuildsDispl
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href='<%= fileName.contains("/liferay-dxp-") ? "https://storage.cloud.google.com/liferay-releases-hotfix" : patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName %>'
+			href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName %>'
 			name="hotfix"
 			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(fileName) : StringPool.BLANK %>"
 		/>

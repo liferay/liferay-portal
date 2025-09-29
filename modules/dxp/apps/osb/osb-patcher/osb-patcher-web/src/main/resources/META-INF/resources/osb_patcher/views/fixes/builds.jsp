@@ -80,19 +80,9 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 			/>
 		</liferay-ui:search-container-column-text>
 
-		<%
-		String fileName = patcherBuild.getFileName();
-
-		String hotfixURL = "https://storage.cloud.google.com/liferay-releases-hotfix" + fileName;
-
-		if (!fileName.contains("/liferay-dxp-")) {
-			hotfixURL = patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName;
-		}
-		%>
-
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href="<%= hotfixURL %>"
+			href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + patcherBuild.getFileName() %>'
 			name="hotfix"
 			target="_blank"
 			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(patcherBuild.getFileName()) : StringPool.BLANK %>"

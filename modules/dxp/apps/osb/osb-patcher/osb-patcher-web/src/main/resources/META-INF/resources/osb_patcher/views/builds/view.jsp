@@ -248,7 +248,7 @@ else if (!patcherBuild.getLatestKeyBuild()) {
 			<p class="text-secondary">
 				<c:choose>
 					<c:when test='<%= fileName.contains("/liferay-dxp-") %>'>
-						<a href="https://storage.cloud.google.com/liferay-releases-hotfix<%= fileName %>" target="_blank">https://storage.cloud.google.com/liferay-releases-hotfix<%= fileName %></a><br />
+						<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= fileName %>" target="_blank"><%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= fileName %></a><br />
 
 						<pre>patching-tool install hotfix-<%= PatcherBuildUtil.getHotfixIdByFileName(fileName) %></pre>
 						<pre>patching-tool.sh install hotfix-<%= PatcherBuildUtil.getHotfixIdByFileName(fileName) %></pre>
