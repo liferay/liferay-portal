@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -122,6 +123,10 @@ public class ObjectEntryItemDescriptor
 		}
 
 		try {
+			if (Validator.isNull(_objectEntry.getTitleValue())) {
+				return _objectEntry.getTitleValue(String.valueOf(locale), true);
+			}
+
 			return _objectEntry.getTitleValue();
 		}
 		catch (PortalException portalException) {

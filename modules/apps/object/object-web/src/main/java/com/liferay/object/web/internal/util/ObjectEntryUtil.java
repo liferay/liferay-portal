@@ -155,6 +155,8 @@ public class ObjectEntryUtil {
 		serviceBuilderObjectEntry.setObjectEntryId(
 			GetterUtil.getLong(objectEntry.getId()));
 		serviceBuilderObjectEntry.setObjectDefinitionId(objectDefinitionId);
+		serviceBuilderObjectEntry.setDefaultLanguageId(
+			objectEntry.getDefaultLanguageId());
 
 		return new ProxyObjectEntry(serviceBuilderObjectEntry, objectEntry);
 	}
