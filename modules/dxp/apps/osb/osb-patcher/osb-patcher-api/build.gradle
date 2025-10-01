@@ -1,6 +1,7 @@
 dependencies {
 	compileInclude group: "com.google.api.grpc", name: "proto-google-cloud-pubsub-v1", version: "1.101.1"
 	compileInclude group: "com.google.cloud", name: "google-cloud-pubsub", version: "1.122.0"
+	compileInclude group: "com.google.cloud", name: "google-cloud-storage", version: "2.36.0"
 	compileOnly group: "com.google.api", name: "api-common", version: "2.43.0"
 	compileOnly group: "com.google.api", name: "gax", version: "2.60.0"
 	compileOnly group: "com.google.api", name: "gax-grpc", version: "2.60.0"
