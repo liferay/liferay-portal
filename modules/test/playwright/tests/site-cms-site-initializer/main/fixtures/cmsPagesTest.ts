@@ -7,7 +7,6 @@ import {test} from '@playwright/test';
 
 import {AssetsPage} from '../pages/AssetsPage';
 import {ContentsPage} from '../pages/ContentsPage';
-import {DefaultPermissionsPage} from '../pages/DefaultPermissionsPage';
 import {EditVocabularyPage} from '../pages/EditVocabularyPage';
 import {FolderPage} from '../pages/FolderPage';
 import {HomePage} from '../pages/HomePage';
@@ -22,7 +21,6 @@ import {VocabulariesPage} from '../pages/VocabulariesPage';
 const cmsPagesTest = test.extend<{
 	assetsPage: AssetsPage;
 	contentsPage: ContentsPage;
-	defaultPermissionsPage: DefaultPermissionsPage;
 	editVocabularyPage: EditVocabularyPage;
 	folderPage: FolderPage;
 	homePage: HomePage;
@@ -39,9 +37,6 @@ const cmsPagesTest = test.extend<{
 	},
 	contentsPage: async ({page}, use) => {
 		await use(new ContentsPage(page));
-	},
-	defaultPermissionsPage: async ({page}, use) => {
-		await use(new DefaultPermissionsPage(page));
 	},
 	editVocabularyPage: async ({page}, use) => {
 		await use(new EditVocabularyPage(page));
