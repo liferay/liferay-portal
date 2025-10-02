@@ -6890,13 +6890,13 @@ public class PortalImpl implements Portal {
 			return 0;
 		}
 
-		long doAsUserId = GetterUtil.getLong(doAsUserIdString);
+		long doAsUserId = 0;
 
 		if (Validator.isHex(doAsUserIdString)) {
 			try {
 				byte[] doAsUserIdBytes = StringUtil.hexStringToBytes(
 					doAsUserIdString);
-				
+
 				if (!ChecksumUtil.isValid(doAsUserIdBytes)) {
 					return 0;
 				}
