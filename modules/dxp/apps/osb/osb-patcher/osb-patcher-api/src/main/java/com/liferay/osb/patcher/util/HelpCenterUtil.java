@@ -5,6 +5,11 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+
 import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.model.PatcherAccount;
@@ -12,6 +17,7 @@ import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.service.PatcherAccountLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -19,11 +25,12 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import java.nio.channels.Channels;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,14 +43,37 @@ import org.apache.commons.io.IOUtils;
 public class HelpCenterUtil {
 
 	public static String addAttachmentComment(
-			String fileName, PatcherBuild patcherBuild, String path)
+			String fileName, PatcherBuild patcherBuild)
 		throws Exception {
 
-		File file = new File(path);
+		Storage storage = StorageOptions.getDefaultInstance().getService();
 
-		uploadAttachment(
-			patcherBuild.getCompanyId(), file, fileName,
-			patcherBuild.getSupportTicket());
+		BlobId blobId = BlobId.of(
+			"liferay-releases-hotfix", patcherBuild.getFileName());
+
+		Blob blob = storage.get(blobId);
+
+		if (blob == null) {
+			throw new PortalException(
+				translate(
+					"file-x-not-found-in-the-x-gcs-bucket", fileName,
+						"liferay-releases-hotfix"),
+					false);
+		}
+
+		long fileSize = blob.getSize();
+
+		try {
+			InputStream fileInputStream = Channels.newInputStream(
+				blob.reader());
+
+			uploadAttachment(
+				patcherBuild.getCompanyId(), fileInputStream, fileName,
+				fileSize, patcherBuild.getSupportTicket());
+		}
+		catch (Exception e) {
+			throw new Exception("Error processing GCS file.", e);
+		}
 
 		Http.Options options = new Http.Options();
 
@@ -69,7 +99,7 @@ public class HelpCenterUtil {
 		options.addPart("fileName", fileName);
 		options.addPart(
 			"fileRepositoryId", patcherConfiguration.helpCenterFileRepoId());
-		options.addPart("fileSize", String.valueOf(file.length()));
+		options.addPart("fileSize", String.valueOf(fileSize));
 		options.addPart("regionRestricted", "false");
 		options.addPart("type", "1");
 		options.addPart("zendeskTicketId", patcherBuild.getSupportTicket());
@@ -153,7 +183,8 @@ public class HelpCenterUtil {
 	}
 
 	protected static void uploadAttachment(
-			long companyId, File file, String fileName, String supportTicket)
+			long companyId, InputStream fileInputStream, String fileName,
+			long fileSize, String supportTicket)
 		throws Exception {
 
 		PatcherConfiguration patcherConfiguration =
@@ -172,7 +203,7 @@ public class HelpCenterUtil {
 		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "resumableTotalChunks", 1);
 		uploadURL = HttpComponentsUtil.addParameter(
-			uploadURL, "resumableTotalSize", file.length());
+			uploadURL, "resumableTotalSize", fileSize);
 		uploadURL = HttpComponentsUtil.addParameter(
 			uploadURL, "token", getAttachmentToken(companyId, supportTicket));
 
@@ -186,10 +217,11 @@ public class HelpCenterUtil {
 		httpURLConnection.setRequestProperty(
 			"Content-Type", "application/octet-stream");
 
-		IOUtils.copy(
-			new FileInputStream(file), httpURLConnection.getOutputStream());
+		IOUtils.copy(fileInputStream, httpURLConnection.getOutputStream());
 
 		IOUtils.toString(httpURLConnection.getInputStream());
+
+		httpURLConnection.disconnect();
 	}
 
 }
