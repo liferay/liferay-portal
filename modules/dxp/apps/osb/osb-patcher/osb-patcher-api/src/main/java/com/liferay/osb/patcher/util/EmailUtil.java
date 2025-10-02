@@ -179,6 +179,7 @@ public class EmailUtil {
 					PatcherConfiguration.class, patcherBuild.getCompanyId());
 
 			sb.append(patcherConfiguration.patcherBuildDownloadURL());
+
 			sb.append(StringPool.SLASH);
 			sb.append(patcherBuild.getFileName());
 

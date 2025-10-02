@@ -82,8 +82,8 @@ public class HelpCenterUtil {
 				patcherBuild.getCompanyId(), fileInputStream, fileName,
 				fileSize, patcherBuild.getSupportTicket());
 		}
-		catch (Exception e) {
-			throw new Exception("Error processing GCS file.", e);
+		catch (Exception exception) {
+			throw new Exception("Error processing GCS file", exception);
 		}
 
 		Http.Options options = new Http.Options();
