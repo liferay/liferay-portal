@@ -66,7 +66,7 @@ public class HelpCenterUtil {
 			throw new PortalException(
 				LanguageUtil.format(
 					LocaleUtil.getMostRelevantLocale(),
-					"file-x-not-found-in-the-x-gcs-bucket",
+					"file-x-was-not-found-in-the-x-gcs-bucket",
 					new Object[] {
 						fileName, patcherConfiguration.googleCloudHotfixBucket()
 					}));
