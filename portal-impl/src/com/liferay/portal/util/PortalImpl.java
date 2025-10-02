@@ -109,6 +109,7 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.UserAttributes;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.redirect.RedirectURLSettingsUtil;
+import com.liferay.portal.kernel.security.ChecksumUtil;
 import com.liferay.portal.kernel.security.auth.AlwaysAllowDoAsUser;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.FullNameGenerator;
@@ -5201,7 +5202,10 @@ public class PortalImpl implements Portal {
 		String doAsUserIdString = ParamUtil.getString(
 			httpServletRequest, "doAsUserId", null);
 
-		if (doAsUserIdString != null) {
+		if (Validator.isHex(doAsUserIdString) &&
+			ChecksumUtil.isValid(
+				StringUtil.hexStringToBytes(doAsUserIdString))) {
+
 			String actionName = getPortletParam(
 				httpServletRequest, "actionName");
 			String mvcRenderCommandName = ParamUtil.getString(
@@ -6888,13 +6892,23 @@ public class PortalImpl implements Portal {
 
 		long doAsUserId = GetterUtil.getLong(doAsUserIdString);
 
-		if (doAsUserId == 0) {
+		if (Validator.isHex(doAsUserIdString)) {
 			try {
+				byte[] doAsUserIdBytes = StringUtil.hexStringToBytes(
+					doAsUserIdString);
+				
+				if (!ChecksumUtil.isValid(doAsUserIdBytes)) {
+					return 0;
+				}
+
+				doAsUserIdBytes = ChecksumUtil.removeChecksum(doAsUserIdBytes);
+
 				Company company = getCompany(httpServletRequest);
 
 				doAsUserId = GetterUtil.getLong(
-					EncryptorUtil.decrypt(
-						company.getKeyObj(), doAsUserIdString));
+					new String(
+						EncryptorUtil.decryptUnencodedAsBytes(
+							company.getKeyObj(), doAsUserIdBytes)));
 			}
 			catch (Exception exception) {
 				if (_log.isDebugEnabled()) {
@@ -7166,12 +7180,22 @@ public class PortalImpl implements Portal {
 			String doAsUserIdString = ParamUtil.getString(
 				httpServletRequest, "doAsUserId");
 
-			if (Validator.isNotNull(doAsUserIdString)) {
+			if (Validator.isHex(doAsUserIdString)) {
+				byte[] doAsUserIdBytes = StringUtil.hexStringToBytes(
+					doAsUserIdString);
+
+				if (!ChecksumUtil.isValid(doAsUserIdBytes)) {
+					return false;
+				}
+
+				doAsUserIdBytes = ChecksumUtil.removeChecksum(doAsUserIdBytes);
+
 				Company company = getCompany(httpServletRequest);
 
 				doAsUserId = GetterUtil.getLong(
-					EncryptorUtil.decrypt(
-						company.getKeyObj(), doAsUserIdString));
+					new String(
+						EncryptorUtil.decryptUnencodedAsBytes(
+							company.getKeyObj(), doAsUserIdBytes)));
 			}
 		}
 		catch (Exception exception) {
