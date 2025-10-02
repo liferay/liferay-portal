@@ -18,11 +18,13 @@ import com.liferay.osb.patcher.service.PatcherAccountLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.InputStream;
@@ -60,10 +62,12 @@ public class HelpCenterUtil {
 
 		if (blob == null) {
 			throw new PortalException(
-				translate(
-					"file-x-not-found-in-the-x-gcs-bucket", fileName,
-						patcherConfiguration.googleCloudHotfixBucket()),
-					false);
+				LanguageUtil.format(
+					LocaleUtil.getMostRelevantLocale(),
+					"file-x-not-found-in-the-x-gcs-bucket",
+					new Object[] {
+						fileName, patcherConfiguration.googleCloudHotfixBucket()
+					}));
 		}
 
 		long fileSize = blob.getSize();
