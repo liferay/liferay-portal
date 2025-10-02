@@ -13,13 +13,11 @@ import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.cache.key.CacheKeyGenerator;
 import com.liferay.portal.kernel.cache.key.CacheKeyGeneratorUtil;
-import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -27,7 +25,6 @@ import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletConstants;
 import com.liferay.portal.kernel.model.PortletPreferencesIds;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletMode;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
@@ -302,37 +299,9 @@ public class PortletPreferencesFactoryImpl
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		User user = themeDisplay.getRealUser();
-
-		long userId = themeDisplay.getUserId();
-
-		String doAsUserId = themeDisplay.getDoAsUserId();
-
-		if ((user != null) && !user.isGuestUser() &&
-			Validator.isNotNull(doAsUserId) &&
-			!Objects.equals(String.valueOf(userId), doAsUserId)) {
-
-			Company company = themeDisplay.getCompany();
-
-			try {
-				userId = GetterUtil.getLong(
-					EncryptorUtil.decrypt(company.getKeyObj(), doAsUserId),
-					userId);
-			}
-			catch (Exception exception) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Unable to decrypt user ID from " + doAsUserId,
-						exception);
-				}
-				else if (_log.isWarnEnabled()) {
-					_log.warn("Unable to decrypt user ID from " + doAsUserId);
-				}
-			}
-		}
-
 		return getPortalPreferences(
-			httpServletRequest.getSession(), userId, themeDisplay.isSignedIn());
+			httpServletRequest.getSession(), themeDisplay.getUserId(),
+			themeDisplay.isSignedIn());
 	}
 
 	@Override
