@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.InvokerPortlet;
+import com.liferay.portal.kernel.security.ChecksumUtil;
 import com.liferay.portal.kernel.security.auth.AlwaysAllowDoAsUser;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.impl.LayoutImpl;
@@ -543,7 +545,10 @@ public class PortalImplUnitTest {
 			MockHttpServletRequest mockHttpServletRequest =
 				new MockHttpServletRequest();
 
-			mockHttpServletRequest.setParameter("doAsUserId", "1");
+			mockHttpServletRequest.setParameter(
+				"doAsUserId",
+				StringUtil.bytesToHexString(
+					ChecksumUtil.appendChecksum("1".getBytes())));
 
 			_portalImpl.getUserId(mockHttpServletRequest);
 
@@ -552,7 +557,17 @@ public class PortalImplUnitTest {
 
 			calledAlwaysAllowDoAsUser[0] = false;
 
-			_portalImpl.getUserId(new MockHttpServletRequest());
+			mockHttpServletRequest = new MockHttpServletRequest();
+
+			_portalImpl.getUserId(mockHttpServletRequest);
+
+			Assert.assertFalse(
+				"AlwaysAllowDoAsUser should not be called",
+				calledAlwaysAllowDoAsUser[0]);
+
+			mockHttpServletRequest.setParameter("doAsUserId", "1");
+
+			_portalImpl.getUserId(mockHttpServletRequest);
 
 			Assert.assertFalse(
 				"AlwaysAllowDoAsUser should not be called",
