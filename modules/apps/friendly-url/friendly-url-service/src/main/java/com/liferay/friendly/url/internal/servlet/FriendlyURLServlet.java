@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.security.ChecksumUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -473,26 +474,36 @@ public class FriendlyURLServlet extends HttpServlet {
 		boolean impersonated = _isImpersonated(httpServletRequest, userId);
 
 		if ((userId > 0) && impersonated) {
-			try {
+			String doAsUserId = ParamUtil.getString(
+				httpServletRequest, "doAsUserId");
+
+			if (Validator.isBlank(doAsUserId) || !Validator.isHex(doAsUserId) ||
+				!ChecksumUtil.isValid(
+					StringUtil.hexStringToBytes(doAsUserId))) {
+
 				Company company = portal.getCompany(httpServletRequest);
 
-				String encDoAsUserId = encryptor.encrypt(
-					company.getKeyObj(), String.valueOf(userId));
-
-				actualURL = HttpComponentsUtil.setParameter(
-					actualURL, "doAsUserId", encDoAsUserId);
-
-				params = new HashMap<>(params);
-
-				params.remove("doAsUserId");
-			}
-			catch (EncryptorException encryptorException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(encryptorException);
+				try {
+					doAsUserId = StringUtil.bytesToHexString(
+						ChecksumUtil.appendChecksum(
+							encryptor.encryptUnencoded(
+								company.getKeyObj(), String.valueOf(userId))));
 				}
+				catch (EncryptorException encryptorException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(encryptorException);
+					}
 
-				return new Redirect(actualURL, false, false);
+					return new Redirect(actualURL, false, false);
+				}
 			}
+
+			actualURL = HttpComponentsUtil.setParameter(
+				actualURL, "doAsUserId", doAsUserId);
+
+			params = new HashMap<>(params);
+
+			params.remove("doAsUserId");
 		}
 
 		Layout layout = (Layout)httpServletRequest.getAttribute(WebKeys.LAYOUT);
