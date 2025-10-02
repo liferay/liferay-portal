@@ -48,7 +48,9 @@ public class HelpCenterUtil {
 			String fileName, PatcherBuild patcherBuild)
 		throws Exception {
 
-		Storage storage = StorageOptions.getDefaultInstance().getService();
+		StorageOptions storageOptions = StorageOptions.getDefaultInstance();
+
+		Storage storage = storageOptions.getService();
 
 		PatcherConfiguration patcherConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
