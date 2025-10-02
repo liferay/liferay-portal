@@ -48,8 +48,13 @@ public class HelpCenterUtil {
 
 		Storage storage = StorageOptions.getDefaultInstance().getService();
 
+		PatcherConfiguration patcherConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+				PatcherConfiguration.class, patcherBuild.getCompanyId());
+
 		BlobId blobId = BlobId.of(
-			"liferay-releases-hotfix", patcherBuild.getFileName());
+			patcherConfiguration.googleCloudHotfixBucket(),
+			patcherBuild.getFileName());
 
 		Blob blob = storage.get(blobId);
 
@@ -57,7 +62,7 @@ public class HelpCenterUtil {
 			throw new PortalException(
 				translate(
 					"file-x-not-found-in-the-x-gcs-bucket", fileName,
-						"liferay-releases-hotfix"),
+						patcherConfiguration.googleCloudHotfixBucket()),
 					false);
 		}
 
@@ -76,10 +81,6 @@ public class HelpCenterUtil {
 		}
 
 		Http.Options options = new Http.Options();
-
-		PatcherConfiguration patcherConfiguration =
-			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, patcherBuild.getCompanyId());
 
 		String login =
 			patcherConfiguration.helpCenterApiUserName() + ":" +
