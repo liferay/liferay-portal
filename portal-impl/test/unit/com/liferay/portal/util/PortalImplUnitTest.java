@@ -7,6 +7,7 @@ package com.liferay.portal.util;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -545,10 +546,14 @@ public class PortalImplUnitTest {
 			MockHttpServletRequest mockHttpServletRequest =
 				new MockHttpServletRequest();
 
+			byte[] doAsUserIdBytes = new byte[Long.BYTES];
+
+			BigEndianCodec.putLong(doAsUserIdBytes, 0, 1L);
+
 			mockHttpServletRequest.setParameter(
 				"doAsUserId",
 				StringUtil.bytesToHexString(
-					ChecksumUtil.appendChecksum("1".getBytes())));
+					ChecksumUtil.appendChecksum(doAsUserIdBytes)));
 
 			_portalImpl.getUserId(mockHttpServletRequest);
 

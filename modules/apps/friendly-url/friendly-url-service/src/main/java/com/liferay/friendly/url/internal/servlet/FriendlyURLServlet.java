@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -484,10 +485,14 @@ public class FriendlyURLServlet extends HttpServlet {
 				Company company = portal.getCompany(httpServletRequest);
 
 				try {
+					byte[] doAsUserIdBytes = new byte[Long.BYTES];
+
+					BigEndianCodec.putLong(doAsUserIdBytes, 0, userId);
+
 					doAsUserId = StringUtil.bytesToHexString(
 						ChecksumUtil.appendChecksum(
 							encryptor.encryptUnencoded(
-								company.getKeyObj(), String.valueOf(userId))));
+								company.getKeyObj(), doAsUserIdBytes)));
 				}
 				catch (EncryptorException encryptorException) {
 					if (_log.isDebugEnabled()) {

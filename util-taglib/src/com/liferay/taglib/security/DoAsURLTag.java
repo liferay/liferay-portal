@@ -6,6 +6,7 @@
 package com.liferay.taglib.security;
 
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.ChecksumUtil;
@@ -51,10 +52,14 @@ public class DoAsURLTag extends TagSupport {
 			doAsUserId = guestUser.getUserId();
 		}
 
+		byte[] doAsUserIdBytes = new byte[Long.BYTES];
+
+		BigEndianCodec.putLong(doAsUserIdBytes, 0, doAsUserId);
+
 		String encDoAsUserId = StringUtil.bytesToHexString(
 			ChecksumUtil.appendChecksum(
 				EncryptorUtil.encryptUnencoded(
-					company.getKeyObj(), String.valueOf(doAsUserId))));
+					company.getKeyObj(), doAsUserIdBytes)));
 
 		return HttpComponentsUtil.addParameter(
 			doAsURL, "doAsUserId", encDoAsUserId);

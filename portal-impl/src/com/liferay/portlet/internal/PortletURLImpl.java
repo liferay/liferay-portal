@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -1023,10 +1024,14 @@ public class PortletURLImpl
 			try {
 				Company company = PortalUtil.getCompany(_httpServletRequest);
 
+				byte[] doAsUserIdBytes = new byte[Long.BYTES];
+
+				BigEndianCodec.putLong(doAsUserIdBytes, 0, _doAsUserId);
+
 				String doAsUserIdString = StringUtil.bytesToHexString(
 					ChecksumUtil.appendChecksum(
 						EncryptorUtil.encryptUnencoded(
-							company.getKeyObj(), String.valueOf(_doAsUserId))));
+							company.getKeyObj(), doAsUserIdBytes)));
 
 				sb.append("doAsUserId=");
 				sb.append(processValue(key, doAsUserIdString));

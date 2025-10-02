@@ -15,6 +15,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -457,11 +458,14 @@ public class FriendlyURLServletTest {
 		Company company = _companyLocalService.getCompany(
 			_doAsUser.getCompanyId());
 
+		byte[] doAsUserIdBytes = new byte[Long.BYTES];
+
+		BigEndianCodec.putLong(doAsUserIdBytes, 0, _doAsUser.getUserId());
+
 		String encryptedDoAsUserId = StringUtil.bytesToHexString(
 			ChecksumUtil.appendChecksum(
 				_encryptor.encryptUnencoded(
-					company.getKeyObj(),
-					String.valueOf(_doAsUser.getUserId()))));
+					company.getKeyObj(), doAsUserIdBytes)));
 
 		Object expectedRedirect = _redirectConstructor1.newInstance(
 			HttpComponentsUtil.setParameter(

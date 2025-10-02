@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -79,9 +80,14 @@ public class PortletURLImplTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.COMPANY_ID, company.getCompanyId());
 
+		byte[] doAsUserIdBytes = new byte[Long.BYTES];
+
+		BigEndianCodec.putLong(doAsUserIdBytes, 0, 1L);
+
 		String doAsUserIdString = StringUtil.bytesToHexString(
 			ChecksumUtil.appendChecksum(
-				EncryptorUtil.encryptUnencoded(company.getKeyObj(), "1")));
+				EncryptorUtil.encryptUnencoded(
+					company.getKeyObj(), doAsUserIdBytes)));
 
 		LiferayPortletURL liferayPortletURL = _portletURLFactory.create(
 			mockHttpServletRequest, PortletKeys.LOGIN, themeDisplay.getPlid(),
@@ -98,10 +104,12 @@ public class PortletURLImplTest {
 
 		long doAsUserId = 2;
 
+		BigEndianCodec.putLong(doAsUserIdBytes, 0, doAsUserId);
+
 		doAsUserIdString = StringUtil.bytesToHexString(
 			ChecksumUtil.appendChecksum(
 				EncryptorUtil.encryptUnencoded(
-					company.getKeyObj(), String.valueOf(doAsUserId))));
+					company.getKeyObj(), doAsUserIdBytes)));
 
 		themeDisplay.setDoAsUserId(null);
 

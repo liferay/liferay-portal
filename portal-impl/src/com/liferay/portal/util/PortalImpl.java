@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.exception.RSSFeedException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.image.ImageBag;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.language.constants.LanguageConstants;
 import com.liferay.portal.kernel.log.Log;
@@ -6905,10 +6906,10 @@ public class PortalImpl implements Portal {
 
 				Company company = getCompany(httpServletRequest);
 
-				doAsUserId = GetterUtil.getLong(
-					new String(
-						EncryptorUtil.decryptUnencodedAsBytes(
-							company.getKeyObj(), doAsUserIdBytes)));
+				doAsUserId = BigEndianCodec.getLong(
+					EncryptorUtil.decryptUnencodedAsBytes(
+						company.getKeyObj(), doAsUserIdBytes),
+					0);
 			}
 			catch (Exception exception) {
 				if (_log.isDebugEnabled()) {
@@ -7192,10 +7193,10 @@ public class PortalImpl implements Portal {
 
 				Company company = getCompany(httpServletRequest);
 
-				doAsUserId = GetterUtil.getLong(
-					new String(
-						EncryptorUtil.decryptUnencodedAsBytes(
-							company.getKeyObj(), doAsUserIdBytes)));
+				doAsUserId = BigEndianCodec.getLong(
+					EncryptorUtil.decryptUnencodedAsBytes(
+						company.getKeyObj(), doAsUserIdBytes),
+					0);
 			}
 		}
 		catch (Exception exception) {
