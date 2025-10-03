@@ -2809,6 +2809,10 @@
 					"default": "",
 					"type": "string"
 				},
+				"googleCloudHotfixBucket": {
+					"default": "",
+					"type": "string"
+				},
 				"helpCenterApiPassword": {
 					"default": "",
 					"type": "string"
