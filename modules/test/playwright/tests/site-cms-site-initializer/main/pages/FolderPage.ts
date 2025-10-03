@@ -22,7 +22,9 @@ export class FolderPage {
 	constructor(page: Page) {
 		this.page = page;
 
-		this.newButton = page.getByLabel('New');
+		this.newButton = page
+			.getByRole('navigation')
+			.getByTestId('fdsCreationActionButton');
 	}
 
 	async createFolder(name: string) {
