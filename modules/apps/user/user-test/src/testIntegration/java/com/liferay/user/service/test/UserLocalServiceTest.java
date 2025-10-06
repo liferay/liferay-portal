@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.exception.RequiredRoleException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserLockoutException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
+import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
@@ -69,6 +70,7 @@ import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -224,6 +226,50 @@ public class UserLocalServiceTest {
 				() -> _addUser(true, "abc"));
 
 			_assertUserHasPasswordPolicy(true, _addUser(true, "Liferay123"));
+		}
+	}
+
+	@Test
+	@TestInfo("LPS-12849")
+	public void testAddUserNumericScreenNameNotAllowed() throws Exception {
+		_userLocalService.addUser(
+			0, TestPropsValues.getCompanyId(), true, StringPool.BLANK,
+			StringPool.BLANK, false, "01234",
+			RandomTestUtil.randomString() + "@liferay.com", LocaleUtil.US,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), 0, 0, true, 1, 1, 1970,
+			StringPool.BLANK, UserConstants.TYPE_REGULAR, new long[0],
+			new long[0], new long[0], new long[0], false,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				TestPropsValues.getUserId()));
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"USERS_SCREEN_NAME_ALLOW_NUMERIC", false)) {
+
+			try {
+				_userLocalService.addUser(
+					0, TestPropsValues.getCompanyId(), true, StringPool.BLANK,
+					StringPool.BLANK, false, "56789",
+					RandomTestUtil.randomString() + "@liferay.com",
+					LocaleUtil.US, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), 0, 0, true, 1, 1, 1970,
+					StringPool.BLANK, UserConstants.TYPE_REGULAR, new long[0],
+					new long[0], new long[0], new long[0], false,
+					ServiceContextTestUtil.getServiceContext(
+						TestPropsValues.getCompanyId(),
+						TestPropsValues.getGroupId(),
+						TestPropsValues.getUserId()));
+
+				Assert.fail();
+			}
+			catch (UserScreenNameException userScreenNameException) {
+				String message = userScreenNameException.getMessage();
+
+				Assert.assertTrue(message.contains("must not be numeric"));
+			}
 		}
 	}
 

@@ -1323,3 +1323,147 @@ test(
 		).toBeChecked();
 	}
 );
+
+test(
+	'Can edit user site memberships',
+	{tag: ['@LPD-62984']},
+	async ({apiHelpers, editUserPage, site, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+		await editUserPage.membershipsLink.click();
+		await editUserPage.selectSiteButton.click();
+		await editUserPage.selectSiteSearchBar.fill(site.name);
+		await editUserPage.selectSiteSearchBarButton.click();
+		await editUserPage.selectSiteFrameSiteLink(site.name).click();
+		await editUserPage.saveButton.click();
+
+		await expect(
+			await editUserPage.membershipsSiteTableCell(site.name)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can edit user websites',
+	{tag: ['@LPD-62984']},
+	async ({apiHelpers, editUserPage, page, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+		await editUserPage.contactLink.click();
+		await editUserPage.contactInformationLink.click();
+
+		const website1 = `http://${getRandomString()}.com`;
+		const website2 = `http://${getRandomString()}.com`;
+		const website3 = `http://${getRandomString()}.com`;
+
+		await editUserPage.addNewWebsite(false, website1);
+
+		await expect(
+			(await editUserPage.websitesTableRow(0, website1, true)).row
+		).toBeVisible();
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website1)
+		).toBeVisible();
+
+		await editUserPage.addNewWebsite(true, website2);
+
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website2)
+		).toBeVisible();
+
+		await editUserPage.addNewWebsite(false, website3);
+
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website1)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website2)
+		).toBeVisible();
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website3)
+		).not.toBeVisible();
+		await expect(async () => {
+			await (
+				await editUserPage.websitesTableRowActions(website2)
+			).click();
+			await editUserPage.editMenuItem.click();
+			await editUserPage.makePrimaryCheckbox.uncheck();
+			await editUserPage.saveButton.click();
+
+			await waitForAlert(page);
+		}).toPass();
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website2)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website3)
+		).toBeVisible();
+
+		await (await editUserPage.websitesTableRowActions(website2)).click();
+		await editUserPage.makePrimaryMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website2)
+		).toBeVisible();
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website3)
+		).not.toBeVisible();
+
+		await (await editUserPage.websitesTableRowActions(website3)).click();
+		await editUserPage.removeMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website1)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website2)
+		).toBeVisible();
+
+		await (await editUserPage.websitesTableRowActions(website2)).click();
+		await editUserPage.removeMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			await editUserPage.websitesTablePrimaryText(website1)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Site role is empty with empty message',
+	{tag: ['@LPD-62984']},
+	async ({apiHelpers, editUserPage, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+		await editUserPage.rolesLink.click();
+
+		await expect(editUserPage.selectSiteRolesButton).not.toBeVisible();
+		await expect(editUserPage.cannotSelectSiteRolesMessage).toBeVisible();
+	}
+);
