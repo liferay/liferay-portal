@@ -1369,10 +1369,12 @@ public class ObjectDefinitionResourceImpl
 			objectDefinitionValidationException =
 				new ObjectDefinitionValidationException();
 
-		objectDefinitionValidationException.setDetail(
+		ObjectDefinitionValidationContext objectDefinitionValidationContext =
 			ObjectDefinitionValidationThreadLocal.
-				getObjectDefinitionValidationContext(
-				).getValidationErrorsAsJSON());
+				getObjectDefinitionValidationContext();
+
+		objectDefinitionValidationException.setValidationErrors(
+			objectDefinitionValidationContext.getValidationErrors());
 
 		throw objectDefinitionValidationException;
 	}

@@ -7,17 +7,19 @@ package com.liferay.object.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.util.List;
+
 /**
  * @author Caio Farias
  */
 public class ObjectDefinitionValidationException extends PortalException {
 
-	public String getDetail() {
-		return _detail;
+	public List<ValidationError> getValidationErrors() {
+		return _validationErrors;
 	}
 
-	public void setDetail(String detail) {
-		_detail = detail;
+	public void setValidationErrors(List<ValidationError> validationErrors) {
+		_validationErrors = validationErrors;
 	}
 
 	public static class ValidationError {
@@ -61,6 +63,6 @@ public class ObjectDefinitionValidationException extends PortalException {
 
 	}
 
-	private String _detail;
+	private List<ValidationError> _validationErrors;
 
 }

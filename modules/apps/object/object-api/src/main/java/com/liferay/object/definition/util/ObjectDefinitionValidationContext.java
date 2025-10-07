@@ -8,9 +8,6 @@ package com.liferay.object.definition.util;
 import com.liferay.object.exception.ObjectDefinitionValidationException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,30 +69,10 @@ public class ObjectDefinitionValidationContext {
 		return _objectDefinitionExternalReferenceCode;
 	}
 
-	public String getValidationErrorsAsJSON() {
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+	public List<ObjectDefinitionValidationException.ValidationError>
+		getValidationErrors() {
 
-		for (ObjectDefinitionValidationException.ValidationError
-				validationError : _validationErrors) {
-
-			jsonArray.put(
-				JSONUtil.put(
-					"className", validationError.getClassName()
-				).put(
-					"errorMessage", validationError.getErrorMessage()
-				).put(
-					"exceptionClassName",
-					validationError.getExceptionClassName()
-				).put(
-					"property", validationError.getProperty()
-				).put(
-					"value", validationError.getValue()
-				));
-		}
-
-		return JSONUtil.put(
-			"validationErrors", jsonArray
-		).toString();
+		return _validationErrors;
 	}
 
 	public boolean hasValidationErrors() {

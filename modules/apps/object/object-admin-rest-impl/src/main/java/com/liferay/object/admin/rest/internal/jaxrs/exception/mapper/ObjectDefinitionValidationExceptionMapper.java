@@ -6,6 +6,9 @@
 package com.liferay.object.admin.rest.internal.jaxrs.exception.mapper;
 
 import com.liferay.object.exception.ObjectDefinitionValidationException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
@@ -13,6 +16,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Caio Farias
@@ -34,10 +38,43 @@ public class ObjectDefinitionValidationExceptionMapper
 			objectDefinitionValidationException) {
 
 		return new Problem(
-			objectDefinitionValidationException.getDetail(),
+			_generateDetail(objectDefinitionValidationException),
 			Response.Status.BAD_REQUEST,
 			ObjectDefinitionValidationException.class.getName(),
 			ObjectDefinitionValidationException.class.getName());
 	}
+
+	private String _generateDetail(
+		ObjectDefinitionValidationException
+			objectDefinitionValidationException) {
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		for (ObjectDefinitionValidationException.ValidationError
+				validationError :
+					objectDefinitionValidationException.getValidationErrors()) {
+
+			jsonArray.put(
+				JSONUtil.put(
+					"className", validationError.getClassName()
+				).put(
+					"errorMessage", validationError.getErrorMessage()
+				).put(
+					"exceptionClassName",
+					validationError.getExceptionClassName()
+				).put(
+					"property", validationError.getProperty()
+				).put(
+					"value", validationError.getValue()
+				));
+		}
+
+		return JSONUtil.put(
+			"validationErrors", jsonArray
+		).toString();
+	}
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 }
